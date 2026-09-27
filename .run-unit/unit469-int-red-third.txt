@@ -1,0 +1,1147 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.07]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.29]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.30]   Starting:    Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.46]     Hamlet.RadioEngine.Tests.Cw.Fixtures.TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(label: "INT-CARRIER(+100, +20)") [FAIL]
+[xUnit.net 00:00:00.46]       INT-CARRIER(+100, +20): layer 1 offset +0.000 Hz within 2 Hz of +100; layer 1 key-down power 0.000 dB within 0.5 dB of +20.0 against the wanted; layer 1 is steady from the first sample to the last: swing Infinity dB (at most 1), 73 key-ups (none), first window at 0.995 s
+[xUnit.net 00:00:00.46]       Stack Trace:
+[xUnit.net 00:00:00.46]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\Fixtures\TheInterferenceProfilesAreWhatTheySayTests.cs(241,0): at Hamlet.RadioEngine.Tests.Cw.Fixtures.TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(String label)
+[xUnit.net 00:00:00.46]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:00.46]            at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+[xUnit.net 00:00:00.46]       Output:
+[xUnit.net 00:00:00.46]         case | INT-CARRIER(+100, +20) | INT-CARRIER | wanted TX-ITU 18 wpm at 600 Hz, 15 dB reference on CH-AWGN | seed 469001 | mixer NOMINAL (watched red)
+[xUnit.net 00:00:00.46]         sidecar | INT-CARRIER(+100, +20) | seed          469001 (band); path 1 476920, path 2 484839 (seed + 7919 k)
+[xUnit.net 00:00:00.46]         sidecar | INT-CARRIER(+100, +20) | snr           15.0 dB in the 2500 Hz reference (CW_SPEC.md 8.1)
+[xUnit.net 00:00:00.46]         sidecar | INT-CARRIER(+100, +20) | intProfile    INT-CARRIER(+100, +20) - Unkeyed carrier (CW_SPEC.md 9.3)
+[xUnit.net 00:00:00.46]         sidecar | INT-CARRIER(+100, +20) | intDefinition A steady tone. The "loudest is not keyed" case.
+[xUnit.net 00:00:00.46]         sidecar | INT-CARRIER(+100, +20) | intMixer      NOMINAL - the watched-red mixer: every layer is the wanted station again, its pitch, level and keying
+[xUnit.net 00:00:00.46]         sidecar | INT-CARRIER(+100, +20) | seed          469001 (469000 + the wanted speed's index into SyntheticCq.Speeds; the band's)
+[xUnit.net 00:00:00.46]         sidecar | INT-CARRIER(+100, +20) | layer 1       steady carrier, 600 Hz (+100 Hz), +20.0 dB against the wanted's key-down power, from the first sample to the last, phase 0
+[xUnit.net 00:00:00.46]         sidecar | INT-CARRIER(+100, +20) | headroom      x 1 (none needed)
+[xUnit.net 00:00:00.46]         ok   | INT-CARRIER(+100, +20) | wanted key `CQ CQ CQ DE N0CALL N0CALL K` is SyntheticCq.Text, exact by construction
+[xUnit.net 00:00:00.46]         measured | INT-CARRIER(+100, +20) | wanted | 600.002 Hz | key-down power -16.060 dB | key-ups 73 | swing Infinity dB | first key-down 0.995 s
+[xUnit.net 00:00:00.46]         measured | INT-CARRIER(+100, +20) | layer 1 | 600.002 Hz, offset +0.000 Hz (stated +100) | level 0.000 dB (stated +20.0) | key-ups 73, floor -300.0 dB | swing Infinity dB | first key-down 0.995 s
+[xUnit.net 00:00:00.46]         FAIL | INT-CARRIER(+100, +20) | layer 1 offset +0.000 Hz within 2 Hz of +100
+[xUnit.net 00:00:00.46]         FAIL | INT-CARRIER(+100, +20) | layer 1 key-down power 0.000 dB within 0.5 dB of +20.0 against the wanted
+[xUnit.net 00:00:00.46]         FAIL | INT-CARRIER(+100, +20) | layer 1 is steady from the first sample to the last: swing Infinity dB (at most 1), 73 key-ups (none), first window at 0.995 s
+[xUnit.net 00:00:00.46]         ok   | INT-CARRIER(+100, +20) | the mix is band + wanted + every layer, x 1: worst sample 1.5e-8 from the sum
+[xUnit.net 00:00:00.46]         ok   | INT-CARRIER(+100, +20) | no sample clipped: peak 0.4768 FS
+[xUnit.net 00:00:00.46]         ok   | INT-CARRIER(+100, +20) | the band is under every 25 ms of the case, never digital silence (V-06): 0 silent windows
+[xUnit.net 00:00:00.46]         verdict | INT-CARRIER(+100, +20) | NOT what 9.3 says: layer 1 offset +0.000 Hz within 2 Hz of +100; layer 1 key-down power 0.000 dB within 0.5 dB of +20.0 against the wanted; layer 1 is steady from the first sample to the last: swing Infinity dB (at most 1), 73 key-ups (none), first window at 0.995 s
+[xUnit.net 00:00:00.52]     Hamlet.RadioEngine.Tests.Cw.Fixtures.TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(label: "INT-ADJ(-50, -6, 25)") [FAIL]
+[xUnit.net 00:00:00.52]       INT-ADJ(-50, -6, 25): layer 1 offset +0.000 Hz within 2 Hz of -50; layer 1 key-down power 0.000 dB within 0.5 dB of -6.0 against the wanted
+[xUnit.net 00:00:00.52]       Stack Trace:
+[xUnit.net 00:00:00.52]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\Fixtures\TheInterferenceProfilesAreWhatTheySayTests.cs(241,0): at Hamlet.RadioEngine.Tests.Cw.Fixtures.TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(String label)
+[xUnit.net 00:00:00.52]            at InvokeStub_TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(Object, Span`1)
+[xUnit.net 00:00:00.52]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:00.52]       Output:
+[xUnit.net 00:00:00.52]         case | INT-ADJ(-50, -6, 25) | INT-ADJ | wanted TX-ITU 18 wpm at 600 Hz, 15 dB reference on CH-AWGN | seed 469001 | mixer NOMINAL (watched red)
+[xUnit.net 00:00:00.52]         sidecar | INT-ADJ(-50, -6, 25) | seed          469001 (band); path 1 476920, path 2 484839 (seed + 7919 k)
+[xUnit.net 00:00:00.52]         sidecar | INT-ADJ(-50, -6, 25) | snr           15.0 dB in the 2500 Hz reference (CW_SPEC.md 8.1)
+[xUnit.net 00:00:00.52]         sidecar | INT-ADJ(-50, -6, 25) | intProfile    INT-ADJ(-50, -6, 25) - Adjacent station (CW_SPEC.md 9.3)
+[xUnit.net 00:00:00.52]         sidecar | INT-ADJ(-50, -6, 25) | intDefinition A second CW signal Δf hertz away, ΔdB relative to the wanted one, at its own speed.
+[xUnit.net 00:00:00.52]         sidecar | INT-ADJ(-50, -6, 25) | intMixer      NOMINAL - the watched-red mixer: every layer is the wanted station again, its pitch, level and keying
+[xUnit.net 00:00:00.52]         sidecar | INT-ADJ(-50, -6, 25) | seed          469001 (469000 + the wanted speed's index into SyntheticCq.Speeds; the band's)
+[xUnit.net 00:00:00.52]         sidecar | INT-ADJ(-50, -6, 25) | layer 1       keyed TX-ITU, 600 Hz (-50 Hz), -6.0 dB against the wanted's key-down power, 25 wpm, start 0.000 s (the wanted's second word), text `DE N0AAA UP` - never scored
+[xUnit.net 00:00:00.52]         sidecar | INT-ADJ(-50, -6, 25) | headroom      x 1 (none needed)
+[xUnit.net 00:00:00.52]         ok   | INT-ADJ(-50, -6, 25) | wanted key `CQ CQ CQ DE N0CALL N0CALL K` is SyntheticCq.Text, exact by construction
+[xUnit.net 00:00:00.52]         measured | INT-ADJ(-50, -6, 25) | wanted | 600.002 Hz | key-down power -16.060 dB | key-ups 73 | swing Infinity dB | first key-down 0.995 s
+[xUnit.net 00:00:00.52]         measured | INT-ADJ(-50, -6, 25) | layer 1 | 600.002 Hz, offset +0.000 Hz (stated -50) | level 0.000 dB (stated -6.0) | key-ups 73, floor -300.0 dB | swing Infinity dB | first key-down 0.995 s
+[xUnit.net 00:00:00.52]         FAIL | INT-ADJ(-50, -6, 25) | layer 1 offset +0.000 Hz within 2 Hz of -50
+[xUnit.net 00:00:00.52]         FAIL | INT-ADJ(-50, -6, 25) | layer 1 key-down power 0.000 dB within 0.5 dB of -6.0 against the wanted
+[xUnit.net 00:00:00.52]         ok   | INT-ADJ(-50, -6, 25) | layer 1 keys on and off: 73 key-ups (at least 5), floor -300.0 dB under key-down (at least 20)
+[xUnit.net 00:00:00.52]         ok   | INT-ADJ(-50, -6, 25) | the mix is band + wanted + every layer, x 1: worst sample 1.5e-8 from the sum
+[xUnit.net 00:00:00.52]         ok   | INT-ADJ(-50, -6, 25) | no sample clipped: peak 0.4768 FS
+[xUnit.net 00:00:00.52]         ok   | INT-ADJ(-50, -6, 25) | the band is under every 25 ms of the case, never digital silence (V-06): 0 silent windows
+[xUnit.net 00:00:00.52]         verdict | INT-ADJ(-50, -6, 25) | NOT what 9.3 says: layer 1 offset +0.000 Hz within 2 Hz of -50; layer 1 key-down power 0.000 dB within 0.5 dB of -6.0 against the wanted
+[xUnit.net 00:00:00.59]     Hamlet.RadioEngine.Tests.Cw.Fixtures.TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(label: "INT-ADJ(+100, -2.4, 25)") [FAIL]
+[xUnit.net 00:00:00.59]       INT-ADJ(+100, -2.4, 25): layer 1 offset +0.000 Hz within 2 Hz of +100; layer 1 key-down power 0.000 dB within 0.5 dB of -2.4 against the wanted
+[xUnit.net 00:00:00.59]       Stack Trace:
+[xUnit.net 00:00:00.59]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\Fixtures\TheInterferenceProfilesAreWhatTheySayTests.cs(241,0): at Hamlet.RadioEngine.Tests.Cw.Fixtures.TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(String label)
+[xUnit.net 00:00:00.59]            at InvokeStub_TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(Object, Span`1)
+[xUnit.net 00:00:00.59]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:00.59]       Output:
+[xUnit.net 00:00:00.59]         case | INT-ADJ(+100, -2.4, 25) | INT-ADJ | wanted TX-ITU 18 wpm at 600 Hz, 15 dB reference on CH-AWGN | seed 469001 | mixer NOMINAL (watched red)
+[xUnit.net 00:00:00.59]         sidecar | INT-ADJ(+100, -2.4, 25) | seed          469001 (band); path 1 476920, path 2 484839 (seed + 7919 k)
+[xUnit.net 00:00:00.59]         sidecar | INT-ADJ(+100, -2.4, 25) | snr           15.0 dB in the 2500 Hz reference (CW_SPEC.md 8.1)
+[xUnit.net 00:00:00.59]         sidecar | INT-ADJ(+100, -2.4, 25) | intProfile    INT-ADJ(+100, -2.4, 25) - Adjacent station (CW_SPEC.md 9.3)
+[xUnit.net 00:00:00.59]         sidecar | INT-ADJ(+100, -2.4, 25) | intDefinition A second CW signal Δf hertz away, ΔdB relative to the wanted one, at its own speed.
+[xUnit.net 00:00:00.59]         sidecar | INT-ADJ(+100, -2.4, 25) | intMixer      NOMINAL - the watched-red mixer: every layer is the wanted station again, its pitch, level and keying
+[xUnit.net 00:00:00.59]         sidecar | INT-ADJ(+100, -2.4, 25) | seed          469001 (469000 + the wanted speed's index into SyntheticCq.Speeds; the band's)
+[xUnit.net 00:00:00.59]         sidecar | INT-ADJ(+100, -2.4, 25) | layer 1       keyed TX-ITU, 600 Hz (+100 Hz), -2.4 dB against the wanted's key-down power, 25 wpm, start 0.000 s (the wanted's second word), text `DE N0AAA UP` - never scored
+[xUnit.net 00:00:00.59]         sidecar | INT-ADJ(+100, -2.4, 25) | headroom      x 1 (none needed)
+[xUnit.net 00:00:00.59]         ok   | INT-ADJ(+100, -2.4, 25) | wanted key `CQ CQ CQ DE N0CALL N0CALL K` is SyntheticCq.Text, exact by construction
+[xUnit.net 00:00:00.59]         measured | INT-ADJ(+100, -2.4, 25) | wanted | 600.002 Hz | key-down power -16.060 dB | key-ups 73 | swing Infinity dB | first key-down 0.995 s
+[xUnit.net 00:00:00.59]         measured | INT-ADJ(+100, -2.4, 25) | layer 1 | 600.002 Hz, offset +0.000 Hz (stated +100) | level 0.000 dB (stated -2.4) | key-ups 73, floor -300.0 dB | swing Infinity dB | first key-down 0.995 s
+[xUnit.net 00:00:00.59]         FAIL | INT-ADJ(+100, -2.4, 25) | layer 1 offset +0.000 Hz within 2 Hz of +100
+[xUnit.net 00:00:00.59]         FAIL | INT-ADJ(+100, -2.4, 25) | layer 1 key-down power 0.000 dB within 0.5 dB of -2.4 against the wanted
+[xUnit.net 00:00:00.59]         ok   | INT-ADJ(+100, -2.4, 25) | layer 1 keys on and off: 73 key-ups (at least 5), floor -300.0 dB under key-down (at least 20)
+[xUnit.net 00:00:00.59]         ok   | INT-ADJ(+100, -2.4, 25) | the mix is band + wanted + every layer, x 1: worst sample 1.5e-8 from the sum
+[xUnit.net 00:00:00.59]         ok   | INT-ADJ(+100, -2.4, 25) | no sample clipped: peak 0.4768 FS
+[xUnit.net 00:00:00.59]         ok   | INT-ADJ(+100, -2.4, 25) | the band is under every 25 ms of the case, never digital silence (V-06): 0 silent windows
+[xUnit.net 00:00:00.59]         verdict | INT-ADJ(+100, -2.4, 25) | NOT what 9.3 says: layer 1 offset +0.000 Hz within 2 Hz of +100; layer 1 key-down power 0.000 dB within 0.5 dB of -2.4 against the wanted
+[xUnit.net 00:00:00.64]     Hamlet.RadioEngine.Tests.Cw.Fixtures.TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(label: "INT-CARRIER(+50, 0)") [FAIL]
+[xUnit.net 00:00:00.64]       INT-CARRIER(+50, 0): layer 1 offset +0.000 Hz within 2 Hz of +50; layer 1 is steady from the first sample to the last: swing Infinity dB (at most 1), 73 key-ups (none), first window at 0.995 s
+[xUnit.net 00:00:00.64]       Stack Trace:
+[xUnit.net 00:00:00.64]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\Fixtures\TheInterferenceProfilesAreWhatTheySayTests.cs(241,0): at Hamlet.RadioEngine.Tests.Cw.Fixtures.TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(String label)
+[xUnit.net 00:00:00.64]            at InvokeStub_TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(Object, Span`1)
+[xUnit.net 00:00:00.64]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:00.64]       Output:
+[xUnit.net 00:00:00.64]         case | INT-CARRIER(+50, 0) | INT-CARRIER | wanted TX-ITU 18 wpm at 600 Hz, 15 dB reference on CH-AWGN | seed 469001 | mixer NOMINAL (watched red)
+[xUnit.net 00:00:00.64]         sidecar | INT-CARRIER(+50, 0) | seed          469001 (band); path 1 476920, path 2 484839 (seed + 7919 k)
+[xUnit.net 00:00:00.64]         sidecar | INT-CARRIER(+50, 0) | snr           15.0 dB in the 2500 Hz reference (CW_SPEC.md 8.1)
+[xUnit.net 00:00:00.64]         sidecar | INT-CARRIER(+50, 0) | intProfile    INT-CARRIER(+50, 0) - Unkeyed carrier (CW_SPEC.md 9.3)
+[xUnit.net 00:00:00.64]         sidecar | INT-CARRIER(+50, 0) | intDefinition A steady tone. The "loudest is not keyed" case.
+[xUnit.net 00:00:00.64]         sidecar | INT-CARRIER(+50, 0) | intMixer      NOMINAL - the watched-red mixer: every layer is the wanted station again, its pitch, level and keying
+[xUnit.net 00:00:00.64]         sidecar | INT-CARRIER(+50, 0) | seed          469001 (469000 + the wanted speed's index into SyntheticCq.Speeds; the band's)
+[xUnit.net 00:00:00.64]         sidecar | INT-CARRIER(+50, 0) | layer 1       steady carrier, 600 Hz (+50 Hz), 0.0 dB against the wanted's key-down power, from the first sample to the last, phase 0
+[xUnit.net 00:00:00.64]         sidecar | INT-CARRIER(+50, 0) | headroom      x 1 (none needed)
+[xUnit.net 00:00:00.64]         ok   | INT-CARRIER(+50, 0) | wanted key `CQ CQ CQ DE N0CALL N0CALL K` is SyntheticCq.Text, exact by construction
+[xUnit.net 00:00:00.64]         measured | INT-CARRIER(+50, 0) | wanted | 600.002 Hz | key-down power -16.060 dB | key-ups 73 | swing Infinity dB | first key-down 0.995 s
+[xUnit.net 00:00:00.64]         measured | INT-CARRIER(+50, 0) | layer 1 | 600.002 Hz, offset +0.000 Hz (stated +50) | level 0.000 dB (stated 0.0) | key-ups 73, floor -300.0 dB | swing Infinity dB | first key-down 0.995 s
+[xUnit.net 00:00:00.64]         FAIL | INT-CARRIER(+50, 0) | layer 1 offset +0.000 Hz within 2 Hz of +50
+[xUnit.net 00:00:00.64]         ok   | INT-CARRIER(+50, 0) | layer 1 key-down power 0.000 dB within 0.5 dB of 0.0 against the wanted
+[xUnit.net 00:00:00.64]         FAIL | INT-CARRIER(+50, 0) | layer 1 is steady from the first sample to the last: swing Infinity dB (at most 1), 73 key-ups (none), first window at 0.995 s
+[xUnit.net 00:00:00.64]         ok   | INT-CARRIER(+50, 0) | the mix is band + wanted + every layer, x 1: worst sample 1.5e-8 from the sum
+[xUnit.net 00:00:00.64]         ok   | INT-CARRIER(+50, 0) | no sample clipped: peak 0.4768 FS
+[xUnit.net 00:00:00.64]         ok   | INT-CARRIER(+50, 0) | the band is under every 25 ms of the case, never digital silence (V-06): 0 silent windows
+[xUnit.net 00:00:00.64]         verdict | INT-CARRIER(+50, 0) | NOT what 9.3 says: layer 1 offset +0.000 Hz within 2 Hz of +50; layer 1 is steady from the first sample to the last: swing Infinity dB (at most 1), 73 key-ups (none), first window at 0.995 s
+[xUnit.net 00:00:00.71]     Hamlet.RadioEngine.Tests.Cw.Fixtures.TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(label: "INT-CARRIER(+200, +10)") [FAIL]
+[xUnit.net 00:00:00.71]       INT-CARRIER(+200, +10): layer 1 offset +0.000 Hz within 2 Hz of +200; layer 1 key-down power 0.000 dB within 0.5 dB of +10.0 against the wanted; layer 1 is steady from the first sample to the last: swing Infinity dB (at most 1), 73 key-ups (none), first window at 0.995 s
+[xUnit.net 00:00:00.71]       Stack Trace:
+[xUnit.net 00:00:00.71]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\Fixtures\TheInterferenceProfilesAreWhatTheySayTests.cs(241,0): at Hamlet.RadioEngine.Tests.Cw.Fixtures.TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(String label)
+[xUnit.net 00:00:00.71]            at InvokeStub_TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(Object, Span`1)
+[xUnit.net 00:00:00.71]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:00.71]       Output:
+[xUnit.net 00:00:00.71]         case | INT-CARRIER(+200, +10) | INT-CARRIER | wanted TX-ITU 18 wpm at 600 Hz, 15 dB reference on CH-AWGN | seed 469001 | mixer NOMINAL (watched red)
+[xUnit.net 00:00:00.71]         sidecar | INT-CARRIER(+200, +10) | seed          469001 (band); path 1 476920, path 2 484839 (seed + 7919 k)
+[xUnit.net 00:00:00.71]         sidecar | INT-CARRIER(+200, +10) | snr           15.0 dB in the 2500 Hz reference (CW_SPEC.md 8.1)
+[xUnit.net 00:00:00.71]         sidecar | INT-CARRIER(+200, +10) | intProfile    INT-CARRIER(+200, +10) - Unkeyed carrier (CW_SPEC.md 9.3)
+[xUnit.net 00:00:00.71]         sidecar | INT-CARRIER(+200, +10) | intDefinition A steady tone. The "loudest is not keyed" case.
+[xUnit.net 00:00:00.71]         sidecar | INT-CARRIER(+200, +10) | intMixer      NOMINAL - the watched-red mixer: every layer is the wanted station again, its pitch, level and keying
+[xUnit.net 00:00:00.71]         sidecar | INT-CARRIER(+200, +10) | seed          469001 (469000 + the wanted speed's index into SyntheticCq.Speeds; the band's)
+[xUnit.net 00:00:00.71]         sidecar | INT-CARRIER(+200, +10) | layer 1       steady carrier, 600 Hz (+200 Hz), +10.0 dB against the wanted's key-down power, from the first sample to the last, phase 0
+[xUnit.net 00:00:00.71]         sidecar | INT-CARRIER(+200, +10) | headroom      x 1 (none needed)
+[xUnit.net 00:00:00.71]         ok   | INT-CARRIER(+200, +10) | wanted key `CQ CQ CQ DE N0CALL N0CALL K` is SyntheticCq.Text, exact by construction
+[xUnit.net 00:00:00.71]         measured | INT-CARRIER(+200, +10) | wanted | 600.002 Hz | key-down power -16.060 dB | key-ups 73 | swing Infinity dB | first key-down 0.995 s
+[xUnit.net 00:00:00.71]         measured | INT-CARRIER(+200, +10) | layer 1 | 600.002 Hz, offset +0.000 Hz (stated +200) | level 0.000 dB (stated +10.0) | key-ups 73, floor -300.0 dB | swing Infinity dB | first key-down 0.995 s
+[xUnit.net 00:00:00.71]         FAIL | INT-CARRIER(+200, +10) | layer 1 offset +0.000 Hz within 2 Hz of +200
+[xUnit.net 00:00:00.71]         FAIL | INT-CARRIER(+200, +10) | layer 1 key-down power 0.000 dB within 0.5 dB of +10.0 against the wanted
+[xUnit.net 00:00:00.71]         FAIL | INT-CARRIER(+200, +10) | layer 1 is steady from the first sample to the last: swing Infinity dB (at most 1), 73 key-ups (none), first window at 0.995 s
+[xUnit.net 00:00:00.71]         ok   | INT-CARRIER(+200, +10) | the mix is band + wanted + every layer, x 1: worst sample 1.5e-8 from the sum
+[xUnit.net 00:00:00.71]         ok   | INT-CARRIER(+200, +10) | no sample clipped: peak 0.4768 FS
+[xUnit.net 00:00:00.71]         ok   | INT-CARRIER(+200, +10) | the band is under every 25 ms of the case, never digital silence (V-06): 0 silent windows
+[xUnit.net 00:00:00.71]         verdict | INT-CARRIER(+200, +10) | NOT what 9.3 says: layer 1 offset +0.000 Hz within 2 Hz of +200; layer 1 key-down power 0.000 dB within 0.5 dB of +10.0 against the wanted; layer 1 is steady from the first sample to the last: swing Infinity dB (at most 1), 73 key-ups (none), first window at 0.995 s
+[xUnit.net 00:00:00.78]     Hamlet.RadioEngine.Tests.Cw.Fixtures.TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(label: "INT-ADJ(+100, -6, 25)") [FAIL]
+[xUnit.net 00:00:00.78]       INT-ADJ(+100, -6, 25): layer 1 offset +0.000 Hz within 2 Hz of +100; layer 1 key-down power 0.000 dB within 0.5 dB of -6.0 against the wanted
+[xUnit.net 00:00:00.78]       Stack Trace:
+[xUnit.net 00:00:00.78]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\Fixtures\TheInterferenceProfilesAreWhatTheySayTests.cs(241,0): at Hamlet.RadioEngine.Tests.Cw.Fixtures.TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(String label)
+[xUnit.net 00:00:00.78]            at InvokeStub_TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(Object, Span`1)
+[xUnit.net 00:00:00.78]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:00.78]       Output:
+[xUnit.net 00:00:00.78]         case | INT-ADJ(+100, -6, 25) | INT-ADJ | wanted TX-ITU 18 wpm at 600 Hz, 15 dB reference on CH-AWGN | seed 469001 | mixer NOMINAL (watched red)
+[xUnit.net 00:00:00.78]         sidecar | INT-ADJ(+100, -6, 25) | seed          469001 (band); path 1 476920, path 2 484839 (seed + 7919 k)
+[xUnit.net 00:00:00.78]         sidecar | INT-ADJ(+100, -6, 25) | snr           15.0 dB in the 2500 Hz reference (CW_SPEC.md 8.1)
+[xUnit.net 00:00:00.78]         sidecar | INT-ADJ(+100, -6, 25) | intProfile    INT-ADJ(+100, -6, 25) - Adjacent station (CW_SPEC.md 9.3)
+[xUnit.net 00:00:00.78]         sidecar | INT-ADJ(+100, -6, 25) | intDefinition A second CW signal Δf hertz away, ΔdB relative to the wanted one, at its own speed.
+[xUnit.net 00:00:00.78]         sidecar | INT-ADJ(+100, -6, 25) | intMixer      NOMINAL - the watched-red mixer: every layer is the wanted station again, its pitch, level and keying
+[xUnit.net 00:00:00.78]         sidecar | INT-ADJ(+100, -6, 25) | seed          469001 (469000 + the wanted speed's index into SyntheticCq.Speeds; the band's)
+[xUnit.net 00:00:00.78]         sidecar | INT-ADJ(+100, -6, 25) | layer 1       keyed TX-ITU, 600 Hz (+100 Hz), -6.0 dB against the wanted's key-down power, 25 wpm, start 0.000 s (the wanted's second word), text `DE N0AAA UP` - never scored
+[xUnit.net 00:00:00.78]         sidecar | INT-ADJ(+100, -6, 25) | headroom      x 1 (none needed)
+[xUnit.net 00:00:00.78]         ok   | INT-ADJ(+100, -6, 25) | wanted key `CQ CQ CQ DE N0CALL N0CALL K` is SyntheticCq.Text, exact by construction
+[xUnit.net 00:00:00.78]         measured | INT-ADJ(+100, -6, 25) | wanted | 600.002 Hz | key-down power -16.060 dB | key-ups 73 | swing Infinity dB | first key-down 0.995 s
+[xUnit.net 00:00:00.78]         measured | INT-ADJ(+100, -6, 25) | layer 1 | 600.002 Hz, offset +0.000 Hz (stated +100) | level 0.000 dB (stated -6.0) | key-ups 73, floor -300.0 dB | swing Infinity dB | first key-down 0.995 s
+[xUnit.net 00:00:00.78]         FAIL | INT-ADJ(+100, -6, 25) | layer 1 offset +0.000 Hz within 2 Hz of +100
+[xUnit.net 00:00:00.78]         FAIL | INT-ADJ(+100, -6, 25) | layer 1 key-down power 0.000 dB within 0.5 dB of -6.0 against the wanted
+[xUnit.net 00:00:00.78]         ok   | INT-ADJ(+100, -6, 25) | layer 1 keys on and off: 73 key-ups (at least 5), floor -300.0 dB under key-down (at least 20)
+[xUnit.net 00:00:00.78]         ok   | INT-ADJ(+100, -6, 25) | the mix is band + wanted + every layer, x 1: worst sample 1.5e-8 from the sum
+[xUnit.net 00:00:00.78]         ok   | INT-ADJ(+100, -6, 25) | no sample clipped: peak 0.4768 FS
+[xUnit.net 00:00:00.78]         ok   | INT-ADJ(+100, -6, 25) | the band is under every 25 ms of the case, never digital silence (V-06): 0 silent windows
+[xUnit.net 00:00:00.78]         verdict | INT-ADJ(+100, -6, 25) | NOT what 9.3 says: layer 1 offset +0.000 Hz within 2 Hz of +100; layer 1 key-down power 0.000 dB within 0.5 dB of -6.0 against the wanted
+[xUnit.net 00:00:00.84]     Hamlet.RadioEngine.Tests.Cw.Fixtures.TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(label: "INT-CARRIER(+200, +20)") [FAIL]
+[xUnit.net 00:00:00.84]       INT-CARRIER(+200, +20): layer 1 offset +0.000 Hz within 2 Hz of +200; layer 1 key-down power 0.000 dB within 0.5 dB of +20.0 against the wanted; layer 1 is steady from the first sample to the last: swing Infinity dB (at most 1), 73 key-ups (none), first window at 0.995 s
+[xUnit.net 00:00:00.84]       Stack Trace:
+[xUnit.net 00:00:00.84]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\Fixtures\TheInterferenceProfilesAreWhatTheySayTests.cs(241,0): at Hamlet.RadioEngine.Tests.Cw.Fixtures.TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(String label)
+[xUnit.net 00:00:00.84]            at InvokeStub_TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(Object, Span`1)
+[xUnit.net 00:00:00.84]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:00.84]       Output:
+[xUnit.net 00:00:00.84]         case | INT-CARRIER(+200, +20) | INT-CARRIER | wanted TX-ITU 18 wpm at 600 Hz, 15 dB reference on CH-AWGN | seed 469001 | mixer NOMINAL (watched red)
+[xUnit.net 00:00:00.84]         sidecar | INT-CARRIER(+200, +20) | seed          469001 (band); path 1 476920, path 2 484839 (seed + 7919 k)
+[xUnit.net 00:00:00.84]         sidecar | INT-CARRIER(+200, +20) | snr           15.0 dB in the 2500 Hz reference (CW_SPEC.md 8.1)
+[xUnit.net 00:00:00.84]         sidecar | INT-CARRIER(+200, +20) | intProfile    INT-CARRIER(+200, +20) - Unkeyed carrier (CW_SPEC.md 9.3)
+[xUnit.net 00:00:00.84]         sidecar | INT-CARRIER(+200, +20) | intDefinition A steady tone. The "loudest is not keyed" case.
+[xUnit.net 00:00:00.84]         sidecar | INT-CARRIER(+200, +20) | intMixer      NOMINAL - the watched-red mixer: every layer is the wanted station again, its pitch, level and keying
+[xUnit.net 00:00:00.84]         sidecar | INT-CARRIER(+200, +20) | seed          469001 (469000 + the wanted speed's index into SyntheticCq.Speeds; the band's)
+[xUnit.net 00:00:00.84]         sidecar | INT-CARRIER(+200, +20) | layer 1       steady carrier, 600 Hz (+200 Hz), +20.0 dB against the wanted's key-down power, from the first sample to the last, phase 0
+[xUnit.net 00:00:00.84]         sidecar | INT-CARRIER(+200, +20) | headroom      x 1 (none needed)
+[xUnit.net 00:00:00.84]         ok   | INT-CARRIER(+200, +20) | wanted key `CQ CQ CQ DE N0CALL N0CALL K` is SyntheticCq.Text, exact by construction
+[xUnit.net 00:00:00.84]         measured | INT-CARRIER(+200, +20) | wanted | 600.002 Hz | key-down power -16.060 dB | key-ups 73 | swing Infinity dB | first key-down 0.995 s
+[xUnit.net 00:00:00.84]         measured | INT-CARRIER(+200, +20) | layer 1 | 600.002 Hz, offset +0.000 Hz (stated +200) | level 0.000 dB (stated +20.0) | key-ups 73, floor -300.0 dB | swing Infinity dB | first key-down 0.995 s
+[xUnit.net 00:00:00.84]         FAIL | INT-CARRIER(+200, +20) | layer 1 offset +0.000 Hz within 2 Hz of +200
+[xUnit.net 00:00:00.84]         FAIL | INT-CARRIER(+200, +20) | layer 1 key-down power 0.000 dB within 0.5 dB of +20.0 against the wanted
+[xUnit.net 00:00:00.84]         FAIL | INT-CARRIER(+200, +20) | layer 1 is steady from the first sample to the last: swing Infinity dB (at most 1), 73 key-ups (none), first window at 0.995 s
+[xUnit.net 00:00:00.84]         ok   | INT-CARRIER(+200, +20) | the mix is band + wanted + every layer, x 1: worst sample 1.5e-8 from the sum
+[xUnit.net 00:00:00.84]         ok   | INT-CARRIER(+200, +20) | no sample clipped: peak 0.4768 FS
+[xUnit.net 00:00:00.84]         ok   | INT-CARRIER(+200, +20) | the band is under every 25 ms of the case, never digital silence (V-06): 0 silent windows
+[xUnit.net 00:00:00.85]         verdict | INT-CARRIER(+200, +20) | NOT what 9.3 says: layer 1 offset +0.000 Hz within 2 Hz of +200; layer 1 key-down power 0.000 dB within 0.5 dB of +20.0 against the wanted; layer 1 is steady from the first sample to the last: swing Infinity dB (at most 1), 73 key-ups (none), first window at 0.995 s
+[xUnit.net 00:00:00.91]     Hamlet.RadioEngine.Tests.Cw.Fixtures.TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(label: "INT-CARRIER(+200, 0)") [FAIL]
+[xUnit.net 00:00:00.91]       INT-CARRIER(+200, 0): layer 1 offset +0.000 Hz within 2 Hz of +200; layer 1 is steady from the first sample to the last: swing Infinity dB (at most 1), 73 key-ups (none), first window at 0.995 s
+[xUnit.net 00:00:00.91]       Stack Trace:
+[xUnit.net 00:00:00.91]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\Fixtures\TheInterferenceProfilesAreWhatTheySayTests.cs(241,0): at Hamlet.RadioEngine.Tests.Cw.Fixtures.TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(String label)
+[xUnit.net 00:00:00.91]            at InvokeStub_TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(Object, Span`1)
+[xUnit.net 00:00:00.91]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:00.91]       Output:
+[xUnit.net 00:00:00.91]         case | INT-CARRIER(+200, 0) | INT-CARRIER | wanted TX-ITU 18 wpm at 600 Hz, 15 dB reference on CH-AWGN | seed 469001 | mixer NOMINAL (watched red)
+[xUnit.net 00:00:00.91]         sidecar | INT-CARRIER(+200, 0) | seed          469001 (band); path 1 476920, path 2 484839 (seed + 7919 k)
+[xUnit.net 00:00:00.91]         sidecar | INT-CARRIER(+200, 0) | snr           15.0 dB in the 2500 Hz reference (CW_SPEC.md 8.1)
+[xUnit.net 00:00:00.91]         sidecar | INT-CARRIER(+200, 0) | intProfile    INT-CARRIER(+200, 0) - Unkeyed carrier (CW_SPEC.md 9.3)
+[xUnit.net 00:00:00.91]         sidecar | INT-CARRIER(+200, 0) | intDefinition A steady tone. The "loudest is not keyed" case.
+[xUnit.net 00:00:00.91]         sidecar | INT-CARRIER(+200, 0) | intMixer      NOMINAL - the watched-red mixer: every layer is the wanted station again, its pitch, level and keying
+[xUnit.net 00:00:00.91]         sidecar | INT-CARRIER(+200, 0) | seed          469001 (469000 + the wanted speed's index into SyntheticCq.Speeds; the band's)
+[xUnit.net 00:00:00.91]         sidecar | INT-CARRIER(+200, 0) | layer 1       steady carrier, 600 Hz (+200 Hz), 0.0 dB against the wanted's key-down power, from the first sample to the last, phase 0
+[xUnit.net 00:00:00.91]         sidecar | INT-CARRIER(+200, 0) | headroom      x 1 (none needed)
+[xUnit.net 00:00:00.91]         ok   | INT-CARRIER(+200, 0) | wanted key `CQ CQ CQ DE N0CALL N0CALL K` is SyntheticCq.Text, exact by construction
+[xUnit.net 00:00:00.91]         measured | INT-CARRIER(+200, 0) | wanted | 600.002 Hz | key-down power -16.060 dB | key-ups 73 | swing Infinity dB | first key-down 0.995 s
+[xUnit.net 00:00:00.91]         measured | INT-CARRIER(+200, 0) | layer 1 | 600.002 Hz, offset +0.000 Hz (stated +200) | level 0.000 dB (stated 0.0) | key-ups 73, floor -300.0 dB | swing Infinity dB | first key-down 0.995 s
+[xUnit.net 00:00:00.91]         FAIL | INT-CARRIER(+200, 0) | layer 1 offset +0.000 Hz within 2 Hz of +200
+[xUnit.net 00:00:00.91]         ok   | INT-CARRIER(+200, 0) | layer 1 key-down power 0.000 dB within 0.5 dB of 0.0 against the wanted
+[xUnit.net 00:00:00.91]         FAIL | INT-CARRIER(+200, 0) | layer 1 is steady from the first sample to the last: swing Infinity dB (at most 1), 73 key-ups (none), first window at 0.995 s
+[xUnit.net 00:00:00.91]         ok   | INT-CARRIER(+200, 0) | the mix is band + wanted + every layer, x 1: worst sample 1.5e-8 from the sum
+[xUnit.net 00:00:00.91]         ok   | INT-CARRIER(+200, 0) | no sample clipped: peak 0.4768 FS
+[xUnit.net 00:00:00.91]         ok   | INT-CARRIER(+200, 0) | the band is under every 25 ms of the case, never digital silence (V-06): 0 silent windows
+[xUnit.net 00:00:00.91]         verdict | INT-CARRIER(+200, 0) | NOT what 9.3 says: layer 1 offset +0.000 Hz within 2 Hz of +200; layer 1 is steady from the first sample to the last: swing Infinity dB (at most 1), 73 key-ups (none), first window at 0.995 s
+[xUnit.net 00:00:00.96]     Hamlet.RadioEngine.Tests.Cw.Fixtures.TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(label: "INT-ADJ(+50, -6, 25)") [FAIL]
+[xUnit.net 00:00:00.96]       INT-ADJ(+50, -6, 25): layer 1 offset +0.000 Hz within 2 Hz of +50; layer 1 key-down power 0.000 dB within 0.5 dB of -6.0 against the wanted
+[xUnit.net 00:00:00.96]       Stack Trace:
+[xUnit.net 00:00:00.96]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\Fixtures\TheInterferenceProfilesAreWhatTheySayTests.cs(241,0): at Hamlet.RadioEngine.Tests.Cw.Fixtures.TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(String label)
+[xUnit.net 00:00:00.96]            at InvokeStub_TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(Object, Span`1)
+[xUnit.net 00:00:00.96]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:00.96]       Output:
+[xUnit.net 00:00:00.96]         case | INT-ADJ(+50, -6, 25) | INT-ADJ | wanted TX-ITU 18 wpm at 600 Hz, 15 dB reference on CH-AWGN | seed 469001 | mixer NOMINAL (watched red)
+[xUnit.net 00:00:00.96]         sidecar | INT-ADJ(+50, -6, 25) | seed          469001 (band); path 1 476920, path 2 484839 (seed + 7919 k)
+[xUnit.net 00:00:00.96]         sidecar | INT-ADJ(+50, -6, 25) | snr           15.0 dB in the 2500 Hz reference (CW_SPEC.md 8.1)
+[xUnit.net 00:00:00.96]         sidecar | INT-ADJ(+50, -6, 25) | intProfile    INT-ADJ(+50, -6, 25) - Adjacent station (CW_SPEC.md 9.3)
+[xUnit.net 00:00:00.96]         sidecar | INT-ADJ(+50, -6, 25) | intDefinition A second CW signal Δf hertz away, ΔdB relative to the wanted one, at its own speed.
+[xUnit.net 00:00:00.96]         sidecar | INT-ADJ(+50, -6, 25) | intMixer      NOMINAL - the watched-red mixer: every layer is the wanted station again, its pitch, level and keying
+[xUnit.net 00:00:00.96]         sidecar | INT-ADJ(+50, -6, 25) | seed          469001 (469000 + the wanted speed's index into SyntheticCq.Speeds; the band's)
+[xUnit.net 00:00:00.96]         sidecar | INT-ADJ(+50, -6, 25) | layer 1       keyed TX-ITU, 600 Hz (+50 Hz), -6.0 dB against the wanted's key-down power, 25 wpm, start 0.000 s (the wanted's second word), text `DE N0AAA UP` - never scored
+[xUnit.net 00:00:00.96]         sidecar | INT-ADJ(+50, -6, 25) | headroom      x 1 (none needed)
+[xUnit.net 00:00:00.96]         ok   | INT-ADJ(+50, -6, 25) | wanted key `CQ CQ CQ DE N0CALL N0CALL K` is SyntheticCq.Text, exact by construction
+[xUnit.net 00:00:00.96]         measured | INT-ADJ(+50, -6, 25) | wanted | 600.002 Hz | key-down power -16.060 dB | key-ups 73 | swing Infinity dB | first key-down 0.995 s
+[xUnit.net 00:00:00.96]         measured | INT-ADJ(+50, -6, 25) | layer 1 | 600.002 Hz, offset +0.000 Hz (stated +50) | level 0.000 dB (stated -6.0) | key-ups 73, floor -300.0 dB | swing Infinity dB | first key-down 0.995 s
+[xUnit.net 00:00:00.96]         FAIL | INT-ADJ(+50, -6, 25) | layer 1 offset +0.000 Hz within 2 Hz of +50
+[xUnit.net 00:00:00.96]         FAIL | INT-ADJ(+50, -6, 25) | layer 1 key-down power 0.000 dB within 0.5 dB of -6.0 against the wanted
+[xUnit.net 00:00:00.96]         ok   | INT-ADJ(+50, -6, 25) | layer 1 keys on and off: 73 key-ups (at least 5), floor -300.0 dB under key-down (at least 20)
+[xUnit.net 00:00:00.96]         ok   | INT-ADJ(+50, -6, 25) | the mix is band + wanted + every layer, x 1: worst sample 1.5e-8 from the sum
+[xUnit.net 00:00:00.96]         ok   | INT-ADJ(+50, -6, 25) | no sample clipped: peak 0.4768 FS
+[xUnit.net 00:00:00.96]         ok   | INT-ADJ(+50, -6, 25) | the band is under every 25 ms of the case, never digital silence (V-06): 0 silent windows
+[xUnit.net 00:00:00.96]         verdict | INT-ADJ(+50, -6, 25) | NOT what 9.3 says: layer 1 offset +0.000 Hz within 2 Hz of +50; layer 1 key-down power 0.000 dB within 0.5 dB of -6.0 against the wanted
+  Failed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(label: "INT-CARRIER(+100, +20)") [125 ms]
+  Error Message:
+   INT-CARRIER(+100, +20): layer 1 offset +0.000 Hz within 2 Hz of +100; layer 1 key-down power 0.000 dB within 0.5 dB of +20.0 against the wanted; layer 1 is steady from the first sample to the last: swing Infinity dB (at most 1), 73 key-ups (none), first window at 0.995 s
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Cw.Fixtures.TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(String label) in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\Fixtures\TheInterferenceProfilesAreWhatTheySayTests.cs:line 241
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+  Standard Output Messages:
+ case | INT-CARRIER(+100, +20) | INT-CARRIER | wanted TX-ITU 18 wpm at 600 Hz, 15 dB reference on CH-AWGN | seed 469001 | mixer NOMINAL (watched red)
+ sidecar | INT-CARRIER(+100, +20) | seed          469001 (band); path 1 476920, path 2 484839 (seed + 7919 k)
+ sidecar | INT-CARRIER(+100, +20) | snr           15.0 dB in the 2500 Hz reference (CW_SPEC.md 8.1)
+ sidecar | INT-CARRIER(+100, +20) | intProfile    INT-CARRIER(+100, +20) - Unkeyed carrier (CW_SPEC.md 9.3)
+ sidecar | INT-CARRIER(+100, +20) | intDefinition A steady tone. The "loudest is not keyed" case.
+ sidecar | INT-CARRIER(+100, +20) | intMixer      NOMINAL - the watched-red mixer: every layer is the wanted station again, its pitch, level and keying
+ sidecar | INT-CARRIER(+100, +20) | seed          469001 (469000 + the wanted speed's index into SyntheticCq.Speeds; the band's)
+ sidecar | INT-CARRIER(+100, +20) | layer 1       steady carrier, 600 Hz (+100 Hz), +20.0 dB against the wanted's key-down power, from the first sample to the last, phase 0
+ sidecar | INT-CARRIER(+100, +20) | headroom      x 1 (none needed)
+ ok   | INT-CARRIER(+100, +20) | wanted key `CQ CQ CQ DE N0CALL N0CALL K` is SyntheticCq.Text, exact by construction
+ measured | INT-CARRIER(+100, +20) | wanted | 600.002 Hz | key-down power -16.060 dB | key-ups 73 | swing Infinity dB | first key-down 0.995 s
+ measured | INT-CARRIER(+100, +20) | layer 1 | 600.002 Hz, offset +0.000 Hz (stated +100) | level 0.000 dB (stated +20.0) | key-ups 73, floor -300.0 dB | swing Infinity dB | first key-down 0.995 s
+ FAIL | INT-CARRIER(+100, +20) | layer 1 offset +0.000 Hz within 2 Hz of +100
+ FAIL | INT-CARRIER(+100, +20) | layer 1 key-down power 0.000 dB within 0.5 dB of +20.0 against the wanted
+ FAIL | INT-CARRIER(+100, +20) | layer 1 is steady from the first sample to the last: swing Infinity dB (at most 1), 73 key-ups (none), first window at 0.995 s
+ ok   | INT-CARRIER(+100, +20) | the mix is band + wanted + every layer, x 1: worst sample 1.5e-8 from the sum
+ ok   | INT-CARRIER(+100, +20) | no sample clipped: peak 0.4768 FS
+ ok   | INT-CARRIER(+100, +20) | the band is under every 25 ms of the case, never digital silence (V-06): 0 silent windows
+ verdict | INT-CARRIER(+100, +20) | NOT what 9.3 says: layer 1 offset +0.000 Hz within 2 Hz of +100; layer 1 key-down power 0.000 dB within 0.5 dB of +20.0 against the wanted; layer 1 is steady from the first sample to the last: swing Infinity dB (at most 1), 73 key-ups (none), first window at 0.995 s
+
+
+  Failed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(label: "INT-ADJ(-50, -6, 25)") [61 ms]
+  Error Message:
+   INT-ADJ(-50, -6, 25): layer 1 offset +0.000 Hz within 2 Hz of -50; layer 1 key-down power 0.000 dB within 0.5 dB of -6.0 against the wanted
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Cw.Fixtures.TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(String label) in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\Fixtures\TheInterferenceProfilesAreWhatTheySayTests.cs:line 241
+   at InvokeStub_TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Standard Output Messages:
+ case | INT-ADJ(-50, -6, 25) | INT-ADJ | wanted TX-ITU 18 wpm at 600 Hz, 15 dB reference on CH-AWGN | seed 469001 | mixer NOMINAL (watched red)
+ sidecar | INT-ADJ(-50, -6, 25) | seed          469001 (band); path 1 476920, path 2 484839 (seed + 7919 k)
+ sidecar | INT-ADJ(-50, -6, 25) | snr           15.0 dB in the 2500 Hz reference (CW_SPEC.md 8.1)
+ sidecar | INT-ADJ(-50, -6, 25) | intProfile    INT-ADJ(-50, -6, 25) - Adjacent station (CW_SPEC.md 9.3)
+ sidecar | INT-ADJ(-50, -6, 25) | intDefinition A second CW signal Δf hertz away, ΔdB relative to the wanted one, at its own speed.
+ sidecar | INT-ADJ(-50, -6, 25) | intMixer      NOMINAL - the watched-red mixer: every layer is the wanted station again, its pitch, level and keying
+ sidecar | INT-ADJ(-50, -6, 25) | seed          469001 (469000 + the wanted speed's index into SyntheticCq.Speeds; the band's)
+ sidecar | INT-ADJ(-50, -6, 25) | layer 1       keyed TX-ITU, 600 Hz (-50 Hz), -6.0 dB against the wanted's key-down power, 25 wpm, start 0.000 s (the wanted's second word), text `DE N0AAA UP` - never scored
+ sidecar | INT-ADJ(-50, -6, 25) | headroom      x 1 (none needed)
+ ok   | INT-ADJ(-50, -6, 25) | wanted key `CQ CQ CQ DE N0CALL N0CALL K` is SyntheticCq.Text, exact by construction
+ measured | INT-ADJ(-50, -6, 25) | wanted | 600.002 Hz | key-down power -16.060 dB | key-ups 73 | swing Infinity dB | first key-down 0.995 s
+ measured | INT-ADJ(-50, -6, 25) | layer 1 | 600.002 Hz, offset +0.000 Hz (stated -50) | level 0.000 dB (stated -6.0) | key-ups 73, floor -300.0 dB | swing Infinity dB | first key-down 0.995 s
+ FAIL | INT-ADJ(-50, -6, 25) | layer 1 offset +0.000 Hz within 2 Hz of -50
+ FAIL | INT-ADJ(-50, -6, 25) | layer 1 key-down power 0.000 dB within 0.5 dB of -6.0 against the wanted
+ ok   | INT-ADJ(-50, -6, 25) | layer 1 keys on and off: 73 key-ups (at least 5), floor -300.0 dB under key-down (at least 20)
+ ok   | INT-ADJ(-50, -6, 25) | the mix is band + wanted + every layer, x 1: worst sample 1.5e-8 from the sum
+ ok   | INT-ADJ(-50, -6, 25) | no sample clipped: peak 0.4768 FS
+ ok   | INT-ADJ(-50, -6, 25) | the band is under every 25 ms of the case, never digital silence (V-06): 0 silent windows
+ verdict | INT-ADJ(-50, -6, 25) | NOT what 9.3 says: layer 1 offset +0.000 Hz within 2 Hz of -50; layer 1 key-down power 0.000 dB within 0.5 dB of -6.0 against the wanted
+
+
+  Failed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(label: "INT-ADJ(+100, -2.4, 25)") [63 ms]
+  Error Message:
+   INT-ADJ(+100, -2.4, 25): layer 1 offset +0.000 Hz within 2 Hz of +100; layer 1 key-down power 0.000 dB within 0.5 dB of -2.4 against the wanted
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Cw.Fixtures.TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(String label) in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\Fixtures\TheInterferenceProfilesAreWhatTheySayTests.cs:line 241
+   at InvokeStub_TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Standard Output Messages:
+ case | INT-ADJ(+100, -2.4, 25) | INT-ADJ | wanted TX-ITU 18 wpm at 600 Hz, 15 dB reference on CH-AWGN | seed 469001 | mixer NOMINAL (watched red)
+ sidecar | INT-ADJ(+100, -2.4, 25) | seed          469001 (band); path 1 476920, path 2 484839 (seed + 7919 k)
+ sidecar | INT-ADJ(+100, -2.4, 25) | snr           15.0 dB in the 2500 Hz reference (CW_SPEC.md 8.1)
+ sidecar | INT-ADJ(+100, -2.4, 25) | intProfile    INT-ADJ(+100, -2.4, 25) - Adjacent station (CW_SPEC.md 9.3)
+ sidecar | INT-ADJ(+100, -2.4, 25) | intDefinition A second CW signal Δf hertz away, ΔdB relative to the wanted one, at its own speed.
+ sidecar | INT-ADJ(+100, -2.4, 25) | intMixer      NOMINAL - the watched-red mixer: every layer is the wanted station again, its pitch, level and keying
+ sidecar | INT-ADJ(+100, -2.4, 25) | seed          469001 (469000 + the wanted speed's index into SyntheticCq.Speeds; the band's)
+ sidecar | INT-ADJ(+100, -2.4, 25) | layer 1       keyed TX-ITU, 600 Hz (+100 Hz), -2.4 dB against the wanted's key-down power, 25 wpm, start 0.000 s (the wanted's second word), text `DE N0AAA UP` - never scored
+ sidecar | INT-ADJ(+100, -2.4, 25) | headroom      x 1 (none needed)
+ ok   | INT-ADJ(+100, -2.4, 25) | wanted key `CQ CQ CQ DE N0CALL N0CALL K` is SyntheticCq.Text, exact by construction
+ measured | INT-ADJ(+100, -2.4, 25) | wanted | 600.002 Hz | key-down power -16.060 dB | key-ups 73 | swing Infinity dB | first key-down 0.995 s
+ measured | INT-ADJ(+100, -2.4, 25) | layer 1 | 600.002 Hz, offset +0.000 Hz (stated +100) | level 0.000 dB (stated -2.4) | key-ups 73, floor -300.0 dB | swing Infinity dB | first key-down 0.995 s
+ FAIL | INT-ADJ(+100, -2.4, 25) | layer 1 offset +0.000 Hz within 2 Hz of +100
+ FAIL | INT-ADJ(+100, -2.4, 25) | layer 1 key-down power 0.000 dB within 0.5 dB of -2.4 against the wanted
+ ok   | INT-ADJ(+100, -2.4, 25) | layer 1 keys on and off: 73 key-ups (at least 5), floor -300.0 dB under key-down (at least 20)
+ ok   | INT-ADJ(+100, -2.4, 25) | the mix is band + wanted + every layer, x 1: worst sample 1.5e-8 from the sum
+ ok   | INT-ADJ(+100, -2.4, 25) | no sample clipped: peak 0.4768 FS
+ ok   | INT-ADJ(+100, -2.4, 25) | the band is under every 25 ms of the case, never digital silence (V-06): 0 silent windows
+ verdict | INT-ADJ(+100, -2.4, 25) | NOT what 9.3 says: layer 1 offset +0.000 Hz within 2 Hz of +100; layer 1 key-down power 0.000 dB within 0.5 dB of -2.4 against the wanted
+
+
+  Failed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(label: "INT-CARRIER(+50, 0)") [52 ms]
+  Error Message:
+   INT-CARRIER(+50, 0): layer 1 offset +0.000 Hz within 2 Hz of +50; layer 1 is steady from the first sample to the last: swing Infinity dB (at most 1), 73 key-ups (none), first window at 0.995 s
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Cw.Fixtures.TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(String label) in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\Fixtures\TheInterferenceProfilesAreWhatTheySayTests.cs:line 241
+   at InvokeStub_TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Standard Output Messages:
+ case | INT-CARRIER(+50, 0) | INT-CARRIER | wanted TX-ITU 18 wpm at 600 Hz, 15 dB reference on CH-AWGN | seed 469001 | mixer NOMINAL (watched red)
+ sidecar | INT-CARRIER(+50, 0) | seed          469001 (band); path 1 476920, path 2 484839 (seed + 7919 k)
+ sidecar | INT-CARRIER(+50, 0) | snr           15.0 dB in the 2500 Hz reference (CW_SPEC.md 8.1)
+ sidecar | INT-CARRIER(+50, 0) | intProfile    INT-CARRIER(+50, 0) - Unkeyed carrier (CW_SPEC.md 9.3)
+ sidecar | INT-CARRIER(+50, 0) | intDefinition A steady tone. The "loudest is not keyed" case.
+ sidecar | INT-CARRIER(+50, 0) | intMixer      NOMINAL - the watched-red mixer: every layer is the wanted station again, its pitch, level and keying
+ sidecar | INT-CARRIER(+50, 0) | seed          469001 (469000 + the wanted speed's index into SyntheticCq.Speeds; the band's)
+ sidecar | INT-CARRIER(+50, 0) | layer 1       steady carrier, 600 Hz (+50 Hz), 0.0 dB against the wanted's key-down power, from the first sample to the last, phase 0
+ sidecar | INT-CARRIER(+50, 0) | headroom      x 1 (none needed)
+ ok   | INT-CARRIER(+50, 0) | wanted key `CQ CQ CQ DE N0CALL N0CALL K` is SyntheticCq.Text, exact by construction
+ measured | INT-CARRIER(+50, 0) | wanted | 600.002 Hz | key-down power -16.060 dB | key-ups 73 | swing Infinity dB | first key-down 0.995 s
+ measured | INT-CARRIER(+50, 0) | layer 1 | 600.002 Hz, offset +0.000 Hz (stated +50) | level 0.000 dB (stated 0.0) | key-ups 73, floor -300.0 dB | swing Infinity dB | first key-down 0.995 s
+ FAIL | INT-CARRIER(+50, 0) | layer 1 offset +0.000 Hz within 2 Hz of +50
+ ok   | INT-CARRIER(+50, 0) | layer 1 key-down power 0.000 dB within 0.5 dB of 0.0 against the wanted
+ FAIL | INT-CARRIER(+50, 0) | layer 1 is steady from the first sample to the last: swing Infinity dB (at most 1), 73 key-ups (none), first window at 0.995 s
+ ok   | INT-CARRIER(+50, 0) | the mix is band + wanted + every layer, x 1: worst sample 1.5e-8 from the sum
+ ok   | INT-CARRIER(+50, 0) | no sample clipped: peak 0.4768 FS
+ ok   | INT-CARRIER(+50, 0) | the band is under every 25 ms of the case, never digital silence (V-06): 0 silent windows
+ verdict | INT-CARRIER(+50, 0) | NOT what 9.3 says: layer 1 offset +0.000 Hz within 2 Hz of +50; layer 1 is steady from the first sample to the last: swing Infinity dB (at most 1), 73 key-ups (none), first window at 0.995 s
+
+
+  Failed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(label: "INT-CARRIER(+200, +10)") [71 ms]
+  Error Message:
+   INT-CARRIER(+200, +10): layer 1 offset +0.000 Hz within 2 Hz of +200; layer 1 key-down power 0.000 dB within 0.5 dB of +10.0 against the wanted; layer 1 is steady from the first sample to the last: swing Infinity dB (at most 1), 73 key-ups (none), first window at 0.995 s
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Cw.Fixtures.TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(String label) in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\Fixtures\TheInterferenceProfilesAreWhatTheySayTests.cs:line 241
+   at InvokeStub_TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Standard Output Messages:
+ case | INT-CARRIER(+200, +10) | INT-CARRIER | wanted TX-ITU 18 wpm at 600 Hz, 15 dB reference on CH-AWGN | seed 469001 | mixer NOMINAL (watched red)
+ sidecar | INT-CARRIER(+200, +10) | seed          469001 (band); path 1 476920, path 2 484839 (seed + 7919 k)
+ sidecar | INT-CARRIER(+200, +10) | snr           15.0 dB in the 2500 Hz reference (CW_SPEC.md 8.1)
+ sidecar | INT-CARRIER(+200, +10) | intProfile    INT-CARRIER(+200, +10) - Unkeyed carrier (CW_SPEC.md 9.3)
+ sidecar | INT-CARRIER(+200, +10) | intDefinition A steady tone. The "loudest is not keyed" case.
+ sidecar | INT-CARRIER(+200, +10) | intMixer      NOMINAL - the watched-red mixer: every layer is the wanted station again, its pitch, level and keying
+ sidecar | INT-CARRIER(+200, +10) | seed          469001 (469000 + the wanted speed's index into SyntheticCq.Speeds; the band's)
+ sidecar | INT-CARRIER(+200, +10) | layer 1       steady carrier, 600 Hz (+200 Hz), +10.0 dB against the wanted's key-down power, from the first sample to the last, phase 0
+ sidecar | INT-CARRIER(+200, +10) | headroom      x 1 (none needed)
+ ok   | INT-CARRIER(+200, +10) | wanted key `CQ CQ CQ DE N0CALL N0CALL K` is SyntheticCq.Text, exact by construction
+ measured | INT-CARRIER(+200, +10) | wanted | 600.002 Hz | key-down power -16.060 dB | key-ups 73 | swing Infinity dB | first key-down 0.995 s
+ measured | INT-CARRIER(+200, +10) | layer 1 | 600.002 Hz, offset +0.000 Hz (stated +200) | level 0.000 dB (stated +10.0) | key-ups 73, floor -300.0 dB | swing Infinity dB | first key-down 0.995 s
+ FAIL | INT-CARRIER(+200, +10) | layer 1 offset +0.000 Hz within 2 Hz of +200
+ FAIL | INT-CARRIER(+200, +10) | layer 1 key-down power 0.000 dB within 0.5 dB of +10.0 against the wanted
+ FAIL | INT-CARRIER(+200, +10) | layer 1 is steady from the first sample to the last: swing Infinity dB (at most 1), 73 key-ups (none), first window at 0.995 s
+ ok   | INT-CARRIER(+200, +10) | the mix is band + wanted + every layer, x 1: worst sample 1.5e-8 from the sum
+ ok   | INT-CARRIER(+200, +10) | no sample clipped: peak 0.4768 FS
+ ok   | INT-CARRIER(+200, +10) | the band is under every 25 ms of the case, never digital silence (V-06): 0 silent windows
+ verdict | INT-CARRIER(+200, +10) | NOT what 9.3 says: layer 1 offset +0.000 Hz within 2 Hz of +200; layer 1 key-down power 0.000 dB within 0.5 dB of +10.0 against the wanted; layer 1 is steady from the first sample to the last: swing Infinity dB (at most 1), 73 key-ups (none), first window at 0.995 s
+
+
+  Failed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(label: "INT-ADJ(+100, -6, 25)") [70 ms]
+  Error Message:
+   INT-ADJ(+100, -6, 25): layer 1 offset +0.000 Hz within 2 Hz of +100; layer 1 key-down power 0.000 dB within 0.5 dB of -6.0 against the wanted
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Cw.Fixtures.TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(String label) in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\Fixtures\TheInterferenceProfilesAreWhatTheySayTests.cs:line 241
+   at InvokeStub_TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Standard Output Messages:
+ case | INT-ADJ(+100, -6, 25) | INT-ADJ | wanted TX-ITU 18 wpm at 600 Hz, 15 dB reference on CH-AWGN | seed 469001 | mixer NOMINAL (watched red)
+ sidecar | INT-ADJ(+100, -6, 25) | seed          469001 (band); path 1 476920, path 2 484839 (seed + 7919 k)
+ sidecar | INT-ADJ(+100, -6, 25) | snr           15.0 dB in the 2500 Hz reference (CW_SPEC.md 8.1)
+ sidecar | INT-ADJ(+100, -6, 25) | intProfile    INT-ADJ(+100, -6, 25) - Adjacent station (CW_SPEC.md 9.3)
+ sidecar | INT-ADJ(+100, -6, 25) | intDefinition A second CW signal Δf hertz away, ΔdB relative to the wanted one, at its own speed.
+ sidecar | INT-ADJ(+100, -6, 25) | intMixer      NOMINAL - the watched-red mixer: every layer is the wanted station again, its pitch, level and keying
+ sidecar | INT-ADJ(+100, -6, 25) | seed          469001 (469000 + the wanted speed's index into SyntheticCq.Speeds; the band's)
+ sidecar | INT-ADJ(+100, -6, 25) | layer 1       keyed TX-ITU, 600 Hz (+100 Hz), -6.0 dB against the wanted's key-down power, 25 wpm, start 0.000 s (the wanted's second word), text `DE N0AAA UP` - never scored
+ sidecar | INT-ADJ(+100, -6, 25) | headroom      x 1 (none needed)
+ ok   | INT-ADJ(+100, -6, 25) | wanted key `CQ CQ CQ DE N0CALL N0CALL K` is SyntheticCq.Text, exact by construction
+ measured | INT-ADJ(+100, -6, 25) | wanted | 600.002 Hz | key-down power -16.060 dB | key-ups 73 | swing Infinity dB | first key-down 0.995 s
+ measured | INT-ADJ(+100, -6, 25) | layer 1 | 600.002 Hz, offset +0.000 Hz (stated +100) | level 0.000 dB (stated -6.0) | key-ups 73, floor -300.0 dB | swing Infinity dB | first key-down 0.995 s
+ FAIL | INT-ADJ(+100, -6, 25) | layer 1 offset +0.000 Hz within 2 Hz of +100
+ FAIL | INT-ADJ(+100, -6, 25) | layer 1 key-down power 0.000 dB within 0.5 dB of -6.0 against the wanted
+ ok   | INT-ADJ(+100, -6, 25) | layer 1 keys on and off: 73 key-ups (at least 5), floor -300.0 dB under key-down (at least 20)
+ ok   | INT-ADJ(+100, -6, 25) | the mix is band + wanted + every layer, x 1: worst sample 1.5e-8 from the sum
+ ok   | INT-ADJ(+100, -6, 25) | no sample clipped: peak 0.4768 FS
+ ok   | INT-ADJ(+100, -6, 25) | the band is under every 25 ms of the case, never digital silence (V-06): 0 silent windows
+ verdict | INT-ADJ(+100, -6, 25) | NOT what 9.3 says: layer 1 offset +0.000 Hz within 2 Hz of +100; layer 1 key-down power 0.000 dB within 0.5 dB of -6.0 against the wanted
+
+
+  Failed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(label: "INT-CARRIER(+200, +20)") [60 ms]
+  Error Message:
+   INT-CARRIER(+200, +20): layer 1 offset +0.000 Hz within 2 Hz of +200; layer 1 key-down power 0.000 dB within 0.5 dB of +20.0 against the wanted; layer 1 is steady from the first sample to the last: swing Infinity dB (at most 1), 73 key-ups (none), first window at 0.995 s
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Cw.Fixtures.TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(String label) in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\Fixtures\TheInterferenceProfilesAreWhatTheySayTests.cs:line 241
+   at InvokeStub_TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Standard Output Messages:
+ case | INT-CARRIER(+200, +20) | INT-CARRIER | wanted TX-ITU 18 wpm at 600 Hz, 15 dB reference on CH-AWGN | seed 469001 | mixer NOMINAL (watched red)
+ sidecar | INT-CARRIER(+200, +20) | seed          469001 (band); path 1 476920, path 2 484839 (seed + 7919 k)
+ sidecar | INT-CARRIER(+200, +20) | snr           15.0 dB in the 2500 Hz reference (CW_SPEC.md 8.1)
+ sidecar | INT-CARRIER(+200, +20) | intProfile    INT-CARRIER(+200, +20) - Unkeyed carrier (CW_SPEC.md 9.3)
+ sidecar | INT-CARRIER(+200, +20) | intDefinition A steady tone. The "loudest is not keyed" case.
+ sidecar | INT-CARRIER(+200, +20) | intMixer      NOMINAL - the watched-red mixer: every layer is the wanted station again, its pitch, level and keying
+ sidecar | INT-CARRIER(+200, +20) | seed          469001 (469000 + the wanted speed's index into SyntheticCq.Speeds; the band's)
+ sidecar | INT-CARRIER(+200, +20) | layer 1       steady carrier, 600 Hz (+200 Hz), +20.0 dB against the wanted's key-down power, from the first sample to the last, phase 0
+ sidecar | INT-CARRIER(+200, +20) | headroom      x 1 (none needed)
+ ok   | INT-CARRIER(+200, +20) | wanted key `CQ CQ CQ DE N0CALL N0CALL K` is SyntheticCq.Text, exact by construction
+ measured | INT-CARRIER(+200, +20) | wanted | 600.002 Hz | key-down power -16.060 dB | key-ups 73 | swing Infinity dB | first key-down 0.995 s
+ measured | INT-CARRIER(+200, +20) | layer 1 | 600.002 Hz, offset +0.000 Hz (stated +200) | level 0.000 dB (stated +20.0) | key-ups 73, floor -300.0 dB | swing Infinity dB | first key-down 0.995 s
+ FAIL | INT-CARRIER(+200, +20) | layer 1 offset +0.000 Hz within 2 Hz of +200
+ FAIL | INT-CARRIER(+200, +20) | layer 1 key-down power 0.000 dB within 0.5 dB of +20.0 against the wanted
+ FAIL | INT-CARRIER(+200, +20) | layer 1 is steady from the first sample to the last: swing Infinity dB (at most 1), 73 key-ups (none), first window at 0.995 s
+ ok   | INT-CARRIER(+200, +20) | the mix is band + wanted + every layer, x 1: worst sample 1.5e-8 from the sum
+ ok   | INT-CARRIER(+200, +20) | no sample clipped: peak 0.4768 FS
+ ok   | INT-CARRIER(+200, +20) | the band is under every 25 ms of the case, never digital silence (V-06): 0 silent windows
+ verdict | INT-CARRIER(+200, +20) | NOT what 9.3 says: layer 1 offset +0.000 Hz within 2 Hz of +200; layer 1 key-down power 0.000 dB within 0.5 dB of +20.0 against the wanted; layer 1 is steady from the first sample to the last: swing Infinity dB (at most 1), 73 key-ups (none), first window at 0.995 s
+
+
+  Failed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(label: "INT-CARRIER(+200, 0)") [60 ms]
+  Error Message:
+   INT-CARRIER(+200, 0): layer 1 offset +0.000 Hz within 2 Hz of +200; layer 1 is steady from the first sample to the last: swing Infinity dB (at most 1), 73 key-ups (none), first window at 0.995 s
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Cw.Fixtures.TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(String label) in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\Fixtures\TheInterferenceProfilesAreWhatTheySayTests.cs:line 241
+   at InvokeStub_TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Standard Output Messages:
+ case | INT-CARRIER(+200, 0) | INT-CARRIER | wanted TX-ITU 18 wpm at 600 Hz, 15 dB reference on CH-AWGN | seed 469001 | mixer NOMINAL (watched red)
+ sidecar | INT-CARRIER(+200, 0) | seed          469001 (band); path 1 476920, path 2 484839 (seed + 7919 k)
+ sidecar | INT-CARRIER(+200, 0) | snr           15.0 dB in the 2500 Hz reference (CW_SPEC.md 8.1)
+ sidecar | INT-CARRIER(+200, 0) | intProfile    INT-CARRIER(+200, 0) - Unkeyed carrier (CW_SPEC.md 9.3)
+ sidecar | INT-CARRIER(+200, 0) | intDefinition A steady tone. The "loudest is not keyed" case.
+ sidecar | INT-CARRIER(+200, 0) | intMixer      NOMINAL - the watched-red mixer: every layer is the wanted station again, its pitch, level and keying
+ sidecar | INT-CARRIER(+200, 0) | seed          469001 (469000 + the wanted speed's index into SyntheticCq.Speeds; the band's)
+ sidecar | INT-CARRIER(+200, 0) | layer 1       steady carrier, 600 Hz (+200 Hz), 0.0 dB against the wanted's key-down power, from the first sample to the last, phase 0
+ sidecar | INT-CARRIER(+200, 0) | headroom      x 1 (none needed)
+ ok   | INT-CARRIER(+200, 0) | wanted key `CQ CQ CQ DE N0CALL N0CALL K` is SyntheticCq.Text, exact by construction
+ measured | INT-CARRIER(+200, 0) | wanted | 600.002 Hz | key-down power -16.060 dB | key-ups 73 | swing Infinity dB | first key-down 0.995 s
+ measured | INT-CARRIER(+200, 0) | layer 1 | 600.002 Hz, offset +0.000 Hz (stated +200) | level 0.000 dB (stated 0.0) | key-ups 73, floor -300.0 dB | swing Infinity dB | first key-down 0.995 s
+ FAIL | INT-CARRIER(+200, 0) | layer 1 offset +0.000 Hz within 2 Hz of +200
+ ok   | INT-CARRIER(+200, 0) | layer 1 key-down power 0.000 dB within 0.5 dB of 0.0 against the wanted
+ FAIL | INT-CARRIER(+200, 0) | layer 1 is steady from the first sample to the last: swing Infinity dB (at most 1), 73 key-ups (none), first window at 0.995 s
+ ok   | INT-CARRIER(+200, 0) | the mix is band + wanted + every layer, x 1: worst sample 1.5e-8 from the sum
+ ok   | INT-CARRIER(+200, 0) | no sample clipped: peak 0.4768 FS
+ ok   | INT-CARRIER(+200, 0) | the band is under every 25 ms of the case, never digital silence (V-06): 0 silent windows
+ verdict | INT-CARRIER(+200, 0) | NOT what 9.3 says: layer 1 offset +0.000 Hz within 2 Hz of +200; layer 1 is steady from the first sample to the last: swing Infinity dB (at most 1), 73 key-ups (none), first window at 0.995 s
+
+
+  Failed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(label: "INT-ADJ(+50, -6, 25)") [57 ms]
+  Error Message:
+   INT-ADJ(+50, -6, 25): layer 1 offset +0.000 Hz within 2 Hz of +50; layer 1 key-down power 0.000 dB within 0.5 dB of -6.0 against the wanted
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Cw.Fixtures.TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(String label) in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\Fixtures\TheInterferenceProfilesAreWhatTheySayTests.cs:line 241
+   at InvokeStub_TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Standard Output Messages:
+ case | INT-ADJ(+50, -6, 25) | INT-ADJ | wanted TX-ITU 18 wpm at 600 Hz, 15 dB reference on CH-AWGN | seed 469001 | mixer NOMINAL (watched red)
+ sidecar | INT-ADJ(+50, -6, 25) | seed          469001 (band); path 1 476920, path 2 484839 (seed + 7919 k)
+ sidecar | INT-ADJ(+50, -6, 25) | snr           15.0 dB in the 2500 Hz reference (CW_SPEC.md 8.1)
+ sidecar | INT-ADJ(+50, -6, 25) | intProfile    INT-ADJ(+50, -6, 25) - Adjacent station (CW_SPEC.md 9.3)
+ sidecar | INT-ADJ(+50, -6, 25) | intDefinition A second CW signal Δf hertz away, ΔdB relative to the wanted one, at its own speed.
+ sidecar | INT-ADJ(+50, -6, 25) | intMixer      NOMINAL - the watched-red mixer: every layer is the wanted station again, its pitch, level and keying
+ sidecar | INT-ADJ(+50, -6, 25) | seed          469001 (469000 + the wanted speed's index into SyntheticCq.Speeds; the band's)
+ sidecar | INT-ADJ(+50, -6, 25) | layer 1       keyed TX-ITU, 600 Hz (+50 Hz), -6.0 dB against the wanted's key-down power, 25 wpm, start 0.000 s (the wanted's second word), text `DE N0AAA UP` - never scored
+ sidecar | INT-ADJ(+50, -6, 25) | headroom      x 1 (none needed)
+ ok   | INT-ADJ(+50, -6, 25) | wanted key `CQ CQ CQ DE N0CALL N0CALL K` is SyntheticCq.Text, exact by construction
+ measured | INT-ADJ(+50, -6, 25) | wanted | 600.002 Hz | key-down power -16.060 dB | key-ups 73 | swing Infinity dB | first key-down 0.995 s
+ measured | INT-ADJ(+50, -6, 25) | layer 1 | 600.002 Hz, offset +0.000 Hz (stated +50) | level 0.000 dB (stated -6.0) | key-ups 73, floor -300.0 dB | swing Infinity dB | first key-down 0.995 s
+ FAIL | INT-ADJ(+50, -6, 25) | layer 1 offset +0.000 Hz within 2 Hz of +50
+ FAIL | INT-ADJ(+50, -6, 25) | layer 1 key-down power 0.000 dB within 0.5 dB of -6.0 against the wanted
+ ok   | INT-ADJ(+50, -6, 25) | layer 1 keys on and off: 73 key-ups (at least 5), floor -300.0 dB under key-down (at least 20)
+ ok   | INT-ADJ(+50, -6, 25) | the mix is band + wanted + every layer, x 1: worst sample 1.5e-8 from the sum
+ ok   | INT-ADJ(+50, -6, 25) | no sample clipped: peak 0.4768 FS
+ ok   | INT-ADJ(+50, -6, 25) | the band is under every 25 ms of the case, never digital silence (V-06): 0 silent windows
+ verdict | INT-ADJ(+50, -6, 25) | NOT what 9.3 says: layer 1 offset +0.000 Hz within 2 Hz of +50; layer 1 key-down power 0.000 dB within 0.5 dB of -6.0 against the wanted
+
+
+[xUnit.net 00:00:01.03]     Hamlet.RadioEngine.Tests.Cw.Fixtures.TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(label: "INT-CARRIER(+500, +10)") [FAIL]
+[xUnit.net 00:00:01.03]       INT-CARRIER(+500, +10): layer 1 offset +0.000 Hz within 2 Hz of +500; layer 1 key-down power 0.000 dB within 0.5 dB of +10.0 against the wanted; layer 1 is steady from the first sample to the last: swing Infinity dB (at most 1), 73 key-ups (none), first window at 0.995 s
+[xUnit.net 00:00:01.03]       Stack Trace:
+[xUnit.net 00:00:01.03]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\Fixtures\TheInterferenceProfilesAreWhatTheySayTests.cs(241,0): at Hamlet.RadioEngine.Tests.Cw.Fixtures.TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(String label)
+[xUnit.net 00:00:01.03]            at InvokeStub_TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(Object, Span`1)
+[xUnit.net 00:00:01.03]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.03]       Output:
+[xUnit.net 00:00:01.03]         case | INT-CARRIER(+500, +10) | INT-CARRIER | wanted TX-ITU 18 wpm at 600 Hz, 15 dB reference on CH-AWGN | seed 469001 | mixer NOMINAL (watched red)
+[xUnit.net 00:00:01.03]         sidecar | INT-CARRIER(+500, +10) | seed          469001 (band); path 1 476920, path 2 484839 (seed + 7919 k)
+[xUnit.net 00:00:01.03]         sidecar | INT-CARRIER(+500, +10) | snr           15.0 dB in the 2500 Hz reference (CW_SPEC.md 8.1)
+[xUnit.net 00:00:01.03]         sidecar | INT-CARRIER(+500, +10) | intProfile    INT-CARRIER(+500, +10) - Unkeyed carrier (CW_SPEC.md 9.3)
+[xUnit.net 00:00:01.03]         sidecar | INT-CARRIER(+500, +10) | intDefinition A steady tone. The "loudest is not keyed" case.
+[xUnit.net 00:00:01.03]         sidecar | INT-CARRIER(+500, +10) | intMixer      NOMINAL - the watched-red mixer: every layer is the wanted station again, its pitch, level and keying
+[xUnit.net 00:00:01.03]         sidecar | INT-CARRIER(+500, +10) | seed          469001 (469000 + the wanted speed's index into SyntheticCq.Speeds; the band's)
+[xUnit.net 00:00:01.03]         sidecar | INT-CARRIER(+500, +10) | layer 1       steady carrier, 600 Hz (+500 Hz), +10.0 dB against the wanted's key-down power, from the first sample to the last, phase 0
+[xUnit.net 00:00:01.03]         sidecar | INT-CARRIER(+500, +10) | headroom      x 1 (none needed)
+[xUnit.net 00:00:01.03]         ok   | INT-CARRIER(+500, +10) | wanted key `CQ CQ CQ DE N0CALL N0CALL K` is SyntheticCq.Text, exact by construction
+[xUnit.net 00:00:01.03]         measured | INT-CARRIER(+500, +10) | wanted | 600.002 Hz | key-down power -16.060 dB | key-ups 73 | swing Infinity dB | first key-down 0.995 s
+[xUnit.net 00:00:01.03]         measured | INT-CARRIER(+500, +10) | layer 1 | 600.002 Hz, offset +0.000 Hz (stated +500) | level 0.000 dB (stated +10.0) | key-ups 73, floor -300.0 dB | swing Infinity dB | first key-down 0.995 s
+[xUnit.net 00:00:01.03]         FAIL | INT-CARRIER(+500, +10) | layer 1 offset +0.000 Hz within 2 Hz of +500
+[xUnit.net 00:00:01.03]         FAIL | INT-CARRIER(+500, +10) | layer 1 key-down power 0.000 dB within 0.5 dB of +10.0 against the wanted
+[xUnit.net 00:00:01.03]         FAIL | INT-CARRIER(+500, +10) | layer 1 is steady from the first sample to the last: swing Infinity dB (at most 1), 73 key-ups (none), first window at 0.995 s
+[xUnit.net 00:00:01.03]         ok   | INT-CARRIER(+500, +10) | the mix is band + wanted + every layer, x 1: worst sample 1.5e-8 from the sum
+[xUnit.net 00:00:01.03]         ok   | INT-CARRIER(+500, +10) | no sample clipped: peak 0.4768 FS
+[xUnit.net 00:00:01.03]         ok   | INT-CARRIER(+500, +10) | the band is under every 25 ms of the case, never digital silence (V-06): 0 silent windows
+[xUnit.net 00:00:01.03]         verdict | INT-CARRIER(+500, +10) | NOT what 9.3 says: layer 1 offset +0.000 Hz within 2 Hz of +500; layer 1 key-down power 0.000 dB within 0.5 dB of +10.0 against the wanted; layer 1 is steady from the first sample to the last: swing Infinity dB (at most 1), 73 key-ups (none), first window at 0.995 s
+[xUnit.net 00:00:01.10]     Hamlet.RadioEngine.Tests.Cw.Fixtures.TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(label: "INT-CARRIER(+100, +10)") [FAIL]
+[xUnit.net 00:00:01.10]       INT-CARRIER(+100, +10): layer 1 offset +0.000 Hz within 2 Hz of +100; layer 1 key-down power 0.000 dB within 0.5 dB of +10.0 against the wanted; layer 1 is steady from the first sample to the last: swing Infinity dB (at most 1), 73 key-ups (none), first window at 0.995 s
+[xUnit.net 00:00:01.10]       Stack Trace:
+[xUnit.net 00:00:01.10]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\Fixtures\TheInterferenceProfilesAreWhatTheySayTests.cs(241,0): at Hamlet.RadioEngine.Tests.Cw.Fixtures.TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(String label)
+[xUnit.net 00:00:01.10]            at InvokeStub_TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(Object, Span`1)
+[xUnit.net 00:00:01.10]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.10]       Output:
+[xUnit.net 00:00:01.10]         case | INT-CARRIER(+100, +10) | INT-CARRIER | wanted TX-ITU 18 wpm at 600 Hz, 15 dB reference on CH-AWGN | seed 469001 | mixer NOMINAL (watched red)
+[xUnit.net 00:00:01.10]         sidecar | INT-CARRIER(+100, +10) | seed          469001 (band); path 1 476920, path 2 484839 (seed + 7919 k)
+[xUnit.net 00:00:01.10]         sidecar | INT-CARRIER(+100, +10) | snr           15.0 dB in the 2500 Hz reference (CW_SPEC.md 8.1)
+[xUnit.net 00:00:01.10]         sidecar | INT-CARRIER(+100, +10) | intProfile    INT-CARRIER(+100, +10) - Unkeyed carrier (CW_SPEC.md 9.3)
+[xUnit.net 00:00:01.10]         sidecar | INT-CARRIER(+100, +10) | intDefinition A steady tone. The "loudest is not keyed" case.
+[xUnit.net 00:00:01.10]         sidecar | INT-CARRIER(+100, +10) | intMixer      NOMINAL - the watched-red mixer: every layer is the wanted station again, its pitch, level and keying
+[xUnit.net 00:00:01.10]         sidecar | INT-CARRIER(+100, +10) | seed          469001 (469000 + the wanted speed's index into SyntheticCq.Speeds; the band's)
+[xUnit.net 00:00:01.10]         sidecar | INT-CARRIER(+100, +10) | layer 1       steady carrier, 600 Hz (+100 Hz), +10.0 dB against the wanted's key-down power, from the first sample to the last, phase 0
+[xUnit.net 00:00:01.10]         sidecar | INT-CARRIER(+100, +10) | headroom      x 1 (none needed)
+[xUnit.net 00:00:01.10]         ok   | INT-CARRIER(+100, +10) | wanted key `CQ CQ CQ DE N0CALL N0CALL K` is SyntheticCq.Text, exact by construction
+[xUnit.net 00:00:01.10]         measured | INT-CARRIER(+100, +10) | wanted | 600.002 Hz | key-down power -16.060 dB | key-ups 73 | swing Infinity dB | first key-down 0.995 s
+[xUnit.net 00:00:01.10]         measured | INT-CARRIER(+100, +10) | layer 1 | 600.002 Hz, offset +0.000 Hz (stated +100) | level 0.000 dB (stated +10.0) | key-ups 73, floor -300.0 dB | swing Infinity dB | first key-down 0.995 s
+[xUnit.net 00:00:01.10]         FAIL | INT-CARRIER(+100, +10) | layer 1 offset +0.000 Hz within 2 Hz of +100
+[xUnit.net 00:00:01.10]         FAIL | INT-CARRIER(+100, +10) | layer 1 key-down power 0.000 dB within 0.5 dB of +10.0 against the wanted
+[xUnit.net 00:00:01.10]         FAIL | INT-CARRIER(+100, +10) | layer 1 is steady from the first sample to the last: swing Infinity dB (at most 1), 73 key-ups (none), first window at 0.995 s
+[xUnit.net 00:00:01.10]         ok   | INT-CARRIER(+100, +10) | the mix is band + wanted + every layer, x 1: worst sample 1.5e-8 from the sum
+[xUnit.net 00:00:01.10]         ok   | INT-CARRIER(+100, +10) | no sample clipped: peak 0.4768 FS
+[xUnit.net 00:00:01.10]         ok   | INT-CARRIER(+100, +10) | the band is under every 25 ms of the case, never digital silence (V-06): 0 silent windows
+[xUnit.net 00:00:01.10]         verdict | INT-CARRIER(+100, +10) | NOT what 9.3 says: layer 1 offset +0.000 Hz within 2 Hz of +100; layer 1 key-down power 0.000 dB within 0.5 dB of +10.0 against the wanted; layer 1 is steady from the first sample to the last: swing Infinity dB (at most 1), 73 key-ups (none), first window at 0.995 s
+[xUnit.net 00:00:01.16]     Hamlet.RadioEngine.Tests.Cw.Fixtures.TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(label: "INT-COCHAN(+10, 0, 25)") [FAIL]
+[xUnit.net 00:00:01.16]       INT-COCHAN(+10, 0, 25): layer 1 offset +0.000 Hz within 2 Hz of +10; INT-COCHAN: the second station +0.000 Hz from the wanted, inside the detector bandwidth (Hann, 45 Hz, so within ±22.5 Hz) and not on the wanted's own pitch
+[xUnit.net 00:00:01.16]       Stack Trace:
+[xUnit.net 00:00:01.16]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\Fixtures\TheInterferenceProfilesAreWhatTheySayTests.cs(241,0): at Hamlet.RadioEngine.Tests.Cw.Fixtures.TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(String label)
+[xUnit.net 00:00:01.16]            at InvokeStub_TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(Object, Span`1)
+[xUnit.net 00:00:01.16]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.16]       Output:
+[xUnit.net 00:00:01.16]         case | INT-COCHAN(+10, 0, 25) | INT-COCHAN | wanted TX-ITU 18 wpm at 600 Hz, 15 dB reference on CH-AWGN | seed 469001 | mixer NOMINAL (watched red)
+[xUnit.net 00:00:01.16]         sidecar | INT-COCHAN(+10, 0, 25) | seed          469001 (band); path 1 476920, path 2 484839 (seed + 7919 k)
+[xUnit.net 00:00:01.16]         sidecar | INT-COCHAN(+10, 0, 25) | snr           15.0 dB in the 2500 Hz reference (CW_SPEC.md 8.1)
+[xUnit.net 00:00:01.16]         sidecar | INT-COCHAN(+10, 0, 25) | intProfile    INT-COCHAN(+10, 0, 25) - Co-channel station (CW_SPEC.md 9.3)
+[xUnit.net 00:00:01.16]         sidecar | INT-COCHAN(+10, 0, 25) | intDefinition A second signal within the detector bandwidth of the wanted one. The veto case.
+[xUnit.net 00:00:01.16]         sidecar | INT-COCHAN(+10, 0, 25) | intMixer      NOMINAL - the watched-red mixer: every layer is the wanted station again, its pitch, level and keying
+[xUnit.net 00:00:01.16]         sidecar | INT-COCHAN(+10, 0, 25) | seed          469001 (469000 + the wanted speed's index into SyntheticCq.Speeds; the band's)
+[xUnit.net 00:00:01.16]         sidecar | INT-COCHAN(+10, 0, 25) | layer 1       keyed TX-ITU, 600 Hz (+10 Hz), 0.0 dB against the wanted's key-down power, 25 wpm, start 0.000 s (the wanted's second word), text `DE N0AAA UP` - never scored
+[xUnit.net 00:00:01.16]         sidecar | INT-COCHAN(+10, 0, 25) | headroom      x 1 (none needed)
+[xUnit.net 00:00:01.16]         ok   | INT-COCHAN(+10, 0, 25) | wanted key `CQ CQ CQ DE N0CALL N0CALL K` is SyntheticCq.Text, exact by construction
+[xUnit.net 00:00:01.16]         measured | INT-COCHAN(+10, 0, 25) | wanted | 600.002 Hz | key-down power -16.060 dB | key-ups 73 | swing Infinity dB | first key-down 0.995 s
+[xUnit.net 00:00:01.16]         measured | INT-COCHAN(+10, 0, 25) | layer 1 | 600.002 Hz, offset +0.000 Hz (stated +10) | level 0.000 dB (stated 0.0) | key-ups 73, floor -300.0 dB | swing Infinity dB | first key-down 0.995 s
+[xUnit.net 00:00:01.16]         FAIL | INT-COCHAN(+10, 0, 25) | layer 1 offset +0.000 Hz within 2 Hz of +10
+[xUnit.net 00:00:01.16]         ok   | INT-COCHAN(+10, 0, 25) | layer 1 key-down power 0.000 dB within 0.5 dB of 0.0 against the wanted
+[xUnit.net 00:00:01.16]         ok   | INT-COCHAN(+10, 0, 25) | layer 1 keys on and off: 73 key-ups (at least 5), floor -300.0 dB under key-down (at least 20)
+[xUnit.net 00:00:01.16]         FAIL | INT-COCHAN(+10, 0, 25) | INT-COCHAN: the second station +0.000 Hz from the wanted, inside the detector bandwidth (Hann, 45 Hz, so within ±22.5 Hz) and not on the wanted's own pitch
+[xUnit.net 00:00:01.16]         ok   | INT-COCHAN(+10, 0, 25) | the mix is band + wanted + every layer, x 1: worst sample 1.5e-8 from the sum
+[xUnit.net 00:00:01.16]         ok   | INT-COCHAN(+10, 0, 25) | no sample clipped: peak 0.4768 FS
+[xUnit.net 00:00:01.16]         ok   | INT-COCHAN(+10, 0, 25) | the band is under every 25 ms of the case, never digital silence (V-06): 0 silent windows
+[xUnit.net 00:00:01.16]         verdict | INT-COCHAN(+10, 0, 25) | NOT what 9.3 says: layer 1 offset +0.000 Hz within 2 Hz of +10; INT-COCHAN: the second station +0.000 Hz from the wanted, inside the detector bandwidth (Hann, 45 Hz, so within ±22.5 Hz) and not on the wanted's own pitch
+[xUnit.net 00:00:01.22]     Hamlet.RadioEngine.Tests.Cw.Fixtures.TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(label: "INT-ADJ(-100, 0, 25)") [FAIL]
+[xUnit.net 00:00:01.22]       INT-ADJ(-100, 0, 25): layer 1 offset +0.000 Hz within 2 Hz of -100
+[xUnit.net 00:00:01.22]       Stack Trace:
+[xUnit.net 00:00:01.22]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\Fixtures\TheInterferenceProfilesAreWhatTheySayTests.cs(241,0): at Hamlet.RadioEngine.Tests.Cw.Fixtures.TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(String label)
+[xUnit.net 00:00:01.22]            at InvokeStub_TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(Object, Span`1)
+[xUnit.net 00:00:01.22]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.22]       Output:
+[xUnit.net 00:00:01.22]         case | INT-ADJ(-100, 0, 25) | INT-ADJ | wanted TX-ITU 18 wpm at 600 Hz, 15 dB reference on CH-AWGN | seed 469001 | mixer NOMINAL (watched red)
+[xUnit.net 00:00:01.22]         sidecar | INT-ADJ(-100, 0, 25) | seed          469001 (band); path 1 476920, path 2 484839 (seed + 7919 k)
+[xUnit.net 00:00:01.22]         sidecar | INT-ADJ(-100, 0, 25) | snr           15.0 dB in the 2500 Hz reference (CW_SPEC.md 8.1)
+[xUnit.net 00:00:01.22]         sidecar | INT-ADJ(-100, 0, 25) | intProfile    INT-ADJ(-100, 0, 25) - Adjacent station (CW_SPEC.md 9.3)
+[xUnit.net 00:00:01.22]         sidecar | INT-ADJ(-100, 0, 25) | intDefinition A second CW signal Δf hertz away, ΔdB relative to the wanted one, at its own speed.
+[xUnit.net 00:00:01.22]         sidecar | INT-ADJ(-100, 0, 25) | intMixer      NOMINAL - the watched-red mixer: every layer is the wanted station again, its pitch, level and keying
+[xUnit.net 00:00:01.22]         sidecar | INT-ADJ(-100, 0, 25) | seed          469001 (469000 + the wanted speed's index into SyntheticCq.Speeds; the band's)
+[xUnit.net 00:00:01.22]         sidecar | INT-ADJ(-100, 0, 25) | layer 1       keyed TX-ITU, 600 Hz (-100 Hz), 0.0 dB against the wanted's key-down power, 25 wpm, start 0.000 s (the wanted's second word), text `DE N0AAA UP` - never scored
+[xUnit.net 00:00:01.22]         sidecar | INT-ADJ(-100, 0, 25) | headroom      x 1 (none needed)
+[xUnit.net 00:00:01.22]         ok   | INT-ADJ(-100, 0, 25) | wanted key `CQ CQ CQ DE N0CALL N0CALL K` is SyntheticCq.Text, exact by construction
+[xUnit.net 00:00:01.22]         measured | INT-ADJ(-100, 0, 25) | wanted | 600.002 Hz | key-down power -16.060 dB | key-ups 73 | swing Infinity dB | first key-down 0.995 s
+[xUnit.net 00:00:01.22]         measured | INT-ADJ(-100, 0, 25) | layer 1 | 600.002 Hz, offset +0.000 Hz (stated -100) | level 0.000 dB (stated 0.0) | key-ups 73, floor -300.0 dB | swing Infinity dB | first key-down 0.995 s
+[xUnit.net 00:00:01.22]         FAIL | INT-ADJ(-100, 0, 25) | layer 1 offset +0.000 Hz within 2 Hz of -100
+[xUnit.net 00:00:01.22]         ok   | INT-ADJ(-100, 0, 25) | layer 1 key-down power 0.000 dB within 0.5 dB of 0.0 against the wanted
+[xUnit.net 00:00:01.22]         ok   | INT-ADJ(-100, 0, 25) | layer 1 keys on and off: 73 key-ups (at least 5), floor -300.0 dB under key-down (at least 20)
+[xUnit.net 00:00:01.22]         ok   | INT-ADJ(-100, 0, 25) | the mix is band + wanted + every layer, x 1: worst sample 1.5e-8 from the sum
+[xUnit.net 00:00:01.22]         ok   | INT-ADJ(-100, 0, 25) | no sample clipped: peak 0.4768 FS
+[xUnit.net 00:00:01.22]         ok   | INT-ADJ(-100, 0, 25) | the band is under every 25 ms of the case, never digital silence (V-06): 0 silent windows
+[xUnit.net 00:00:01.22]         verdict | INT-ADJ(-100, 0, 25) | NOT what 9.3 says: layer 1 offset +0.000 Hz within 2 Hz of -100
+[xUnit.net 00:00:01.28]     Hamlet.RadioEngine.Tests.Cw.Fixtures.TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(label: "INT-CARRIER(+50, +20)") [FAIL]
+[xUnit.net 00:00:01.28]       INT-CARRIER(+50, +20): layer 1 offset +0.000 Hz within 2 Hz of +50; layer 1 key-down power 0.000 dB within 0.5 dB of +20.0 against the wanted; layer 1 is steady from the first sample to the last: swing Infinity dB (at most 1), 73 key-ups (none), first window at 0.995 s
+[xUnit.net 00:00:01.28]       Stack Trace:
+[xUnit.net 00:00:01.28]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\Fixtures\TheInterferenceProfilesAreWhatTheySayTests.cs(241,0): at Hamlet.RadioEngine.Tests.Cw.Fixtures.TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(String label)
+[xUnit.net 00:00:01.28]            at InvokeStub_TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(Object, Span`1)
+[xUnit.net 00:00:01.28]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.28]       Output:
+[xUnit.net 00:00:01.28]         case | INT-CARRIER(+50, +20) | INT-CARRIER | wanted TX-ITU 18 wpm at 600 Hz, 15 dB reference on CH-AWGN | seed 469001 | mixer NOMINAL (watched red)
+[xUnit.net 00:00:01.28]         sidecar | INT-CARRIER(+50, +20) | seed          469001 (band); path 1 476920, path 2 484839 (seed + 7919 k)
+[xUnit.net 00:00:01.28]         sidecar | INT-CARRIER(+50, +20) | snr           15.0 dB in the 2500 Hz reference (CW_SPEC.md 8.1)
+[xUnit.net 00:00:01.28]         sidecar | INT-CARRIER(+50, +20) | intProfile    INT-CARRIER(+50, +20) - Unkeyed carrier (CW_SPEC.md 9.3)
+[xUnit.net 00:00:01.28]         sidecar | INT-CARRIER(+50, +20) | intDefinition A steady tone. The "loudest is not keyed" case.
+[xUnit.net 00:00:01.28]         sidecar | INT-CARRIER(+50, +20) | intMixer      NOMINAL - the watched-red mixer: every layer is the wanted station again, its pitch, level and keying
+[xUnit.net 00:00:01.28]         sidecar | INT-CARRIER(+50, +20) | seed          469001 (469000 + the wanted speed's index into SyntheticCq.Speeds; the band's)
+[xUnit.net 00:00:01.28]         sidecar | INT-CARRIER(+50, +20) | layer 1       steady carrier, 600 Hz (+50 Hz), +20.0 dB against the wanted's key-down power, from the first sample to the last, phase 0
+[xUnit.net 00:00:01.28]         sidecar | INT-CARRIER(+50, +20) | headroom      x 1 (none needed)
+[xUnit.net 00:00:01.28]         ok   | INT-CARRIER(+50, +20) | wanted key `CQ CQ CQ DE N0CALL N0CALL K` is SyntheticCq.Text, exact by construction
+[xUnit.net 00:00:01.28]         measured | INT-CARRIER(+50, +20) | wanted | 600.002 Hz | key-down power -16.060 dB | key-ups 73 | swing Infinity dB | first key-down 0.995 s
+[xUnit.net 00:00:01.28]         measured | INT-CARRIER(+50, +20) | layer 1 | 600.002 Hz, offset +0.000 Hz (stated +50) | level 0.000 dB (stated +20.0) | key-ups 73, floor -300.0 dB | swing Infinity dB | first key-down 0.995 s
+[xUnit.net 00:00:01.28]         FAIL | INT-CARRIER(+50, +20) | layer 1 offset +0.000 Hz within 2 Hz of +50
+[xUnit.net 00:00:01.28]         FAIL | INT-CARRIER(+50, +20) | layer 1 key-down power 0.000 dB within 0.5 dB of +20.0 against the wanted
+[xUnit.net 00:00:01.28]         FAIL | INT-CARRIER(+50, +20) | layer 1 is steady from the first sample to the last: swing Infinity dB (at most 1), 73 key-ups (none), first window at 0.995 s
+[xUnit.net 00:00:01.28]         ok   | INT-CARRIER(+50, +20) | the mix is band + wanted + every layer, x 1: worst sample 1.5e-8 from the sum
+[xUnit.net 00:00:01.28]         ok   | INT-CARRIER(+50, +20) | no sample clipped: peak 0.4768 FS
+[xUnit.net 00:00:01.28]         ok   | INT-CARRIER(+50, +20) | the band is under every 25 ms of the case, never digital silence (V-06): 0 silent windows
+[xUnit.net 00:00:01.28]         verdict | INT-CARRIER(+50, +20) | NOT what 9.3 says: layer 1 offset +0.000 Hz within 2 Hz of +50; layer 1 key-down power 0.000 dB within 0.5 dB of +20.0 against the wanted; layer 1 is steady from the first sample to the last: swing Infinity dB (at most 1), 73 key-ups (none), first window at 0.995 s
+[xUnit.net 00:00:01.34]     Hamlet.RadioEngine.Tests.Cw.Fixtures.TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(label: "INT-CARRIER(+50, +10)") [FAIL]
+[xUnit.net 00:00:01.34]       INT-CARRIER(+50, +10): layer 1 offset +0.000 Hz within 2 Hz of +50; layer 1 key-down power 0.000 dB within 0.5 dB of +10.0 against the wanted; layer 1 is steady from the first sample to the last: swing Infinity dB (at most 1), 73 key-ups (none), first window at 0.995 s
+[xUnit.net 00:00:01.34]       Stack Trace:
+[xUnit.net 00:00:01.34]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\Fixtures\TheInterferenceProfilesAreWhatTheySayTests.cs(241,0): at Hamlet.RadioEngine.Tests.Cw.Fixtures.TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(String label)
+[xUnit.net 00:00:01.34]            at InvokeStub_TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(Object, Span`1)
+[xUnit.net 00:00:01.34]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.34]       Output:
+[xUnit.net 00:00:01.34]         case | INT-CARRIER(+50, +10) | INT-CARRIER | wanted TX-ITU 18 wpm at 600 Hz, 15 dB reference on CH-AWGN | seed 469001 | mixer NOMINAL (watched red)
+[xUnit.net 00:00:01.34]         sidecar | INT-CARRIER(+50, +10) | seed          469001 (band); path 1 476920, path 2 484839 (seed + 7919 k)
+[xUnit.net 00:00:01.34]         sidecar | INT-CARRIER(+50, +10) | snr           15.0 dB in the 2500 Hz reference (CW_SPEC.md 8.1)
+[xUnit.net 00:00:01.34]         sidecar | INT-CARRIER(+50, +10) | intProfile    INT-CARRIER(+50, +10) - Unkeyed carrier (CW_SPEC.md 9.3)
+[xUnit.net 00:00:01.34]         sidecar | INT-CARRIER(+50, +10) | intDefinition A steady tone. The "loudest is not keyed" case.
+[xUnit.net 00:00:01.34]         sidecar | INT-CARRIER(+50, +10) | intMixer      NOMINAL - the watched-red mixer: every layer is the wanted station again, its pitch, level and keying
+[xUnit.net 00:00:01.34]         sidecar | INT-CARRIER(+50, +10) | seed          469001 (469000 + the wanted speed's index into SyntheticCq.Speeds; the band's)
+[xUnit.net 00:00:01.34]         sidecar | INT-CARRIER(+50, +10) | layer 1       steady carrier, 600 Hz (+50 Hz), +10.0 dB against the wanted's key-down power, from the first sample to the last, phase 0
+[xUnit.net 00:00:01.34]         sidecar | INT-CARRIER(+50, +10) | headroom      x 1 (none needed)
+[xUnit.net 00:00:01.34]         ok   | INT-CARRIER(+50, +10) | wanted key `CQ CQ CQ DE N0CALL N0CALL K` is SyntheticCq.Text, exact by construction
+[xUnit.net 00:00:01.34]         measured | INT-CARRIER(+50, +10) | wanted | 600.002 Hz | key-down power -16.060 dB | key-ups 73 | swing Infinity dB | first key-down 0.995 s
+[xUnit.net 00:00:01.34]         measured | INT-CARRIER(+50, +10) | layer 1 | 600.002 Hz, offset +0.000 Hz (stated +50) | level 0.000 dB (stated +10.0) | key-ups 73, floor -300.0 dB | swing Infinity dB | first key-down 0.995 s
+[xUnit.net 00:00:01.34]         FAIL | INT-CARRIER(+50, +10) | layer 1 offset +0.000 Hz within 2 Hz of +50
+[xUnit.net 00:00:01.34]         FAIL | INT-CARRIER(+50, +10) | layer 1 key-down power 0.000 dB within 0.5 dB of +10.0 against the wanted
+[xUnit.net 00:00:01.34]         FAIL | INT-CARRIER(+50, +10) | layer 1 is steady from the first sample to the last: swing Infinity dB (at most 1), 73 key-ups (none), first window at 0.995 s
+[xUnit.net 00:00:01.34]         ok   | INT-CARRIER(+50, +10) | the mix is band + wanted + every layer, x 1: worst sample 1.5e-8 from the sum
+[xUnit.net 00:00:01.34]         ok   | INT-CARRIER(+50, +10) | no sample clipped: peak 0.4768 FS
+[xUnit.net 00:00:01.34]         ok   | INT-CARRIER(+50, +10) | the band is under every 25 ms of the case, never digital silence (V-06): 0 silent windows
+[xUnit.net 00:00:01.34]         verdict | INT-CARRIER(+50, +10) | NOT what 9.3 says: layer 1 offset +0.000 Hz within 2 Hz of +50; layer 1 key-down power 0.000 dB within 0.5 dB of +10.0 against the wanted; layer 1 is steady from the first sample to the last: swing Infinity dB (at most 1), 73 key-ups (none), first window at 0.995 s
+[xUnit.net 00:00:01.40]     Hamlet.RadioEngine.Tests.Cw.Fixtures.TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(label: "INT-CARRIER(+100, 0)") [FAIL]
+[xUnit.net 00:00:01.40]       INT-CARRIER(+100, 0): layer 1 offset +0.000 Hz within 2 Hz of +100; layer 1 is steady from the first sample to the last: swing Infinity dB (at most 1), 73 key-ups (none), first window at 0.995 s
+[xUnit.net 00:00:01.40]       Stack Trace:
+[xUnit.net 00:00:01.40]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\Fixtures\TheInterferenceProfilesAreWhatTheySayTests.cs(241,0): at Hamlet.RadioEngine.Tests.Cw.Fixtures.TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(String label)
+[xUnit.net 00:00:01.40]            at InvokeStub_TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(Object, Span`1)
+[xUnit.net 00:00:01.40]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.40]       Output:
+[xUnit.net 00:00:01.40]         case | INT-CARRIER(+100, 0) | INT-CARRIER | wanted TX-ITU 18 wpm at 600 Hz, 15 dB reference on CH-AWGN | seed 469001 | mixer NOMINAL (watched red)
+[xUnit.net 00:00:01.40]         sidecar | INT-CARRIER(+100, 0) | seed          469001 (band); path 1 476920, path 2 484839 (seed + 7919 k)
+[xUnit.net 00:00:01.40]         sidecar | INT-CARRIER(+100, 0) | snr           15.0 dB in the 2500 Hz reference (CW_SPEC.md 8.1)
+[xUnit.net 00:00:01.40]         sidecar | INT-CARRIER(+100, 0) | intProfile    INT-CARRIER(+100, 0) - Unkeyed carrier (CW_SPEC.md 9.3)
+[xUnit.net 00:00:01.40]         sidecar | INT-CARRIER(+100, 0) | intDefinition A steady tone. The "loudest is not keyed" case.
+[xUnit.net 00:00:01.40]         sidecar | INT-CARRIER(+100, 0) | intMixer      NOMINAL - the watched-red mixer: every layer is the wanted station again, its pitch, level and keying
+[xUnit.net 00:00:01.40]         sidecar | INT-CARRIER(+100, 0) | seed          469001 (469000 + the wanted speed's index into SyntheticCq.Speeds; the band's)
+[xUnit.net 00:00:01.40]         sidecar | INT-CARRIER(+100, 0) | layer 1       steady carrier, 600 Hz (+100 Hz), 0.0 dB against the wanted's key-down power, from the first sample to the last, phase 0
+[xUnit.net 00:00:01.40]         sidecar | INT-CARRIER(+100, 0) | headroom      x 1 (none needed)
+[xUnit.net 00:00:01.40]         ok   | INT-CARRIER(+100, 0) | wanted key `CQ CQ CQ DE N0CALL N0CALL K` is SyntheticCq.Text, exact by construction
+[xUnit.net 00:00:01.40]         measured | INT-CARRIER(+100, 0) | wanted | 600.002 Hz | key-down power -16.060 dB | key-ups 73 | swing Infinity dB | first key-down 0.995 s
+[xUnit.net 00:00:01.40]         measured | INT-CARRIER(+100, 0) | layer 1 | 600.002 Hz, offset +0.000 Hz (stated +100) | level 0.000 dB (stated 0.0) | key-ups 73, floor -300.0 dB | swing Infinity dB | first key-down 0.995 s
+[xUnit.net 00:00:01.40]         FAIL | INT-CARRIER(+100, 0) | layer 1 offset +0.000 Hz within 2 Hz of +100
+[xUnit.net 00:00:01.40]         ok   | INT-CARRIER(+100, 0) | layer 1 key-down power 0.000 dB within 0.5 dB of 0.0 against the wanted
+[xUnit.net 00:00:01.40]         FAIL | INT-CARRIER(+100, 0) | layer 1 is steady from the first sample to the last: swing Infinity dB (at most 1), 73 key-ups (none), first window at 0.995 s
+[xUnit.net 00:00:01.40]         ok   | INT-CARRIER(+100, 0) | the mix is band + wanted + every layer, x 1: worst sample 1.5e-8 from the sum
+[xUnit.net 00:00:01.40]         ok   | INT-CARRIER(+100, 0) | no sample clipped: peak 0.4768 FS
+[xUnit.net 00:00:01.40]         ok   | INT-CARRIER(+100, 0) | the band is under every 25 ms of the case, never digital silence (V-06): 0 silent windows
+[xUnit.net 00:00:01.40]         verdict | INT-CARRIER(+100, 0) | NOT what 9.3 says: layer 1 offset +0.000 Hz within 2 Hz of +100; layer 1 is steady from the first sample to the last: swing Infinity dB (at most 1), 73 key-ups (none), first window at 0.995 s
+[xUnit.net 00:00:01.47]     Hamlet.RadioEngine.Tests.Cw.Fixtures.TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(label: "INT-CARRIER(+500, +20)") [FAIL]
+[xUnit.net 00:00:01.47]       INT-CARRIER(+500, +20): layer 1 offset +0.000 Hz within 2 Hz of +500; layer 1 key-down power 0.000 dB within 0.5 dB of +20.0 against the wanted; layer 1 is steady from the first sample to the last: swing Infinity dB (at most 1), 73 key-ups (none), first window at 0.995 s
+[xUnit.net 00:00:01.47]       Stack Trace:
+[xUnit.net 00:00:01.47]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\Fixtures\TheInterferenceProfilesAreWhatTheySayTests.cs(241,0): at Hamlet.RadioEngine.Tests.Cw.Fixtures.TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(String label)
+[xUnit.net 00:00:01.47]            at InvokeStub_TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(Object, Span`1)
+[xUnit.net 00:00:01.47]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.47]       Output:
+[xUnit.net 00:00:01.47]         case | INT-CARRIER(+500, +20) | INT-CARRIER | wanted TX-ITU 18 wpm at 600 Hz, 15 dB reference on CH-AWGN | seed 469001 | mixer NOMINAL (watched red)
+[xUnit.net 00:00:01.47]         sidecar | INT-CARRIER(+500, +20) | seed          469001 (band); path 1 476920, path 2 484839 (seed + 7919 k)
+[xUnit.net 00:00:01.47]         sidecar | INT-CARRIER(+500, +20) | snr           15.0 dB in the 2500 Hz reference (CW_SPEC.md 8.1)
+[xUnit.net 00:00:01.47]         sidecar | INT-CARRIER(+500, +20) | intProfile    INT-CARRIER(+500, +20) - Unkeyed carrier (CW_SPEC.md 9.3)
+[xUnit.net 00:00:01.47]         sidecar | INT-CARRIER(+500, +20) | intDefinition A steady tone. The "loudest is not keyed" case.
+[xUnit.net 00:00:01.47]         sidecar | INT-CARRIER(+500, +20) | intMixer      NOMINAL - the watched-red mixer: every layer is the wanted station again, its pitch, level and keying
+[xUnit.net 00:00:01.47]         sidecar | INT-CARRIER(+500, +20) | seed          469001 (469000 + the wanted speed's index into SyntheticCq.Speeds; the band's)
+[xUnit.net 00:00:01.47]         sidecar | INT-CARRIER(+500, +20) | layer 1       steady carrier, 600 Hz (+500 Hz), +20.0 dB against the wanted's key-down power, from the first sample to the last, phase 0
+[xUnit.net 00:00:01.47]         sidecar | INT-CARRIER(+500, +20) | headroom      x 1 (none needed)
+[xUnit.net 00:00:01.47]         ok   | INT-CARRIER(+500, +20) | wanted key `CQ CQ CQ DE N0CALL N0CALL K` is SyntheticCq.Text, exact by construction
+[xUnit.net 00:00:01.47]         measured | INT-CARRIER(+500, +20) | wanted | 600.002 Hz | key-down power -16.060 dB | key-ups 73 | swing Infinity dB | first key-down 0.995 s
+[xUnit.net 00:00:01.47]         measured | INT-CARRIER(+500, +20) | layer 1 | 600.002 Hz, offset +0.000 Hz (stated +500) | level 0.000 dB (stated +20.0) | key-ups 73, floor -300.0 dB | swing Infinity dB | first key-down 0.995 s
+[xUnit.net 00:00:01.47]         FAIL | INT-CARRIER(+500, +20) | layer 1 offset +0.000 Hz within 2 Hz of +500
+[xUnit.net 00:00:01.47]         FAIL | INT-CARRIER(+500, +20) | layer 1 key-down power 0.000 dB within 0.5 dB of +20.0 against the wanted
+[xUnit.net 00:00:01.47]         FAIL | INT-CARRIER(+500, +20) | layer 1 is steady from the first sample to the last: swing Infinity dB (at most 1), 73 key-ups (none), first window at 0.995 s
+[xUnit.net 00:00:01.47]         ok   | INT-CARRIER(+500, +20) | the mix is band + wanted + every layer, x 1: worst sample 1.5e-8 from the sum
+[xUnit.net 00:00:01.47]         ok   | INT-CARRIER(+500, +20) | no sample clipped: peak 0.4768 FS
+[xUnit.net 00:00:01.47]         ok   | INT-CARRIER(+500, +20) | the band is under every 25 ms of the case, never digital silence (V-06): 0 silent windows
+[xUnit.net 00:00:01.47]         verdict | INT-CARRIER(+500, +20) | NOT what 9.3 says: layer 1 offset +0.000 Hz within 2 Hz of +500; layer 1 key-down power 0.000 dB within 0.5 dB of +20.0 against the wanted; layer 1 is steady from the first sample to the last: swing Infinity dB (at most 1), 73 key-ups (none), first window at 0.995 s
+[xUnit.net 00:00:01.55]     Hamlet.RadioEngine.Tests.Cw.Fixtures.TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(label: "INT-PILEUP(3 at 0 dB: -75/12, +75/25, +150/18)") [FAIL]
+[xUnit.net 00:00:01.55]       INT-PILEUP(3 at 0 dB: -75/12, +75/25, +150/18): layer 1 offset +0.000 Hz within 2 Hz of -75; layer 2 offset +0.000 Hz within 2 Hz of +75; layer 3 offset +0.000 Hz within 2 Hz of +150; INT-PILEUP: 0 keyed stations inside the 350-870 Hz passband at distinct pitches besides the wanted (at least 3): 600.0, 600.0, 600.0 Hz
+[xUnit.net 00:00:01.55]       Stack Trace:
+[xUnit.net 00:00:01.55]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\Fixtures\TheInterferenceProfilesAreWhatTheySayTests.cs(241,0): at Hamlet.RadioEngine.Tests.Cw.Fixtures.TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(String label)
+[xUnit.net 00:00:01.55]            at InvokeStub_TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(Object, Span`1)
+[xUnit.net 00:00:01.55]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.55]       Output:
+[xUnit.net 00:00:01.55]         case | INT-PILEUP(3 at 0 dB: -75/12, +75/25, +150/18) | INT-PILEUP | wanted TX-ITU 18 wpm at 600 Hz, 15 dB reference on CH-AWGN | seed 469001 | mixer NOMINAL (watched red)
+[xUnit.net 00:00:01.55]         sidecar | INT-PILEUP(3 at 0 dB: -75/12, +75/25, +150/18) | seed          469001 (band); path 1 476920, path 2 484839 (seed + 7919 k)
+[xUnit.net 00:00:01.55]         sidecar | INT-PILEUP(3 at 0 dB: -75/12, +75/25, +150/18) | snr           15.0 dB in the 2500 Hz reference (CW_SPEC.md 8.1)
+[xUnit.net 00:00:01.55]         sidecar | INT-PILEUP(3 at 0 dB: -75/12, +75/25, +150/18) | intProfile    INT-PILEUP(3 at 0 dB: -75/12, +75/25, +150/18) - Pileup (CW_SPEC.md 9.3)
+[xUnit.net 00:00:01.55]         sidecar | INT-PILEUP(3 at 0 dB: -75/12, +75/25, +150/18) | intDefinition Three or more stations inside the passband. The "emit nothing" case.
+[xUnit.net 00:00:01.55]         sidecar | INT-PILEUP(3 at 0 dB: -75/12, +75/25, +150/18) | intMixer      NOMINAL - the watched-red mixer: every layer is the wanted station again, its pitch, level and keying
+[xUnit.net 00:00:01.55]         sidecar | INT-PILEUP(3 at 0 dB: -75/12, +75/25, +150/18) | seed          469001 (469000 + the wanted speed's index into SyntheticCq.Speeds; the band's)
+[xUnit.net 00:00:01.55]         sidecar | INT-PILEUP(3 at 0 dB: -75/12, +75/25, +150/18) | layer 1       keyed TX-ITU, 600 Hz (-75 Hz), 0.0 dB against the wanted's key-down power, 12 wpm, start 0.000 s (the wanted's second word), text `DE N0AAA UP` - never scored
+[xUnit.net 00:00:01.55]         sidecar | INT-PILEUP(3 at 0 dB: -75/12, +75/25, +150/18) | layer 2       keyed TX-ITU, 600 Hz (+75 Hz), 0.0 dB against the wanted's key-down power, 25 wpm, start 0.000 s (the wanted's second word), text `QRZ DE N0AAA` - never scored
+[xUnit.net 00:00:01.55]         sidecar | INT-PILEUP(3 at 0 dB: -75/12, +75/25, +150/18) | layer 3       keyed TX-ITU, 600 Hz (+150 Hz), 0.0 dB against the wanted's key-down power, 18 wpm, start 0.000 s (the wanted's second word), text `5NN TU` - never scored
+[xUnit.net 00:00:01.55]         sidecar | INT-PILEUP(3 at 0 dB: -75/12, +75/25, +150/18) | headroom      x 0.976172 - the whole case, band, wanted and every layer, scaled so the peak is 0.9 FS; every SNR and ratio unchanged
+[xUnit.net 00:00:01.55]         ok   | INT-PILEUP(3 at 0 dB: -75/12, +75/25, +150/18) | wanted key `CQ CQ CQ DE N0CALL N0CALL K` is SyntheticCq.Text, exact by construction
+[xUnit.net 00:00:01.55]         measured | INT-PILEUP(3 at 0 dB: -75/12, +75/25, +150/18) | wanted | 600.002 Hz | key-down power -16.060 dB | key-ups 73 | swing Infinity dB | first key-down 0.995 s
+[xUnit.net 00:00:01.55]         measured | INT-PILEUP(3 at 0 dB: -75/12, +75/25, +150/18) | layer 1 | 600.002 Hz, offset +0.000 Hz (stated -75) | level 0.000 dB (stated 0.0) | key-ups 73, floor -300.0 dB | swing Infinity dB | first key-down 0.995 s
+[xUnit.net 00:00:01.55]         FAIL | INT-PILEUP(3 at 0 dB: -75/12, +75/25, +150/18) | layer 1 offset +0.000 Hz within 2 Hz of -75
+[xUnit.net 00:00:01.55]         ok   | INT-PILEUP(3 at 0 dB: -75/12, +75/25, +150/18) | layer 1 key-down power 0.000 dB within 0.5 dB of 0.0 against the wanted
+[xUnit.net 00:00:01.55]         ok   | INT-PILEUP(3 at 0 dB: -75/12, +75/25, +150/18) | layer 1 keys on and off: 73 key-ups (at least 5), floor -300.0 dB under key-down (at least 20)
+[xUnit.net 00:00:01.55]         measured | INT-PILEUP(3 at 0 dB: -75/12, +75/25, +150/18) | layer 2 | 600.002 Hz, offset +0.000 Hz (stated +75) | level 0.000 dB (stated 0.0) | key-ups 73, floor -300.0 dB | swing Infinity dB | first key-down 0.995 s
+[xUnit.net 00:00:01.55]         FAIL | INT-PILEUP(3 at 0 dB: -75/12, +75/25, +150/18) | layer 2 offset +0.000 Hz within 2 Hz of +75
+[xUnit.net 00:00:01.55]         ok   | INT-PILEUP(3 at 0 dB: -75/12, +75/25, +150/18) | layer 2 key-down power 0.000 dB within 0.5 dB of 0.0 against the wanted
+[xUnit.net 00:00:01.55]         ok   | INT-PILEUP(3 at 0 dB: -75/12, +75/25, +150/18) | layer 2 keys on and off: 73 key-ups (at least 5), floor -300.0 dB under key-down (at least 20)
+[xUnit.net 00:00:01.55]         measured | INT-PILEUP(3 at 0 dB: -75/12, +75/25, +150/18) | layer 3 | 600.002 Hz, offset +0.000 Hz (stated +150) | level 0.000 dB (stated 0.0) | key-ups 73, floor -300.0 dB | swing Infinity dB | first key-down 0.995 s
+[xUnit.net 00:00:01.55]         FAIL | INT-PILEUP(3 at 0 dB: -75/12, +75/25, +150/18) | layer 3 offset +0.000 Hz within 2 Hz of +150
+[xUnit.net 00:00:01.55]         ok   | INT-PILEUP(3 at 0 dB: -75/12, +75/25, +150/18) | layer 3 key-down power 0.000 dB within 0.5 dB of 0.0 against the wanted
+[xUnit.net 00:00:01.55]         ok   | INT-PILEUP(3 at 0 dB: -75/12, +75/25, +150/18) | layer 3 keys on and off: 73 key-ups (at least 5), floor -300.0 dB under key-down (at least 20)
+[xUnit.net 00:00:01.55]         FAIL | INT-PILEUP(3 at 0 dB: -75/12, +75/25, +150/18) | INT-PILEUP: 0 keyed stations inside the 350-870 Hz passband at distinct pitches besides the wanted (at least 3): 600.0, 600.0, 600.0 Hz
+[xUnit.net 00:00:01.55]         ok   | INT-PILEUP(3 at 0 dB: -75/12, +75/25, +150/18) | the mix is band + wanted + every layer, x 0.976172: worst sample 3.0e-8 from the sum
+[xUnit.net 00:00:01.55]         ok   | INT-PILEUP(3 at 0 dB: -75/12, +75/25, +150/18) | no sample clipped: peak 0.9000 FS
+[xUnit.net 00:00:01.55]         ok   | INT-PILEUP(3 at 0 dB: -75/12, +75/25, +150/18) | the band is under every 25 ms of the case, never digital silence (V-06): 0 silent windows
+[xUnit.net 00:00:01.55]         verdict | INT-PILEUP(3 at 0 dB: -75/12, +75/25, +150/18) | NOT what 9.3 says: layer 1 offset +0.000 Hz within 2 Hz of -75; layer 2 offset +0.000 Hz within 2 Hz of +75; layer 3 offset +0.000 Hz within 2 Hz of +150; INT-PILEUP: 0 keyed stations inside the 350-870 Hz passband at distinct pitches besides the wanted (at least 3): 600.0, 600.0, 600.0 Hz
+  Failed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(label: "INT-CARRIER(+500, +10)") [67 ms]
+  Error Message:
+   INT-CARRIER(+500, +10): layer 1 offset +0.000 Hz within 2 Hz of +500; layer 1 key-down power 0.000 dB within 0.5 dB of +10.0 against the wanted; layer 1 is steady from the first sample to the last: swing Infinity dB (at most 1), 73 key-ups (none), first window at 0.995 s
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Cw.Fixtures.TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(String label) in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\Fixtures\TheInterferenceProfilesAreWhatTheySayTests.cs:line 241
+   at InvokeStub_TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Standard Output Messages:
+ case | INT-CARRIER(+500, +10) | INT-CARRIER | wanted TX-ITU 18 wpm at 600 Hz, 15 dB reference on CH-AWGN | seed 469001 | mixer NOMINAL (watched red)
+ sidecar | INT-CARRIER(+500, +10) | seed          469001 (band); path 1 476920, path 2 484839 (seed + 7919 k)
+ sidecar | INT-CARRIER(+500, +10) | snr           15.0 dB in the 2500 Hz reference (CW_SPEC.md 8.1)
+ sidecar | INT-CARRIER(+500, +10) | intProfile    INT-CARRIER(+500, +10) - Unkeyed carrier (CW_SPEC.md 9.3)
+ sidecar | INT-CARRIER(+500, +10) | intDefinition A steady tone. The "loudest is not keyed" case.
+ sidecar | INT-CARRIER(+500, +10) | intMixer      NOMINAL - the watched-red mixer: every layer is the wanted station again, its pitch, level and keying
+ sidecar | INT-CARRIER(+500, +10) | seed          469001 (469000 + the wanted speed's index into SyntheticCq.Speeds; the band's)
+ sidecar | INT-CARRIER(+500, +10) | layer 1       steady carrier, 600 Hz (+500 Hz), +10.0 dB against the wanted's key-down power, from the first sample to the last, phase 0
+ sidecar | INT-CARRIER(+500, +10) | headroom      x 1 (none needed)
+ ok   | INT-CARRIER(+500, +10) | wanted key `CQ CQ CQ DE N0CALL N0CALL K` is SyntheticCq.Text, exact by construction
+ measured | INT-CARRIER(+500, +10) | wanted | 600.002 Hz | key-down power -16.060 dB | key-ups 73 | swing Infinity dB | first key-down 0.995 s
+ measured | INT-CARRIER(+500, +10) | layer 1 | 600.002 Hz, offset +0.000 Hz (stated +500) | level 0.000 dB (stated +10.0) | key-ups 73, floor -300.0 dB | swing Infinity dB | first key-down 0.995 s
+ FAIL | INT-CARRIER(+500, +10) | layer 1 offset +0.000 Hz within 2 Hz of +500
+ FAIL | INT-CARRIER(+500, +10) | layer 1 key-down power 0.000 dB within 0.5 dB of +10.0 against the wanted
+ FAIL | INT-CARRIER(+500, +10) | layer 1 is steady from the first sample to the last: swing Infinity dB (at most 1), 73 key-ups (none), first window at 0.995 s
+ ok   | INT-CARRIER(+500, +10) | the mix is band + wanted + every layer, x 1: worst sample 1.5e-8 from the sum
+ ok   | INT-CARRIER(+500, +10) | no sample clipped: peak 0.4768 FS
+ ok   | INT-CARRIER(+500, +10) | the band is under every 25 ms of the case, never digital silence (V-06): 0 silent windows
+ verdict | INT-CARRIER(+500, +10) | NOT what 9.3 says: layer 1 offset +0.000 Hz within 2 Hz of +500; layer 1 key-down power 0.000 dB within 0.5 dB of +10.0 against the wanted; layer 1 is steady from the first sample to the last: swing Infinity dB (at most 1), 73 key-ups (none), first window at 0.995 s
+
+
+  Failed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(label: "INT-CARRIER(+100, +10)") [65 ms]
+  Error Message:
+   INT-CARRIER(+100, +10): layer 1 offset +0.000 Hz within 2 Hz of +100; layer 1 key-down power 0.000 dB within 0.5 dB of +10.0 against the wanted; layer 1 is steady from the first sample to the last: swing Infinity dB (at most 1), 73 key-ups (none), first window at 0.995 s
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Cw.Fixtures.TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(String label) in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\Fixtures\TheInterferenceProfilesAreWhatTheySayTests.cs:line 241
+   at InvokeStub_TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Standard Output Messages:
+ case | INT-CARRIER(+100, +10) | INT-CARRIER | wanted TX-ITU 18 wpm at 600 Hz, 15 dB reference on CH-AWGN | seed 469001 | mixer NOMINAL (watched red)
+ sidecar | INT-CARRIER(+100, +10) | seed          469001 (band); path 1 476920, path 2 484839 (seed + 7919 k)
+ sidecar | INT-CARRIER(+100, +10) | snr           15.0 dB in the 2500 Hz reference (CW_SPEC.md 8.1)
+ sidecar | INT-CARRIER(+100, +10) | intProfile    INT-CARRIER(+100, +10) - Unkeyed carrier (CW_SPEC.md 9.3)
+ sidecar | INT-CARRIER(+100, +10) | intDefinition A steady tone. The "loudest is not keyed" case.
+ sidecar | INT-CARRIER(+100, +10) | intMixer      NOMINAL - the watched-red mixer: every layer is the wanted station again, its pitch, level and keying
+ sidecar | INT-CARRIER(+100, +10) | seed          469001 (469000 + the wanted speed's index into SyntheticCq.Speeds; the band's)
+ sidecar | INT-CARRIER(+100, +10) | layer 1       steady carrier, 600 Hz (+100 Hz), +10.0 dB against the wanted's key-down power, from the first sample to the last, phase 0
+ sidecar | INT-CARRIER(+100, +10) | headroom      x 1 (none needed)
+ ok   | INT-CARRIER(+100, +10) | wanted key `CQ CQ CQ DE N0CALL N0CALL K` is SyntheticCq.Text, exact by construction
+ measured | INT-CARRIER(+100, +10) | wanted | 600.002 Hz | key-down power -16.060 dB | key-ups 73 | swing Infinity dB | first key-down 0.995 s
+ measured | INT-CARRIER(+100, +10) | layer 1 | 600.002 Hz, offset +0.000 Hz (stated +100) | level 0.000 dB (stated +10.0) | key-ups 73, floor -300.0 dB | swing Infinity dB | first key-down 0.995 s
+ FAIL | INT-CARRIER(+100, +10) | layer 1 offset +0.000 Hz within 2 Hz of +100
+ FAIL | INT-CARRIER(+100, +10) | layer 1 key-down power 0.000 dB within 0.5 dB of +10.0 against the wanted
+ FAIL | INT-CARRIER(+100, +10) | layer 1 is steady from the first sample to the last: swing Infinity dB (at most 1), 73 key-ups (none), first window at 0.995 s
+ ok   | INT-CARRIER(+100, +10) | the mix is band + wanted + every layer, x 1: worst sample 1.5e-8 from the sum
+ ok   | INT-CARRIER(+100, +10) | no sample clipped: peak 0.4768 FS
+ ok   | INT-CARRIER(+100, +10) | the band is under every 25 ms of the case, never digital silence (V-06): 0 silent windows
+ verdict | INT-CARRIER(+100, +10) | NOT what 9.3 says: layer 1 offset +0.000 Hz within 2 Hz of +100; layer 1 key-down power 0.000 dB within 0.5 dB of +10.0 against the wanted; layer 1 is steady from the first sample to the last: swing Infinity dB (at most 1), 73 key-ups (none), first window at 0.995 s
+
+
+  Failed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(label: "INT-COCHAN(+10, 0, 25)") [59 ms]
+  Error Message:
+   INT-COCHAN(+10, 0, 25): layer 1 offset +0.000 Hz within 2 Hz of +10; INT-COCHAN: the second station +0.000 Hz from the wanted, inside the detector bandwidth (Hann, 45 Hz, so within ±22.5 Hz) and not on the wanted's own pitch
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Cw.Fixtures.TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(String label) in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\Fixtures\TheInterferenceProfilesAreWhatTheySayTests.cs:line 241
+   at InvokeStub_TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Standard Output Messages:
+ case | INT-COCHAN(+10, 0, 25) | INT-COCHAN | wanted TX-ITU 18 wpm at 600 Hz, 15 dB reference on CH-AWGN | seed 469001 | mixer NOMINAL (watched red)
+ sidecar | INT-COCHAN(+10, 0, 25) | seed          469001 (band); path 1 476920, path 2 484839 (seed + 7919 k)
+ sidecar | INT-COCHAN(+10, 0, 25) | snr           15.0 dB in the 2500 Hz reference (CW_SPEC.md 8.1)
+ sidecar | INT-COCHAN(+10, 0, 25) | intProfile    INT-COCHAN(+10, 0, 25) - Co-channel station (CW_SPEC.md 9.3)
+ sidecar | INT-COCHAN(+10, 0, 25) | intDefinition A second signal within the detector bandwidth of the wanted one. The veto case.
+ sidecar | INT-COCHAN(+10, 0, 25) | intMixer      NOMINAL - the watched-red mixer: every layer is the wanted station again, its pitch, level and keying
+ sidecar | INT-COCHAN(+10, 0, 25) | seed          469001 (469000 + the wanted speed's index into SyntheticCq.Speeds; the band's)
+ sidecar | INT-COCHAN(+10, 0, 25) | layer 1       keyed TX-ITU, 600 Hz (+10 Hz), 0.0 dB against the wanted's key-down power, 25 wpm, start 0.000 s (the wanted's second word), text `DE N0AAA UP` - never scored
+ sidecar | INT-COCHAN(+10, 0, 25) | headroom      x 1 (none needed)
+ ok   | INT-COCHAN(+10, 0, 25) | wanted key `CQ CQ CQ DE N0CALL N0CALL K` is SyntheticCq.Text, exact by construction
+ measured | INT-COCHAN(+10, 0, 25) | wanted | 600.002 Hz | key-down power -16.060 dB | key-ups 73 | swing Infinity dB | first key-down 0.995 s
+ measured | INT-COCHAN(+10, 0, 25) | layer 1 | 600.002 Hz, offset +0.000 Hz (stated +10) | level 0.000 dB (stated 0.0) | key-ups 73, floor -300.0 dB | swing Infinity dB | first key-down 0.995 s
+ FAIL | INT-COCHAN(+10, 0, 25) | layer 1 offset +0.000 Hz within 2 Hz of +10
+ ok   | INT-COCHAN(+10, 0, 25) | layer 1 key-down power 0.000 dB within 0.5 dB of 0.0 against the wanted
+ ok   | INT-COCHAN(+10, 0, 25) | layer 1 keys on and off: 73 key-ups (at least 5), floor -300.0 dB under key-down (at least 20)
+ FAIL | INT-COCHAN(+10, 0, 25) | INT-COCHAN: the second station +0.000 Hz from the wanted, inside the detector bandwidth (Hann, 45 Hz, so within ±22.5 Hz) and not on the wanted's own pitch
+ ok   | INT-COCHAN(+10, 0, 25) | the mix is band + wanted + every layer, x 1: worst sample 1.5e-8 from the sum
+ ok   | INT-COCHAN(+10, 0, 25) | no sample clipped: peak 0.4768 FS
+ ok   | INT-COCHAN(+10, 0, 25) | the band is under every 25 ms of the case, never digital silence (V-06): 0 silent windows
+ verdict | INT-COCHAN(+10, 0, 25) | NOT what 9.3 says: layer 1 offset +0.000 Hz within 2 Hz of +10; INT-COCHAN: the second station +0.000 Hz from the wanted, inside the detector bandwidth (Hann, 45 Hz, so within ±22.5 Hz) and not on the wanted's own pitch
+
+
+  Failed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(label: "INT-ADJ(-100, 0, 25)") [61 ms]
+  Error Message:
+   INT-ADJ(-100, 0, 25): layer 1 offset +0.000 Hz within 2 Hz of -100
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Cw.Fixtures.TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(String label) in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\Fixtures\TheInterferenceProfilesAreWhatTheySayTests.cs:line 241
+   at InvokeStub_TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Standard Output Messages:
+ case | INT-ADJ(-100, 0, 25) | INT-ADJ | wanted TX-ITU 18 wpm at 600 Hz, 15 dB reference on CH-AWGN | seed 469001 | mixer NOMINAL (watched red)
+ sidecar | INT-ADJ(-100, 0, 25) | seed          469001 (band); path 1 476920, path 2 484839 (seed + 7919 k)
+ sidecar | INT-ADJ(-100, 0, 25) | snr           15.0 dB in the 2500 Hz reference (CW_SPEC.md 8.1)
+ sidecar | INT-ADJ(-100, 0, 25) | intProfile    INT-ADJ(-100, 0, 25) - Adjacent station (CW_SPEC.md 9.3)
+ sidecar | INT-ADJ(-100, 0, 25) | intDefinition A second CW signal Δf hertz away, ΔdB relative to the wanted one, at its own speed.
+ sidecar | INT-ADJ(-100, 0, 25) | intMixer      NOMINAL - the watched-red mixer: every layer is the wanted station again, its pitch, level and keying
+ sidecar | INT-ADJ(-100, 0, 25) | seed          469001 (469000 + the wanted speed's index into SyntheticCq.Speeds; the band's)
+ sidecar | INT-ADJ(-100, 0, 25) | layer 1       keyed TX-ITU, 600 Hz (-100 Hz), 0.0 dB against the wanted's key-down power, 25 wpm, start 0.000 s (the wanted's second word), text `DE N0AAA UP` - never scored
+ sidecar | INT-ADJ(-100, 0, 25) | headroom      x 1 (none needed)
+ ok   | INT-ADJ(-100, 0, 25) | wanted key `CQ CQ CQ DE N0CALL N0CALL K` is SyntheticCq.Text, exact by construction
+ measured | INT-ADJ(-100, 0, 25) | wanted | 600.002 Hz | key-down power -16.060 dB | key-ups 73 | swing Infinity dB | first key-down 0.995 s
+ measured | INT-ADJ(-100, 0, 25) | layer 1 | 600.002 Hz, offset +0.000 Hz (stated -100) | level 0.000 dB (stated 0.0) | key-ups 73, floor -300.0 dB | swing Infinity dB | first key-down 0.995 s
+ FAIL | INT-ADJ(-100, 0, 25) | layer 1 offset +0.000 Hz within 2 Hz of -100
+ ok   | INT-ADJ(-100, 0, 25) | layer 1 key-down power 0.000 dB within 0.5 dB of 0.0 against the wanted
+ ok   | INT-ADJ(-100, 0, 25) | layer 1 keys on and off: 73 key-ups (at least 5), floor -300.0 dB under key-down (at least 20)
+ ok   | INT-ADJ(-100, 0, 25) | the mix is band + wanted + every layer, x 1: worst sample 1.5e-8 from the sum
+ ok   | INT-ADJ(-100, 0, 25) | no sample clipped: peak 0.4768 FS
+ ok   | INT-ADJ(-100, 0, 25) | the band is under every 25 ms of the case, never digital silence (V-06): 0 silent windows
+ verdict | INT-ADJ(-100, 0, 25) | NOT what 9.3 says: layer 1 offset +0.000 Hz within 2 Hz of -100
+
+
+  Failed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(label: "INT-CARRIER(+50, +20)") [60 ms]
+  Error Message:
+   INT-CARRIER(+50, +20): layer 1 offset +0.000 Hz within 2 Hz of +50; layer 1 key-down power 0.000 dB within 0.5 dB of +20.0 against the wanted; layer 1 is steady from the first sample to the last: swing Infinity dB (at most 1), 73 key-ups (none), first window at 0.995 s
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Cw.Fixtures.TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(String label) in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\Fixtures\TheInterferenceProfilesAreWhatTheySayTests.cs:line 241
+   at InvokeStub_TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Standard Output Messages:
+ case | INT-CARRIER(+50, +20) | INT-CARRIER | wanted TX-ITU 18 wpm at 600 Hz, 15 dB reference on CH-AWGN | seed 469001 | mixer NOMINAL (watched red)
+ sidecar | INT-CARRIER(+50, +20) | seed          469001 (band); path 1 476920, path 2 484839 (seed + 7919 k)
+ sidecar | INT-CARRIER(+50, +20) | snr           15.0 dB in the 2500 Hz reference (CW_SPEC.md 8.1)
+ sidecar | INT-CARRIER(+50, +20) | intProfile    INT-CARRIER(+50, +20) - Unkeyed carrier (CW_SPEC.md 9.3)
+ sidecar | INT-CARRIER(+50, +20) | intDefinition A steady tone. The "loudest is not keyed" case.
+ sidecar | INT-CARRIER(+50, +20) | intMixer      NOMINAL - the watched-red mixer: every layer is the wanted station again, its pitch, level and keying
+ sidecar | INT-CARRIER(+50, +20) | seed          469001 (469000 + the wanted speed's index into SyntheticCq.Speeds; the band's)
+ sidecar | INT-CARRIER(+50, +20) | layer 1       steady carrier, 600 Hz (+50 Hz), +20.0 dB against the wanted's key-down power, from the first sample to the last, phase 0
+ sidecar | INT-CARRIER(+50, +20) | headroom      x 1 (none needed)
+ ok   | INT-CARRIER(+50, +20) | wanted key `CQ CQ CQ DE N0CALL N0CALL K` is SyntheticCq.Text, exact by construction
+ measured | INT-CARRIER(+50, +20) | wanted | 600.002 Hz | key-down power -16.060 dB | key-ups 73 | swing Infinity dB | first key-down 0.995 s
+ measured | INT-CARRIER(+50, +20) | layer 1 | 600.002 Hz, offset +0.000 Hz (stated +50) | level 0.000 dB (stated +20.0) | key-ups 73, floor -300.0 dB | swing Infinity dB | first key-down 0.995 s
+ FAIL | INT-CARRIER(+50, +20) | layer 1 offset +0.000 Hz within 2 Hz of +50
+ FAIL | INT-CARRIER(+50, +20) | layer 1 key-down power 0.000 dB within 0.5 dB of +20.0 against the wanted
+ FAIL | INT-CARRIER(+50, +20) | layer 1 is steady from the first sample to the last: swing Infinity dB (at most 1), 73 key-ups (none), first window at 0.995 s
+ ok   | INT-CARRIER(+50, +20) | the mix is band + wanted + every layer, x 1: worst sample 1.5e-8 from the sum
+ ok   | INT-CARRIER(+50, +20) | no sample clipped: peak 0.4768 FS
+ ok   | INT-CARRIER(+50, +20) | the band is under every 25 ms of the case, never digital silence (V-06): 0 silent windows
+ verdict | INT-CARRIER(+50, +20) | NOT what 9.3 says: layer 1 offset +0.000 Hz within 2 Hz of +50; layer 1 key-down power 0.000 dB within 0.5 dB of +20.0 against the wanted; layer 1 is steady from the first sample to the last: swing Infinity dB (at most 1), 73 key-ups (none), first window at 0.995 s
+
+
+  Failed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(label: "INT-CARRIER(+50, +10)") [59 ms]
+  Error Message:
+   INT-CARRIER(+50, +10): layer 1 offset +0.000 Hz within 2 Hz of +50; layer 1 key-down power 0.000 dB within 0.5 dB of +10.0 against the wanted; layer 1 is steady from the first sample to the last: swing Infinity dB (at most 1), 73 key-ups (none), first window at 0.995 s
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Cw.Fixtures.TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(String label) in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\Fixtures\TheInterferenceProfilesAreWhatTheySayTests.cs:line 241
+   at InvokeStub_TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Standard Output Messages:
+ case | INT-CARRIER(+50, +10) | INT-CARRIER | wanted TX-ITU 18 wpm at 600 Hz, 15 dB reference on CH-AWGN | seed 469001 | mixer NOMINAL (watched red)
+ sidecar | INT-CARRIER(+50, +10) | seed          469001 (band); path 1 476920, path 2 484839 (seed + 7919 k)
+ sidecar | INT-CARRIER(+50, +10) | snr           15.0 dB in the 2500 Hz reference (CW_SPEC.md 8.1)
+ sidecar | INT-CARRIER(+50, +10) | intProfile    INT-CARRIER(+50, +10) - Unkeyed carrier (CW_SPEC.md 9.3)
+ sidecar | INT-CARRIER(+50, +10) | intDefinition A steady tone. The "loudest is not keyed" case.
+ sidecar | INT-CARRIER(+50, +10) | intMixer      NOMINAL - the watched-red mixer: every layer is the wanted station again, its pitch, level and keying
+ sidecar | INT-CARRIER(+50, +10) | seed          469001 (469000 + the wanted speed's index into SyntheticCq.Speeds; the band's)
+ sidecar | INT-CARRIER(+50, +10) | layer 1       steady carrier, 600 Hz (+50 Hz), +10.0 dB against the wanted's key-down power, from the first sample to the last, phase 0
+ sidecar | INT-CARRIER(+50, +10) | headroom      x 1 (none needed)
+ ok   | INT-CARRIER(+50, +10) | wanted key `CQ CQ CQ DE N0CALL N0CALL K` is SyntheticCq.Text, exact by construction
+ measured | INT-CARRIER(+50, +10) | wanted | 600.002 Hz | key-down power -16.060 dB | key-ups 73 | swing Infinity dB | first key-down 0.995 s
+ measured | INT-CARRIER(+50, +10) | layer 1 | 600.002 Hz, offset +0.000 Hz (stated +50) | level 0.000 dB (stated +10.0) | key-ups 73, floor -300.0 dB | swing Infinity dB | first key-down 0.995 s
+ FAIL | INT-CARRIER(+50, +10) | layer 1 offset +0.000 Hz within 2 Hz of +50
+ FAIL | INT-CARRIER(+50, +10) | layer 1 key-down power 0.000 dB within 0.5 dB of +10.0 against the wanted
+ FAIL | INT-CARRIER(+50, +10) | layer 1 is steady from the first sample to the last: swing Infinity dB (at most 1), 73 key-ups (none), first window at 0.995 s
+ ok   | INT-CARRIER(+50, +10) | the mix is band + wanted + every layer, x 1: worst sample 1.5e-8 from the sum
+ ok   | INT-CARRIER(+50, +10) | no sample clipped: peak 0.4768 FS
+ ok   | INT-CARRIER(+50, +10) | the band is under every 25 ms of the case, never digital silence (V-06): 0 silent windows
+ verdict | INT-CARRIER(+50, +10) | NOT what 9.3 says: layer 1 offset +0.000 Hz within 2 Hz of +50; layer 1 key-down power 0.000 dB within 0.5 dB of +10.0 against the wanted; layer 1 is steady from the first sample to the last: swing Infinity dB (at most 1), 73 key-ups (none), first window at 0.995 s
+
+
+  Failed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(label: "INT-CARRIER(+100, 0)") [63 ms]
+  Error Message:
+   INT-CARRIER(+100, 0): layer 1 offset +0.000 Hz within 2 Hz of +100; layer 1 is steady from the first sample to the last: swing Infinity dB (at most 1), 73 key-ups (none), first window at 0.995 s
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Cw.Fixtures.TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(String label) in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\Fixtures\TheInterferenceProfilesAreWhatTheySayTests.cs:line 241
+   at InvokeStub_TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Standard Output Messages:
+ case | INT-CARRIER(+100, 0) | INT-CARRIER | wanted TX-ITU 18 wpm at 600 Hz, 15 dB reference on CH-AWGN | seed 469001 | mixer NOMINAL (watched red)
+ sidecar | INT-CARRIER(+100, 0) | seed          469001 (band); path 1 476920, path 2 484839 (seed + 7919 k)
+ sidecar | INT-CARRIER(+100, 0) | snr           15.0 dB in the 2500 Hz reference (CW_SPEC.md 8.1)
+ sidecar | INT-CARRIER(+100, 0) | intProfile    INT-CARRIER(+100, 0) - Unkeyed carrier (CW_SPEC.md 9.3)
+ sidecar | INT-CARRIER(+100, 0) | intDefinition A steady tone. The "loudest is not keyed" case.
+ sidecar | INT-CARRIER(+100, 0) | intMixer      NOMINAL - the watched-red mixer: every layer is the wanted station again, its pitch, level and keying
+ sidecar | INT-CARRIER(+100, 0) | seed          469001 (469000 + the wanted speed's index into SyntheticCq.Speeds; the band's)
+ sidecar | INT-CARRIER(+100, 0) | layer 1       steady carrier, 600 Hz (+100 Hz), 0.0 dB against the wanted's key-down power, from the first sample to the last, phase 0
+ sidecar | INT-CARRIER(+100, 0) | headroom      x 1 (none needed)
+ ok   | INT-CARRIER(+100, 0) | wanted key `CQ CQ CQ DE N0CALL N0CALL K` is SyntheticCq.Text, exact by construction
+ measured | INT-CARRIER(+100, 0) | wanted | 600.002 Hz | key-down power -16.060 dB | key-ups 73 | swing Infinity dB | first key-down 0.995 s
+ measured | INT-CARRIER(+100, 0) | layer 1 | 600.002 Hz, offset +0.000 Hz (stated +100) | level 0.000 dB (stated 0.0) | key-ups 73, floor -300.0 dB | swing Infinity dB | first key-down 0.995 s
+ FAIL | INT-CARRIER(+100, 0) | layer 1 offset +0.000 Hz within 2 Hz of +100
+ ok   | INT-CARRIER(+100, 0) | layer 1 key-down power 0.000 dB within 0.5 dB of 0.0 against the wanted
+ FAIL | INT-CARRIER(+100, 0) | layer 1 is steady from the first sample to the last: swing Infinity dB (at most 1), 73 key-ups (none), first window at 0.995 s
+ ok   | INT-CARRIER(+100, 0) | the mix is band + wanted + every layer, x 1: worst sample 1.5e-8 from the sum
+ ok   | INT-CARRIER(+100, 0) | no sample clipped: peak 0.4768 FS
+ ok   | INT-CARRIER(+100, 0) | the band is under every 25 ms of the case, never digital silence (V-06): 0 silent windows
+ verdict | INT-CARRIER(+100, 0) | NOT what 9.3 says: layer 1 offset +0.000 Hz within 2 Hz of +100; layer 1 is steady from the first sample to the last: swing Infinity dB (at most 1), 73 key-ups (none), first window at 0.995 s
+
+
+  Failed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(label: "INT-CARRIER(+500, +20)") [64 ms]
+  Error Message:
+   INT-CARRIER(+500, +20): layer 1 offset +0.000 Hz within 2 Hz of +500; layer 1 key-down power 0.000 dB within 0.5 dB of +20.0 against the wanted; layer 1 is steady from the first sample to the last: swing Infinity dB (at most 1), 73 key-ups (none), first window at 0.995 s
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Cw.Fixtures.TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(String label) in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\Fixtures\TheInterferenceProfilesAreWhatTheySayTests.cs:line 241
+   at InvokeStub_TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Standard Output Messages:
+ case | INT-CARRIER(+500, +20) | INT-CARRIER | wanted TX-ITU 18 wpm at 600 Hz, 15 dB reference on CH-AWGN | seed 469001 | mixer NOMINAL (watched red)
+ sidecar | INT-CARRIER(+500, +20) | seed          469001 (band); path 1 476920, path 2 484839 (seed + 7919 k)
+ sidecar | INT-CARRIER(+500, +20) | snr           15.0 dB in the 2500 Hz reference (CW_SPEC.md 8.1)
+ sidecar | INT-CARRIER(+500, +20) | intProfile    INT-CARRIER(+500, +20) - Unkeyed carrier (CW_SPEC.md 9.3)
+ sidecar | INT-CARRIER(+500, +20) | intDefinition A steady tone. The "loudest is not keyed" case.
+ sidecar | INT-CARRIER(+500, +20) | intMixer      NOMINAL - the watched-red mixer: every layer is the wanted station again, its pitch, level and keying
+ sidecar | INT-CARRIER(+500, +20) | seed          469001 (469000 + the wanted speed's index into SyntheticCq.Speeds; the band's)
+ sidecar | INT-CARRIER(+500, +20) | layer 1       steady carrier, 600 Hz (+500 Hz), +20.0 dB against the wanted's key-down power, from the first sample to the last, phase 0
+ sidecar | INT-CARRIER(+500, +20) | headroom      x 1 (none needed)
+ ok   | INT-CARRIER(+500, +20) | wanted key `CQ CQ CQ DE N0CALL N0CALL K` is SyntheticCq.Text, exact by construction
+ measured | INT-CARRIER(+500, +20) | wanted | 600.002 Hz | key-down power -16.060 dB | key-ups 73 | swing Infinity dB | first key-down 0.995 s
+ measured | INT-CARRIER(+500, +20) | layer 1 | 600.002 Hz, offset +0.000 Hz (stated +500) | level 0.000 dB (stated +20.0) | key-ups 73, floor -300.0 dB | swing Infinity dB | first key-down 0.995 s
+ FAIL | INT-CARRIER(+500, +20) | layer 1 offset +0.000 Hz within 2 Hz of +500
+ FAIL | INT-CARRIER(+500, +20) | layer 1 key-down power 0.000 dB within 0.5 dB of +20.0 against the wanted
+ FAIL | INT-CARRIER(+500, +20) | layer 1 is steady from the first sample to the last: swing Infinity dB (at most 1), 73 key-ups (none), first window at 0.995 s
+ ok   | INT-CARRIER(+500, +20) | the mix is band + wanted + every layer, x 1: worst sample 1.5e-8 from the sum
+ ok   | INT-CARRIER(+500, +20) | no sample clipped: peak 0.4768 FS
+ ok   | INT-CARRIER(+500, +20) | the band is under every 25 ms of the case, never digital silence (V-06): 0 silent windows
+ verdict | INT-CARRIER(+500, +20) | NOT what 9.3 says: layer 1 offset +0.000 Hz within 2 Hz of +500; layer 1 key-down power 0.000 dB within 0.5 dB of +20.0 against the wanted; layer 1 is steady from the first sample to the last: swing Infinity dB (at most 1), 73 key-ups (none), first window at 0.995 s
+
+
+  Failed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(label: "INT-PILEUP(3 at 0 dB: -75/12, +75/25, +150/18)") [82 ms]
+  Error Message:
+   INT-PILEUP(3 at 0 dB: -75/12, +75/25, +150/18): layer 1 offset +0.000 Hz within 2 Hz of -75; layer 2 offset +0.000 Hz within 2 Hz of +75; layer 3 offset +0.000 Hz within 2 Hz of +150; INT-PILEUP: 0 keyed stations inside the 350-870 Hz passband at distinct pitches besides the wanted (at least 3): 600.0, 600.0, 600.0 Hz
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Cw.Fixtures.TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(String label) in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\Fixtures\TheInterferenceProfilesAreWhatTheySayTests.cs:line 241
+   at InvokeStub_TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Standard Output Messages:
+ case | INT-PILEUP(3 at 0 dB: -75/12, +75/25, +150/18) | INT-PILEUP | wanted TX-ITU 18 wpm at 600 Hz, 15 dB reference on CH-AWGN | seed 469001 | mixer NOMINAL (watched red)
+ sidecar | INT-PILEUP(3 at 0 dB: -75/12, +75/25, +150/18) | seed          469001 (band); path 1 476920, path 2 484839 (seed + 7919 k)
+ sidecar | INT-PILEUP(3 at 0 dB: -75/12, +75/25, +150/18) | snr           15.0 dB in the 2500 Hz reference (CW_SPEC.md 8.1)
+ sidecar | INT-PILEUP(3 at 0 dB: -75/12, +75/25, +150/18) | intProfile    INT-PILEUP(3 at 0 dB: -75/12, +75/25, +150/18) - Pileup (CW_SPEC.md 9.3)
+ sidecar | INT-PILEUP(3 at 0 dB: -75/12, +75/25, +150/18) | intDefinition Three or more stations inside the passband. The "emit nothing" case.
+ sidecar | INT-PILEUP(3 at 0 dB: -75/12, +75/25, +150/18) | intMixer      NOMINAL - the watched-red mixer: every layer is the wanted station again, its pitch, level and keying
+ sidecar | INT-PILEUP(3 at 0 dB: -75/12, +75/25, +150/18) | seed          469001 (469000 + the wanted speed's index into SyntheticCq.Speeds; the band's)
+ sidecar | INT-PILEUP(3 at 0 dB: -75/12, +75/25, +150/18) | layer 1       keyed TX-ITU, 600 Hz (-75 Hz), 0.0 dB against the wanted's key-down power, 12 wpm, start 0.000 s (the wanted's second word), text `DE N0AAA UP` - never scored
+ sidecar | INT-PILEUP(3 at 0 dB: -75/12, +75/25, +150/18) | layer 2       keyed TX-ITU, 600 Hz (+75 Hz), 0.0 dB against the wanted's key-down power, 25 wpm, start 0.000 s (the wanted's second word), text `QRZ DE N0AAA` - never scored
+ sidecar | INT-PILEUP(3 at 0 dB: -75/12, +75/25, +150/18) | layer 3       keyed TX-ITU, 600 Hz (+150 Hz), 0.0 dB against the wanted's key-down power, 18 wpm, start 0.000 s (the wanted's second word), text `5NN TU` - never scored
+ sidecar | INT-PILEUP(3 at 0 dB: -75/12, +75/25, +150/18) | headroom      x 0.976172 - the whole case, band, wanted and every layer, scaled so the peak is 0.9 FS; every SNR and ratio unchanged
+ ok   | INT-PILEUP(3 at 0 dB: -75/12, +75/25, +150/18) | wanted key `CQ CQ CQ DE N0CALL N0CALL K` is SyntheticCq.Text, exact by construction
+ measured | INT-PILEUP(3 at 0 dB: -75/12, +75/25, +150/18) | wanted | 600.002 Hz | key-down power -16.060 dB | key-ups 73 | swing Infinity dB | first key-down 0.995 s
+ measured | INT-PILEUP(3 at 0 dB: -75/12, +75/25, +150/18) | layer 1 | 600.002 Hz, offset +0.000 Hz (stated -75) | level 0.000 dB (stated 0.0) | key-ups 73, floor -300.0 dB | swing Infinity dB | first key-down 0.995 s
+ FAIL | INT-PILEUP(3 at 0 dB: -75/12, +75/25, +150/18) | layer 1 offset +0.000 Hz within 2 Hz of -75
+ ok   | INT-PILEUP(3 at 0 dB: -75/12, +75/25, +150/18) | layer 1 key-down power 0.000 dB within 0.5 dB of 0.0 against the wanted
+ ok   | INT-PILEUP(3 at 0 dB: -75/12, +75/25, +150/18) | layer 1 keys on and off: 73 key-ups (at least 5), floor -300.0 dB under key-down (at least 20)
+ measured | INT-PILEUP(3 at 0 dB: -75/12, +75/25, +150/18) | layer 2 | 600.002 Hz, offset +0.000 Hz (stated +75) | level 0.000 dB (stated 0.0) | key-ups 73, floor -300.0 dB | swing Infinity dB | first key-down 0.995 s
+ FAIL | INT-PILEUP(3 at 0 dB: -75/12, +75/25, +150/18) | layer 2 offset +0.000 Hz within 2 Hz of +75
+ ok   | INT-PILEUP(3 at 0 dB: -75/12, +75/25, +150/18) | layer 2 key-down power 0.000 dB within 0.5 dB of 0.0 against the wanted
+ ok   | INT-PILEUP(3 at 0 dB: -75/12, +75/25, +150/18) | layer 2 keys on and off: 73 key-ups (at least 5), floor -300.0 dB under key-down (at least 20)
+ measured | INT-PILEUP(3 at 0 dB: -75/12, +75/25, +150/18) | layer 3 | 600.002 Hz, offset +0.000 Hz (stated +150) | level 0.000 dB (stated 0.0) | key-ups 73, floor -300.0 dB | swing Infinity dB | first key-down 0.995 s
+ FAIL | INT-PILEUP(3 at 0 dB: -75/12, +75/25, +150/18) | layer 3 offset +0.000 Hz within 2 Hz of +150
+ ok   | INT-PILEUP(3 at 0 dB: -75/12, +75/25, +150/18) | layer 3 key-down power 0.000 dB within 0.5 dB of 0.0 against the wanted
+ ok   | INT-PILEUP(3 at 0 dB: -75/12, +75/25, +150/18) | layer 3 keys on and off: 73 key-ups (at least 5), floor -300.0 dB under key-down (at least 20)
+ FAIL | INT-PILEUP(3 at 0 dB: -75/12, +75/25, +150/18) | INT-PILEUP: 0 keyed stations inside the 350-870 Hz passband at distinct pitches besides the wanted (at least 3): 600.0, 600.0, 600.0 Hz
+ ok   | INT-PILEUP(3 at 0 dB: -75/12, +75/25, +150/18) | the mix is band + wanted + every layer, x 0.976172: worst sample 3.0e-8 from the sum
+ ok   | INT-PILEUP(3 at 0 dB: -75/12, +75/25, +150/18) | no sample clipped: peak 0.9000 FS
+ ok   | INT-PILEUP(3 at 0 dB: -75/12, +75/25, +150/18) | the band is under every 25 ms of the case, never digital silence (V-06): 0 silent windows
+ verdict | INT-PILEUP(3 at 0 dB: -75/12, +75/25, +150/18) | NOT what 9.3 says: layer 1 offset +0.000 Hz within 2 Hz of -75; layer 2 offset +0.000 Hz within 2 Hz of +75; layer 3 offset +0.000 Hz within 2 Hz of +150; INT-PILEUP: 0 keyed stations inside the 350-870 Hz passband at distinct pitches besides the wanted (at least 3): 600.0, 600.0, 600.0 Hz
+
+
+[xUnit.net 00:00:01.61]     Hamlet.RadioEngine.Tests.Cw.Fixtures.TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(label: "INT-ADJ(+100, 0, 25)") [FAIL]
+[xUnit.net 00:00:01.61]       INT-ADJ(+100, 0, 25): layer 1 offset +0.000 Hz within 2 Hz of +100
+[xUnit.net 00:00:01.61]       Stack Trace:
+[xUnit.net 00:00:01.61]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\Fixtures\TheInterferenceProfilesAreWhatTheySayTests.cs(241,0): at Hamlet.RadioEngine.Tests.Cw.Fixtures.TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(String label)
+[xUnit.net 00:00:01.61]            at InvokeStub_TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(Object, Span`1)
+[xUnit.net 00:00:01.61]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.61]       Output:
+[xUnit.net 00:00:01.61]         case | INT-ADJ(+100, 0, 25) | INT-ADJ | wanted TX-ITU 18 wpm at 600 Hz, 15 dB reference on CH-AWGN | seed 469001 | mixer NOMINAL (watched red)
+[xUnit.net 00:00:01.61]         sidecar | INT-ADJ(+100, 0, 25) | seed          469001 (band); path 1 476920, path 2 484839 (seed + 7919 k)
+[xUnit.net 00:00:01.61]         sidecar | INT-ADJ(+100, 0, 25) | snr           15.0 dB in the 2500 Hz reference (CW_SPEC.md 8.1)
+[xUnit.net 00:00:01.61]         sidecar | INT-ADJ(+100, 0, 25) | intProfile    INT-ADJ(+100, 0, 25) - Adjacent station (CW_SPEC.md 9.3)
+[xUnit.net 00:00:01.61]         sidecar | INT-ADJ(+100, 0, 25) | intDefinition A second CW signal Δf hertz away, ΔdB relative to the wanted one, at its own speed.
+[xUnit.net 00:00:01.61]         sidecar | INT-ADJ(+100, 0, 25) | intMixer      NOMINAL - the watched-red mixer: every layer is the wanted station again, its pitch, level and keying
+[xUnit.net 00:00:01.61]         sidecar | INT-ADJ(+100, 0, 25) | seed          469001 (469000 + the wanted speed's index into SyntheticCq.Speeds; the band's)
+[xUnit.net 00:00:01.61]         sidecar | INT-ADJ(+100, 0, 25) | layer 1       keyed TX-ITU, 600 Hz (+100 Hz), 0.0 dB against the wanted's key-down power, 25 wpm, start 0.000 s (the wanted's second word), text `DE N0AAA UP` - never scored
+[xUnit.net 00:00:01.61]         sidecar | INT-ADJ(+100, 0, 25) | headroom      x 1 (none needed)
+[xUnit.net 00:00:01.61]         ok   | INT-ADJ(+100, 0, 25) | wanted key `CQ CQ CQ DE N0CALL N0CALL K` is SyntheticCq.Text, exact by construction
+[xUnit.net 00:00:01.61]         measured | INT-ADJ(+100, 0, 25) | wanted | 600.002 Hz | key-down power -16.060 dB | key-ups 73 | swing Infinity dB | first key-down 0.995 s
+[xUnit.net 00:00:01.61]         measured | INT-ADJ(+100, 0, 25) | layer 1 | 600.002 Hz, offset +0.000 Hz (stated +100) | level 0.000 dB (stated 0.0) | key-ups 73, floor -300.0 dB | swing Infinity dB | first key-down 0.995 s
+[xUnit.net 00:00:01.61]         FAIL | INT-ADJ(+100, 0, 25) | layer 1 offset +0.000 Hz within 2 Hz of +100
+[xUnit.net 00:00:01.61]         ok   | INT-ADJ(+100, 0, 25) | layer 1 key-down power 0.000 dB within 0.5 dB of 0.0 against the wanted
+[xUnit.net 00:00:01.61]         ok   | INT-ADJ(+100, 0, 25) | layer 1 keys on and off: 73 key-ups (at least 5), floor -300.0 dB under key-down (at least 20)
+[xUnit.net 00:00:01.61]         ok   | INT-ADJ(+100, 0, 25) | the mix is band + wanted + every layer, x 1: worst sample 1.5e-8 from the sum
+[xUnit.net 00:00:01.61]         ok   | INT-ADJ(+100, 0, 25) | no sample clipped: peak 0.4768 FS
+[xUnit.net 00:00:01.61]         ok   | INT-ADJ(+100, 0, 25) | the band is under every 25 ms of the case, never digital silence (V-06): 0 silent windows
+[xUnit.net 00:00:01.61]         verdict | INT-ADJ(+100, 0, 25) | NOT what 9.3 says: layer 1 offset +0.000 Hz within 2 Hz of +100
+[xUnit.net 00:00:01.68]     Hamlet.RadioEngine.Tests.Cw.Fixtures.TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(label: "INT-CARRIER(+500, 0)") [FAIL]
+[xUnit.net 00:00:01.68]       INT-CARRIER(+500, 0): layer 1 offset +0.000 Hz within 2 Hz of +500; layer 1 is steady from the first sample to the last: swing Infinity dB (at most 1), 73 key-ups (none), first window at 0.995 s
+[xUnit.net 00:00:01.68]       Stack Trace:
+[xUnit.net 00:00:01.68]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\Fixtures\TheInterferenceProfilesAreWhatTheySayTests.cs(241,0): at Hamlet.RadioEngine.Tests.Cw.Fixtures.TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(String label)
+[xUnit.net 00:00:01.68]            at InvokeStub_TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(Object, Span`1)
+[xUnit.net 00:00:01.68]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.68]       Output:
+[xUnit.net 00:00:01.68]         case | INT-CARRIER(+500, 0) | INT-CARRIER | wanted TX-ITU 18 wpm at 600 Hz, 15 dB reference on CH-AWGN | seed 469001 | mixer NOMINAL (watched red)
+[xUnit.net 00:00:01.68]         sidecar | INT-CARRIER(+500, 0) | seed          469001 (band); path 1 476920, path 2 484839 (seed + 7919 k)
+[xUnit.net 00:00:01.68]         sidecar | INT-CARRIER(+500, 0) | snr           15.0 dB in the 2500 Hz reference (CW_SPEC.md 8.1)
+[xUnit.net 00:00:01.68]         sidecar | INT-CARRIER(+500, 0) | intProfile    INT-CARRIER(+500, 0) - Unkeyed carrier (CW_SPEC.md 9.3)
+[xUnit.net 00:00:01.68]         sidecar | INT-CARRIER(+500, 0) | intDefinition A steady tone. The "loudest is not keyed" case.
+[xUnit.net 00:00:01.68]         sidecar | INT-CARRIER(+500, 0) | intMixer      NOMINAL - the watched-red mixer: every layer is the wanted station again, its pitch, level and keying
+[xUnit.net 00:00:01.68]         sidecar | INT-CARRIER(+500, 0) | seed          469001 (469000 + the wanted speed's index into SyntheticCq.Speeds; the band's)
+[xUnit.net 00:00:01.68]         sidecar | INT-CARRIER(+500, 0) | layer 1       steady carrier, 600 Hz (+500 Hz), 0.0 dB against the wanted's key-down power, from the first sample to the last, phase 0
+[xUnit.net 00:00:01.68]         sidecar | INT-CARRIER(+500, 0) | headroom      x 1 (none needed)
+[xUnit.net 00:00:01.68]         ok   | INT-CARRIER(+500, 0) | wanted key `CQ CQ CQ DE N0CALL N0CALL K` is SyntheticCq.Text, exact by construction
+[xUnit.net 00:00:01.68]         measured | INT-CARRIER(+500, 0) | wanted | 600.002 Hz | key-down power -16.060 dB | key-ups 73 | swing Infinity dB | first key-down 0.995 s
+[xUnit.net 00:00:01.68]         measured | INT-CARRIER(+500, 0) | layer 1 | 600.002 Hz, offset +0.000 Hz (stated +500) | level 0.000 dB (stated 0.0) | key-ups 73, floor -300.0 dB | swing Infinity dB | first key-down 0.995 s
+[xUnit.net 00:00:01.68]         FAIL | INT-CARRIER(+500, 0) | layer 1 offset +0.000 Hz within 2 Hz of +500
+[xUnit.net 00:00:01.68]         ok   | INT-CARRIER(+500, 0) | layer 1 key-down power 0.000 dB within 0.5 dB of 0.0 against the wanted
+[xUnit.net 00:00:01.68]         FAIL | INT-CARRIER(+500, 0) | layer 1 is steady from the first sample to the last: swing Infinity dB (at most 1), 73 key-ups (none), first window at 0.995 s
+[xUnit.net 00:00:01.68]         ok   | INT-CARRIER(+500, 0) | the mix is band + wanted + every layer, x 1: worst sample 1.5e-8 from the sum
+[xUnit.net 00:00:01.68]         ok   | INT-CARRIER(+500, 0) | no sample clipped: peak 0.4768 FS
+[xUnit.net 00:00:01.68]         ok   | INT-CARRIER(+500, 0) | the band is under every 25 ms of the case, never digital silence (V-06): 0 silent windows
+[xUnit.net 00:00:01.68]         verdict | INT-CARRIER(+500, 0) | NOT what 9.3 says: layer 1 offset +0.000 Hz within 2 Hz of +500; layer 1 is steady from the first sample to the last: swing Infinity dB (at most 1), 73 key-ups (none), first window at 0.995 s
+[xUnit.net 00:00:01.70]   Finished:    Hamlet.RadioEngine.Tests
+  Failed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(label: "INT-ADJ(+100, 0, 25)") [62 ms]
+  Error Message:
+   INT-ADJ(+100, 0, 25): layer 1 offset +0.000 Hz within 2 Hz of +100
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Cw.Fixtures.TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(String label) in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\Fixtures\TheInterferenceProfilesAreWhatTheySayTests.cs:line 241
+   at InvokeStub_TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Standard Output Messages:
+ case | INT-ADJ(+100, 0, 25) | INT-ADJ | wanted TX-ITU 18 wpm at 600 Hz, 15 dB reference on CH-AWGN | seed 469001 | mixer NOMINAL (watched red)
+ sidecar | INT-ADJ(+100, 0, 25) | seed          469001 (band); path 1 476920, path 2 484839 (seed + 7919 k)
+ sidecar | INT-ADJ(+100, 0, 25) | snr           15.0 dB in the 2500 Hz reference (CW_SPEC.md 8.1)
+ sidecar | INT-ADJ(+100, 0, 25) | intProfile    INT-ADJ(+100, 0, 25) - Adjacent station (CW_SPEC.md 9.3)
+ sidecar | INT-ADJ(+100, 0, 25) | intDefinition A second CW signal Δf hertz away, ΔdB relative to the wanted one, at its own speed.
+ sidecar | INT-ADJ(+100, 0, 25) | intMixer      NOMINAL - the watched-red mixer: every layer is the wanted station again, its pitch, level and keying
+ sidecar | INT-ADJ(+100, 0, 25) | seed          469001 (469000 + the wanted speed's index into SyntheticCq.Speeds; the band's)
+ sidecar | INT-ADJ(+100, 0, 25) | layer 1       keyed TX-ITU, 600 Hz (+100 Hz), 0.0 dB against the wanted's key-down power, 25 wpm, start 0.000 s (the wanted's second word), text `DE N0AAA UP` - never scored
+ sidecar | INT-ADJ(+100, 0, 25) | headroom      x 1 (none needed)
+ ok   | INT-ADJ(+100, 0, 25) | wanted key `CQ CQ CQ DE N0CALL N0CALL K` is SyntheticCq.Text, exact by construction
+ measured | INT-ADJ(+100, 0, 25) | wanted | 600.002 Hz | key-down power -16.060 dB | key-ups 73 | swing Infinity dB | first key-down 0.995 s
+ measured | INT-ADJ(+100, 0, 25) | layer 1 | 600.002 Hz, offset +0.000 Hz (stated +100) | level 0.000 dB (stated 0.0) | key-ups 73, floor -300.0 dB | swing Infinity dB | first key-down 0.995 s
+ FAIL | INT-ADJ(+100, 0, 25) | layer 1 offset +0.000 Hz within 2 Hz of +100
+ ok   | INT-ADJ(+100, 0, 25) | layer 1 key-down power 0.000 dB within 0.5 dB of 0.0 against the wanted
+ ok   | INT-ADJ(+100, 0, 25) | layer 1 keys on and off: 73 key-ups (at least 5), floor -300.0 dB under key-down (at least 20)
+ ok   | INT-ADJ(+100, 0, 25) | the mix is band + wanted + every layer, x 1: worst sample 1.5e-8 from the sum
+ ok   | INT-ADJ(+100, 0, 25) | no sample clipped: peak 0.4768 FS
+ ok   | INT-ADJ(+100, 0, 25) | the band is under every 25 ms of the case, never digital silence (V-06): 0 silent windows
+ verdict | INT-ADJ(+100, 0, 25) | NOT what 9.3 says: layer 1 offset +0.000 Hz within 2 Hz of +100
+
+
+  Failed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(label: "INT-CARRIER(+500, 0)") [63 ms]
+  Error Message:
+   INT-CARRIER(+500, 0): layer 1 offset +0.000 Hz within 2 Hz of +500; layer 1 is steady from the first sample to the last: swing Infinity dB (at most 1), 73 key-ups (none), first window at 0.995 s
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Cw.Fixtures.TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(String label) in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\Fixtures\TheInterferenceProfilesAreWhatTheySayTests.cs:line 241
+   at InvokeStub_TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Standard Output Messages:
+ case | INT-CARRIER(+500, 0) | INT-CARRIER | wanted TX-ITU 18 wpm at 600 Hz, 15 dB reference on CH-AWGN | seed 469001 | mixer NOMINAL (watched red)
+ sidecar | INT-CARRIER(+500, 0) | seed          469001 (band); path 1 476920, path 2 484839 (seed + 7919 k)
+ sidecar | INT-CARRIER(+500, 0) | snr           15.0 dB in the 2500 Hz reference (CW_SPEC.md 8.1)
+ sidecar | INT-CARRIER(+500, 0) | intProfile    INT-CARRIER(+500, 0) - Unkeyed carrier (CW_SPEC.md 9.3)
+ sidecar | INT-CARRIER(+500, 0) | intDefinition A steady tone. The "loudest is not keyed" case.
+ sidecar | INT-CARRIER(+500, 0) | intMixer      NOMINAL - the watched-red mixer: every layer is the wanted station again, its pitch, level and keying
+ sidecar | INT-CARRIER(+500, 0) | seed          469001 (469000 + the wanted speed's index into SyntheticCq.Speeds; the band's)
+ sidecar | INT-CARRIER(+500, 0) | layer 1       steady carrier, 600 Hz (+500 Hz), 0.0 dB against the wanted's key-down power, from the first sample to the last, phase 0
+ sidecar | INT-CARRIER(+500, 0) | headroom      x 1 (none needed)
+ ok   | INT-CARRIER(+500, 0) | wanted key `CQ CQ CQ DE N0CALL N0CALL K` is SyntheticCq.Text, exact by construction
+ measured | INT-CARRIER(+500, 0) | wanted | 600.002 Hz | key-down power -16.060 dB | key-ups 73 | swing Infinity dB | first key-down 0.995 s
+ measured | INT-CARRIER(+500, 0) | layer 1 | 600.002 Hz, offset +0.000 Hz (stated +500) | level 0.000 dB (stated 0.0) | key-ups 73, floor -300.0 dB | swing Infinity dB | first key-down 0.995 s
+ FAIL | INT-CARRIER(+500, 0) | layer 1 offset +0.000 Hz within 2 Hz of +500
+ ok   | INT-CARRIER(+500, 0) | layer 1 key-down power 0.000 dB within 0.5 dB of 0.0 against the wanted
+ FAIL | INT-CARRIER(+500, 0) | layer 1 is steady from the first sample to the last: swing Infinity dB (at most 1), 73 key-ups (none), first window at 0.995 s
+ ok   | INT-CARRIER(+500, 0) | the mix is band + wanted + every layer, x 1: worst sample 1.5e-8 from the sum
+ ok   | INT-CARRIER(+500, 0) | no sample clipped: peak 0.4768 FS
+ ok   | INT-CARRIER(+500, 0) | the band is under every 25 ms of the case, never digital silence (V-06): 0 silent windows
+ verdict | INT-CARRIER(+500, 0) | NOT what 9.3 says: layer 1 offset +0.000 Hz within 2 Hz of +500; layer 1 is steady from the first sample to the last: swing Infinity dB (at most 1), 73 key-ups (none), first window at 0.995 s
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheInterferenceProfilesAreWhatTheySayTests.EverySectionNinePointThreeInterferenceProfileIsProduced [21 ms]
+  Standard Output Messages:
+ profile | INT-ADJ | Adjacent station | "A second CW signal Δf hertz away, ΔdB relative to the wanted one, at its own speed." | 6 case(s) proved below
+ profile | INT-COCHAN | Co-channel station | "A second signal within the detector bandwidth of the wanted one. The veto case." | 1 case(s) proved below
+ profile | INT-CARRIER | Unkeyed carrier | "A steady tone. The "loudest is not keyed" case." | 12 case(s) proved below
+ profile | INT-PILEUP | Pileup | "Three or more stations inside the passband. The "emit nothing" case." | 1 case(s) proved below
+
+
+
+Test Run Failed.
+Total tests: 21
+     Passed: 1
+     Failed: 20
+ Total time: 1.9793 Seconds
+RC=1 WALL=3s

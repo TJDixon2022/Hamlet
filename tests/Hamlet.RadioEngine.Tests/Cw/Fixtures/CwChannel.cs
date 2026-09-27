@@ -390,7 +390,7 @@ public static class CwChannel
         return x;
     }
 
-    private static float[] Envelope(double[] edges, int count)
+    internal static float[] Envelope(double[] edges, int count)
     {
         var e = new float[count];
         var segment = 0;

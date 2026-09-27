@@ -1,0 +1,9 @@
+unit469 task 1: INT-* profiles produced over the wanted TX-ITU on CH-AWGN - INT-ADJ(+-100, 0, 25), (+-50, -6, 25), (+100, 0/-2.4/-6, 25); INT-COCHAN(+10, 0, 25); INT-CARRIER(+50/+100/+200/+500, 0/+10/+20); INT-PILEUP(525/12, 675/25, 750/18 at 0 dB); proved on the rendered audio, watched red (7.3)
+
+CwInterference lays each interferer over CwChannel's wanted station before the band, the 2500 Hz reference SNR set on the wanted alone (15 dB), levels against the wanted's key-down amplitude, keyed interferers from the wanted's second word, carriers from the first sample; one headroom factor where the sum would pass 0.9 FS. Seeds 469000-469002 by wanted speed, shared with the control.
+
+TheInterferenceProfilesAreWhatTheySayTests: red 20 of 20 cases against the nominal mixer (the wanted laid over itself), then green 21 of 21 - worst offset error 0.009 Hz, worst level error 0.022 dB, carriers steady within 0.04 dB. Recipe and "what these fixtures do not prove" in docs/phase-requirements/interference.md. CwChannel.Envelope made internal, otherwise unchanged. Nothing under src.
+
+At this commit: build 0 errors; engine line 178/178; app line 278/278; floors named 13/13, captures 51/51, adjudicated 13/13; channels 71/71; senders 16/16.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -1,0 +1,332 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.07]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.29]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.29]   Starting:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(label: "INT-CARRIER(+100, +20)") [96 ms]
+  Standard Output Messages:
+ case | INT-CARRIER(+100, +20) | INT-CARRIER | wanted TX-ITU 18 wpm at 600 Hz, 15 dB reference on CH-AWGN | seed 469001 | mixer CwInterference
+ ok   | INT-CARRIER(+100, +20) | wanted key `CQ CQ CQ DE N0CALL N0CALL K` is SyntheticCq.Text, exact by construction
+ measured | INT-CARRIER(+100, +20) | wanted | 600.002 Hz | key-down power -16.060 dB | key-ups 73 | swing Infinity dB | first key-down 0.995 s
+ measured | INT-CARRIER(+100, +20) | layer 1 | 700.000 Hz, offset +99.998 Hz (stated +100) | level +20.000 dB (stated +20.0) | key-ups 0, floor -0.0 dB | swing 0.00 dB | first key-down 0.000 s
+ ok   | INT-CARRIER(+100, +20) | layer 1 offset +99.998 Hz within 2 Hz of +100
+ ok   | INT-CARRIER(+100, +20) | layer 1 key-down power +20.000 dB within 0.5 dB of +20.0 against the wanted
+ ok   | INT-CARRIER(+100, +20) | layer 1 is steady from the first sample to the last: swing 0.000 dB (at most 1), 0 key-ups (none), first window at 0.000 s
+ ok   | INT-CARRIER(+100, +20) | the mix is band + wanted + every layer, x 0.363088: worst sample 3.0e-8 from the sum
+ ok   | INT-CARRIER(+100, +20) | no sample clipped: peak 0.9000 FS
+ ok   | INT-CARRIER(+100, +20) | the band is under every 25 ms of the case, never digital silence (V-06): 0 silent windows
+ verdict | INT-CARRIER(+100, +20) | is what 9.3 says
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(label: "INT-ADJ(-50, -6, 25)") [54 ms]
+  Standard Output Messages:
+ case | INT-ADJ(-50, -6, 25) | INT-ADJ | wanted TX-ITU 18 wpm at 600 Hz, 15 dB reference on CH-AWGN | seed 469001 | mixer CwInterference
+ ok   | INT-ADJ(-50, -6, 25) | wanted key `CQ CQ CQ DE N0CALL N0CALL K` is SyntheticCq.Text, exact by construction
+ measured | INT-ADJ(-50, -6, 25) | wanted | 600.002 Hz | key-down power -16.060 dB | key-ups 73 | swing Infinity dB | first key-down 0.995 s
+ measured | INT-ADJ(-50, -6, 25) | layer 1 | 549.999 Hz, offset -50.003 Hz (stated -50) | level -6.022 dB (stated -6.0) | key-ups 76, floor -300.0 dB | swing Infinity dB | first key-down 3.260 s
+ ok   | INT-ADJ(-50, -6, 25) | layer 1 offset -50.003 Hz within 2 Hz of -50
+ ok   | INT-ADJ(-50, -6, 25) | layer 1 key-down power -6.022 dB within 0.5 dB of -6.0 against the wanted
+ ok   | INT-ADJ(-50, -6, 25) | layer 1 keys on and off: 76 key-ups (at least 5), floor -300.0 dB under key-down (at least 20)
+ ok   | INT-ADJ(-50, -6, 25) | the mix is band + wanted + every layer, x 1: worst sample 1.5e-8 from the sum
+ ok   | INT-ADJ(-50, -6, 25) | no sample clipped: peak 0.3616 FS
+ ok   | INT-ADJ(-50, -6, 25) | the band is under every 25 ms of the case, never digital silence (V-06): 0 silent windows
+ verdict | INT-ADJ(-50, -6, 25) | is what 9.3 says
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(label: "INT-ADJ(+100, -2.4, 25)") [60 ms]
+  Standard Output Messages:
+ case | INT-ADJ(+100, -2.4, 25) | INT-ADJ | wanted TX-ITU 18 wpm at 600 Hz, 15 dB reference on CH-AWGN | seed 469001 | mixer CwInterference
+ ok   | INT-ADJ(+100, -2.4, 25) | wanted key `CQ CQ CQ DE N0CALL N0CALL K` is SyntheticCq.Text, exact by construction
+ measured | INT-ADJ(+100, -2.4, 25) | wanted | 600.002 Hz | key-down power -16.060 dB | key-ups 73 | swing Infinity dB | first key-down 0.995 s
+ measured | INT-ADJ(+100, -2.4, 25) | layer 1 | 699.997 Hz, offset +99.995 Hz (stated +100) | level -2.400 dB (stated -2.4) | key-ups 76, floor -300.0 dB | swing Infinity dB | first key-down 3.260 s
+ ok   | INT-ADJ(+100, -2.4, 25) | layer 1 offset +99.995 Hz within 2 Hz of +100
+ ok   | INT-ADJ(+100, -2.4, 25) | layer 1 key-down power -2.400 dB within 0.5 dB of -2.4 against the wanted
+ ok   | INT-ADJ(+100, -2.4, 25) | layer 1 keys on and off: 76 key-ups (at least 5), floor -300.0 dB under key-down (at least 20)
+ ok   | INT-ADJ(+100, -2.4, 25) | the mix is band + wanted + every layer, x 1: worst sample 1.5e-8 from the sum
+ ok   | INT-ADJ(+100, -2.4, 25) | no sample clipped: peak 0.4188 FS
+ ok   | INT-ADJ(+100, -2.4, 25) | the band is under every 25 ms of the case, never digital silence (V-06): 0 silent windows
+ verdict | INT-ADJ(+100, -2.4, 25) | is what 9.3 says
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(label: "INT-CARRIER(+50, 0)") [50 ms]
+  Standard Output Messages:
+ case | INT-CARRIER(+50, 0) | INT-CARRIER | wanted TX-ITU 18 wpm at 600 Hz, 15 dB reference on CH-AWGN | seed 469001 | mixer CwInterference
+ ok   | INT-CARRIER(+50, 0) | wanted key `CQ CQ CQ DE N0CALL N0CALL K` is SyntheticCq.Text, exact by construction
+ measured | INT-CARRIER(+50, 0) | wanted | 600.002 Hz | key-down power -16.060 dB | key-ups 73 | swing Infinity dB | first key-down 0.995 s
+ measured | INT-CARRIER(+50, 0) | layer 1 | 650.000 Hz, offset +49.998 Hz (stated +50) | level +0.022 dB (stated 0.0) | key-ups 0, floor -0.0 dB | swing 0.04 dB | first key-down 0.000 s
+ ok   | INT-CARRIER(+50, 0) | layer 1 offset +49.998 Hz within 2 Hz of +50
+ ok   | INT-CARRIER(+50, 0) | layer 1 key-down power +0.022 dB within 0.5 dB of 0.0 against the wanted
+ ok   | INT-CARRIER(+50, 0) | layer 1 is steady from the first sample to the last: swing 0.043 dB (at most 1), 0 key-ups (none), first window at 0.000 s
+ ok   | INT-CARRIER(+50, 0) | the mix is band + wanted + every layer, x 1: worst sample 1.5e-8 from the sum
+ ok   | INT-CARRIER(+50, 0) | no sample clipped: peak 0.4734 FS
+ ok   | INT-CARRIER(+50, 0) | the band is under every 25 ms of the case, never digital silence (V-06): 0 silent windows
+ verdict | INT-CARRIER(+50, 0) | is what 9.3 says
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(label: "INT-CARRIER(+200, +10)") [53 ms]
+  Standard Output Messages:
+ case | INT-CARRIER(+200, +10) | INT-CARRIER | wanted TX-ITU 18 wpm at 600 Hz, 15 dB reference on CH-AWGN | seed 469001 | mixer CwInterference
+ ok   | INT-CARRIER(+200, +10) | wanted key `CQ CQ CQ DE N0CALL N0CALL K` is SyntheticCq.Text, exact by construction
+ measured | INT-CARRIER(+200, +10) | wanted | 600.002 Hz | key-down power -16.060 dB | key-ups 73 | swing Infinity dB | first key-down 0.995 s
+ measured | INT-CARRIER(+200, +10) | layer 1 | 800.000 Hz, offset +199.998 Hz (stated +200) | level +10.000 dB (stated +10.0) | key-ups 0, floor -0.0 dB | swing 0.00 dB | first key-down 0.000 s
+ ok   | INT-CARRIER(+200, +10) | layer 1 offset +199.998 Hz within 2 Hz of +200
+ ok   | INT-CARRIER(+200, +10) | layer 1 key-down power +10.000 dB within 0.5 dB of +10.0 against the wanted
+ ok   | INT-CARRIER(+200, +10) | layer 1 is steady from the first sample to the last: swing 0.000 dB (at most 1), 0 key-ups (none), first window at 0.000 s
+ ok   | INT-CARRIER(+200, +10) | the mix is band + wanted + every layer, x 0.940424: worst sample 3.0e-8 from the sum
+ ok   | INT-CARRIER(+200, +10) | no sample clipped: peak 0.9000 FS
+ ok   | INT-CARRIER(+200, +10) | the band is under every 25 ms of the case, never digital silence (V-06): 0 silent windows
+ verdict | INT-CARRIER(+200, +10) | is what 9.3 says
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(label: "INT-ADJ(+100, -6, 25)") [52 ms]
+  Standard Output Messages:
+ case | INT-ADJ(+100, -6, 25) | INT-ADJ | wanted TX-ITU 18 wpm at 600 Hz, 15 dB reference on CH-AWGN | seed 469001 | mixer CwInterference
+ ok   | INT-ADJ(+100, -6, 25) | wanted key `CQ CQ CQ DE N0CALL N0CALL K` is SyntheticCq.Text, exact by construction
+ measured | INT-ADJ(+100, -6, 25) | wanted | 600.002 Hz | key-down power -16.060 dB | key-ups 73 | swing Infinity dB | first key-down 0.995 s
+ measured | INT-ADJ(+100, -6, 25) | layer 1 | 699.997 Hz, offset +99.995 Hz (stated +100) | level -6.000 dB (stated -6.0) | key-ups 76, floor -300.0 dB | swing Infinity dB | first key-down 3.260 s
+ ok   | INT-ADJ(+100, -6, 25) | layer 1 offset +99.995 Hz within 2 Hz of +100
+ ok   | INT-ADJ(+100, -6, 25) | layer 1 key-down power -6.000 dB within 0.5 dB of -6.0 against the wanted
+ ok   | INT-ADJ(+100, -6, 25) | layer 1 keys on and off: 76 key-ups (at least 5), floor -300.0 dB under key-down (at least 20)
+ ok   | INT-ADJ(+100, -6, 25) | the mix is band + wanted + every layer, x 1: worst sample 1.5e-8 from the sum
+ ok   | INT-ADJ(+100, -6, 25) | no sample clipped: peak 0.3616 FS
+ ok   | INT-ADJ(+100, -6, 25) | the band is under every 25 ms of the case, never digital silence (V-06): 0 silent windows
+ verdict | INT-ADJ(+100, -6, 25) | is what 9.3 says
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(label: "INT-CARRIER(+200, +20)") [51 ms]
+  Standard Output Messages:
+ case | INT-CARRIER(+200, +20) | INT-CARRIER | wanted TX-ITU 18 wpm at 600 Hz, 15 dB reference on CH-AWGN | seed 469001 | mixer CwInterference
+ ok   | INT-CARRIER(+200, +20) | wanted key `CQ CQ CQ DE N0CALL N0CALL K` is SyntheticCq.Text, exact by construction
+ measured | INT-CARRIER(+200, +20) | wanted | 600.002 Hz | key-down power -16.060 dB | key-ups 73 | swing Infinity dB | first key-down 0.995 s
+ measured | INT-CARRIER(+200, +20) | layer 1 | 800.000 Hz, offset +199.998 Hz (stated +200) | level +20.000 dB (stated +20.0) | key-ups 0, floor -0.0 dB | swing 0.00 dB | first key-down 0.000 s
+ ok   | INT-CARRIER(+200, +20) | layer 1 offset +199.998 Hz within 2 Hz of +200
+ ok   | INT-CARRIER(+200, +20) | layer 1 key-down power +20.000 dB within 0.5 dB of +20.0 against the wanted
+ ok   | INT-CARRIER(+200, +20) | layer 1 is steady from the first sample to the last: swing 0.000 dB (at most 1), 0 key-ups (none), first window at 0.000 s
+ ok   | INT-CARRIER(+200, +20) | the mix is band + wanted + every layer, x 0.363045: worst sample 3.0e-8 from the sum
+ ok   | INT-CARRIER(+200, +20) | no sample clipped: peak 0.9000 FS
+ ok   | INT-CARRIER(+200, +20) | the band is under every 25 ms of the case, never digital silence (V-06): 0 silent windows
+ verdict | INT-CARRIER(+200, +20) | is what 9.3 says
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(label: "INT-CARRIER(+200, 0)") [53 ms]
+  Standard Output Messages:
+ case | INT-CARRIER(+200, 0) | INT-CARRIER | wanted TX-ITU 18 wpm at 600 Hz, 15 dB reference on CH-AWGN | seed 469001 | mixer CwInterference
+ ok   | INT-CARRIER(+200, 0) | wanted key `CQ CQ CQ DE N0CALL N0CALL K` is SyntheticCq.Text, exact by construction
+ measured | INT-CARRIER(+200, 0) | wanted | 600.002 Hz | key-down power -16.060 dB | key-ups 73 | swing Infinity dB | first key-down 0.995 s
+ measured | INT-CARRIER(+200, 0) | layer 1 | 800.000 Hz, offset +199.998 Hz (stated +200) | level +0.000 dB (stated 0.0) | key-ups 0, floor -0.0 dB | swing 0.00 dB | first key-down 0.000 s
+ ok   | INT-CARRIER(+200, 0) | layer 1 offset +199.998 Hz within 2 Hz of +200
+ ok   | INT-CARRIER(+200, 0) | layer 1 key-down power +0.000 dB within 0.5 dB of 0.0 against the wanted
+ ok   | INT-CARRIER(+200, 0) | layer 1 is steady from the first sample to the last: swing 0.000 dB (at most 1), 0 key-ups (none), first window at 0.000 s
+ ok   | INT-CARRIER(+200, 0) | the mix is band + wanted + every layer, x 1: worst sample 1.5e-8 from the sum
+ ok   | INT-CARRIER(+200, 0) | no sample clipped: peak 0.4757 FS
+ ok   | INT-CARRIER(+200, 0) | the band is under every 25 ms of the case, never digital silence (V-06): 0 silent windows
+ verdict | INT-CARRIER(+200, 0) | is what 9.3 says
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(label: "INT-ADJ(+50, -6, 25)") [52 ms]
+  Standard Output Messages:
+ case | INT-ADJ(+50, -6, 25) | INT-ADJ | wanted TX-ITU 18 wpm at 600 Hz, 15 dB reference on CH-AWGN | seed 469001 | mixer CwInterference
+ ok   | INT-ADJ(+50, -6, 25) | wanted key `CQ CQ CQ DE N0CALL N0CALL K` is SyntheticCq.Text, exact by construction
+ measured | INT-ADJ(+50, -6, 25) | wanted | 600.002 Hz | key-down power -16.060 dB | key-ups 73 | swing Infinity dB | first key-down 0.995 s
+ measured | INT-ADJ(+50, -6, 25) | layer 1 | 649.993 Hz, offset +49.991 Hz (stated +50) | level -6.022 dB (stated -6.0) | key-ups 76, floor -300.0 dB | swing Infinity dB | first key-down 3.260 s
+ ok   | INT-ADJ(+50, -6, 25) | layer 1 offset +49.991 Hz within 2 Hz of +50
+ ok   | INT-ADJ(+50, -6, 25) | layer 1 key-down power -6.022 dB within 0.5 dB of -6.0 against the wanted
+ ok   | INT-ADJ(+50, -6, 25) | layer 1 keys on and off: 76 key-ups (at least 5), floor -300.0 dB under key-down (at least 20)
+ ok   | INT-ADJ(+50, -6, 25) | the mix is band + wanted + every layer, x 1: worst sample 1.5e-8 from the sum
+ ok   | INT-ADJ(+50, -6, 25) | no sample clipped: peak 0.3616 FS
+ ok   | INT-ADJ(+50, -6, 25) | the band is under every 25 ms of the case, never digital silence (V-06): 0 silent windows
+ verdict | INT-ADJ(+50, -6, 25) | is what 9.3 says
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(label: "INT-CARRIER(+500, +10)") [51 ms]
+  Standard Output Messages:
+ case | INT-CARRIER(+500, +10) | INT-CARRIER | wanted TX-ITU 18 wpm at 600 Hz, 15 dB reference on CH-AWGN | seed 469001 | mixer CwInterference
+ ok   | INT-CARRIER(+500, +10) | wanted key `CQ CQ CQ DE N0CALL N0CALL K` is SyntheticCq.Text, exact by construction
+ measured | INT-CARRIER(+500, +10) | wanted | 600.002 Hz | key-down power -16.060 dB | key-ups 73 | swing Infinity dB | first key-down 0.995 s
+ measured | INT-CARRIER(+500, +10) | layer 1 | 1100.000 Hz, offset +499.998 Hz (stated +500) | level +10.000 dB (stated +10.0) | key-ups 0, floor -0.0 dB | swing 0.00 dB | first key-down 0.000 s
+ ok   | INT-CARRIER(+500, +10) | layer 1 offset +499.998 Hz within 2 Hz of +500
+ ok   | INT-CARRIER(+500, +10) | layer 1 key-down power +10.000 dB within 0.5 dB of +10.0 against the wanted
+ ok   | INT-CARRIER(+500, +10) | layer 1 is steady from the first sample to the last: swing 0.000 dB (at most 1), 0 key-ups (none), first window at 0.000 s
+ ok   | INT-CARRIER(+500, +10) | the mix is band + wanted + every layer, x 0.940713: worst sample 3.0e-8 from the sum
+ ok   | INT-CARRIER(+500, +10) | no sample clipped: peak 0.9000 FS
+ ok   | INT-CARRIER(+500, +10) | the band is under every 25 ms of the case, never digital silence (V-06): 0 silent windows
+ verdict | INT-CARRIER(+500, +10) | is what 9.3 says
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(label: "INT-CARRIER(+100, +10)") [52 ms]
+  Standard Output Messages:
+ case | INT-CARRIER(+100, +10) | INT-CARRIER | wanted TX-ITU 18 wpm at 600 Hz, 15 dB reference on CH-AWGN | seed 469001 | mixer CwInterference
+ ok   | INT-CARRIER(+100, +10) | wanted key `CQ CQ CQ DE N0CALL N0CALL K` is SyntheticCq.Text, exact by construction
+ measured | INT-CARRIER(+100, +10) | wanted | 600.002 Hz | key-down power -16.060 dB | key-ups 73 | swing Infinity dB | first key-down 0.995 s
+ measured | INT-CARRIER(+100, +10) | layer 1 | 700.000 Hz, offset +99.998 Hz (stated +100) | level +10.000 dB (stated +10.0) | key-ups 0, floor -0.0 dB | swing 0.00 dB | first key-down 0.000 s
+ ok   | INT-CARRIER(+100, +10) | layer 1 offset +99.998 Hz within 2 Hz of +100
+ ok   | INT-CARRIER(+100, +10) | layer 1 key-down power +10.000 dB within 0.5 dB of +10.0 against the wanted
+ ok   | INT-CARRIER(+100, +10) | layer 1 is steady from the first sample to the last: swing 0.000 dB (at most 1), 0 key-ups (none), first window at 0.000 s
+ ok   | INT-CARRIER(+100, +10) | the mix is band + wanted + every layer, x 0.940713: worst sample 3.0e-8 from the sum
+ ok   | INT-CARRIER(+100, +10) | no sample clipped: peak 0.9000 FS
+ ok   | INT-CARRIER(+100, +10) | the band is under every 25 ms of the case, never digital silence (V-06): 0 silent windows
+ verdict | INT-CARRIER(+100, +10) | is what 9.3 says
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(label: "INT-COCHAN(+10, 0, 25)") [51 ms]
+  Standard Output Messages:
+ case | INT-COCHAN(+10, 0, 25) | INT-COCHAN | wanted TX-ITU 18 wpm at 600 Hz, 15 dB reference on CH-AWGN | seed 469001 | mixer CwInterference
+ ok   | INT-COCHAN(+10, 0, 25) | wanted key `CQ CQ CQ DE N0CALL N0CALL K` is SyntheticCq.Text, exact by construction
+ measured | INT-COCHAN(+10, 0, 25) | wanted | 600.002 Hz | key-down power -16.060 dB | key-ups 73 | swing Infinity dB | first key-down 0.995 s
+ measured | INT-COCHAN(+10, 0, 25) | layer 1 | 610.000 Hz, offset +9.998 Hz (stated +10) | level -0.022 dB (stated 0.0) | key-ups 76, floor -300.0 dB | swing Infinity dB | first key-down 3.260 s
+ ok   | INT-COCHAN(+10, 0, 25) | layer 1 offset +9.998 Hz within 2 Hz of +10
+ ok   | INT-COCHAN(+10, 0, 25) | layer 1 key-down power -0.022 dB within 0.5 dB of 0.0 against the wanted
+ ok   | INT-COCHAN(+10, 0, 25) | layer 1 keys on and off: 76 key-ups (at least 5), floor -300.0 dB under key-down (at least 20)
+ ok   | INT-COCHAN(+10, 0, 25) | INT-COCHAN: the second station +9.998 Hz from the wanted, inside the detector bandwidth (Hann, 45 Hz, so within ±22.5 Hz) and not on the wanted's own pitch
+ ok   | INT-COCHAN(+10, 0, 25) | the mix is band + wanted + every layer, x 1: worst sample 1.5e-8 from the sum
+ ok   | INT-COCHAN(+10, 0, 25) | no sample clipped: peak 0.4726 FS
+ ok   | INT-COCHAN(+10, 0, 25) | the band is under every 25 ms of the case, never digital silence (V-06): 0 silent windows
+ verdict | INT-COCHAN(+10, 0, 25) | is what 9.3 says
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(label: "INT-ADJ(-100, 0, 25)") [52 ms]
+  Standard Output Messages:
+ case | INT-ADJ(-100, 0, 25) | INT-ADJ | wanted TX-ITU 18 wpm at 600 Hz, 15 dB reference on CH-AWGN | seed 469001 | mixer CwInterference
+ ok   | INT-ADJ(-100, 0, 25) | wanted key `CQ CQ CQ DE N0CALL N0CALL K` is SyntheticCq.Text, exact by construction
+ measured | INT-ADJ(-100, 0, 25) | wanted | 600.002 Hz | key-down power -16.060 dB | key-ups 73 | swing Infinity dB | first key-down 0.995 s
+ measured | INT-ADJ(-100, 0, 25) | layer 1 | 500.000 Hz, offset -100.002 Hz (stated -100) | level -+0.000 dB (stated 0.0) | key-ups 76, floor -300.0 dB | swing Infinity dB | first key-down 3.260 s
+ ok   | INT-ADJ(-100, 0, 25) | layer 1 offset -100.002 Hz within 2 Hz of -100
+ ok   | INT-ADJ(-100, 0, 25) | layer 1 key-down power -+0.000 dB within 0.5 dB of 0.0 against the wanted
+ ok   | INT-ADJ(-100, 0, 25) | layer 1 keys on and off: 76 key-ups (at least 5), floor -300.0 dB under key-down (at least 20)
+ ok   | INT-ADJ(-100, 0, 25) | the mix is band + wanted + every layer, x 1: worst sample 1.5e-8 from the sum
+ ok   | INT-ADJ(-100, 0, 25) | no sample clipped: peak 0.4726 FS
+ ok   | INT-ADJ(-100, 0, 25) | the band is under every 25 ms of the case, never digital silence (V-06): 0 silent windows
+ verdict | INT-ADJ(-100, 0, 25) | is what 9.3 says
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(label: "INT-CARRIER(+50, +20)") [49 ms]
+  Standard Output Messages:
+ case | INT-CARRIER(+50, +20) | INT-CARRIER | wanted TX-ITU 18 wpm at 600 Hz, 15 dB reference on CH-AWGN | seed 469001 | mixer CwInterference
+ ok   | INT-CARRIER(+50, +20) | wanted key `CQ CQ CQ DE N0CALL N0CALL K` is SyntheticCq.Text, exact by construction
+ measured | INT-CARRIER(+50, +20) | wanted | 600.002 Hz | key-down power -16.060 dB | key-ups 73 | swing Infinity dB | first key-down 0.995 s
+ measured | INT-CARRIER(+50, +20) | layer 1 | 650.000 Hz, offset +49.998 Hz (stated +50) | level +20.022 dB (stated +20.0) | key-ups 0, floor -0.0 dB | swing 0.04 dB | first key-down 0.000 s
+ ok   | INT-CARRIER(+50, +20) | layer 1 offset +49.998 Hz within 2 Hz of +50
+ ok   | INT-CARRIER(+50, +20) | layer 1 key-down power +20.022 dB within 0.5 dB of +20.0 against the wanted
+ ok   | INT-CARRIER(+50, +20) | layer 1 is steady from the first sample to the last: swing 0.043 dB (at most 1), 0 key-ups (none), first window at 0.000 s
+ ok   | INT-CARRIER(+50, +20) | the mix is band + wanted + every layer, x 0.363389: worst sample 3.0e-8 from the sum
+ ok   | INT-CARRIER(+50, +20) | no sample clipped: peak 0.9000 FS
+ ok   | INT-CARRIER(+50, +20) | the band is under every 25 ms of the case, never digital silence (V-06): 0 silent windows
+ verdict | INT-CARRIER(+50, +20) | is what 9.3 says
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(label: "INT-CARRIER(+50, +10)") [52 ms]
+  Standard Output Messages:
+ case | INT-CARRIER(+50, +10) | INT-CARRIER | wanted TX-ITU 18 wpm at 600 Hz, 15 dB reference on CH-AWGN | seed 469001 | mixer CwInterference
+ ok   | INT-CARRIER(+50, +10) | wanted key `CQ CQ CQ DE N0CALL N0CALL K` is SyntheticCq.Text, exact by construction
+ measured | INT-CARRIER(+50, +10) | wanted | 600.002 Hz | key-down power -16.060 dB | key-ups 73 | swing Infinity dB | first key-down 0.995 s
+ measured | INT-CARRIER(+50, +10) | layer 1 | 650.000 Hz, offset +49.998 Hz (stated +50) | level +10.022 dB (stated +10.0) | key-ups 0, floor -0.0 dB | swing 0.04 dB | first key-down 0.000 s
+ ok   | INT-CARRIER(+50, +10) | layer 1 offset +49.998 Hz within 2 Hz of +50
+ ok   | INT-CARRIER(+50, +10) | layer 1 key-down power +10.022 dB within 0.5 dB of +10.0 against the wanted
+ ok   | INT-CARRIER(+50, +10) | layer 1 is steady from the first sample to the last: swing 0.043 dB (at most 1), 0 key-ups (none), first window at 0.000 s
+ ok   | INT-CARRIER(+50, +10) | the mix is band + wanted + every layer, x 0.942735: worst sample 3.0e-8 from the sum
+ ok   | INT-CARRIER(+50, +10) | no sample clipped: peak 0.9000 FS
+ ok   | INT-CARRIER(+50, +10) | the band is under every 25 ms of the case, never digital silence (V-06): 0 silent windows
+ verdict | INT-CARRIER(+50, +10) | is what 9.3 says
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(label: "INT-CARRIER(+100, 0)") [52 ms]
+  Standard Output Messages:
+ case | INT-CARRIER(+100, 0) | INT-CARRIER | wanted TX-ITU 18 wpm at 600 Hz, 15 dB reference on CH-AWGN | seed 469001 | mixer CwInterference
+ ok   | INT-CARRIER(+100, 0) | wanted key `CQ CQ CQ DE N0CALL N0CALL K` is SyntheticCq.Text, exact by construction
+ measured | INT-CARRIER(+100, 0) | wanted | 600.002 Hz | key-down power -16.060 dB | key-ups 73 | swing Infinity dB | first key-down 0.995 s
+ measured | INT-CARRIER(+100, 0) | layer 1 | 700.000 Hz, offset +99.998 Hz (stated +100) | level +0.000 dB (stated 0.0) | key-ups 0, floor -0.0 dB | swing 0.00 dB | first key-down 0.000 s
+ ok   | INT-CARRIER(+100, 0) | layer 1 offset +99.998 Hz within 2 Hz of +100
+ ok   | INT-CARRIER(+100, 0) | layer 1 key-down power +0.000 dB within 0.5 dB of 0.0 against the wanted
+ ok   | INT-CARRIER(+100, 0) | layer 1 is steady from the first sample to the last: swing 0.000 dB (at most 1), 0 key-ups (none), first window at 0.000 s
+ ok   | INT-CARRIER(+100, 0) | the mix is band + wanted + every layer, x 1: worst sample 1.5e-8 from the sum
+ ok   | INT-CARRIER(+100, 0) | no sample clipped: peak 0.4754 FS
+ ok   | INT-CARRIER(+100, 0) | the band is under every 25 ms of the case, never digital silence (V-06): 0 silent windows
+ verdict | INT-CARRIER(+100, 0) | is what 9.3 says
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(label: "INT-CARRIER(+500, +20)") [53 ms]
+  Standard Output Messages:
+ case | INT-CARRIER(+500, +20) | INT-CARRIER | wanted TX-ITU 18 wpm at 600 Hz, 15 dB reference on CH-AWGN | seed 469001 | mixer CwInterference
+ ok   | INT-CARRIER(+500, +20) | wanted key `CQ CQ CQ DE N0CALL N0CALL K` is SyntheticCq.Text, exact by construction
+ measured | INT-CARRIER(+500, +20) | wanted | 600.002 Hz | key-down power -16.060 dB | key-ups 73 | swing Infinity dB | first key-down 0.995 s
+ measured | INT-CARRIER(+500, +20) | layer 1 | 1100.000 Hz, offset +499.998 Hz (stated +500) | level +20.000 dB (stated +20.0) | key-ups 0, floor -0.0 dB | swing 0.00 dB | first key-down 0.000 s
+ ok   | INT-CARRIER(+500, +20) | layer 1 offset +499.998 Hz within 2 Hz of +500
+ ok   | INT-CARRIER(+500, +20) | layer 1 key-down power +20.000 dB within 0.5 dB of +20.0 against the wanted
+ ok   | INT-CARRIER(+500, +20) | layer 1 is steady from the first sample to the last: swing 0.000 dB (at most 1), 0 key-ups (none), first window at 0.000 s
+ ok   | INT-CARRIER(+500, +20) | the mix is band + wanted + every layer, x 0.363088: worst sample 3.0e-8 from the sum
+ ok   | INT-CARRIER(+500, +20) | no sample clipped: peak 0.9000 FS
+ ok   | INT-CARRIER(+500, +20) | the band is under every 25 ms of the case, never digital silence (V-06): 0 silent windows
+ verdict | INT-CARRIER(+500, +20) | is what 9.3 says
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(label: "INT-PILEUP(3 at 0 dB: -75/12, +75/25, +150/18)") [79 ms]
+  Standard Output Messages:
+ case | INT-PILEUP(3 at 0 dB: -75/12, +75/25, +150/18) | INT-PILEUP | wanted TX-ITU 18 wpm at 600 Hz, 15 dB reference on CH-AWGN | seed 469001 | mixer CwInterference
+ ok   | INT-PILEUP(3 at 0 dB: -75/12, +75/25, +150/18) | wanted key `CQ CQ CQ DE N0CALL N0CALL K` is SyntheticCq.Text, exact by construction
+ measured | INT-PILEUP(3 at 0 dB: -75/12, +75/25, +150/18) | wanted | 600.002 Hz | key-down power -16.060 dB | key-ups 73 | swing Infinity dB | first key-down 0.995 s
+ measured | INT-PILEUP(3 at 0 dB: -75/12, +75/25, +150/18) | layer 1 | 525.000 Hz, offset -75.002 Hz (stated -75) | level -0.014 dB (stated 0.0) | key-ups 28, floor -300.0 dB | swing Infinity dB | first key-down 3.260 s
+ ok   | INT-PILEUP(3 at 0 dB: -75/12, +75/25, +150/18) | layer 1 offset -75.002 Hz within 2 Hz of -75
+ ok   | INT-PILEUP(3 at 0 dB: -75/12, +75/25, +150/18) | layer 1 key-down power -0.014 dB within 0.5 dB of 0.0 against the wanted
+ ok   | INT-PILEUP(3 at 0 dB: -75/12, +75/25, +150/18) | layer 1 keys on and off: 28 key-ups (at least 5), floor -300.0 dB under key-down (at least 20)
+ measured | INT-PILEUP(3 at 0 dB: -75/12, +75/25, +150/18) | layer 2 | 675.001 Hz, offset +74.999 Hz (stated +75) | level -0.008 dB (stated 0.0) | key-ups 84, floor -300.0 dB | swing Infinity dB | first key-down 3.260 s
+ ok   | INT-PILEUP(3 at 0 dB: -75/12, +75/25, +150/18) | layer 2 offset +74.999 Hz within 2 Hz of +75
+ ok   | INT-PILEUP(3 at 0 dB: -75/12, +75/25, +150/18) | layer 2 key-down power -0.008 dB within 0.5 dB of 0.0 against the wanted
+ ok   | INT-PILEUP(3 at 0 dB: -75/12, +75/25, +150/18) | layer 2 keys on and off: 84 key-ups (at least 5), floor -300.0 dB under key-down (at least 20)
+ measured | INT-PILEUP(3 at 0 dB: -75/12, +75/25, +150/18) | layer 3 | 750.005 Hz, offset +150.003 Hz (stated +150) | level -0.022 dB (stated 0.0) | key-ups 65, floor -300.0 dB | swing Infinity dB | first key-down 3.260 s
+ ok   | INT-PILEUP(3 at 0 dB: -75/12, +75/25, +150/18) | layer 3 offset +150.003 Hz within 2 Hz of +150
+ ok   | INT-PILEUP(3 at 0 dB: -75/12, +75/25, +150/18) | layer 3 key-down power -0.022 dB within 0.5 dB of 0.0 against the wanted
+ ok   | INT-PILEUP(3 at 0 dB: -75/12, +75/25, +150/18) | layer 3 keys on and off: 65 key-ups (at least 5), floor -300.0 dB under key-down (at least 20)
+ ok   | INT-PILEUP(3 at 0 dB: -75/12, +75/25, +150/18) | INT-PILEUP: 3 keyed stations inside the 350-870 Hz passband at distinct pitches besides the wanted (at least 3): 525.0, 675.0, 750.0 Hz
+ ok   | INT-PILEUP(3 at 0 dB: -75/12, +75/25, +150/18) | the mix is band + wanted + every layer, x 0.992519: worst sample 3.0e-8 from the sum
+ ok   | INT-PILEUP(3 at 0 dB: -75/12, +75/25, +150/18) | no sample clipped: peak 0.9000 FS
+ ok   | INT-PILEUP(3 at 0 dB: -75/12, +75/25, +150/18) | the band is under every 25 ms of the case, never digital silence (V-06): 0 silent windows
+ verdict | INT-PILEUP(3 at 0 dB: -75/12, +75/25, +150/18) | is what 9.3 says
+
+
+[xUnit.net 00:00:01.44]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(label: "INT-ADJ(+100, 0, 25)") [52 ms]
+  Standard Output Messages:
+ case | INT-ADJ(+100, 0, 25) | INT-ADJ | wanted TX-ITU 18 wpm at 600 Hz, 15 dB reference on CH-AWGN | seed 469001 | mixer CwInterference
+ ok   | INT-ADJ(+100, 0, 25) | wanted key `CQ CQ CQ DE N0CALL N0CALL K` is SyntheticCq.Text, exact by construction
+ measured | INT-ADJ(+100, 0, 25) | wanted | 600.002 Hz | key-down power -16.060 dB | key-ups 73 | swing Infinity dB | first key-down 0.995 s
+ measured | INT-ADJ(+100, 0, 25) | layer 1 | 699.997 Hz, offset +99.995 Hz (stated +100) | level -+0.000 dB (stated 0.0) | key-ups 76, floor -300.0 dB | swing Infinity dB | first key-down 3.260 s
+ ok   | INT-ADJ(+100, 0, 25) | layer 1 offset +99.995 Hz within 2 Hz of +100
+ ok   | INT-ADJ(+100, 0, 25) | layer 1 key-down power -+0.000 dB within 0.5 dB of 0.0 against the wanted
+ ok   | INT-ADJ(+100, 0, 25) | layer 1 keys on and off: 76 key-ups (at least 5), floor -300.0 dB under key-down (at least 20)
+ ok   | INT-ADJ(+100, 0, 25) | the mix is band + wanted + every layer, x 1: worst sample 1.5e-8 from the sum
+ ok   | INT-ADJ(+100, 0, 25) | no sample clipped: peak 0.4726 FS
+ ok   | INT-ADJ(+100, 0, 25) | the band is under every 25 ms of the case, never digital silence (V-06): 0 silent windows
+ verdict | INT-ADJ(+100, 0, 25) | is what 9.3 says
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheInterferenceProfilesAreWhatTheySayTests.EachProfileIsWhatSectionNinePointThreeSays(label: "INT-CARRIER(+500, 0)") [52 ms]
+  Standard Output Messages:
+ case | INT-CARRIER(+500, 0) | INT-CARRIER | wanted TX-ITU 18 wpm at 600 Hz, 15 dB reference on CH-AWGN | seed 469001 | mixer CwInterference
+ ok   | INT-CARRIER(+500, 0) | wanted key `CQ CQ CQ DE N0CALL N0CALL K` is SyntheticCq.Text, exact by construction
+ measured | INT-CARRIER(+500, 0) | wanted | 600.002 Hz | key-down power -16.060 dB | key-ups 73 | swing Infinity dB | first key-down 0.995 s
+ measured | INT-CARRIER(+500, 0) | layer 1 | 1100.000 Hz, offset +499.998 Hz (stated +500) | level +0.000 dB (stated 0.0) | key-ups 0, floor -0.0 dB | swing 0.00 dB | first key-down 0.000 s
+ ok   | INT-CARRIER(+500, 0) | layer 1 offset +499.998 Hz within 2 Hz of +500
+ ok   | INT-CARRIER(+500, 0) | layer 1 key-down power +0.000 dB within 0.5 dB of 0.0 against the wanted
+ ok   | INT-CARRIER(+500, 0) | layer 1 is steady from the first sample to the last: swing 0.000 dB (at most 1), 0 key-ups (none), first window at 0.000 s
+ ok   | INT-CARRIER(+500, 0) | the mix is band + wanted + every layer, x 1: worst sample 1.5e-8 from the sum
+ ok   | INT-CARRIER(+500, 0) | no sample clipped: peak 0.4754 FS
+ ok   | INT-CARRIER(+500, 0) | the band is under every 25 ms of the case, never digital silence (V-06): 0 silent windows
+ verdict | INT-CARRIER(+500, 0) | is what 9.3 says
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheInterferenceProfilesAreWhatTheySayTests.EverySectionNinePointThreeInterferenceProfileIsProduced [5 ms]
+  Standard Output Messages:
+ profile | INT-ADJ | Adjacent station | "A second CW signal Δf hertz away, ΔdB relative to the wanted one, at its own speed." | 6 case(s) proved below
+ profile | INT-COCHAN | Co-channel station | "A second signal within the detector bandwidth of the wanted one. The veto case." | 1 case(s) proved below
+ profile | INT-CARRIER | Unkeyed carrier | "A steady tone. The "loudest is not keyed" case." | 12 case(s) proved below
+ profile | INT-PILEUP | Pileup | "Three or more stations inside the passband. The "emit nothing" case." | 1 case(s) proved below
+
+
+
+Test Run Successful.
+Total tests: 21
+     Passed: 21
+ Total time: 1.7039 Seconds
+RC=0 WALL=2s
