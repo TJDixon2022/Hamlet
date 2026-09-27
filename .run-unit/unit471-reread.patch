@@ -1,0 +1,460 @@
+diff --git a/src/Hamlet.RadioEngine/Cw/CwDecoder.cs b/src/Hamlet.RadioEngine/Cw/CwDecoder.cs
+index f1a260f5..bbadca70 100644
+--- a/src/Hamlet.RadioEngine/Cw/CwDecoder.cs
++++ b/src/Hamlet.RadioEngine/Cw/CwDecoder.cs
+@@ -76,6 +76,9 @@ public sealed class CwDecoder
+     /// </remarks>
+     private double _lastMeasuredToneHz = double.NaN;
+ 
++    /// <summary>Whether both proof states were proved after the stream's last read.</summary>
++    private bool _lastReadProved;
++
+     private int _charactersEmitted;
+     private int _charactersUnsure;
+     private int _elementsResolved;
+@@ -896,8 +899,26 @@ public sealed class CwDecoder
+             Pend(_second.Read(samples, _probabilistic.ToneHz));
+         }
+ 
++        var reads = _probabilistic.Reads;
++
+         _probabilistic.Process(samples);
+ 
++        // **AT THE FIRST READ WITH BOTH PROOF STATES PROVED, THE STRETCH THAT ARRIVED
++        // WHILE ACQUIRING IS READ AGAIN AT THE PROVED VALUES** (work instruction 471,
++        // DECIDED (3) and (4)). The states are the tree's, read as they stand after the
++        // read; what is still unsettled of that stretch settles as the re-read has it.
++        if (_probabilistic.Reads != reads)
++        {
++            var proved = _tracker.PitchProof == CwPitchProof.Proved && SpeedProof == CwSpeedProof.Proved;
++
++            if (proved && !_lastReadProved)
++            {
++                _probabilistic.ReadAgainAtProvedValues(_tracker.ToneHz, _probabilistic.Last.WordsPerMinute);
++            }
++
++            _lastReadProved = proved;
++        }
++
+         // **ASKED AFTER THE DECODER HAS READ THIS AUDIO, NOT BEFORE.** The
+         // tracker consults the interlock when it reads its survey, and both it
+         // and the decoder work on the same half second, so setting it here rather
+diff --git a/src/Hamlet.RadioEngine/Cw/CwProbabilisticStream.cs b/src/Hamlet.RadioEngine/Cw/CwProbabilisticStream.cs
+index 941d893c..ae8fb026 100644
+--- a/src/Hamlet.RadioEngine/Cw/CwProbabilisticStream.cs
++++ b/src/Hamlet.RadioEngine/Cw/CwProbabilisticStream.cs
+@@ -124,6 +124,32 @@ public sealed class CwProbabilisticStream
+     /// <summary>How many characters have been settled since this stream started.</summary>
+     private long _settledCount;
+ 
++    /// <summary>The raw samples behind the envelope, a ring the window and one integrator long.</summary>
++    private readonly float[] _raw;
++
++    /// <summary>How many samples have entered the ring since the stream started or restarted.</summary>
++    private long _rawCount;
++
++    /// <summary>For each envelope hop, how many samples had entered the ring when it was taken.</summary>
++    private readonly long[] _envelopeRawEnd;
++
++    /// <summary>The gap lengths the last read decoded with, or null.</summary>
++    private double[]? _lastGapMilliseconds;
++
++    /// <summary>The newest hop at the last read and at the read before it, or -1.</summary>
++    private long _lastReadHop = -1;
++
++    private long _previousReadHop = -1;
++
++    /// <summary>Letters read again at the proved values, waiting to settle in place of the ordinary read's.</summary>
++    private readonly List<(long Start, long End, CwCharacter Character)> _pinned = new();
++
++    /// <summary>Spans of pinned letters already settled, while the region they cover is still being settled.</summary>
++    private readonly List<(long Start, long End)> _pinnedSettled = new();
++
++    /// <summary>The newest hop of the stretch read again, or -1.</summary>
++    private long _pinnedThrough = -1;
++
+     /// <summary>Creates a stream.</summary>
+     /// <param name="sampleRate">Samples per second.</param>
+     public CwProbabilisticStream(int sampleRate)
+@@ -154,6 +180,8 @@ public sealed class CwProbabilisticStream
+         _mixedI = new float[_windowSamples];
+         _mixedQ = new float[_windowSamples];
+         _envelope = new double[_windowHops];
++        _envelopeRawEnd = new long[_windowHops];
++        _raw = new float[(_windowHops + 1) * _hopSamples + _windowSamples];
+ 
+         // **A GUARD SET ONLY IN A METHOD NOTHING CALLS IS A GUARD THAT DOES NOT
+         // EXIST.** This was assigned in `Restart()` alone, and `Restart()` is
+@@ -272,6 +300,9 @@ public sealed class CwProbabilisticStream
+             _mixFilled = Math.Min(_mixFilled + 1, _windowSamples);
+             _samplesSeen++;
+ 
++            _raw[_rawCount % _raw.Length] = sample;
++            _rawCount++;
++
+             if (++_sampleInHop < _hopSamples)
+             {
+                 continue;
+@@ -342,6 +373,12 @@ public sealed class CwProbabilisticStream
+         _heldGaps = default;
+         _refillHops = Math.Max(
+             1, (int)(RefillSeconds * 1000.0 / CwProbabilisticDecoder.HopMilliseconds));
++        _rawCount = 0;
++        _lastReadHop = -1;
++        _previousReadHop = -1;
++        _pinned.Clear();
++        _pinnedSettled.Clear();
++        _pinnedThrough = -1;
+ 
+         Last = CwProbabilisticResult.None;
+         UnitWasMeasured = false;
+@@ -391,12 +428,15 @@ public sealed class CwProbabilisticStream
+ 
+         if (_envelopeCount < _windowHops)
+         {
++            _envelopeRawEnd[_envelopeCount] = _rawCount;
+             _envelope[_envelopeCount++] = magnitude;
+         }
+         else
+         {
+             Array.Copy(_envelope, 1, _envelope, 0, _windowHops - 1);
++            Array.Copy(_envelopeRawEnd, 1, _envelopeRawEnd, 0, _windowHops - 1);
+             _envelope[_windowHops - 1] = magnitude;
++            _envelopeRawEnd[_windowHops - 1] = _rawCount;
+         }
+ 
+         _hopsSeen++;
+@@ -532,6 +572,10 @@ public sealed class CwProbabilisticStream
+ 
+         Last = result;
+         UnitWasMeasured = unitMeasured;
++        Reads++;
++        _lastGapMilliseconds = gapMilliseconds;
++        _previousReadHop = _lastReadHop;
++        _lastReadHop = _hopsSeen;
+ 
+         // **THIS SENDER'S CHARACTER GAP, FOR THE SPACES ONLY** (work instruction
+         // 415). Measured from the same window whether or not the word trough
+@@ -598,6 +642,20 @@ public sealed class CwProbabilisticStream
+                     continue;
+                 }
+ 
++                // **WHAT WAS READ AGAIN AT THE PROVED VALUES SETTLES IN ITS PLACE**
++                // (work instruction 471, DECIDED (3)). Pinned letters that end by
++                // here go first; a letter of this read inside the stretch read
++                // again, or across a pinned letter, is not settled.
++                SettlePinnedThrough(absolute);
++
++                if (character.Pattern.Length > 0
++                    && (absolute <= _pinnedThrough
++                        || OverlapsPinned(absolute - Math.Max(1, character.SpanHops), absolute)))
++                {
++                    _settledThrough = absolute;
++                    continue;
++                }
++
+                 // **THE MARK MOVES EXACTLY AS THE PATH'S OWN CHARACTERS MOVE IT**,
+                 // a space the relabel took out included, so every letter settles
+                 // where and when it did before the relabel existed.
+@@ -618,9 +676,138 @@ public sealed class CwProbabilisticStream
+             }
+         }
+ 
++        // Pinned letters wholly behind the delay settle even where this read has
++        // nothing near them.
++        SettlePinnedThrough(windowStartHop + settleBefore - 1);
++
+         LeadingEdgeChanged?.Invoke(edge);
+     }
+ 
++    /// <summary>How many times the window has been read.</summary>
++    public long Reads { get; private set; }
++
++    /// <summary>
++    /// Read the stretch that arrived while acquiring again, at the pitch and speed now
++    /// proved, and settle that reading in place of the ordinary read's.
++    /// </summary>
++    /// <param name="pitchHz">The pitch the tracker reports, proved.</param>
++    /// <param name="wordsPerMinute">The speed the last read decoded at, proved.</param>
++    /// <remarks>
++    /// <para>**CALLED ONCE, AT THE FIRST READ WITH BOTH PROOF STATES PROVED AFTER ONE
++    /// WITHOUT** (work instruction 471, DECIDED (3) and (4)). The window's raw audio
++    /// is mixed down again at the proved pitch through the same trailing integrator,
++    /// decoded at the proved speed with the gap lengths the read just used, and every
++    /// letter of it that ends after the settled mark and by the previous read's newest
++    /// hop is pinned. Where that decode has nothing, nothing of the ordinary read's
++    /// settles there.</para>
++    /// <para>**NOTHING ALREADY SETTLED IS TOUCHED**, and the window, the delay and the
++    /// read cadence are as they were. It uses the audio and the two proved values and
++    /// nothing else (R72).</para>
++    /// </remarks>
++    public void ReadAgainAtProvedValues(double pitchHz, double wordsPerMinute)
++    {
++        _pinned.Clear();
++        _pinnedSettled.Clear();
++        _pinnedThrough = -1;
++
++        if (_envelopeCount == 0 || wordsPerMinute <= 0 || _previousReadHop <= _settledThrough)
++        {
++            return;
++        }
++
++        var window = Remixed(pitchHz);
++        var result = CwProbabilisticDecoder.Decode(window, pitchHz, wordsPerMinute, _lastGapMilliseconds);
++        var windowStartHop = _hopsSeen - _envelopeCount;
++
++        foreach (var character in result.Characters)
++        {
++            var absolute = windowStartHop + character.EndHop;
++
++            if (character.Pattern.Length == 0 || absolute <= _settledThrough || absolute > _previousReadHop)
++            {
++                continue;
++            }
++
++            var at = TimeSpan.FromSeconds(absolute * CwProbabilisticDecoder.HopMilliseconds / 1000.0);
++
++            _pinned.Add((absolute - Math.Max(1, character.SpanHops), absolute, Character(character, result, at, window)));
++        }
++
++        _pinnedThrough = _previousReadHop;
++    }
++
++    /// <summary>The window as it would have been taken had every hop been mixed down at one pitch.</summary>
++    private double[] Remixed(double pitchHz)
++    {
++        var window = new double[_envelopeCount];
++        var from = Math.Max(0, _envelopeRawEnd[0] - _windowSamples);
++        var to = _envelopeRawEnd[_envelopeCount - 1];
++        var mixedI = new float[to - from];
++        var mixedQ = new float[to - from];
++        var step = 2 * Math.PI * pitchHz / _sampleRate;
++
++        for (var j = from; j < to; j++)
++        {
++            var phase = step * j % (2 * Math.PI);
++            var sample = _raw[j % _raw.Length];
++
++            mixedI[j - from] = (float)(sample * Math.Cos(phase));
++            mixedQ[j - from] = (float)(sample * -Math.Sin(phase));
++        }
++
++        for (var k = 0; k < _envelopeCount; k++)
++        {
++            var end = _envelopeRawEnd[k];
++            var filled = (int)Math.Min(end, _windowSamples);
++            double i = 0;
++            double q = 0;
++
++            for (var n = 0; n < filled; n++)
++            {
++                var w = _taper[_windowSamples - filled + n];
++                var at = end - filled + n - from;
++
++                i += mixedI[at] * w;
++                q += mixedQ[at] * w;
++            }
++
++            window[k] = Math.Sqrt((i * i) + (q * q)) / _taperWeight;
++        }
++
++        return window;
++    }
++
++    /// <summary>Settle every pinned letter that ends by an absolute hop, in order.</summary>
++    private void SettlePinnedThrough(long absolute)
++    {
++        while (_pinned.Count > 0 && _pinned[0].End <= absolute)
++        {
++            var (start, end, character) = _pinned[0];
++
++            _pinned.RemoveAt(0);
++
++            if (end <= _settledThrough)
++            {
++                continue;
++            }
++
++            _pinnedSettled.Add((start, end));
++            _settledThrough = end;
++            _settledCount++;
++            CharacterSettled?.Invoke(character);
++        }
++
++        if (_pinned.Count == 0 && _settledThrough > _pinnedThrough)
++        {
++            _pinnedSettled.Clear();
++        }
++    }
++
++    /// <summary>Whether a span crosses a pinned letter, settled or waiting.</summary>
++    private bool OverlapsPinned(long start, long end)
++        => _pinned.Any(p => Math.Min(p.End, end) - Math.Max(p.Start, start) > 0)
++           || _pinnedSettled.Any(p => Math.Min(p.End, end) - Math.Max(p.Start, start) > 0);
++
+     /// <summary>
+     /// How much longer than the path's unit the window's marks must imply before
+     /// the path is re-read at the marks' speed.
+diff --git a/tests/Hamlet.RadioEngine.Tests/Cw/TheAcquiringStretchIsReadAtTheProvedValuesTests.cs b/tests/Hamlet.RadioEngine.Tests/Cw/TheAcquiringStretchIsReadAtTheProvedValuesTests.cs
+new file mode 100644
+index 00000000..b54c4e53
+--- /dev/null
++++ b/tests/Hamlet.RadioEngine.Tests/Cw/TheAcquiringStretchIsReadAtTheProvedValuesTests.cs
+@@ -0,0 +1,157 @@
++using System.Globalization;
++using Hamlet.RadioEngine.Audio;
++using Hamlet.RadioEngine.Cw;
++using Hamlet.RadioEngine.Tests.Cw.Fixtures;
++using Xunit;
++using Xunit.Abstractions;
++
++namespace Hamlet.RadioEngine.Tests.Cw;
++
++/// <summary>
++/// The letters read while acquiring are read again at the pitch and speed once both are
++/// proved, before they settle (work instruction 471, task 2; HM-REQ-010, HM-REQ-102).
++/// </summary>
++public sealed class TheAcquiringStretchIsReadAtTheProvedValuesTests
++{
++    private static readonly CultureInfo Invariant = CultureInfo.InvariantCulture;
++
++    private readonly ITestOutputHelper _output;
++
++    /// <summary>Creates the tests.</summary>
++    /// <param name="output">Where the search is printed.</param>
++    public TheAcquiringStretchIsReadAtTheProvedValuesTests(ITestOutputHelper output)
++        => _output = output;
++
++    private static IEnumerable<(string Name, CwInterferenceSpec? Spec, double Wpm, int Seed)> Candidates()
++    {
++        foreach (var wpm in SyntheticCq.Speeds)
++        {
++            for (var extra = 0; extra < 4; extra++)
++            {
++                yield return (string.Create(Invariant, $"tx-itu-cold-{wpm:0}wpm-seed+{extra}"), null, wpm, CwInterference.Seed(wpm) + extra);
++            }
++
++            foreach (var f in new[] { 100.0, -100 })
++            {
++                yield return (string.Create(Invariant, $"int-carrier({f:+0;-0},0)-{wpm:0}wpm"), CwInterference.Carrier(f, 0), wpm, CwInterference.Seed(wpm));
++                yield return (string.Create(Invariant, $"int-adj({f:+0;-0},0,25)-{wpm:0}wpm"), CwInterference.Adjacent(f, 0, 25), wpm, CwInterference.Seed(wpm));
++            }
++        }
++
++        foreach (var f in new[] { 50.0, 200, 500 })
++        {
++            foreach (var db in new[] { 0.0, 10, 20 })
++            {
++                yield return (string.Create(Invariant, $"int-carrier({f:0},{db:0})-18wpm"), CwInterference.Carrier(f, db), 18, CwInterference.Seed(18));
++            }
++        }
++    }
++
++    /// <remarks>
++    /// Proves nothing; prints, over generated TX-ITU cases whose key is exact by construction
++    /// (cold from 600 Hz, and under INT-CARRIER and INT-ADJ), every letter emitted while
++    /// acquiring that was still unsettled at the first read after it with both proof states
++    /// proved, and what it reads at the proved values - the search for task 2's red case.
++    /// </remarks>
++    [Fact]
++    public void WhereAWrongLetterUnsettledAtProofReadsRight()
++    {
++        var found = 0;
++        var reachable = 0;
++
++        foreach (var (name, spec, wpm, seed) in Candidates())
++        {
++            var parts = CwInterference.Render(spec, wpm, seed);
++            var drove = WhatTheAcquiringLettersReadAtTheProvedValuesFact.Drive(parts.Audio.Samples, parts.Audio.SampleRate, SyntheticCq.StartingPitchHz);
++            var scores = TheArbitrationEarnsItsPlaceFact.ScoresFor(name, false, drove.Run.Settled);
++            var index = new Dictionary<CwCharacter, int>(ReferenceEqualityComparer.Instance);
++            var cache = new Dictionary<int, (double[], CwProbabilisticResult)>();
++
++            for (var i = 0; i < drove.Run.Settled.Count; i++)
++            {
++                index[drove.Run.Settled[i]] = i;
++            }
++
++            var letters = WhatTheSureLettersWerePrintedUnderFact.Letters(name, "generated", "TX-ITU 15 dB CH-AWGN", CwKeyKind.Exact, drove.Run, scores).ToList();
++            var here = 0;
++
++            foreach (var l in letters.Where(l => l.Acquiring))
++            {
++                var end = (long)Math.Round(l.Character.At.TotalMilliseconds / CwProbabilisticDecoder.HopMilliseconds);
++                var span = (end - Math.Max(1, l.Character.SpanHops), end);
++                var proof = drove.Reads.FirstOrDefault(r => r.Proved && r.Hops > end);
++
++                if (proof is null || proof.Index >= drove.SettledAt[index[l.Character]])
++                {
++                    continue;
++                }
++
++                var again = WhatTheAcquiringLettersReadAtTheProvedValuesFact.ReadAgain(drove, proof, span, cache);
++                var right = again.Letters == 1 && again.Text == l.Sent;
++
++                here++;
++                reachable++;
++
++                if (!l.IsRight && right)
++                {
++                    found++;
++                }
++
++                _output.WriteLine(string.Create(Invariant,
++                    $"unsettled | {name} | {l.Character.At.TotalSeconds:0.000} | sent `{l.Sent}` | HEAD `{l.Character.Text}` {(l.Sure ? "sure" : "dim")} {l.Class} | proof {proof.Seconds:0.00} s {proof.TrackerHz:0.0} Hz {proof.Wpm:0.0} WPM | re-read `{again.Text}` {(again.Sure ? "sure" : "dim")} | {(!l.IsRight && right ? "WRONG TO RIGHT" : l.IsRight && !right ? "right to wrong" : "same")}"));
++            }
++
++            var sure = letters.Where(l => l.Sure).ToList();
++
++            _output.WriteLine(string.Create(Invariant,
++                $"case | {name} | seed {seed} | sure {sure.Count}, wrong or added {sure.Count(l => !l.IsRight)} | acquiring {letters.Count(l => l.Acquiring)} | unsettled at proof {here} | first proof {drove.Reads.FirstOrDefault(r => r.Proved)?.Seconds.ToString("0.00", Invariant) ?? "never"} s | read `{CwReading.Of(drove.Run.Settled).Text.Trim()}`"));
++        }
++
++        _output.WriteLine($"total | unsettled at proof {reachable} | wrong to right {found}");
++    }
++
++    /// <remarks>
++    /// Proves HM-REQ-102's half of the change that no settled character changes after it
++    /// settles: over every generated case above, cold from 600 Hz, each settled letter ends
++    /// after the one before it, so nothing is inserted behind the settled mark and nothing is
++    /// announced twice, and the re-read happened at least once. No generated case shows a
++    /// wrong letter unsettled at proof that reads right at the proved values (the search
++    /// above), so the text half has no red case and the change is judged on R78 alone.
++    /// </remarks>
++    [Fact]
++    public void HmReq010AndHmReq102NothingSettledMovesWhenTheStretchIsReadAgain()
++    {
++        var reread = 0;
++
++        foreach (var (name, spec, wpm, seed) in Candidates())
++        {
++            var parts = CwInterference.Render(spec, wpm, seed);
++            var decoder = new CwDecoder(parts.Audio.SampleRate, SyntheticCq.StartingPitchHz);
++            var settled = new List<CwCharacter>();
++            var proved = false;
++
++            decoder.CharacterSettled += settled.Add;
++
++            var hop = decoder.Tracker.HopSamples;
++
++            for (var at = 0L; at + hop <= parts.Audio.Samples.Length; at += hop)
++            {
++                decoder.Process(new AudioChunk(at, parts.Audio.SampleRate, parts.Audio.Samples.AsSpan((int)at, hop)));
++                proved |= decoder.Tracker.PitchProof == CwPitchProof.Proved && decoder.SpeedProof == CwSpeedProof.Proved;
++            }
++
++            decoder.Flush();
++            reread += proved ? 1 : 0;
++
++            var letters = settled.Where(c => !c.IsWordGap).ToList();
++
++            for (var i = 1; i < letters.Count; i++)
++            {
++                Assert.True(letters[i].At > letters[i - 1].At,
++                    string.Create(Invariant, $"{name}: `{letters[i].Text}` at {letters[i].At.TotalSeconds:0.000} s settled after `{letters[i - 1].Text}` at {letters[i - 1].At.TotalSeconds:0.000} s"));
++            }
++        }
++
++        Assert.True(reread > 0);
++    }
++}

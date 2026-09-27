@@ -12,6 +12,75 @@ denominator is the sure characters emitted, unit 439's reading of `CW_SPEC.md` 1
 **From unit 464, each decoder's confidence p and its calibration per condition (HM-REQ-124,
 MET-CAL) are in `calibration.md`, held-out by recording.**
 
+## Unit 471 - the acquiring stretch read again at the proved pitch and speed, not kept
+
+Step 2, 2.4, HM-REQ-010 with HM-REQ-011 and 012 and MET-WBE as guards, HM-REQ-102 measured
+beside it. The trace (`WhatTheAcquiringLettersReadAtTheProvedValuesFact`,
+`.run-unit/unit471-trace.txt`) read both of the tree's proof states after every read of the
+stream. For each letter emitted while acquiring (470's sense), it took the first read after it
+with both proved and re-read the letter's span there, from the raw audio at the proved pitch and
+speed. Real, inferred: 322 such sure letters (29 wrong or added). 33 were still unsettled at that
+read, all sure and right at HEAD: 32 re-read right, and 1 was lost (`012403` `0`). 289 had
+settled before it, 214 of them with no proof ever after. Synthetic, exact: 95 (2 wrong or
+added). 39 unsettled: 36 right to right, 1 right to wrong (`cq-18wpm-5db` `C` read `6`), 2 wrong
+to wrong. 56 settled before. Unit 449's 13 and unit 470's 29 all settled before any proof after
+them: 24 of the 29 sit in recordings that never reach both proved. No generated exact-key case
+shows a wrong letter unsettled at proof that reads right (33 cases, cold TX-ITU at 12, 18 and
+25 WPM, INT-CARRIER and INT-ADJ: 126 letters unsettled at proof, wrong to right 0), so the test
+has no red case and the change was judged on R78 alone.
+
+The change was built as registered before any after-figure. At the first read with both states
+proved after one without, `CwDecoder.Step` calls `CwProbabilisticStream.ReadAgainAtProvedValues`.
+That re-mixes the window's raw audio at the proved pitch, decodes it at the proved speed with the
+read's gap lengths, and settles that reading in place of the ordinary read's over what arrived
+while acquiring and is still unsettled. Nothing settled is touched, and no constant is added.
+The diff and its test are `.run-unit/unit471-reread.patch`, and `src` does not carry it.
+**Refused on MET-CER-SURE: it does not fall on the real set, and on synthetic character gap 5,
+5 dB it rises.**
+
+| part of R78 | before (HEAD `d0a1fc36`) | under the change | verdict |
+|---|---|---|---|
+| MET-CER-SURE, real, inferred | 33 of 436 (28 substituted, 5 added), 0.0757 | 33 of 436, 0.0757 | **does not fall - refuses** |
+| MET-CER-SURE, synthetic, exact | 14 of 173 (8 substituted, 6 added), 0.0809 | 14 of 173, 0.0809; falls on TX-ITU 5 dB, **rises** on character gap 5, 5 dB | **refuses** |
+| MET-INVENTED, real, inferred | 33 over 473, 0.0698 | 33 over 473 | holds |
+| MET-INVENTED, synthetic, exact | 14 over 252 | 14 over 252; character gap 5, 5 dB 11 -> 12 over 21 | **rises on a condition** |
+| sure-and-right coverage, real, inferred | 403 over 473, 0.8520 | 403 over 473 | holds |
+| sure-and-right coverage, synthetic, exact | 159 over 252, 0.6310 | 159 over 252 | holds |
+| MET-WBE, real, inferred | 37 over 113, 0.3274 | 37 over 113 | holds |
+| MET-WBE, synthetic, exact | 44 over 84, 0.5238 | 44 over 84 | holds |
+| dim precision (HM-REQ-014), scored stretches | no dim letter, real or synthetic | no dim letter | no number |
+| adjudicated readings | 13 of 13 | 13 of 13 | hold |
+| V-11, 35 recordings, four metrics | - | 2 rows move: `cq-18wpm-5db-char5` one sure letter added more, `cq-25wpm-5db` one fewer | reported |
+| capture rows | 51 of 51 | 44 of 51: `004405`, `001831`, `013303`, `013150`, `003758`, `003126`, `013347` red | **fails (V-11)** |
+| named floors | 13 of 13 | 11 of 13: `003758` (43), `013347` (57) red | **fails** |
+| engine carry-forward line | 178 of 178 | 176 of 178 (`013303`, `013150` capture rows) | **fails** |
+| app carry-forward line | 278 of 278 | 277 of 278, one lost to the dispatcher loop; 278 of 278 on the rerun | holds |
+| `TheArbitrationEarnsItsPlaceTests` | (a) 5 of 5, (b) harness 1 of 1, live 2 of 2 | the same | holds |
+| HM-REQ-102, 7.052 opening, sure while acquiring | 20 over 0 to 46.2 s (9 before the 26.04 s verdict) | 20 (9) | unchanged |
+| HM-REQ-103, 7.052 opening, sure and right of 24, inferred | 21 | 21 | unchanged |
+
+Per condition, with the key's kind beside each, before -> after, MET-CER-SURE and coverage:
+- Real, all four conditions, inferred: unchanged (sender not stated 33 of 374, 0.8317;
+  TX-FARNS 0 of 43, 0.9773; TX-ITU 0 of 13, 1.0000; TX-TIGHT 0 of 6, 1.0000).
+- Synthetic TX-ITU 15 dB, exact: 1 of 64 -> 1 of 64; 1.0000 -> 1.0000.
+- Synthetic TX-ITU 5 dB, exact: 1 of 63, 0.0159 -> 0 of 62, 0.0000; 0.9841 -> 0.9841. It is the
+  one condition to fall, and it falls to HM-REQ-010's side of one in a hundred.
+- Synthetic character gap 5, 15 dB, exact: 1 of 21 -> 1 of 21; 0.9524 -> 0.9524.
+- Synthetic character gap 5, 5 dB, exact: 11 of 25, 0.4400 -> 12 of 26, 0.4615; 0.6667 -> 0.6667.
+- Both synthetic 0 dB conditions: no sure letter before or after, coverage 0.
+
+The 7.052 opening, 0 to 46.2 s, sure as itself, (dim), {emitted while acquiring}, is the same
+before and after: `{EII ETNHHK        EANQNI}D          {EAN(■)IK     }`. The texts moved on 23
+of the 35 recordings, mostly outside the scored stretches. Most of those moves keep the letter
+and its class and change only p. Where they change text, they add a letter (`004133` `D`,
+`004234` `E`, `004550` `A`, `cq-18wpm-5db-char5` `T`), drop one (`013347` `R`, `003758` `K`,
+`cq-25wpm-5db` `K`), or move a word space. Every recording's text and classes before and after
+are `.run-unit/unit471-texts-entry.txt` and `unit471-text-change.txt`.
+
+**Not kept. Step 2's count of units with no kept change goes to 3 of 3.** Every reachable letter
+the re-read touched was already right at HEAD. The wrong ones settle before any proof, or in
+recordings that never reach one. No second form is tried (V-14).
+
 ## Unit 470 - no sure letter while acquiring (HM-REQ-102), not kept
 
 Step 2, 2.4, HM-REQ-010 with HM-REQ-011 and 012 and MET-WBE as guards, HM-REQ-102 measured

@@ -1,0 +1,451 @@
+14c14
+< save | ours | unadjudicated/cw-2026-09-23-173723 | 13 | Z | sure | 0.9234515516220604
+---
+> save | ours | unadjudicated/cw-2026-09-23-173723 | 13 | Z | sure | 0.9234515516246747
+18c18
+< save | ours | unadjudicated/cw-2026-09-23-173723 | 17 | 6 | sure | 0.917288125267196
+---
+> save | ours | unadjudicated/cw-2026-09-23-173723 | 17 | 6 | sure | 0.9308478384103145
+29c29
+< save | ours | unadjudicated/cw-2026-09-23-173723 | 28 | C | sure | 0.9259740263849873
+---
+> save | ours | unadjudicated/cw-2026-09-23-173723 | 28 | C | sure | 0.9346720349415077
+35c35
+< save | ours | unadjudicated/cw-2026-09-23-173723 | 34 | B | sure | 0.9304383790892631
+---
+> save | ours | unadjudicated/cw-2026-09-23-173723 | 34 | B | sure | 0.9391949440485303
+113c113
+< save | ours | cw-2026-08-17-013347 | 60 | R | sure | 0.8547936484734427
+---
+> save | ours | cw-2026-08-17-013347 | 60 | R | sure | 0.8500297867508
+121c121
+< save | ours | cw-2026-08-17-013347 | 68 | R | sure | 0.8946177279040806
+---
+> save | ours | cw-2026-08-17-013347 | 68 | (space) | gap | 0.9210526315789473
+123d122
+< save | ours | cw-2026-08-17-013347 | 70 | (space) | gap | 0.9210526315789473
+190c189
+< save | ours | unadjudicated/cw-2026-08-18-003758 | 36 | / | sure | 0.9467041019069312
+---
+> save | ours | unadjudicated/cw-2026-08-18-003758 | 36 | / | sure | 0.9495686003226129
+197c196
+< save | ours | unadjudicated/cw-2026-08-18-003758 | 43 | K | sure | 0.9374817694575878
+---
+> save | ours | unadjudicated/cw-2026-08-18-003758 | 43 | (space) | gap | 0.9210526315789473
+200,211c199,210
+< save | ours | unadjudicated/cw-2026-08-18-003758 | 46 | (space) | gap | 0.9210526315789473
+< save | ours | unadjudicated/cw-2026-08-18-003758 | 47 | E | sure | 0.9210526315789473
+< save | ours | unadjudicated/cw-2026-08-18-003758 | 48 | A | sure | 0.9370028436032337
+< save | ours | unadjudicated/cw-2026-08-18-003758 | 49 | N | sure | 0.9537167272089032
+< save | ours | unadjudicated/cw-2026-08-18-003758 | 50 | (space) | gap | 0.9210526315789473
+< save | ours | unadjudicated/cw-2026-08-18-003758 | 51 | E | sure | 0.9210526315789473
+< save | ours | unadjudicated/cw-2026-08-18-003758 | 52 | A | sure | 0.9436634552491707
+< save | ours | unadjudicated/cw-2026-08-18-003758 | 53 | N | sure | 0.9375729644010673
+< save | ours | unadjudicated/cw-2026-08-18-003758 | 54 | Q | sure | 0.9446444459146287
+< save | ours | unadjudicated/cw-2026-08-18-003758 | 55 | N | sure | 0.9514537530737385
+< save | ours | unadjudicated/cw-2026-08-18-003758 | 56 | I | sure | 0.9306713851034714
+< save | ours | unadjudicated/cw-2026-08-18-003758 | 57 | K | sure | 0.9421291297977442
+---
+> save | ours | unadjudicated/cw-2026-08-18-003758 | 46 | E | sure | 0.9210526315789473
+> save | ours | unadjudicated/cw-2026-08-18-003758 | 47 | A | sure | 0.9370028436032337
+> save | ours | unadjudicated/cw-2026-08-18-003758 | 48 | N | sure | 0.9537167272089032
+> save | ours | unadjudicated/cw-2026-08-18-003758 | 49 | (space) | gap | 0.9210526315789473
+> save | ours | unadjudicated/cw-2026-08-18-003758 | 50 | E | sure | 0.9210526315789473
+> save | ours | unadjudicated/cw-2026-08-18-003758 | 51 | A | sure | 0.9436634552491707
+> save | ours | unadjudicated/cw-2026-08-18-003758 | 52 | N | sure | 0.937139701377056
+> save | ours | unadjudicated/cw-2026-08-18-003758 | 53 | Q | sure | 0.9446444459146287
+> save | ours | unadjudicated/cw-2026-08-18-003758 | 54 | N | sure | 0.9514537530737385
+> save | ours | unadjudicated/cw-2026-08-18-003758 | 55 | I | sure | 0.9306713851034714
+> save | ours | unadjudicated/cw-2026-08-18-003758 | 56 | K | sure | 0.9421291297977442
+> save | ours | unadjudicated/cw-2026-08-18-003758 | 57 | (space) | gap | 0.9210526315789473
+219,224c218,222
+< save | ours | unadjudicated/cw-2026-08-18-003758 | 65 | (space) | gap | 0.9210526315789473
+< save | ours | unadjudicated/cw-2026-08-18-003758 | 66 | E | sure | 0.9210526315789473
+< save | ours | unadjudicated/cw-2026-08-18-003758 | 67 | A | sure | 0.8579040590113763
+< save | ours | unadjudicated/cw-2026-08-18-003758 | 68 | N | sure | 0.9406056008117349
+< save | ours | unadjudicated/cw-2026-08-18-003758 | 69 | (space) | gap | 0.9210526315789473
+< save | ours | unadjudicated/cw-2026-08-18-003758 | 70 | E | sure | 0.9210526315789473
+---
+> save | ours | unadjudicated/cw-2026-08-18-003758 | 65 | E | sure | 0.9210526315789473
+> save | ours | unadjudicated/cw-2026-08-18-003758 | 66 | A | sure | 0.8579040590113763
+> save | ours | unadjudicated/cw-2026-08-18-003758 | 67 | N | sure | 0.9406056008117349
+> save | ours | unadjudicated/cw-2026-08-18-003758 | 68 | (space) | gap | 0.9210526315789473
+> save | ours | unadjudicated/cw-2026-08-18-003758 | 69 | E | sure | 0.9210526315789473
+246c244
+< save | ours | unadjudicated/cw-2026-08-24-012403 | 21 | D | sure | 0.9083883667082214
+---
+> save | ours | unadjudicated/cw-2026-08-24-012403 | 21 | D | sure | 0.917056855698089
+248,249c246,247
+< save | ours | unadjudicated/cw-2026-08-24-012403 | 23 | U | sure | 0.9042082116092962
+< save | ours | unadjudicated/cw-2026-08-24-012403 | 24 | N | sure | 0.9000156068640403
+---
+> save | ours | unadjudicated/cw-2026-08-24-012403 | 23 | U | sure | 0.8994494904387276
+> save | ours | unadjudicated/cw-2026-08-24-012403 | 24 | N | sure | 0.8942785602924912
+290c288
+< save | ours | cw-2026-08-18-004507 | 37 | S | sure | 0.9351530193608928
+---
+> save | ours | cw-2026-08-18-004507 | 37 | S | sure | 0.9327027167093286
+296c294
+< save | ours | cw-2026-08-18-004507 | 43 | N | sure | 0.9591853055148917
+---
+> save | ours | cw-2026-08-18-004507 | 43 | N | sure | 0.959189416167505
+318c316
+< save | ours | cw-2026-08-18-004507 | 65 | E | sure | 0.9210526315789473
+---
+> save | ours | cw-2026-08-18-004507 | 65 | E | sure | 0.9673163611858894
+394c392
+< save | ours | unadjudicated/cw-2026-08-22-031905 | 27 | R | sure | 0.9582929910991603
+---
+> save | ours | unadjudicated/cw-2026-08-22-031905 | 27 | R | sure | 0.9580888360827969
+730c728
+< save | ours | unadjudicated/cw-2026-09-24-004108 | 39 | H | sure | 0.8843029455293756
+---
+> save | ours | unadjudicated/cw-2026-09-24-004108 | 39 | H | sure | 0.8877741285632146
+759c757
+< save | ours | unadjudicated/cw-2026-09-24-004133 | 18 | J | sure | 0.8752896467895478
+---
+> save | ours | unadjudicated/cw-2026-09-24-004133 | 18 | J | sure | 0.8843029455293756
+770,787c768,786
+< save | ours | unadjudicated/cw-2026-09-24-004133 | 29 | T | sure | 0.917744822779005
+< save | ours | unadjudicated/cw-2026-09-24-004133 | 30 | (space) | gap | 0.9210526315789473
+< save | ours | unadjudicated/cw-2026-09-24-004133 | 31 | U | sure | 0.9099379662476188
+< save | ours | unadjudicated/cw-2026-09-24-004133 | 32 | T | sure | 0.9499579289230705
+< save | ours | unadjudicated/cw-2026-09-24-004133 | 33 | (space) | gap | 0.9210526315789473
+< save | ours | unadjudicated/cw-2026-09-24-004133 | 34 | 5 | sure | 0.8903041835234144
+< save | ours | unadjudicated/cw-2026-09-24-004133 | 35 | 0 | sure | 0.8843029455293756
+< save | ours | unadjudicated/cw-2026-09-24-004133 | 36 | (space) | gap | 0.9210526315789473
+< save | ours | unadjudicated/cw-2026-09-24-004133 | 37 | 0 | sure | 0.8752896467895478
+< save | ours | unadjudicated/cw-2026-09-24-004133 | 38 | (space) | gap | 0.9210526315789473
+< save | ours | unadjudicated/cw-2026-09-24-004133 | 39 | 5 | sure | 0.8843029455293756
+< save | ours | unadjudicated/cw-2026-09-24-004133 | 40 | (space) | gap | 0.9210526315789473
+< save | ours | unadjudicated/cw-2026-09-24-004133 | 41 | H | sure | 0.8643622069729343
+< save | ours | unadjudicated/cw-2026-09-24-004133 | 42 | (space) | gap | 0.9210526315789473
+< save | ours | unadjudicated/cw-2026-09-24-004133 | 43 | ■ | placeholder | 0.8843029455293756
+< save | ours | unadjudicated/cw-2026-09-24-004133 | 44 | (space) | gap | 0.9210526315789473
+< save | ours | unadjudicated/cw-2026-09-24-004133 | 45 | 8 | sure | 0.8843029455293756
+< save | ours | unadjudicated/cw-2026-09-24-004133 | 46 | (space) | gap | 0.9210526315789473
+---
+> save | ours | unadjudicated/cw-2026-09-24-004133 | 29 | D | sure | 0.9027695810863268
+> save | ours | unadjudicated/cw-2026-09-24-004133 | 30 | T | sure | 0.917744822779005
+> save | ours | unadjudicated/cw-2026-09-24-004133 | 31 | (space) | gap | 0.9210526315789473
+> save | ours | unadjudicated/cw-2026-09-24-004133 | 32 | U | sure | 0.9099379662476188
+> save | ours | unadjudicated/cw-2026-09-24-004133 | 33 | T | sure | 0.9499579289230705
+> save | ours | unadjudicated/cw-2026-09-24-004133 | 34 | (space) | gap | 0.9210526315789473
+> save | ours | unadjudicated/cw-2026-09-24-004133 | 35 | 5 | sure | 0.8903041835234144
+> save | ours | unadjudicated/cw-2026-09-24-004133 | 36 | 0 | sure | 0.8843029455293756
+> save | ours | unadjudicated/cw-2026-09-24-004133 | 37 | (space) | gap | 0.9210526315789473
+> save | ours | unadjudicated/cw-2026-09-24-004133 | 38 | 0 | sure | 0.8752896467895478
+> save | ours | unadjudicated/cw-2026-09-24-004133 | 39 | (space) | gap | 0.9210526315789473
+> save | ours | unadjudicated/cw-2026-09-24-004133 | 40 | 5 | sure | 0.8843029455293756
+> save | ours | unadjudicated/cw-2026-09-24-004133 | 41 | (space) | gap | 0.9210526315789473
+> save | ours | unadjudicated/cw-2026-09-24-004133 | 42 | H | sure | 0.8643622069729343
+> save | ours | unadjudicated/cw-2026-09-24-004133 | 43 | (space) | gap | 0.9210526315789473
+> save | ours | unadjudicated/cw-2026-09-24-004133 | 44 | ■ | placeholder | 0.8843029455293756
+> save | ours | unadjudicated/cw-2026-09-24-004133 | 45 | (space) | gap | 0.9210526315789473
+> save | ours | unadjudicated/cw-2026-09-24-004133 | 46 | 8 | sure | 0.8843029455293756
+> save | ours | unadjudicated/cw-2026-09-24-004133 | 47 | (space) | gap | 0.9210526315789473
+830c829
+< save | ours | unadjudicated/cw-2026-09-24-004205 | 42 | T | sure | 0.960985845899916
+---
+> save | ours | unadjudicated/cw-2026-09-24-004205 | 42 | T | sure | 0.9608948641462656
+857c856
+< save | ours | unadjudicated/cw-2026-09-24-004234 | 15 | N | sure | 0.8752896467895478
+---
+> save | ours | unadjudicated/cw-2026-09-24-004234 | 15 | N | sure | 0.875289646789548
+867c866
+< save | ours | unadjudicated/cw-2026-09-24-004234 | 25 | F | sure | 0.9510463386245992
+---
+> save | ours | unadjudicated/cw-2026-09-24-004234 | 25 | F | sure | 0.9715848680381383
+879,894c878,894
+< save | ours | unadjudicated/cw-2026-09-24-004234 | 37 | N | sure | 0.9474469960460637
+< save | ours | unadjudicated/cw-2026-09-24-004234 | 38 | (space) | gap | 0.9210526315789473
+< save | ours | unadjudicated/cw-2026-09-24-004234 | 39 | A | sure | 0.9726145914718591
+< save | ours | unadjudicated/cw-2026-09-24-004234 | 40 | I | sure | 0.9692842827518969
+< save | ours | unadjudicated/cw-2026-09-24-004234 | 41 | R | sure | 0.9681559579532941
+< save | ours | unadjudicated/cw-2026-09-24-004234 | 42 | (space) | gap | 0.9210526315789473
+< save | ours | unadjudicated/cw-2026-09-24-004234 | 43 | Q | sure | 0.9715063008405196
+< save | ours | unadjudicated/cw-2026-09-24-004234 | 44 | S | sure | 0.9599859027493198
+< save | ours | unadjudicated/cw-2026-09-24-004234 | 45 | O | sure | 0.9717601987164196
+< save | ours | unadjudicated/cw-2026-09-24-004234 | 46 | (space) | gap | 0.9210526315789473
+< save | ours | unadjudicated/cw-2026-09-24-004234 | 47 | W | sure | 0.9674608293415244
+< save | ours | unadjudicated/cw-2026-09-24-004234 | 48 | I | sure | 0.9744152712567242
+< save | ours | unadjudicated/cw-2026-09-24-004234 | 49 | T | sure | 0.9757613132696373
+< save | ours | unadjudicated/cw-2026-09-24-004234 | 50 | H | sure | 0.968445931642375
+< save | ours | unadjudicated/cw-2026-09-24-004234 | 51 | (space) | gap | 0.9210526315789473
+< save | ours | unadjudicated/cw-2026-09-24-004234 | 52 | W | sure | 0.9210526315789473
+---
+> save | ours | unadjudicated/cw-2026-09-24-004234 | 37 | E | sure | 0.9210526315789473
+> save | ours | unadjudicated/cw-2026-09-24-004234 | 38 | N | sure | 0.9694209548456939
+> save | ours | unadjudicated/cw-2026-09-24-004234 | 39 | (space) | gap | 0.9210526315789473
+> save | ours | unadjudicated/cw-2026-09-24-004234 | 40 | A | sure | 0.9726145914718591
+> save | ours | unadjudicated/cw-2026-09-24-004234 | 41 | I | sure | 0.9692842827518969
+> save | ours | unadjudicated/cw-2026-09-24-004234 | 42 | R | sure | 0.9677539503300591
+> save | ours | unadjudicated/cw-2026-09-24-004234 | 43 | (space) | gap | 0.9210526315789473
+> save | ours | unadjudicated/cw-2026-09-24-004234 | 44 | Q | sure | 0.9709349769394804
+> save | ours | unadjudicated/cw-2026-09-24-004234 | 45 | S | sure | 0.9599859027493198
+> save | ours | unadjudicated/cw-2026-09-24-004234 | 46 | O | sure | 0.9717601987164196
+> save | ours | unadjudicated/cw-2026-09-24-004234 | 47 | (space) | gap | 0.9210526315789473
+> save | ours | unadjudicated/cw-2026-09-24-004234 | 48 | W | sure | 0.9674608293415244
+> save | ours | unadjudicated/cw-2026-09-24-004234 | 49 | I | sure | 0.9744152712567242
+> save | ours | unadjudicated/cw-2026-09-24-004234 | 50 | T | sure | 0.9757613132696373
+> save | ours | unadjudicated/cw-2026-09-24-004234 | 51 | H | sure | 0.968445931642375
+> save | ours | unadjudicated/cw-2026-09-24-004234 | 52 | (space) | gap | 0.9210526315789473
+> save | ours | unadjudicated/cw-2026-09-24-004234 | 53 | W | sure | 0.9210526315789473
+966c966
+< save | ours | unadjudicated/cw-2026-09-24-004347 | 18 | O | sure | 0.8887057406487932
+---
+> save | ours | unadjudicated/cw-2026-09-24-004347 | 18 | O | sure | 0.8981105992701002
+976c976
+< save | ours | unadjudicated/cw-2026-09-24-004347 | 28 | R | sure | 0.9763148943173124
+---
+> save | ours | unadjudicated/cw-2026-09-24-004347 | 28 | R | sure | 0.9765635164752245
+987c987
+< save | ours | unadjudicated/cw-2026-09-24-004347 | 39 | <BT> | sure | 0.9723500753035362
+---
+> save | ours | unadjudicated/cw-2026-09-24-004347 | 39 | <BT> | sure | 0.9717329783989243
+1023c1023
+< save | ours | unadjudicated/cw-2026-09-24-004405 | 22 | C | sure | 0.8843029455293756
+---
+> save | ours | unadjudicated/cw-2026-09-24-004405 | 22 | C | sure | 0.8752896467895478
+1041,1051c1041,1050
+< save | ours | unadjudicated/cw-2026-09-24-004405 | 40 | 8 | sure | 0.8752896467895487
+< save | ours | unadjudicated/cw-2026-09-24-004405 | 41 | (space) | gap | 0.9210526315789473
+< save | ours | unadjudicated/cw-2026-09-24-004405 | 42 | ■ | placeholder | 0.8643622069729343
+< save | ours | unadjudicated/cw-2026-09-24-004405 | 43 | O | sure | 0.8752896467895478
+< save | ours | unadjudicated/cw-2026-09-24-004405 | 44 | O | sure | 0.8843029455293756
+< save | ours | unadjudicated/cw-2026-09-24-004405 | 45 | R | sure | 0.8843029455293756
+< save | ours | unadjudicated/cw-2026-09-24-004405 | 46 | D | sure | 0.8843029455293756
+< save | ours | unadjudicated/cw-2026-09-24-004405 | 47 | I | sure | 0.8843029455293756
+< save | ours | unadjudicated/cw-2026-09-24-004405 | 48 | N | sure | 0.9051905828278353
+< save | ours | unadjudicated/cw-2026-09-24-004405 | 49 | A | sure | 0.8843029455293756
+< save | ours | unadjudicated/cw-2026-09-24-004405 | 50 | T | sure | 0.9731887140144285
+---
+> save | ours | unadjudicated/cw-2026-09-24-004405 | 40 | (space) | gap | 0.9210526315789473
+> save | ours | unadjudicated/cw-2026-09-24-004405 | 41 | ■ | placeholder | 0.8643622069729343
+> save | ours | unadjudicated/cw-2026-09-24-004405 | 42 | O | sure | 0.8752896467895478
+> save | ours | unadjudicated/cw-2026-09-24-004405 | 43 | O | sure | 0.8843029455293756
+> save | ours | unadjudicated/cw-2026-09-24-004405 | 44 | R | sure | 0.8843029455293756
+> save | ours | unadjudicated/cw-2026-09-24-004405 | 45 | D | sure | 0.8843029455293756
+> save | ours | unadjudicated/cw-2026-09-24-004405 | 46 | I | sure | 0.8843029455293756
+> save | ours | unadjudicated/cw-2026-09-24-004405 | 47 | N | sure | 0.9051905828278353
+> save | ours | unadjudicated/cw-2026-09-24-004405 | 48 | A | sure | 0.8843029455293756
+> save | ours | unadjudicated/cw-2026-09-24-004405 | 49 | T | sure | 0.9731887140144285
+1077c1076
+< save | ours | unadjudicated/cw-2026-09-24-004427 | 25 | B | sure | 0.8621610996557344
+---
+> save | ours | unadjudicated/cw-2026-09-24-004427 | 25 | B | sure | 0.8868098137576528
+1088c1087
+< save | ours | unadjudicated/cw-2026-09-24-004427 | 36 | I | sure | 0.918302045879644
+---
+> save | ours | unadjudicated/cw-2026-09-24-004427 | 36 | I | sure | 0.9101943971497376
+1090c1089
+< save | ours | unadjudicated/cw-2026-09-24-004427 | 38 | G | sure | 0.8787793080608192
+---
+> save | ours | unadjudicated/cw-2026-09-24-004427 | 38 | G | sure | 0.8853101405022231
+1097c1096
+< save | ours | unadjudicated/cw-2026-09-24-004427 | 45 | T | sure | 0.9698697281478044
+---
+> save | ours | unadjudicated/cw-2026-09-24-004427 | 45 | T | sure | 0.9763724543181118
+1110c1109
+< save | ours | unadjudicated/cw-2026-09-24-004510 | 5 | R | sure | 0.9025357319830299
+---
+> save | ours | unadjudicated/cw-2026-09-24-004510 | 5 | R | sure | 0.8872470955050982
+1134c1133
+< save | ours | unadjudicated/cw-2026-09-24-004510 | 29 | 2 | sure | 0.9368991120467774
+---
+> save | ours | unadjudicated/cw-2026-09-24-004510 | 29 | 2 | sure | 0.9360316063897475
+1146c1145
+< save | ours | unadjudicated/cw-2026-09-24-004510 | 41 | 3 | sure | 0.9126243648245157
+---
+> save | ours | unadjudicated/cw-2026-09-24-004510 | 41 | 3 | sure | 0.9117422668533174
+1185,1210c1184,1209
+< save | ours | unadjudicated/cw-2026-09-24-004550 | 31 | A | sure | 0.8579040590113763
+< save | ours | unadjudicated/cw-2026-09-24-004550 | 32 | 3 | sure | 0.8579040590113766
+< save | ours | unadjudicated/cw-2026-09-24-004550 | 33 | H | sure | 0.8711904344528136
+< save | ours | unadjudicated/cw-2026-09-24-004550 | 34 | B | sure | 0.8711904344528136
+< save | ours | unadjudicated/cw-2026-09-24-004550 | 35 | (space) | gap | 0.9210526315789473
+< save | ours | unadjudicated/cw-2026-09-24-004550 | 36 | D | sure | 0.8784730255440435
+< save | ours | unadjudicated/cw-2026-09-24-004550 | 37 | E | sure | 0.9210526315789473
+< save | ours | unadjudicated/cw-2026-09-24-004550 | 38 | (space) | gap | 0.9210526315789473
+< save | ours | unadjudicated/cw-2026-09-24-004550 | 39 | K | sure | 0.8784730255440435
+< save | ours | unadjudicated/cw-2026-09-24-004550 | 40 | A | sure | 0.8784730255440435
+< save | ours | unadjudicated/cw-2026-09-24-004550 | 41 | 2 | sure | 0.8843029455293756
+< save | ours | unadjudicated/cw-2026-09-24-004550 | 42 | (space) | gap | 0.9210526315789473
+< save | ours | unadjudicated/cw-2026-09-24-004550 | 43 | G | sure | 0.878735332264767
+< save | ours | unadjudicated/cw-2026-09-24-004550 | 44 | J | sure | 0.8792518825038763
+< save | ours | unadjudicated/cw-2026-09-24-004550 | 45 | V | sure | 0.8843029455293756
+< save | ours | unadjudicated/cw-2026-09-24-004550 | 46 | (space) | gap | 0.9210526315789473
+< save | ours | unadjudicated/cw-2026-09-24-004550 | 47 | H | sure | 0.8752896467895483
+< save | ours | unadjudicated/cw-2026-09-24-004550 | 48 | W | sure | 0.8752896467895487
+< save | ours | unadjudicated/cw-2026-09-24-004550 | 49 | (space) | gap | 0.9210526315789473
+< save | ours | unadjudicated/cw-2026-09-24-004550 | 50 | R | sure | 0.8843029455293756
+< save | ours | unadjudicated/cw-2026-09-24-004550 | 51 | O | sure | 0.8843029455293756
+< save | ours | unadjudicated/cw-2026-09-24-004550 | 52 | B | sure | 0.8843029455293756
+< save | ours | unadjudicated/cw-2026-09-24-004550 | 53 | I | sure | 0.8843029455293756
+< save | ours | unadjudicated/cw-2026-09-24-004550 | 54 | N | sure | 0.90645034851635
+< save | ours | unadjudicated/cw-2026-09-24-004550 | 55 | ? | sure | 0.8843029455293756
+< save | ours | unadjudicated/cw-2026-09-24-004550 | 56 | (space) | gap | 0.9210526315789473
+---
+> save | ours | unadjudicated/cw-2026-09-24-004550 | 31 | A | sure | 0.8711904344528141
+> save | ours | unadjudicated/cw-2026-09-24-004550 | 32 | A | sure | 0.8711904344528141
+> save | ours | unadjudicated/cw-2026-09-24-004550 | 33 | 3 | sure | 0.8579040590113766
+> save | ours | unadjudicated/cw-2026-09-24-004550 | 34 | H | sure | 0.8711904344528136
+> save | ours | unadjudicated/cw-2026-09-24-004550 | 35 | B | sure | 0.8711904344528136
+> save | ours | unadjudicated/cw-2026-09-24-004550 | 36 | (space) | gap | 0.9210526315789473
+> save | ours | unadjudicated/cw-2026-09-24-004550 | 37 | D | sure | 0.8784730255440435
+> save | ours | unadjudicated/cw-2026-09-24-004550 | 38 | E | sure | 0.9210526315789473
+> save | ours | unadjudicated/cw-2026-09-24-004550 | 39 | (space) | gap | 0.9210526315789473
+> save | ours | unadjudicated/cw-2026-09-24-004550 | 40 | K | sure | 0.8784730255440435
+> save | ours | unadjudicated/cw-2026-09-24-004550 | 41 | A | sure | 0.8784730255440435
+> save | ours | unadjudicated/cw-2026-09-24-004550 | 42 | 2 | sure | 0.8843029455293756
+> save | ours | unadjudicated/cw-2026-09-24-004550 | 43 | (space) | gap | 0.9210526315789473
+> save | ours | unadjudicated/cw-2026-09-24-004550 | 44 | G | sure | 0.878735332264767
+> save | ours | unadjudicated/cw-2026-09-24-004550 | 45 | J | sure | 0.8792518825038763
+> save | ours | unadjudicated/cw-2026-09-24-004550 | 46 | V | sure | 0.8843029455293756
+> save | ours | unadjudicated/cw-2026-09-24-004550 | 47 | (space) | gap | 0.9210526315789473
+> save | ours | unadjudicated/cw-2026-09-24-004550 | 48 | H | sure | 0.8752896467895483
+> save | ours | unadjudicated/cw-2026-09-24-004550 | 49 | W | sure | 0.8752896467895487
+> save | ours | unadjudicated/cw-2026-09-24-004550 | 50 | (space) | gap | 0.9210526315789473
+> save | ours | unadjudicated/cw-2026-09-24-004550 | 51 | R | sure | 0.8843029455293756
+> save | ours | unadjudicated/cw-2026-09-24-004550 | 52 | O | sure | 0.8843029455293756
+> save | ours | unadjudicated/cw-2026-09-24-004550 | 53 | B | sure | 0.8843029455293756
+> save | ours | unadjudicated/cw-2026-09-24-004550 | 54 | I | sure | 0.8843029455293756
+> save | ours | unadjudicated/cw-2026-09-24-004550 | 55 | N | sure | 0.90645034851635
+> save | ours | unadjudicated/cw-2026-09-24-004550 | 56 | ? | sure | 0.8843029455293756
+1213,1214c1212,1214
+< save | ours | unadjudicated/cw-2026-09-24-004550 | 59 | T | sure | 0.8740432455134597
+< save | ours | unadjudicated/cw-2026-09-24-004550 | 60 | (space) | gap | 0.9210526315789473
+---
+> save | ours | unadjudicated/cw-2026-09-24-004550 | 59 | (space) | gap | 0.9210526315789473
+> save | ours | unadjudicated/cw-2026-09-24-004550 | 60 | T | sure | 0.8740432455134597
+> save | ours | unadjudicated/cw-2026-09-24-004550 | 61 | (space) | gap | 0.9210526315789473
+1223c1223
+< save | ours | cq-12wpm-15db | 8 | Q | sure | 0.9801494302536709
+---
+> save | ours | cq-12wpm-15db | 8 | Q | sure | 0.980175297724276
+1252c1252
+< save | ours | cq-12wpm-5db | 8 | Q | sure | 0.9060286303426914
+---
+> save | ours | cq-12wpm-5db | 8 | Q | sure | 0.9282876033545222
+1268c1268
+< save | ours | cq-12wpm-5db | 24 | L | sure | 0.9401466096332391
+---
+> save | ours | cq-12wpm-5db | 24 | L | sure | 0.9414919430201679
+1278c1278
+< save | ours | cq-18wpm-15db | 5 | Q | sure | 0.9619153367737507
+---
+> save | ours | cq-18wpm-15db | 5 | Q | sure | 0.9625217462289382
+1287c1287
+< save | ours | cq-18wpm-15db | 14 | 0 | sure | 0.9569899412559735
+---
+> save | ours | cq-18wpm-15db | 14 | 0 | sure | 0.9637878457659422
+1289c1289
+< save | ours | cq-18wpm-15db | 16 | A | sure | 0.9665583982674518
+---
+> save | ours | cq-18wpm-15db | 16 | A | sure | 0.9665330629938733
+1291c1291
+< save | ours | cq-18wpm-15db | 18 | L | sure | 0.9752326331654099
+---
+> save | ours | cq-18wpm-15db | 18 | L | sure | 0.9736250440482179
+1294c1294
+< save | ours | cq-18wpm-15db | 21 | 0 | sure | 0.9554196394502955
+---
+> save | ours | cq-18wpm-15db | 21 | 0 | sure | 0.9572281501462463
+1307c1307
+< save | ours | cq-18wpm-5db | 4 | C | sure | 0.8810207404494734
+---
+> save | ours | cq-18wpm-5db | 4 | C | sure | 0.8923088245343512
+1313c1313
+< save | ours | cq-18wpm-5db | 10 | D | sure | 0.9188020258979263
+---
+> save | ours | cq-18wpm-5db | 10 | D | sure | 0.9250374459340831
+1328c1328
+< save | ours | cq-18wpm-5db | 25 | L | sure | 0.9362319860869452
+---
+> save | ours | cq-18wpm-5db | 25 | L | sure | 0.9141200518953869
+1341c1341
+< save | ours | cq-25wpm-15db | 8 | C | sure | 0.9619015771437781
+---
+> save | ours | cq-25wpm-15db | 8 | C | sure | 0.9603462441794969
+1351c1351
+< save | ours | cq-25wpm-15db | 18 | L | sure | 0.965150059163177
+---
+> save | ours | cq-25wpm-15db | 18 | L | sure | 0.9617555472117539
+1394c1394
+< save | ours | cq-25wpm-5db | 29 | K | sure | 0.8851658466196866
+---
+> save | ours | cq-25wpm-5db | 29 | (space) | gap | 0.9210526315789473
+1396d1395
+< save | ours | cq-25wpm-5db | 31 | (space) | gap | 0.9210526315789473
+1402c1401
+< save | ours | cq-18wpm-15db-char5 | 5 | Q | sure | 0.9758009591216418
+---
+> save | ours | cq-18wpm-15db-char5 | 5 | Q | sure | 0.9758897075309573
+1404,1405c1403,1404
+< save | ours | cq-18wpm-15db-char5 | 7 | Q | sure | 0.9753563093887255
+< save | ours | cq-18wpm-15db-char5 | 8 | D | sure | 0.9768222808801923
+---
+> save | ours | cq-18wpm-15db-char5 | 7 | Q | sure | 0.9771025837595168
+> save | ours | cq-18wpm-15db-char5 | 8 | D | sure | 0.9798135458569286
+1412c1411
+< save | ours | cq-18wpm-15db-char5 | 15 | A | sure | 0.9754422760077823
+---
+> save | ours | cq-18wpm-15db-char5 | 15 | A | sure | 0.9712291027600616
+1419c1418
+< save | ours | cq-18wpm-15db-char5 | 22 | 0 | sure | 0.9522887874032333
+---
+> save | ours | cq-18wpm-15db-char5 | 22 | 0 | sure | 0.9584450465674551
+1422c1421
+< save | ours | cq-18wpm-15db-char5 | 25 | L | sure | 0.9719758106221822
+---
+> save | ours | cq-18wpm-15db-char5 | 25 | L | sure | 0.9722814061722121
+1435c1434
+< save | ours | cq-18wpm-5db-char5 | 6 | Q | sure | 0.9183985039539488
+---
+> save | ours | cq-18wpm-5db-char5 | 6 | Q | sure | 0.9323892007840577
+1437c1436
+< save | ours | cq-18wpm-5db-char5 | 8 | C | sure | 0.9160506934974132
+---
+> save | ours | cq-18wpm-5db-char5 | 8 | C | sure | 0.9172899938098547
+1448c1447
+< save | ours | cq-18wpm-5db-char5 | 19 | K | sure | 0.766436579948067
+---
+> save | ours | cq-18wpm-5db-char5 | 19 | K | sure | 0.7717716510864002
+1450,1466c1449,1465
+< save | ours | cq-18wpm-5db-char5 | 21 | D | sure | 0.7646716527985771
+< save | ours | cq-18wpm-5db-char5 | 22 | U | sure | 0.8991112543083015
+< save | ours | cq-18wpm-5db-char5 | 23 | U | sure | 0.9185081617684957
+< save | ours | cq-18wpm-5db-char5 | 24 | E | sure | 0.9469650580622515
+< save | ours | cq-18wpm-5db-char5 | 25 | U | sure | 0.8124777781048486
+< save | ours | cq-18wpm-5db-char5 | 26 | E | sure | 0.9443245753862473
+< save | ours | cq-18wpm-5db-char5 | 27 | N | sure | 0.9409855767811885
+< save | ours | cq-18wpm-5db-char5 | 28 | (space) | gap | 0.9210526315789473
+< save | ours | cq-18wpm-5db-char5 | 29 | 0 | sure | 0.8820411920401138
+< save | ours | cq-18wpm-5db-char5 | 30 | C | sure | 0.9140840591814259
+< save | ours | cq-18wpm-5db-char5 | 31 | A | sure | 0.9334044426087305
+< save | ours | cq-18wpm-5db-char5 | 32 | L | sure | 0.8703140534294951
+< save | ours | cq-18wpm-5db-char5 | 33 | (space) | gap | 0.9210526315789473
+< save | ours | cq-18wpm-5db-char5 | 34 | L | sure | 0.9028636295170901
+< save | ours | cq-18wpm-5db-char5 | 35 | (space) | gap | 0.9210526315789473
+< save | ours | cq-18wpm-5db-char5 | 36 | K | sure | 0.9265982648480957
+< save | ours | cq-18wpm-5db-char5 | 37 | (space) | gap | 0.9210526315789473
+---
+> save | ours | cq-18wpm-5db-char5 | 21 | T | sure | 0.9223007207950834
+> save | ours | cq-18wpm-5db-char5 | 22 | D | sure | 0.8650055975691008
+> save | ours | cq-18wpm-5db-char5 | 23 | U | sure | 0.8991112543083015
+> save | ours | cq-18wpm-5db-char5 | 24 | U | sure | 0.9185081617684957
+> save | ours | cq-18wpm-5db-char5 | 25 | E | sure | 0.9469650580622515
+> save | ours | cq-18wpm-5db-char5 | 26 | U | sure | 0.8124777781048486
+> save | ours | cq-18wpm-5db-char5 | 27 | E | sure | 0.9443245753862473
+> save | ours | cq-18wpm-5db-char5 | 28 | N | sure | 0.9409855767811885
+> save | ours | cq-18wpm-5db-char5 | 29 | (space) | gap | 0.9210526315789473
+> save | ours | cq-18wpm-5db-char5 | 30 | 0 | sure | 0.8820411920401138
+> save | ours | cq-18wpm-5db-char5 | 31 | C | sure | 0.9140840591814259
+> save | ours | cq-18wpm-5db-char5 | 32 | A | sure | 0.9195485701654461
+> save | ours | cq-18wpm-5db-char5 | 33 | L | sure | 0.8894089772935277
+> save | ours | cq-18wpm-5db-char5 | 34 | (space) | gap | 0.9210526315789473
+> save | ours | cq-18wpm-5db-char5 | 35 | L | sure | 0.9028636295170901
+> save | ours | cq-18wpm-5db-char5 | 36 | (space) | gap | 0.9210526315789473
+> save | ours | cq-18wpm-5db-char5 | 37 | K | sure | 0.9265982648480957
+1467a1467
+> save | ours | cq-18wpm-5db-char5 | 39 | (space) | gap | 0.9210526315789473

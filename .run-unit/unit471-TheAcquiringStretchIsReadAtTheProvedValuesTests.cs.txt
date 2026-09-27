@@ -1,0 +1,157 @@
+using System.Globalization;
+using Hamlet.RadioEngine.Audio;
+using Hamlet.RadioEngine.Cw;
+using Hamlet.RadioEngine.Tests.Cw.Fixtures;
+using Xunit;
+using Xunit.Abstractions;
+
+namespace Hamlet.RadioEngine.Tests.Cw;
+
+/// <summary>
+/// The letters read while acquiring are read again at the pitch and speed once both are
+/// proved, before they settle (work instruction 471, task 2; HM-REQ-010, HM-REQ-102).
+/// </summary>
+public sealed class TheAcquiringStretchIsReadAtTheProvedValuesTests
+{
+    private static readonly CultureInfo Invariant = CultureInfo.InvariantCulture;
+
+    private readonly ITestOutputHelper _output;
+
+    /// <summary>Creates the tests.</summary>
+    /// <param name="output">Where the search is printed.</param>
+    public TheAcquiringStretchIsReadAtTheProvedValuesTests(ITestOutputHelper output)
+        => _output = output;
+
+    private static IEnumerable<(string Name, CwInterferenceSpec? Spec, double Wpm, int Seed)> Candidates()
+    {
+        foreach (var wpm in SyntheticCq.Speeds)
+        {
+            for (var extra = 0; extra < 4; extra++)
+            {
+                yield return (string.Create(Invariant, $"tx-itu-cold-{wpm:0}wpm-seed+{extra}"), null, wpm, CwInterference.Seed(wpm) + extra);
+            }
+
+            foreach (var f in new[] { 100.0, -100 })
+            {
+                yield return (string.Create(Invariant, $"int-carrier({f:+0;-0},0)-{wpm:0}wpm"), CwInterference.Carrier(f, 0), wpm, CwInterference.Seed(wpm));
+                yield return (string.Create(Invariant, $"int-adj({f:+0;-0},0,25)-{wpm:0}wpm"), CwInterference.Adjacent(f, 0, 25), wpm, CwInterference.Seed(wpm));
+            }
+        }
+
+        foreach (var f in new[] { 50.0, 200, 500 })
+        {
+            foreach (var db in new[] { 0.0, 10, 20 })
+            {
+                yield return (string.Create(Invariant, $"int-carrier({f:0},{db:0})-18wpm"), CwInterference.Carrier(f, db), 18, CwInterference.Seed(18));
+            }
+        }
+    }
+
+    /// <remarks>
+    /// Proves nothing; prints, over generated TX-ITU cases whose key is exact by construction
+    /// (cold from 600 Hz, and under INT-CARRIER and INT-ADJ), every letter emitted while
+    /// acquiring that was still unsettled at the first read after it with both proof states
+    /// proved, and what it reads at the proved values - the search for task 2's red case.
+    /// </remarks>
+    [Fact]
+    public void WhereAWrongLetterUnsettledAtProofReadsRight()
+    {
+        var found = 0;
+        var reachable = 0;
+
+        foreach (var (name, spec, wpm, seed) in Candidates())
+        {
+            var parts = CwInterference.Render(spec, wpm, seed);
+            var drove = WhatTheAcquiringLettersReadAtTheProvedValuesFact.Drive(parts.Audio.Samples, parts.Audio.SampleRate, SyntheticCq.StartingPitchHz);
+            var scores = TheArbitrationEarnsItsPlaceFact.ScoresFor(name, false, drove.Run.Settled);
+            var index = new Dictionary<CwCharacter, int>(ReferenceEqualityComparer.Instance);
+            var cache = new Dictionary<int, (double[], CwProbabilisticResult)>();
+
+            for (var i = 0; i < drove.Run.Settled.Count; i++)
+            {
+                index[drove.Run.Settled[i]] = i;
+            }
+
+            var letters = WhatTheSureLettersWerePrintedUnderFact.Letters(name, "generated", "TX-ITU 15 dB CH-AWGN", CwKeyKind.Exact, drove.Run, scores).ToList();
+            var here = 0;
+
+            foreach (var l in letters.Where(l => l.Acquiring))
+            {
+                var end = (long)Math.Round(l.Character.At.TotalMilliseconds / CwProbabilisticDecoder.HopMilliseconds);
+                var span = (end - Math.Max(1, l.Character.SpanHops), end);
+                var proof = drove.Reads.FirstOrDefault(r => r.Proved && r.Hops > end);
+
+                if (proof is null || proof.Index >= drove.SettledAt[index[l.Character]])
+                {
+                    continue;
+                }
+
+                var again = WhatTheAcquiringLettersReadAtTheProvedValuesFact.ReadAgain(drove, proof, span, cache);
+                var right = again.Letters == 1 && again.Text == l.Sent;
+
+                here++;
+                reachable++;
+
+                if (!l.IsRight && right)
+                {
+                    found++;
+                }
+
+                _output.WriteLine(string.Create(Invariant,
+                    $"unsettled | {name} | {l.Character.At.TotalSeconds:0.000} | sent `{l.Sent}` | HEAD `{l.Character.Text}` {(l.Sure ? "sure" : "dim")} {l.Class} | proof {proof.Seconds:0.00} s {proof.TrackerHz:0.0} Hz {proof.Wpm:0.0} WPM | re-read `{again.Text}` {(again.Sure ? "sure" : "dim")} | {(!l.IsRight && right ? "WRONG TO RIGHT" : l.IsRight && !right ? "right to wrong" : "same")}"));
+            }
+
+            var sure = letters.Where(l => l.Sure).ToList();
+
+            _output.WriteLine(string.Create(Invariant,
+                $"case | {name} | seed {seed} | sure {sure.Count}, wrong or added {sure.Count(l => !l.IsRight)} | acquiring {letters.Count(l => l.Acquiring)} | unsettled at proof {here} | first proof {drove.Reads.FirstOrDefault(r => r.Proved)?.Seconds.ToString("0.00", Invariant) ?? "never"} s | read `{CwReading.Of(drove.Run.Settled).Text.Trim()}`"));
+        }
+
+        _output.WriteLine($"total | unsettled at proof {reachable} | wrong to right {found}");
+    }
+
+    /// <remarks>
+    /// Proves HM-REQ-102's half of the change that no settled character changes after it
+    /// settles: over every generated case above, cold from 600 Hz, each settled letter ends
+    /// after the one before it, so nothing is inserted behind the settled mark and nothing is
+    /// announced twice, and the re-read happened at least once. No generated case shows a
+    /// wrong letter unsettled at proof that reads right at the proved values (the search
+    /// above), so the text half has no red case and the change is judged on R78 alone.
+    /// </remarks>
+    [Fact]
+    public void HmReq010AndHmReq102NothingSettledMovesWhenTheStretchIsReadAgain()
+    {
+        var reread = 0;
+
+        foreach (var (name, spec, wpm, seed) in Candidates())
+        {
+            var parts = CwInterference.Render(spec, wpm, seed);
+            var decoder = new CwDecoder(parts.Audio.SampleRate, SyntheticCq.StartingPitchHz);
+            var settled = new List<CwCharacter>();
+            var proved = false;
+
+            decoder.CharacterSettled += settled.Add;
+
+            var hop = decoder.Tracker.HopSamples;
+
+            for (var at = 0L; at + hop <= parts.Audio.Samples.Length; at += hop)
+            {
+                decoder.Process(new AudioChunk(at, parts.Audio.SampleRate, parts.Audio.Samples.AsSpan((int)at, hop)));
+                proved |= decoder.Tracker.PitchProof == CwPitchProof.Proved && decoder.SpeedProof == CwSpeedProof.Proved;
+            }
+
+            decoder.Flush();
+            reread += proved ? 1 : 0;
+
+            var letters = settled.Where(c => !c.IsWordGap).ToList();
+
+            for (var i = 1; i < letters.Count; i++)
+            {
+                Assert.True(letters[i].At > letters[i - 1].At,
+                    string.Create(Invariant, $"{name}: `{letters[i].Text}` at {letters[i].At.TotalSeconds:0.000} s settled after `{letters[i - 1].Text}` at {letters[i - 1].At.TotalSeconds:0.000} s"));
+            }
+        }
+
+        Assert.True(reread > 0);
+    }
+}
