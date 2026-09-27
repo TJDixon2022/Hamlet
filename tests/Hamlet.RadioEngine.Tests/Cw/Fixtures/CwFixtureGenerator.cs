@@ -362,7 +362,7 @@ public static class CwFixtureGenerator
     /// textbook asks for. Nothing in the old fixture set contains that shape, and
     /// it is the shape that breaks any decoder classifying gaps by counting dits.
     /// </remarks>
-    private static double[] KeyEdges(CwFixtureRecipe recipe, out double messageStart)
+    internal static double[] KeyEdges(CwFixtureRecipe recipe, out double messageStart)
     {
         messageStart = LeadInSeconds + recipe.PreambleSeconds;
 
@@ -474,7 +474,7 @@ public static class CwFixtureGenerator
     /// down rather than absent. Absent is the old fixtures' mistake in a different
     /// place: a receiver's filter attenuates, it does not delete.
     /// </remarks>
-    private static double ShapedNoise(float[] samples, int seed)
+    internal static double ShapedNoise(float[] samples, int seed)
     {
         var state = (uint)(seed == 0 ? 1 : seed);
 
@@ -633,7 +633,7 @@ public static class CwFixtureGenerator
     }
 
     /// <summary>A raised-cosine envelope over one keyed element.</summary>
-    private static double Gate(double t, double start, double end)
+    internal static double Gate(double t, double start, double end)
     {
         var rise = Math.Clamp((t - start) / EdgeSeconds, 0, 1);
         var fall = Math.Clamp((end - t) / EdgeSeconds, 0, 1);

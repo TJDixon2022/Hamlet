@@ -1,0 +1,657 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:01.51]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:01.72]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:01.72]   Starting:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheChannelProfilesAreWhatTheySayTests.ThePathsAreEqualAndSumToTheUnfadedPower(id: "CH-HD") [2 s]
+  Standard Output Messages:
+ power | CH-HD | path 1 -3.03 dB, path 2 -3.04 dB | ratio +0.01 dB | sum -0.02 dB against the unfaded | on the audio over 73 s -2.99 dB
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheChannelProfilesAreWhatTheySayTests.ThePathsAreEqualAndSumToTheUnfadedPower(id: "CH-MM") [1 s]
+  Standard Output Messages:
+ power | CH-MM | path 1 -3.06 dB, path 2 -2.97 dB | ratio -0.10 dB | sum -0.01 dB against the unfaded | on the audio over 73 s -2.93 dB
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheChannelProfilesAreWhatTheySayTests.ThePathsAreEqualAndSumToTheUnfadedPower(id: "CH-LM") [1 s]
+  Standard Output Messages:
+ power | CH-LM | path 1 -3.03 dB, path 2 -3.02 dB | ratio 0.00 dB | sum -0.02 dB against the unfaded | on the audio over 73 s -3.28 dB
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheChannelProfilesAreWhatTheySayTests.ThePathsAreEqualAndSumToTheUnfadedPower(id: "CH-HQ") [1 s]
+  Standard Output Messages:
+ power | CH-HQ | path 1 -3.07 dB, path 2 -3.03 dB | ratio -0.04 dB | sum -0.04 dB against the unfaded | on the audio over 73 s -3.98 dB
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheChannelProfilesAreWhatTheySayTests.ThePathsAreEqualAndSumToTheUnfadedPower(id: "CH-MD") [1 s]
+  Standard Output Messages:
+ power | CH-MD | path 1 -3.01 dB, path 2 -3.08 dB | ratio +0.08 dB | sum -0.03 dB against the unfaded | on the audio over 73 s -3.13 dB
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheChannelProfilesAreWhatTheySayTests.ThePathsAreEqualAndSumToTheUnfadedPower(id: "CH-LQ") [1 s]
+  Standard Output Messages:
+ power | CH-LQ | path 1 -3.02 dB, path 2 -2.90 dB | ratio -0.13 dB | sum +0.05 dB against the unfaded | on the audio over 73 s -3.47 dB
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheChannelProfilesAreWhatTheySayTests.ThePathsAreEqualAndSumToTheUnfadedPower(id: "CH-HM") [1 s]
+  Standard Output Messages:
+ power | CH-HM | path 1 -3.10 dB, path 2 -2.95 dB | ratio -0.15 dB | sum -0.02 dB against the unfaded | on the audio over 73 s -3.38 dB
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheChannelProfilesAreWhatTheySayTests.ThePathsAreEqualAndSumToTheUnfadedPower(id: "CH-MQ") [1 s]
+  Standard Output Messages:
+ power | CH-MQ | path 1 -2.97 dB, path 2 -3.07 dB | ratio +0.10 dB | sum -0.01 dB against the unfaded | on the audio over 73 s -0.96 dB
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheChannelProfilesAreWhatTheySayTests.ThePathsAreEqualAndSumToTheUnfadedPower(id: "CH-LD") [1 s]
+  Standard Output Messages:
+ power | CH-LD | path 1 -3.02 dB, path 2 -3.02 dB | ratio 0.00 dB | sum -0.01 dB against the unfaded | on the audio over 73 s -2.90 dB
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheChannelProfilesAreWhatTheySayTests.TheOutputIsThePiecesSummed(id: "CH-MM") [69 ms]
+  Standard Output Messages:
+ sidecar | CH-MM
+profile       CH-MM - Mid, moderate - status [verify] (CW_SPEC.md 9.1)
+ paths         2, independent, equal power, each half the unfaded power
+ delay         1 ms, 8 samples
+ spread        0.5 Hz, two sigma of a Gaussian Doppler spectrum, sigma 0.25 Hz, no shift
+ doppler       complex white Gaussian at 32 taps/s through a sampled Gaussian FIR, unit power, linear to 8000 Hz
+ generated     tests/Hamlet.RadioEngine.Tests/Cw/Fixtures/CwChannel.cs
+ seed          461104 (band); path 1 469023, path 2 476942 (seed + 7919 k)
+ sampleRate    8000
+ seconds       19.84
+ 
+ key           CQ CQ CQ DE N0CALL N0CALL K
+ sender        TX-ITU, 1:3:1:3:7, 20 wpm, dit 60 ms, 5 ms raised-cosine edges
+ messageStart  1.00 s
+ toneHz        600 Hz, no drift
+ 
+ snr           -4.0 dB in the 2500 Hz reference (CW_SPEC.md 8.1)
+ band          CwFixtureGenerator.ShapedNoise, 350-870 Hz, three biquads, skirt 30 dB down in power, x 0.5 (rms 0.01, -40 dBFS), added after the fading
+ enbw          319.8 Hz referred to the density at 600 Hz; offset to 2500 Hz -8.93 dB
+ inPassband    4.93 dB (tone power over the band's power)
+ n0            -65.04 dB/Hz at the tone; unfaded tone power -35.06 dBFS
+ 
+ peak          -23.6 dBFS, 0 samples clipped
+ notProved     the published model, not the band; [verify] values unvendored (CW_SPEC.md 12 item 2)
+ 
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheChannelProfilesAreWhatTheySayTests.TheOutputIsThePiecesSummed(id: "CH-HM") [103 ms]
+  Standard Output Messages:
+ sidecar | CH-HM
+profile       CH-HM - High, moderate - status [verify] (CW_SPEC.md 9.1)
+ paths         2, independent, equal power, each half the unfaded power
+ delay         3 ms, 24 samples
+ spread        10 Hz, two sigma of a Gaussian Doppler spectrum, sigma 5 Hz, no shift
+ doppler       complex white Gaussian at 640 taps/s through a sampled Gaussian FIR, unit power, linear to 8000 Hz
+ generated     tests/Hamlet.RadioEngine.Tests/Cw/Fixtures/CwChannel.cs
+ seed          461107 (band); path 1 469026, path 2 476945 (seed + 7919 k)
+ sampleRate    8000
+ seconds       19.84
+ 
+ key           CQ CQ CQ DE N0CALL N0CALL K
+ sender        TX-ITU, 1:3:1:3:7, 20 wpm, dit 60 ms, 5 ms raised-cosine edges
+ messageStart  1.00 s
+ toneHz        600 Hz, no drift
+ 
+ snr           -4.0 dB in the 2500 Hz reference (CW_SPEC.md 8.1)
+ band          CwFixtureGenerator.ShapedNoise, 350-870 Hz, three biquads, skirt 30 dB down in power, x 0.5 (rms 0.01, -40 dBFS), added after the fading
+ enbw          319.8 Hz referred to the density at 600 Hz; offset to 2500 Hz -8.93 dB
+ inPassband    4.93 dB (tone power over the band's power)
+ n0            -65.04 dB/Hz at the tone; unfaded tone power -35.06 dBFS
+ 
+ peak          -23.6 dBFS, 0 samples clipped
+ notProved     the published model, not the band; [verify] values unvendored (CW_SPEC.md 12 item 2)
+ 
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheChannelProfilesAreWhatTheySayTests.TheOutputIsThePiecesSummed(id: "CH-HD") [185 ms]
+  Standard Output Messages:
+ sidecar | CH-HD
+profile       CH-HD - High, disturbed - status [verify] (CW_SPEC.md 9.1)
+ paths         2, independent, equal power, each half the unfaded power
+ delay         7 ms, 56 samples
+ spread        30 Hz, two sigma of a Gaussian Doppler spectrum, sigma 15 Hz, no shift
+ doppler       complex white Gaussian at 1920 taps/s through a sampled Gaussian FIR, unit power, linear to 8000 Hz
+ generated     tests/Hamlet.RadioEngine.Tests/Cw/Fixtures/CwChannel.cs
+ seed          461108 (band); path 1 469027, path 2 476946 (seed + 7919 k)
+ sampleRate    8000
+ seconds       19.84
+ 
+ key           CQ CQ CQ DE N0CALL N0CALL K
+ sender        TX-ITU, 1:3:1:3:7, 20 wpm, dit 60 ms, 5 ms raised-cosine edges
+ messageStart  1.00 s
+ toneHz        600 Hz, no drift
+ 
+ snr           -4.0 dB in the 2500 Hz reference (CW_SPEC.md 8.1)
+ band          CwFixtureGenerator.ShapedNoise, 350-870 Hz, three biquads, skirt 30 dB down in power, x 0.5 (rms 0.01, -40 dBFS), added after the fading
+ enbw          319.8 Hz referred to the density at 600 Hz; offset to 2500 Hz -8.93 dB
+ inPassband    4.93 dB (tone power over the band's power)
+ n0            -65.04 dB/Hz at the tone; unfaded tone power -35.06 dBFS
+ 
+ peak          -23.5 dBFS, 0 samples clipped
+ notProved     the published model, not the band; [verify] values unvendored (CW_SPEC.md 12 item 2)
+ 
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheChannelProfilesAreWhatTheySayTests.TheOutputIsThePiecesSummed(id: "CH-MQ") [39 ms]
+  Standard Output Messages:
+ sidecar | CH-MQ
+profile       CH-MQ - Mid, quiet - status [verify] (CW_SPEC.md 9.1)
+ paths         2, independent, equal power, each half the unfaded power
+ delay         0.5 ms, 4 samples
+ spread        0.1 Hz, two sigma of a Gaussian Doppler spectrum, sigma 0.05 Hz, no shift
+ doppler       complex white Gaussian at 6.4 taps/s through a sampled Gaussian FIR, unit power, linear to 8000 Hz
+ generated     tests/Hamlet.RadioEngine.Tests/Cw/Fixtures/CwChannel.cs
+ seed          461103 (band); path 1 469022, path 2 476941 (seed + 7919 k)
+ sampleRate    8000
+ seconds       19.84
+ 
+ key           CQ CQ CQ DE N0CALL N0CALL K
+ sender        TX-ITU, 1:3:1:3:7, 20 wpm, dit 60 ms, 5 ms raised-cosine edges
+ messageStart  1.00 s
+ toneHz        600 Hz, no drift
+ 
+ snr           -4.0 dB in the 2500 Hz reference (CW_SPEC.md 8.1)
+ band          CwFixtureGenerator.ShapedNoise, 350-870 Hz, three biquads, skirt 30 dB down in power, x 0.5 (rms 0.01, -40 dBFS), added after the fading
+ enbw          319.8 Hz referred to the density at 600 Hz; offset to 2500 Hz -8.93 dB
+ inPassband    4.93 dB (tone power over the band's power)
+ n0            -65.04 dB/Hz at the tone; unfaded tone power -35.06 dBFS
+ 
+ peak          -24.3 dBFS, 0 samples clipped
+ notProved     the published model, not the band; [verify] values unvendored (CW_SPEC.md 12 item 2)
+ 
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheChannelProfilesAreWhatTheySayTests.TheOutputIsThePiecesSummed(id: "CH-LM") [46 ms]
+  Standard Output Messages:
+ sidecar | CH-LM
+profile       CH-LM - Low, moderate - status confirmed (CW_SPEC.md 9.1)
+ paths         2, independent, equal power, each half the unfaded power
+ delay         2 ms, 16 samples
+ spread        1.5 Hz, two sigma of a Gaussian Doppler spectrum, sigma 0.75 Hz, no shift
+ doppler       complex white Gaussian at 96 taps/s through a sampled Gaussian FIR, unit power, linear to 8000 Hz
+ generated     tests/Hamlet.RadioEngine.Tests/Cw/Fixtures/CwChannel.cs
+ seed          461101 (band); path 1 469020, path 2 476939 (seed + 7919 k)
+ sampleRate    8000
+ seconds       19.84
+ 
+ key           CQ CQ CQ DE N0CALL N0CALL K
+ sender        TX-ITU, 1:3:1:3:7, 20 wpm, dit 60 ms, 5 ms raised-cosine edges
+ messageStart  1.00 s
+ toneHz        600 Hz, no drift
+ 
+ snr           -4.0 dB in the 2500 Hz reference (CW_SPEC.md 8.1)
+ band          CwFixtureGenerator.ShapedNoise, 350-870 Hz, three biquads, skirt 30 dB down in power, x 0.5 (rms 0.01, -40 dBFS), added after the fading
+ enbw          319.8 Hz referred to the density at 600 Hz; offset to 2500 Hz -8.93 dB
+ inPassband    4.93 dB (tone power over the band's power)
+ n0            -65.04 dB/Hz at the tone; unfaded tone power -35.06 dBFS
+ 
+ peak          -24.4 dBFS, 0 samples clipped
+ notProved     the published model, not the band; [verify] values unvendored (CW_SPEC.md 12 item 2)
+ 
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheChannelProfilesAreWhatTheySayTests.TheOutputIsThePiecesSummed(id: "CH-MD") [110 ms]
+  Standard Output Messages:
+ sidecar | CH-MD
+profile       CH-MD - Mid, disturbed - status [verify] (CW_SPEC.md 9.1)
+ paths         2, independent, equal power, each half the unfaded power
+ delay         2 ms, 16 samples
+ spread        1 Hz, two sigma of a Gaussian Doppler spectrum, sigma 0.5 Hz, no shift
+ doppler       complex white Gaussian at 64 taps/s through a sampled Gaussian FIR, unit power, linear to 8000 Hz
+ generated     tests/Hamlet.RadioEngine.Tests/Cw/Fixtures/CwChannel.cs
+ seed          461105 (band); path 1 469024, path 2 476943 (seed + 7919 k)
+ sampleRate    8000
+ seconds       19.84
+ 
+ key           CQ CQ CQ DE N0CALL N0CALL K
+ sender        TX-ITU, 1:3:1:3:7, 20 wpm, dit 60 ms, 5 ms raised-cosine edges
+ messageStart  1.00 s
+ toneHz        600 Hz, no drift
+ 
+ snr           -4.0 dB in the 2500 Hz reference (CW_SPEC.md 8.1)
+ band          CwFixtureGenerator.ShapedNoise, 350-870 Hz, three biquads, skirt 30 dB down in power, x 0.5 (rms 0.01, -40 dBFS), added after the fading
+ enbw          319.8 Hz referred to the density at 600 Hz; offset to 2500 Hz -8.93 dB
+ inPassband    4.93 dB (tone power over the band's power)
+ n0            -65.04 dB/Hz at the tone; unfaded tone power -35.06 dBFS
+ 
+ peak          -23.5 dBFS, 0 samples clipped
+ notProved     the published model, not the band; [verify] values unvendored (CW_SPEC.md 12 item 2)
+ 
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheChannelProfilesAreWhatTheySayTests.TheOutputIsThePiecesSummed(id: "CH-LQ") [50 ms]
+  Standard Output Messages:
+ sidecar | CH-LQ
+profile       CH-LQ - Low, quiet - status [verify] (CW_SPEC.md 9.1)
+ paths         2, independent, equal power, each half the unfaded power
+ delay         0.5 ms, 4 samples
+ spread        0.5 Hz, two sigma of a Gaussian Doppler spectrum, sigma 0.25 Hz, no shift
+ doppler       complex white Gaussian at 32 taps/s through a sampled Gaussian FIR, unit power, linear to 8000 Hz
+ generated     tests/Hamlet.RadioEngine.Tests/Cw/Fixtures/CwChannel.cs
+ seed          461100 (band); path 1 469019, path 2 476938 (seed + 7919 k)
+ sampleRate    8000
+ seconds       19.84
+ 
+ key           CQ CQ CQ DE N0CALL N0CALL K
+ sender        TX-ITU, 1:3:1:3:7, 20 wpm, dit 60 ms, 5 ms raised-cosine edges
+ messageStart  1.00 s
+ toneHz        600 Hz, no drift
+ 
+ snr           -4.0 dB in the 2500 Hz reference (CW_SPEC.md 8.1)
+ band          CwFixtureGenerator.ShapedNoise, 350-870 Hz, three biquads, skirt 30 dB down in power, x 0.5 (rms 0.01, -40 dBFS), added after the fading
+ enbw          319.8 Hz referred to the density at 600 Hz; offset to 2500 Hz -8.93 dB
+ inPassband    4.93 dB (tone power over the band's power)
+ n0            -65.04 dB/Hz at the tone; unfaded tone power -35.06 dBFS
+ 
+ peak          -22.5 dBFS, 0 samples clipped
+ notProved     the published model, not the band; [verify] values unvendored (CW_SPEC.md 12 item 2)
+ 
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheChannelProfilesAreWhatTheySayTests.TheOutputIsThePiecesSummed(id: "CH-HQ") [42 ms]
+  Standard Output Messages:
+ sidecar | CH-HQ
+profile       CH-HQ - High, quiet - status [verify] (CW_SPEC.md 9.1)
+ paths         2, independent, equal power, each half the unfaded power
+ delay         1 ms, 8 samples
+ spread        0.5 Hz, two sigma of a Gaussian Doppler spectrum, sigma 0.25 Hz, no shift
+ doppler       complex white Gaussian at 32 taps/s through a sampled Gaussian FIR, unit power, linear to 8000 Hz
+ generated     tests/Hamlet.RadioEngine.Tests/Cw/Fixtures/CwChannel.cs
+ seed          461106 (band); path 1 469025, path 2 476944 (seed + 7919 k)
+ sampleRate    8000
+ seconds       19.84
+ 
+ key           CQ CQ CQ DE N0CALL N0CALL K
+ sender        TX-ITU, 1:3:1:3:7, 20 wpm, dit 60 ms, 5 ms raised-cosine edges
+ messageStart  1.00 s
+ toneHz        600 Hz, no drift
+ 
+ snr           -4.0 dB in the 2500 Hz reference (CW_SPEC.md 8.1)
+ band          CwFixtureGenerator.ShapedNoise, 350-870 Hz, three biquads, skirt 30 dB down in power, x 0.5 (rms 0.01, -40 dBFS), added after the fading
+ enbw          319.8 Hz referred to the density at 600 Hz; offset to 2500 Hz -8.93 dB
+ inPassband    4.93 dB (tone power over the band's power)
+ n0            -65.04 dB/Hz at the tone; unfaded tone power -35.06 dBFS
+ 
+ peak          -24.5 dBFS, 0 samples clipped
+ notProved     the published model, not the band; [verify] values unvendored (CW_SPEC.md 12 item 2)
+ 
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheChannelProfilesAreWhatTheySayTests.TheOutputIsThePiecesSummed(id: "CH-LD") [93 ms]
+  Standard Output Messages:
+ sidecar | CH-LD
+profile       CH-LD - Low, disturbed - status [verify] (CW_SPEC.md 9.1)
+ paths         2, independent, equal power, each half the unfaded power
+ delay         6 ms, 48 samples
+ spread        10 Hz, two sigma of a Gaussian Doppler spectrum, sigma 5 Hz, no shift
+ doppler       complex white Gaussian at 640 taps/s through a sampled Gaussian FIR, unit power, linear to 8000 Hz
+ generated     tests/Hamlet.RadioEngine.Tests/Cw/Fixtures/CwChannel.cs
+ seed          461102 (band); path 1 469021, path 2 476940 (seed + 7919 k)
+ sampleRate    8000
+ seconds       19.84
+ 
+ key           CQ CQ CQ DE N0CALL N0CALL K
+ sender        TX-ITU, 1:3:1:3:7, 20 wpm, dit 60 ms, 5 ms raised-cosine edges
+ messageStart  1.00 s
+ toneHz        600 Hz, no drift
+ 
+ snr           -4.0 dB in the 2500 Hz reference (CW_SPEC.md 8.1)
+ band          CwFixtureGenerator.ShapedNoise, 350-870 Hz, three biquads, skirt 30 dB down in power, x 0.5 (rms 0.01, -40 dBFS), added after the fading
+ enbw          319.8 Hz referred to the density at 600 Hz; offset to 2500 Hz -8.93 dB
+ inPassband    4.93 dB (tone power over the band's power)
+ n0            -65.04 dB/Hz at the tone; unfaded tone power -35.06 dBFS
+ 
+ peak          -22.2 dBFS, 0 samples clipped
+ notProved     the published model, not the band; [verify] values unvendored (CW_SPEC.md 12 item 2)
+ 
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheChannelProfilesAreWhatTheySayTests.TheOutputIsThePiecesSummed(id: "CH-AWGN") [42 ms]
+  Standard Output Messages:
+ sidecar | CH-AWGN
+profile       CH-AWGN - No fading, white noise - status project baseline (CW_SPEC.md 9.1)
+ paths         1, unfaded (h1 = 1)
+ delay         0 ms, 0 samples
+ spread        0 Hz, two sigma of a Gaussian Doppler spectrum, sigma 0 Hz, no shift
+ doppler       none
+ generated     tests/Hamlet.RadioEngine.Tests/Cw/Fixtures/CwChannel.cs
+ seed          461109 (band); path 1 469028, path 2 476947 (seed + 7919 k)
+ sampleRate    8000
+ seconds       19.84
+ 
+ key           CQ CQ CQ DE N0CALL N0CALL K
+ sender        TX-ITU, 1:3:1:3:7, 20 wpm, dit 60 ms, 5 ms raised-cosine edges
+ messageStart  1.00 s
+ toneHz        600 Hz, no drift
+ 
+ snr           -4.0 dB in the 2500 Hz reference (CW_SPEC.md 8.1)
+ band          CwFixtureGenerator.ShapedNoise, 350-870 Hz, three biquads, skirt 30 dB down in power, x 0.5 (rms 0.01, -40 dBFS), added after the fading
+ enbw          319.8 Hz referred to the density at 600 Hz; offset to 2500 Hz -8.93 dB
+ inPassband    4.93 dB (tone power over the band's power)
+ n0            -65.04 dB/Hz at the tone; unfaded tone power -35.06 dBFS
+ 
+ peak          -24.6 dBFS, 0 samples clipped
+ notProved     the published model, not the band; [verify] values unvendored (CW_SPEC.md 12 item 2)
+ 
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheChannelProfilesAreWhatTheySayTests.NoBlockFallsBelowTheBand(id: "CH-HM") [525 ms]
+  Standard Output Messages:
+ v06 | CH-HM | -7 dB reference | 7312 blocks | band rms -40.18 dBFS | lowest block -7.56 dB at 61.11 s | clipped 0 | peak -24.7 dBFS
+ v06 | CH-HM | +15 dB reference | 7312 blocks | band rms -39.85 dBFS | lowest block -8.53 dB at 48.26 s | clipped 0 | peak -5.8 dBFS
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheChannelProfilesAreWhatTheySayTests.NoBlockFallsBelowTheBand(id: "CH-AWGN") [122 ms]
+  Standard Output Messages:
+ v06 | CH-AWGN | -7 dB reference | 7312 blocks | band rms -39.97 dBFS | lowest block -8.88 dB at 42.85 s | clipped 0 | peak -24.0 dBFS
+ v06 | CH-AWGN | +15 dB reference | 7312 blocks | band rms -39.89 dBFS | lowest block -7.07 dB at 62.88 s | clipped 0 | peak -11.6 dBFS
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheChannelProfilesAreWhatTheySayTests.NoBlockFallsBelowTheBand(id: "CH-LQ") [232 ms]
+  Standard Output Messages:
+ v06 | CH-LQ | -7 dB reference | 7312 blocks | band rms -39.68 dBFS | lowest block -8.46 dB at 42.31 s | clipped 0 | peak -24.0 dBFS
+ v06 | CH-LQ | +15 dB reference | 7312 blocks | band rms -39.89 dBFS | lowest block -8.21 dB at 69.72 s | clipped 0 | peak -9.1 dBFS
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheChannelProfilesAreWhatTheySayTests.NoBlockFallsBelowTheBand(id: "CH-MD") [197 ms]
+  Standard Output Messages:
+ v06 | CH-MD | -7 dB reference | 7312 blocks | band rms -39.82 dBFS | lowest block -7.90 dB at 31.46 s | clipped 0 | peak -24.6 dBFS
+ v06 | CH-MD | +15 dB reference | 7312 blocks | band rms -40.31 dBFS | lowest block -8.54 dB at 48.85 s | clipped 0 | peak -7.7 dBFS
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheChannelProfilesAreWhatTheySayTests.NoBlockFallsBelowTheBand(id: "CH-MM") [192 ms]
+  Standard Output Messages:
+ v06 | CH-MM | -7 dB reference | 7312 blocks | band rms -39.96 dBFS | lowest block -8.42 dB at 69.75 s | clipped 0 | peak -23.8 dBFS
+ v06 | CH-MM | +15 dB reference | 7312 blocks | band rms -40.10 dBFS | lowest block -8.87 dB at 0.20 s | clipped 0 | peak -9.2 dBFS
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheChannelProfilesAreWhatTheySayTests.NoBlockFallsBelowTheBand(id: "CH-LM") [228 ms]
+  Standard Output Messages:
+ v06 | CH-LM | -7 dB reference | 7312 blocks | band rms -39.91 dBFS | lowest block -8.28 dB at 48.28 s | clipped 0 | peak -23.9 dBFS
+ v06 | CH-LM | +15 dB reference | 7312 blocks | band rms -39.85 dBFS | lowest block -7.80 dB at 50.86 s | clipped 0 | peak -7.6 dBFS
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheChannelProfilesAreWhatTheySayTests.NoBlockFallsBelowTheBand(id: "CH-LD") [559 ms]
+  Standard Output Messages:
+ v06 | CH-LD | -7 dB reference | 7312 blocks | band rms -40.05 dBFS | lowest block -9.51 dB at 17.07 s | clipped 0 | peak -23.9 dBFS
+ v06 | CH-LD | +15 dB reference | 7312 blocks | band rms -40.08 dBFS | lowest block -7.85 dB at 18.51 s | clipped 0 | peak -6.8 dBFS
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheChannelProfilesAreWhatTheySayTests.NoBlockFallsBelowTheBand(id: "CH-HQ") [190 ms]
+  Standard Output Messages:
+ v06 | CH-HQ | -7 dB reference | 7312 blocks | band rms -40.51 dBFS | lowest block -8.08 dB at 22.64 s | clipped 0 | peak -25.3 dBFS
+ v06 | CH-HQ | +15 dB reference | 7312 blocks | band rms -39.93 dBFS | lowest block -8.44 dB at 66.47 s | clipped 0 | peak -9.4 dBFS
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheChannelProfilesAreWhatTheySayTests.NoBlockFallsBelowTheBand(id: "CH-HD") [1 s]
+  Standard Output Messages:
+ v06 | CH-HD | -7 dB reference | 7312 blocks | band rms -39.66 dBFS | lowest block -8.28 dB at 56.30 s | clipped 0 | peak -24.4 dBFS
+ v06 | CH-HD | +15 dB reference | 7312 blocks | band rms -39.91 dBFS | lowest block -8.56 dB at 52.94 s | clipped 0 | peak -6.2 dBFS
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheChannelProfilesAreWhatTheySayTests.NoBlockFallsBelowTheBand(id: "CH-MQ") [179 ms]
+  Standard Output Messages:
+ v06 | CH-MQ | -7 dB reference | 7312 blocks | band rms -40.09 dBFS | lowest block -7.83 dB at 47.07 s | clipped 0 | peak -24.1 dBFS
+ v06 | CH-MQ | +15 dB reference | 7312 blocks | band rms -39.72 dBFS | lowest block -9.67 dB at 40.43 s | clipped 0 | peak -9.8 dBFS
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheChannelProfilesAreWhatTheySayTests.TheSameSeedGivesTheSameAudio(id: "CH-LQ") [95 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheChannelProfilesAreWhatTheySayTests.TheSameSeedGivesTheSameAudio(id: "CH-MM") [94 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheChannelProfilesAreWhatTheySayTests.TheSameSeedGivesTheSameAudio(id: "CH-MD") [102 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheChannelProfilesAreWhatTheySayTests.TheSameSeedGivesTheSameAudio(id: "CH-HM") [234 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheChannelProfilesAreWhatTheySayTests.TheSameSeedGivesTheSameAudio(id: "CH-AWGN") [72 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheChannelProfilesAreWhatTheySayTests.TheSameSeedGivesTheSameAudio(id: "CH-HQ") [123 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheChannelProfilesAreWhatTheySayTests.TheSameSeedGivesTheSameAudio(id: "CH-MQ") [103 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheChannelProfilesAreWhatTheySayTests.TheSameSeedGivesTheSameAudio(id: "CH-HD") [528 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheChannelProfilesAreWhatTheySayTests.TheSameSeedGivesTheSameAudio(id: "CH-LD") [279 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheChannelProfilesAreWhatTheySayTests.TheSameSeedGivesTheSameAudio(id: "CH-LM") [114 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheChannelProfilesAreWhatTheySayTests.TheKeyIsTheMessage(id: "CH-LD") [83 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheChannelProfilesAreWhatTheySayTests.TheKeyIsTheMessage(id: "CH-LQ") [31 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheChannelProfilesAreWhatTheySayTests.TheKeyIsTheMessage(id: "CH-HD") [173 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheChannelProfilesAreWhatTheySayTests.TheKeyIsTheMessage(id: "CH-MM") [40 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheChannelProfilesAreWhatTheySayTests.TheKeyIsTheMessage(id: "CH-HQ") [34 ms]
+[xUnit.net 00:00:23.39]     Hamlet.RadioEngine.Tests.Cw.Fixtures.TheChannelProfilesAreWhatTheySayTests.TheSecondPathLagsByTheDelay(id: "CH-LM") [FAIL]
+[xUnit.net 00:00:23.39]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:23.39]       Expected: 73
+[xUnit.net 00:00:23.39]       Actual:   0
+[xUnit.net 00:00:23.39]       Stack Trace:
+[xUnit.net 00:00:23.39]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\Fixtures\TheChannelProfilesAreWhatTheySayTests.cs(125,0): at Hamlet.RadioEngine.Tests.Cw.Fixtures.TheChannelProfilesAreWhatTheySayTests.TheSecondPathLagsByTheDelay(String id)
+[xUnit.net 00:00:23.39]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:23.39]            at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+[xUnit.net 00:00:23.48]     Hamlet.RadioEngine.Tests.Cw.Fixtures.TheChannelProfilesAreWhatTheySayTests.TheSecondPathLagsByTheDelay(id: "CH-LD") [FAIL]
+[xUnit.net 00:00:23.48]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:23.48]       Expected: 73
+[xUnit.net 00:00:23.48]       Actual:   0
+[xUnit.net 00:00:23.48]       Stack Trace:
+[xUnit.net 00:00:23.48]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\Fixtures\TheChannelProfilesAreWhatTheySayTests.cs(125,0): at Hamlet.RadioEngine.Tests.Cw.Fixtures.TheChannelProfilesAreWhatTheySayTests.TheSecondPathLagsByTheDelay(String id)
+[xUnit.net 00:00:23.48]            at InvokeStub_TheChannelProfilesAreWhatTheySayTests.TheSecondPathLagsByTheDelay(Object, Span`1)
+[xUnit.net 00:00:23.48]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:23.52]     Hamlet.RadioEngine.Tests.Cw.Fixtures.TheChannelProfilesAreWhatTheySayTests.TheSecondPathLagsByTheDelay(id: "CH-MD") [FAIL]
+[xUnit.net 00:00:23.52]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:23.52]       Expected: 73
+[xUnit.net 00:00:23.52]       Actual:   0
+[xUnit.net 00:00:23.52]       Stack Trace:
+[xUnit.net 00:00:23.52]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\Fixtures\TheChannelProfilesAreWhatTheySayTests.cs(125,0): at Hamlet.RadioEngine.Tests.Cw.Fixtures.TheChannelProfilesAreWhatTheySayTests.TheSecondPathLagsByTheDelay(String id)
+[xUnit.net 00:00:23.52]            at InvokeStub_TheChannelProfilesAreWhatTheySayTests.TheSecondPathLagsByTheDelay(Object, Span`1)
+[xUnit.net 00:00:23.52]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:23.62]     Hamlet.RadioEngine.Tests.Cw.Fixtures.TheChannelProfilesAreWhatTheySayTests.TheSecondPathLagsByTheDelay(id: "CH-HM") [FAIL]
+[xUnit.net 00:00:23.62]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:23.62]       Expected: 73
+[xUnit.net 00:00:23.62]       Actual:   0
+[xUnit.net 00:00:23.62]       Stack Trace:
+[xUnit.net 00:00:23.62]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\Fixtures\TheChannelProfilesAreWhatTheySayTests.cs(125,0): at Hamlet.RadioEngine.Tests.Cw.Fixtures.TheChannelProfilesAreWhatTheySayTests.TheSecondPathLagsByTheDelay(String id)
+[xUnit.net 00:00:23.62]            at InvokeStub_TheChannelProfilesAreWhatTheySayTests.TheSecondPathLagsByTheDelay(Object, Span`1)
+[xUnit.net 00:00:23.62]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheChannelProfilesAreWhatTheySayTests.TheKeyIsTheMessage(id: "CH-AWGN") [28 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheChannelProfilesAreWhatTheySayTests.TheKeyIsTheMessage(id: "CH-HM") [75 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheChannelProfilesAreWhatTheySayTests.TheKeyIsTheMessage(id: "CH-LM") [37 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheChannelProfilesAreWhatTheySayTests.TheKeyIsTheMessage(id: "CH-MD") [34 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheChannelProfilesAreWhatTheySayTests.TheKeyIsTheMessage(id: "CH-MQ") [32 ms]
+  Failed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheChannelProfilesAreWhatTheySayTests.TheSecondPathLagsByTheDelay(id: "CH-LM") [48 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: 73
+Actual:   0
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Cw.Fixtures.TheChannelProfilesAreWhatTheySayTests.TheSecondPathLagsByTheDelay(String id) in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\Fixtures\TheChannelProfilesAreWhatTheySayTests.cs:line 125
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+  Failed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheChannelProfilesAreWhatTheySayTests.TheSecondPathLagsByTheDelay(id: "CH-LD") [92 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: 73
+Actual:   0
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Cw.Fixtures.TheChannelProfilesAreWhatTheySayTests.TheSecondPathLagsByTheDelay(String id) in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\Fixtures\TheChannelProfilesAreWhatTheySayTests.cs:line 125
+   at InvokeStub_TheChannelProfilesAreWhatTheySayTests.TheSecondPathLagsByTheDelay(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheChannelProfilesAreWhatTheySayTests.TheSecondPathLagsByTheDelay(id: "CH-MD") [44 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: 73
+Actual:   0
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Cw.Fixtures.TheChannelProfilesAreWhatTheySayTests.TheSecondPathLagsByTheDelay(String id) in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\Fixtures\TheChannelProfilesAreWhatTheySayTests.cs:line 125
+   at InvokeStub_TheChannelProfilesAreWhatTheySayTests.TheSecondPathLagsByTheDelay(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheChannelProfilesAreWhatTheySayTests.TheSecondPathLagsByTheDelay(id: "CH-HM") [96 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: 73
+Actual:   0
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Cw.Fixtures.TheChannelProfilesAreWhatTheySayTests.TheSecondPathLagsByTheDelay(String id) in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\Fixtures\TheChannelProfilesAreWhatTheySayTests.cs:line 125
+   at InvokeStub_TheChannelProfilesAreWhatTheySayTests.TheSecondPathLagsByTheDelay(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:23.69]     Hamlet.RadioEngine.Tests.Cw.Fixtures.TheChannelProfilesAreWhatTheySayTests.TheSecondPathLagsByTheDelay(id: "CH-HQ") [FAIL]
+[xUnit.net 00:00:23.69]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:23.69]       Expected: 73
+[xUnit.net 00:00:23.69]       Actual:   0
+[xUnit.net 00:00:23.69]       Stack Trace:
+[xUnit.net 00:00:23.69]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\Fixtures\TheChannelProfilesAreWhatTheySayTests.cs(125,0): at Hamlet.RadioEngine.Tests.Cw.Fixtures.TheChannelProfilesAreWhatTheySayTests.TheSecondPathLagsByTheDelay(String id)
+[xUnit.net 00:00:23.69]            at InvokeStub_TheChannelProfilesAreWhatTheySayTests.TheSecondPathLagsByTheDelay(Object, Span`1)
+[xUnit.net 00:00:23.69]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:23.73]     Hamlet.RadioEngine.Tests.Cw.Fixtures.TheChannelProfilesAreWhatTheySayTests.TheSecondPathLagsByTheDelay(id: "CH-LQ") [FAIL]
+[xUnit.net 00:00:23.73]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:23.73]       Expected: 73
+[xUnit.net 00:00:23.73]       Actual:   0
+[xUnit.net 00:00:23.73]       Stack Trace:
+[xUnit.net 00:00:23.73]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\Fixtures\TheChannelProfilesAreWhatTheySayTests.cs(125,0): at Hamlet.RadioEngine.Tests.Cw.Fixtures.TheChannelProfilesAreWhatTheySayTests.TheSecondPathLagsByTheDelay(String id)
+[xUnit.net 00:00:23.73]            at InvokeStub_TheChannelProfilesAreWhatTheySayTests.TheSecondPathLagsByTheDelay(Object, Span`1)
+[xUnit.net 00:00:23.73]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:23.77]     Hamlet.RadioEngine.Tests.Cw.Fixtures.TheChannelProfilesAreWhatTheySayTests.TheSecondPathLagsByTheDelay(id: "CH-MM") [FAIL]
+[xUnit.net 00:00:23.77]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:23.77]       Expected: 73
+[xUnit.net 00:00:23.77]       Actual:   0
+[xUnit.net 00:00:23.77]       Stack Trace:
+[xUnit.net 00:00:23.77]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\Fixtures\TheChannelProfilesAreWhatTheySayTests.cs(125,0): at Hamlet.RadioEngine.Tests.Cw.Fixtures.TheChannelProfilesAreWhatTheySayTests.TheSecondPathLagsByTheDelay(String id)
+[xUnit.net 00:00:23.77]            at InvokeStub_TheChannelProfilesAreWhatTheySayTests.TheSecondPathLagsByTheDelay(Object, Span`1)
+[xUnit.net 00:00:23.77]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:23.95]     Hamlet.RadioEngine.Tests.Cw.Fixtures.TheChannelProfilesAreWhatTheySayTests.TheSecondPathLagsByTheDelay(id: "CH-HD") [FAIL]
+[xUnit.net 00:00:23.95]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:23.95]       Expected: 73
+[xUnit.net 00:00:23.95]       Actual:   0
+[xUnit.net 00:00:23.95]       Stack Trace:
+[xUnit.net 00:00:23.95]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\Fixtures\TheChannelProfilesAreWhatTheySayTests.cs(125,0): at Hamlet.RadioEngine.Tests.Cw.Fixtures.TheChannelProfilesAreWhatTheySayTests.TheSecondPathLagsByTheDelay(String id)
+[xUnit.net 00:00:23.95]            at InvokeStub_TheChannelProfilesAreWhatTheySayTests.TheSecondPathLagsByTheDelay(Object, Span`1)
+[xUnit.net 00:00:23.95]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:23.98]     Hamlet.RadioEngine.Tests.Cw.Fixtures.TheChannelProfilesAreWhatTheySayTests.TheSecondPathLagsByTheDelay(id: "CH-MQ") [FAIL]
+[xUnit.net 00:00:23.98]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:23.98]       Expected: 73
+[xUnit.net 00:00:23.98]       Actual:   0
+[xUnit.net 00:00:23.98]       Stack Trace:
+[xUnit.net 00:00:23.98]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\Fixtures\TheChannelProfilesAreWhatTheySayTests.cs(125,0): at Hamlet.RadioEngine.Tests.Cw.Fixtures.TheChannelProfilesAreWhatTheySayTests.TheSecondPathLagsByTheDelay(String id)
+[xUnit.net 00:00:23.98]            at InvokeStub_TheChannelProfilesAreWhatTheySayTests.TheSecondPathLagsByTheDelay(Object, Span`1)
+[xUnit.net 00:00:23.98]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheChannelProfilesAreWhatTheySayTests.TheSecondPathLagsByTheDelay(id: "CH-HQ") [69 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: 73
+Actual:   0
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Cw.Fixtures.TheChannelProfilesAreWhatTheySayTests.TheSecondPathLagsByTheDelay(String id) in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\Fixtures\TheChannelProfilesAreWhatTheySayTests.cs:line 125
+   at InvokeStub_TheChannelProfilesAreWhatTheySayTests.TheSecondPathLagsByTheDelay(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheChannelProfilesAreWhatTheySayTests.TheSecondPathLagsByTheDelay(id: "CH-LQ") [35 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: 73
+Actual:   0
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Cw.Fixtures.TheChannelProfilesAreWhatTheySayTests.TheSecondPathLagsByTheDelay(String id) in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\Fixtures\TheChannelProfilesAreWhatTheySayTests.cs:line 125
+   at InvokeStub_TheChannelProfilesAreWhatTheySayTests.TheSecondPathLagsByTheDelay(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheChannelProfilesAreWhatTheySayTests.TheSecondPathLagsByTheDelay(id: "CH-MM") [39 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: 73
+Actual:   0
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Cw.Fixtures.TheChannelProfilesAreWhatTheySayTests.TheSecondPathLagsByTheDelay(String id) in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\Fixtures\TheChannelProfilesAreWhatTheySayTests.cs:line 125
+   at InvokeStub_TheChannelProfilesAreWhatTheySayTests.TheSecondPathLagsByTheDelay(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheChannelProfilesAreWhatTheySayTests.TheSecondPathLagsByTheDelay(id: "CH-HD") [186 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: 73
+Actual:   0
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Cw.Fixtures.TheChannelProfilesAreWhatTheySayTests.TheSecondPathLagsByTheDelay(String id) in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\Fixtures\TheChannelProfilesAreWhatTheySayTests.cs:line 125
+   at InvokeStub_TheChannelProfilesAreWhatTheySayTests.TheSecondPathLagsByTheDelay(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheChannelProfilesAreWhatTheySayTests.TheSecondPathLagsByTheDelay(id: "CH-MQ") [31 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: 73
+Actual:   0
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Cw.Fixtures.TheChannelProfilesAreWhatTheySayTests.TheSecondPathLagsByTheDelay(String id) in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\Fixtures\TheChannelProfilesAreWhatTheySayTests.cs:line 125
+   at InvokeStub_TheChannelProfilesAreWhatTheySayTests.TheSecondPathLagsByTheDelay(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheChannelProfilesAreWhatTheySayTests.EachPathSpreadsAsNamed(id: "CH-MD") [1 s]
+  Standard Output Messages:
+ spread | CH-MD | path 1 | measured two sigma 1.0063 Hz against 1 Hz (+0.6 %) | shift -0.0002 Hz
+ spread | CH-MD | path 2 | measured two sigma 1.0048 Hz against 1 Hz (+0.5 %) | shift -0.0008 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheChannelProfilesAreWhatTheySayTests.EachPathSpreadsAsNamed(id: "CH-HQ") [1 s]
+  Standard Output Messages:
+ spread | CH-HQ | path 1 | measured two sigma 0.4994 Hz against 0.5 Hz (-0.1 %) | shift +0.0016 Hz
+ spread | CH-HQ | path 2 | measured two sigma 0.4972 Hz against 0.5 Hz (-0.6 %) | shift +0.0029 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheChannelProfilesAreWhatTheySayTests.EachPathSpreadsAsNamed(id: "CH-LM") [1 s]
+  Standard Output Messages:
+ spread | CH-LM | path 1 | measured two sigma 1.4998 Hz against 1.5 Hz (0.0 %) | shift -0.0096 Hz
+ spread | CH-LM | path 2 | measured two sigma 1.5066 Hz against 1.5 Hz (+0.4 %) | shift +0.0019 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheChannelProfilesAreWhatTheySayTests.EachPathSpreadsAsNamed(id: "CH-LD") [1 s]
+  Standard Output Messages:
+ spread | CH-LD | path 1 | measured two sigma 9.9898 Hz against 10 Hz (-0.1 %) | shift -0.0050 Hz
+ spread | CH-LD | path 2 | measured two sigma 10.0360 Hz against 10 Hz (+0.4 %) | shift -0.0191 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheChannelProfilesAreWhatTheySayTests.EachPathSpreadsAsNamed(id: "CH-HD") [1 s]
+  Standard Output Messages:
+ spread | CH-HD | path 1 | measured two sigma 29.9442 Hz against 30 Hz (-0.2 %) | shift +0.1836 Hz
+ spread | CH-HD | path 2 | measured two sigma 29.9661 Hz against 30 Hz (-0.1 %) | shift -0.0355 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheChannelProfilesAreWhatTheySayTests.EachPathSpreadsAsNamed(id: "CH-MQ") [1 s]
+  Standard Output Messages:
+ spread | CH-MQ | path 1 | measured two sigma 0.1003 Hz against 0.1 Hz (+0.3 %) | shift -0.0001 Hz
+ spread | CH-MQ | path 2 | measured two sigma 0.1007 Hz against 0.1 Hz (+0.7 %) | shift +0.0002 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheChannelProfilesAreWhatTheySayTests.EachPathSpreadsAsNamed(id: "CH-MM") [1 s]
+  Standard Output Messages:
+ spread | CH-MM | path 1 | measured two sigma 0.5004 Hz against 0.5 Hz (+0.1 %) | shift +0.0000 Hz
+ spread | CH-MM | path 2 | measured two sigma 0.5000 Hz against 0.5 Hz (0.0 %) | shift +0.0001 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheChannelProfilesAreWhatTheySayTests.EachPathSpreadsAsNamed(id: "CH-LQ") [1 s]
+  Standard Output Messages:
+ spread | CH-LQ | path 1 | measured two sigma 0.5008 Hz against 0.5 Hz (+0.2 %) | shift -0.0034 Hz
+ spread | CH-LQ | path 2 | measured two sigma 0.4975 Hz against 0.5 Hz (-0.5 %) | shift -0.0041 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheChannelProfilesAreWhatTheySayTests.EachPathSpreadsAsNamed(id: "CH-HM") [1 s]
+  Standard Output Messages:
+ spread | CH-HM | path 1 | measured two sigma 10.0576 Hz against 10 Hz (+0.6 %) | shift -0.0538 Hz
+ spread | CH-HM | path 2 | measured two sigma 9.9261 Hz against 10 Hz (-0.7 %) | shift -0.0322 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheChannelProfilesAreWhatTheySayTests.ChMdvIsRefusedByName [< 1 ms]
+  Standard Output Messages:
+ refusal | CH-MDV | CH-MDV is refused: CW_SPEC.md 9.1 gives no delay or spread for it ("[read from Annex 3]"), and no value is invented. The source to vendor is CW_SPEC.md 12 item 2, ITU-R F.1487 Annex 3.
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheChannelProfilesAreWhatTheySayTests.TheSnrIsInTheReference(snrDb: 15) [670 ms]
+  Standard Output Messages:
+ snr | CH-AWGN | asked +15.0 dB reference | measured +14.97 dB reference (-0.03) | +23.92 dB in the band's own bandwidth
+
+
+[xUnit.net 00:00:36.81]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheChannelProfilesAreWhatTheySayTests.TheSnrIsInTheReference(snrDb: -7) [678 ms]
+  Standard Output Messages:
+ snr | CH-AWGN | asked -7.0 dB reference | measured -6.94 dB reference (+0.06) | +1.92 dB in the band's own bandwidth
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheChannelProfilesAreWhatTheySayTests.TheSnrIsInTheReference(snrDb: -4) [678 ms]
+  Standard Output Messages:
+ snr | CH-AWGN | asked -4.0 dB reference | measured -4.00 dB reference (0.00) | +4.92 dB in the band's own bandwidth
+
+
+
+Test Run Failed.
+Total tests: 71
+     Passed: 62
+     Failed: 9
+ Total time: 37.1034 Seconds
+RC=1 WALL=38s

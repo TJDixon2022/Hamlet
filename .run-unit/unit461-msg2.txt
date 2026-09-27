@@ -1,0 +1,35 @@
+unit461 task 2: the channel layer - all ten CH-* profiles 9.1 gives values for produced over the shaped band and proved on their own audio, CH-MDV refused by name, channels.md written; 7.1 ticked (7.1)
+
+CwChannel (tests/.../Cw/Fixtures): Re{A[h1 e(t) + h2 e(t-tau)] exp(j2pi f0 t)}
+over CwFixtureGenerator.ShapedNoise x 0.5, the noise after the fading;
+each hk a unit-power complex Gaussian over root two, through a sampled
+Gaussian FIR at 64 x spread taps/s, linear to 8000 Hz; TX-ITU keying
+through the generator's own KeyEdges and Gate; SNR set in the 2500 Hz
+reference from the band's density beside the tone.
+
+TheChannelProfilesAreWhatTheySayTests, 71 of 71 (V-06, CW_SPEC 9.1;
+HM-REQ-040, 041, 042): spread 18 of 18 paths within 0.7 % (tolerance
+10 %); power 9 of 9, ratio within 0.15 dB and sum within 0.05 dB
+(tolerance 0.3 dB), each rendered path 0.000 dB against its taps; delay
+9 of 9, every mark exactly on the sample; SNR 3 of 3, -6.94, -4.00,
++14.97 dB reference for -7, -4, +15; V-06 20 of 20 outputs, lowest
+10 ms block 9.7 dB under the band (limit 30), nothing clipped; key 10 of
+10; determinism 10 of 10; CH-MDV refused.
+
+Watched red first: round A (spread as sigma, noise before the fading,
+SNR in the band's own bandwidth, each path at full power, the key run
+together, the seed not alone, CH-MDV invented) - 48 red: spread +100 %,
+sum +3.0 dB, SNR -9.0 dB, V-06 -44 dB on 6 of 9 fading profiles, key,
+determinism, refusal. Round B (one path): delay 9 red, and power stayed
+green because it measured the taps and not the render - the
+rendered-against-taps check was added and round B re-run, power 9 red.
+No watched-red state is committed.
+
+CwFixtureGenerator: KeyEdges, ShapedNoise and Gate private to internal,
+no other change; TheSyntheticCqRebuildsTests 13 of 13 (byte-compared)
+and WhatTheGeneratorMakesTests 2 of 2. Nothing under src changed. At
+this commit: build 0 errors; engine line 178 of 178; app line 277 of
+278, the loss the dispatcher loop, the one rerun 278 of 278; named 13
+of 13; captures 51 of 51; adjudicated 13 of 13.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
