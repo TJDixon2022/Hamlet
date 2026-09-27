@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 2 of 4
+TASK: 3 of 4
 WORK_INSTRUCTION: 462 - one fldigi technique earns its place in ours: the spike rule, the two-dot class edge or the word-space edge, screened under R78
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-26T23:45:15-04:00
-NOTE: Task 2 done: C refused on 031838 MET-WBE (real WBE 37 to 38) and reverted; committing its patch and numbers, then screening B
+UPDATED: 2026-09-27T00:00:37-04:00
+NOTE: Task 3 done: B refused (real worse on all four), W refused on V-11 (032113, 031838, 004550); all three refused, 9.4 open; committing evidence
 
 ---
 
