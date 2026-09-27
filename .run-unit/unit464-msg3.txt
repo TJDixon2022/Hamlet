@@ -1,0 +1,9 @@
+unit464 task 3: calibration measured held-out per condition - ours calibrated on 4, not calibrated on 2, not measurable on 6; the port calibrated on none, not calibrated on 6, not measurable on 6 (9.5)
+
+Ours calibrated: real HF all; real, sender not stated; synthetic all; synthetic TX-ITU 15 dB. Not calibrated: real TX-FARNS (43, all right against mean p 0.936); synthetic TX-ITU 5 dB (63, 0.984 right against 0.894). Not measurable (under 30): real TX-ITU, real TX-TIGHT, synthetic TX-ITU 0 dB, synthetic gap-5 at 0, 5 and 15 dB.
+The port calibrated: none. Not calibrated: real HF all, real TX-FARNS, real sender not stated, synthetic all, synthetic TX-ITU 15 dB and 5 dB. Not measurable: real TX-ITU, real TX-TIGHT, synthetic TX-ITU 0 dB, synthetic gap-5 at 0, 5 and 15 dB.
+Held-out by recording (fit on 34, measure the 35th); ten bins, 5 points, 10 per bin, 30 per condition. Held-out against in-sample: ours 0.49 points per character on average (5.49 at most), the port 1.17 (9.79). Real keys inferred, synthetic exact.
+CwCalibration (task 2's commit) and EachDecodersConfidenceIsMeasuredTests write docs/phase-requirements/calibration.md; metrics.md points at it. MET-CAL for ours: sure 0.924 real (inferred), 0.919 synthetic (exact); dim none emitted; placeholders unscored.
+Gate: this commit adds a test type and two documents to task 2's tree; task 2's gate ran with this test file already present (build 0 errors, engine 178, app 278 on the rerun, named 13, captures 51, adjudicated 13) and no test reads either document; built again here, 0 errors.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

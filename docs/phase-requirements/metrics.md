@@ -9,6 +9,9 @@ denominator is the sure characters emitted, unit 439's reading of `CW_SPEC.md` 1
 **From unit 441, MET-COVERAGE is sure and right over sent (R82).** The figures below under unit
 440 are as the spec wrote it then.
 
+**From unit 464, each decoder's confidence p and its calibration per condition (HM-REQ-124,
+MET-CAL) are in `calibration.md`, held-out by recording.**
+
 ## Unit 453 - HM-REQ-084 measured on its named spans (6.5)
 
 HM-REQ-084: "On the acceptance spans named in DEV_ANALYSIS_2026-08-27 §4, the decoder shall emit

@@ -1,0 +1,419 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.06]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.26]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.26]   Starting:    Hamlet.RadioEngine.Tests
+[xUnit.net 00:02:01.92]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.EachDecodersConfidenceIsMeasuredTests.HeldOutPerConditionAndTheFileWritten [2 m 1 s]
+  Standard Output Messages:
+ verdict | real HF, all | inferred | ours | 436 | 0.918 | 0.924 | +0.8 | **calibrated** | 0.919 | 0.924 | +1.1 | calibrated | +0.1 |
+ bin | ours | real HF, all | 7 | 0.7 | 1 | 0.779 | 1.000 | +22.1 (under 10) | 0 | - | - | none populated |
+ bin | ours | real HF, all | 8 | 0.8 | 147 | 0.870 | 0.871 | +0.1 | 148 | 0.871 | 0.865 | -0.6 |
+ bin | ours | real HF, all | 9 | 0.9 | 288 | 0.944 | 0.951 | +0.8 | 288 | 0.944 | 0.955 | +1.1 |
+ verdict | real HF, no CH-* profile, SNR_2500 not measured, sender TX-FARNS (CW_SPEC.md 6.4 and 10, HM-DEC-115's traffic net) | inferred | ours | 43 | 0.936 | 1.000 | +5.8 | **not calibrated** | 0.941 | 1.000 | +5.3 | not calibrated | +0.5 |
+ bin | ours | real HF, no CH-* profile, SNR_2500 not measured, sender TX-FARNS (CW_SPEC.md 6.4 and 10, HM-DEC-115's traffic net) | 8 | 0.8 | 2 | 0.817 | 1.000 | +18.3 (under 10) | 2 | 0.819 | 1.000 | +18.1 |
+ bin | ours | real HF, no CH-* profile, SNR_2500 not measured, sender TX-FARNS (CW_SPEC.md 6.4 and 10, HM-DEC-115's traffic net) | 9 | 0.9 | 41 | 0.942 | 1.000 | +5.8 | 41 | 0.947 | 1.000 | +5.3 |
+ verdict | real HF, no CH-* profile, SNR_2500 not measured, sender TX-ITU (CW_SPEC.md 10, the KD0UN capture) | inferred | ours | 13 | 0.914 | 1.000 | +7.9 | **not measurable** | 0.916 | 1.000 | +7.9 | not measurable | +0.2 |
+ bin | ours | real HF, no CH-* profile, SNR_2500 not measured, sender TX-ITU (CW_SPEC.md 10, the KD0UN capture) | 8 | 0.8 | 3 | 0.890 | 1.000 | +11.0 (under 10) | 2 | 0.888 | 1.000 | +11.2 |
+ bin | ours | real HF, no CH-* profile, SNR_2500 not measured, sender TX-ITU (CW_SPEC.md 10, the KD0UN capture) | 9 | 0.9 | 10 | 0.921 | 1.000 | +7.9 | 11 | 0.921 | 1.000 | +7.9 |
+ verdict | real HF, no CH-* profile, SNR_2500 not measured, sender TX-TIGHT (CW_SPEC.md 10, HM-DEC-101) | inferred | ours | 6 | 0.858 | 1.000 | none populated | **not measurable** | 0.863 | 1.000 | none populated | not measurable | +0.4 |
+ bin | ours | real HF, no CH-* profile, SNR_2500 not measured, sender TX-TIGHT (CW_SPEC.md 10, HM-DEC-101) | 8 | 0.8 | 6 | 0.858 | 1.000 | +14.2 (under 10) | 6 | 0.863 | 1.000 | +13.7 |
+ verdict | real HF, no CH-* profile, SNR_2500 not measured, sender not stated in CW_SPEC.md | inferred | ours | 374 | 0.918 | 0.912 | -1.1 | **calibrated** | 0.918 | 0.912 | -1.7 | calibrated | 0.0 |
+ bin | ours | real HF, no CH-* profile, SNR_2500 not measured, sender not stated in CW_SPEC.md | 7 | 0.7 | 1 | 0.779 | 1.000 | +22.1 (under 10) | 0 | - | - | none populated |
+ bin | ours | real HF, no CH-* profile, SNR_2500 not measured, sender not stated in CW_SPEC.md | 8 | 0.8 | 136 | 0.871 | 0.860 | -1.1 | 138 | 0.872 | 0.855 | -1.7 |
+ bin | ours | real HF, no CH-* profile, SNR_2500 not measured, sender not stated in CW_SPEC.md | 9 | 0.9 | 237 | 0.945 | 0.941 | -0.4 | 236 | 0.944 | 0.945 | +0.1 |
+ verdict | synthetic, all | exact | ours | 173 | 0.933 | 0.919 | +3.7 | **calibrated** | 0.932 | 0.919 | +5.3 | not calibrated | -0.1 |
+ bin | ours | synthetic, all | 7 | 0.7 | 0 | - | - | none populated (under 10) | 2 | 0.766 | 0.000 | -76.6 |
+ bin | ours | synthetic, all | 8 | 0.8 | 42 | 0.868 | 0.905 | +3.7 | 42 | 0.875 | 0.929 | +5.3 |
+ bin | ours | synthetic, all | 9 | 0.9 | 131 | 0.953 | 0.924 | -3.0 | 129 | 0.953 | 0.930 | -2.3 |
+ verdict | synthetic, no fading, shaped noise band (not shown to be CH-AWGN), TX-ITU (1:3:1:3:7), 0 dB in the passband (not restated in the 2500 Hz reference) | exact | ours | 0 | - | - | none populated | **not measurable** | - | - | none populated | not measurable | - |
+ verdict | synthetic, no fading, shaped noise band (not shown to be CH-AWGN), TX-ITU (1:3:1:3:7), 15 dB in the passband (not restated in the 2500 Hz reference) | exact | ours | 64 | 0.964 | 0.984 | +2.0 | **calibrated** | 0.966 | 0.984 | +1.9 | calibrated | +0.1 |
+ bin | ours | synthetic, no fading, shaped noise band (not shown to be CH-AWGN), TX-ITU (1:3:1:3:7), 15 dB in the passband (not restated in the 2500 Hz reference) | 9 | 0.9 | 64 | 0.964 | 0.984 | +2.0 | 64 | 0.966 | 0.984 | +1.9 |
+ verdict | synthetic, no fading, shaped noise band (not shown to be CH-AWGN), TX-ITU (1:3:1:3:7), 5 dB in the passband (not restated in the 2500 Hz reference) | exact | ours | 63 | 0.894 | 0.984 | +10.4 | **not calibrated** | 0.899 | 0.984 | +9.6 | not calibrated | +0.6 |
+ bin | ours | synthetic, no fading, shaped noise band (not shown to be CH-AWGN), TX-ITU (1:3:1:3:7), 5 dB in the passband (not restated in the 2500 Hz reference) | 8 | 0.8 | 38 | 0.870 | 0.974 | +10.4 | 36 | 0.876 | 0.972 | +9.6 |
+ bin | ours | synthetic, no fading, shaped noise band (not shown to be CH-AWGN), TX-ITU (1:3:1:3:7), 5 dB in the passband (not restated in the 2500 Hz reference) | 9 | 0.9 | 25 | 0.929 | 1.000 | +7.1 | 27 | 0.930 | 1.000 | +7.0 |
+ verdict | synthetic, no fading, shaped noise band (not shown to be CH-AWGN), character gap 5 units, inside TX-FARNS's 3 to 7, 0 dB in the passband (not restated in the 2500 Hz reference) | exact | ours | 0 | - | - | none populated | **not measurable** | - | - | none populated | not measurable | - |
+ verdict | synthetic, no fading, shaped noise band (not shown to be CH-AWGN), character gap 5 units, inside TX-FARNS's 3 to 7, 15 dB in the passband (not restated in the 2500 Hz reference) | exact | ours | 21 | 0.969 | 0.952 | -1.6 | **not measurable** | 0.968 | 0.952 | -1.6 | not measurable | 0.0 |
+ bin | ours | synthetic, no fading, shaped noise band (not shown to be CH-AWGN), character gap 5 units, inside TX-FARNS's 3 to 7, 15 dB in the passband (not restated in the 2500 Hz reference) | 9 | 0.9 | 21 | 0.969 | 0.952 | -1.6 | 21 | 0.968 | 0.952 | -1.6 |
+ verdict | synthetic, no fading, shaped noise band (not shown to be CH-AWGN), character gap 5 units, inside TX-FARNS's 3 to 7, 5 dB in the passband (not restated in the 2500 Hz reference) | exact | ours | 25 | 0.919 | 0.560 | -31.4 | **not measurable** | 0.898 | 0.560 | -33.5 | not measurable | -2.1 |
+ bin | ours | synthetic, no fading, shaped noise band (not shown to be CH-AWGN), character gap 5 units, inside TX-FARNS's 3 to 7, 5 dB in the passband (not restated in the 2500 Hz reference) | 7 | 0.7 | 0 | - | - | none populated (under 10) | 2 | 0.766 | 0.000 | -76.6 |
+ bin | ours | synthetic, no fading, shaped noise band (not shown to be CH-AWGN), character gap 5 units, inside TX-FARNS's 3 to 7, 5 dB in the passband (not restated in the 2500 Hz reference) | 8 | 0.8 | 4 | 0.849 | 0.250 | -59.9 (under 10) | 6 | 0.871 | 0.667 | -20.4 |
+ bin | ours | synthetic, no fading, shaped noise band (not shown to be CH-AWGN), character gap 5 units, inside TX-FARNS's 3 to 7, 5 dB in the passband (not restated in the 2500 Hz reference) | 9 | 0.9 | 21 | 0.933 | 0.619 | -31.4 | 17 | 0.923 | 0.588 | -33.5 |
+ verdict | real HF, all | inferred | port | 239 | 0.769 | 0.741 | +10.9 | **not calibrated** | 0.768 | 0.741 | +13.7 | not calibrated | 0.0 |
+ bin | port | real HF, all | 1 | 0.1 | 1 | 0.146 | 1.000 | +85.4 (under 10) | 0 | - | - | none populated |
+ bin | port | real HF, all | 2 | 0.2 | 2 | 0.255 | 1.000 | +74.5 (under 10) | 3 | 0.246 | 0.667 | +42.1 |
+ bin | port | real HF, all | 3 | 0.3 | 2 | 0.330 | 0.000 | -33.0 (under 10) | 3 | 0.357 | 0.333 | -2.4 |
+ bin | port | real HF, all | 4 | 0.4 | 5 | 0.451 | 0.600 | +14.9 (under 10) | 4 | 0.481 | 0.500 | +1.9 |
+ bin | port | real HF, all | 5 | 0.5 | 7 | 0.541 | 0.714 | +17.3 (under 10) | 7 | 0.553 | 0.571 | +1.8 |
+ bin | port | real HF, all | 6 | 0.6 | 27 | 0.669 | 0.778 | +10.9 | 26 | 0.671 | 0.808 | +13.7 |
+ bin | port | real HF, all | 7 | 0.7 | 83 | 0.764 | 0.747 | -1.7 | 85 | 0.763 | 0.729 | -3.4 |
+ bin | port | real HF, all | 8 | 0.8 | 106 | 0.843 | 0.736 | -10.7 | 102 | 0.838 | 0.755 | -8.4 |
+ bin | port | real HF, all | 9 | 0.9 | 6 | 0.920 | 0.833 | -8.7 (under 10) | 9 | 0.914 | 0.889 | -2.5 |
+ verdict | real HF, no CH-* profile, SNR_2500 not measured, sender TX-FARNS (CW_SPEC.md 6.4 and 10, HM-DEC-115's traffic net) | inferred | port | 33 | 0.731 | 0.909 | +11.1 | **not calibrated** | 0.747 | 0.909 | +14.7 | not calibrated | +1.6 |
+ bin | port | real HF, no CH-* profile, SNR_2500 not measured, sender TX-FARNS (CW_SPEC.md 6.4 and 10, HM-DEC-115's traffic net) | 1 | 0.1 | 1 | 0.146 | 1.000 | +85.4 (under 10) | 0 | - | - | none populated |
+ bin | port | real HF, no CH-* profile, SNR_2500 not measured, sender TX-FARNS (CW_SPEC.md 6.4 and 10, HM-DEC-115's traffic net) | 2 | 0.2 | 0 | - | - | none populated (under 10) | 1 | 0.207 | 1.000 | +79.3 |
+ bin | port | real HF, no CH-* profile, SNR_2500 not measured, sender TX-FARNS (CW_SPEC.md 6.4 and 10, HM-DEC-115's traffic net) | 4 | 0.4 | 1 | 0.448 | 1.000 | +55.2 (under 10) | 0 | - | - | none populated |
+ bin | port | real HF, no CH-* profile, SNR_2500 not measured, sender TX-FARNS (CW_SPEC.md 6.4 and 10, HM-DEC-115's traffic net) | 5 | 0.5 | 1 | 0.585 | 1.000 | +41.5 (under 10) | 1 | 0.514 | 1.000 | +48.6 |
+ bin | port | real HF, no CH-* profile, SNR_2500 not measured, sender TX-FARNS (CW_SPEC.md 6.4 and 10, HM-DEC-115's traffic net) | 6 | 0.6 | 1 | 0.666 | 1.000 | +33.4 (under 10) | 1 | 0.638 | 1.000 | +36.2 |
+ bin | port | real HF, no CH-* profile, SNR_2500 not measured, sender TX-FARNS (CW_SPEC.md 6.4 and 10, HM-DEC-115's traffic net) | 7 | 0.7 | 23 | 0.758 | 0.870 | +11.1 | 23 | 0.766 | 0.913 | +14.7 |
+ bin | port | real HF, no CH-* profile, SNR_2500 not measured, sender TX-FARNS (CW_SPEC.md 6.4 and 10, HM-DEC-115's traffic net) | 8 | 0.8 | 6 | 0.806 | 1.000 | +19.4 (under 10) | 7 | 0.813 | 0.857 | +4.4 |
+ verdict | real HF, no CH-* profile, SNR_2500 not measured, sender TX-ITU (CW_SPEC.md 10, the KD0UN capture) | inferred | port | 6 | 0.719 | 0.833 | none populated | **not measurable** | 0.720 | 0.833 | none populated | not measurable | +0.1 |
+ bin | port | real HF, no CH-* profile, SNR_2500 not measured, sender TX-ITU (CW_SPEC.md 10, the KD0UN capture) | 6 | 0.6 | 1 | 0.673 | 1.000 | +32.7 (under 10) | 1 | 0.674 | 1.000 | +32.6 |
+ bin | port | real HF, no CH-* profile, SNR_2500 not measured, sender TX-ITU (CW_SPEC.md 10, the KD0UN capture) | 7 | 0.7 | 5 | 0.728 | 0.800 | +7.2 (under 10) | 5 | 0.729 | 0.800 | +7.1 |
+ verdict | real HF, no CH-* profile, SNR_2500 not measured, sender TX-TIGHT (CW_SPEC.md 10, HM-DEC-101) | inferred | port | 3 | 0.891 | 0.333 | none populated | **not measurable** | 0.882 | 0.333 | none populated | not measurable | -0.9 |
+ bin | port | real HF, no CH-* profile, SNR_2500 not measured, sender TX-TIGHT (CW_SPEC.md 10, HM-DEC-101) | 7 | 0.7 | 1 | 0.793 | 0.000 | -79.3 (under 10) | 1 | 0.783 | 0.000 | -78.3 |
+ bin | port | real HF, no CH-* profile, SNR_2500 not measured, sender TX-TIGHT (CW_SPEC.md 10, HM-DEC-101) | 8 | 0.8 | 1 | 0.883 | 1.000 | +11.7 (under 10) | 1 | 0.870 | 1.000 | +13.0 |
+ bin | port | real HF, no CH-* profile, SNR_2500 not measured, sender TX-TIGHT (CW_SPEC.md 10, HM-DEC-101) | 9 | 0.9 | 1 | 0.996 | 0.000 | -99.6 (under 10) | 1 | 0.992 | 0.000 | -99.2 |
+ verdict | real HF, no CH-* profile, SNR_2500 not measured, sender not stated in CW_SPEC.md | inferred | port | 197 | 0.775 | 0.716 | -12.8 | **not calibrated** | 0.772 | 0.716 | +12.0 | not calibrated | -0.3 |
+ bin | port | real HF, no CH-* profile, SNR_2500 not measured, sender not stated in CW_SPEC.md | 2 | 0.2 | 2 | 0.255 | 1.000 | +74.5 (under 10) | 2 | 0.265 | 0.500 | +23.5 |
+ bin | port | real HF, no CH-* profile, SNR_2500 not measured, sender not stated in CW_SPEC.md | 3 | 0.3 | 2 | 0.330 | 0.000 | -33.0 (under 10) | 3 | 0.357 | 0.333 | -2.4 |
+ bin | port | real HF, no CH-* profile, SNR_2500 not measured, sender not stated in CW_SPEC.md | 4 | 0.4 | 4 | 0.451 | 0.500 | +4.9 (under 10) | 4 | 0.481 | 0.500 | +1.9 |
+ bin | port | real HF, no CH-* profile, SNR_2500 not measured, sender not stated in CW_SPEC.md | 5 | 0.5 | 6 | 0.534 | 0.667 | +13.3 (under 10) | 6 | 0.560 | 0.500 | -6.0 |
+ bin | port | real HF, no CH-* profile, SNR_2500 not measured, sender not stated in CW_SPEC.md | 6 | 0.6 | 25 | 0.669 | 0.760 | +9.1 | 24 | 0.672 | 0.792 | +12.0 |
+ bin | port | real HF, no CH-* profile, SNR_2500 not measured, sender not stated in CW_SPEC.md | 7 | 0.7 | 54 | 0.770 | 0.704 | -6.6 | 56 | 0.765 | 0.661 | -10.4 |
+ bin | port | real HF, no CH-* profile, SNR_2500 not measured, sender not stated in CW_SPEC.md | 8 | 0.8 | 99 | 0.845 | 0.717 | -12.8 | 94 | 0.840 | 0.745 | -9.5 |
+ bin | port | real HF, no CH-* profile, SNR_2500 not measured, sender not stated in CW_SPEC.md | 9 | 0.9 | 5 | 0.905 | 1.000 | +9.5 (under 10) | 8 | 0.904 | 1.000 | +9.6 |
+ verdict | synthetic, all | exact | port | 168 | 0.756 | 0.798 | +13.0 | **not calibrated** | 0.758 | 0.798 | -21.0 | not calibrated | +0.2 |
+ bin | port | synthetic, all | 2 | 0.2 | 3 | 0.262 | 0.000 | -26.2 (under 10) | 3 | 0.251 | 0.000 | -25.1 |
+ bin | port | synthetic, all | 3 | 0.3 | 2 | 0.385 | 0.000 | -38.5 (under 10) | 2 | 0.359 | 0.000 | -35.9 |
+ bin | port | synthetic, all | 4 | 0.4 | 5 | 0.467 | 0.400 | -6.7 (under 10) | 4 | 0.465 | 0.500 | +3.5 |
+ bin | port | synthetic, all | 5 | 0.5 | 5 | 0.563 | 0.400 | -16.3 (under 10) | 8 | 0.567 | 0.375 | -19.2 |
+ bin | port | synthetic, all | 6 | 0.6 | 25 | 0.648 | 0.560 | -8.8 | 27 | 0.655 | 0.444 | -21.0 |
+ bin | port | synthetic, all | 7 | 0.7 | 57 | 0.729 | 0.860 | +13.0 | 57 | 0.733 | 0.877 | +14.5 |
+ bin | port | synthetic, all | 8 | 0.8 | 58 | 0.875 | 0.931 | +5.6 | 30 | 0.880 | 1.000 | +12.0 |
+ bin | port | synthetic, all | 9 | 0.9 | 13 | 0.906 | 1.000 | +9.4 | 37 | 0.909 | 1.000 | +9.1 |
+ verdict | synthetic, no fading, shaped noise band (not shown to be CH-AWGN), TX-ITU (1:3:1:3:7), 0 dB in the passband (not restated in the 2500 Hz reference) | exact | port | 27 | 0.664 | 0.222 | -33.4 | **not measurable** | 0.631 | 0.222 | -45.0 | not measurable | -3.3 |
+ bin | port | synthetic, no fading, shaped noise band (not shown to be CH-AWGN), TX-ITU (1:3:1:3:7), 0 dB in the passband (not restated in the 2500 Hz reference) | 3 | 0.3 | 1 | 0.396 | 0.000 | -39.6 (under 10) | 1 | 0.371 | 0.000 | -37.1 |
+ bin | port | synthetic, no fading, shaped noise band (not shown to be CH-AWGN), TX-ITU (1:3:1:3:7), 0 dB in the passband (not restated in the 2500 Hz reference) | 4 | 0.4 | 2 | 0.481 | 0.500 | +1.9 (under 10) | 1 | 0.475 | 1.000 | +52.5 |
+ bin | port | synthetic, no fading, shaped noise band (not shown to be CH-AWGN), TX-ITU (1:3:1:3:7), 0 dB in the passband (not restated in the 2500 Hz reference) | 5 | 0.5 | 2 | 0.566 | 0.000 | -56.6 (under 10) | 5 | 0.572 | 0.200 | -37.2 |
+ bin | port | synthetic, no fading, shaped noise band (not shown to be CH-AWGN), TX-ITU (1:3:1:3:7), 0 dB in the passband (not restated in the 2500 Hz reference) | 6 | 0.6 | 13 | 0.642 | 0.308 | -33.4 | 15 | 0.650 | 0.200 | -45.0 |
+ bin | port | synthetic, no fading, shaped noise band (not shown to be CH-AWGN), TX-ITU (1:3:1:3:7), 0 dB in the passband (not restated in the 2500 Hz reference) | 7 | 0.7 | 4 | 0.761 | 0.000 | -76.1 (under 10) | 5 | 0.715 | 0.200 | -51.5 |
+ bin | port | synthetic, no fading, shaped noise band (not shown to be CH-AWGN), TX-ITU (1:3:1:3:7), 0 dB in the passband (not restated in the 2500 Hz reference) | 8 | 0.8 | 5 | 0.807 | 0.200 | -60.7 (under 10) | 0 | - | - | none populated |
+ verdict | synthetic, no fading, shaped noise band (not shown to be CH-AWGN), TX-ITU (1:3:1:3:7), 15 dB in the passband (not restated in the 2500 Hz reference) | exact | port | 56 | 0.848 | 0.964 | +11.9 | **not calibrated** | 0.857 | 0.964 | +12.4 | not calibrated | +0.9 |
+ bin | port | synthetic, no fading, shaped noise band (not shown to be CH-AWGN), TX-ITU (1:3:1:3:7), 15 dB in the passband (not restated in the 2500 Hz reference) | 2 | 0.2 | 2 | 0.269 | 0.000 | -26.9 (under 10) | 2 | 0.248 | 0.000 | -24.8 |
+ bin | port | synthetic, no fading, shaped noise band (not shown to be CH-AWGN), TX-ITU (1:3:1:3:7), 15 dB in the passband (not restated in the 2500 Hz reference) | 5 | 0.5 | 2 | 0.589 | 1.000 | +41.1 (under 10) | 2 | 0.586 | 1.000 | +41.4 |
+ bin | port | synthetic, no fading, shaped noise band (not shown to be CH-AWGN), TX-ITU (1:3:1:3:7), 15 dB in the passband (not restated in the 2500 Hz reference) | 7 | 0.7 | 3 | 0.767 | 1.000 | +23.3 (under 10) | 2 | 0.757 | 1.000 | +24.3 |
+ bin | port | synthetic, no fading, shaped noise band (not shown to be CH-AWGN), TX-ITU (1:3:1:3:7), 15 dB in the passband (not restated in the 2500 Hz reference) | 8 | 0.8 | 38 | 0.881 | 1.000 | +11.9 | 20 | 0.876 | 1.000 | +12.4 |
+ bin | port | synthetic, no fading, shaped noise band (not shown to be CH-AWGN), TX-ITU (1:3:1:3:7), 15 dB in the passband (not restated in the 2500 Hz reference) | 9 | 0.9 | 11 | 0.907 | 1.000 | +9.3 | 30 | 0.909 | 1.000 | +9.1 |
+ verdict | synthetic, no fading, shaped noise band (not shown to be CH-AWGN), TX-ITU (1:3:1:3:7), 5 dB in the passband (not restated in the 2500 Hz reference) | exact | port | 47 | 0.691 | 0.894 | +21.9 | **not calibrated** | 0.701 | 0.894 | +21.1 | not calibrated | +1.0 |
+ bin | port | synthetic, no fading, shaped noise band (not shown to be CH-AWGN), TX-ITU (1:3:1:3:7), 5 dB in the passband (not restated in the 2500 Hz reference) | 2 | 0.2 | 1 | 0.249 | 0.000 | -24.9 (under 10) | 1 | 0.258 | 0.000 | -25.8 |
+ bin | port | synthetic, no fading, shaped noise band (not shown to be CH-AWGN), TX-ITU (1:3:1:3:7), 5 dB in the passband (not restated in the 2500 Hz reference) | 4 | 0.4 | 3 | 0.458 | 0.333 | -12.4 (under 10) | 3 | 0.462 | 0.333 | -12.9 |
+ bin | port | synthetic, no fading, shaped noise band (not shown to be CH-AWGN), TX-ITU (1:3:1:3:7), 5 dB in the passband (not restated in the 2500 Hz reference) | 6 | 0.6 | 6 | 0.658 | 1.000 | +34.2 (under 10) | 5 | 0.664 | 1.000 | +33.6 |
+ bin | port | synthetic, no fading, shaped noise band (not shown to be CH-AWGN), TX-ITU (1:3:1:3:7), 5 dB in the passband (not restated in the 2500 Hz reference) | 7 | 0.7 | 37 | 0.727 | 0.946 | +21.9 | 38 | 0.737 | 0.947 | +21.1 |
+ verdict | synthetic, no fading, shaped noise band (not shown to be CH-AWGN), character gap 5 units, inside TX-FARNS's 3 to 7, 0 dB in the passband (not restated in the 2500 Hz reference) | exact | port | 3 | 0.653 | 0.333 | none populated | **not measurable** | 0.648 | 0.333 | none populated | not measurable | -0.5 |
+ bin | port | synthetic, no fading, shaped noise band (not shown to be CH-AWGN), character gap 5 units, inside TX-FARNS's 3 to 7, 0 dB in the passband (not restated in the 2500 Hz reference) | 6 | 0.6 | 2 | 0.628 | 0.500 | -12.8 (under 10) | 3 | 0.648 | 0.333 | -31.4 |
+ bin | port | synthetic, no fading, shaped noise band (not shown to be CH-AWGN), character gap 5 units, inside TX-FARNS's 3 to 7, 0 dB in the passband (not restated in the 2500 Hz reference) | 7 | 0.7 | 1 | 0.701 | 0.000 | -70.1 (under 10) | 0 | - | - | none populated |
+ verdict | synthetic, no fading, shaped noise band (not shown to be CH-AWGN), character gap 5 units, inside TX-FARNS's 3 to 7, 15 dB in the passband (not restated in the 2500 Hz reference) | exact | port | 19 | 0.849 | 0.947 | +11.8 | **not measurable** | 0.858 | 0.947 | +11.2 | not measurable | +1.0 |
+ bin | port | synthetic, no fading, shaped noise band (not shown to be CH-AWGN), character gap 5 units, inside TX-FARNS's 3 to 7, 15 dB in the passband (not restated in the 2500 Hz reference) | 3 | 0.3 | 1 | 0.374 | 0.000 | -37.4 (under 10) | 1 | 0.347 | 0.000 | -34.7 |
+ bin | port | synthetic, no fading, shaped noise band (not shown to be CH-AWGN), character gap 5 units, inside TX-FARNS's 3 to 7, 15 dB in the passband (not restated in the 2500 Hz reference) | 7 | 0.7 | 1 | 0.718 | 1.000 | +28.2 (under 10) | 1 | 0.722 | 1.000 | +27.8 |
+ bin | port | synthetic, no fading, shaped noise band (not shown to be CH-AWGN), character gap 5 units, inside TX-FARNS's 3 to 7, 15 dB in the passband (not restated in the 2500 Hz reference) | 8 | 0.8 | 15 | 0.882 | 1.000 | +11.8 | 10 | 0.888 | 1.000 | +11.2 |
+ bin | port | synthetic, no fading, shaped noise band (not shown to be CH-AWGN), character gap 5 units, inside TX-FARNS's 3 to 7, 15 dB in the passband (not restated in the 2500 Hz reference) | 9 | 0.9 | 2 | 0.902 | 1.000 | +9.8 (under 10) | 7 | 0.909 | 1.000 | +9.1 |
+ verdict | synthetic, no fading, shaped noise band (not shown to be CH-AWGN), character gap 5 units, inside TX-FARNS's 3 to 7, 5 dB in the passband (not restated in the 2500 Hz reference) | exact | port | 16 | 0.692 | 0.813 | +19.0 | **not measurable** | 0.695 | 0.813 | +18.6 | not measurable | +0.4 |
+ bin | port | synthetic, no fading, shaped noise band (not shown to be CH-AWGN), character gap 5 units, inside TX-FARNS's 3 to 7, 5 dB in the passband (not restated in the 2500 Hz reference) | 5 | 0.5 | 1 | 0.504 | 0.000 | -50.4 (under 10) | 1 | 0.506 | 0.000 | -50.6 |
+ bin | port | synthetic, no fading, shaped noise band (not shown to be CH-AWGN), character gap 5 units, inside TX-FARNS's 3 to 7, 5 dB in the passband (not restated in the 2500 Hz reference) | 6 | 0.6 | 4 | 0.664 | 0.750 | +8.6 (under 10) | 4 | 0.667 | 0.750 | +8.3 |
+ bin | port | synthetic, no fading, shaped noise band (not shown to be CH-AWGN), character gap 5 units, inside TX-FARNS's 3 to 7, 5 dB in the passband (not restated in the 2500 Hz reference) | 7 | 0.7 | 11 | 0.719 | 0.909 | +19.0 | 11 | 0.723 | 0.909 | +18.6 |
+ list | ours | calibrated | 4 | real HF, all; real HF, no CH-* profile, SNR_2500 not measured, sender not stated in CW_SPEC.md; synthetic, all; synthetic, no fading, shaped noise band (not shown to be CH-AWGN), TX-ITU (1:3:1:3:7), 15 dB in the passband (not restated in the 2500 Hz reference)
+ list | ours | not calibrated | 2 | real HF, no CH-* profile, SNR_2500 not measured, sender TX-FARNS (CW_SPEC.md 6.4 and 10, HM-DEC-115's traffic net); synthetic, no fading, shaped noise band (not shown to be CH-AWGN), TX-ITU (1:3:1:3:7), 5 dB in the passband (not restated in the 2500 Hz reference)
+ list | ours | not measurable | 6 | real HF, no CH-* profile, SNR_2500 not measured, sender TX-ITU (CW_SPEC.md 10, the KD0UN capture); real HF, no CH-* profile, SNR_2500 not measured, sender TX-TIGHT (CW_SPEC.md 10, HM-DEC-101); synthetic, no fading, shaped noise band (not shown to be CH-AWGN), TX-ITU (1:3:1:3:7), 0 dB in the passband (not restated in the 2500 Hz reference); synthetic, no fading, shaped noise band (not shown to be CH-AWGN), character gap 5 units, inside TX-FARNS's 3 to 7, 0 dB in the passband (not restated in the 2500 Hz reference); synthetic, no fading, shaped noise band (not shown to be CH-AWGN), character gap 5 units, inside TX-FARNS's 3 to 7, 15 dB in the passband (not restated in the 2500 Hz reference); synthetic, no fading, shaped noise band (not shown to be CH-AWGN), character gap 5 units, inside TX-FARNS's 3 to 7, 5 dB in the passband (not restated in the 2500 Hz reference)
+ list | port | calibrated | 0 | 
+ list | port | not calibrated | 6 | real HF, all; real HF, no CH-* profile, SNR_2500 not measured, sender TX-FARNS (CW_SPEC.md 6.4 and 10, HM-DEC-115's traffic net); real HF, no CH-* profile, SNR_2500 not measured, sender not stated in CW_SPEC.md; synthetic, all; synthetic, no fading, shaped noise band (not shown to be CH-AWGN), TX-ITU (1:3:1:3:7), 15 dB in the passband (not restated in the 2500 Hz reference); synthetic, no fading, shaped noise band (not shown to be CH-AWGN), TX-ITU (1:3:1:3:7), 5 dB in the passband (not restated in the 2500 Hz reference)
+ list | port | not measurable | 6 | real HF, no CH-* profile, SNR_2500 not measured, sender TX-ITU (CW_SPEC.md 10, the KD0UN capture); real HF, no CH-* profile, SNR_2500 not measured, sender TX-TIGHT (CW_SPEC.md 10, HM-DEC-101); synthetic, no fading, shaped noise band (not shown to be CH-AWGN), TX-ITU (1:3:1:3:7), 0 dB in the passband (not restated in the 2500 Hz reference); synthetic, no fading, shaped noise band (not shown to be CH-AWGN), character gap 5 units, inside TX-FARNS's 3 to 7, 0 dB in the passband (not restated in the 2500 Hz reference); synthetic, no fading, shaped noise band (not shown to be CH-AWGN), character gap 5 units, inside TX-FARNS's 3 to 7, 15 dB in the passband (not restated in the 2500 Hz reference); synthetic, no fading, shaped noise band (not shown to be CH-AWGN), character gap 5 units, inside TX-FARNS's 3 to 7, 5 dB in the passband (not restated in the 2500 Hz reference)
+ gap | ours | mean 0.49 points | largest 5.49 points | 609 scored
+ gap | port | mean 1.17 points | largest 9.79 points | 407 scored
+ # Calibration: each decoder's confidence against the keys (HM-REQ-124)
+
+Written by `EachDecodersConfidenceIsMeasuredTests.HeldOutPerConditionAndTheFileWritten` (work instruction 464, PHASE_PLAN.md 9.5). Every character either decoder emits carries a p, the probability it is right. The characters are those of `parity.md`: both decoders through the same harness, the same stretches and the same scorer (V-11). Right is the scorer's verdict; wrong and added are wrong; placeholders and anything outside every scored stretch are unscored; a character two stretches cover is scored once per stretch, as the metrics count it. No letter and no class of either decoder changed for this. **Every real key is inferred (R61, V-13); every synthetic key is exact.**
+
+## 1. The maps
+
+Both fixed at task 1 from the separation print in `.run-unit/unit464-features.txt`, before any calibration number was seen (V-14): a logistic p = 1 / (1 + e^-(a + b.x)) per decoder, fitted by maximum likelihood (Newton's method) to right = 1 against wrong or added = 0 over the real and synthetic sets together; one map per decoder, never one per condition.
+
+- **Ours** (`CwCharacterProbability`, set on `CwCharacter.Probability` by the stream where `MarginLlr` is set): x = sign(m) ln(1 + |m|) of the rival margin m, `CwCharacter.MarginLlr`. a = 1.404669, b = 0.474707, fitted on 571 characters. A margin that is not finite (+Infinity, short letters with no rival reading on the lattice) takes p = 0.921053, the share right of the 38 such scored characters.
+- **The port** (`FldigiConfidence`, outside `Cw/Second/`; fldigi carries no confidence and nothing under `Cw/Second/` changed): x1 the level margin, 20 log10(sig_avg / noise_floor) in dB at the character's last up event (`cw.cxx:610`, `612-616`, the ratio fldigi's own squelch metric reads at `635-636`); x2 the timing margin, the least distance of any of its element lengths from the dot/dash split, in fldigi's own dit (`cw.cxx:811-812`, `847`, `502`). Both read from `FldigiCwKeyEvent`, ordered against the emissions by the decision rows (`TraceDecisions` on), because the port's filter hands out 1024 samples at once. p = 1 / (1 + e^-(a + b.x1 + c.x2)), a = 0.377769, b = 0.185447, c = -0.400298, fitted on 407 characters; both margins were readable on every character, so the constant for an unreadable one, 0.764128, is the pool's share right.
+- The timing margin does not separate right from wrong monotonically (task 1's print: the right share falls both near the split and past one dit from it). The form was fixed as linear before any number and is kept.
+
+## 2. The verdict per condition
+
+Held-out by recording (464 DECIDED (3)): for each of the 35, the map fitted on the other 34. **Calibrated** means every bin of p 0.1 wide holding at least 10 characters, and the condition overall, has its share right within 5 points of its mean p, on at least 30 scored characters; under 30 is **not measurable** (DECIDED (4)). The in-sample columns use the whole-pool map the decoders ship, and judge nothing. The worst bin is the populated bin (10 or more) furthest from its mean p, in points, share right less mean p. The last column is the held-out overall difference (share right less mean p) less the in-sample one, in points.
+
+| condition | key | decoder | scored | held-out mean p | held-out share right | held-out worst bin | held-out verdict | in-sample mean p | in-sample share right | in-sample worst bin | in-sample verdict | held-out less in-sample |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| real HF, all | inferred | ours | 436 | 0.918 | 0.924 | +0.8 | **calibrated** | 0.919 | 0.924 | +1.1 | calibrated | +0.1 |
+| real HF, no CH-* profile, SNR_2500 not measured, sender TX-FARNS (CW_SPEC.md 6.4 and 10, HM-DEC-115's traffic net) | inferred | ours | 43 | 0.936 | 1.000 | +5.8 | **not calibrated** | 0.941 | 1.000 | +5.3 | not calibrated | +0.5 |
+| real HF, no CH-* profile, SNR_2500 not measured, sender TX-ITU (CW_SPEC.md 10, the KD0UN capture) | inferred | ours | 13 | 0.914 | 1.000 | +7.9 | **not measurable** | 0.916 | 1.000 | +7.9 | not measurable | +0.2 |
+| real HF, no CH-* profile, SNR_2500 not measured, sender TX-TIGHT (CW_SPEC.md 10, HM-DEC-101) | inferred | ours | 6 | 0.858 | 1.000 | none populated | **not measurable** | 0.863 | 1.000 | none populated | not measurable | +0.4 |
+| real HF, no CH-* profile, SNR_2500 not measured, sender not stated in CW_SPEC.md | inferred | ours | 374 | 0.918 | 0.912 | -1.1 | **calibrated** | 0.918 | 0.912 | -1.7 | calibrated | 0.0 |
+| synthetic, all | exact | ours | 173 | 0.933 | 0.919 | +3.7 | **calibrated** | 0.932 | 0.919 | +5.3 | not calibrated | -0.1 |
+| synthetic, no fading, shaped noise band (not shown to be CH-AWGN), TX-ITU (1:3:1:3:7), 0 dB in the passband (not restated in the 2500 Hz reference) | exact | ours | 0 | - | - | none populated | **not measurable** | - | - | none populated | not measurable | - |
+| synthetic, no fading, shaped noise band (not shown to be CH-AWGN), TX-ITU (1:3:1:3:7), 15 dB in the passband (not restated in the 2500 Hz reference) | exact | ours | 64 | 0.964 | 0.984 | +2.0 | **calibrated** | 0.966 | 0.984 | +1.9 | calibrated | +0.1 |
+| synthetic, no fading, shaped noise band (not shown to be CH-AWGN), TX-ITU (1:3:1:3:7), 5 dB in the passband (not restated in the 2500 Hz reference) | exact | ours | 63 | 0.894 | 0.984 | +10.4 | **not calibrated** | 0.899 | 0.984 | +9.6 | not calibrated | +0.6 |
+| synthetic, no fading, shaped noise band (not shown to be CH-AWGN), character gap 5 units, inside TX-FARNS's 3 to 7, 0 dB in the passband (not restated in the 2500 Hz reference) | exact | ours | 0 | - | - | none populated | **not measurable** | - | - | none populated | not measurable | - |
+| synthetic, no fading, shaped noise band (not shown to be CH-AWGN), character gap 5 units, inside TX-FARNS's 3 to 7, 15 dB in the passband (not restated in the 2500 Hz reference) | exact | ours | 21 | 0.969 | 0.952 | -1.6 | **not measurable** | 0.968 | 0.952 | -1.6 | not measurable | 0.0 |
+| synthetic, no fading, shaped noise band (not shown to be CH-AWGN), character gap 5 units, inside TX-FARNS's 3 to 7, 5 dB in the passband (not restated in the 2500 Hz reference) | exact | ours | 25 | 0.919 | 0.560 | -31.4 | **not measurable** | 0.898 | 0.560 | -33.5 | not measurable | -2.1 |
+| real HF, all | inferred | port | 239 | 0.769 | 0.741 | +10.9 | **not calibrated** | 0.768 | 0.741 | +13.7 | not calibrated | 0.0 |
+| real HF, no CH-* profile, SNR_2500 not measured, sender TX-FARNS (CW_SPEC.md 6.4 and 10, HM-DEC-115's traffic net) | inferred | port | 33 | 0.731 | 0.909 | +11.1 | **not calibrated** | 0.747 | 0.909 | +14.7 | not calibrated | +1.6 |
+| real HF, no CH-* profile, SNR_2500 not measured, sender TX-ITU (CW_SPEC.md 10, the KD0UN capture) | inferred | port | 6 | 0.719 | 0.833 | none populated | **not measurable** | 0.720 | 0.833 | none populated | not measurable | +0.1 |
+| real HF, no CH-* profile, SNR_2500 not measured, sender TX-TIGHT (CW_SPEC.md 10, HM-DEC-101) | inferred | port | 3 | 0.891 | 0.333 | none populated | **not measurable** | 0.882 | 0.333 | none populated | not measurable | -0.9 |
+| real HF, no CH-* profile, SNR_2500 not measured, sender not stated in CW_SPEC.md | inferred | port | 197 | 0.775 | 0.716 | -12.8 | **not calibrated** | 0.772 | 0.716 | +12.0 | not calibrated | -0.3 |
+| synthetic, all | exact | port | 168 | 0.756 | 0.798 | +13.0 | **not calibrated** | 0.758 | 0.798 | -21.0 | not calibrated | +0.2 |
+| synthetic, no fading, shaped noise band (not shown to be CH-AWGN), TX-ITU (1:3:1:3:7), 0 dB in the passband (not restated in the 2500 Hz reference) | exact | port | 27 | 0.664 | 0.222 | -33.4 | **not measurable** | 0.631 | 0.222 | -45.0 | not measurable | -3.3 |
+| synthetic, no fading, shaped noise band (not shown to be CH-AWGN), TX-ITU (1:3:1:3:7), 15 dB in the passband (not restated in the 2500 Hz reference) | exact | port | 56 | 0.848 | 0.964 | +11.9 | **not calibrated** | 0.857 | 0.964 | +12.4 | not calibrated | +0.9 |
+| synthetic, no fading, shaped noise band (not shown to be CH-AWGN), TX-ITU (1:3:1:3:7), 5 dB in the passband (not restated in the 2500 Hz reference) | exact | port | 47 | 0.691 | 0.894 | +21.9 | **not calibrated** | 0.701 | 0.894 | +21.1 | not calibrated | +1.0 |
+| synthetic, no fading, shaped noise band (not shown to be CH-AWGN), character gap 5 units, inside TX-FARNS's 3 to 7, 0 dB in the passband (not restated in the 2500 Hz reference) | exact | port | 3 | 0.653 | 0.333 | none populated | **not measurable** | 0.648 | 0.333 | none populated | not measurable | -0.5 |
+| synthetic, no fading, shaped noise band (not shown to be CH-AWGN), character gap 5 units, inside TX-FARNS's 3 to 7, 15 dB in the passband (not restated in the 2500 Hz reference) | exact | port | 19 | 0.849 | 0.947 | +11.8 | **not measurable** | 0.858 | 0.947 | +11.2 | not measurable | +1.0 |
+| synthetic, no fading, shaped noise band (not shown to be CH-AWGN), character gap 5 units, inside TX-FARNS's 3 to 7, 5 dB in the passband (not restated in the 2500 Hz reference) | exact | port | 16 | 0.692 | 0.813 | +19.0 | **not measurable** | 0.695 | 0.813 | +18.6 | not measurable | +0.4 |
+
+**Named, per decoder** (held-out):
+
+- **Ours**
+  - calibrated (4): real HF, all; real HF, no CH-* profile, SNR_2500 not measured, sender not stated in CW_SPEC.md; synthetic, all; synthetic, no fading, shaped noise band (not shown to be CH-AWGN), TX-ITU (1:3:1:3:7), 15 dB in the passband (not restated in the 2500 Hz reference)
+  - not calibrated (2): real HF, no CH-* profile, SNR_2500 not measured, sender TX-FARNS (CW_SPEC.md 6.4 and 10, HM-DEC-115's traffic net); synthetic, no fading, shaped noise band (not shown to be CH-AWGN), TX-ITU (1:3:1:3:7), 5 dB in the passband (not restated in the 2500 Hz reference)
+  - not measurable (6): real HF, no CH-* profile, SNR_2500 not measured, sender TX-ITU (CW_SPEC.md 10, the KD0UN capture); real HF, no CH-* profile, SNR_2500 not measured, sender TX-TIGHT (CW_SPEC.md 10, HM-DEC-101); synthetic, no fading, shaped noise band (not shown to be CH-AWGN), TX-ITU (1:3:1:3:7), 0 dB in the passband (not restated in the 2500 Hz reference); synthetic, no fading, shaped noise band (not shown to be CH-AWGN), character gap 5 units, inside TX-FARNS's 3 to 7, 0 dB in the passband (not restated in the 2500 Hz reference); synthetic, no fading, shaped noise band (not shown to be CH-AWGN), character gap 5 units, inside TX-FARNS's 3 to 7, 15 dB in the passband (not restated in the 2500 Hz reference); synthetic, no fading, shaped noise band (not shown to be CH-AWGN), character gap 5 units, inside TX-FARNS's 3 to 7, 5 dB in the passband (not restated in the 2500 Hz reference)
+- **The port**
+  - calibrated (0): none
+  - not calibrated (6): real HF, all; real HF, no CH-* profile, SNR_2500 not measured, sender TX-FARNS (CW_SPEC.md 6.4 and 10, HM-DEC-115's traffic net); real HF, no CH-* profile, SNR_2500 not measured, sender not stated in CW_SPEC.md; synthetic, all; synthetic, no fading, shaped noise band (not shown to be CH-AWGN), TX-ITU (1:3:1:3:7), 15 dB in the passband (not restated in the 2500 Hz reference); synthetic, no fading, shaped noise band (not shown to be CH-AWGN), TX-ITU (1:3:1:3:7), 5 dB in the passband (not restated in the 2500 Hz reference)
+  - not measurable (6): real HF, no CH-* profile, SNR_2500 not measured, sender TX-ITU (CW_SPEC.md 10, the KD0UN capture); real HF, no CH-* profile, SNR_2500 not measured, sender TX-TIGHT (CW_SPEC.md 10, HM-DEC-101); synthetic, no fading, shaped noise band (not shown to be CH-AWGN), TX-ITU (1:3:1:3:7), 0 dB in the passband (not restated in the 2500 Hz reference); synthetic, no fading, shaped noise band (not shown to be CH-AWGN), character gap 5 units, inside TX-FARNS's 3 to 7, 0 dB in the passband (not restated in the 2500 Hz reference); synthetic, no fading, shaped noise band (not shown to be CH-AWGN), character gap 5 units, inside TX-FARNS's 3 to 7, 15 dB in the passband (not restated in the 2500 Hz reference); synthetic, no fading, shaped noise band (not shown to be CH-AWGN), character gap 5 units, inside TX-FARNS's 3 to 7, 5 dB in the passband (not restated in the 2500 Hz reference)
+
+**How much the fit learned the corpus:**
+
+- ours: a character's held-out p differs from its in-sample p by 0.49 points on average over 609 scored characters, 5.49 at most.
+- port: a character's held-out p differs from its in-sample p by 1.17 points on average over 407 scored characters, 9.79 at most.
+
+## 3. The held-out reliability tables
+
+Ten bins of p; empty bins left out; `(under 10)` marks a bin that does not count toward the verdict.
+
+**ours, real HF, all** (inferred keys; 436 scored; held-out calibrated, in-sample calibrated)
+
+| bin | p from | held-out characters | held-out mean p | held-out share right | held-out points | in-sample characters | in-sample mean p | in-sample share right | in-sample points |
+|---|---|---|---|---|---|---|---|---|---|
+| 7 | 0.7 | 1 | 0.779 | 1.000 | +22.1 (under 10) | 0 | - | - | none populated |
+| 8 | 0.8 | 147 | 0.870 | 0.871 | +0.1 | 148 | 0.871 | 0.865 | -0.6 |
+| 9 | 0.9 | 288 | 0.944 | 0.951 | +0.8 | 288 | 0.944 | 0.955 | +1.1 |
+
+**ours, real HF, no CH-* profile, SNR_2500 not measured, sender TX-FARNS (CW_SPEC.md 6.4 and 10, HM-DEC-115's traffic net)** (inferred keys; 43 scored; held-out not calibrated, in-sample not calibrated)
+
+| bin | p from | held-out characters | held-out mean p | held-out share right | held-out points | in-sample characters | in-sample mean p | in-sample share right | in-sample points |
+|---|---|---|---|---|---|---|---|---|---|
+| 8 | 0.8 | 2 | 0.817 | 1.000 | +18.3 (under 10) | 2 | 0.819 | 1.000 | +18.1 |
+| 9 | 0.9 | 41 | 0.942 | 1.000 | +5.8 | 41 | 0.947 | 1.000 | +5.3 |
+
+**ours, real HF, no CH-* profile, SNR_2500 not measured, sender TX-ITU (CW_SPEC.md 10, the KD0UN capture)** (inferred keys; 13 scored; held-out not measurable, in-sample not measurable)
+
+| bin | p from | held-out characters | held-out mean p | held-out share right | held-out points | in-sample characters | in-sample mean p | in-sample share right | in-sample points |
+|---|---|---|---|---|---|---|---|---|---|
+| 8 | 0.8 | 3 | 0.890 | 1.000 | +11.0 (under 10) | 2 | 0.888 | 1.000 | +11.2 |
+| 9 | 0.9 | 10 | 0.921 | 1.000 | +7.9 | 11 | 0.921 | 1.000 | +7.9 |
+
+**ours, real HF, no CH-* profile, SNR_2500 not measured, sender TX-TIGHT (CW_SPEC.md 10, HM-DEC-101)** (inferred keys; 6 scored; held-out not measurable, in-sample not measurable)
+
+| bin | p from | held-out characters | held-out mean p | held-out share right | held-out points | in-sample characters | in-sample mean p | in-sample share right | in-sample points |
+|---|---|---|---|---|---|---|---|---|---|
+| 8 | 0.8 | 6 | 0.858 | 1.000 | +14.2 (under 10) | 6 | 0.863 | 1.000 | +13.7 |
+
+**ours, real HF, no CH-* profile, SNR_2500 not measured, sender not stated in CW_SPEC.md** (inferred keys; 374 scored; held-out calibrated, in-sample calibrated)
+
+| bin | p from | held-out characters | held-out mean p | held-out share right | held-out points | in-sample characters | in-sample mean p | in-sample share right | in-sample points |
+|---|---|---|---|---|---|---|---|---|---|
+| 7 | 0.7 | 1 | 0.779 | 1.000 | +22.1 (under 10) | 0 | - | - | none populated |
+| 8 | 0.8 | 136 | 0.871 | 0.860 | -1.1 | 138 | 0.872 | 0.855 | -1.7 |
+| 9 | 0.9 | 237 | 0.945 | 0.941 | -0.4 | 236 | 0.944 | 0.945 | +0.1 |
+
+**ours, synthetic, all** (exact keys; 173 scored; held-out calibrated, in-sample not calibrated)
+
+| bin | p from | held-out characters | held-out mean p | held-out share right | held-out points | in-sample characters | in-sample mean p | in-sample share right | in-sample points |
+|---|---|---|---|---|---|---|---|---|---|
+| 7 | 0.7 | 0 | - | - | none populated (under 10) | 2 | 0.766 | 0.000 | -76.6 |
+| 8 | 0.8 | 42 | 0.868 | 0.905 | +3.7 | 42 | 0.875 | 0.929 | +5.3 |
+| 9 | 0.9 | 131 | 0.953 | 0.924 | -3.0 | 129 | 0.953 | 0.930 | -2.3 |
+
+**ours, synthetic, no fading, shaped noise band (not shown to be CH-AWGN), TX-ITU (1:3:1:3:7), 0 dB in the passband (not restated in the 2500 Hz reference)** (exact keys; 0 scored; held-out not measurable, in-sample not measurable)
+
+| bin | p from | held-out characters | held-out mean p | held-out share right | held-out points | in-sample characters | in-sample mean p | in-sample share right | in-sample points |
+|---|---|---|---|---|---|---|---|---|---|
+
+**ours, synthetic, no fading, shaped noise band (not shown to be CH-AWGN), TX-ITU (1:3:1:3:7), 15 dB in the passband (not restated in the 2500 Hz reference)** (exact keys; 64 scored; held-out calibrated, in-sample calibrated)
+
+| bin | p from | held-out characters | held-out mean p | held-out share right | held-out points | in-sample characters | in-sample mean p | in-sample share right | in-sample points |
+|---|---|---|---|---|---|---|---|---|---|
+| 9 | 0.9 | 64 | 0.964 | 0.984 | +2.0 | 64 | 0.966 | 0.984 | +1.9 |
+
+**ours, synthetic, no fading, shaped noise band (not shown to be CH-AWGN), TX-ITU (1:3:1:3:7), 5 dB in the passband (not restated in the 2500 Hz reference)** (exact keys; 63 scored; held-out not calibrated, in-sample not calibrated)
+
+| bin | p from | held-out characters | held-out mean p | held-out share right | held-out points | in-sample characters | in-sample mean p | in-sample share right | in-sample points |
+|---|---|---|---|---|---|---|---|---|---|
+| 8 | 0.8 | 38 | 0.870 | 0.974 | +10.4 | 36 | 0.876 | 0.972 | +9.6 |
+| 9 | 0.9 | 25 | 0.929 | 1.000 | +7.1 | 27 | 0.930 | 1.000 | +7.0 |
+
+**ours, synthetic, no fading, shaped noise band (not shown to be CH-AWGN), character gap 5 units, inside TX-FARNS's 3 to 7, 0 dB in the passband (not restated in the 2500 Hz reference)** (exact keys; 0 scored; held-out not measurable, in-sample not measurable)
+
+| bin | p from | held-out characters | held-out mean p | held-out share right | held-out points | in-sample characters | in-sample mean p | in-sample share right | in-sample points |
+|---|---|---|---|---|---|---|---|---|---|
+
+**ours, synthetic, no fading, shaped noise band (not shown to be CH-AWGN), character gap 5 units, inside TX-FARNS's 3 to 7, 15 dB in the passband (not restated in the 2500 Hz reference)** (exact keys; 21 scored; held-out not measurable, in-sample not measurable)
+
+| bin | p from | held-out characters | held-out mean p | held-out share right | held-out points | in-sample characters | in-sample mean p | in-sample share right | in-sample points |
+|---|---|---|---|---|---|---|---|---|---|
+| 9 | 0.9 | 21 | 0.969 | 0.952 | -1.6 | 21 | 0.968 | 0.952 | -1.6 |
+
+**ours, synthetic, no fading, shaped noise band (not shown to be CH-AWGN), character gap 5 units, inside TX-FARNS's 3 to 7, 5 dB in the passband (not restated in the 2500 Hz reference)** (exact keys; 25 scored; held-out not measurable, in-sample not measurable)
+
+| bin | p from | held-out characters | held-out mean p | held-out share right | held-out points | in-sample characters | in-sample mean p | in-sample share right | in-sample points |
+|---|---|---|---|---|---|---|---|---|---|
+| 7 | 0.7 | 0 | - | - | none populated (under 10) | 2 | 0.766 | 0.000 | -76.6 |
+| 8 | 0.8 | 4 | 0.849 | 0.250 | -59.9 (under 10) | 6 | 0.871 | 0.667 | -20.4 |
+| 9 | 0.9 | 21 | 0.933 | 0.619 | -31.4 | 17 | 0.923 | 0.588 | -33.5 |
+
+**port, real HF, all** (inferred keys; 239 scored; held-out not calibrated, in-sample not calibrated)
+
+| bin | p from | held-out characters | held-out mean p | held-out share right | held-out points | in-sample characters | in-sample mean p | in-sample share right | in-sample points |
+|---|---|---|---|---|---|---|---|---|---|
+| 1 | 0.1 | 1 | 0.146 | 1.000 | +85.4 (under 10) | 0 | - | - | none populated |
+| 2 | 0.2 | 2 | 0.255 | 1.000 | +74.5 (under 10) | 3 | 0.246 | 0.667 | +42.1 |
+| 3 | 0.3 | 2 | 0.330 | 0.000 | -33.0 (under 10) | 3 | 0.357 | 0.333 | -2.4 |
+| 4 | 0.4 | 5 | 0.451 | 0.600 | +14.9 (under 10) | 4 | 0.481 | 0.500 | +1.9 |
+| 5 | 0.5 | 7 | 0.541 | 0.714 | +17.3 (under 10) | 7 | 0.553 | 0.571 | +1.8 |
+| 6 | 0.6 | 27 | 0.669 | 0.778 | +10.9 | 26 | 0.671 | 0.808 | +13.7 |
+| 7 | 0.7 | 83 | 0.764 | 0.747 | -1.7 | 85 | 0.763 | 0.729 | -3.4 |
+| 8 | 0.8 | 106 | 0.843 | 0.736 | -10.7 | 102 | 0.838 | 0.755 | -8.4 |
+| 9 | 0.9 | 6 | 0.920 | 0.833 | -8.7 (under 10) | 9 | 0.914 | 0.889 | -2.5 |
+
+**port, real HF, no CH-* profile, SNR_2500 not measured, sender TX-FARNS (CW_SPEC.md 6.4 and 10, HM-DEC-115's traffic net)** (inferred keys; 33 scored; held-out not calibrated, in-sample not calibrated)
+
+| bin | p from | held-out characters | held-out mean p | held-out share right | held-out points | in-sample characters | in-sample mean p | in-sample share right | in-sample points |
+|---|---|---|---|---|---|---|---|---|---|
+| 1 | 0.1 | 1 | 0.146 | 1.000 | +85.4 (under 10) | 0 | - | - | none populated |
+| 2 | 0.2 | 0 | - | - | none populated (under 10) | 1 | 0.207 | 1.000 | +79.3 |
+| 4 | 0.4 | 1 | 0.448 | 1.000 | +55.2 (under 10) | 0 | - | - | none populated |
+| 5 | 0.5 | 1 | 0.585 | 1.000 | +41.5 (under 10) | 1 | 0.514 | 1.000 | +48.6 |
+| 6 | 0.6 | 1 | 0.666 | 1.000 | +33.4 (under 10) | 1 | 0.638 | 1.000 | +36.2 |
+| 7 | 0.7 | 23 | 0.758 | 0.870 | +11.1 | 23 | 0.766 | 0.913 | +14.7 |
+| 8 | 0.8 | 6 | 0.806 | 1.000 | +19.4 (under 10) | 7 | 0.813 | 0.857 | +4.4 |
+
+**port, real HF, no CH-* profile, SNR_2500 not measured, sender TX-ITU (CW_SPEC.md 10, the KD0UN capture)** (inferred keys; 6 scored; held-out not measurable, in-sample not measurable)
+
+| bin | p from | held-out characters | held-out mean p | held-out share right | held-out points | in-sample characters | in-sample mean p | in-sample share right | in-sample points |
+|---|---|---|---|---|---|---|---|---|---|
+| 6 | 0.6 | 1 | 0.673 | 1.000 | +32.7 (under 10) | 1 | 0.674 | 1.000 | +32.6 |
+| 7 | 0.7 | 5 | 0.728 | 0.800 | +7.2 (under 10) | 5 | 0.729 | 0.800 | +7.1 |
+
+**port, real HF, no CH-* profile, SNR_2500 not measured, sender TX-TIGHT (CW_SPEC.md 10, HM-DEC-101)** (inferred keys; 3 scored; held-out not measurable, in-sample not measurable)
+
+| bin | p from | held-out characters | held-out mean p | held-out share right | held-out points | in-sample characters | in-sample mean p | in-sample share right | in-sample points |
+|---|---|---|---|---|---|---|---|---|---|
+| 7 | 0.7 | 1 | 0.793 | 0.000 | -79.3 (under 10) | 1 | 0.783 | 0.000 | -78.3 |
+| 8 | 0.8 | 1 | 0.883 | 1.000 | +11.7 (under 10) | 1 | 0.870 | 1.000 | +13.0 |
+| 9 | 0.9 | 1 | 0.996 | 0.000 | -99.6 (under 10) | 1 | 0.992 | 0.000 | -99.2 |
+
+**port, real HF, no CH-* profile, SNR_2500 not measured, sender not stated in CW_SPEC.md** (inferred keys; 197 scored; held-out not calibrated, in-sample not calibrated)
+
+| bin | p from | held-out characters | held-out mean p | held-out share right | held-out points | in-sample characters | in-sample mean p | in-sample share right | in-sample points |
+|---|---|---|---|---|---|---|---|---|---|
+| 2 | 0.2 | 2 | 0.255 | 1.000 | +74.5 (under 10) | 2 | 0.265 | 0.500 | +23.5 |
+| 3 | 0.3 | 2 | 0.330 | 0.000 | -33.0 (under 10) | 3 | 0.357 | 0.333 | -2.4 |
+| 4 | 0.4 | 4 | 0.451 | 0.500 | +4.9 (under 10) | 4 | 0.481 | 0.500 | +1.9 |
+| 5 | 0.5 | 6 | 0.534 | 0.667 | +13.3 (under 10) | 6 | 0.560 | 0.500 | -6.0 |
+| 6 | 0.6 | 25 | 0.669 | 0.760 | +9.1 | 24 | 0.672 | 0.792 | +12.0 |
+| 7 | 0.7 | 54 | 0.770 | 0.704 | -6.6 | 56 | 0.765 | 0.661 | -10.4 |
+| 8 | 0.8 | 99 | 0.845 | 0.717 | -12.8 | 94 | 0.840 | 0.745 | -9.5 |
+| 9 | 0.9 | 5 | 0.905 | 1.000 | +9.5 (under 10) | 8 | 0.904 | 1.000 | +9.6 |
+
+**port, synthetic, all** (exact keys; 168 scored; held-out not calibrated, in-sample not calibrated)
+
+| bin | p from | held-out characters | held-out mean p | held-out share right | held-out points | in-sample characters | in-sample mean p | in-sample share right | in-sample points |
+|---|---|---|---|---|---|---|---|---|---|
+| 2 | 0.2 | 3 | 0.262 | 0.000 | -26.2 (under 10) | 3 | 0.251 | 0.000 | -25.1 |
+| 3 | 0.3 | 2 | 0.385 | 0.000 | -38.5 (under 10) | 2 | 0.359 | 0.000 | -35.9 |
+| 4 | 0.4 | 5 | 0.467 | 0.400 | -6.7 (under 10) | 4 | 0.465 | 0.500 | +3.5 |
+| 5 | 0.5 | 5 | 0.563 | 0.400 | -16.3 (under 10) | 8 | 0.567 | 0.375 | -19.2 |
+| 6 | 0.6 | 25 | 0.648 | 0.560 | -8.8 | 27 | 0.655 | 0.444 | -21.0 |
+| 7 | 0.7 | 57 | 0.729 | 0.860 | +13.0 | 57 | 0.733 | 0.877 | +14.5 |
+| 8 | 0.8 | 58 | 0.875 | 0.931 | +5.6 | 30 | 0.880 | 1.000 | +12.0 |
+| 9 | 0.9 | 13 | 0.906 | 1.000 | +9.4 | 37 | 0.909 | 1.000 | +9.1 |
+
+**port, synthetic, no fading, shaped noise band (not shown to be CH-AWGN), TX-ITU (1:3:1:3:7), 0 dB in the passband (not restated in the 2500 Hz reference)** (exact keys; 27 scored; held-out not measurable, in-sample not measurable)
+
+| bin | p from | held-out characters | held-out mean p | held-out share right | held-out points | in-sample characters | in-sample mean p | in-sample share right | in-sample points |
+|---|---|---|---|---|---|---|---|---|---|
+| 3 | 0.3 | 1 | 0.396 | 0.000 | -39.6 (under 10) | 1 | 0.371 | 0.000 | -37.1 |
+| 4 | 0.4 | 2 | 0.481 | 0.500 | +1.9 (under 10) | 1 | 0.475 | 1.000 | +52.5 |
+| 5 | 0.5 | 2 | 0.566 | 0.000 | -56.6 (under 10) | 5 | 0.572 | 0.200 | -37.2 |
+| 6 | 0.6 | 13 | 0.642 | 0.308 | -33.4 | 15 | 0.650 | 0.200 | -45.0 |
+| 7 | 0.7 | 4 | 0.761 | 0.000 | -76.1 (under 10) | 5 | 0.715 | 0.200 | -51.5 |
+| 8 | 0.8 | 5 | 0.807 | 0.200 | -60.7 (under 10) | 0 | - | - | none populated |
+
+**port, synthetic, no fading, shaped noise band (not shown to be CH-AWGN), TX-ITU (1:3:1:3:7), 15 dB in the passband (not restated in the 2500 Hz reference)** (exact keys; 56 scored; held-out not calibrated, in-sample not calibrated)
+
+| bin | p from | held-out characters | held-out mean p | held-out share right | held-out points | in-sample characters | in-sample mean p | in-sample share right | in-sample points |
+|---|---|---|---|---|---|---|---|---|---|
+| 2 | 0.2 | 2 | 0.269 | 0.000 | -26.9 (under 10) | 2 | 0.248 | 0.000 | -24.8 |
+| 5 | 0.5 | 2 | 0.589 | 1.000 | +41.1 (under 10) | 2 | 0.586 | 1.000 | +41.4 |
+| 7 | 0.7 | 3 | 0.767 | 1.000 | +23.3 (under 10) | 2 | 0.757 | 1.000 | +24.3 |
+| 8 | 0.8 | 38 | 0.881 | 1.000 | +11.9 | 20 | 0.876 | 1.000 | +12.4 |
+| 9 | 0.9 | 11 | 0.907 | 1.000 | +9.3 | 30 | 0.909 | 1.000 | +9.1 |
+
+**port, synthetic, no fading, shaped noise band (not shown to be CH-AWGN), TX-ITU (1:3:1:3:7), 5 dB in the passband (not restated in the 2500 Hz reference)** (exact keys; 47 scored; held-out not calibrated, in-sample not calibrated)
+
+| bin | p from | held-out characters | held-out mean p | held-out share right | held-out points | in-sample characters | in-sample mean p | in-sample share right | in-sample points |
+|---|---|---|---|---|---|---|---|---|---|
+| 2 | 0.2 | 1 | 0.249 | 0.000 | -24.9 (under 10) | 1 | 0.258 | 0.000 | -25.8 |
+| 4 | 0.4 | 3 | 0.458 | 0.333 | -12.4 (under 10) | 3 | 0.462 | 0.333 | -12.9 |
+| 6 | 0.6 | 6 | 0.658 | 1.000 | +34.2 (under 10) | 5 | 0.664 | 1.000 | +33.6 |
+| 7 | 0.7 | 37 | 0.727 | 0.946 | +21.9 | 38 | 0.737 | 0.947 | +21.1 |
+
+**port, synthetic, no fading, shaped noise band (not shown to be CH-AWGN), character gap 5 units, inside TX-FARNS's 3 to 7, 0 dB in the passband (not restated in the 2500 Hz reference)** (exact keys; 3 scored; held-out not measurable, in-sample not measurable)
+
+| bin | p from | held-out characters | held-out mean p | held-out share right | held-out points | in-sample characters | in-sample mean p | in-sample share right | in-sample points |
+|---|---|---|---|---|---|---|---|---|---|
+| 6 | 0.6 | 2 | 0.628 | 0.500 | -12.8 (under 10) | 3 | 0.648 | 0.333 | -31.4 |
+| 7 | 0.7 | 1 | 0.701 | 0.000 | -70.1 (under 10) | 0 | - | - | none populated |
+
+**port, synthetic, no fading, shaped noise band (not shown to be CH-AWGN), character gap 5 units, inside TX-FARNS's 3 to 7, 15 dB in the passband (not restated in the 2500 Hz reference)** (exact keys; 19 scored; held-out not measurable, in-sample not measurable)
+
+| bin | p from | held-out characters | held-out mean p | held-out share right | held-out points | in-sample characters | in-sample mean p | in-sample share right | in-sample points |
+|---|---|---|---|---|---|---|---|---|---|
+| 3 | 0.3 | 1 | 0.374 | 0.000 | -37.4 (under 10) | 1 | 0.347 | 0.000 | -34.7 |
+| 7 | 0.7 | 1 | 0.718 | 1.000 | +28.2 (under 10) | 1 | 0.722 | 1.000 | +27.8 |
+| 8 | 0.8 | 15 | 0.882 | 1.000 | +11.8 | 10 | 0.888 | 1.000 | +11.2 |
+| 9 | 0.9 | 2 | 0.902 | 1.000 | +9.8 (under 10) | 7 | 0.909 | 1.000 | +9.1 |
+
+**port, synthetic, no fading, shaped noise band (not shown to be CH-AWGN), character gap 5 units, inside TX-FARNS's 3 to 7, 5 dB in the passband (not restated in the 2500 Hz reference)** (exact keys; 16 scored; held-out not measurable, in-sample not measurable)
+
+| bin | p from | held-out characters | held-out mean p | held-out share right | held-out points | in-sample characters | in-sample mean p | in-sample share right | in-sample points |
+|---|---|---|---|---|---|---|---|---|---|
+| 5 | 0.5 | 1 | 0.504 | 0.000 | -50.4 (under 10) | 1 | 0.506 | 0.000 | -50.6 |
+| 6 | 0.6 | 4 | 0.664 | 0.750 | +8.6 (under 10) | 4 | 0.667 | 0.750 | +8.3 |
+| 7 | 0.7 | 11 | 0.719 | 0.909 | +19.0 | 11 | 0.723 | 0.909 | +18.6 |
+
+## 4. MET-CAL, ours (`CW_SPEC.md` section 11)
+
+Observed accuracy per class over every stretch scored, against the rate each class states. Placeholders are unscored, as the spec has them.
+
+| class | set | key | emitted in stretches | right | wrong | added | observed accuracy | stated rate |
+|---|---|---|---|---|---|---|---|---|
+| sure | real | inferred | 436 | 403 | 28 | 5 | 0.924 | asserted as sent (HM-REQ-013 on its conditions: every sure character correct) |
+| sure | synthetic | exact | 173 | 159 | 8 | 6 | 0.919 | asserted as sent (HM-REQ-013 on its conditions: every sure character correct) |
+| dim | real | inferred | 0 | 0 | 0 | 0 | no number: none emitted | at least 0.70 (HM-REQ-014) |
+| dim | synthetic | exact | 0 | 0 | 0 | 0 | no number: none emitted | at least 0.70 (HM-REQ-014) |
+| placeholder | real | inferred | 15 | 0 | 0 | 0 | unscored | unscored |
+| placeholder | synthetic | exact | 2 | 0 | 0 | 0 | unscored | unscored |
+
+## 5. What this does not prove
+
+- **The real set's keys are inferred** (R61, V-13): reasoned from the form of a call, adjudicated, or differenced from consecutive transcripts, never transcribed. A character the key calls wrong may be right, and the real rows' share right is stated against those keys, every time.
+- **No condition here is a `CH-*` condition** (PHASE_PLAN.md 7.4). The real rows are HF recordings with no channel profile and no measured SNR_2500; the synthetic rows are one generator's shaped band noise, not shown to be `CH-AWGN`, and never sole evidence (CLAUDE.md 12.5). HM-REQ-124's "per condition" is met here only over the conditions the tree has.
+- **A map fitted on 35 recordings is not proven on the 36th.** The held-out verdict is the best the corpus can say about a recording the map has not seen, and the corpus is small: most finer conditions hold under 30 scored characters and are not measurable.
+- **Ours emits no dim character on the 35**, so dim characters, which HM-REQ-014 is about, are not measured at all; every scored character of ours is sure. The port's characters are all sure under `parity.md`'s mapping.
+- **The port runs on fldigi's shipped defaults** at 18 WPM with tracking on, given the instrument's pitch, as in `parity.md`. Its p says nothing about fldigi at other settings.
+- **Nothing here votes.** Which decoder may vote where is 9.6's, read from section 2's verdicts under HM-REQ-124.
+
+
+
+
+Test Run Successful.
+Total tests: 1
+     Passed: 1
+ Total time: 2.0364 Minutes
+RC=0 WALL=122s
