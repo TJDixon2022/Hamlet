@@ -305,7 +305,7 @@ because every later change to ours is better aimed with the comparison in hand.
 - [ ] 9.4 HM-REQ-129: one technique 9.3 named is taken into our decoder as a change in its own commit, judged under R78, with the second decoder left as ported.
 - [x] 9.5 HM-REQ-124: each decoder attaches a confidence to every character, and calibration is measured per condition on the keyed corpus - characters emitted at confidence p right within 5 points of p - with the conditions where each decoder is calibrated named; the second decoder is given a confidence, since fldigi carries none, and the report says what it is derived from.
 - [x] 9.6 HM-REQ-120, 121, 125, 126, 127: both decoders read the same samples at the same time; agreement emits with the more confident's class; disagreement emits the higher calibrated confidence's character with both recorded on the sheet; a tie within the margin emits dim, never sure; the CW tab shows one transcript and no decoder name; each watched failing first on an injected synthetic case.
-- [ ] 9.7 HM-REQ-128: the arbitrated output is measured against each decoder alone on every metric of sections B and I on every condition, and where it loses on a condition the arbitration is switched off there and the better decoder alone is used; the report tables all three per condition.
+- [x] 9.7 HM-REQ-128: the arbitrated output is measured against each decoder alone on every metric of sections B and I on every condition, and where it loses on a condition the arbitration is switched off there and the better decoder alone is used; the report tables all three per condition.
 - [ ] 9.8 The three floor tests and both carry-forward lines are green at exit.
 
 **Depends on:** steps 0 and 1.
