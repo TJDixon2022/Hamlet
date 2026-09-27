@@ -6,8 +6,8 @@ WORK_INSTRUCTION: 469 - the INT-* interference profiles generated with the wante
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-27T13:37:02-04:00
-NOTE: Task 2 - 060 2 of 6, 061 0 of 6, 062 4 of 12 not met; 066 3 of 3 weak; round green (app on the rerun, lost type alone 3/3); committing
+UPDATED: 2026-09-27T13:37:26-04:00
+NOTE: Task 2 pushed 5f6eb688; ticking 7.3 in both plan copies - generated, proved red then green, recipe written, all four measured
 
 ---
 
