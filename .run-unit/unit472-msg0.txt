@@ -1,0 +1,3 @@
+unit472 task 0: the record, 1.13.159, the runner's writes; entry round as at 471's exit - build 0 errors, engine line 178/178, app line 278/278 on the one rerun (2 lost to the dispatcher loop first), floors named 13/13, captures 51/51, adjudicated 13/13; MET-INVENTED real 33/473 (inferred), synthetic 14/252 (exact); texts byte-identical to 471's; 7.052 traffic net absent (3.6)
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -1,13 +1,13 @@
 STEPS=0 1 2 3 4 5 6 7 8 9
-OPEN=8
-POSITION=0=done,1=done,2=partial,3=partial,4=partial,5=partial,6=partial,7=partial,8=not started,9=partial
+OPEN=7
+POSITION=0=done,1=done,2=done,3=partial,4=partial,5=partial,6=partial,7=partial,8=not started,9=partial
 NOCRIT=0
 NOCRITSTEPS=
-WORK=22
+WORK=21
 OWNERN=0
 PARKEDN=0
-TARGET=2
-AUTHORABLE=2.4 3.4 3.5 3.6 4.4 4.7 5.1 5.2 5.3 5.4 5.6 6.1 6.4 6.6 7.4 8.1 8.2 8.3 8.4 8.5 8.6 9.4
+TARGET=3
+AUTHORABLE=3.4 3.5 3.6 4.4 4.7 5.1 5.2 5.3 5.4 5.6 6.1 6.4 6.6 7.4 8.1 8.2 8.3 8.4 8.5 8.6 9.4
 OWNERIDS=
 PARKEDIDS=
 STATE_0=done
@@ -28,14 +28,14 @@ OWNER_1=0
 PARKED_1=0
 AUTH_1=
 TITLE_1=The metrics exist - MET-INVENTED, MET-CER-SURE, MET-COVERAGE and MET-WBE are computed over the corpus and reported per condition, so the requirements can be measured at all.
-STATE_2=partial
+STATE_2=done
 SOURCE_2=checkboxes
-MET_2=4
+MET_2=5
 TOTAL_2=5
-WORK_2=1
+WORK_2=0
 OWNER_2=0
 PARKED_2=0
-AUTH_2=2.4
+AUTH_2=
 TITLE_2=The decoder stops printing wrong letters with confidence - MET-CER-SURE driven toward HM-REQ-010's one in a hundred, from the 54 sure-but-wrong characters unit 439 measured.
 STATE_3=partial
 SOURCE_3=checkboxes

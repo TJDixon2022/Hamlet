@@ -59,51 +59,31 @@ WHY: one sentence, plain text, no punctuation beyond commas and full stops
 --- the section 4 text follows ---
 
 ﻿
-Nothing blocks 2.4. Each item is a plain reading, not a ruling request.
+Nothing blocks. Each item is a plain reading, not a ruling request.
 
 1. **The R86 mismatch.** R86 bars steps 2 to 8 until 9.4 has a kept change. 9.4 has no route
    left, since (A) to (E) and (W) were all refused. This unit worked step 2 as the launcher named
-   it, as units 468 and 469 worked outside step 9. If the owner holds R86, this unit is a
-   measurement only, and nothing the operator reads has changed.
-2. **DECIDED (2) and (3) are the arbiter's, and overrulable.**
-   - (2): 449's exclusion of an acquisition gate rested on its being parked. The RESOLVED line of
-     `9a329cdb` answered that.
-   - (3): the gate reads the tree's two proof states at emission, and dims a sure letter while
-     either is not proved.
-
-   This unit read "at emission" as the settle moment, and applied the gate before the arbiter and
-   to our leading edge too.
-3. **Refused: HM-REQ-102 and HM-REQ-012 pull against each other on this corpus.**
-   - The resolution's acquiring holds 293 of the 403 sure-and-right real letters for 29 of the 33
-     wrong or added. The synthetic figures are 93 of 159 for 2 of 14.
-   - On 7 of the 23 real recordings no character is ever emitted with both states proved.
-   - On a clean generated TX-ITU the pitch is proved only just after a confirming survey, so
-     "acquiring" recurs inside words (`D(E)`, `ST(A)(T)(I)ON`).
-
-   As the proof states stand, no form of this gate can pass 2.2's coverage line. That is a finding
-   about the requirements and the proof states, not a request. The narrower forms the trace
-   suggests are not tried (V-14):
-   - speed only: 10 right for 3 wrong;
-   - the 448 span only: 108 right for 13 wrong;
-   - a grace period.
-4. **The proof states against their RESOLVED lines** (reported, not repaired):
-   - **Pitch.** The tree says proved while the latest survey's keyed verdict is at the reported
-     pitch. It does not require that a whole character has resolved at it, as the RESOLVED line
-     says, so on that clause it proves sooner than the line. It also drops to hypothesis between
-     confirming surveys while the station is still keying. The RESOLVED line says hypothesis only
-     where "keying is not admitted or no character has resolved". Whether "admits keying" means the
-     latest survey or the station's keying still being admitted is where the tree and this unit's
-     result part. That reading, not the gate, is what makes acquiring recur mid-word.
-   - **Speed.** The tree has "the tone stops" (six surveys) and "the pitch changes" (a follow of
-     half the filter). It has no test of the marks' unit within 10 percent of the path's
-     (HM-REQ-031). "Measured" is the estimator's dit or the marks' overrule, not the grid's winner.
-5. **With the second reader on, the gate is only on our reading.** An agreeing port reading with
-   the higher p, or a port that alone votes, can still reach the screen sure while acquiring
-   (`CwArbiter.Decide`). The switch and vote tables are parked, so this is recorded only.
-6. **2.4's count after this unit is 2 of 3**:
-   - 449 kept a change;
-   - 460 kept none;
-   - 470 kept none.
-
-   The next step-2 unit with no kept change closes step 2 partial, and its trace goes to
-   `PARKED.md`.
+   it, as units 468 to 470 worked outside step 9.
+2. **DECIDED (3) and (4) are the arbiter's, and overrulable.** "Re-read" was read as: the window
+   mixed down again from the raw audio at the proved pitch, decoded at the proved speed with the
+   read's gaps, and settled in place of the ordinary read over what arrived while acquiring and is
+   unsettled. "The proved values" were read as `Tracker.ToneHz` and `Reading.WordsPerMinute` at the
+   read where both states are proved. "First proved" was read per letter (section 1).
+3. **`PARKED.md`'s header against 449 DECIDED (3).** The header says the file is *"Written by
+   run-phase.bat, never by a session, and append-only"*. This session appended one line, as 449
+   DECIDED (3) and task 3 direct. The line is in the file's form, but its unit field is the
+   runner's iteration number, `unit 10`, and its launch time reads `not recorded`.
+4. **Ticking 2.4 leaves every line of step 2 ticked**, so the launcher reads step 2 as closed while
+   HM-REQ-010 is not met: real 33 of 436 against one in a hundred, synthetic 14 of 173. That is
+   2.4's own "closes partial" set against the owner's checkbox rule of 2026-09-23. It is a
+   finding.
+5. **Why the re-read cannot reach the wrong letters, as the tree stands.** The speed half is met
+   already: the read that proves the speed has decoded the unsettled letters at that speed. Only
+   the mix-down pitch can differ, and on this corpus that changes almost nothing. The wrong letters
+   settle before a proof arrives (the window is 1.0 s behind the audio), or sit in the 7 real
+   recordings that never reach both proved. A longer delay or a hold on settling would reach 5 of
+   the 29. Both are V-14's new constants and are not tried.
+6. **A side result:** synthetic TX-ITU at 5 dB fell to 0 of 62 under the refused change, below
+   HM-REQ-010's line, while character gap 5 at 5 dB rose. Recorded only.
+7. **2.4's state after this unit: ticked.** Step 2's count of consecutive units with no kept
+   change is 3 of 3 (460, 470, 471), and step 2 is closed partial.

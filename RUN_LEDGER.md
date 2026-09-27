@@ -377,3 +377,4 @@ the owner reads instead of watching.
 | 8 | 2026-09-27T12:24 | 2026-09-27T14:04 | complete | 8.505530799999999 | ran unattended, 156 turns, 11 denied call(s) worked around, report valid |
 | 9 | 2026-09-27T14:10 | 2026-09-27T16:11 | complete | 7.978151600000003 | ran unattended, 203 turns, 10 denied call(s) worked around, report valid |
 | 9 | 2026-09-27T16:12 | 2026-09-27T16:12 | note | none - not a run | blocker-clear - cleared a blocker: step 2 criterion 4 |
+| 10 | 2026-09-27T16:16 | 2026-09-27T18:12 | complete | 11.6366396 | ran unattended, 219 turns, 10 denied call(s) worked around, report valid |

@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-TASK: 4 of 4
-WORK_INSTRUCTION: 471 - the letters read while acquiring are read again at the pitch and speed once proved, before they settle: step 2's third attempt at HM-REQ-010
-BALL: tim
-NEXT_PASTE: output.md -> Claude Web
+STATE: EXECUTING
+TASK: 0 of 4
+WORK_INSTRUCTION: 472 - where the invented letters sit against what was sent: step 3's first attempt at HM-REQ-011 since unit 445, with every commit green
+BALL: code
+NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-27T18:12:34-04:00
-NOTE: Unit 471 done: the re-read at the proved pitch and speed refused - every letter it could reach was already right; step 2 closed partial, 2.4 ticked, MET-CER-SURE 33/436 real against one in a hundred
+UPDATED: 2026-09-27T18:44:47-04:00
+NOTE: Task 0 - committing the record and entry round, all five green at entry
 
 ---
 
