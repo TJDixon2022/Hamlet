@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-TASK: 4 of 4
-WORK_INSTRUCTION: 466 - the arbitration earns its place: arbitrated, ours alone and the port alone scored on every metric of sections B and I per condition, and the arbitration switched off wherever it loses
-BALL: tim
+STATE: EXECUTING
+TASK: 0 of 2
+WORK_INSTRUCTION: 467 - HM-REQ-128 judged on conditions as CW_SPEC.md defines them: a union row is a summary, not a condition, and 9.7 is closed on the switch unit 466 built
+BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-27T08:49:23-04:00
-NOTE: Unit 466 done, 9.7 left open: switch built, HM-REQ-128 holds on the live row and all 4 losing rows but not on the aggregate synthetic, all; owner's reading asked in output.md section 4 item 1; screen unchanged
+UPDATED: 2026-09-27T09:26:41-04:00
+NOTE: Task 0 entry figures all as at 466's exit (decode time 65.50 s against 64.27 s); both emitted saves byte-identical to 466's exit; committing
 
 ---
 

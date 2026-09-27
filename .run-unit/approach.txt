@@ -1,1 +1,1 @@
-score the arbitrated transcript against ours alone and the port alone on every metric of sections B and I per condition on the harness and the live path, fix a per-condition switch table that turns arbitration off where it loses and emits the better decoder alone, HM-REQ-128 test watched failing first
+rule aggregate union rows are not conditions under CW_SPEC section 4 one named profile at one SNR, narrow HM-REQ-128 test part b to condition rows and the live row, re-watch red on an empty switch table, tick 9.7 on the switch unit 466 built with no switch or rule changed

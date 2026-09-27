@@ -147,6 +147,7 @@ block; blocker means it cleared something and moved no criterion.
   9.4 | unit 6 launched 2026-09-26T21:33:57.611Z | no | executed | trace every sure letter ours prints wrong where the fldigi port reads it right, classify the lost element as never keyed, spiked, misclassed or cut by a gap or speed rule, then build the port mechanism behind the largest group into our decoder in its own commit, kept under R78, the port untouched
   9.5 | unit 3 launched 2026-09-27T05:57:13.517Z | yes | executed | attach a numeric confidence p to every character of both decoders - ours from its rival margin, the port from its own AGC level and element timing read outside Cw/Second - fit one logistic per decoder fixed before any number is seen, and measure calibration held-out by recording per condition in ten reliability bins against HM-REQ-124's 5 points, no letter or class changed
   9.6 | unit 4 launched 2026-09-27T08:05:13.180Z | yes | executed | build the arbiter that runs both decoders on the same samples, aligns their characters by span, emits agreement with the more confident class, disagreement by the higher calibrated p with the uncalibrated decoder advisory, a tie within 0.05 dim, one transcript on the CW tab, both recorded on the sheet, each watched failing first on an injected synthetic case
+  9.7 | unit 5 launched 2026-09-27T10:21:13.103Z | no | executed | score the arbitrated transcript against ours alone and the port alone on every metric of sections B and I per condition on the harness and the live path, fix a per-condition switch table that turns arbitration off where it loses and emits the better decoder alone, HM-REQ-128 test watched failing first
 
 If every route you can see at a criterion is recorded as no, say so in WHY
 and choose another criterion or another step. Do not restate a failed
@@ -173,133 +174,65 @@ The whole file is at the repository root if you need the rest.
 
 ## 4. What's blocking us
 
-Nothing blocks. These are readings, recorded as the instruction asks. None is a ruling request.
+1. **Is an aggregate row a "condition" for HM-REQ-128?** This blocks 9.7.
+   - **What the tree forces.** Condition rows are nested: `synthetic, all` is the union of its six sub-rows (parity.md section 3, 458 DECIDED (4)). The rule fixed at task 1 picks the port alone on the char-gap-5 5 dB sub-row, because 011 comes first. That makes `synthetic, all` worse than ours alone on 012 and 081 while better on 011 and 010.
+   - **No per-row table meets both rows.** Holding the sub-row at ours fails the sub-row (worse than the port on 011 and 010).
+   - **Reading A.** HM-REQ-128 is judged on the rows a recording is emitted under: each harness sub-row, and real HF, all live. Then 9.7 is met as built, and part (b) drops its assertion on `synthetic, all` and `real HF, all` in the harness.
+   - **Reading B.** Every tabled row, the aggregates included, is a condition. Then the order rule, or a no-port-alone-where-a-parent-row-loses rule, has to change.
+   - **Why the owner decides.** Changing either now, after the figure is seen, is what V-14 forbids a session to do.
+   - It touches neither transmit nor the screen: the live product arbitrates.
+2. **HM-REQ-127's margin is 0.05, the requirement's recommended value, held provisionally.** Unchanged here.
+3. **9.4 has no authorable route.** Its words and the five mechanisms 9.3 named are all recorded as refused, and R86 holds steps 2 to 8 behind 9.4. This is logged for the owner, not a stop. It touches neither transmit nor what the product promises the operator.
+4. **The port alone is picked on one row.** On synthetic, 5 dB, 5-unit character gaps, the switch table picks the port alone. That row's operator would read fldigi's text at its all-sure mapping: `E Q D N 0 C T L L 0C A L L K E`, every letter sure. That is 3 of 16 sure letters wrong (ours: 11 of 25), 13 of 21 sent letters right (ours: 14), and 12 word-space errors in 7 words (ours: 8). DECIDED (6) licenses this. The live product never runs under that row.
+5. **Three of the four switches change nothing today.** The port votes nowhere, so the arbitrated output is ours on every row. "Ours alone" on TX-FARNS, TX-ITU 0 dB and char-gap-5 0 dB emits the same text as arbitrating. These switches start to matter only once a recalibration lets the port vote there.
+6. **The live path and the harness disagree on one row.** Live, syn gap 5 at 15 dB loses to the port on 081 (8/7 against ours' 12/7). In the harness it does not. By the path rule the harness sets that row (arbitrate). This matters only if a synthetic row is ever run live.
+7. **Unpaired characters are not on the live sheet under the port alone.** Live, a character only ours read is not emitted, so it never reaches the sheet. The harness records it (emitted: none). No live row runs under the port alone.
+8. **The headless dispatcher loop took app tests at two runs**: task 3's first run lost 3, and the exit round lost 1 and then 5. DECIDED (9) was applied both times, and every type lost on a rerun passed alone.
+9. **Tree mismatches from section 3.** `.run-unit\watched.rc` is absent (the runner modified `watched.cpu`). The reload's `RULES_AT` disagreement and `outcome-read`'s step titles are logged and are not this unit's.
 
-1. **HM-REQ-127's margin is 0.05, the requirement's recommended value, held provisionally.** It is
-   `CwArbiter.TieMargin`. The threshold is the owner's under `PHASE_PLAN.md` section 6, and its
-   absence never halts a unit.
-2. **9.4's words and 9.3's five refused mechanisms leave 9.4 no authorable route, and R86 holds
-   steps 2 to 8 behind 9.4.** This is logged for the owner, not a stop: it touches neither transmit
-   nor what the product promises the operator.
-3. **A tie is a disagreement's case.** HM-REQ-127 says "the winning character is emitted in the
-   dim class", which presumes two characters in contention. An agreement has one character, and
-   HM-REQ-125 gives it the more confident decoder's class. So two agreeing readings within 0.05 are
-   an agreement: 28 real and 11 synthetic spans. If the owner reads 127 as also dimming close
-   agreements, that is a one-line change in `CwArbiter.Decide`. It moves no letter today, because
-   the port votes nowhere.
-4. **The leading edge cannot wait for the port.** The seam is `CwDecoder.LeadingEdge` and
-   `CharacterDecoded`, to `Transcript.OfferEdge`. The port prints a character only after 2 to 4 of
-   its own dots of silence, plus its filter's 1,024-sample block (128 ms). The edge is ours' live
-   reading, which HM-REQ-083 ties to the settled pass's word boundaries. Holding it until the port
-   has printed would put a gap in the live line. So the edge is routed through the arbiter against
-   what the port has printed so far: an edge character the port has not printed yet shows as
-   one-sided, and it is re-decided at settle.
-
-   At settle, ours runs about 1 s (`DecisionDelaySeconds`) behind the audio. That is longer than
-   the port's lag at every speed in the corpus, but at 6 WPM and below the port's lag (4 dots,
-   0.8 s, plus 0.19 s) comes close to it. A slow sender's character could then settle as
-   one-sided when the port had simply not printed yet. This is not measured: the corpus has no
-   sender that slow.
-5. **The port reads less well live than in `parity.md`.** This bears on 9.7. Live, the port is
-   given our pitch in force from the first hop, and our tracker hunts from 600 Hz, so the port is
-   rebuilt at each move of 30 Hz or more: 35 retunes on the 23 real recordings. Each rebuild loses
-   the port's filter, level and speed state. The harness gives it the instrument's median pitch
-   once. Agreements on the real set fall from 290 (harness) to 228 (live), and spans only ours read
-   rise from 438 to 522.
-
-   9.7's "the arbitrated output measured against each decoder alone" should be measured on the live
-   path, because that is what the operator's screen would carry. A retune rule that holds the port
-   still until our pitch is measured (`Tracker.HasMeasuredPitch`) would likely recover much of the
-   difference. That would be a later unit's choice; V-14 fixed the rule here.
-6. **A sound card rate that is not a whole multiple of 8000 leaves the port silent.**
-   `FldigiRateAdapter` refuses such a rate, and `CwSecondReader` follows it and says why in
-   `Unavailable`. Every character is then one-sided ours, and the tab is unchanged. The rate the
-   owner's device actually runs at is not recorded in the tree; the captures are 48,000 Hz.
-7. **The port's decision rows grow at 500 a second live.** `TraceDecisions` must be on, because
-   only the decision rows place the port's key events. `CwSecondReader` therefore rebuilds the port
-   at the same pitch after 150,000 rows (5 minutes), at the first 2 s with no key event. None of
-   the recordings is long enough to reach that bound, so its effect on the port's reading at the
-   radio is unmeasured.
-8. **Decode time rises by a quarter**, 52.22 s to 65.09 s over 690 s of real audio. It is not a
-   doubling, and it is not a keep rule. The port and the streamed filter take the extra 13 s.
-9. **Live pairing takes each settled character as it arrives.** The harness takes the largest
-   overlap first over the whole stream. Live, a settled character takes its largest-overlap port
-   reading unless a character still on our leading edge overlaps that reading more. Where the
-   competing character is not yet on the edge, the two can pair differently. That changes a record
-   and never a letter today, because the port votes nowhere. The effect is not measured apart from
-   item 5's pitch difference.
-
-with the held-out verdicts as the instruction states them. There are two mismatches:
 ## 3. What you should see
 
-**The meeting table.** These counts come from the harness, where the port is given the pitch
-instrument's median, as `parity.md` gives it. Task 2's arbiter records reproduce every count.
-Under today's vote table, the arbitrated text equals ours on every row. Short names:
-- sender not stated = real HF, no CH-* profile, SNR_2500 not measured, sender not stated in
-  CW_SPEC.md;
-- TX-ITU 15 dB = synthetic, no fading, shaped noise band, TX-ITU (1:3:1:3:7), 15 dB in the
-  passband;
-- gap 5 = the synthetic character gap of 5 units, inside TX-FARNS's 3 to 7.
+**The three-way table, harness, each recording under its own row.** In each metric cell the three figures are arbitrated · ours alone · port alone. `n.d.` means not defined: nothing to divide by. 014 is not defined on any row for any output, because neither ours nor the arbitrated output emits a dim character, and the port emits none by its mapping. 083 does not exist in the harness. Row names are shortened: "real <sender>" is `real HF, no CH-* profile, SNR_2500 not measured, sender <sender>`; "syn <gap>, <level>" is the synthetic row with that character gap and in-passband level.
 
-| condition | key | recordings | agree | disagree | one-sided ours | one-sided port | tie within 0.05 | ours votes | port votes | arbitrated = ours |
-|---|---|---|---|---|---|---|---|---|---|---|
-| real HF, all | inferred | 23 | 290 | 113 | 438 | 48 | 16 | yes | no | yes |
-| real, TX-FARNS | inferred | 1 | 30 | 2 | 17 | 2 | 0 | no (not calibrated) | no | yes |
-| real, TX-ITU | inferred | 1 | 8 | 2 | 9 | 3 | 0 | no (not measurable) | no | yes |
-| real, TX-TIGHT | inferred | 1 | 9 | 19 | 27 | 4 | 2 | no (not measurable) | no | yes |
-| real, sender not stated | inferred | 20 | 243 | 90 | 385 | 39 | 14 | yes | no | yes |
-| synthetic, all | exact | 12 | 120 | 16 | 37 | 32 | 2 | yes | no | yes |
-| synthetic, TX-ITU 0 dB | exact | 3 | 0 | 0 | 0 | 27 | 0 | no (not measurable) | no | yes |
-| synthetic, TX-ITU 5 dB | exact | 3 | 42 | 6 | 16 | 0 | 0 | no (not calibrated) | no | yes |
-| synthetic, TX-ITU 15 dB | exact | 3 | 54 | 2 | 8 | 0 | 0 | yes | no | yes |
-| synthetic, gap 5, 0 dB | exact | 1 | 0 | 0 | 0 | 4 | 0 | no (not measurable) | no | yes |
-| synthetic, gap 5, 5 dB | exact | 1 | 7 | 7 | 11 | 1 | 1 | no (not measurable) | no | yes |
-| synthetic, gap 5, 15 dB | exact | 1 | 17 | 1 | 2 | 0 | 1 | no (not measurable) | no | yes |
+| row | key | 011 MET-INVENTED | 010 MET-CER-SURE | 013 | 012 coverage | 081 MET-WBE | 084 | loses? | better alone | switch | emitted after the switch |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| **real HF, all** (set from the live path) | inferred | 33/473 · 33/473 · 62/473 | 33/436 · 33/436 · 62/239 | - | 403/473 · 403/473 · 177/473 | 37/113 · 37/113 · 86/113 | 0/3 · 0/3 · 0/3 | no | ours, dominance | arbitrate | as arbitrated |
+| real TX-FARNS | inferred | 0/44 · 0/44 · 3/44 | 0/43 · 0/43 · 3/33 | - | 43/44 · 43/44 · 30/44 | 5/11 · 5/11 · **4/11** | - | **yes: 081 to the port** | ours, order at 011 | **ours alone** | ours; text unchanged |
+| real TX-ITU (KD0UN) | inferred | 0/13 · 0/13 · 1/13 | 0/13 · 0/13 · 1/6 | - | 13/13 · 13/13 · 5/13 | 0/4 · 0/4 · 3/4 | - | no | ours, dominance | arbitrate | unchanged |
+| real TX-TIGHT | inferred | 0/6 · 0/6 · 2/6 | 0/6 · 0/6 · 2/3 | - | 6/6 · 6/6 · 1/6 | 0/1 · 0/1 · 0/1 | - | no | ours, dominance | arbitrate | unchanged |
+| real, sender not stated | inferred | 33/410 · 33/410 · 56/410 | 33/374 · 33/374 · 56/197 | - | 341/410 · 341/410 · 141/410 | 32/97 · 32/97 · 79/97 | 0/3 · 0/3 · 0/3 | no | ours, dominance | arbitrate | unchanged |
+| **synthetic, all** | exact | 14/252 · 14/252 · 34/252 | 14/173 · 14/173 · 34/168 | - | 159/252 · 159/252 · 134/252 | 44/84 · 44/84 · 56/84 | - | no | ours, dominance | arbitrate (no recording runs under it) | **6/252, 6/164, 158/252, 48/84: worse than ours alone on 012 and 081** |
+| syn TX-ITU, 0 dB | exact | 0/63 · 0/63 · 21/63 | n.d. · n.d. · 21/27 | - | 0/63 · 0/63 · **6/63** | 18/21 · 18/21 · **15/21** | - | **yes: 012, 081 to the port** | ours, order at 011 | **ours alone** | ours; text unchanged |
+| syn TX-ITU, 15 dB | exact | 1/63 · 1/63 · 2/63 | 1/64 · 1/64 · 2/56 | 0/63 · 0/63 · 9/63 | 63/63 · 63/63 · 54/63 | 0/21 · 0/21 · 3/21 | - | no | ours, dominance | arbitrate | unchanged |
+| syn TX-ITU, 5 dB | exact | 1/63 · 1/63 · 5/63 | 1/63 · 1/63 · 5/47 | - | 62/63 · 62/63 · 42/63 | 0/21 · 0/21 · 6/21 | - | no | ours, dominance | arbitrate | unchanged |
+| syn gap 5, 0 dB | exact | 0/21 · 0/21 · 2/21 | n.d. · n.d. · 2/3 | - | 0/21 · 0/21 · **1/21** | 6/7 · 6/7 · 6/7 | - | **yes: 012 to the port** | ours, order at 011 | **ours alone** | ours; text unchanged |
+| syn gap 5, 15 dB | exact | 1/21 · 1/21 · 1/21 | 1/21 · 1/21 · 1/19 | 1/21 · 1/21 · 3/21 | 20/21 · 20/21 · 18/21 | 12/7 · 12/7 · 14/7 | - | no | ours, dominance | arbitrate | unchanged |
+| syn gap 5, 5 dB | exact | 11/21 · 11/21 · **3/21** | 11/25 · 11/25 · **3/16** | - | 14/21 · 14/21 · 13/21 | 8/7 · 8/7 · 12/7 | - | **yes: 011, 010 to the port** | **port, order at 011** | **port alone** | 3/21, 3/16, 13/21, 12/7: the port's |
 
-Agreements whose two p's are also within 0.05: 28 real, 11 synthetic. They count as agreements,
-not ties (section 4 item 3). On the disagreements and ties the port's p is the higher on 17 of 129
-real spans and 0 of 18 synthetic. The mean p is 0.910 for ours against 0.748 for the port on real
-spans, and 0.898 against 0.582 on synthetic. Through the **live path**, where the port follows our
-pitch:
-- **real:** agree 228, disagree 94, tie 13, one-sided ours 522, one-sided port 40;
-- **synthetic:** 112, 16, 2, 45, 26.
+**The live path**: `CwDecoder` with the second reader, as the product runs it, grouped by the same rows. The port alone here is its live reading, rebuilt at our pitch.
 
-The live transcript equals ours on all 35 (`.run-unit/unit465-live-t3.txt`).
+| row | key | 011 | 010 | 012 | 081 | 083 (arbitrated · ours) | 084 | loses? | switch on this path |
+|---|---|---|---|---|---|---|---|---|---|
+| **real HF, all** (decides this row) | inferred | 33/473 · 33/473 · 64/453 | 33/436 · 33/436 · 64/221 | 403/473 · 403/473 · 157/453 | 37/113 · 37/113 · 78/107 | 10/331 · 10/331 | 0/3 · 0/3 · 0/3 | no; ours by dominance | **arbitrate**; emitted byte-identical to task 0's save |
+| real TX-FARNS | inferred | 0/44 · 0/44 · 5/44 | 0/43 · 0/43 · 5/26 | 43/44 · 43/44 · 21/44 | 5/11 · 5/11 · 7/11 | 0/22 · 0/22 | - | no | arbitrate |
+| real TX-ITU | inferred | 0/13 · 0/13 · 1/13 | 0/13 · 0/13 · 1/5 | 13/13 · 13/13 · 4/13 | 0/4 · 0/4 · 3/4 | 0/2 · 0/2 | - | no | arbitrate |
+| real TX-TIGHT | inferred | 0/6 · 0/6 · 2/6 | 0/6 · 0/6 · 2/4 | 6/6 · 6/6 · 2/6 | 0/1 · 0/1 · 0/1 | 1/31 · 1/31 | - | no | arbitrate |
+| real, sender not stated | inferred | 33/410 · 33/410 · 56/390 | 33/374 · 33/374 · 56/186 | 341/410 · 341/410 · 130/390 | 32/97 · 32/97 · 68/91 | 9/276 · 9/276 | 0/3 · 0/3 · 0/3 | no | arbitrate |
+| synthetic, all | exact | 14/252 · 14/252 · 29/252 | 14/173 · 14/173 · 29/154 | 159/252 · 159/252 · 125/252 | 44/84 · 44/84 · 52/84 | 1/40 · 1/40 | - | no | arbitrate |
+| syn TX-ITU, 0 dB | exact | 0/63 · 0/63 · 13/63 | n.d. · n.d. · 13/18 | 0/63 · 0/63 · 5/63 | 18/21 · 18/21 · 17/21 | n.d. | - | 012, 081 to the port | ours alone |
+| syn TX-ITU, 15 dB | exact | 1/63 · 1/63 · 2/63 | 1/64 · 1/64 · 2/56 | 63/63 · 63/63 · 54/63 | 0/21 · 0/21 · 3/21 | 0/15 · 0/15 | - | no | arbitrate |
+| syn TX-ITU, 5 dB | exact | 1/63 · 1/63 · 5/63 | 1/63 · 1/63 · 5/47 | 62/63 · 62/63 · 42/63 | 0/21 · 0/21 · 6/21 | 0/13 · 0/13 | - | no | arbitrate |
+| syn gap 5, 0 dB | exact | 0/21 · 0/21 · 4/21 | n.d. · n.d. · 4/5 | 0/21 · 0/21 · 1/21 | 6/7 · 6/7 · 7/7 | n.d. | - | 012 to the port | ours alone |
+| syn gap 5, 15 dB | exact | 1/21 · 1/21 · 3/21 | 1/21 · 1/21 · 3/13 | 20/21 · 20/21 · 10/21 | 12/7 · 12/7 · 8/7 | 0/4 · 0/4 | - | 081 to the port | ours alone (the harness sets this row: arbitrate) |
+| syn gap 5, 5 dB | exact | 11/21 · 11/21 · 2/21 | 11/25 · 11/25 · 2/15 | 14/21 · 14/21 · 13/21 | 8/7 · 8/7 · 11/7 | 1/8 · 1/8 | - | 011, 010 to the port | port alone |
 
-**1. The span rule, the vote table and the margin, as task 1 fixed them.**
-- **Span rule:** two characters, one of each decoder, are on the same span when their spans
-  overlap by at least half the shorter span. Pairs are taken one to one, largest overlap first.
-  Word boundaries are not paired.
-- **Vote table:** `calibration.md` section 2's held-out verdicts (unit 464, `efdd5d11`). A decoder
-  votes only where it is calibrated: ours on real HF, all; real, sender not stated; synthetic, all;
-  and synthetic TX-ITU 15 dB. The port votes on no condition. The harness runs each recording
-  under its own condition row; live runs under real HF, all.
-- **Margin:** 0.05 on |p ours − p port|.
-- **Emission:** where both vote, agreement takes the more confident decoder's class, a
-  disagreement goes to the higher p at its own class, and a tie goes to the higher p, dim. Where
-  one votes, its reading stands and the other's goes on the record. Where neither votes, ours is
-  emitted as it prints today. A span only ours read is emitted as ours; a span only the port read
-  is emitted only where the port votes.
+On the live path the port's "sent" can fall below the key's: 453 of 473 on real HF, all. Each stretch is located in the port's own text by the scorer's unchanged rule, and some stretches do not fit.
 
-**2. The seams task 1 named, and what each reads now.**
-- **The CW tab.** `MainWindowViewModel.StartDecoding` (`MainWindowViewModel.cs:11244-11254`) wires
-  `LeadingEdge` to `Transcript.OfferEdge` and `CharacterSettled` to `Transcript.Settle`.
-  `CharacterDecoded` carries no text; it only stamps `_lastDecodeUtc` and `_lastCharacterUtc`.
-  All three are now raised from the arbiter's output inside `CwDecoder` whenever `secondReader`
-  is on, and the app turns it on.
-- **Other readers.** `AutoCallViewModel.cs:426` and `ScanViewModel.cs:515` subscribe to
-  `CharacterSettled` too, so they read the arbiter's output.
-- **The sheet.** `CaptureAudioAsync` still writes `text` (12012) and `spanLlr` (12033), and now
-  `arbiter`, from `MainWindowViewModel.ArbitrationLine`.
-- **The chunks.** `CwDecoder.Process` walks each chunk a tracker hop at a time at the source's own
-  rate. `Step` now hands the same hop to `CwSecondReader.Read` at `_probabilistic.ToneHz` before
-  ours reads it.
-- **The port's pitch.** `FldigiCwDecoder.frequency` is readonly and set by the constructor
-  (`FldigiCwDecoder.cs:281`), and `Frequency` has only a getter (342). So the port is rebuilt at
-  the new pitch; it has no setter, and none was added.
-
-**3. How each of the five tests was watched failing first.**
-- **HM-REQ-125, 126 and 127** (`TheHigherCalibratedReadingWinsTests`, all 8 cases): red against a
-  stub `CwArbiter.Arbitrate` that returned ours unchanged with no records
-  (`.run-unit/unit465-wins-red.txt`). The 125, 126 and 127 cases failed on the character or class
-  emitted. The mirror, advisory and neither-votes cases, whose character the stub already emitted,
+**1. The metric list and the three rules, as task 1 fixed them (`9eef6850`).**
+- **Metrics:**
+  - 011 MET-INVENTED, 010 MET-CER-SURE, 012 MET-COVERAGE and 081/080 MET-WBE apply to all three outputs.
+  - 013, sent characters not emitted sure and correct over sent, applies only on the 15 dB rows.
+  - 014, dim right over dim emitted, applies to ours and the arbitrated output only; the port emits no dim.
+  - 083 applies live only, and to ours and the arbitrated output only; the port has one rendering.
+  - 084 is the named spans read exactly, over the 3 of 6 in the tree.
+  - A rate is compared as a rate. A rate whose denominator is zero is not defined.

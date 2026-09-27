@@ -59,58 +59,18 @@ WHY: one sentence, plain text, no punctuation beyond commas and full stops
 --- the section 4 text follows ---
 
 ﻿
-Nothing blocks. These are readings, recorded as the instruction asks. None is a ruling request.
-
-1. **HM-REQ-127's margin is 0.05, the requirement's recommended value, held provisionally.** It is
-   `CwArbiter.TieMargin`. The threshold is the owner's under `PHASE_PLAN.md` section 6, and its
-   absence never halts a unit.
-2. **9.4's words and 9.3's five refused mechanisms leave 9.4 no authorable route, and R86 holds
-   steps 2 to 8 behind 9.4.** This is logged for the owner, not a stop: it touches neither transmit
-   nor what the product promises the operator.
-3. **A tie is a disagreement's case.** HM-REQ-127 says "the winning character is emitted in the
-   dim class", which presumes two characters in contention. An agreement has one character, and
-   HM-REQ-125 gives it the more confident decoder's class. So two agreeing readings within 0.05 are
-   an agreement: 28 real and 11 synthetic spans. If the owner reads 127 as also dimming close
-   agreements, that is a one-line change in `CwArbiter.Decide`. It moves no letter today, because
-   the port votes nowhere.
-4. **The leading edge cannot wait for the port.** The seam is `CwDecoder.LeadingEdge` and
-   `CharacterDecoded`, to `Transcript.OfferEdge`. The port prints a character only after 2 to 4 of
-   its own dots of silence, plus its filter's 1,024-sample block (128 ms). The edge is ours' live
-   reading, which HM-REQ-083 ties to the settled pass's word boundaries. Holding it until the port
-   has printed would put a gap in the live line. So the edge is routed through the arbiter against
-   what the port has printed so far: an edge character the port has not printed yet shows as
-   one-sided, and it is re-decided at settle.
-
-   At settle, ours runs about 1 s (`DecisionDelaySeconds`) behind the audio. That is longer than
-   the port's lag at every speed in the corpus, but at 6 WPM and below the port's lag (4 dots,
-   0.8 s, plus 0.19 s) comes close to it. A slow sender's character could then settle as
-   one-sided when the port had simply not printed yet. This is not measured: the corpus has no
-   sender that slow.
-5. **The port reads less well live than in `parity.md`.** This bears on 9.7. Live, the port is
-   given our pitch in force from the first hop, and our tracker hunts from 600 Hz, so the port is
-   rebuilt at each move of 30 Hz or more: 35 retunes on the 23 real recordings. Each rebuild loses
-   the port's filter, level and speed state. The harness gives it the instrument's median pitch
-   once. Agreements on the real set fall from 290 (harness) to 228 (live), and spans only ours read
-   rise from 438 to 522.
-
-   9.7's "the arbitrated output measured against each decoder alone" should be measured on the live
-   path, because that is what the operator's screen would carry. A retune rule that holds the port
-   still until our pitch is measured (`Tracker.HasMeasuredPitch`) would likely recover much of the
-   difference. That would be a later unit's choice; V-14 fixed the rule here.
-6. **A sound card rate that is not a whole multiple of 8000 leaves the port silent.**
-   `FldigiRateAdapter` refuses such a rate, and `CwSecondReader` follows it and says why in
-   `Unavailable`. Every character is then one-sided ours, and the tab is unchanged. The rate the
-   owner's device actually runs at is not recorded in the tree; the captures are 48,000 Hz.
-7. **The port's decision rows grow at 500 a second live.** `TraceDecisions` must be on, because
-   only the decision rows place the port's key events. `CwSecondReader` therefore rebuilds the port
-   at the same pitch after 150,000 rows (5 minutes), at the first 2 s with no key event. None of
-   the recordings is long enough to reach that bound, so its effect on the port's reading at the
-   radio is unmeasured.
-8. **Decode time rises by a quarter**, 52.22 s to 65.09 s over 690 s of real audio. It is not a
-   doubling, and it is not a keep rule. The port and the streamed filter take the extra 13 s.
-9. **Live pairing takes each settled character as it arrives.** The harness takes the largest
-   overlap first over the whole stream. Live, a settled character takes its largest-overlap port
-   reading unless a character still on our leading edge overlaps that reading more. Where the
-   competing character is not yet on the edge, the two can pair differently. That changes a record
-   and never a letter today, because the port votes nowhere. The effect is not measured apart from
-   item 5's pitch difference.
+1. **Is an aggregate row a "condition" for HM-REQ-128?** This blocks 9.7.
+   - **What the tree forces.** Condition rows are nested: `synthetic, all` is the union of its six sub-rows (parity.md section 3, 458 DECIDED (4)). The rule fixed at task 1 picks the port alone on the char-gap-5 5 dB sub-row, because 011 comes first. That makes `synthetic, all` worse than ours alone on 012 and 081 while better on 011 and 010.
+   - **No per-row table meets both rows.** Holding the sub-row at ours fails the sub-row (worse than the port on 011 and 010).
+   - **Reading A.** HM-REQ-128 is judged on the rows a recording is emitted under: each harness sub-row, and real HF, all live. Then 9.7 is met as built, and part (b) drops its assertion on `synthetic, all` and `real HF, all` in the harness.
+   - **Reading B.** Every tabled row, the aggregates included, is a condition. Then the order rule, or a no-port-alone-where-a-parent-row-loses rule, has to change.
+   - **Why the owner decides.** Changing either now, after the figure is seen, is what V-14 forbids a session to do.
+   - It touches neither transmit nor the screen: the live product arbitrates.
+2. **HM-REQ-127's margin is 0.05, the requirement's recommended value, held provisionally.** Unchanged here.
+3. **9.4 has no authorable route.** Its words and the five mechanisms 9.3 named are all recorded as refused, and R86 holds steps 2 to 8 behind 9.4. This is logged for the owner, not a stop. It touches neither transmit nor what the product promises the operator.
+4. **The port alone is picked on one row.** On synthetic, 5 dB, 5-unit character gaps, the switch table picks the port alone. That row's operator would read fldigi's text at its all-sure mapping: `E Q D N 0 C T L L 0C A L L K E`, every letter sure. That is 3 of 16 sure letters wrong (ours: 11 of 25), 13 of 21 sent letters right (ours: 14), and 12 word-space errors in 7 words (ours: 8). DECIDED (6) licenses this. The live product never runs under that row.
+5. **Three of the four switches change nothing today.** The port votes nowhere, so the arbitrated output is ours on every row. "Ours alone" on TX-FARNS, TX-ITU 0 dB and char-gap-5 0 dB emits the same text as arbitrating. These switches start to matter only once a recalibration lets the port vote there.
+6. **The live path and the harness disagree on one row.** Live, syn gap 5 at 15 dB loses to the port on 081 (8/7 against ours' 12/7). In the harness it does not. By the path rule the harness sets that row (arbitrate). This matters only if a synthetic row is ever run live.
+7. **Unpaired characters are not on the live sheet under the port alone.** Live, a character only ours read is not emitted, so it never reaches the sheet. The harness records it (emitted: none). No live row runs under the port alone.
+8. **The headless dispatcher loop took app tests at two runs**: task 3's first run lost 3, and the exit round lost 1 and then 5. DECIDED (9) was applied both times, and every type lost on a rerun passed alone.
+9. **Tree mismatches from section 3.** `.run-unit\watched.rc` is absent (the runner modified `watched.cpu`). The reload's `RULES_AT` disagreement and `outcome-read`'s step titles are logged and are not this unit's.

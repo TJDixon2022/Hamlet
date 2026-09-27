@@ -1,5 +1,5 @@
 ﻿RELOAD - PHASE_CONTROL.md section 3
-measured 2026-09-27T06:17:17-04:00  root C:\Source\HamLet
+measured 2026-09-27T08:50:33-04:00  root C:\Source\HamLet
 Every line below was read from the tree at that moment. Nothing is remembered.
 
 ==============================================================
@@ -21,7 +21,7 @@ Every line below was read from the tree at that moment. Nothing is remembered.
 ==============================================================
 
   branch : main
-  HEAD   : 9cc2c74b
+  HEAD   : d34a0563
   uncommitted at the root : 3
       M PHASE_OUTCOME.md
       M PHASE_STATUS.md
@@ -420,13 +420,13 @@ Every line below was read from the tree at that moment. Nothing is remembered.
     metrics after six units were rejected on counts that no requirement states.
 
   --- PHASE_STATUS.md ---
-  16 lines, 2677 bytes
+  16 lines, 2710 bytes
   PHASE: Hamlet meets the CW requirements
   PHASE_SET: 2026-09-25
   DESCRIPTION: CW_REQUIREMENTS.md and CW_SPEC.md at the repository root are the specification from here on. Sixty-eight requirements, sixty-five of them must-tier, and section T shows fourteen groups with no test at all. This phase traces what exists, builds the metrics the requirements are written in - invented characters, sure-character error, coverage, word-boundary error, acquisition time - and then meets the requirements group by group, highest tier first. Every unit recenters on those two documents. Judged by requirement ids and, at the end, by Tim at the radio.
   CURRENT_STEP: 2
-  WORK_INSTRUCTION: 465 - one transcript from two readers: both decoders read the same samples live, an arbiter emits each character by agreement, calibrated confidence and tie
-  HEARTBEAT: 2026-09-27 06:17:15
+  WORK_INSTRUCTION: 466 - the arbitration earns its place: arbitrated, ours alone and the port alone scored on every metric of sections B and I per condition, and the arbitration switched off wherever it loses
+  HEARTBEAT: 2026-09-27 08:50:30
   STEP: 0 | done | Every CW test is traced - section T names, for each requirement, the test that proves it or the word none, and every existing CW test names the requirement it proves or is marked as proving none.
   STEP: 1 | done | The metrics exist - MET-INVENTED, MET-CER-SURE, MET-COVERAGE and MET-WBE are computed over the corpus and reported per condition, so the requirements can be measured at all.
   STEP: 2 | partial | The decoder stops printing wrong letters with confidence - MET-CER-SURE driven toward HM-REQ-010's one in a hundred, from the 54 sure-but-wrong characters unit 439 measured.
@@ -439,7 +439,7 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   STEP: 9 | partial | Two decoders read the same audio - section M: fldigi's CW modem ported faithfully as the second decoder, both scored on every recording before either votes, both confidences calibrated against the keys, and the arbitration that emits one transcript, never worse than the better decoder alone.
 
   --- PHASE_OUTCOME.md ---
-  804 lines, 175370 bytes
+  835 lines, 185251 bytes
   PHASE: Hamlet meets the CW requirements
   PHASE_SET: 2026-09-25
   DESCRIPTION: CW_REQUIREMENTS.md and CW_SPEC.md at the repository root are the specification from here on. Sixty-eight requirements, sixty-five of them must-tier, and section T shows fourteen groups with no test at all. This phase traces what exists, builds the metrics the requirements are written in - invented characters, sure-character error, coverage, word-boundary error, acquisition time - and then meets the requirements group by group, highest tier first. Every unit recenters on those two documents. Judged by requirement ids and, at the end, by Tim at the radio.
@@ -1244,6 +1244,37 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   STATE_WHY: the checkboxes say partial and the judge said done - the checkboxes win. The judge-s reason: The report shows every part of 9.6 with evidence, both decoders read the same hops live, agreement, disagreement and tie are each tested in TheHigherCalibratedReadingWinsTests, both readings go on the sheet, the tab shows one transcript with no decoder name, and each requirement was watched failing first against a named stub with a saved red printout, although two supporting HM-REQ-120 cases were not watched red and the port votes on no condition today.
   ADVANCED: yes
   ATTEMPT: 9.6 | unit 4 launched 2026-09-27T08:05:13.180Z | yes | executed | build the arbiter that runs both decoders on the same samples, aligns their characters by span, emits agreement with the more confident class, disagreement by the higher calibrated p with the uncalibrated decoder advisory, a tie within 0.05 dim, one transcript on the CW tab, both recorded on the sheet, each watched failing first on an injected synthetic case
+  
+  ## UNIT 466 - STEP 9
+  
+  STEP: 9
+  APPROACH: score the arbitrated transcript against ours alone and the port alone on every metric of sections B and I per condition on the harness and the live path, fix a per-condition switch table that turns arbitration off where it loses and emits the better decoder alone, HM-REQ-128 test watched failing first
+  MOVE: work around
+  WHY: PHASE_PLAN.md section 6's R86 bars steps 2 to 8 until 9.4 has a kept change, so the launcher's step 2 line 2.4 cannot move, and 9.4 has no route now that all five mechanisms 9.3 named are recorded refused; 9.6 is ticked, so step 9's next line in section M's order is 9.7 (HM-REQ-128), which R86 permits, no unit has attempted, and the loop test does not find.
+  STATE: partial
+  DECIDED: author's, overrulable - (1) step 9 criterion 9.7 is worked instead of the launcher's step 2 on R86 (PHASE_PLAN.md section 6), as units 462 to 465's arbiters did; 9.4 is not re-attempted; this is not a step-2 unit and 2.4's count stays at 1 of 3; (2) under R85, "every metric of section B and section I" is read as MET-CER-SURE (010), MET-INVENTED (011), MET-COVERAGE sure-and-right over sent (012), sent characters not emitted sure and correct on the 15 dB rows (013), dim right over dim emitted (014), MET-WBE (080, 081), live-against-settled boundary differences on the live path (083) and the six named spans read exactly (084), with 015 and 082 stated once as properties; a metric undefined for one output (the port emits no dim; the port has one rendering) is not compared for it, and the report says so; (3) the arbitration loses on a row when it is strictly worse than either decoder alone on any compared metric of that row, a rate compared as a rate, fixed at task 1 before any three-way figure (V-14); (4) the better decoder alone on a row is the one no worse on every compared metric if one exists, else the first metric where they differ in the order 011, 010, 013, 012, 014, 081, 083, 084 decides, honesty first as CLAUDE.md 0.0 and HM-REQ-011's "prime directive as a number" rank them, and ours on a full tie; (5) a row's switch is set from the path that emits under it - the live product runs only under real HF, all (unit 465), so that row is set from the live path and printed from the harness beside it, and every other row from the harness; (6) HM-REQ-128 is the later and more specific requirement, so where it names the port alone as the better decoder on a row, the port alone is emitted there at parity.md section 1's mapping even though HM-REQ-124 withholds its vote, the documents winning over this plan and the difference reported; (7) a row whose switch changes the emitted text reports R78's four metrics before and after and V-11 on the floor tests judged on the requirements' metrics, and a row whose text does not change must be byte-identical to task 0's arbitrated save; if a switch row would redden a floor test with a requirement metric on that floor's recording worse, that row is held at arbitrate, 9.7 stays open and the row is named; (8) 9.8 is ticked in its own commit only if 9.7 is ticked and the exit commit is green on the five, as 7.5 was ticked with its step still partial; (9) the app line's headless dispatcher-loop loss: one rerun, and any type lost again is run alone and must pass, named in the report.
+  LICENCE: PHASE_PLAN.md step 9 lines 9.4, 9.6, 9.7 and 9.8, section R (R84, R85), section 6 (R86, the second decoder is faithful, the documents win, the TBD-threshold rule, V-11 judged on the requirements' metrics, V-14, R78), R61, R72, R77, R80; CW_REQUIREMENTS.md HM-REQ-010 to 015, 080 to 084, 121, 122, 124, 127, 128, 129 and the verification table's row 128, V-11, V-13, V-14; CW_SPEC.md MET-CER-SURE, MET-INVENTED, MET-COVERAGE, MET-WBE; docs/phase-requirements/parity.md sections 1 and 3 and calibration.md section 2; unit 465's report sections 3 and 4; HM-DEC-155; HM-DEC-165; FACT-004; CLAUDE.md 0.0, 0.2 and 12.5
+  ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
+  ADVANCES: step 9 criterion 7
+  RUN: session launched with SESSION.lock already present (PID 51844, 06:21:14); the lock is the launcher's and was not taken or released by the session.
+  
+  ## UNIT 5 - STEP 9
+  
+  STEP: 9
+  APPROACH: score the arbitrated transcript against ours alone and the port alone on every metric of sections B and I per condition on the harness and the live path, fix a per-condition switch table that turns arbitration off where it loses and emits the better decoder alone, HM-REQ-128 test watched failing first
+  HIT: section 4 asked nothing inside the two stops - author's, overrulable, the loop continued - The only question asked is whether an aggregate harness row counts as a condition for HM-REQ-128, which is about a test's shape and the order rule rather than keying or what the product states to the operator, and the other items are notes for the record or already licensed.
+  MOVE: work around
+  WHY: PHASE_PLAN.md section 6's R86 bars steps 2 to 8 until 9.4 has a kept change, so the launcher's step 2 line 2.4 cannot move, and 9.4 has no route now that all five mechanisms 9.3 named are recorded refused; 9.6 is ticked, so step 9's next line in section M's order is 9.7 (HM-REQ-128), which R86 permits, no unit has attempted, and the loop test does not find.
+  DECIDED: author's, overrulable - (1) step 9 criterion 9.7 is worked instead of the launcher's step 2 on R86 (PHASE_PLAN.md section 6), as units 462 to 465's arbiters did; 9.4 is not re-attempted; this is not a step-2 unit and 2.4's count stays at 1 of 3; (2) under R85, 'every metric of section B and section I' is read as MET-CER-SURE (010), MET-INVENTED (011), MET-COVERAGE sure-and-right over sent (012), sent characters not emitted sure and correct on the 15 dB rows (013), dim right over dim emitted (014), MET-WBE (080, 081), live-against-settled boundary differences on the live path (083) and the six named spans read exactly (084), with 015 and 082 stated once as properties; a metric undefined for one output (the port emits no dim; the port has one rendering) is not compared for it, and the report says so; (3) the arbitration loses on a row when it is strictly worse than either decoder alone on any compared metric of that row, a rate compared as a rate, fixed at task 1 before any three-way figure (V-14); (4) the better decoder alone on a row is the one no worse on every compared metric if one exists, else the first metric where they differ in the order 011, 010, 013, 012, 014, 081, 083, 084 decides, honesty first as CLAUDE.md 0.0 and HM-REQ-011's 'prime directive as a number' rank them, and ours on a full tie; (5) a row's switch is set from the path that emits under it - the live product runs only under real HF, all (unit 465), so that row is set from the live path and printed from the harness beside it, and every other row from the harness; (6) HM-REQ-128 is the later and more specific requirement, so where it names the port alone as the better decoder on a row, the port alone is emitted there at parity.md section 1's mapping even though HM-REQ-124 withholds its vote, the documents winning over this plan and the difference reported; (7) a row whose switch changes the emitted text reports R78's four metrics before and after and V-11 on the floor tests judged on the requirements' metrics, and a row whose text does not change must be byte-identical to task 0's arbitrated save; if a switch row would redden a floor test with a requirement metric on that floor's recording worse, that row is held at arbitrate, 9.7 stays open and the row is named; (8) 9.8 is ticked in its own commit only if 9.7 is ticked and the exit commit is green on the five, as 7.5 was ticked with its step still partial; (9) the app line's headless dispatcher-loop loss: one rerun, and any type lost again is run alone and must pass, named in the report.
+  LICENCE: PHASE_PLAN.md step 9 lines 9.4, 9.6, 9.7 and 9.8, section R (R84, R85), section 6 (R86, the second decoder is faithful, the documents win, the TBD-threshold rule, V-11 judged on the requirements' metrics, V-14, R78), R61, R72, R77, R80; CW_REQUIREMENTS.md HM-REQ-010 to 015, 080 to 084, 121, 122, 124, 127, 128, 129 and the verification table's row 128, V-11, V-13, V-14; CW_SPEC.md MET-CER-SURE, MET-INVENTED, MET-COVERAGE, MET-WBE; docs/phase-requirements/parity.md sections 1 and 3 and calibration.md section 2; unit 465's report sections 3 and 4; HM-DEC-155; HM-DEC-165; FACT-004; CLAUDE.md 0.0, 0.2 and 12.5
+  COST: 10.305994200000004
+  ACCOMPLISHED: Hamlet now knows, signal type by signal type, whether listening with two decoders beats listening with the better one alone, and where it does not, it quietly uses the better one instead, so the transcript the operator reads is never worse for having a second opinion
+  FATE: executed
+  STATE_AFTER: partial
+  STATE_WHY: Five of the eight criteria (9.1, 9.2, 9.3, 9.5 and 9.6) were already ticked, and this unit ticked none, because its own table shows the aggregate row synthetic, all emitting worse than ours alone on 012 and 081, and HM-REQ-128's harness test is committed red. 9.4 and 9.8 also stay open. The unit's question of whether an aggregate row is a condition is about how a test is read and touches neither keying nor anything the product states to the operator, so it does not make the step blocked.
+  ADVANCED: no
+  ATTEMPT: 9.7 | unit 5 launched 2026-09-27T10:21:13.103Z | no | executed | score the arbitrated transcript against ours alone and the port alone on every metric of sections B and I per condition on the harness and the live path, fix a per-condition switch table that turns arbitration off where it loses and emits the better decoder alone, HM-REQ-128 test watched failing first
+  REASON: 9.7 | unit 5 launched 2026-09-27T10:21:13.103Z | the unit ran to completion and the criterion did not flip from unmet to met
 
   --- CLAUDE.md ---
   1405 lines, 212255 bytes
@@ -1266,17 +1297,17 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   to run every unit. Run TEST_CMD yourself if the number matters.
 
   --- PROJECT_STATUS.md ---
-  19 lines, 888 bytes
+  19 lines, 935 bytes
   PROTOCOL: 2
   PROJECT: Hamlet
   STATE: COMPLETED
   TASK: 4 of 4
-  WORK_INSTRUCTION: 465 - one transcript from two readers: both decoders read the same samples live, an arbiter emits each character by agreement, calibrated confidence and tie
+  WORK_INSTRUCTION: 466 - the arbitration earns its place: arbitrated, ours alone and the port alone scored on every metric of sections B and I per condition, and the arbitration switched off wherever it loses
   BALL: tim
   NEXT_PASTE: none
   RULES_AT: HM-DEC-165 (2026-09-19)
-  UPDATED: 2026-09-27T06:16:03-04:00
-  NOTE: Unit 465 done: 9.6 ticked - the port reads live beside ours, one arbiter, one transcript, both readings on the sheet; port advisory everywhere today, so the screen is unchanged; output.md written
+  UPDATED: 2026-09-27T08:49:23-04:00
+  NOTE: Unit 466 done, 9.7 left open: switch built, HM-REQ-128 holds on the live row and all 4 losing rows but not on the aggregate synthetic, all; owner's reading asked in output.md section 4 item 1; screen unchanged
   
   ---
   

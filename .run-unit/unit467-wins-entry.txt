@@ -1,0 +1,22 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.06]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.26]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.26]   Starting:    Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.30]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.TheHigherCalibratedReadingWinsTests.HmReq127_ATieWithinTheMarginIsDimAndNeverSure [16 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.TheHigherCalibratedReadingWinsTests.HmReq124_AnAdvisoryReadingNeverDisplacesACharacter [2 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.TheHigherCalibratedReadingWinsTests.HmReq125_AnAgreementTakesTheMoreConfidentClass [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.TheHigherCalibratedReadingWinsTests.HmReq124_AnAdvisoryReadingNeverRaisesAClass [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.TheHigherCalibratedReadingWinsTests.HmReq124_WhereNeitherVotesOursPrintsAsToday [1 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.TheHigherCalibratedReadingWinsTests.HmReq126_ADisagreementGoesToTheHigherCalibratedP [1 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.TheHigherCalibratedReadingWinsTests.HmReq126_TheMirror_OursHigherKeepsOurs [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.TheHigherCalibratedReadingWinsTests.HmReq125_TheMirror_OursMoreConfidentGivesOursClass [< 1 ms]
+
+Test Run Successful.
+Total tests: 8
+     Passed: 8
+ Total time: 0.5807 Seconds
+RC=0 WALL=1s
