@@ -1,5 +1,5 @@
 ﻿RELOAD - PHASE_CONTROL.md section 3
-measured 2026-09-26T20:39:38-04:00  root C:\Source\HamLet
+measured 2026-09-26T22:57:55-04:00  root C:\Source\HamLet
 Every line below was read from the tree at that moment. Nothing is remembered.
 
 ==============================================================
@@ -10,6 +10,7 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   UNCOMMITTED      PHASE_OUTCOME.md is modified and uncommitted.
   UNCOMMITTED      PHASE_STATUS.md is modified and uncommitted.
   UNCOMMITTED      RUN_LEDGER.md is modified and uncommitted.
+  UNCOMMITTED      output.md is modified and uncommitted.
 
   Checked: RULES_AT against CLAUDE.md section 1; the working tree
   against HEAD at the root; CLAUDE_CODE.md tree against HEAD;
@@ -21,11 +22,12 @@ Every line below was read from the tree at that moment. Nothing is remembered.
 ==============================================================
 
   branch : main
-  HEAD   : e6140891
-  uncommitted at the root : 3
+  HEAD   : 6de324b1
+  uncommitted at the root : 4
       M PHASE_OUTCOME.md
       M PHASE_STATUS.md
       M RUN_LEDGER.md
+      D output.md
 
 ==============================================================
  THE RULINGS IN FORCE
@@ -39,7 +41,7 @@ Every line below was read from the tree at that moment. Nothing is remembered.
 ==============================================================
 
   --- PHASE_PLAN.md ---
-  377 lines, 29344 bytes
+  378 lines, 29533 bytes
   PHASE: Hamlet meets the CW requirements
   PHASE_SET: 2026-09-25
   DESCRIPTION: CW_REQUIREMENTS.md and CW_SPEC.md at the repository root are the specification from here on. Sixty-eight requirements, sixty-five of them must-tier, and section T shows fourteen groups with no test at all. This phase traces what exists, builds the metrics the requirements are written in - invented characters, sure-character error, coverage, word-boundary error, acquisition time - and then meets the requirements group by group, highest tier first. Every unit recenters on those two documents. Judged by requirement ids and, at the end, by Tim at the radio.
@@ -308,11 +310,11 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   **Entry:** steps 0 and 1 met.
   
   **Exit:**
-  - [ ] 7.1 The generator produces the CH-* channel profiles `CW_SPEC.md` names, each carrying a shaped noise band and never digital silence (V-06), with the recipe for every case stated so another unit can rebuild them.
+  - [x] 7.1 The generator produces the CH-* channel profiles `CW_SPEC.md` names, each carrying a shaped noise band and never digital silence (V-06), with the recipe for every case stated so another unit can rebuild them.
   - [ ] 7.2 The generator produces the TX-* sender profiles, and HM-REQ-050 is measured on each must-tier profile at 15 dB reference.
   - [ ] 7.3 The generator produces the INT-* interference profiles, and HM-REQ-060, 061, 062 and 066 are measured against them.
   - [ ] 7.4 Every generated fixture carries its exact key by construction, and the report states what each does not prove (Â§12.5, V-04); a real capture is reported by the sender profile the spec names or as `not stated`, and is never counted toward a CH-* condition.
-  - [ ] 7.5 The three floor tests and both carry-forward lines are green at exit.
+  - [x] 7.5 The three floor tests and both carry-forward lines are green at exit.
   
   **Depends on:** steps 0 and 1. Independent of steps 2 to 6.
   
@@ -381,6 +383,7 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   - **No fixture is admitted by lowering a gate** (V-04), and **no separation limit, confirmation
     rule or plausibility bound is loosened to pass a fixture** (V-14).
   - **A run lost before any assertion** counts neither way and is re-run once.
+  - **Steps 2 to 8 are not authorable until 9.4 has a kept change** (R86). Every unit is step 9's until a technique from the second decoder is kept in ours.
   - **A CW question is answered from the documents, never raised to the owner** (R85).
   - **The second decoder is faithful, not improved** (HM-REQ-122, 129). A technique goes into
     ours, judged under R78; the second decoder stays as ported.
@@ -419,13 +422,12 @@ Every line below was read from the tree at that moment. Nothing is remembered.
     metrics after six units were rejected on counts that no requirement states.
 
   --- PHASE_STATUS.md ---
-  16 lines, 2616 bytes
+  15 lines, 2600 bytes
   PHASE: Hamlet meets the CW requirements
   PHASE_SET: 2026-09-25
   DESCRIPTION: CW_REQUIREMENTS.md and CW_SPEC.md at the repository root are the specification from here on. Sixty-eight requirements, sixty-five of them must-tier, and section T shows fourteen groups with no test at all. This phase traces what exists, builds the metrics the requirements are written in - invented characters, sure-character error, coverage, word-boundary error, acquisition time - and then meets the requirements group by group, highest tier first. Every unit recenters on those two documents. Judged by requirement ids and, at the end, by Tim at the radio.
   CURRENT_STEP: 2
-  WORK_INSTRUCTION: 460 - the three named floors settled on the owner's answer, and step 2's commits kept green
-  HEARTBEAT: 2026-09-26 20:39:35
+  WORK_INSTRUCTION: 461 - the channel profiles are generated: CH-AWGN and the Watterson CH-* conditions, proved on their own audio
   STEP: 0 | done | Every CW test is traced - section T names, for each requirement, the test that proves it or the word none, and every existing CW test names the requirement it proves or is marked as proving none.
   STEP: 1 | done | The metrics exist - MET-INVENTED, MET-CER-SURE, MET-COVERAGE and MET-WBE are computed over the corpus and reported per condition, so the requirements can be measured at all.
   STEP: 2 | partial | The decoder stops printing wrong letters with confidence - MET-CER-SURE driven toward HM-REQ-010's one in a hundred, from the 54 sure-but-wrong characters unit 439 measured.
@@ -433,12 +435,12 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   STEP: 4 | partial | The pitch is right - section J, and the acquisition requirements of section K that depend on it.
   STEP: 5 | partial | The speed is right - section D, five to forty-five words a minute, acquired cold and tracked through a change.
   STEP: 6 | partial | The text is right - sections H and I, the character table, the prosigns and the word boundaries.
-  STEP: 7 | not started | The conditions can be generated - sections E, F and G: channel, sender and interference profiles, which nothing in the tree produces today.
+  STEP: 7 | partial | The conditions can be generated - sections E, F and G: channel, sender and interference profiles, which nothing in the tree produces today.
   STEP: 8 | not started | The record and the tests are put right - last, not first: the decision log, the traceability table, the 43 tests that measure something other than what their requirement states, and the 63 requirements with no test.
   STEP: 9 | partial | Two decoders read the same audio - section M: fldigi's CW modem ported faithfully as the second decoder, both scored on every recording before either votes, both confidences calibrated against the keys, and the arbitration that emits one transcript, never worse than the better decoder alone.
 
   --- PHASE_OUTCOME.md ---
-  652 lines, 133604 bytes
+  682 lines, 141309 bytes
   PHASE: Hamlet meets the CW requirements
   PHASE_SET: 2026-09-25
   DESCRIPTION: CW_REQUIREMENTS.md and CW_SPEC.md at the repository root are the specification from here on. Sixty-eight requirements, sixty-five of them must-tier, and section T shows fourteen groups with no test at all. This phase traces what exists, builds the metrics the requirements are written in - invented characters, sure-character error, coverage, word-boundary error, acquisition time - and then meets the requirements group by group, highest tier first. Every unit recenters on those two documents. Judged by requirement ids and, at the end, by Tim at the radio.
@@ -449,7 +451,7 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   STEP: 4 | partial | The pitch is right - section J, and the acquisition requirements of section K that depend on it.
   STEP: 5 | partial | The speed is right - section D, five to forty-five words a minute, acquired cold and tracked through a change.
   STEP: 6 | partial | The text is right - sections H and I, the character table, the prosigns and the word boundaries.
-  STEP: 7 | not started | The conditions can be generated - sections E, F and G: channel, sender and interference profiles, which nothing in the tree produces today.
+  STEP: 7 | partial | The conditions can be generated - sections E, F and G: channel, sender and interference profiles, which nothing in the tree produces today.
   STEP: 8 | not started | Tim at the radio - CW on 20 m or 40 m, text on the CW tab that reads as what was sent, and he says it read.
   STEP: 9 | partial | Two decoders read the same audio - section M: fldigi's CW modem ported faithfully as the second decoder, both scored on every recording before either votes, both confidences calibrated against the keys, and the arbitration that emits one transcript, never worse than the better decoder alone.
   
@@ -1091,6 +1093,36 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   ADVANCED: no
   ATTEMPT: 2.5 | unit 7 launched 2026-09-26T23:09:20.915Z | no | executed | re-bank the three red named floors under the owner's resolution of 17:37 and R78's per-condition test, then a step-2 change judged in the working tree and committed only if kept
   REASON: 2.5 | unit 7 launched 2026-09-26T23:09:20.915Z | the unit ran to completion and the criterion did not flip from unmet to met
+  
+  ## UNIT 461 - STEP 7
+  
+  STEP: 7
+  APPROACH: build a Watterson two-path Gaussian Doppler channel layer in the test fixtures for every CH-* profile CW_SPEC 9.1 gives values for, over the shaped noise band at an SNR in the 2500 Hz reference, prove spread power delay SNR and no digital silence on its own audio, write the recipe to channels.md, then one decode point per must profile for HM-REQ-040 and 041
+  MOVE: work around
+  WHY: PHASE_PLAN.md step 7 line 7.1 asks that the generator produce the CH-* channel profiles CW_SPEC.md names, each with a shaped noise band and never digital silence (V-06), with every recipe stated, and step 7's own text says no requirement can be judged at its condition without them; step 2's only open line 2.4 is a count at 1 of 3 that no unit can flip this pass and unit 460 did not advance, so the plan's section 5 independence routes the work here, and the loop test finds no entry for this approach.
+  STATE: not started
+  DECIDED: author's, overrulable - (1) step 7 is worked instead of the launcher's step 2, on PHASE_PLAN.md section 5's independence of steps 2 to 7, because 2.4 cannot flip this pass and a second non-advancing step-2 unit would follow 460's; this unit is not a step-2 unit and leaves 2.4's count at 1 of 3; (2) the layer lives in the test fixtures beside CwFixtureGenerator and nothing under src changes, so decoding is byte-identical and R78 does not bind, with the floors held as V-11's guard; (3) the profiles are built at CW_SPEC 9.1's values with each status carried into the recipe, and CH-MDV, for which the spec gives no values, is refused by name rather than invented - where the plan's all-profiles wording and the spec differ, the spec wins and the difference is a finding; (4) under R85, spread is read as the two-sigma width of each path's Gaussian Doppler power spectrum (Watterson, CCIR Rec. 520), noise enters after fading, and SNR is the unfaded mean signal power against noise referred to 2500 Hz by CW_SPEC 8.1, the unit free to differ from a cited source; (5) 7.5 is ticked at this unit's exit only if every commit it made is green on the five, as 460's section 4 item 4 proposed for the floor lines of steps 3 to 9, and 7.2 to 7.4 are not ticked; (6) 460's section 4 is logged, not chased - items 1 and 2 bear on PARKED.md and 17:37 and are the owner's file and settled, item 3 is the count above, item 4 is applied only as (5), item 5 is kept for step 2's next author, item 6 is logged; (7) the app line's headless dispatcher-loop loss: one rerun, and any type lost again is run alone and must pass, named in the report.
+  LICENCE: PHASE_PLAN.md step 7 lines 7.1 and 7.5, sections 5 and 6, R77, R78, R80, R85; CW_SPEC.md sections 5, 8.1, 9.1, 9.2, 10 and 12; CW_REQUIREMENTS.md HM-REQ-013, 020, 040, 041, 042, verification rows 040 and 041; V-04, V-05, V-06, V-07, V-11, V-12, V-14; R72; HM-REQ-122; HM-DEC-155; HM-DEC-165; FACT-004; CLAUDE.md 0.0, 0.2 and 12.5
+  ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
+  ADVANCES: step 7 criterion 1
+  RUN: session launched with SESSION.lock already present (PID 34860, 20:43:54); the lock is the launcher's and was not taken or released by the session.
+  
+  ## UNIT 8 - STEP 7
+  
+  STEP: 7
+  APPROACH: build a Watterson two-path Gaussian Doppler channel layer in the test fixtures for every CH-* profile CW_SPEC 9.1 gives values for, over the shaped noise band at an SNR in the 2500 Hz reference, prove spread power delay SNR and no digital silence on its own audio, write the recipe to channels.md, then one decode point per must profile for HM-REQ-040 and 041
+  HIT: section 4 asked nothing inside the two stops - author's, overrulable, the loop continued - All seven items are about fixtures, test labels, metrics, sources and tooling, none touches keying or what the product states to the operator, and the section itself says none blocks the work.
+  MOVE: work around
+  WHY: PHASE_PLAN.md step 7 line 7.1 asks that the generator produce the CH-* channel profiles CW_SPEC.md names, each with a shaped noise band and never digital silence (V-06), with every recipe stated, and step 7's own text says no requirement can be judged at its condition without them; step 2's only open line 2.4 is a count at 1 of 3 that no unit can flip this pass and unit 460 did not advance, so the plan's section 5 independence routes the work here, and the loop test finds no entry for this approach.
+  DECIDED: author's, overrulable - (1) step 7 is worked instead of the launcher's step 2, on PHASE_PLAN.md section 5's independence of steps 2 to 7, because 2.4 cannot flip this pass and a second non-advancing step-2 unit would follow 460's; this unit is not a step-2 unit and leaves 2.4's count at 1 of 3; (2) the layer lives in the test fixtures beside CwFixtureGenerator and nothing under src changes, so decoding is byte-identical and R78 does not bind, with the floors held as V-11's guard; (3) the profiles are built at CW_SPEC 9.1's values with each status carried into the recipe, and CH-MDV, for which the spec gives no values, is refused by name rather than invented - where the plan's all-profiles wording and the spec differ, the spec wins and the difference is a finding; (4) under R85, spread is read as the two-sigma width of each path's Gaussian Doppler power spectrum (Watterson, CCIR Rec. 520), noise enters after fading, and SNR is the unfaded mean signal power against noise referred to 2500 Hz by CW_SPEC 8.1, the unit free to differ from a cited source; (5) 7.5 is ticked at this unit's exit only if every commit it made is green on the five, as 460's section 4 item 4 proposed for the floor lines of steps 3 to 9, and 7.2 to 7.4 are not ticked; (6) 460's section 4 is logged, not chased - items 1 and 2 bear on PARKED.md and 17:37 and are the owner's file and settled, item 3 is the count above, item 4 is applied only as (5), item 5 is kept for step 2's next author, item 6 is logged; (7) the app line's headless dispatcher-loop loss: one rerun, and any type lost again is run alone and must pass, named in the report.
+  LICENCE: PHASE_PLAN.md step 7 lines 7.1 and 7.5, sections 5 and 6, R77, R78, R80, R85; CW_SPEC.md sections 5, 8.1, 9.1, 9.2, 10 and 12; CW_REQUIREMENTS.md HM-REQ-013, 020, 040, 041, 042, verification rows 040 and 041; V-04, V-05, V-06, V-07, V-11, V-12, V-14; R72; HM-REQ-122; HM-DEC-155; HM-DEC-165; FACT-004; CLAUDE.md 0.0, 0.2 and 12.5
+  COST: 9.050192599999999
+  ACCOMPLISHED: the decoder can for the first time be put through the fading the published HF channel models describe - quiet, moderate and disturbed, low, mid and high latitude - at a signal level stated the way the requirements state it, so the fading requirements can be measured instead of assumed, and one first reading of how it copes is on the page
+  FATE: executed
+  STATE_AFTER: partial
+  STATE_WHY: Only 7.1 and 7.5 are ticked, and 7.2, 7.3 and 7.4 are open because no TX or INT profiles were produced and HM REQ 050, 060, 061, 062 and 066 were not measured. 7.1 is backed by a measured table covering ten profiles. It checks spread, power, delay, SNR and V06, and has 71 of 71 proof tests, watched red builds and channels.md as the recipe. CH MDV was refused by name because the spec gives no values for it.
+  ADVANCED: yes
+  ATTEMPT: 7.1 | unit 8 launched 2026-09-27T00:43:53.192Z | yes | executed | build a Watterson two-path Gaussian Doppler channel layer in the test fixtures for every CH-* profile CW_SPEC 9.1 gives values for, over the shaped noise band at an SNR in the 2500 Hz reference, prove spread power delay SNR and no digital silence on its own audio, write the recipe to channels.md, then one decode point per must profile for HM-REQ-040 and 041
 
   --- CLAUDE.md ---
   1405 lines, 212255 bytes
@@ -1113,17 +1145,17 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   to run every unit. Run TEST_CMD yourself if the number matters.
 
   --- PROJECT_STATUS.md ---
-  19 lines, 826 bytes
+  19 lines, 845 bytes
   PROTOCOL: 2
   PROJECT: Hamlet
   STATE: COMPLETED
   TASK: 4 of 4
-  WORK_INSTRUCTION: 460 - the three named floors settled on the owner's answer, and step 2's commits kept green
+  WORK_INSTRUCTION: 461 - the channel profiles are generated: CH-AWGN and the Watterson CH-* conditions, proved on their own audio
   BALL: code
   NEXT_PASTE: none
   RULES_AT: HM-DEC-165 (2026-09-19)
-  UPDATED: 2026-09-26T20:37:57-04:00
-  NOTE: Unit 460 done: three named floors re-banked (17:37 38, 032113 43, 032129 42), 2.5 ticked with 3 of 3 commits green; pair-speed trace found no separating mechanism, task 3 not run; output.md written
+  UPDATED: 2026-09-26T22:29:19-04:00
+  NOTE: Unit 461 done: all ten CH-* profiles with 9.1 values generated and proved, CH-MDV refused, channels.md written, 7.1 and 7.5 ticked; HM-REQ-013/040/041 read not met at their point; output.md written
   
   ---
   

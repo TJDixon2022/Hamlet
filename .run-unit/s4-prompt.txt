@@ -59,34 +59,60 @@ WHY: one sentence, plain text, no punctuation beyond commas and full stops
 --- the section 4 text follows ---
 
 ﻿
-Nothing blocks the next unit.
+Most-blocking first. None blocks 7.1 or 7.5.
 
-1. **`PARKED.md`'s header says nothing reads it back as a decision; this unit read one of its
-   `RESOLVED:` lines as the owner's answer.**
-   - *Proposed ruling:* a `RESOLVED:` line committed by the owner outside any unit is read as the
-     owner's answer to the question it quotes, and the header is amended to say so.
-   - *Reasoning:* 443 DECIDED (3) and 448 DECIDED (6) rested on that question, and the instruction
-     applied the answer. The header still says the opposite, and the next author will meet the
-     contradiction.
-   - *Rejected:* editing the header in this unit. The instruction forbids it, and it is the owner's
-     file.
-2. **The owner's 17:37 answer quotes "the condition's MET-WBE fell 58 to 52"; those are the real
-   set's totals.**
-   - *Proposed ruling:* the answer stands as written. The condition's own figure, 51 to 45 over the
-     same printouts, moved the same way, and at HEAD it is 32.
-   - *Reasoning:* the answer's premise holds on either reading, so nothing re-banked on it changes.
-   - *Rejected:* holding 17:37 red on the wording.
-3. **2.4's count is now 1 of 3.** This unit kept no `src` change. Logged, not a question.
-4. **The floor lines of steps 3 to 9 are no longer held by the floors.**
-   - *Proposed ruling:* each is ticked at its own step's next exit that reads the five green. 3.6 is
-     judged, like 2.5, over every commit of step 3 from the unit that ticks it.
-   - *Reasoning:* the plan words them per step.
-   - *Rejected:* ticking them here. The instruction forbids it, and no step-3 to step-9 commit was
-     made.
-5. **The finding for HM-REQ-010's next author**, logged under R85, not asked. 459's pair speed breaks
-   where our trigger joins elements into marks of five units or more: 031948, 031905 and 032050's
-   later reads. fldigi's tracker takes the same pairs but gives each one a sixteenth of a vote,
-   because its average is continuous and seeded, not because it refuses them. 004507's `EACH` broke
-   at a speed near the sender's own (TX-FARNS), which is not a speed-tracking failure.
-6. **The runner rewrote `.run-unit/watched.cpu` during the unit.** It was committed at task 0 as found,
-   and the exit commit carries it as it stands. Logged.
+1. **Both decoders lose the first character of a 20 wpm CH-AWGN case at the 1.0 s lead-in.** This
+   happens on the channel's audio and on the untouched generator's alike. HM-REQ-013 at +15 dB
+   therefore cannot be met by any fixture built this way, whatever the decoder does after the
+   first character.
+   - *Proposed ruling:* read V-04's "a fixture the reference decoder cannot read is a generator
+     defect" as not reaching this case. The reference decoder misreads the opening on every
+     variant, including the existing generator's own output. So this is acquisition
+     (MET-TACQ), scored as the decoder's. The channel layer keeps the generator's 1.0 s
+     lead-in.
+   - *Reasoning:* the misread moves with the seed and the pitch, not with the channel. It
+     reproduces on `CwFixtureGenerator.Generate` unchanged, at the set's own 15 dB tier. The
+     port's first-element loss at the lead-in is already on record (457's verdict (b)).
+   - *Rejected:* lengthening the lead-in or adding a run-up for the channel cases. That would
+     hide an acquisition fault from HM-REQ-013 and make the channel cases differ in shape from
+     the synthetic set.
+2. **The tree's synthetic tiers are not the SNR their labels suggest.** The generator's
+   in-passband SNR is in a 340 Hz equivalent bandwidth at 615 Hz. So the set's 15, 5 and 0 dB are
+   +6.3, -3.7 and -8.7 dB reference. They are not -7 dB for "0 dB", as a 500 Hz passband would
+   make it. `TheRequirementsAreMeasuredTests` already labels them "not restated in the 2500 Hz
+   reference".
+   - *Proposed ruling:* a later unit restates each synthetic condition label with the measured
+     offset. No fixture's bytes change.
+   - *Rejected:* restating it here, which is traceability work outside this unit (R80).
+3. **On the fading profiles our decoder is sure and wrong, not dim.** At +15 dB reference:
+   - CH-LM: MET-CER-SURE 0.80, coverage 0.21;
+   - CH-MM: MET-CER-SURE 0.53, coverage 0.43;
+   - CH-HM: MET-CER-SURE 0.97, with MET-INVENTED at 1.86 of the characters sent.
+
+   That is the 0.0 failure, and HM-REQ-011's, on every must fading profile. A sweep for HM-REQ-040
+   and 041 can now be run, but it will find no floor until the decoder copes with fading.
+   - *Proposed ruling:* the fading profiles enter the per-condition metrics as a new condition
+     set, beside the real and synthetic sets, when a decoder unit next works HM-REQ-010 or 011.
+     They are never counted into those sets' totals.
+   - *Rejected:* adding them to the floors now. A number nobody chose does not become a floor
+     in the unit that first measures it.
+4. **CH-AWGN at -7 and -10 dB reference emits nothing.** It emits nothing at all, not even
+   placeholders, on all three seeds. It matches the set's own 0 dB cases (-8.7 dB reference),
+   which also read empty. At HM-REQ-020's -7 dB reference, HM-REQ-011 holds only because nothing
+   is emitted (MET-INVENTED 0), and HM-REQ-010 has no number (0 sure characters). Logged; it is
+   step 2's, and not chased.
+5. **Unvendored sources I believe differ from, or add to, 9.1.** From memory, and not used:
+   - F.1487 states its test SNRs in a 3 kHz noise bandwidth; CW_SPEC 8.1's 2500 Hz wins here,
+     and the two differ by 0.8 dB.
+   - F.1487's mid-latitude disturbed NVIS row is 7 ms and 1 Hz.
+   - *Proposed ruling:* both are checked when 12 item 2 is vendored, and CH-MDV is built then
+     from the vendored row.
+6. **V-06's 10 ms test is not sensitive to faded noise on the fast profiles.** "Noise before
+   the fading" put blocks 44 dB under the band on the slow profiles, but not on CH-LD, CH-HM or
+   CH-HD, whose fades are shorter than a block. The type still went red on that build.
+   - *Proposed ruling:* no change. V-06 asks about silence, which it catches everywhere. Where
+     the noise enters is proved by construction and by the slow profiles.
+7. **`tools/run-carry-forward.sh` is stale.** It runs 133 engine tests, not the 178 of
+   `docs/carry-forward-tests.txt`. This unit ran the document's list.
+   - *Proposed ruling:* the tool reads its filters from the document, as
+     `.run-unit/unit461-cf.sh` does. Logged; not repaired here (CLAUDE.md 12.6).

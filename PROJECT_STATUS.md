@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-TASK: 4 of 4
-WORK_INSTRUCTION: 461 - the channel profiles are generated: CH-AWGN and the Watterson CH-* conditions, proved on their own audio
+STATE: EXECUTING
+TASK: 0 of 4
+WORK_INSTRUCTION: 462 - one fldigi technique earns its place in ours: the spike rule, the two-dot class edge or the word-space edge, screened under R78
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-26T22:29:19-04:00
-NOTE: Unit 461 done: all ten CH-* profiles with 9.1 values generated and proved, CH-MDV refused, channels.md written, 7.1 and 7.5 ticked; HM-REQ-013/040/041 read not met at their point; output.md written
+UPDATED: 2026-09-26T23:25:04-04:00
+NOTE: Task 0 figures all as at 461's exit; committing the record, the runner's writes and the entry printouts
 
 ---
 
