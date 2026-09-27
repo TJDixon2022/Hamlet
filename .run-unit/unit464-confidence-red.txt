@@ -1,0 +1,191 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:01.77]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:01.99]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:02.00]   Starting:    Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:03.19]     Hamlet.RadioEngine.Tests.Cw.EveryCharacterCarriesAConfidenceTests.OnASyntheticCaseEveryCharacterOfBothHasAProbability [FAIL]
+[xUnit.net 00:00:03.19]       40 characters without a probability:
+[xUnit.net 00:00:03.19]       ours `C` at 1.745 s: p NaN
+[xUnit.net 00:00:03.19]       ours `Q` at 2.810 s: p NaN
+[xUnit.net 00:00:03.19]       ours `C` at 4.010 s: p NaN
+[xUnit.net 00:00:03.19]       ours `Q` at 5.075 s: p NaN
+[xUnit.net 00:00:03.19]       ours `C` at 6.275 s: p NaN
+[xUnit.net 00:00:03.19]       ours `Q` at 7.345 s: p NaN
+[xUnit.net 00:00:03.19]       ours `D` at 8.280 s: p NaN
+[xUnit.net 00:00:03.19]       ours `E` at 8.545 s: p NaN
+[xUnit.net 00:00:03.19]       ours `N` at 9.345 s: p NaN
+[xUnit.net 00:00:03.19]       ours `0` at 10.810 s: p NaN
+[xUnit.net 00:00:03.19]       ours `C` at 11.745 s: p NaN
+[xUnit.net 00:00:03.19]       ours `A` at 12.280 s: p NaN
+[xUnit.net 00:00:03.19]       ours `L` at 13.075 s: p NaN
+[xUnit.net 00:00:03.19]       ours `L` at 13.875 s: p NaN
+[xUnit.net 00:00:03.19]       ours `N` at 14.675 s: p NaN
+[xUnit.net 00:00:03.19]       ours `0` at 16.145 s: p NaN
+[xUnit.net 00:00:03.19]       ours `C` at 17.080 s: p NaN
+[xUnit.net 00:00:03.19]       ours `A` at 17.610 s: p NaN
+[xUnit.net 00:00:03.19]       ours `L` at 18.410 s: p NaN
+[xUnit.net 00:00:03.19]       ours `L` at 19.210 s: p NaN
+[xUnit.net 00:00:03.19]       ours `K` at 20.280 s: p NaN
+[xUnit.net 00:00:03.19]       port `E` at sample 33792: p NaN
+[xUnit.net 00:00:03.19]       port `Q` at sample 43008: p NaN
+[xUnit.net 00:00:03.19]       port `C` at sample 52224: p NaN
+[xUnit.net 00:00:03.19]       port `Q` at sample 60416: p NaN
+[xUnit.net 00:00:03.19]       port `D` at sample 68608: p NaN
+[xUnit.net 00:00:03.19]       port `E` at sample 70656: p NaN
+[xUnit.net 00:00:03.19]       port `N` at sample 76800: p NaN
+[xUnit.net 00:00:03.19]       port `0` at sample 89088: p NaN
+[xUnit.net 00:00:03.19]       port `C` at sample 96256: p NaN
+[xUnit.net 00:00:03.19]       port `A` at sample 100352: p NaN
+[xUnit.net 00:00:03.19]       port `L` at sample 106496: p NaN
+[xUnit.net 00:00:03.19]       port `L` at sample 113664: p NaN
+[xUnit.net 00:00:03.19]       port `N` at sample 119808: p NaN
+[xUnit.net 00:00:03.19]       port `0` at sample 131072: p NaN
+[xUnit.net 00:00:03.19]       port `C` at sample 139264: p NaN
+[xUnit.net 00:00:03.19]       port `A` at sample 143360: p NaN
+[xUnit.net 00:00:03.19]       port `L` at sample 149504: p NaN
+[xUnit.net 00:00:03.19]       port `L` at sample 155648: p NaN
+[xUnit.net 00:00:03.19]       port `K` at sample 164864: p NaN
+[xUnit.net 00:00:03.19]       Stack Trace:
+[xUnit.net 00:00:03.19]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\EveryCharacterCarriesAConfidenceTests.cs(94,0): at Hamlet.RadioEngine.Tests.Cw.EveryCharacterCarriesAConfidenceTests.OnASyntheticCaseEveryCharacterOfBothHasAProbability()
+[xUnit.net 00:00:03.19]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:03.19]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:03.19]       Output:
+[xUnit.net 00:00:03.19]         ours | C | margin 103.943 | p NaN
+[xUnit.net 00:00:03.19]         ours | Q | margin 90.857 | p NaN
+[xUnit.net 00:00:03.19]         ours | C | margin 82.552 | p NaN
+[xUnit.net 00:00:03.19]         ours | Q | margin 45.68 | p NaN
+[xUnit.net 00:00:03.19]         ours | C | margin 60.161 | p NaN
+[xUnit.net 00:00:03.19]         ours | Q | margin 32.298 | p NaN
+[xUnit.net 00:00:03.19]         ours | D | margin 93.665 | p NaN
+[xUnit.net 00:00:03.19]         ours | E | margin Infinity | p NaN
+[xUnit.net 00:00:03.19]         ours | N | margin 39.923 | p NaN
+[xUnit.net 00:00:03.19]         ours | 0 | margin 34.741 | p NaN
+[xUnit.net 00:00:03.19]         ours | C | margin 41.297 | p NaN
+[xUnit.net 00:00:03.19]         ours | A | margin 61.012 | p NaN
+[xUnit.net 00:00:03.19]         ours | L | margin 75.221 | p NaN
+[xUnit.net 00:00:03.19]         ours | L | margin 117.949 | p NaN
+[xUnit.net 00:00:03.19]         ours | N | margin 46.364 | p NaN
+[xUnit.net 00:00:03.19]         ours | 0 | margin 32.026 | p NaN
+[xUnit.net 00:00:03.19]         ours | C | margin 39.661 | p NaN
+[xUnit.net 00:00:03.19]         ours | A | margin 57.409 | p NaN
+[xUnit.net 00:00:03.19]         ours | L | margin 54.962 | p NaN
+[xUnit.net 00:00:03.19]         ours | L | margin 70.016 | p NaN
+[xUnit.net 00:00:03.19]         ours | K | margin 126.741 | p NaN
+[xUnit.net 00:00:03.19]         port | E | . | p NaN
+[xUnit.net 00:00:03.19]         port | Q | --.- | p NaN
+[xUnit.net 00:00:03.19]         port | C | -.-. | p NaN
+[xUnit.net 00:00:03.19]         port | Q | --.- | p NaN
+[xUnit.net 00:00:03.19]         port | D | -.. | p NaN
+[xUnit.net 00:00:03.19]         port | E | . | p NaN
+[xUnit.net 00:00:03.19]         port | N | -. | p NaN
+[xUnit.net 00:00:03.19]         port | 0 | ----- | p NaN
+[xUnit.net 00:00:03.19]         port | C | -.-. | p NaN
+[xUnit.net 00:00:03.19]         port | A | .- | p NaN
+[xUnit.net 00:00:03.19]         port | L | .-.. | p NaN
+[xUnit.net 00:00:03.19]         port | L | .-.. | p NaN
+[xUnit.net 00:00:03.19]         port | N | -. | p NaN
+[xUnit.net 00:00:03.19]         port | 0 | ----- | p NaN
+[xUnit.net 00:00:03.19]         port | C | -.-. | p NaN
+[xUnit.net 00:00:03.19]         port | A | .- | p NaN
+[xUnit.net 00:00:03.19]         port | L | .-.. | p NaN
+[xUnit.net 00:00:03.19]         port | L | .-.. | p NaN
+[xUnit.net 00:00:03.19]         port | K | -.- | p NaN
+[xUnit.net 00:00:03.19]   Finished:    Hamlet.RadioEngine.Tests
+  Failed Hamlet.RadioEngine.Tests.Cw.EveryCharacterCarriesAConfidenceTests.OnASyntheticCaseEveryCharacterOfBothHasAProbability [1 s]
+  Error Message:
+   40 characters without a probability:
+ours `C` at 1.745 s: p NaN
+ours `Q` at 2.810 s: p NaN
+ours `C` at 4.010 s: p NaN
+ours `Q` at 5.075 s: p NaN
+ours `C` at 6.275 s: p NaN
+ours `Q` at 7.345 s: p NaN
+ours `D` at 8.280 s: p NaN
+ours `E` at 8.545 s: p NaN
+ours `N` at 9.345 s: p NaN
+ours `0` at 10.810 s: p NaN
+ours `C` at 11.745 s: p NaN
+ours `A` at 12.280 s: p NaN
+ours `L` at 13.075 s: p NaN
+ours `L` at 13.875 s: p NaN
+ours `N` at 14.675 s: p NaN
+ours `0` at 16.145 s: p NaN
+ours `C` at 17.080 s: p NaN
+ours `A` at 17.610 s: p NaN
+ours `L` at 18.410 s: p NaN
+ours `L` at 19.210 s: p NaN
+ours `K` at 20.280 s: p NaN
+port `E` at sample 33792: p NaN
+port `Q` at sample 43008: p NaN
+port `C` at sample 52224: p NaN
+port `Q` at sample 60416: p NaN
+port `D` at sample 68608: p NaN
+port `E` at sample 70656: p NaN
+port `N` at sample 76800: p NaN
+port `0` at sample 89088: p NaN
+port `C` at sample 96256: p NaN
+port `A` at sample 100352: p NaN
+port `L` at sample 106496: p NaN
+port `L` at sample 113664: p NaN
+port `N` at sample 119808: p NaN
+port `0` at sample 131072: p NaN
+port `C` at sample 139264: p NaN
+port `A` at sample 143360: p NaN
+port `L` at sample 149504: p NaN
+port `L` at sample 155648: p NaN
+port `K` at sample 164864: p NaN
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Cw.EveryCharacterCarriesAConfidenceTests.OnASyntheticCaseEveryCharacterOfBothHasAProbability() in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\EveryCharacterCarriesAConfidenceTests.cs:line 94
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Standard Output Messages:
+ ours | C | margin 103.943 | p NaN
+ ours | Q | margin 90.857 | p NaN
+ ours | C | margin 82.552 | p NaN
+ ours | Q | margin 45.68 | p NaN
+ ours | C | margin 60.161 | p NaN
+ ours | Q | margin 32.298 | p NaN
+ ours | D | margin 93.665 | p NaN
+ ours | E | margin Infinity | p NaN
+ ours | N | margin 39.923 | p NaN
+ ours | 0 | margin 34.741 | p NaN
+ ours | C | margin 41.297 | p NaN
+ ours | A | margin 61.012 | p NaN
+ ours | L | margin 75.221 | p NaN
+ ours | L | margin 117.949 | p NaN
+ ours | N | margin 46.364 | p NaN
+ ours | 0 | margin 32.026 | p NaN
+ ours | C | margin 39.661 | p NaN
+ ours | A | margin 57.409 | p NaN
+ ours | L | margin 54.962 | p NaN
+ ours | L | margin 70.016 | p NaN
+ ours | K | margin 126.741 | p NaN
+ port | E | . | p NaN
+ port | Q | --.- | p NaN
+ port | C | -.-. | p NaN
+ port | Q | --.- | p NaN
+ port | D | -.. | p NaN
+ port | E | . | p NaN
+ port | N | -. | p NaN
+ port | 0 | ----- | p NaN
+ port | C | -.-. | p NaN
+ port | A | .- | p NaN
+ port | L | .-.. | p NaN
+ port | L | .-.. | p NaN
+ port | N | -. | p NaN
+ port | 0 | ----- | p NaN
+ port | C | -.-. | p NaN
+ port | A | .- | p NaN
+ port | L | .-.. | p NaN
+ port | L | .-.. | p NaN
+ port | K | -.- | p NaN
+
+
+
+Test Run Failed.
+Total tests: 1
+     Failed: 1
+ Total time: 3.5048 Seconds
+RC=1 WALL=4s

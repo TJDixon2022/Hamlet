@@ -1,0 +1,21 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.06]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.27]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.28]   Starting:    Hamlet.RadioEngine.Tests
+[xUnit.net 00:02:16.05]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.EachDecodersConfidenceIsMeasuredTests.TheShippedConstantsAreTheWholePoolFit [2 m 15 s]
+  Standard Output Messages:
+ fit | ours | a 1.4046693133246466 | b 0.47470729666229566 | not finite 0.9210526315789473 | fitted on 571, constant on 38
+ fit | port | a 0.37776906958829465 | b level 0.18544731603622516 | c timing -0.40029810858361803 | not finite 0.7641277641277642 | fitted on 407, constant on 0
+ shipped | ours 1032 characters, port 651 characters checked against the map; 0 differ
+
+
+
+Test Run Successful.
+Total tests: 1
+     Passed: 1
+ Total time: 2.2719 Minutes
+RC=0 WALL=137s

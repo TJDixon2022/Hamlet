@@ -171,6 +171,22 @@ public sealed record CwCharacter(
     public double MarginLlr { get; init; } = double.NaN;
 
     /// <summary>
+    /// The probability that this character is right, from 0 to 1 (HM-REQ-124).
+    /// </summary>
+    /// <remarks>
+    /// <para>**A NUMBER BESIDE THE CHARACTER, NEVER A CLASS** (work instruction
+    /// 464, task 2). Set by the stream where <see cref="MarginLlr"/> is set, by
+    /// <see cref="CwCharacterProbability.Of"/>: a logistic in the rival margin,
+    /// fitted once over the keyed corpus and measured held-out by recording in
+    /// `docs/phase-requirements/calibration.md`. <see cref="Confidence"/>, the
+    /// lattice, the class rule and every threshold are untouched by it, and
+    /// nothing the operator sees reads it (HM-REQ-121, criterion 9.6).</para>
+    /// <para><see cref="double.NaN"/> where the pass that produced this
+    /// character does not set it.</para>
+    /// </remarks>
+    public double Probability { get; init; } = double.NaN;
+
+    /// <summary>
     /// The rival reading <see cref="MarginLlr"/> was taken against, dits and dahs
     /// with a space where it splits the letter; null where there is none.
     /// </summary>
