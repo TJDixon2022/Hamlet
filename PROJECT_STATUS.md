@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: EXECUTING
-TASK: 2 of 3
+STATE: COMPLETED
+TASK: 3 of 3
 WORK_INSTRUCTION: 468 - the TX-* sender profiles generated with exact keys by construction, and HM-REQ-050 measured on each must-tier fist at 15 dB on CH-AWGN
-BALL: code
+BALL: tim
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-27T11:52:19-04:00
-NOTE: Task 2 - ticking 7.2: profiles produced, proof watched red then green, recipe written, HM-REQ-050 measured (not met on all four)
+UPDATED: 2026-09-27T12:18:49-04:00
+NOTE: Unit 468 done: 7.2 ticked - five TX-* fists generated and proved, two refused; HM-REQ-050 not met on any of the four must fists (tight fist reads 1 of 21); exit round as at entry; screen unchanged
 
 ---
 
