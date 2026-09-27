@@ -82,6 +82,43 @@ public sealed class WhatFldigisFrontEndWouldLiftFact
         Forms();
     }
 
+    /// <summary>
+    /// The empty band through the stream as the tree builds it: the highest ratio
+    /// any read scored, against the gate (HM-REQ-011; work instruction 463,
+    /// section 4, check 4). Run before and with each form.
+    /// </summary>
+    [Fact]
+    public void TheEmptyBandThroughTheStream()
+    {
+        foreach (var (name, tone) in new[] { ("unadjudicated/cw-2026-08-20-014854", 600.0), ("unadjudicated/cw-2026-08-20-014935", 825.0) })
+        {
+            var audio = Load(name, true);
+            var stream = new CwProbabilisticStream(audio.SampleRate) { ToneHz = tone };
+            var chunk = (int)(audio.SampleRate * CwProbabilisticStream.ReadEverySeconds);
+            var best = double.NegativeInfinity;
+            var reads = 0;
+            var emitted = 0;
+
+            stream.CharacterSettled += _ => emitted++;
+
+            for (var at = 0; at < audio.Samples.Length; at += chunk)
+            {
+                stream.Process(audio.Samples.AsSpan(at, Math.Min(chunk, audio.Samples.Length - at)));
+
+                if (stream.Last.WordsPerMinute > 0)
+                {
+                    best = Math.Max(best, stream.Last.LikelihoodRatio);
+                    reads++;
+                }
+            }
+
+            stream.Flush();
+
+            Print(string.Create(Invariant,
+                $"gate-stream | {name} at {tone:0} Hz | {reads} reads | highest ratio {best:0.000} against the gate {CwProbabilisticDecoder.Gate:0.00}, margin {CwProbabilisticDecoder.Gate - best:0.000} | characters settled {emitted}"));
+        }
+    }
+
     private void Chains()
     {
         Print("chain | stage | ours, file:line at HEAD | fldigi, cw.cxx at 61b97f41");

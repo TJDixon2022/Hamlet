@@ -1,0 +1,181 @@
+diff --git a/src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs b/src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs
+index dcbcbe3f..88fb214e 100644
+--- a/src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs
++++ b/src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs
+@@ -634,6 +634,81 @@ public static class CwProbabilisticDecoder
+         return taper;
+     }
+ 
++    /// <summary>fldigi's AGC attack in our hops: 200 decimated samples at 500 a second, 0.4 s.</summary>
++    /// <remarks>`cwrx_attack` case 1, the default (`cw.cxx` 599-603 at `61b97f41`).</remarks>
++    public const int AgcAttackHops = 80;
++
++    /// <summary>fldigi's AGC decay in our hops: 1000 decimated samples at 500 a second, 2 s.</summary>
++    /// <remarks>`cwrx_decay` case 1, the default (`cw.cxx` 604-608 at `61b97f41`).</remarks>
++    public const int AgcDecayHops = 400;
++
++    /// <summary>
++    /// fldigi's signal, noise-floor and peak trackers, dividing each envelope
++    /// magnitude by the peak (work instruction 463, form A2; HM-REQ-129).
++    /// </summary>
++    /// <remarks>
++    /// <para>**FLDIGI'S OWN, STEP FOR STEP** (`cw.cxx` at `61b97f41`): the signal
++    /// average at the decay; the floor below it at the attack when falling under
++    /// itself and at the decay otherwise; the peak above it at the attack when
++    /// rising over itself and at the decay otherwise (610-623); then the value over
++    /// the peak, or nought where the peak is nought (629-632). They start where the
++    /// constructor starts them, at 0, 1 and 1 (347, 376-377).</para>
++    /// <para>**ONE STEP PER HOP**, where fldigi steps every decimated sample, so its
++    /// weights are carried over as the same times in our hops.</para>
++    /// </remarks>
++    public sealed class FrontEndAgc
++    {
++        private double _signal;
++        private double _floor = 1.0;
++        private double _peak = 1.0;
++
++        /// <summary>Step the trackers on one magnitude and return it over the peak.</summary>
++        /// <param name="value">The envelope magnitude.</param>
++        /// <returns>The magnitude divided by the tracked peak.</returns>
++        public double Divide(double value)
++        {
++            _signal = DecayAverage(_signal, value, AgcDecayHops);
++
++            if (value < _signal)
++            {
++                _floor = value < _floor
++                    ? DecayAverage(_floor, value, AgcAttackHops)
++                    : DecayAverage(_floor, value, AgcDecayHops);
++            }
++
++            if (value > _signal)
++            {
++                _peak = value > _peak
++                    ? DecayAverage(_peak, value, AgcAttackHops)
++                    : DecayAverage(_peak, value, AgcDecayHops);
++            }
++
++            return _peak != 0 ? value / _peak : 0;
++        }
++
++        /// <summary>`decayavg` (`misc.h` 59-63).</summary>
++        private static double DecayAverage(double average, double input, int weight)
++            => weight <= 1 ? input : ((input - average) / weight) + average;
++    }
++
++    /// <summary>A whole envelope through <see cref="FrontEndAgc"/> from its first hop.</summary>
++    /// <param name="envelope">The envelope.</param>
++    /// <returns>Each magnitude over the peak tracked to it.</returns>
++    public static double[] AgcDivided(IReadOnlyList<double> envelope)
++    {
++        ArgumentNullException.ThrowIfNull(envelope);
++
++        var agc = new FrontEndAgc();
++        var divided = new double[envelope.Count];
++
++        for (var h = 0; h < divided.Length; h++)
++        {
++            divided[h] = agc.Divide(envelope[h]);
++        }
++
++        return divided;
++    }
++
+     /// <summary>Read a stretch of audio at a known pitch.</summary>
+     /// <param name="audio">The recording.</param>
+     /// <param name="toneHz">Where the station is, from the tone tracker.</param>
+@@ -644,7 +719,9 @@ public static class CwProbabilisticDecoder
+ 
+         var envelope = Envelope(audio.Samples, audio.SampleRate, toneHz);
+ 
+-        return Decode(envelope, toneHz);
++        // **THE LEVEL IS DIVIDED BY FLDIGI'S TRACKED PEAK BEFORE THE LIKELIHOODS**
++        // (work instruction 463, form A2; `cw.cxx` 610-632).
++        return Decode(AgcDivided(envelope), toneHz);
+     }
+ 
+     /// <summary>Read an envelope that has already been taken.</summary>
+diff --git a/src/Hamlet.RadioEngine/Cw/CwProbabilisticStream.cs b/src/Hamlet.RadioEngine/Cw/CwProbabilisticStream.cs
+index 42a3a07a..f3aa7aaf 100644
+--- a/src/Hamlet.RadioEngine/Cw/CwProbabilisticStream.cs
++++ b/src/Hamlet.RadioEngine/Cw/CwProbabilisticStream.cs
+@@ -96,6 +96,11 @@ public sealed class CwProbabilisticStream
+     private readonly float[] _mixedI;
+     private readonly float[] _mixedQ;
+     private readonly double[] _envelope;
++
++    /// <summary>The same hops divided by fldigi's tracked peak, which the lattice scores (work instruction 463, form A2).</summary>
++    private readonly double[] _divided;
++
++    private CwProbabilisticDecoder.FrontEndAgc _agc = new();
+     private readonly double[] _taper;
+     private readonly double _taperWeight;
+ 
+@@ -154,6 +159,7 @@ public sealed class CwProbabilisticStream
+         _mixedI = new float[_windowSamples];
+         _mixedQ = new float[_windowSamples];
+         _envelope = new double[_windowHops];
++        _divided = new double[_windowHops];
+ 
+         // **A GUARD SET ONLY IN A METHOD NOTHING CALLS IS A GUARD THAT DOES NOT
+         // EXIST.** This was assigned in `Restart()` alone, and `Restart()` is
+@@ -332,6 +338,7 @@ public sealed class CwProbabilisticStream
+     public void Restart()
+     {
+         _envelopeCount = 0;
++        _agc = new CwProbabilisticDecoder.FrontEndAgc();
+         _mixWrite = 0;
+         _mixFilled = 0;
+         _hopsSinceRead = 0;
+@@ -388,15 +395,19 @@ public sealed class CwProbabilisticStream
+         }
+ 
+         var magnitude = Math.Sqrt((i * i) + (q * q)) / _taperWeight;
++        var divided = _agc.Divide(magnitude);
+ 
+         if (_envelopeCount < _windowHops)
+         {
++            _divided[_envelopeCount] = divided;
+             _envelope[_envelopeCount++] = magnitude;
+         }
+         else
+         {
+             Array.Copy(_envelope, 1, _envelope, 0, _windowHops - 1);
++            Array.Copy(_divided, 1, _divided, 0, _windowHops - 1);
+             _envelope[_windowHops - 1] = magnitude;
++            _divided[_windowHops - 1] = divided;
+         }
+ 
+         _hopsSeen++;
+@@ -426,6 +437,13 @@ public sealed class CwProbabilisticStream
+ 
+         Array.Copy(_envelope, window, _envelopeCount);
+ 
++        // **THE LATTICE SCORES THE WINDOW DIVIDED BY FLDIGI'S TRACKED PEAK; EVERY
++        // TIMING READ BELOW STILL READS THE ENVELOPE ITSELF** (work instruction
++        // 463, form A2; `cw.cxx` 610-632).
++        var scored = new double[_envelopeCount];
++
++        Array.Copy(_divided, scored, _envelopeCount);
++
+         // **THE UNIT IS MEASURED FROM THE WINDOW RATHER THAN SEARCHED FOR.**
+         // The speed grid was scored 0.05 apart out of 33 across its whole range
+         // on a real capture, so which hypothesis won was decided in the fourth
+@@ -503,7 +521,7 @@ public sealed class CwProbabilisticStream
+             }
+             : null;
+ 
+-        var result = CwProbabilisticDecoder.Decode(window, ToneHz, speed, gapMilliseconds);
++        var result = CwProbabilisticDecoder.Decode(scored, ToneHz, speed, gapMilliseconds);
+ 
+         // **WHERE THE MARKS SAY THE SENDER IS SLOWER THAN THE PATH WAS TIMED, THE
+         // MARKS' SPEED IS USED** (work instruction 441, task 2). A clock that runs
+@@ -525,7 +543,7 @@ public sealed class CwProbabilisticStream
+             if (marksWpm >= CwProbabilisticDecoder.SlowestWpm
+                 && marksWpm <= CwProbabilisticDecoder.FastestWpm)
+             {
+-                result = CwProbabilisticDecoder.Decode(window, ToneHz, marksWpm, gapMilliseconds);
++                result = CwProbabilisticDecoder.Decode(scored, ToneHz, marksWpm, gapMilliseconds);
+                 unitMeasured = true;
+             }
+         }

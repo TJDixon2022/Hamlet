@@ -1,0 +1,20 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.06]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.28]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.28]   Starting:    Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:04.71]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.WhatFldigisFrontEndWouldLiftFact.TheEmptyBandThroughTheStream [4 s]
+  Standard Output Messages:
+ gate-stream | unadjudicated/cw-2026-08-20-014854 at 600 Hz | 55 reads | highest ratio 0.938 against the gate 1.40, margin 0.462 | characters settled 0
+ gate-stream | unadjudicated/cw-2026-08-20-014935 at 825 Hz | 55 reads | highest ratio 0.256 against the gate 1.40, margin 1.144 | characters settled 0
+
+
+
+Test Run Successful.
+Total tests: 1
+     Passed: 1
+ Total time: 4.9875 Seconds
+RC=0 WALL=5s

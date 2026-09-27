@@ -1,0 +1,372 @@
+diff --git a/src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs b/src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs
+index dcbcbe3f..910ef745 100644
+--- a/src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs
++++ b/src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs
+@@ -634,6 +634,179 @@ public static class CwProbabilisticDecoder
+         return taper;
+     }
+ 
++    /// <summary>fldigi's own rate, `CW_SAMPLERATE` (`cw.h` 41 at `61b97f41`).</summary>
++    public const int FrontEndRate = 8000;
++
++    /// <summary>`DEC_RATIO` (`cw.h` 90): the magnitude is taken every sixteenth sample.</summary>
++    public const int FrontEndDecimation = 16;
++
++    /// <summary>The taps fldigi's low-pass lays down, `CW_FFT_SIZE` / 2 (`cw.cxx` 81, `fftfilt.cxx` 136-148).</summary>
++    public const int FrontEndTaps = 1024;
++
++    /// <summary>Where one audio sample sits on the front end's 8 kHz clock.</summary>
++    /// <param name="sample">The audio sample, counted from the first.</param>
++    /// <param name="sampleRate">Samples per second.</param>
++    /// <returns>Its position in 8 kHz samples.</returns>
++    public static double FrontEndPosition(double sample, int sampleRate)
++        => ((sample + 0.5) * FrontEndRate / sampleRate) - 0.5;
++
++    /// <summary>The audio mixed to the pitch and averaged down to 8 kHz, as fldigi reads it.</summary>
++    /// <param name="samples">The audio.</param>
++    /// <param name="sampleRate">Samples per second.</param>
++    /// <param name="toneHz">The pitch.</param>
++    /// <returns>The two quadrature arms at 8 kHz.</returns>
++    /// <remarks>
++    /// The same mixdown <see cref="Envelope(IReadOnlyList{float}, int, double, double)"/>
++    /// makes; each 8 kHz sample is the mean of the audio samples that fall in it.
++    /// </remarks>
++    public static (float[] I, float[] Q) FrontEndBaseband(
++        IReadOnlyList<float> samples, int sampleRate, double toneHz)
++    {
++        ArgumentNullException.ThrowIfNull(samples);
++
++        var count = (int)((long)samples.Count * FrontEndRate / sampleRate);
++        var sumI = new double[count];
++        var sumQ = new double[count];
++        var taken = new int[count];
++        var omega = -2 * Math.PI * toneHz / sampleRate;
++
++        for (var n = 0; n < samples.Count; n++)
++        {
++            var k = (int)((long)n * FrontEndRate / sampleRate);
++
++            if (k >= count)
++            {
++                break;
++            }
++
++            sumI[k] += samples[n] * Math.Cos(omega * n);
++            sumQ[k] += samples[n] * Math.Sin(omega * n);
++            taken[k]++;
++        }
++
++        var i = new float[count];
++        var q = new float[count];
++
++        for (var k = 0; k < count; k++)
++        {
++            if (taken[k] > 0)
++            {
++                i[k] = (float)(sumI[k] / taken[k]);
++                q[k] = (float)(sumQ[k] / taken[k]);
++            }
++        }
++
++        return (i, q);
++    }
++
++    /// <summary>
++    /// fldigi's detection envelope at one speed, one magnitude at each of the
++    /// given centres (work instruction 463, form A1; HM-REQ-129).
++    /// </summary>
++    /// <param name="i">The in-phase arm at 8 kHz.</param>
++    /// <param name="q">The quadrature arm at 8 kHz.</param>
++    /// <param name="firstIndex">The 8 kHz sample the arrays begin at, counted from the first.</param>
++    /// <param name="wordsPerMinute">The speed the read is decoded at.</param>
++    /// <param name="centres">Where each hop sits, in 8 kHz samples counted from the first.</param>
++    /// <returns>One magnitude per centre.</returns>
++    /// <remarks>
++    /// <para>**FLDIGI'S FRONT END, AT THE READ'S OWN SPEED** (`cw.cxx` at
++    /// `61b97f41`): a Blackman-windowed sinc low-pass of 1024 taps at 5 x WPM / 1.2
++    /// hertz (352-356, 396, 696; `fftfilt.cxx` 128-160), its magnitude every
++    /// sixteenth sample (704-707), and a moving average of symbollen / (2 x 16) of
++    /// those, half a dit (326, 358-361, 428-431, 708).</para>
++    /// <para>**CENTRED ON EACH HOP**, where fldigi's runs behind the audio, so the
++    /// marks it forms sit on the hops the 45 hertz envelope's do and every timing
++    /// read from that envelope still lines up. A decimated sample the arrays do not
++    /// cover counts as nought.</para>
++    /// </remarks>
++    public static double[] SpeedMatchedEnvelope(
++        float[] i, float[] q, long firstIndex, double wordsPerMinute, IReadOnlyList<double> centres)
++    {
++        ArgumentNullException.ThrowIfNull(i);
++        ArgumentNullException.ThrowIfNull(q);
++        ArgumentNullException.ThrowIfNull(centres);
++
++        var envelope = new double[centres.Count];
++
++        if (centres.Count == 0 || i.Length == 0 || wordsPerMinute <= 0)
++        {
++            return envelope;
++        }
++
++        const int half = FrontEndTaps / 2;
++        var fc = 5.0 * wordsPerMinute / 1.2 / FrontEndRate;
++        var taps = new double[FrontEndTaps];
++
++        for (var t = 0; t < FrontEndTaps; t++)
++        {
++            var sinc = t == half
++                ? 2.0 * fc
++                : Math.Sin(2 * Math.PI * fc * (t - half)) / (Math.PI * (t - half));
++            var blackman = 0.42
++                - (0.50 * Math.Cos(2.0 * Math.PI * t / FrontEndTaps))
++                + (0.08 * Math.Cos(4.0 * Math.PI * t / FrontEndTaps));
++
++            taps[t] = sinc * blackman;
++        }
++
++        var gain = taps.Sum();
++        var bfv = Math.Max(1, (int)Math.Round(FrontEndRate * 1.2 / wordsPerMinute) / (2 * FrontEndDecimation));
++        var lead = (bfv - 1) / 2;
++        var last = firstIndex + i.Length;
++
++        long First(double centre) => (long)Math.Round(centre / FrontEndDecimation) - lead;
++
++        var from = First(centres[0]);
++        var to = First(centres[^1]) + bfv;
++        var magnitudes = new double[Math.Max(0, to - from)];
++
++        for (var p = from; p < to; p++)
++        {
++            var at = p * FrontEndDecimation;
++
++            if (at < firstIndex || at >= last)
++            {
++                continue;
++            }
++
++            double si = 0;
++            double sq = 0;
++            var start = Math.Max(0, (int)(firstIndex - (at - half)));
++            var stop = Math.Min(FrontEndTaps, (int)(last - (at - half)));
++
++            for (var t = start; t < stop; t++)
++            {
++                var n = (int)(at - half + t - firstIndex);
++
++                si += taps[t] * i[n];
++                sq += taps[t] * q[n];
++            }
++
++            magnitudes[p - from] = Math.Sqrt((si * si) + (sq * sq)) / gain;
++        }
++
++        for (var h = 0; h < centres.Count; h++)
++        {
++            var first = First(centres[h]);
++            double sum = 0;
++
++            for (var b = 0; b < bfv; b++)
++            {
++                var p = first + b - from;
++
++                if (p >= 0 && p < magnitudes.Length)
++                {
++                    sum += magnitudes[p];
++                }
++            }
++
++            envelope[h] = sum / bfv;
++        }
++
++        return envelope;
++    }
++
+     /// <summary>Read a stretch of audio at a known pitch.</summary>
+     /// <param name="audio">The recording.</param>
+     /// <param name="toneHz">Where the station is, from the tone tracker.</param>
+@@ -643,8 +816,29 @@ public static class CwProbabilisticDecoder
+         ArgumentNullException.ThrowIfNull(audio);
+ 
+         var envelope = Envelope(audio.Samples, audio.SampleRate, toneHz);
++        var read = Decode(envelope, toneHz);
++
++        if (read.WordsPerMinute <= 0)
++        {
++            return read;
++        }
+ 
+-        return Decode(envelope, toneHz);
++        // **THE SPEED IS CHOSEN ON THE 45 HERTZ ENVELOPE AND ONLY THEN IS THE
++        // LATTICE SCORED ON FLDIGI'S** (work instruction 463, form A1), so the
++        // bandwidth never feeds the speed that set it.
++        var (i, q) = FrontEndBaseband(audio.Samples, audio.SampleRate, toneHz);
++        var step = Math.Max(1, (int)(audio.SampleRate * HopMilliseconds / 1000.0));
++        var centres = new double[envelope.Length];
++
++        for (var h = 0; h < centres.Length; h++)
++        {
++            centres[h] = FrontEndPosition((double)h * step, audio.SampleRate);
++        }
++
++        return Decode(
++            SpeedMatchedEnvelope(i, q, 0, read.WordsPerMinute, centres),
++            toneHz,
++            read.WordsPerMinute);
+     }
+ 
+     /// <summary>Read an envelope that has already been taken.</summary>
+diff --git a/src/Hamlet.RadioEngine/Cw/CwProbabilisticStream.cs b/src/Hamlet.RadioEngine/Cw/CwProbabilisticStream.cs
+index 42a3a07a..33dcbd0b 100644
+--- a/src/Hamlet.RadioEngine/Cw/CwProbabilisticStream.cs
++++ b/src/Hamlet.RadioEngine/Cw/CwProbabilisticStream.cs
+@@ -96,6 +96,20 @@ public sealed class CwProbabilisticStream
+     private readonly float[] _mixedI;
+     private readonly float[] _mixedQ;
+     private readonly double[] _envelope;
++
++    /// <summary>The window's audio at fldigi's 8 kHz, a ring (work instruction 463, form A1).</summary>
++    private readonly float[] _frontI;
++    private readonly float[] _frontQ;
++
++    /// <summary>How many audio samples had been mixed when each envelope hop was pushed.</summary>
++    private readonly long[] _pushedAt;
++
++    private long _mixedCount;
++    private long _frontCount;
++    private int _frontFilled;
++    private double _frontSumI;
++    private double _frontSumQ;
++    private int _frontTaken;
+     private readonly double[] _taper;
+     private readonly double _taperWeight;
+ 
+@@ -154,6 +168,13 @@ public sealed class CwProbabilisticStream
+         _mixedI = new float[_windowSamples];
+         _mixedQ = new float[_windowSamples];
+         _envelope = new double[_windowHops];
++        _pushedAt = new long[_windowHops];
++
++        // The window, its integrator and fldigi's low-pass either side of it.
++        var front = (int)(WindowSeconds * CwProbabilisticDecoder.FrontEndRate)
++            + (2 * CwProbabilisticDecoder.FrontEndTaps);
++        _frontI = new float[front];
++        _frontQ = new float[front];
+ 
+         // **A GUARD SET ONLY IN A METHOD NOTHING CALLS IS A GUARD THAT DOES NOT
+         // EXIST.** This was assigned in `Restart()` alone, and `Restart()` is
+@@ -261,6 +282,8 @@ public sealed class CwProbabilisticStream
+             _mixedI[_mixWrite] = (float)(sample * Math.Cos(_phase));
+             _mixedQ[_mixWrite] = (float)(sample * -Math.Sin(_phase));
+ 
++            FrontEnd(_mixedI[_mixWrite], _mixedQ[_mixWrite]);
++
+             _phase += step;
+ 
+             if (_phase > 2 * Math.PI)
+@@ -332,6 +355,10 @@ public sealed class CwProbabilisticStream
+     public void Restart()
+     {
+         _envelopeCount = 0;
++        _frontFilled = 0;
++        _frontSumI = 0;
++        _frontSumQ = 0;
++        _frontTaken = 0;
+         _mixWrite = 0;
+         _mixFilled = 0;
+         _hopsSinceRead = 0;
+@@ -391,12 +418,15 @@ public sealed class CwProbabilisticStream
+ 
+         if (_envelopeCount < _windowHops)
+         {
++            _pushedAt[_envelopeCount] = _mixedCount;
+             _envelope[_envelopeCount++] = magnitude;
+         }
+         else
+         {
+             Array.Copy(_envelope, 1, _envelope, 0, _windowHops - 1);
++            Array.Copy(_pushedAt, 1, _pushedAt, 0, _windowHops - 1);
+             _envelope[_windowHops - 1] = magnitude;
++            _pushedAt[_windowHops - 1] = _mixedCount;
+         }
+ 
+         _hopsSeen++;
+@@ -420,6 +450,64 @@ public sealed class CwProbabilisticStream
+         Read(settleEverything: false);
+     }
+ 
++    /// <summary>One mixed sample into the 8 kHz ring, each 8 kHz sample the mean of those in it.</summary>
++    /// <remarks>
++    /// The same rule <see cref="CwProbabilisticDecoder.FrontEndBaseband"/> keeps
++    /// offline (work instruction 463, form A1).
++    /// </remarks>
++    private void FrontEnd(float i, float q)
++    {
++        var bucket = _mixedCount * CwProbabilisticDecoder.FrontEndRate / _sampleRate;
++
++        while (bucket > _frontCount)
++        {
++            var at = (int)(_frontCount % _frontI.Length);
++
++            _frontI[at] = _frontTaken > 0 ? (float)(_frontSumI / _frontTaken) : 0f;
++            _frontQ[at] = _frontTaken > 0 ? (float)(_frontSumQ / _frontTaken) : 0f;
++            _frontFilled = Math.Min(_frontFilled + 1, _frontI.Length);
++            _frontCount++;
++            _frontSumI = 0;
++            _frontSumQ = 0;
++            _frontTaken = 0;
++        }
++
++        _frontSumI += i;
++        _frontSumQ += q;
++        _frontTaken++;
++        _mixedCount++;
++    }
++
++    /// <summary>
++    /// The window again through fldigi's front end at one speed, centred where
++    /// each hop's own integrator is centred (work instruction 463, form A1).
++    /// </summary>
++    private double[] FrontEndWindow(double wordsPerMinute)
++    {
++        var lead = (_windowSamples - 1) / 2;
++        var centres = new double[_envelopeCount];
++
++        for (var h = 0; h < _envelopeCount; h++)
++        {
++            centres[h] = CwProbabilisticDecoder.FrontEndPosition(
++                _pushedAt[h] - 1 - lead, _sampleRate);
++        }
++
++        var first = _frontCount - _frontFilled;
++        var i = new float[_frontFilled];
++        var q = new float[_frontFilled];
++
++        for (var n = 0; n < _frontFilled; n++)
++        {
++            var at = (int)((first + n) % _frontI.Length);
++
++            i[n] = _frontI[at];
++            q[n] = _frontQ[at];
++        }
++
++        return CwProbabilisticDecoder.SpeedMatchedEnvelope(i, q, first, wordsPerMinute, centres);
++    }
++
+     private void Read(bool settleEverything)
+     {
+         var window = new double[_envelopeCount];
+@@ -530,6 +618,16 @@ public sealed class CwProbabilisticStream
+             }
+         }
+ 
++        // **THE SPEED IS CHOSEN ABOVE, ON THE 45 HERTZ WINDOW, AND ONLY THEN IS THE
++        // LATTICE SCORED ON FLDIGI'S ENVELOPE AT THAT SPEED** (work instruction
++        // 463, form A1; `cw.cxx` 352-361, 396, 428-431, 696-708). The 45 hertz
++        // window still feeds every timing read below.
++        if (result.WordsPerMinute > 0)
++        {
++            result = CwProbabilisticDecoder.Decode(
++                FrontEndWindow(result.WordsPerMinute), ToneHz, result.WordsPerMinute, gapMilliseconds);
++        }
++
+         Last = result;
+         UnitWasMeasured = unitMeasured;
+ 
