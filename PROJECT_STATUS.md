@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 2 of 4
+TASK: 3 of 4
 WORK_INSTRUCTION: 463 - the last fldigi technique nobody has tried: its detection front end, a half-dit integrator at the speed in force and its AGC-normalized level, screened on every recording and kept under R78
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-27T01:29:37-04:00
-NOTE: Task 2 done: A1 and A2 both refused under R78 and reverted, patches and numbers saved; committing the evidence
+UPDATED: 2026-09-27T01:30:07-04:00
+NOTE: Task 3: nothing kept, 9.4 open; committing the refusal record for A1 and A2
 
 ---
 
