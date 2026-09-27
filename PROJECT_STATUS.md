@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 1 of 4
+TASK: 2 of 4
 WORK_INSTRUCTION: 466 - the arbitration earns its place: arbitrated, ours alone and the port alone scored on every metric of sections B and I per condition, and the arbitration switched off wherever it loses
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-27T07:05:47-04:00
-NOTE: Task 1 - rules fixed, five green (178, 278, 51, 13, 13); committing the fact header
+UPDATED: 2026-09-27T07:35:00-04:00
+NOTE: Task 2 - three-way table measured, five green; committing the fact, arbitration.md and the read-only seams
 
 ---
 

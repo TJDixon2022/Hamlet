@@ -1,11 +1,12 @@
 #!/bin/sh
 # unit 466 - read-only lookups in the tree, rewritten as needed.
 cd /c/Source/HamLet || exit 1
-grep -a "live |" .run-unit/unit465-live-t3.txt | sed 's/^ *//' | cut -c1-200
-echo "== 083 tests"
-grep -rln "HM-REQ-083" tests | head
-echo "== metric step"
-grep -n "record struct CwMetricStep" -A 8 tests/Hamlet.RadioEngine.Tests/Cw/CwMetrics.cs
-sed -n 44,58p tests/Hamlet.RadioEngine.Tests/Cw/CwMetrics.cs
-echo "== named words"
-grep -n "Fact\|void \|WEEKEND\|internal static\|class " tests/Hamlet.RadioEngine.Tests/Cw/WhatTheNamedWordsReadTests.cs | head -40
+grep -n "KeyedRecordings\b.*=\|record Keyed\|class Keyed\|Score(" tests/Hamlet.RadioEngine.Tests/Cw/WhatTheStrayLettersRestOnTests.cs | head -10
+grep -rn "static .* Whole(\|StartingPitchHz\b.*=\|static .*Folder" tests/Hamlet.RadioEngine.Tests/Cw/Fixtures/SyntheticCq.cs | head
+grep -rn "internal static .*RunPort" tests/Hamlet.RadioEngine.Tests/Cw/*.cs
+grep -rn "public static .* Measure(" tests/Hamlet.RadioEngine.Tests/Cw/Instruments/*.cs | head -3
+grep -rn "namespace" tests/Hamlet.RadioEngine.Tests/Cw/CwMetrics.cs tests/Hamlet.RadioEngine.Tests/Cw/Instruments/CwPitchInstrument.cs
+grep -rn "Folder" tests/Hamlet.RadioEngine.Tests/CapturedSignalTests.cs tests/Hamlet.RadioEngine.Tests/Cw/CapturedSignalTests.cs 2>/dev/null | head -3
+grep -rn "WordGap\b.*=\|Unreadable\b.*=" src/Hamlet.RadioEngine/Cw/MorseAlphabet.cs
+grep -n "public sealed record CwCharacter" -A 12 src/Hamlet.RadioEngine/Cw/CwCharacter.cs
+grep -rn "SecondReading\b" tests --include=*.cs -l

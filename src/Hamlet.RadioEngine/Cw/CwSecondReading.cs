@@ -18,6 +18,14 @@ public sealed record CwSecondReading(
 {
     /// <summary>True where both ends are known.</summary>
     public bool HasSpan => double.IsFinite(Start) && double.IsFinite(End) && End >= Start;
+
+    /// <summary>
+    /// True where the port printed a word space since its last character: parity.md
+    /// section 1's word boundary, kept so the port alone can be emitted and scored
+    /// with its own boundaries (HM-REQ-128; work instruction 466). The arbiter does
+    /// not read it.
+    /// </summary>
+    public bool WordGapBefore { get; init; }
 }
 
 /// <summary>
@@ -48,6 +56,7 @@ public sealed class CwSecondHarvester
     private int _row;
     private int _key;
     private int _emission;
+    private bool _spaced;
 
     /// <summary>Creates a harvester for one port run.</summary>
     /// <param name="offsetSeconds">Where the port's first sample sits on the audio clock.</param>
@@ -61,7 +70,7 @@ public sealed class CwSecondHarvester
 
     /// <summary>The readings the port has printed since the last call.</summary>
     /// <param name="port">The same port each call, run with its decisions traced.</param>
-    /// <returns>The new readings, in order; word spaces left out.</returns>
+    /// <returns>The new readings, in order; word spaces left out, each marked on the reading after it (<see cref="CwSecondReading.WordGapBefore"/>).</returns>
     public IReadOnlyList<CwSecondReading> Take(FldigiCwDecoder port)
     {
         ArgumentNullException.ThrowIfNull(port);
@@ -102,7 +111,12 @@ public sealed class CwSecondHarvester
 
             if (e.Text != MorseAlphabet.WordGap)
             {
-                found.Add(Reading(e));
+                found.Add(Reading(e) with { WordGapBefore = _spaced });
+                _spaced = false;
+            }
+            else
+            {
+                _spaced = true;
             }
 
             _ups = new List<(FldigiCwKeyEvent, long)>();

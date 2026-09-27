@@ -158,6 +158,25 @@ public sealed class CwDecoder
     /// <summary>Spans only the port read, emitted or not, since the decoder was made.</summary>
     public int SecondOnlySpans { get; private set; }
 
+    /// <summary>
+    /// Each reading the port completes, as it is harvested and before the arbiter
+    /// meets it: the port alone as it reads live, for the sheet and for scoring it
+    /// beside the arbitrated transcript (HM-REQ-128; work instruction 466). Never
+    /// the CW tab's (HM-REQ-121).
+    /// </summary>
+    public event Action<CwSecondReading>? SecondRead;
+
+    // The port's readings, raised and then held for the arbiter.
+    private void Pend(IReadOnlyList<CwSecondReading> readings)
+    {
+        foreach (var s in readings)
+        {
+            SecondRead?.Invoke(s);
+        }
+
+        _pendingSecond.AddRange(readings);
+    }
+
     private void Settle(CwCharacter c)
     {
         // **THE COUNTERS COUNT WHAT REACHED THE SCREEN** (HM-DEC-091). They
@@ -716,7 +735,7 @@ public sealed class CwDecoder
             // on with it, and it starts afresh after the gap.
             if (_second is not null)
             {
-                _pendingSecond.AddRange(_second.Skip(chunk.Samples.Length));
+                Pend(_second.Skip(chunk.Samples.Length));
             }
 
             _probabilistic.Skip(chunk.Samples.Length);
@@ -822,7 +841,7 @@ public sealed class CwDecoder
         // the same samples.
         if (_second is not null)
         {
-            _pendingSecond.AddRange(_second.Read(samples, _probabilistic.ToneHz));
+            Pend(_second.Read(samples, _probabilistic.ToneHz));
         }
 
         _probabilistic.Process(samples);
@@ -848,7 +867,7 @@ public sealed class CwDecoder
     {
         if (_second is not null)
         {
-            _pendingSecond.AddRange(_second.Flush());
+            Pend(_second.Flush());
         }
 
         _probabilistic.Flush();
