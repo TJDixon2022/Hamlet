@@ -12486,7 +12486,15 @@ public partial class MainWindowViewModel : ObservableObject
                 _ => "port-only",
             };
 
-            return $"{text}:{emitted}/{kase}/ours {Reading(a.OursText, a.OursP)}/port {Reading(a.SecondText, a.SecondP)}";
+            // HM-REQ-128: where the arbitration is switched off on the condition, the sheet says which decoder alone was used.
+            var switched = a.Switch switch
+            {
+                CwArbitrationSwitch.OursAlone => "/switch ours-alone",
+                CwArbitrationSwitch.PortAlone => "/switch port-alone",
+                _ => string.Empty,
+            };
+
+            return $"{text}:{emitted}/{kase}/ours {Reading(a.OursText, a.OursP)}/port {Reading(a.SecondText, a.SecondP)}{switched}";
         }));
 
         return $"{characters.Length} characters, each with both readings of its span ({covers})"

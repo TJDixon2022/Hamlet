@@ -1,0 +1,44 @@
+unit466 task 3: the switch built - CwSwitchTable transcribed from arbitration.md at a37a0d82, CwArbiter and CwDecoder emit under it, the sheet marks it; HM-REQ-128's test watched failing first; green on the live row and all 4 losing rows, red on synthetic, all (9.7)
+
+Switch table (CwSwitchTable.Rows, beside CwVoteTable, which is untouched):
+real TX-FARNS ours alone; synthetic TX-ITU 0 dB ours alone; char-gap-5 0 dB
+ours alone; char-gap-5 5 dB port alone; the other 8 rows arbitrate; the live
+product's row, real HF, all, arbitrate. CwArbiter.Arbitrate/Decide/DecideAlone
+take the switch: arbitrate is 465's code unchanged; ours alone emits ours as
+ours prints alone; port alone emits the port's readings at parity.md's
+mapping with its spaces (CwArbiter.Alone, GapBefore). Every span is still
+paired and recorded with the switch (CwArbitration.Switch); the sheet's
+ArbitrationLine adds /switch ours-alone or /switch port-alone, the CW tab
+shows neither. CwDecoder.Switch, CwSwitchTable.Live by default, is read in
+Arbitrated, ArbitratedEdge and Flush.
+
+TheArbitrationEarnsItsPlaceTests (HM-REQ-128):
+(a) five cases built by hand from HM-REQ-128's words - beats both, loses
+to ours, loses to the port, split decided for ours at 011, split decided
+for the port at 011. Red 4 of 5 against a Choose stubbed to answer
+arbitrate (the beats-both case green, as it must be); 5 of 5 with the rule.
+(b) harness: red with CwSwitchTable.Rows empty on exactly the 4 losing rows
+(table against rule), and on char-gap-5 5 dB also emitted worse than the
+port alone on 011, 010. With the table: every losing row green. STILL RED on
+synthetic, all: the port alone on its char-gap-5 5 dB sub-row makes the
+aggregate 158/252 coverage and 48/84 MET-WBE against ours alone's 159 and 44
+(better on 011, 6 vs 14). Holding that sub-row at ours fails the sub-row
+instead; with nested condition rows no per-row table meets both. Reported,
+not re-read after the figure (V-14). (b) live: real HF, all green.
+ThePortAloneOnTheLivePathEmitsThePortsOwnReading: CwDecoder under port alone
+on cq-18wpm-5db-char5 emits exactly the port's live reading; a check, not
+watched red.
+
+Emitted after the switch: harness, only cq-18wpm-5db-char5's text changed
+(R78 before -> after: MET-CER-SURE 11/25 -> 3/16, MET-INVENTED 11/21 ->
+3/21, coverage 14/21 -> 13/21, MET-WBE 8/7 -> 12/7); the other 34
+recordings byte-identical to task 0's arbitrated save. Live byte-identical
+to task 0's save. V-11: ours' per-recording metrics unmoved on all 35;
+floors green. Decode time over 690 s real: 64.71 s -> 64.19 s.
+git diff 19109b51 -- Cw/Second/ prints nothing.
+
+At this commit: build 0 errors; engine line 178 of 178; app line 278 of 278
+on its one rerun (first run lost 3 to the headless dispatcher loop, DECIDED
+(9)); captures 51 of 51; adjudicated 13 of 13; named 13 of 13.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -59,6 +59,9 @@ public sealed record CwArbitration(
 
     /// <summary>Where it ends, likewise.</summary>
     public double SecondEnd { get; init; } = double.NaN;
+
+    /// <summary>The switch in force on the condition (HM-REQ-128), for the sheet; never the CW tab (HM-REQ-121).</summary>
+    public CwArbitrationSwitch Switch { get; init; } = CwArbitrationSwitch.Arbitrate;
 }
 
 /// <summary>The arbiter's output over a stream: what is emitted, and a record of every span.</summary>
@@ -135,9 +138,29 @@ public static class CwArbiter
     /// <param name="vote">Who votes on the condition in force.</param>
     /// <returns>The one transcript and the record of every span.</returns>
     public static CwArbitrated Arbitrate(IReadOnlyList<CwCharacter> ours, IReadOnlyList<CwSecondReading> second, CwVote vote)
+        => Arbitrate(ours, second, vote, CwArbitrationSwitch.Arbitrate);
+
+    /// <summary>A whole stream under the switch in force on its condition (HM-REQ-128; work instruction 466).</summary>
+    /// <param name="ours">Our settled characters, word boundaries included, in order.</param>
+    /// <param name="second">The second decoder's readings.</param>
+    /// <param name="vote">Who votes on the condition in force.</param>
+    /// <param name="switchInForce"><see cref="CwSwitchTable.For"/> on the condition.</param>
+    /// <returns>
+    /// Under <see cref="CwArbitrationSwitch.Arbitrate"/>, the arbiter's transcript as unit 465 built it; under
+    /// <see cref="CwArbitrationSwitch.OursAlone"/>, ours as ours prints alone; under
+    /// <see cref="CwArbitrationSwitch.PortAlone"/>, the port's readings in order at parity.md section 1's mapping,
+    /// a word boundary where it printed a space. Every span is paired and recorded either way, with the switch.
+    /// </returns>
+    public static CwArbitrated Arbitrate(
+        IReadOnlyList<CwCharacter> ours, IReadOnlyList<CwSecondReading> second, CwVote vote, CwArbitrationSwitch switchInForce)
     {
         ArgumentNullException.ThrowIfNull(ours);
         ArgumentNullException.ThrowIfNull(second);
+
+        if (switchInForce == CwArbitrationSwitch.PortAlone)
+        {
+            return PortAloneStream(ours, second, vote);
+        }
 
         var partner = Pair(ours, second);
         var taken = new bool[second.Count];
@@ -159,7 +182,7 @@ public static class CwArbiter
             while (next < alone.Count && (!(at < double.MaxValue) || second[alone[next]].Start < at))
             {
                 var s = second[alone[next++]];
-                var (emitted, record) = DecideAlone(s, vote);
+                var (emitted, record) = DecideAlone(s, vote, switchInForce);
 
                 records.Add((s.Start, record));
 
@@ -183,7 +206,7 @@ public static class CwArbiter
                 continue;
             }
 
-            var decided = Decide(c, partner.TryGetValue(o, out var q) ? second[q] : null, vote);
+            var decided = Decide(c, partner.TryGetValue(o, out var q) ? second[q] : null, vote, switchInForce);
 
             characters.Add(decided);
             records.Add((at, decided.Arbitration!));
@@ -247,28 +270,50 @@ public static class CwArbiter
     /// <param name="vote">Who votes on the condition in force.</param>
     /// <returns>The character emitted, carrying its <see cref="CwCharacter.Arbitration"/>.</returns>
     public static CwCharacter Decide(CwCharacter ours, CwSecondReading? second, CwVote vote)
+        => Decide(ours, second, vote, CwArbitrationSwitch.Arbitrate);
+
+    /// <summary>One of our characters and the second decoder's reading of its span under the switch in force.</summary>
+    /// <param name="ours">Our character; never a word boundary.</param>
+    /// <param name="second">The second decoder's character on the same span, or null.</param>
+    /// <param name="vote">Who votes on the condition in force.</param>
+    /// <param name="switchInForce">Arbitrate or ours alone; the port alone is emitted by <see cref="Alone"/>.</param>
+    /// <returns>The character emitted, carrying its <see cref="CwCharacter.Arbitration"/> and the switch.</returns>
+    public static CwCharacter Decide(CwCharacter ours, CwSecondReading? second, CwVote vote, CwArbitrationSwitch switchInForce)
     {
         ArgumentNullException.ThrowIfNull(ours);
+
+        if (switchInForce == CwArbitrationSwitch.PortAlone)
+        {
+            throw new ArgumentException("the port alone is emitted from the port's readings, by CwArbiter.Alone", nameof(switchInForce));
+        }
 
         if (second is null)
         {
             // One-sided: ours as it prints today, whether or not it votes (465 DECIDED (4)).
             return ours with
             {
-                Arbitration = new CwArbitration(CwReader.Ours, CwArbitrationCase.OneSidedOurs, ours.Text, ours.Probability, null, double.NaN, vote),
+                Arbitration = new CwArbitration(CwReader.Ours, CwArbitrationCase.OneSidedOurs, ours.Text, ours.Probability, null, double.NaN, vote)
+                {
+                    Switch = switchInForce,
+                },
             };
         }
 
         var agree = ours.Text == second.Text;
-        var kase = agree ? CwArbitrationCase.Agree
-            : Math.Abs(ours.Probability - second.P) <= TieMargin ? CwArbitrationCase.Tie
-            : CwArbitrationCase.Disagree;
+        var kase = CaseOf(ours, second);
 
         CwArbitration Record(CwReader emitted) => new(emitted, kase, ours.Text, ours.Probability, second.Text, second.P, vote)
         {
             SecondStart = second.Start,
             SecondEnd = second.End,
+            Switch = switchInForce,
         };
+
+        // HM-REQ-128: the arbitration switched off, ours as ours prints alone; the port's reading on the record only.
+        if (switchInForce == CwArbitrationSwitch.OursAlone)
+        {
+            return ours with { Arbitration = Record(CwReader.Ours) };
+        }
 
         // Only one votes, or neither: the voter's reading at its own class; with neither, ours as today (HM-REQ-124).
         if (!vote.Ours || !vote.Second)
@@ -311,29 +356,133 @@ public static class CwArbiter
     /// <param name="vote">Who votes on the condition in force.</param>
     /// <returns>The character emitted or null, and the record.</returns>
     public static (CwCharacter? Emitted, CwArbitration Record) DecideAlone(CwSecondReading second, CwVote vote)
+        => DecideAlone(second, vote, CwArbitrationSwitch.Arbitrate);
+
+    /// <summary>A span only the second decoder read, under the switch in force.</summary>
+    /// <param name="second">Its reading.</param>
+    /// <param name="vote">Who votes on the condition in force.</param>
+    /// <param name="switchInForce">Emitted where the port votes under arbitrate, always under the port alone, never under ours alone.</param>
+    /// <returns>The character emitted or null, and the record.</returns>
+    public static (CwCharacter? Emitted, CwArbitration Record) DecideAlone(CwSecondReading second, CwVote vote, CwArbitrationSwitch switchInForce)
     {
         ArgumentNullException.ThrowIfNull(second);
 
-        var record = new CwArbitration(vote.Second ? CwReader.Second : null, CwArbitrationCase.OneSidedSecond, null, double.NaN, second.Text, second.P, vote)
+        var emit = switchInForce switch
+        {
+            CwArbitrationSwitch.PortAlone => true,
+            CwArbitrationSwitch.OursAlone => false,
+            _ => vote.Second,
+        };
+        var record = new CwArbitration(emit ? CwReader.Second : null, CwArbitrationCase.OneSidedSecond, null, double.NaN, second.Text, second.P, vote)
         {
             SecondStart = second.Start,
             SecondEnd = second.End,
+            Switch = switchInForce,
         };
 
-        if (!vote.Second)
+        return emit ? (FromSecond(second) with { Arbitration = record }, record) : (null, record);
+    }
+
+    /// <summary>
+    /// The port alone on one of its readings (HM-REQ-128; 466 DECIDED (6)): its
+    /// character at parity.md section 1's mapping on its own clock, with ours'
+    /// reading of the same span, if any, on the record.
+    /// </summary>
+    /// <param name="second">The port's reading.</param>
+    /// <param name="ours">Ours on the same span, or null.</param>
+    /// <param name="vote">Who votes on the condition in force.</param>
+    /// <returns>The character emitted.</returns>
+    public static CwCharacter Alone(CwSecondReading second, CwCharacter? ours, CwVote vote)
+    {
+        ArgumentNullException.ThrowIfNull(second);
+
+        if (ours is null)
         {
-            return (null, record);
+            return DecideAlone(second, vote, CwArbitrationSwitch.PortAlone).Emitted!;
         }
 
+        var record = new CwArbitration(CwReader.Second, CaseOf(ours, second), ours.Text, ours.Probability, second.Text, second.P, vote)
+        {
+            SecondStart = second.Start,
+            SecondEnd = second.End,
+            Switch = CwArbitrationSwitch.PortAlone,
+        };
+
+        return FromSecond(second) with { Arbitration = record };
+    }
+
+    /// <summary>The word boundary the port printed before a reading, at parity.md section 1's mapping, or null where it printed none.</summary>
+    /// <param name="second">The reading.</param>
+    /// <returns>A word boundary on the reading's clock, or null.</returns>
+    public static CwCharacter? GapBefore(CwSecondReading second)
+    {
+        ArgumentNullException.ThrowIfNull(second);
+
+        return second.WordGapBefore
+            ? new CwCharacter(MorseAlphabet.WordGap, CwConfidence.High, 1, string.Empty, double.NaN, second.WordsPerMinute, FromSecond(second).At)
+            : null;
+    }
+
+    // The port alone over a whole stream: its readings in order, each span still paired and recorded.
+    private static CwArbitrated PortAloneStream(IReadOnlyList<CwCharacter> ours, IReadOnlyList<CwSecondReading> second, CwVote vote)
+    {
+        var partner = Pair(ours, second);
+        var oursOf = partner.ToDictionary(p => p.Value, p => p.Key);
+        var characters = new List<CwCharacter>();
+        var records = new List<(double At, CwArbitration Record)>();
+
+        for (var q = 0; q < second.Count; q++)
+        {
+            var s = second[q];
+
+            if (GapBefore(s) is { } gap)
+            {
+                characters.Add(gap);
+            }
+
+            var c = Alone(s, oursOf.TryGetValue(q, out var o) ? ours[o] : null, vote);
+
+            characters.Add(c);
+            records.Add((s.HasSpan ? s.Start : c.At.TotalSeconds, c.Arbitration!));
+        }
+
+        // Ours' readings no port reading met: on the record, not emitted.
+        for (var o = 0; o < ours.Count; o++)
+        {
+            if (ours[o].IsWordGap || partner.ContainsKey(o))
+            {
+                continue;
+            }
+
+            var c = ours[o];
+            var at = SpanOf(c).Start is var start && double.IsFinite(start) ? start : c.At.TotalSeconds;
+
+            records.Add((at, new CwArbitration(null, CwArbitrationCase.OneSidedOurs, c.Text, c.Probability, null, double.NaN, vote)
+            {
+                Switch = CwArbitrationSwitch.PortAlone,
+            }));
+        }
+
+        return new CwArbitrated(characters, records.OrderBy(r => r.At).Select(r => r.Record).ToList());
+    }
+
+    // How two readings of one span stand.
+    private static CwArbitrationCase CaseOf(CwCharacter ours, CwSecondReading second)
+        => ours.Text == second.Text ? CwArbitrationCase.Agree
+            : Math.Abs(ours.Probability - second.P) <= TieMargin ? CwArbitrationCase.Tie
+            : CwArbitrationCase.Disagree;
+
+    // The port's character on its own clock, as parity.md section 1 maps it: its text and class, its p.
+    private static CwCharacter FromSecond(CwSecondReading second)
+    {
         var hops = second.HasSpan ? (int)Math.Round((second.End - second.Start) * 1000.0 / CwProbabilisticDecoder.HopMilliseconds) : 0;
         var at = TimeSpan.FromSeconds(double.IsFinite(second.End) ? second.End : 0);
 
-        return (new CwCharacter(second.Text, second.Confidence, second.P, second.Pattern, double.NaN, second.WordsPerMinute, at)
+        return new CwCharacter(second.Text, second.Confidence, second.P, second.Pattern, double.NaN, second.WordsPerMinute, at)
         {
             SpanHops = hops,
             Probability = second.P,
-            Arbitration = record,
-        }, record);
+        };
     }
 
     // The second decoder's character in our character's place: its text, pattern, class and p; our clock.

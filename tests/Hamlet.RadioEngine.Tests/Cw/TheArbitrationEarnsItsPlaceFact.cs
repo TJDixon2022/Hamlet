@@ -304,9 +304,9 @@ public sealed class TheArbitrationEarnsItsPlaceFact
 
     /// <summary>One recording through <see cref="CwDecoder"/> hop by hop, as the metrics feed it, with its leading edge kept.</summary>
     internal static (IReadOnlyList<CwCharacter> Settled, Boundaries Live, IReadOnlyList<CwSecondReading> Readings) Drive(
-        float[] samples, int rate, double hz, bool second)
+        float[] samples, int rate, double hz, bool second, CwArbitrationSwitch switchInForce = CwArbitrationSwitch.Arbitrate)
     {
-        var decoder = new CwDecoder(rate, hz, second);
+        var decoder = new CwDecoder(rate, hz, second) { Switch = switchInForce };
         var settled = new List<CwCharacter>();
         var readings = new List<CwSecondReading>();
         var shown = new Dictionary<(long, long), (bool Gap, bool NoGap)>();
@@ -426,7 +426,9 @@ public sealed class TheArbitrationEarnsItsPlaceFact
     }
 
     /// <summary>The span recordings read three ways on both paths: harness and live, each as the three outputs.</summary>
-    internal static IReadOnlyDictionary<string, IReadOnlyList<IReadOnlyList<CwCharacter>>> SpanReadings(string recording)
+    /// <param name="recording">One of <see cref="WhatTheNamedWordsReadTests.Recordings"/>.</param>
+    /// <param name="switched">True for the output emitted under <see cref="CwSwitchTable"/> in place of the arbitrated one (work instruction 466, task 3).</param>
+    internal static IReadOnlyDictionary<string, IReadOnlyList<IReadOnlyList<CwCharacter>>> SpanReadings(string recording, bool switched = false)
     {
         var path = Path.Combine(CapturedSignalTests.Folder, recording + ".wav");
         var audio = WavAudio.Read(path);
@@ -438,8 +440,10 @@ public sealed class TheArbitrationEarnsItsPlaceFact
         port.rx_process(FldigiRateAdapter.ToFldigiRate(audio.Samples, audio.SampleRate));
 
         var second = CwSecondHarvester.Of(port);
-        var arbitrated = CwArbiter.Arbitrate(ours, second, CwVoteTable.For(TheRequirementsAreMeasuredTests.RealCondition(recording))).Characters;
-        var (live, _, readings) = Drive(audio.Samples, audio.SampleRate, 600, true);
+        var condition = TheRequirementsAreMeasuredTests.RealCondition(recording);
+        var arbitrated = CwArbiter.Arbitrate(ours, second, CwVoteTable.For(condition),
+            switched ? CwSwitchTable.For(condition) : CwArbitrationSwitch.Arbitrate).Characters;
+        var (live, _, readings) = Drive(audio.Samples, audio.SampleRate, 600, true, switched ? CwSwitchTable.Live : CwArbitrationSwitch.Arbitrate);
 
         return new Dictionary<string, IReadOnlyList<IReadOnlyList<CwCharacter>>>(StringComparer.Ordinal)
         {
@@ -476,7 +480,8 @@ public sealed class TheArbitrationEarnsItsPlaceFact
         public CwSwitchVerdict Verdict => CwSwitchTable.Choose(Figures[0], Figures[1], Figures[2]);
     }
 
-    private static IReadOnlyList<PathRow> Rows(IReadOnlyList<Three> threes, IReadOnlyDictionary<string, (int Exact, int Measurable)[]> spans)
+    /// <summary>A path's rows: the two sets, then each condition in ordinal order, the three outputs' figures on each; the named spans' counts under key "x".</summary>
+    internal static IReadOnlyList<PathRow> Rows(IReadOnlyList<Three> threes, IReadOnlyDictionary<string, (int Exact, int Measurable)[]> spans)
     {
         var rows = new List<PathRow>();
 
@@ -646,6 +651,36 @@ public sealed class TheArbitrationEarnsItsPlaceFact
         File.WriteAllText(Path.Combine(CwToneSurveyTests.RepositoryRoot(), "docs", "phase-requirements", "arbitration.md"), md);
 
         Assert.Equal(BothDecodersAreScoredAlikeTests.Rows.Count, live.Count);
+    }
+
+    /// <remarks>
+    /// Work instruction 466 task 3, item 4: the output emitted in the harness under
+    /// <see cref="CwSwitchTable.For"/>, each recording under its own row, printed in
+    /// task 0's save format, so each row's text is compared with task 0's save of
+    /// the arbitrated transcript line by line. Asserts only that all 35 were read.
+    /// </remarks>
+    [Fact]
+    public void TheEmittedTranscriptWithClassAndP()
+    {
+        var harness = Harness();
+
+        foreach (var (t, second, r) in harness)
+        {
+            var s = CwSwitchTable.For(r.Condition);
+            var emitted = CwArbiter.Arbitrate(r.Ours.Settled, second, CwVoteTable.For(r.Condition), s).Characters;
+
+            Print($"switch in force | {t.Name} | {SwitchWord(s)}");
+
+            for (var i = 0; i < emitted.Count; i++)
+            {
+                var c = emitted[i];
+
+                Print(string.Create(Invariant,
+                    $"save | ours | {t.Name} | {i} | {WhereTheTwoReadingsMeetFact.Visible(c.Text)} | {WhereTheTwoReadingsMeetFact.ClassOf(c)} | {WhereTheTwoReadingsMeetFact.P(c.Probability)}"));
+            }
+        }
+
+        Assert.Equal(BothDecodersAreScoredAlikeTests.Rows.Count, harness.Count);
     }
 
     private static string Markdown(

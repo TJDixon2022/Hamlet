@@ -214,9 +214,15 @@ public sealed class CwDecoder
     /// </remarks>
     private IReadOnlyList<CwCharacter> Arbitrated(CwCharacter c)
     {
-        if (_second is null || c.IsWordGap)
+        if (_second is null)
         {
             return new[] { c };
+        }
+
+        // HM-REQ-128: under the port alone, ours' word boundaries are not emitted; the port's are.
+        if (c.IsWordGap)
+        {
+            return Switch == CwArbitrationSwitch.PortAlone ? Array.Empty<CwCharacter>() : new[] { c };
         }
 
         var emitted = new List<CwCharacter>();
@@ -231,11 +237,7 @@ public sealed class CwDecoder
             {
                 _pendingSecond.RemoveAt(i);
                 SecondOnlySpans++;
-
-                if (CwArbiter.DecideAlone(s, Vote).Emitted is { } alone)
-                {
-                    emitted.Add(alone);
-                }
+                OneSided(s, emitted);
 
                 continue;
             }
@@ -273,18 +275,59 @@ public sealed class CwDecoder
             _pendingSecond.RemoveAt(best);
         }
 
-        emitted.Add(CwArbiter.Decide(c, partner, Vote));
+        if (Switch != CwArbitrationSwitch.PortAlone)
+        {
+            emitted.Add(CwArbiter.Decide(c, partner, Vote, Switch));
+
+            return emitted;
+        }
+
+        // The port alone: its readings in the order it read them. Ours with no
+        // partner is not emitted; a partner goes out after any earlier port reading.
+        if (partner is not null)
+        {
+            foreach (var s in _pendingSecond.Where(s => s.HasSpan && s.Start < partner.Start).ToList())
+            {
+                _pendingSecond.Remove(s);
+                SecondOnlySpans++;
+                OneSided(s, emitted);
+            }
+
+            if (CwArbiter.GapBefore(partner) is { } gap)
+            {
+                emitted.Add(gap);
+            }
+
+            emitted.Add(CwArbiter.Alone(partner, c, Vote));
+        }
 
         return emitted;
     }
 
+    // A span only the port read, under the switch in force; under the port alone with the space it printed before it.
+    private void OneSided(CwSecondReading s, List<CwCharacter> emitted)
+    {
+        if (CwArbiter.DecideAlone(s, Vote, Switch).Emitted is not { } alone)
+        {
+            return;
+        }
+
+        if (Switch == CwArbitrationSwitch.PortAlone && CwArbiter.GapBefore(s) is { } gap)
+        {
+            emitted.Add(gap);
+        }
+
+        emitted.Add(alone);
+    }
+
     /// <summary>Our leading edge through the arbiter against what the port has printed so far; nothing is taken from the pending readings.</summary>
+    /// <remarks>Under the port alone (HM-REQ-128), the edge shows the port's reading of each of our provisional spans it has read, and nothing of ours.</remarks>
     private IReadOnlyList<CwCharacter> ArbitratedEdge(IReadOnlyList<CwCharacter> edge)
         => edge.Select(x =>
             {
                 if (x.IsWordGap)
                 {
-                    return x;
+                    return Switch == CwArbitrationSwitch.PortAlone ? null : x;
                 }
 
                 var span = CwArbiter.SpanOf(x);
@@ -295,8 +338,11 @@ public sealed class CwDecoder
                     .Select(p => p.s)
                     .FirstOrDefault();
 
-                return CwArbiter.Decide(x, partner, Vote);
+                return Switch != CwArbitrationSwitch.PortAlone ? CwArbiter.Decide(x, partner, Vote, Switch)
+                    : partner is null ? null
+                    : CwArbiter.Alone(partner, x, Vote);
             })
+            .OfType<CwCharacter>()
             .ToList();
 
     /// <summary>Samples per second.</summary>
@@ -307,6 +353,12 @@ public sealed class CwDecoder
 
     /// <summary>Who votes on the condition in force (HM-REQ-124): <see cref="CwVoteTable.Live"/> unless a harness says otherwise.</summary>
     public CwVote Vote { get; set; } = CwVoteTable.Live;
+
+    /// <summary>
+    /// What is emitted on the condition in force (HM-REQ-128): <see cref="CwSwitchTable.Live"/>
+    /// unless a harness says otherwise. Read where the port's readings meet ours; never shown on the CW tab.
+    /// </summary>
+    public CwArbitrationSwitch Switch { get; set; } = CwSwitchTable.Live;
 
     /// <summary>
     /// Whether the held window is emptied when the tracker crosses to somebody
@@ -872,17 +924,20 @@ public sealed class CwDecoder
 
         _probabilistic.Flush();
 
+        var rest = new List<CwCharacter>();
+
         foreach (var s in _pendingSecond)
         {
             SecondOnlySpans++;
-
-            if (CwArbiter.DecideAlone(s, Vote).Emitted is { } alone)
-            {
-                Settle(alone);
-            }
+            OneSided(s, rest);
         }
 
         _pendingSecond.Clear();
+
+        foreach (var c in rest)
+        {
+            Settle(c);
+        }
     }
 
     /// <summary>

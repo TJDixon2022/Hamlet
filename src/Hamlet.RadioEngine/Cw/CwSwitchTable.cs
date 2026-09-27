@@ -54,6 +54,54 @@ public sealed record CwSwitchVerdict(IReadOnlyList<string> LostOn, CwReader Bett
 /// </remarks>
 public static class CwSwitchTable
 {
+    /// <summary>
+    /// Per condition row, what is emitted there. A row not named here arbitrates.
+    /// </summary>
+    /// <remarks>
+    /// **TRANSCRIBED FROM `docs/phase-requirements/arbitration.md` SECTION 2 AT
+    /// `a37a0d82`**, work instruction 466's task 2, not measured here (HM-REQ-128;
+    /// 466 DECIDED (3) to (5)). Each row's switch is the rule's on the path that
+    /// emits under it: real HF, all from the live path, where the product runs;
+    /// every other row from the harness. Four rows lose, each to the port on at
+    /// least one metric; the port is the better decoder alone on one of them, by
+    /// 011 first in the order (466 DECIDED (6)).
+    /// </remarks>
+    public static IReadOnlyDictionary<string, CwArbitrationSwitch> Rows { get; } =
+        new Dictionary<string, CwArbitrationSwitch>(StringComparer.Ordinal)
+        {
+            ["real HF, all"] = CwArbitrationSwitch.Arbitrate,
+            ["real HF, no CH-* profile, SNR_2500 not measured, sender TX-FARNS (CW_SPEC.md 6.4 and 10, HM-DEC-115's traffic net)"]
+                = CwArbitrationSwitch.OursAlone,
+            ["real HF, no CH-* profile, SNR_2500 not measured, sender TX-ITU (CW_SPEC.md 10, the KD0UN capture)"]
+                = CwArbitrationSwitch.Arbitrate,
+            ["real HF, no CH-* profile, SNR_2500 not measured, sender TX-TIGHT (CW_SPEC.md 10, HM-DEC-101)"]
+                = CwArbitrationSwitch.Arbitrate,
+            ["real HF, no CH-* profile, SNR_2500 not measured, sender not stated in CW_SPEC.md"]
+                = CwArbitrationSwitch.Arbitrate,
+            ["synthetic, all"] = CwArbitrationSwitch.Arbitrate,
+            ["synthetic, no fading, shaped noise band (not shown to be CH-AWGN), TX-ITU (1:3:1:3:7), 0 dB in the passband (not restated in the 2500 Hz reference)"]
+                = CwArbitrationSwitch.OursAlone,
+            ["synthetic, no fading, shaped noise band (not shown to be CH-AWGN), TX-ITU (1:3:1:3:7), 15 dB in the passband (not restated in the 2500 Hz reference)"]
+                = CwArbitrationSwitch.Arbitrate,
+            ["synthetic, no fading, shaped noise band (not shown to be CH-AWGN), TX-ITU (1:3:1:3:7), 5 dB in the passband (not restated in the 2500 Hz reference)"]
+                = CwArbitrationSwitch.Arbitrate,
+            ["synthetic, no fading, shaped noise band (not shown to be CH-AWGN), character gap 5 units, inside TX-FARNS's 3 to 7, 0 dB in the passband (not restated in the 2500 Hz reference)"]
+                = CwArbitrationSwitch.OursAlone,
+            ["synthetic, no fading, shaped noise band (not shown to be CH-AWGN), character gap 5 units, inside TX-FARNS's 3 to 7, 15 dB in the passband (not restated in the 2500 Hz reference)"]
+                = CwArbitrationSwitch.Arbitrate,
+            ["synthetic, no fading, shaped noise band (not shown to be CH-AWGN), character gap 5 units, inside TX-FARNS's 3 to 7, 5 dB in the passband (not restated in the 2500 Hz reference)"]
+                = CwArbitrationSwitch.PortAlone,
+        };
+
+    /// <summary>The switch on a condition: its row, and arbitrate where the table does not name it.</summary>
+    /// <param name="condition">The condition as calibration.md and parity.md name it.</param>
+    /// <returns>The switch.</returns>
+    public static CwArbitrationSwitch For(string condition)
+        => Rows.TryGetValue(condition, out var s) ? s : CwArbitrationSwitch.Arbitrate;
+
+    /// <summary>The switch the live product runs under: <see cref="For"/> at <see cref="CwVoteTable.LiveCondition"/>.</summary>
+    public static CwArbitrationSwitch Live => For(CwVoteTable.LiveCondition);
+
     /// <summary>The metrics, honesty first (466 DECIDED (4)): 011, 010, 013, 012, 014, 081, 083, 084.</summary>
     public static IReadOnlyList<string> Order { get; } = new[] { "011", "010", "013", "012", "014", "081", "083", "084" };
 
