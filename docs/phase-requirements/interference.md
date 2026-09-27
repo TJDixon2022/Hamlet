@@ -204,8 +204,9 @@ Every control read `CQ CQ CQ DE N0CALL N0CALL K` whole at 12 and 18 WPM (pitch a
 
 **Beside ours, for reading only:** the transcript the live path emits under
 `CwSwitchTable.Live` as it stands is ours, character for character, in all 27 cases. The port
-alone is worse in every case, or empty (the +50 Hz carrier at +20 dB and the +100 Hz carrier at
-+10 and +20 dB).
+alone is worse than ours or empty in 26 cases (empty at the +50 Hz carrier at +20 dB and the
++100 Hz carrier at +10 and +20 dB). At INT-CARRIER(+50, +10) it read one sure `E`, right
+(MET-CER-SURE 0/1), against ours `T  E` (1/2).
 
 ## 5. What these fixtures do not prove
 

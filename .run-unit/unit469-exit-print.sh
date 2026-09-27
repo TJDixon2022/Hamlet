@@ -1,9 +1,9 @@
 #!/bin/sh
-# unit 468 - the exit prints: src against 0f30a782, the port against 19109b51, the eleven transmit files against 7e209cb4, git status, this unit's commits.
+# unit 469 - the exit prints: src against e058da0c, the port against 19109b51, the eleven transmit files against 7e209cb4, git status, this unit's commits.
 cd /c/Source/HamLet || exit 1
 C=src/Hamlet.RadioEngine/Cw
-echo "== git diff 0f30a782 -- src"
-git diff 0f30a782 -- src
+echo "== git diff e058da0c -- src"
+git diff e058da0c -- src
 echo "== (end src diff)"
 echo "== git diff 19109b51 -- src/Hamlet.RadioEngine/Cw/Second/"
 git diff 19109b51 -- $C/Second/
@@ -18,4 +18,4 @@ echo "== (end transmit diff)"
 echo "== git status"
 git status --short
 echo "== this unit's commits"
-git log --oneline 0f30a782..HEAD
+git log --oneline e058da0c..HEAD

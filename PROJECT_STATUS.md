@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: EXECUTING
-TASK: 2 of 3
+STATE: COMPLETED
+TASK: 3 of 3
 WORK_INSTRUCTION: 469 - the INT-* interference profiles generated with the wanted key exact by construction, and HM-REQ-060, 061, 062 and 066 measured against them
-BALL: code
-NEXT_PASTE: none
+BALL: tim
+NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-27T13:37:26-04:00
-NOTE: Task 2 pushed 5f6eb688; ticking 7.3 in both plan copies - generated, proved red then green, recipe written, all four measured
+UPDATED: 2026-09-27T14:04:16-04:00
+NOTE: Unit 469 done: 7.3 ticked - INT-ADJ, COCHAN, CARRIER, PILEUP generated and proved; 060, 061, 062 not met (tracker walks to the neighbour or starts on a carrier), 066 met only weakly; exit round as at entry; screen unchanged
 
 ---
 
