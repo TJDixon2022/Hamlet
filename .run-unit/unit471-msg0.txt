@@ -1,0 +1,10 @@
+unit471 task 0: the record, 1.13.158, the runner's writes; entry round as at 470's exit (2.4)
+
+Build 0 errors. Engine line 178 of 178. App line 275 of 278 on the first run (three of TheFavoritesAreUnderTheGreenZoneTests lost to the headless dispatcher loop), 278 of 278 on the one rerun (DECIDED 8).
+Floors: named 13 of 13, captures 51 of 51, adjudicated 13 of 13. TheArbitrationEarnsItsPlaceTests (a) 5 of 5, (b) harness 1 of 1, live 2 of 2.
+Real, 23 keyed, inferred key: MET-CER-SURE 33 of 436, MET-INVENTED 33 over 473, coverage 403 over 473, MET-WBE 37 over 113.
+Synthetic, 12 cases, exact key: MET-CER-SURE 14 of 173, MET-INVENTED 14 over 252, coverage 159 over 252, MET-WBE 44 over 84.
+Texts with classes byte-identical to unit470-texts-entry.txt.
+Runner's writes committed as they are; .run-unit/watched.rc was not present (watched.cpu deleted instead). .run-unit/fldigi/ and SESSION.lock not staged.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

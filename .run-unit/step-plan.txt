@@ -1,17 +1,16 @@
-﻿STEP: 7 | The conditions can be generated - sections E, F and G: channel, sender and interference profiles, which nothing in the tree produces today.
-## Step 7 - The conditions can be generated
+﻿STEP: 2 | The decoder stops printing wrong letters with confidence - MET-CER-SURE driven toward HM-REQ-010's one in a hundred, from the 54 sure-but-wrong characters unit 439 measured.
+## Step 2 - The decoder stops printing wrong letters with confidence
 
-**Delivers:** sections E, F and G. Nothing in the tree produces these, and without them no
-requirement can be judged at its own condition (unit 439's finding 1).
+**Delivers:** R81 and HM-REQ-010. The 54 sure-but-wrong characters unit 439 measured.
 
-**Entry:** steps 0 and 1 met.
+**Entry:** steps 0 and 1 met, ticked at task 0 from unit 439's report.
 
 **Exit:**
-- [x] 7.1 The generator produces the CH-* channel profiles `CW_SPEC.md` names, each carrying a shaped noise band and never digital silence (V-06), with the recipe for every case stated so another unit can rebuild them.
-- [x] 7.2 The generator produces the TX-* sender profiles, and HM-REQ-050 is measured on each must-tier profile at 15 dB reference.
-- [x] 7.3 The generator produces the INT-* interference profiles, and HM-REQ-060, 061, 062 and 066 are measured against them.
-- [ ] 7.4 Every generated fixture carries its exact key by construction, and the report states what each does not prove (Â§12.5, V-04); a real capture is reported by the sender profile the spec names or as `not stated`, and is never counted toward a CH-* condition.
-- [x] 7.5 The three floor tests and both carry-forward lines are green at exit.
+- [x] 2.1 The 54 sure-but-wrong characters are traced: a fact that asserts nothing prints each one with its recording, what the key says was sent, what the decoder emitted, its span, the speed and pitch in force, and the marks it rested on; the report groups them by what they have in common.
+- [x] 2.2 Each change is built in its own commit and kept under R78: MET-CER-SURE falls, MET-INVENTED does not rise, MET-COVERAGE does not fall, the three adjudicated readings are unchanged or move onto their own adjudicated text, and V-11 holds - no capture is reddened to green a newer one.
+- [x] 2.3 MET-CER-SURE is reported before and after every kept change, per condition, with the key kind beside each number, and the running figure is in `docs/phase-requirements/metrics.md`.
+- [ ] 2.4 After three consecutive units with no kept change the trace goes to `PARKED.md` and the step closes partial.
+- [x] 2.5 The three floor tests and both carry-forward lines are green at the exit of every commit of the step.
 
-**Depends on:** steps 0 and 1. Independent of steps 2 to 6.
+**Depends on:** steps 0 and 1.
 

@@ -122,6 +122,7 @@ block; blocker means it cleared something and moved no criterion.
   2.2 | unit 1 launched 2026-09-25T23:17:53.232Z | not recorded | not recorded | change MET-COVERAGE to sure-and-right over sent under R82, cherry-pick G1 unchanged and keep it under R78, then trace the speed each of the 54 was read at against the speed the envelope's marks imply and build one change that takes the path's speed from the marks where they disagree
   2.2 | unit 2 launched 2026-09-26T00:33:44.294Z | no | executed | give each letter a confidence from how far its reading beats the nearest rival reading, so a close call prints dim instead of sure, threshold taken from a margin trace of right against wrong sure letters; re-bank the floor rows that fell on counts under R78 so the floors are green
   2.4 | unit 11 launched 2026-09-26T09:22:29.173Z | no | executed | re-trace the 40 sure-but-wrong letters at HEAD with the instrument pitch and tracker moves beside each, build one change against the largest group no earlier unit attacked, kept under R78, else park the trace and close step 2 partial
+  2.4 | unit 9 launched 2026-09-27T18:10:17.650Z | blocker | executed | gate the sure class on acquiring as PARKED.md's 2026-09-26 resolution defines it - no character emitted sure while the pitch proof or the speed proof is hypothesis or none - traced first for right and wrong sure letters inside acquiring, HM-REQ-102 test watched red on a generated carrier case, judged under R78 against HM-REQ-010, committed if kept else held as a patch
   2.5 | unit 6 launched 2026-09-26T03:05:24.161Z | no | executed | trace every gap in 17:37's CQ at HEAD and before G1 with its length, unit, thresholds and call, name the cause of the two boundaries G1 lost, build one gap-duration change that gives them back with G1 kept, and re-bank 17:37's named floor only if no requirement metric on it is worse than before G1
   2.5 | unit 7 launched 2026-09-26T23:09:20.915Z | no | executed | re-bank the three red named floors under the owner's resolution of 17:37 and R78's per-condition test, then a step-2 change judged in the working tree and committed only if kept
   3.1 | unit 4 launched 2026-09-26T01:56:54.125Z | yes | executed | trace every sure added character at 439's baseline and at HEAD with span, speed, pitch, marks, gaps and energy, match the two lists to show which 441 removed, group what is left, and build one change against the largest group, kept under R78 with MET-INVENTED falling
@@ -173,130 +174,159 @@ The whole file is at the repository root if you need the rest.
 
 ## 4. What's blocking us
 
-Nothing blocks 7.3. Each item below is a plain reading, not a ruling request.
+Nothing blocks 2.4. Each item is a plain reading, not a ruling request.
 
-1. **The R86 mismatch.** R86 bars steps 2 to 8 until 9.4 has a kept change. This unit worked
-   step 7 anyway. 9.4 has no route left: every mechanism 9.3 named, (A) to (E) and (W), was
-   refused under R78 by units 459, 462 and 463. The launcher's 2.4 cannot flip in one unit at
-   1 of 3. `ARBITER.md` section 4, the launcher and `PHASE_PLAN.md` section 5 all direct a move.
-   If the owner holds R86, this unit's work is fixtures and a measurement, and nothing the
-   operator reads has changed.
-2. **Every parameter below is the arbiter's reading under R85, and overrulable.**
-   - **The veto margin** is 6 dB, HM-REQ-065's recommended figure, which that row names as
-     HM-REQ-008's margin. 066 is measured at 0, −2.4 and −6 dB.
-   - **The 066 station** is at +100 Hz and 25 WPM over a wanted 18 WPM.
-   - **062's wanted** is at 18 WPM.
-   - **Sides:** 060 and 061 are measured at both + and − offsets.
-   - **INT-COCHAN** is +10 Hz, read as inside the integrator's 45 Hz ENBW, so within ±22.5 Hz.
-   - **INT-PILEUP** is three stations *over* the wanted, making four keyed in the passband. They
-     sit at 525, 675 and 750 Hz and 12, 25 and 18 WPM.
-   - **Texts:** `DE N0AAA UP`, `QRZ DE N0AAA` and `5NN TU`.
-   - **Start:** every keyed interferer starts at the wanted's second word; a carrier starts at
-     the first sample.
-   - **Held** is the tracked pitch at every wanted word end within 25 Hz.
-   - **Selected** is every tracked pitch from the first sure character to the wanted's last
-     key-up within 25 Hz.
-   - **Competing** is the report naming a tone within 25 Hz of the second station at any hop
-     while both key.
-   - **HM-REQ-010 with nothing sure** is not met.
-   - **Headroom:** one scale factor on the whole case, as low as x 0.363 for a +20 dB carrier.
-   - **Station measurements** are taken on each rendered layer, with the mix proved to be their
-     sum.
-3. **HM-REQ-060 and 061 not met: a finding for step 4 (the tracker) and step 2 (sure letters).**
-   - At 12 WPM, with the adjacent station at 0 dB ±100 Hz or −6 dB +50 Hz, **the pitch is lost**
-     at the fifth word, and the adjacent station's letters are printed sure: `N0AAA UP DE N0AAA`.
-   - At 12 WPM −50 Hz and at 25 WPM ±100 Hz, **the pitch is held and the interferer's letters
-     are still printed sure** (`N0AAA UP`, `EA UP`). The 45 Hz detector lets a keyed station
-     50 to 100 Hz away through at those speeds.
-   - At 18 WPM, 061 prints one sure extra `N` (`NN0CALL`).
-   - At 25 WPM the wanted alone adds a sure `K`, 468's TX-ITU finding. No 25 WPM case can meet
-     HM-REQ-010 until that is fixed.
-   - Nothing was chased here.
-4. **HM-REQ-062 not met: a finding for step 4.** With the carrier present from cold, the tracker
-   is on the carrier at the first word's end in 8 of 12 cases, and ours prints sure letters read
-   off it (`T T  T` before `CQ`). **This is the pitch chosen by level before keying is
-   confirmed.** Unit 448's HM-REQ-091 test says so in its own "what this does not prove": it
-   passes on the last half of the message. At +50 Hz and +10 or +20 dB the carrier sits inside
-   the detector's reach, and the wanted is barely read at all (`T  E`, `T T`). The +500 Hz
-   carrier is at 1100 Hz, outside the band's passband. A real receiver's filter would weaken it
-   further, so those three "met" cases are the easiest in the table.
-5. **HM-REQ-066 is met only on a lenient reading: a finding for steps 2 and 4.** Met here means
-   the report named the second station on at least one hop while both keyed. It did so on 2 %,
-   11 % and 12 % of those hops. It never names it at its true 100 Hz, because
-   `CwCompetitor.SeparationHz` is 125 Hz; it names it only when a neighbouring 25 Hz bin puts it
-   at 125 (tracked 575 Hz, or the candidate at 725 Hz). The levels it gives are +4.3 dB for an
-   equal station, and −9.2 and −12.9 dB for −2.4 and −6 dB stations. Most of the time, then, the
-   report says nothing: this is DEV_ANALYSIS's `competing: none found` beside a station 2.4 dB
-   away. A reading that asked for the report whenever both key would make 066 not met. Nothing
-   in the competing logic was touched (parked).
-6. **What 7.4 still lacks now 7.3 is in.** Every generated fixture of steps 7.1 to 7.3 now
-   carries its exact key by construction, and `channels.md`, `senders.md` and `interference.md`
-   each state what their fixtures do not prove. What is missing is 7.4's other half: no real
-   capture is yet reported by the sender profile the spec names, or as `not stated`, and none is
-   marked as never counted toward a CH-* condition. The 23 keyed recordings carry no TX-* label
-   today.
+1. **The R86 mismatch.** R86 bars steps 2 to 8 until 9.4 has a kept change. 9.4 has no route
+   left, since (A) to (E) and (W) were all refused. This unit worked step 2 as the launcher named
+   it, as units 468 and 469 worked outside step 9. If the owner holds R86, this unit is a
+   measurement only, and nothing the operator reads has changed.
+2. **DECIDED (2) and (3) are the arbiter's, and overrulable.**
+   - (2): 449's exclusion of an acquisition gate rested on its being parked. The RESOLVED line of
+     `9a329cdb` answered that.
+   - (3): the gate reads the tree's two proof states at emission, and dims a sure letter while
+     either is not proved.
 
-The emitted output did not lose to ours on any case: it is ours in all 27. So there is no
-switch-table line to add, and nothing was switched.
+   This unit read "at emission" as the settle moment, and applied the gate before the arbiter and
+   to our leading edge too.
+3. **Refused: HM-REQ-102 and HM-REQ-012 pull against each other on this corpus.**
+   - The resolution's acquiring holds 293 of the 403 sure-and-right real letters for 29 of the 33
+     wrong or added. The synthetic figures are 93 of 159 for 2 of 14.
+   - On 7 of the 23 real recordings no character is ever emitted with both states proved.
+   - On a clean generated TX-ITU the pitch is proved only just after a confirming survey, so
+     "acquiring" recurs inside words (`D(E)`, `ST(A)(T)(I)ON`).
 
-   against R86's words, reported as a mismatch for the owner.
-   R86 mismatch in one line: R86 bars steps 2 to 8 until 9.4 has a
+   As the proof states stand, no form of this gate can pass 2.2's coverage line. That is a finding
+   about the requirements and the proof states, not a request. The narrower forms the trace
+   suggests are not tried (V-14):
+   - speed only: 10 right for 3 wrong;
+   - the 448 span only: 108 right for 13 wrong;
+   - a grace period.
+4. **The proof states against their RESOLVED lines** (reported, not repaired):
+   - **Pitch.** The tree says proved while the latest survey's keyed verdict is at the reported
+     pitch. It does not require that a whole character has resolved at it, as the RESOLVED line
+     says, so on that clause it proves sooner than the line. It also drops to hypothesis between
+     confirming surveys while the station is still keying. The RESOLVED line says hypothesis only
+     where "keying is not admitted or no character has resolved". Whether "admits keying" means the
+     latest survey or the station's keying still being admitted is where the tree and this unit's
+     result part. That reading, not the gate, is what makes acquiring recur mid-word.
+   - **Speed.** The tree has "the tone stops" (six surveys) and "the pitch changes" (a follow of
+     half the filter). It has no test of the marks' unit within 10 percent of the path's
+     (HM-REQ-031). "Measured" is the estimator's dit or the marks' overrule, not the grid's winner.
+5. **With the second reader on, the gate is only on our reading.** An agreeing port reading with
+   the higher p, or a port that alone votes, can still reach the screen sure while acquiring
+   (`CwArbiter.Decide`). The switch and vote tables are parked, so this is recorded only.
+6. **2.4's count after this unit is 2 of 3**:
+   - 449 kept a change;
+   - 460 kept none;
+   - 470 kept none.
+
+   The next step-2 unit with no kept change closes step 2 partial, and its trace goes to
+   `PARKED.md`.
+
+   worked step 2 against R86's words, reported as a mismatch.
+   cannot be that change as the proof states stand. The R86 mismatch
 ## 3. What you should see
 
-**No visible change.** This unit made the test signals and measured against them. The answer to
-the question it was commissioned to ask, per requirement, on ours (synthetic, exact key, CH-AWGN
-15 dB in the 2500 Hz reference on the wanted):
+**The R78 table** (before is HEAD `bcbf97ba`, under is the gate; key's kind beside each):
 
-| req | interferer | wanted WPM | ours read | control read (wanted alone) | held / selected / competing | MET-CER-SURE | MET-INVENTED | case |
-|---|---|---|---|---|---|---|---|---|
-| 060 | INT-ADJ(+100, 0, 25) | 12 | `CQ CQ CQ DEE■H N0AAA UP DE N0AAA UP DE N0AAA ET TTT` | whole | held **no** (700 Hz at word 5) | 24/38 | 24/21 | not met |
-| 060 | INT-ADJ(−100, 0, 25) | 12 | `CQ CQ CQ DEE■H N0AAA UP DE N0AAA UP DE N0AAA UP DE` | whole | held **no** (500 Hz, words 5-7) | 23/37 | 23/21 | not met |
-| 060 | INT-ADJ(+100, 0, 25) | 18 | `CQ CQ CQ DE N0CALL N0CALL K` | whole | held | 0/21 | 0/21 | met |
-| 060 | INT-ADJ(−100, 0, 25) | 18 | `CQ CQ CQ DE N0CALL N0CALL K` | whole | held | 0/21 | 0/21 | met |
-| 060 | INT-ADJ(+100, 0, 25) | 25 | `CQ CQ CQ DE N0CALL EA UP EALL KK` | `... N0CALL KK` | held | 6/24 | 6/21 | not met |
-| 060 | INT-ADJ(−100, 0, 25) | 25 | `CQ CQ CQ DE N0CALL EA UP DE L KK` | `... N0CALL KK` | held | 7/23 | 7/21 | not met |
-| 061 | INT-ADJ(+50, −6, 25) | 12 | `CQ CQ CQ DE N0EE H UP SE N0AAA UT E DE N0A E ET K` | whole | held **no** (650 Hz at word 5) | 19/33 | 19/21 | not met |
-| 061 | INT-ADJ(−50, −6, 25) | 12 | `CQ CQ CQ DE ESH N0AAA UP EI ET TT TTTE T TET TLL K` | whole | held | 22/36 | 22/21 | not met |
-| 061 | INT-ADJ(+50, −6, 25) | 18 | `CQ CQ CQ DE N0CALL NN0CALL K` | whole | held | 1/22 | 1/21 | not met |
-| 061 | INT-ADJ(−50, −6, 25) | 18 | `CQ CQ CQ DE N0CALL NN0CALL K` | whole | held | 1/22 | 1/21 | not met |
-| 061 | INT-ADJ(+50, −6, 25) | 25 | `CQ CQ CQ DE N0CALL N0CALL KK` | `... N0CALL KK` | held | 1/22 | 1/21 | not met (as control) |
-| 061 | INT-ADJ(−50, −6, 25) | 25 | `CQ CQ CQ DE N0CALL N0CALL KK` | `... N0CALL KK` | held | 1/22 | 1/21 | not met (as control) |
-| 062 | INT-CARRIER(+50, 0) | 18 | `U   Q CQ DE I T<KN> TETE ET ETEE ETEE NN0ISL K` | whole | **the carrier** | 22/29 | 22/21 | not met |
-| 062 | INT-CARRIER(+50, +10) | 18 | `T  E` | whole | **the carrier** | 1/2 | 1/21 | not met |
-| 062 | INT-CARRIER(+50, +20) | 18 | `T T` | whole | **the carrier** | 2/2 | 2/21 | not met |
-| 062 | INT-CARRIER(+100, 0) | 18 | `CT  EIQ CQ DE N0CALL N0CALL K` | whole | **the carrier** | 3/22 | 3/21 | not met |
-| 062 | INT-CARRIER(+100, +10) | 18 | `T T  T CQ DE N0CAL■ N0CALL K` | whole | **the carrier** | 3/19 | 3/21 | not met |
-| 062 | INT-CARRIER(+100, +20) | 18 | `T T E CQ DE N0CALL N0CALL K` | whole | **the carrier** | 3/20 | 3/21 | not met |
-| 062 | INT-CARRIER(+200, 0) | 18 | `CQ CQ CQ DE N0CALL N0CALL K` | whole | keyed station | 0/21 | 0/21 | met |
-| 062 | INT-CARRIER(+200, +10) | 18 | `T  T CQ DE N0CALL N0CALL K` | whole | **the carrier** | 2/19 | 2/21 | not met |
-| 062 | INT-CARRIER(+200, +20) | 18 | `T T  T CQ DE N0CALL N0CALL K` | whole | **the carrier** | 3/20 | 3/21 | not met |
-| 062 | INT-CARRIER(+500, 0) | 18 | `CQ CQ CQ DE N0CALL N0CALL K` | whole | keyed station | 0/21 | 0/21 | met |
-| 062 | INT-CARRIER(+500, +10) | 18 | `CQ CQ CQ DE N0CALL N0CALL K` | whole | keyed station | 0/21 | 0/21 | met |
-| 062 | INT-CARRIER(+500, +20) | 18 | `CQ CQ CQ DE N0CALL N0CALL K` | whole | keyed station | 0/21 | 0/21 | met |
-| 066 | INT-ADJ(+100, 0, 25) | 18 | `CQ CQ CQ DE N0CALL N0CALL K` | whole | competing on 78 of 3400 hops | 0/21 | 0/21 | met |
-| 066 | INT-ADJ(+100, −2.4, 25) | 18 | `CQ CQ CQ DE N00CALL N0CALL K` | whole | competing on 374 of 3400 hops | 1/22 | 1/21 | met |
-| 066 | INT-ADJ(+100, −6, 25) | 18 | `CQ CQ CQ DE N0CALL N0CALL K` | whole | competing on 392 of 3400 hops | 0/21 | 0/21 | met |
+| part of R78 | before | under the gate | verdict |
+|---|---|---|---|
+| MET-CER-SURE, real, inferred | 33 of 436, 0.0757 | 4 of 114, 0.0351 | falls |
+| MET-CER-SURE, synthetic, exact | 14 of 173, 0.0809 | 12 of 78, 0.1538 | **rises** |
+| MET-INVENTED, real, inferred | 33 over 473, 0.0698 | 4 over 473, 0.0085 | falls |
+| MET-INVENTED, synthetic, exact | 14 over 252 | 12 over 252 | falls |
+| sure-and-right coverage, real, inferred | 403 over 473, 0.8520 | 110 over 473, 0.2326 | **falls - refuses** |
+| sure-and-right coverage, synthetic, exact | 159 over 252, 0.6310 | 66 over 252, 0.2619 | **falls - refuses** |
+| MET-WBE, real / synthetic | 37 over 113 / 44 over 84 | the same | holds |
+| dim precision (HM-REQ-014) | no dim letter in either set | real 293 right of 322 dim, 0.9099; synthetic 93 of 95, 0.9789 | reported |
+| adjudicated readings | 13 of 13 | 13 of 13 | hold |
+| V-11, 35 recordings | - | 29 worse on sure-and-right, none worse on wrong, added or boundaries | **fails** |
+| floors: named, captures | 13 of 13, 51 of 51 | 13 of 13, 51 of 51 | hold |
+| engine line | 178 of 178 | 176 of 178, `TheCleanRecordingsDecodeExactly` red on clean-12wpm and clean-18wpm | **fails** |
+| app line | 278 of 278 | 278 of 278 | holds |
+| `TheArbitrationEarnsItsPlaceTests` | (a) 5/5, (b) harness 1/1, live 2/2 | (a) 5/5; (b) harness red, live red | **fails** |
 
-"Whole" is the control reading `CQ CQ CQ DE N0CALL N0CALL K` with MET-CER-SURE 0/21. The 25 WPM
-control reads `... N0CALL KK`, MET-CER-SURE 1/22, MET-INVENTED 1/21. Every "the carrier" case
-has the tracked pitch on the carrier at the first word's end (650, 700 or 800 Hz), and 272 to
-334 hops, out of about 3650 after the first sure character, more than 25 Hz off. **Per
-requirement:**
-- HM-REQ-060: not met, 2 of 6.
-- HM-REQ-061: not met, 0 of 6.
-- HM-REQ-062: not met, 4 of 12.
-- HM-REQ-066: met, 3 of 3.
+Part (b) goes red because the rule's choice moves off the switch table on 4 harness rows and on
+the live row (Arbitrate becomes OursAlone or PortAlone), and character gap 5 at 15 dB becomes worse
+than the port on 010, 013 and 012.
 
-The transcript the live path emits under `CwSwitchTable.Live` is ours, character for character,
-in all 27 cases. The port alone is worse than ours, or empty, in 26 of the 27 cases. It is empty
-at the +50 Hz carrier at +20 dB and the +100 Hz carrier at +10 and +20 dB. The one case where it
-is not worse
-is INT-CARRIER(+50, +10): there the port read a single sure `E`, which is right (MET-CER-SURE
-0/1), against ours `T  E` (1/2). Task 2's commit message says "worse or empty in each", which is
-one case too strong.
+Per condition, MET-CER-SURE and coverage before -> under:
 
-1. **The profile list** (`interference.md` section 1):
-   - INT-ADJ(Δf, ΔdB, WPM) takes (±100, 0, 25) from row 060, (±50, −6, 25) from row 061, and
-     (+100, 0/−2.4/−6, 25) for 066. Each is TX-ITU sending `DE N0AAA UP` from the wanted's
-     second word.
-   - INT-COCHAN is +10 Hz, 0 dB, 25 WPM, inside the 45 Hz Hann detector's ±22.5 Hz.
+| condition | key | MET-CER-SURE | MET-COVERAGE |
+|---|---|---|---|
+| real, sender not stated (20) | inferred | 33/374 -> 4/97 | 0.8317 -> 0.2268 |
+| real TX-FARNS | inferred | 0/43 -> 0/11 | 0.9773 -> 0.2500 |
+| real TX-ITU | inferred | 0/13 -> 0/5 | 1.0000 -> 0.3846 |
+| real TX-TIGHT | inferred | 0/6 -> 0/1 | 1.0000 -> 0.1667 |
+| synth TX-ITU 15 dB | exact | 1/64 -> 1/30 | 1.0000 -> 0.4603 |
+| synth TX-ITU 5 dB | exact | 1/63 -> 1/23 | 0.9841 -> 0.3492 |
+| synth char gap 5, 15 dB | exact | 1/21 -> 1/9 | 0.9524 -> 0.3810 |
+| synth char gap 5, 5 dB | exact | 11/25 -> 9/16 | 0.6667 -> 0.3333 |
+| synth, both 0 dB | exact | none sure | 0 -> 0 |
+
+MET-WBE is unchanged on every condition.
+
+1. **Task 1's acquiring table at HEAD** (sure letters in the scored stretches, by the proof states
+   at emission):
+
+   | set | key | inside: right | inside: wrong or added | outside: right | outside: wrong or added |
+   |---|---|---|---|---|---|
+   | real, sender not stated | inferred | 248 | 29 | 93 | 4 |
+   | real TX-FARNS / TX-ITU / TX-TIGHT | inferred | 32 / 8 / 5 | 0 / 0 / 0 | 11 / 5 / 1 | 0 / 0 / 0 |
+   | **real, all** | inferred | **293** | **29** | 110 | 4 |
+   | synth TX-ITU 15 / 5 dB | exact | 34 / 40 | 0 / 0 | 29 / 22 | 1 / 1 |
+   | synth char gap 5, 15 / 5 dB | exact | 12 / 7 | 0 / 2 | 8 / 7 | 1 / 9 |
+   | **synthetic, all** | exact | **93** | **2** | 66 | 12 |
+
+   Which state was not proved, real: pitch alone 58 right / 4 wrong; speed alone 10 / 3; neither
+   225 / 22. **Unit 449's 13: all 13 found, all sure and inside acquiring**, every one with pitch
+   none and speed hypothesis and before the first keyed verdict (`032012` 3, `032050` 4, `032113`
+   1, `032129` 5). Unit 448's acquiring, before the first keyed verdict, holds 121 real sure
+   letters (108 right, 13 wrong), and 119 of them are inside the resolution's.
+2. **The 7.052 opening, 0 to 46.2 s** (sure as itself, dim in parentheses, braces round what was
+   emitted while acquiring; first keyed verdict 26.04 s):
+   - before: `{EII ETNHHK        EANQNI}D          {EAN(■)IK     }`. That is 20 sure while acquiring,
+     all right against 448's reference, and 9 of them before 26.04 s, as unit 448 measured.
+   - under the gate: `{(E)(I)(I) (E)(T)(N)(H)(H)(K)        (E)(A)(N)(Q)(N)(I)}D          {(E)(A)(N)(■)(I)(K)     }`.
+     That is 0 sure while acquiring. HM-REQ-102 is met on the opening, and HM-REQ-103 falls from
+     21 to 1 of 24.
+3. **Recordings whose classes changed under the gate.** No letter changed on any recording
+   (`.run-unit/unit470-letters.sh`: letters identical, classes aside). Over all 35 whole texts,
+   685 sure became dim and 330 stayed sure. 31 recordings changed:
+   - the 8 synthetic cases at 5 and 15 dB;
+   - all 23 real recordings.
+
+   Whole texts, before and under, are in `.run-unit/unit470-texts-entry.txt` and
+   `unit470-text-gate.txt`. Samples:
+   - `cq-18wpm-15db`: `CQ CQ CQ DE N0CALL N0CALL K` -> `(C)Q (C)Q CQ D(E) (N)(0)CALL (N)(0)(C)(A)(L)L K`
+   - `cq-12wpm-15db`: -> `(C)(Q) (C)(Q) (C)(Q) (D)(E) (N)(0)(C)(A)L(L) (N)(0)(C)(A)L(L) (K)`
+   - `031905`: `PREDICTED 10.7 K NTIMETER FLAX IS 125, 125T` -> all dim but one `E`
+   - `004507`: `... ARRL D O T N E T <BT>  E ACH STATION HANDLING THIS MESSAGE PE` -> `... (<BT>)  (E) (A)(C)(H) ST(A)(T)(I)ON (H)(A)(N)(D)(L)(I)(N)G THI(S) (M)(E)(S)(S)(A)GE PE`
+   - `004322`: `P O N S ORED AMERICA 25 9 OPERATION X ALL LOGS WILA` -> `(P) (O) N (S) ORED AMERICA 2(5) (9) (O)PERATION X ALL (L)OGS WILA`
+   - `032129`: the whole ARRL bulletin opening dim.
+4. **First sure character, before -> under the gate, in seconds** ("-" means none):
+
+   | recording | before | under | recording | before | under |
+   |---|---|---|---|---|---|
+   | 7.052 opening | 20.64 | 33.48 | `004108` | 0.90 | 5.59 |
+   | `173723` | 0.88 | 8.18 | `004133` | 0.92 | 3.35 |
+   | `013347` | 0.32 | 20.69 | `004205` | 1.87 | 9.01 |
+   | `134712` | 14.57 | - | `004234` | 0.12 | 3.57 |
+   | `003758` | 2.92 | 13.06 | `004322` | 1.73 | 3.23 |
+   | `012403` | 14.41 | 25.53 | `004347` | 0.84 | 0.84 |
+   | `004507` | 0.05 | 14.70 | `004405` | 1.74 | 3.87 |
+   | `031838` | 1.86 | - | `004427` | 2.48 | 2.48 |
+   | `031905` | 3.72 | 16.69 | `004510` | 2.10 | 3.94 |
+   | `031948` | 2.18 | - | `004550` | 0.23 | 3.68 |
+   | `032012` | 1.77 | - | cq 12 WPM 15 / 5 dB | 2.11 / 2.11 | 19.11 / 19.11 |
+   | `032050` | 2.30 | - | cq 18 WPM 15 / 5 dB | 1.75 / 2.81 | 2.81 / 5.07 |
+   | `032113` | 1.69 | - | cq 25 WPM 15 / 5 dB | 1.54 / 1.54 | 2.31 / 2.31 |
+   | `032129` | 3.20 | - | cq 18 WPM char 5, 15 / 5 dB | 1.75 / 1.75 | 5.35 / 5.34 |
+
+   The three 0 dB passband cases and char 5 at 0 dB have no sure character before or after.
+   This stands in for MET-TACQ (5.4). It is reported, and it is not a keep gate.
+5. **The commit table**, with the five results at each commit:
+
+   | commit | what | build | engine line | app line | named | captures | adjudicated |
+   |---|---|---|---|---|---|---|---|
+   | `ab98456b` | task 0: record, 1.13.157, runner's writes, entry | 0 errors | 178/178 | 278/278 first run | 13/13 | 51/51 | 13/13 |

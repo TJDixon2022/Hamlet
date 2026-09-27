@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-TASK: 3 of 3
-WORK_INSTRUCTION: 470 - no letter is printed sure while the decoder is still acquiring: HM-REQ-102's gate judged under R78 as step 2's next change against HM-REQ-010
-BALL: tim
-NEXT_PASTE: output.md -> Claude Web
+STATE: EXECUTING
+TASK: 0 of 4
+WORK_INSTRUCTION: 471 - the letters read while acquiring are read again at the pitch and speed once proved, before they settle: step 2's third attempt at HM-REQ-010
+BALL: code
+NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-27T16:11:04-04:00
-NOTE: Unit 470 done: the no-sure-while-acquiring gate refused - it would dim 293 right real letters to catch 29 wrong; screen unchanged, patch kept; exit round as at entry; step 2's count now 2 of 3
+UPDATED: 2026-09-27T16:44:10-04:00
+NOTE: Task 0 entry figures all as at 470's exit, texts byte-identical; committing the record and the runner's writes before reading the stream's window
 
 ---
 
