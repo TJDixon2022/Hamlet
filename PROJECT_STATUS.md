@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 0 of 4
+TASK: 1 of 4
 WORK_INSTRUCTION: 463 - the last fldigi technique nobody has tried: its detection front end, a half-dit integrator at the speed in force and its AGC-normalized level, screened on every recording and kept under R78
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-27T00:58:29-04:00
-NOTE: Task 0 figures all as at 462s exit; committing the record, the runner writes and the entry printouts
+UPDATED: 2026-09-27T01:06:47-04:00
+NOTE: Task 1 done: first-order lift is none on 17:37 under either form; A1 widens 014854 gate room 0.39 to 1.41; committing the fact
 
 ---
 
