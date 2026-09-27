@@ -1,0 +1,39 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.07]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.27]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.27]   Starting:    Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.31]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.TheArbitrationEarnsItsPlaceTests.WhereTheDecodersSplitTheOrderDecidesForThePort [18 ms]
+  Standard Output Messages:
+ HM-REQ-128 (a) | split, the port first at 011 | loses on 011 to port, 010 to port | better alone Second by order, at 011 | switch PortAlone, expected PortAlone | emits `AC E`, expected `AC E`
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheArbitrationEarnsItsPlaceTests.WhereTheArbitrationBeatsBothItStaysOn [2 ms]
+  Standard Output Messages:
+ HM-REQ-128 (a) | beats both | loses on nothing | better alone Ours by dominance | switch Arbitrate, expected Arbitrate | emits `ACE`, expected `ACE`
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheArbitrationEarnsItsPlaceTests.WhereItLosesToOursOursAloneIsUsed [< 1 ms]
+  Standard Output Messages:
+ HM-REQ-128 (a) | loses to ours | loses on 011 to ours, 010 to ours | better alone Ours by dominance | switch OursAlone, expected OursAlone | emits `AB`, expected `AB`
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheArbitrationEarnsItsPlaceTests.WhereItLosesToThePortThePortAloneIsUsed [< 1 ms]
+  Standard Output Messages:
+ HM-REQ-128 (a) | loses to the port | loses on 011 to port, 010 to port, 012 to port, 081 to port | better alone Second by dominance | switch PortAlone, expected PortAlone | emits `AC E`, expected `AC E`
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheArbitrationEarnsItsPlaceTests.WhereTheDecodersSplitTheOrderDecidesForOurs [< 1 ms]
+  Standard Output Messages:
+ HM-REQ-128 (a) | split, ours first at 011 | loses on 012 to port, 081 to port | better alone Ours by order, at 011 | switch OursAlone, expected OursAlone | emits `AB`, expected `AB`
+
+
+
+Test Run Successful.
+Total tests: 5
+     Passed: 5
+ Total time: 0.6275 Seconds
+RC=0 WALL=1s

@@ -1,0 +1,286 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.07]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.29]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.29]   Starting:    Hamlet.RadioEngine.Tests
+[xUnit.net 00:01:02.14]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.WhatTheSureLettersWerePrintedUnderFact.EverySureLetterWithTheProofStatesAtItsEmission [1 m 1 s]
+  Standard Output Messages:
+ first sure | real | unadjudicated/cw-2026-09-23-173723 | first keyed verdict 8.04 s | `Z` at 8.180 s, pitch proved, speed proved | first character both proved at 8.180 s
+ first sure | real | cw-2026-08-17-013347 | first keyed verdict 21.54 s | `V` at 20.690 s, pitch proved, speed proved | first character both proved at 20.690 s
+ first sure | real | cw-2026-08-17-134712 | first keyed verdict none s | no sure character | first character both proved at never s
+ first sure | real | unadjudicated/cw-2026-08-18-003758 | first keyed verdict 2.54 s | `/` at 13.055 s, pitch proved, speed proved | first character both proved at 13.055 s
+ first sure | real | unadjudicated/cw-2026-08-24-012403 | first keyed verdict 20.54 s | `K` at 25.525 s, pitch proved, speed proved | first character both proved at 25.525 s
+ first sure | real | cw-2026-08-18-004507 | first keyed verdict 2.04 s | `S` at 14.700 s, pitch proved, speed proved | first character both proved at 14.700 s
+ first sure | real | unadjudicated/cw-2026-08-22-031838 | first keyed verdict 4.54 s | no sure character | first character both proved at never s
+ first sure | real | unadjudicated/cw-2026-08-22-031905 | first keyed verdict 6.54 s | `E` at 16.690 s, pitch proved, speed proved | first character both proved at 16.690 s
+ first sure | real | unadjudicated/cw-2026-08-22-031948 | first keyed verdict 3.04 s | no sure character | first character both proved at never s
+ first sure | real | unadjudicated/cw-2026-08-22-032012 | first keyed verdict 12.04 s | no sure character | first character both proved at never s
+ first sure | real | unadjudicated/cw-2026-08-22-032050 | first keyed verdict 24.04 s | no sure character | first character both proved at never s
+ first sure | real | unadjudicated/cw-2026-08-22-032113 | first keyed verdict 20.54 s | no sure character | first character both proved at never s
+ first sure | real | unadjudicated/cw-2026-08-22-032129 | first keyed verdict none s | no sure character | first character both proved at never s
+ first sure | real | unadjudicated/cw-2026-09-24-004108 | first keyed verdict 5.54 s | `0` at 5.590 s, pitch proved, speed proved | first character both proved at 5.590 s
+ first sure | real | unadjudicated/cw-2026-09-24-004133 | first keyed verdict 3.54 s | `R` at 3.350 s, pitch proved, speed proved | first character both proved at 3.350 s
+ first sure | real | unadjudicated/cw-2026-09-24-004205 | first keyed verdict 6.04 s | `8` at 9.010 s, pitch proved, speed proved | first character both proved at 9.010 s
+ first sure | real | unadjudicated/cw-2026-09-24-004234 | first keyed verdict 4.54 s | `M` at 3.565 s, pitch proved, speed proved | first character both proved at 3.565 s
+ first sure | real | unadjudicated/cw-2026-09-24-004322 | first keyed verdict 4.04 s | `N` at 3.225 s, pitch proved, speed proved | first character both proved at 3.225 s
+ first sure | real | unadjudicated/cw-2026-09-24-004347 | first keyed verdict 2.54 s | `O` at 0.840 s, pitch proved, speed proved | first character both proved at 0.840 s
+ first sure | real | unadjudicated/cw-2026-09-24-004405 | first keyed verdict 4.54 s | `<BT>` at 3.865 s, pitch proved, speed proved | first character both proved at 3.865 s
+ first sure | real | unadjudicated/cw-2026-09-24-004427 | first keyed verdict 3.04 s | `F` at 2.480 s, pitch proved, speed proved | first character both proved at 2.480 s
+ first sure | real | unadjudicated/cw-2026-09-24-004510 | first keyed verdict 4.04 s | `R` at 3.935 s, pitch proved, speed proved | first character both proved at 3.935 s
+ first sure | real | unadjudicated/cw-2026-09-24-004550 | first keyed verdict 4.54 s | `N` at 3.680 s, pitch proved, speed proved | first character both proved at 3.680 s
+ first sure | synthetic | cq-12wpm-15db | first keyed verdict 11.04 s | `L` at 19.110 s, pitch proved, speed proved | first character both proved at 19.110 s
+ first sure | synthetic | cq-12wpm-5db | first keyed verdict 11.04 s | `L` at 19.105 s, pitch proved, speed proved | first character both proved at 19.105 s
+ first sure | synthetic | cq-12wpm-0db | first keyed verdict 4.04 s | no sure character | first character both proved at never s
+ first sure | synthetic | cq-18wpm-15db | first keyed verdict 3.54 s | `Q` at 2.810 s, pitch proved, speed proved | first character both proved at 2.810 s
+ first sure | synthetic | cq-18wpm-5db | first keyed verdict 3.54 s | `Q` at 5.070 s, pitch proved, speed proved | first character both proved at 5.070 s
+ first sure | synthetic | cq-18wpm-0db | first keyed verdict none s | no sure character | first character both proved at never s
+ first sure | synthetic | cq-25wpm-15db | first keyed verdict 3.04 s | `Q` at 2.305 s, pitch proved, speed proved | first character both proved at 2.305 s
+ first sure | synthetic | cq-25wpm-5db | first keyed verdict 3.04 s | `Q` at 2.305 s, pitch proved, speed proved | first character both proved at 2.305 s
+ first sure | synthetic | cq-25wpm-0db | first keyed verdict none s | no sure character | first character both proved at never s
+ first sure | synthetic | cq-18wpm-15db-char5 | first keyed verdict 5.54 s | `Q` at 5.345 s, pitch proved, speed proved | first character both proved at 5.345 s
+ first sure | synthetic | cq-18wpm-5db-char5 | first keyed verdict 5.54 s | `Q` at 5.340 s, pitch proved, speed proved | first character both proved at 5.340 s
+ first sure | synthetic | cq-18wpm-0db-char5 | first keyed verdict none s | no sure character | first character both proved at never s
+ sure | set | recording | at s | span s | sent | emitted | class | pitch proof | speed proof | inside acquiring | before first keyed verdict (448)
+ sure | real | unadjudicated/cw-2026-09-23-173723 | 13.995 | 13.23 to 14.00 | `C` | `C` | right | proved | proved | no | no
+ sure | real | unadjudicated/cw-2026-09-23-173723 | 15.150 | 14.24 to 15.15 | `Q` | `Q` | right | proved | proved | no | no
+ sure | real | unadjudicated/cw-2026-09-23-173723 | 16.355 | 15.58 to 16.36 | `C` | `C` | right | proved | proved | no | no
+ sure | real | unadjudicated/cw-2026-09-23-173723 | 18.785 | 18.02 to 18.79 | `C` | `C` | right | proved | proved | no | no
+ sure | real | unadjudicated/cw-2026-09-23-173723 | 19.950 | 19.04 to 19.95 | `Q` | `Q` | right | proved | proved | no | no
+ sure | real | unadjudicated/cw-2026-09-23-173723 | 20.825 | 20.34 to 20.83 | `D` | `D` | right | proved | proved | no | no
+ sure | real | unadjudicated/cw-2026-09-23-173723 | 22.050 | 21.42 to 22.05 | `W` | `W` | right | proved | proved | no | no
+ sure | real | unadjudicated/cw-2026-09-23-173723 | 22.990 | 22.37 to 22.99 | `B` | `B` | right | proved | proved | no | no
+ sure | real | unadjudicated/cw-2026-09-23-173723 | 24.020 | 23.26 to 24.02 | `6` | `6` | right | proved | proved | no | no
+ sure | real | unadjudicated/cw-2026-09-23-173723 | 24.820 | 24.34 to 24.82 | `R` | `R` | right | proved | proved | no | no
+ sure | real | unadjudicated/cw-2026-09-23-173723 | 25.100 | 25.04 to 25.10 | `E` | `E` | right | proved | proved | no | no
+ sure | real | unadjudicated/cw-2026-09-23-173723 | 25.840 | 25.35 to 25.84 | `D` | `D` | right | proved | proved | no | no
+ sure | real | cw-2026-08-17-013347 | 27.690 | 27.08 to 27.69 | `R` | `R` | right | proved | proved | no | no
+ sure | real | unadjudicated/cw-2026-08-18-003758 | 13.055 | 12.41 to 13.06 | `/` | `/` | right | proved | proved | no | no
+ sure | real | unadjudicated/cw-2026-08-18-003758 | 13.755 | 13.22 to 13.76 | `4` | `4` | right | proved | proved | no | no
+ sure | real | unadjudicated/cw-2026-08-18-003758 | 14.725 | 14.09 to 14.73 | `Q` | `Q` | right | proved | proved | no | no
+ sure | real | unadjudicated/cw-2026-08-18-003758 | 16.090 | 15.65 to 16.09 | `K` | `K` | right | proved | proved | no | no
+ sure | real | unadjudicated/cw-2026-08-24-012403 | 25.525 | 24.99 to 25.53 | `K` | `K` | right | proved | proved | no | no
+ sure | real | unadjudicated/cw-2026-08-24-012403 | 26.110 | 25.70 to 26.11 | `D` | `D` | right | proved | proved | no | no
+ sure | real | unadjudicated/cw-2026-08-24-012403 | 28.005 | 27.60 to 28.01 | `U` | `U` | right | proved | proved | no | no
+ sure | real | unadjudicated/cw-2026-08-24-012403 | 28.475 | 28.19 to 28.48 | `N` | `N` | right | proved | proved | no | no
+ sure | real | unadjudicated/cw-2026-08-24-012403 | 29.420 | 28.92 to 29.42 | `K` | `K` | right | proved | proved | no | no
+ sure | real | cw-2026-08-18-004507 | 14.700 | 14.45 to 14.70 | `S` | `S` | right | proved | proved | no | no
+ sure | real | cw-2026-08-18-004507 | 15.075 | 14.92 to 15.08 | `T` | `T` | right | proved | proved | no | no
+ sure | real | cw-2026-08-18-004507 | 17.095 | 16.54 to 17.10 | `O` | `O` | right | proved | proved | no | no
+ sure | real | cw-2026-08-18-004507 | 17.580 | 17.32 to 17.58 | `N` | `N` | right | proved | proved | no | no
+ sure | real | cw-2026-08-18-004507 | 22.495 | 22.04 to 22.50 | `G` | `G` | right | proved | proved | no | no
+ sure | real | cw-2026-08-18-004507 | 23.295 | 23.14 to 23.30 | `T` | `T` | right | proved | proved | no | no
+ sure | real | cw-2026-08-18-004507 | 23.915 | 23.56 to 23.92 | `H` | `H` | right | proved | proved | no | no
+ sure | real | cw-2026-08-18-004507 | 24.295 | 24.14 to 24.30 | `I` | `I` | right | proved | proved | no | no
+ sure | real | cw-2026-08-18-004507 | 28.205 | 27.75 to 28.21 | `G` | `G` | right | proved | proved | no | no
+ sure | real | cw-2026-08-18-004507 | 28.585 | 28.54 to 28.59 | `E` | `E` | right | proved | proved | no | no
+ sure | real | cw-2026-08-18-004507 | 29.765 | 29.21 to 29.77 | `P` | `P` | right | proved | proved | no | no
+ sure | real | unadjudicated/cw-2026-08-22-031905 | 16.690 | 16.62 to 16.69 | `E` | `E` | right | proved | proved | no | no
+ sure | real | unadjudicated/cw-2026-09-24-004108 | 14.340 | 13.86 to 14.34 | `E` | `G` | wrong | proved | proved | no | no
+ sure | real | unadjudicated/cw-2026-09-24-004108 | 16.850 | 16.03 to 16.85 | `2` | `2` | right | proved | proved | no | no
+ sure | real | unadjudicated/cw-2026-09-24-004108 | 17.775 | 17.19 to 17.78 | `V` | `6` | wrong | proved | proved | no | no
+ sure | real | unadjudicated/cw-2026-09-24-004133 | 4.750 | 4.16 to 4.75 | `C` | `C` | right | proved | proved | no | no
+ sure | real | unadjudicated/cw-2026-09-24-004133 | 5.505 | 5.13 to 5.51 | `H` | `H` | right | proved | proved | no | no
+ sure | real | unadjudicated/cw-2026-09-24-004133 | 6.085 | 5.82 to 6.09 | `A` | `A` | right | proved | proved | no | no
+ sure | real | unadjudicated/cw-2026-09-24-004133 | 6.645 | 6.27 to 6.64 | `R` | `R` | right | proved | proved | no | no
+ sure | real | unadjudicated/cw-2026-09-24-004205 | 22.645 | 22.38 to 22.65 | `A` | `A` | right | proved | proved | no | no
+ sure | real | unadjudicated/cw-2026-09-24-004205 | 23.020 | 22.88 to 23.02 | `T` | `T` | right | proved | proved | no | no
+ sure | real | unadjudicated/cw-2026-09-24-004205 | 25.015 | 24.75 to 25.02 | `A` | `A` | right | proved | proved | no | no
+ sure | real | unadjudicated/cw-2026-09-24-004205 | 25.730 | 25.36 to 25.73 | `H` | `H` | right | proved | proved | no | no
+ sure | real | unadjudicated/cw-2026-09-24-004205 | 26.750 | 26.16 to 26.75 | `O` | `O` | right | proved | proved | no | no
+ sure | real | unadjudicated/cw-2026-09-24-004234 | 3.565 | 3.19 to 3.57 | `M` | `M` | right | proved | proved | no | yes
+ sure | real | unadjudicated/cw-2026-09-24-004234 | 4.670 | 3.97 to 4.67 | `<BT>` | `<BT>` | right | proved | proved | no | no
+ sure | real | unadjudicated/cw-2026-09-24-004234 | 6.835 | 6.57 to 6.84 | `A` | `A` | right | proved | proved | no | no
+ sure | real | unadjudicated/cw-2026-09-24-004234 | 7.330 | 7.08 to 7.33 | `N` | `N` | right | proved | proved | no | no
+ sure | real | unadjudicated/cw-2026-09-24-004234 | 7.715 | 7.57 to 7.72 | `O` | `T` | wrong | proved | proved | no | no
+ sure | real | unadjudicated/cw-2026-09-24-004234 | 8.045 | 7.89 to 8.05 | `U` | `T` | wrong | proved | proved | no | no
+ sure | real | unadjudicated/cw-2026-09-24-004322 | 3.225 | 2.97 to 3.23 | `N` | `N` | right | proved | proved | no | yes
+ sure | real | unadjudicated/cw-2026-09-24-004322 | 4.750 | 4.15 to 4.75 | `O` | `O` | right | proved | proved | no | no
+ sure | real | unadjudicated/cw-2026-09-24-004322 | 5.330 | 4.95 to 5.33 | `R` | `R` | right | proved | proved | no | no
+ sure | real | unadjudicated/cw-2026-09-24-004322 | 5.615 | 5.58 to 5.62 | `E` | `E` | right | proved | proved | no | no
+ sure | real | unadjudicated/cw-2026-09-24-004322 | 6.235 | 5.86 to 6.24 | `D` | `D` | right | proved | proved | no | no
+ sure | real | unadjudicated/cw-2026-09-24-004322 | 7.315 | 7.05 to 7.32 | `A` | `A` | right | proved | proved | no | no
+ sure | real | unadjudicated/cw-2026-09-24-004322 | 7.990 | 7.62 to 7.99 | `M` | `M` | right | proved | proved | no | no
+ sure | real | unadjudicated/cw-2026-09-24-004322 | 8.300 | 8.25 to 8.30 | `E` | `E` | right | proved | proved | no | no
+ sure | real | unadjudicated/cw-2026-09-24-004322 | 8.920 | 8.54 to 8.92 | `R` | `R` | right | proved | proved | no | no
+ sure | real | unadjudicated/cw-2026-09-24-004322 | 9.335 | 9.19 to 9.34 | `I` | `I` | right | proved | proved | no | no
+ sure | real | unadjudicated/cw-2026-09-24-004322 | 10.190 | 9.60 to 10.19 | `C` | `C` | right | proved | proved | no | no
+ sure | real | unadjudicated/cw-2026-09-24-004322 | 10.680 | 10.42 to 10.68 | `A` | `A` | right | proved | proved | no | no
+ sure | real | unadjudicated/cw-2026-09-24-004322 | 16.685 | 16.09 to 16.69 | `P` | `P` | right | proved | proved | no | no
+ sure | real | unadjudicated/cw-2026-09-24-004322 | 17.050 | 17.01 to 17.05 | `E` | `E` | right | proved | proved | no | no
+ sure | real | unadjudicated/cw-2026-09-24-004322 | 17.670 | 17.30 to 17.67 | `R` | `R` | right | proved | proved | no | no
+ sure | real | unadjudicated/cw-2026-09-24-004322 | 18.180 | 17.92 to 18.18 | `A` | `A` | right | proved | proved | no | no
+ sure | real | unadjudicated/cw-2026-09-24-004322 | 18.645 | 18.50 to 18.65 | `T` | `T` | right | proved | proved | no | no
+ sure | real | unadjudicated/cw-2026-09-24-004322 | 19.070 | 18.92 to 19.07 | `I` | `I` | right | proved | proved | no | no
+ sure | real | unadjudicated/cw-2026-09-24-004322 | 19.945 | 19.35 to 19.95 | `O` | `O` | right | proved | proved | no | no
+ sure | real | unadjudicated/cw-2026-09-24-004322 | 20.430 | 20.17 to 20.43 | `N` | `N` | right | proved | proved | no | no
+ sure | real | unadjudicated/cw-2026-09-24-004322 | 22.630 | 22.38 to 22.63 | `A` | `A` | right | proved | proved | no | no
+ sure | real | unadjudicated/cw-2026-09-24-004322 | 23.315 | 22.83 to 23.32 | `L` | `L` | right | proved | proved | no | no
+ sure | real | unadjudicated/cw-2026-09-24-004322 | 23.970 | 23.48 to 23.97 | `L` | `L` | right | proved | proved | no | no
+ sure | real | unadjudicated/cw-2026-09-24-004322 | 26.030 | 25.44 to 26.03 | `O` | `O` | right | proved | proved | no | no
+ sure | real | unadjudicated/cw-2026-09-24-004322 | 26.790 | 26.31 to 26.79 | `G` | `G` | right | proved | proved | no | no
+ sure | real | unadjudicated/cw-2026-09-24-004322 | 27.380 | 27.11 to 27.38 | `S` | `S` | right | proved | proved | no | no
+ sure | real | unadjudicated/cw-2026-09-24-004322 | 28.505 | 28.02 to 28.51 | `W` | `W` | right | proved | proved | no | no
+ sure | real | unadjudicated/cw-2026-09-24-004347 | 5.075 | 4.59 to 5.08 | `L` | `L` | right | proved | proved | no | no
+ sure | real | unadjudicated/cw-2026-09-24-004347 | 6.250 | 5.77 to 6.25 | `B` | `B` | right | proved | proved | no | no
+ sure | real | unadjudicated/cw-2026-09-24-004347 | 6.525 | 6.48 to 6.53 | `E` | `E` | right | proved | proved | no | no
+ sure | real | unadjudicated/cw-2026-09-24-004347 | 8.240 | 7.65 to 8.24 | `P` | `P` | right | proved | proved | no | no
+ sure | real | unadjudicated/cw-2026-09-24-004347 | 9.025 | 8.54 to 9.03 | `L` | `L` | right | proved | proved | no | no
+ sure | real | unadjudicated/cw-2026-09-24-004347 | 9.975 | 9.38 to 9.98 | `O` | `O` | right | proved | proved | no | no
+ sure | real | unadjudicated/cw-2026-09-24-004347 | 10.425 | 10.17 to 10.43 | `A` | `A` | right | proved | proved | no | no
+ sure | real | unadjudicated/cw-2026-09-24-004347 | 11.085 | 10.72 to 11.09 | `D` | `D` | right | proved | proved | no | no
+ sure | real | unadjudicated/cw-2026-09-24-004347 | 11.435 | 11.40 to 11.44 | `E` | `E` | right | proved | proved | no | no
+ sure | real | unadjudicated/cw-2026-09-24-004347 | 12.100 | 11.73 to 12.10 | `D` | `D` | right | proved | proved | no | no
+ sure | real | unadjudicated/cw-2026-09-24-004347 | 13.020 | 12.87 to 13.02 | `T` | `T` | right | proved | proved | no | no
+ sure | real | unadjudicated/cw-2026-09-24-004347 | 15.555 | 15.18 to 15.56 | `R` | `R` | right | proved | proved | no | no
+ sure | real | unadjudicated/cw-2026-09-24-004347 | 16.175 | 15.80 to 16.18 | `R` | `R` | right | proved | proved | no | no
+ sure | real | unadjudicated/cw-2026-09-24-004347 | 16.870 | 16.39 to 16.87 | `L` | `L` | right | proved | proved | no | no
+ sure | real | unadjudicated/cw-2026-09-24-004347 | 19.285 | 18.70 to 19.29 | `O` | `O` | right | proved | proved | no | no
+ sure | real | unadjudicated/cw-2026-09-24-004347 | 19.820 | 19.68 to 19.82 | `T` | `T` | right | proved | proved | no | no
+ sure | real | unadjudicated/cw-2026-09-24-004405 | 25.655 | 25.06 to 25.66 | `O` | `O` | right | proved | proved | no | no
+ sure | real | unadjudicated/cw-2026-09-24-004405 | 26.515 | 25.92 to 26.52 | `O` | `O` | right | proved | proved | no | no
+ sure | real | unadjudicated/cw-2026-09-24-004405 | 27.130 | 26.76 to 27.13 | `R` | `R` | right | proved | proved | no | no
+ sure | real | unadjudicated/cw-2026-09-24-004405 | 27.825 | 27.45 to 27.83 | `D` | `D` | right | proved | proved | no | no
+ sure | real | unadjudicated/cw-2026-09-24-004405 | 28.285 | 28.14 to 28.29 | `I` | `I` | right | proved | proved | no | no
+ sure | real | unadjudicated/cw-2026-09-24-004405 | 28.795 | 28.53 to 28.80 | `N` | `N` | right | proved | proved | no | no
+ sure | real | unadjudicated/cw-2026-09-24-004510 | 19.560 | 18.82 to 19.56 | `2` | `2` | right | proved | proved | no | no
+ sure | real | unadjudicated/cw-2026-09-24-004510 | 20.275 | 19.84 to 20.28 | `G` | `G` | right | proved | proved | no | no
+ sure | real | unadjudicated/cw-2026-09-24-004510 | 21.145 | 20.50 to 21.15 | `J` | `J` | right | proved | proved | no | no
+ sure | real | unadjudicated/cw-2026-09-24-004510 | 21.825 | 21.37 to 21.83 | `V` | `V` | right | proved | proved | no | no
+ sure | real | unadjudicated/cw-2026-09-24-004510 | 27.840 | 27.39 to 27.84 | `B` | `B` | right | proved | proved | no | no
+ sure | real | unadjudicated/cw-2026-09-24-004550 | 15.925 | 15.56 to 15.93 | `D` | `D` | right | proved | proved | no | no
+ sure | real | unadjudicated/cw-2026-09-24-004550 | 16.150 | 16.11 to 16.15 | `E` | `E` | right | proved | proved | no | no
+ sure | real | unadjudicated/cw-2026-09-24-004550 | 16.935 | 16.46 to 16.94 | `K` | `K` | right | proved | proved | no | no
+ sure | real | unadjudicated/cw-2026-09-24-004550 | 17.365 | 17.10 to 17.36 | `A` | `A` | right | proved | proved | no | no
+ sure | real | unadjudicated/cw-2026-09-24-004550 | 18.380 | 17.57 to 18.38 | `2` | `2` | right | proved | proved | no | no
+ sure | real | unadjudicated/cw-2026-09-24-004550 | 19.120 | 18.64 to 19.12 | `G` | `G` | right | proved | proved | no | no
+ sure | real | unadjudicated/cw-2026-09-24-004550 | 20.070 | 19.37 to 20.07 | `J` | `J` | right | proved | proved | no | no
+ sure | real | unadjudicated/cw-2026-09-24-004550 | 20.795 | 20.31 to 20.80 | `V` | `V` | right | proved | proved | no | no
+ acquiring | set | condition | key | inside: right | inside: wrong or added | outside: right | outside: wrong or added | sure emitted | MET-CER-SURE
+ acquiring | real | real HF, no CH-* profile, SNR_2500 not measured, sender TX-FARNS (CW_SPEC.md 6.4 and 10, HM-DEC-115's traffic net) | inferred | 0 | 0 | 11 | 0 | 11 | 0 of 11, 0.0000
+ acquiring | real | real HF, no CH-* profile, SNR_2500 not measured, sender TX-ITU (CW_SPEC.md 10, the KD0UN capture) | inferred | 0 | 0 | 5 | 0 | 5 | 0 of 5, 0.0000
+ acquiring | real | real HF, no CH-* profile, SNR_2500 not measured, sender TX-TIGHT (CW_SPEC.md 10, HM-DEC-101) | inferred | 0 | 0 | 1 | 0 | 1 | 0 of 1, 0.0000
+ acquiring | real | real HF, no CH-* profile, SNR_2500 not measured, sender not stated in CW_SPEC.md | inferred | 0 | 0 | 93 | 4 | 97 | 4 of 97, 0.0412
+ acquiring | real | all | inferred | 0 | 0 | 110 | 4 | 114 | 4 of 114, 0.0351
+ which | real | pitch not proved, speed proved | right 0 | wrong or added 0
+ which | real | speed not proved, pitch proved | right 0 | wrong or added 0
+ which | real | neither proved | right 0 | wrong or added 0
+ verdict | real | before the tracker's first keyed verdict (448) | right 2 | wrong or added 0 | of them inside acquiring (resolution) 0
+ dim | real | dim precision (HM-REQ-014): 293 right of 322 dim, 0.9099 | dim rate: 322 dim of 436 named letters in the scored stretches
+ sure | set | recording | at s | span s | sent | emitted | class | pitch proof | speed proof | inside acquiring | before first keyed verdict (448)
+ sure | synthetic | cq-12wpm-15db | 19.110 | 18.22 to 19.11 | `L` | `L` | right | proved | proved | no | no
+ sure | synthetic | cq-12wpm-15db | 27.110 | 26.22 to 27.11 | `L` | `L` | right | proved | proved | no | no
+ sure | synthetic | cq-12wpm-5db | 19.105 | 18.22 to 19.11 | `L` | `L` | right | proved | proved | no | no
+ sure | synthetic | cq-12wpm-5db | 27.110 | 26.22 to 27.11 | `L` | `L` | right | proved | proved | no | no
+ sure | synthetic | cq-18wpm-15db | 2.810 | 1.95 to 2.81 | `Q` | `Q` | right | proved | proved | no | yes
+ sure | synthetic | cq-18wpm-15db | 5.075 | 4.22 to 5.08 | `Q` | `Q` | right | proved | proved | no | no
+ sure | synthetic | cq-18wpm-15db | 6.275 | 5.55 to 6.28 | `C` | `C` | right | proved | proved | no | no
+ sure | synthetic | cq-18wpm-15db | 7.345 | 6.49 to 7.35 | `Q` | `Q` | right | proved | proved | no | no
+ sure | synthetic | cq-18wpm-15db | 8.280 | 7.82 to 8.28 | `D` | `D` | right | proved | proved | no | no
+ sure | synthetic | cq-18wpm-15db | 11.745 | 11.02 to 11.74 | `C` | `C` | right | proved | proved | no | no
+ sure | synthetic | cq-18wpm-15db | 12.280 | 11.95 to 12.28 | `A` | `A` | right | proved | proved | no | no
+ sure | synthetic | cq-18wpm-15db | 13.075 | 12.49 to 13.08 | `L` | `L` | right | proved | proved | no | no
+ sure | synthetic | cq-18wpm-15db | 13.875 | 13.29 to 13.88 | `L` | `L` | right | proved | proved | no | no
+ sure | synthetic | cq-18wpm-15db | 19.210 | 18.62 to 19.21 | `L` | `L` | right | proved | proved | no | no
+ sure | synthetic | cq-18wpm-15db | 20.280 | 19.69 to 20.28 | `K` | `K` | right | proved | proved | no | no
+ sure | synthetic | cq-18wpm-5db | 5.070 | 4.23 to 5.07 | `Q` | `Q` | right | proved | proved | no | no
+ sure | synthetic | cq-18wpm-5db | 6.275 | 5.55 to 6.28 | `C` | `C` | right | proved | proved | no | no
+ sure | synthetic | cq-18wpm-5db | 8.275 | 7.82 to 8.28 | `D` | `D` | right | proved | proved | no | no
+ sure | synthetic | cq-18wpm-5db | 11.745 | 11.01 to 11.74 | `C` | `C` | right | proved | proved | no | no
+ sure | synthetic | cq-18wpm-5db | 12.275 | 11.96 to 12.28 | `A` | `A` | right | proved | proved | no | no
+ sure | synthetic | cq-18wpm-5db | 13.075 | 12.49 to 13.08 | `L` | `L` | right | proved | proved | no | no
+ sure | synthetic | cq-18wpm-5db | 16.145 | 14.89 to 16.15 | `0` | `0` | right | proved | proved | no | no
+ sure | synthetic | cq-18wpm-5db | 19.210 | 18.62 to 19.21 | `L` | `L` | right | proved | proved | no | no
+ sure | synthetic | cq-18wpm-5db | 20.270 | 19.69 to 20.27 | `K` | `K` | right | proved | proved | no | no
+ sure | synthetic | cq-25wpm-15db | 2.305 | 1.69 to 2.31 | `Q` | `Q` | right | proved | proved | no | yes
+ sure | synthetic | cq-25wpm-15db | 3.170 | 2.65 to 3.17 | `C` | `C` | right | proved | proved | no | no
+ sure | synthetic | cq-25wpm-15db | 4.800 | 4.28 to 4.80 | `C` | `C` | right | proved | proved | no | no
+ sure | synthetic | cq-25wpm-15db | 5.570 | 4.96 to 5.57 | `Q` | `Q` | right | proved | proved | no | no
+ sure | synthetic | cq-25wpm-15db | 6.245 | 5.92 to 6.25 | `D` | `D` | right | proved | proved | no | no
+ sure | synthetic | cq-25wpm-15db | 6.435 | 6.39 to 6.43 | `E` | `E` | right | proved | proved | no | no
+ sure | synthetic | cq-25wpm-15db | 7.010 | 6.78 to 7.01 | `N` | `N` | right | proved | proved | no | no
+ sure | synthetic | cq-25wpm-15db | 9.125 | 8.89 to 9.13 | `A` | `A` | right | proved | proved | no | no
+ sure | synthetic | cq-25wpm-15db | 9.700 | 9.28 to 9.70 | `L` | `L` | right | proved | proved | no | no
+ sure | synthetic | cq-25wpm-15db | 10.275 | 9.85 to 10.28 | `L` | `L` | right | proved | proved | no | no
+ sure | synthetic | cq-25wpm-15db | 11.905 | 11.00 to 11.91 | `0` | `0` | right | proved | proved | no | no
+ sure | synthetic | cq-25wpm-15db | 12.580 | 12.06 to 12.58 | `C` | `C` | right | proved | proved | no | no
+ sure | synthetic | cq-25wpm-15db | 12.960 | 12.73 to 12.96 | `A` | `A` | right | proved | proved | no | no
+ sure | synthetic | cq-25wpm-15db | 13.540 | 13.12 to 13.54 | `L` | `L` | right | proved | proved | no | no
+ sure | synthetic | cq-25wpm-15db | 14.115 | 13.69 to 14.12 | `L` | `L` | right | proved | proved | no | no
+ sure | synthetic | cq-25wpm-15db | 14.885 | 14.46 to 14.89 | `-` | `K` | added | proved | proved | no | no
+ sure | synthetic | cq-25wpm-15db | 14.890 | 14.46 to 14.89 | `K` | `K` | right | proved | proved | no | no
+ sure | synthetic | cq-25wpm-5db | 2.305 | 1.70 to 2.31 | `Q` | `Q` | right | proved | proved | no | yes
+ sure | synthetic | cq-25wpm-5db | 3.170 | 2.65 to 3.17 | `C` | `C` | right | proved | proved | no | no
+ sure | synthetic | cq-25wpm-5db | 3.935 | 3.33 to 3.94 | `Q` | `Q` | right | proved | proved | no | no
+ sure | synthetic | cq-25wpm-5db | 4.795 | 4.28 to 4.80 | `C` | `C` | right | proved | proved | no | no
+ sure | synthetic | cq-25wpm-5db | 7.010 | 6.78 to 7.01 | `N` | `N` | right | proved | proved | no | no
+ sure | synthetic | cq-25wpm-5db | 8.065 | 7.17 to 8.07 | `0` | `0` | right | proved | proved | no | no
+ sure | synthetic | cq-25wpm-5db | 8.740 | 8.22 to 8.74 | `C` | `C` | right | proved | proved | no | no
+ sure | synthetic | cq-25wpm-5db | 11.905 | 11.01 to 11.91 | `0` | `0` | right | proved | proved | no | no
+ sure | synthetic | cq-25wpm-5db | 12.580 | 12.06 to 12.58 | `C` | `C` | right | proved | proved | no | no
+ sure | synthetic | cq-25wpm-5db | 12.960 | 12.73 to 12.96 | `A` | `A` | right | proved | proved | no | no
+ sure | synthetic | cq-25wpm-5db | 14.885 | 14.46 to 14.89 | `-` | `K` | added | proved | proved | no | no
+ sure | synthetic | cq-25wpm-5db | 14.890 | 14.46 to 14.89 | `K` | `K` | right | proved | proved | no | no
+ sure | synthetic | cq-18wpm-15db-char5 | 5.345 | 4.49 to 5.35 | `Q` | `Q` | right | proved | proved | no | yes
+ sure | synthetic | cq-18wpm-15db-char5 | 8.675 | 8.22 to 8.68 | `D` | `D` | right | proved | proved | no | no
+ sure | synthetic | cq-18wpm-15db-char5 | 9.080 | 9.02 to 9.08 | `E` | `E` | right | proved | proved | no | no
+ sure | synthetic | cq-18wpm-15db-char5 | 12.545 | 11.82 to 12.55 | `C` | `C` | right | proved | proved | no | no
+ sure | synthetic | cq-18wpm-15db-char5 | 13.215 | 12.89 to 13.22 | `A` | `A` | right | proved | proved | no | no
+ sure | synthetic | cq-18wpm-15db-char5 | 14.145 | 14.08 to 14.15 | `L` | `E` | wrong | proved | proved | no | no
+ sure | synthetic | cq-18wpm-15db-char5 | 15.080 | 14.49 to 15.08 | `L` | `L` | right | proved | proved | no | no
+ sure | synthetic | cq-18wpm-15db-char5 | 20.145 | 19.55 to 20.15 | `L` | `L` | right | proved | proved | no | no
+ sure | synthetic | cq-18wpm-15db-char5 | 21.080 | 20.48 to 21.08 | `L` | `L` | right | proved | proved | no | no
+ sure | synthetic | cq-18wpm-5db-char5 | 5.340 | 4.49 to 5.34 | `Q` | `Q` | right | proved | proved | no | yes
+ sure | synthetic | cq-18wpm-5db-char5 | 6.545 | 5.82 to 6.55 | `C` | `C` | right | proved | proved | no | no
+ sure | synthetic | cq-18wpm-5db-char5 | 7.725 | 6.89 to 7.73 | `Q` | `Q` | right | proved | proved | no | no
+ sure | synthetic | cq-18wpm-5db-char5 | 8.405 | 8.22 to 8.41 | `-` | `T` | added | proved | proved | no | no
+ sure | synthetic | cq-18wpm-5db-char5 | 8.680 | 8.62 to 8.68 | `D` | `E` | wrong | proved | proved | no | no
+ sure | synthetic | cq-18wpm-5db-char5 | 9.075 | 9.03 to 9.08 | `E` | `E` | right | proved | proved | no | no
+ sure | synthetic | cq-18wpm-5db-char5 | 12.005 | 11.82 to 12.01 | `-` | `T` | added | proved | proved | no | no
+ sure | synthetic | cq-18wpm-5db-char5 | 12.545 | 12.24 to 12.55 | `N` | `D` | wrong | proved | proved | no | no
+ sure | synthetic | cq-18wpm-5db-char5 | 13.215 | 12.89 to 13.22 | `0` | `U` | wrong | proved | proved | no | no
+ sure | synthetic | cq-18wpm-5db-char5 | 13.870 | 13.56 to 13.87 | `C` | `U` | wrong | proved | proved | no | no
+ sure | synthetic | cq-18wpm-5db-char5 | 14.145 | 14.09 to 14.15 | `A` | `E` | wrong | proved | proved | no | no
+ sure | synthetic | cq-18wpm-5db-char5 | 14.805 | 14.49 to 14.81 | `L` | `U` | wrong | proved | proved | no | no
+ sure | synthetic | cq-18wpm-5db-char5 | 15.075 | 15.02 to 15.08 | `L` | `E` | wrong | proved | proved | no | no
+ sure | synthetic | cq-18wpm-5db-char5 | 15.880 | 15.55 to 15.88 | `N` | `N` | right | proved | proved | no | no
+ sure | synthetic | cq-18wpm-5db-char5 | 18.540 | 17.82 to 18.54 | `C` | `C` | right | proved | proved | no | no
+ sure | synthetic | cq-18wpm-5db-char5 | 20.145 | 19.56 to 20.15 | `L` | `L` | right | proved | proved | no | no
+ acquiring | set | condition | key | inside: right | inside: wrong or added | outside: right | outside: wrong or added | sure emitted | MET-CER-SURE
+ acquiring | synthetic | synthetic, no fading, shaped noise band (not shown to be CH-AWGN), TX-ITU (1:3:1:3:7), 15 dB in the passband (not restated in the 2500 Hz reference) | exact | 0 | 0 | 29 | 1 | 30 | 1 of 30, 0.0333
+ acquiring | synthetic | synthetic, no fading, shaped noise band (not shown to be CH-AWGN), TX-ITU (1:3:1:3:7), 5 dB in the passband (not restated in the 2500 Hz reference) | exact | 0 | 0 | 22 | 1 | 23 | 1 of 23, 0.0435
+ acquiring | synthetic | synthetic, no fading, shaped noise band (not shown to be CH-AWGN), character gap 5 units, inside TX-FARNS's 3 to 7, 15 dB in the passband (not restated in the 2500 Hz reference) | exact | 0 | 0 | 8 | 1 | 9 | 1 of 9, 0.1111
+ acquiring | synthetic | synthetic, no fading, shaped noise band (not shown to be CH-AWGN), character gap 5 units, inside TX-FARNS's 3 to 7, 5 dB in the passband (not restated in the 2500 Hz reference) | exact | 0 | 0 | 7 | 9 | 16 | 9 of 16, 0.5625
+ acquiring | synthetic | all | exact | 0 | 0 | 66 | 12 | 78 | 12 of 78, 0.1538
+ which | synthetic | pitch not proved, speed proved | right 0 | wrong or added 0
+ which | synthetic | speed not proved, pitch proved | right 0 | wrong or added 0
+ which | synthetic | neither proved | right 0 | wrong or added 0
+ verdict | synthetic | before the tracker's first keyed verdict (448) | right 5 | wrong or added 0 | of them inside acquiring (resolution) 0
+ dim | synthetic | dim precision (HM-REQ-014): 93 right of 95 dim, 0.9789 | dim rate: 95 dim of 173 named letters in the scored stretches
+ 449 | recording | at s | sent | emitted | found at HEAD | sure | inside acquiring | pitch proof | speed proof | before first keyed verdict (448)
+ 449 | unadjudicated/cw-2026-08-22-032012 | 1.765 | `O` | `T` | yes | no | yes | none | hypothesis | yes
+ 449 | unadjudicated/cw-2026-08-22-032012 | 7.425 | `-` | `.` | yes | no | yes | none | hypothesis | yes
+ 449 | unadjudicated/cw-2026-08-22-032012 | 8.640 | `-` | `1` | yes | no | yes | none | hypothesis | yes
+ 449 | unadjudicated/cw-2026-08-22-032050 | 11.195 | `-` | `T` | yes | no | yes | none | hypothesis | yes
+ 449 | unadjudicated/cw-2026-08-22-032050 | 11.545 | `U` | `A` | yes | no | yes | none | hypothesis | yes
+ 449 | unadjudicated/cw-2026-08-22-032050 | 16.375 | `P` | `W` | yes | no | yes | none | hypothesis | yes
+ 449 | unadjudicated/cw-2026-08-22-032050 | 17.745 | `N` | `T` | yes | no | yes | none | hypothesis | yes
+ 449 | unadjudicated/cw-2026-08-22-032113 | 6.135 | `D` | `O` | yes | no | yes | none | hypothesis | yes
+ 449 | unadjudicated/cw-2026-08-22-032129 | 4.175 | `2` | `T` | yes | no | yes | none | hypothesis | yes
+ 449 | unadjudicated/cw-2026-08-22-032129 | 4.990 | `0` | `J` | yes | no | yes | none | hypothesis | yes
+ 449 | unadjudicated/cw-2026-08-22-032129 | 7.810 | `R` | `G` | yes | no | yes | none | hypothesis | yes
+ 449 | unadjudicated/cw-2026-08-22-032129 | 20.250 | `-` | `A` | yes | no | yes | none | hypothesis | yes
+ 449 | unadjudicated/cw-2026-08-22-032129 | 20.460 | `L` | `E` | yes | no | yes | none | hypothesis | yes
+ 449 | total | 0 of unit 449's 13 are sure and inside acquiring
+ total | real | 114 sure: 110 right, 4 wrong, 0 added | inside acquiring 0 right (the coverage the gate costs), 0 wrong or added (the MET-CER-SURE it saves) | outside 110 right, 4 wrong or added
+ total | synthetic | 78 sure: 66 right, 8 wrong, 4 added | inside acquiring 0 right (the coverage the gate costs), 0 wrong or added (the MET-CER-SURE it saves) | outside 66 right, 12 wrong or added
+
+
+
+Test Run Successful.
+Total tests: 1
+     Passed: 1
+ Total time: 1.0404 Minutes
+RC=0 WALL=63s

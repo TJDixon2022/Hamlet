@@ -12,6 +12,73 @@ denominator is the sure characters emitted, unit 439's reading of `CW_SPEC.md` 1
 **From unit 464, each decoder's confidence p and its calibration per condition (HM-REQ-124,
 MET-CAL) are in `calibration.md`, held-out by recording.**
 
+## Unit 470 - no sure letter while acquiring (HM-REQ-102), not kept
+
+Step 2, 2.4, HM-REQ-010 with HM-REQ-011 and 012 and MET-WBE as guards, HM-REQ-102 measured
+beside it. Acquiring is `PARKED.md`'s RESOLVED line of 2026-09-26: until both the pitch
+(HM-REQ-093) and the speed (HM-REQ-034) carry proof state proved. The trace
+(`WhatTheSureLettersWerePrintedUnderFact`, `.run-unit/unit470-trace.txt`) read both of the tree's
+states (`CwToneTracker.PitchProof`, `CwDecoder.SpeedProof`) at each letter's emission. At HEAD,
+real, inferred: 293 right and 29 wrong or added sure letters inside acquiring, 110 right and 4
+wrong or added outside it. Synthetic, exact: 93 right and 2 wrong or added inside, 66 and 12
+outside. All 13 of unit 449's acquisition letters fall inside, each with pitch none and speed
+hypothesis. The change, in `CwDecoder` where both states are first known together: a letter whose
+class would be sure is emitted dim while either state is not proved. No letter changes, and no
+constant is added. The test (`NoSureLetterWhileAcquiringTests`, INT-CARRIER(+100, 0) and the wanted
+TX-ITU alone, 18 WPM, 15 dB, CH-AWGN, exact keys) was red at HEAD, with 67 and 42 characters
+emitted sure while acquiring, and green under the change. The diff and its test are
+`.run-unit/unit470-gate.patch`, and `src` does not carry it. **Refused on MET-COVERAGE, on every
+condition that has a sure letter, real and synthetic.**
+
+| part of R78 | before (HEAD `bcbf97ba`) | under the change | verdict |
+|---|---|---|---|
+| MET-CER-SURE, real, inferred | 33 of 436 (28 substituted, 5 added), 0.0757 | 4 of 114 (4 substituted), 0.0351 | falls |
+| MET-CER-SURE, synthetic, exact | 14 of 173 (8 substituted, 6 added), 0.0809 | 12 of 78 (8 substituted, 4 added), 0.1538 | **rises** |
+| MET-INVENTED, real, inferred | 33 over 473, 0.0698 | 4 over 473, 0.0085 | falls |
+| MET-INVENTED, synthetic, exact | 14 over 252 | 12 over 252 | falls |
+| sure-and-right coverage, real, inferred | 403 over 473, 0.8520 | 110 over 473, 0.2326 | **falls - refuses** |
+| sure-and-right coverage, synthetic, exact | 159 over 252, 0.6310 | 66 over 252, 0.2619 | **falls - refuses** |
+| MET-WBE, real, inferred | 37 over 113, 0.3274 | 37 over 113, 0.3274 | holds |
+| MET-WBE, synthetic, exact | 44 over 84, 0.5238 | 44 over 84, 0.5238 | holds |
+| dim precision (HM-REQ-014), scored stretches | real no dim letter; synthetic no dim letter | real 293 right of 322 dim, 0.9099; synthetic 93 of 95, 0.9789 | reported |
+| adjudicated readings | 13 of 13 | 13 of 13 | hold |
+| V-11, 35 recordings, four metrics | - | 29 worse on sure-and-right (none on wrong, added or boundaries); letters identical, 685 sure to dim, 330 stay sure | **fails** |
+| capture rows, named floors | 51 of 51; 13 of 13 | 51 of 51; 13 of 13 | hold |
+| engine carry-forward line | 178 of 178 | 176 of 178; `CwFixtureTests.TheCleanRecordingsDecodeExactly` red on clean-12wpm and clean-18wpm (every letter dim) | **fails** |
+| app carry-forward line | 278 of 278 | 278 of 278 | holds |
+| `TheArbitrationEarnsItsPlaceTests` | (a) 5 of 5, (b) harness 1 of 1, live 2 of 2 | (a) 5 of 5; (b) harness red (4 rows' rule moves off the table, char-5 15 dB worse than the port on 010, 013, 012), live red (the live rule becomes OursAlone) | **fails** |
+| HM-REQ-102, 7.052 opening, sure while acquiring | 20 over 0 to 46.2 s (9 before the 26.04 s verdict, as 448) | 0 | met on the opening |
+| HM-REQ-103, 7.052 opening, sure and right of 24, inferred | 21 | 1 | falls |
+
+Per condition, with the key's kind beside each, before -> after, MET-CER-SURE and coverage:
+- Real, sender not stated (20 recordings), inferred: 33 of 374, 0.0882 -> 4 of 97, 0.0412; 0.8317 -> 0.2268.
+- Real TX-FARNS, inferred: 0 of 43 -> 0 of 11; 0.9773 -> 0.2500.
+- Real TX-ITU, inferred: 0 of 13 -> 0 of 5; 1.0000 -> 0.3846.
+- Real TX-TIGHT, inferred: 0 of 6 -> 0 of 1; 1.0000 -> 0.1667.
+- Synthetic TX-ITU 15 dB, exact: 1 of 64, 0.0156 -> 1 of 30, 0.0333; 1.0000 -> 0.4603.
+- Synthetic TX-ITU 5 dB, exact: 1 of 63, 0.0159 -> 1 of 23, 0.0435; 0.9841 -> 0.3492.
+- Synthetic character gap 5, 15 dB, exact: 1 of 21 -> 1 of 9; 0.9524 -> 0.3810.
+- Synthetic character gap 5, 5 dB, exact: 11 of 25, 0.4400 -> 9 of 16, 0.5625; 0.6667 -> 0.3333.
+- Both synthetic 0 dB conditions: no sure letter before or after, coverage 0.
+
+MET-WBE is unchanged on every condition.
+
+The 7.052 opening, 0 to 46.2 s, sure as itself, (dim), {emitted while acquiring}:
+before `{EII ETNHHK        EANQNI}D          {EAN(■)IK     }`; after
+`{(E)(I)(I) (E)(T)(N)(H)(H)(K)        (E)(A)(N)(Q)(N)(I)}D          {(E)(A)(N)(■)(I)(K)     }`.
+First sure character, before -> after: the opening 20.64 -> 33.48 s. On the real set, 16 of 23
+recordings keep a sure character, first at 0.84 to 25.53 s, and 7 have none left: `134712`,
+`031838`, `031948`, `032012`, `032050`, `032113` and `032129`, on none of which is a character
+ever emitted with both states proved. On the synthetic set every 12 and 18 WPM case at 5 and 15
+dB is later, for example 12 WPM 2.11 -> 19.11 s. Every recording's text and classes before and
+after are `.run-unit/unit470-texts-entry.txt` and `unit470-text-gate.txt`.
+
+**Not kept. 2.4 is not ticked, and step 2's count of units with no kept change goes to 2 of 3.**
+HM-REQ-102 and HM-REQ-012 pull against each other on this corpus. The resolution's acquiring
+holds 293 of the 403 sure-and-right real letters for 29 of the 33 wrong ones, and on a clean
+generated TX-ITU the pitch sits at hypothesis between the surveys that confirm it. No second
+form is tried (V-14).
+
 ## Unit 469 - HM-REQ-060, 061, 062 and 066 measured against the INT-* profiles (7.3)
 
 2026-09-27, unit 469. Over the wanted TX-ITU station (`SyntheticCq.Text`, 600 Hz) at 15 dB in the 2500 Hz reference on CH-AWGN, ours alone, synthetic, exact keys, each case beside its control (the wanted alone, same seed and band). **HM-REQ-060 not met, 2 of 6 cases**: INT-ADJ(±100, 0, 25) met at 18 WPM both sides; at 12 WPM the tracker walks to the adjacent station at the fifth word and ours prints its text as sure (MET-CER-SURE 24/38 and 23/37, MET-INVENTED 24/21 and 23/21); at 25 WPM held but 6/24 and 7/23 (control 1/22). **HM-REQ-061 not met, 0 of 6**: INT-ADJ(±50, −6, 25) at 12 WPM 19/33 and 22/36, one of them losing the pitch; at 18 and 25 WPM held with one sure added letter each, 1/22 (the 25 WPM control's own extra `K` is 1/22). **HM-REQ-062 not met, 4 of 12**: INT-CARRIER met only at +200 Hz 0 dB and at +500 Hz all three levels; at +50 and +100 Hz at every level and at +200 Hz at +10 and +20 dB the tracker sits on the carrier through the first word and ours prints sure letters off it (`T T  T` before `CQ DE ...`); at +50 Hz +10 and +20 dB it reads almost nothing (`T  E`, `T T`), worst MET-CER-SURE 2/2. **HM-REQ-066 met, 3 of 3, on the reading fixed before the decode** (the report names the second station at any hop while both key) - but only on 78, 374 and 392 of 3400 hops, always as "125 Hz above" through a neighbouring 25 Hz bin, at levels 4 to 7 dB from the truth. `TheInterferenceIsMeasuredFact` (asserts nothing); the table and the recipe are in `interference.md`. Decoder unchanged; pass/fail, not a ratchet (V-08).

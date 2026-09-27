@@ -1,0 +1,103 @@
+using System.Globalization;
+using Hamlet.RadioEngine.Audio;
+using Hamlet.RadioEngine.Cw;
+using Hamlet.RadioEngine.Tests.Cw.Fixtures;
+using Xunit;
+using Xunit.Abstractions;
+
+namespace Hamlet.RadioEngine.Tests.Cw;
+
+/// <summary>
+/// HM-REQ-102: while acquiring, the decoder emits no sure character; judged with
+/// HM-REQ-010 (work instruction 470, task 2).
+/// </summary>
+/// <remarks>
+/// <para>**ACQUIRING IS `PARKED.md`'s RESOLVED LINE OF 2026-09-26**: until both the
+/// pitch (HM-REQ-093) and the speed (HM-REQ-034) carry proof state proved. Both
+/// states are the tree's, <see cref="CwToneTracker.PitchProof"/> and
+/// <see cref="CwDecoder.SpeedProof"/>, read at the moment each character is emitted,
+/// settled or on the leading edge.</para>
+/// <para>**THE CASES ARE GENERATED AND THEIR KEY IS EXACT BY CONSTRUCTION** (12.5):
+/// the wanted TX-ITU station at <see cref="SyntheticCq.Text"/> on CH-AWGN at 15 dB,
+/// heard from cold, alone and beside unit 469's INT-CARRIER at +100 Hz and 0 dB. At
+/// `bcbf97ba` both print sure letters while acquiring: the carrier case `CT  EIQ`
+/// before `CQ` (unit 469), the cold start its opening `CQ`.</para>
+/// </remarks>
+public sealed class NoSureLetterWhileAcquiringTests
+{
+    private static readonly CultureInfo Invariant = CultureInfo.InvariantCulture;
+
+    private readonly ITestOutputHelper _output;
+
+    /// <summary>Creates the tests.</summary>
+    /// <param name="output">Where each offending character is printed.</param>
+    public NoSureLetterWhileAcquiringTests(ITestOutputHelper output)
+        => _output = output;
+
+    /// <summary>HM-REQ-102 on a generated case: nothing emitted sure while either proof state is not proved.</summary>
+    /// <param name="carrierHz">The carrier's offset from the wanted, or NaN for the wanted alone.</param>
+    /// <param name="carrierDb">The carrier's level against the wanted's key-down.</param>
+    /// <param name="wordsPerMinute">The wanted station's speed.</param>
+    [Theory]
+    [InlineData(100.0, 0.0, 18.0)]
+    [InlineData(double.NaN, 0.0, 18.0)]
+    public void NothingIsEmittedSureUntilThePitchAndTheSpeedAreBothProved(double carrierHz, double carrierDb, double wordsPerMinute)
+    {
+        var spec = double.IsNaN(carrierHz) ? null : CwInterference.Carrier(carrierHz, carrierDb);
+        var parts = CwInterference.Render(spec, wordsPerMinute, CwInterference.Seed(wordsPerMinute));
+
+        Assert.Equal(SyntheticCq.Text, parts.Key);
+
+        var audio = parts.Audio;
+        var decoder = new CwDecoder(audio.SampleRate, SyntheticCq.StartingPitchHz);
+        var settled = new List<CwCharacter>();
+        var offending = new List<string>();
+
+        void Check(CwCharacter c, string where)
+        {
+            var pitch = decoder.Tracker.PitchProof;
+            var speed = decoder.SpeedProof;
+
+            if (!c.IsWordGap && c.Confidence == CwConfidence.High
+                && (pitch != CwPitchProof.Proved || speed != CwSpeedProof.Proved))
+            {
+                offending.Add(string.Create(Invariant,
+                    $"{where} `{c.Text}` at {c.At.TotalSeconds:0.000} s sure, pitch {pitch}, speed {speed}"));
+            }
+        }
+
+        decoder.CharacterSettled += c =>
+        {
+            settled.Add(c);
+            Check(c, "settled");
+        };
+        decoder.LeadingEdge += edge =>
+        {
+            foreach (var c in edge)
+            {
+                Check(c, "edge");
+            }
+        };
+
+        var hop = decoder.Tracker.HopSamples;
+
+        for (var at = 0L; at + hop <= audio.Samples.Length; at += hop)
+        {
+            decoder.Process(new AudioChunk(at, audio.SampleRate, audio.Samples.AsSpan((int)at, hop)));
+        }
+
+        decoder.Flush();
+
+        var label = spec?.Label ?? "the wanted alone";
+
+        _output.WriteLine($"case | {label} | {wordsPerMinute:0} wpm | key `{parts.Key}` exact | read `{CwReading.Of(settled).Text.Trim()}`");
+
+        foreach (var o in offending.Distinct().Take(40))
+        {
+            _output.WriteLine($"offending | {label} | {o}");
+        }
+
+        Assert.True(offending.Count == 0,
+            $"HM-REQ-102: {offending.Distinct().Count()} characters emitted sure while acquiring on {label}; first: {offending.FirstOrDefault()}");
+    }
+}

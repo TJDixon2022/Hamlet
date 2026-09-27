@@ -1,0 +1,212 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:01.83]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:02.06]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:02.06]   Starting:    Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:03.02]     Hamlet.RadioEngine.Tests.Cw.NoSureLetterWhileAcquiringTests.NothingIsEmittedSureUntilThePitchAndTheSpeedAreBothProved(carrierHz: 100, carrierDb: 0, wordsPerMinute: 18) [FAIL]
+[xUnit.net 00:00:03.02]       HM-REQ-102: 67 characters emitted sure while acquiring on INT-CARRIER(+100, 0); first: settled `C` at 1.745 s sure, pitch None, speed Hypothesis
+[xUnit.net 00:00:03.02]       Stack Trace:
+[xUnit.net 00:00:03.02]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\NoSureLetterWhileAcquiringTests.cs(100,0): at Hamlet.RadioEngine.Tests.Cw.NoSureLetterWhileAcquiringTests.NothingIsEmittedSureUntilThePitchAndTheSpeedAreBothProved(Double carrierHz, Double carrierDb, Double wordsPerMinute)
+[xUnit.net 00:00:03.02]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:03.02]            at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+[xUnit.net 00:00:03.02]       Output:
+[xUnit.net 00:00:03.02]         case | INT-CARRIER(+100, 0) | 18 wpm | key `CQ CQ CQ DE N0CALL N0CALL K` exact | read `CT  EIQ CQ DE N0CALL N0CALL K`
+[xUnit.net 00:00:03.02]         offending | INT-CARRIER(+100, 0) | settled `C` at 1.745 s sure, pitch None, speed Hypothesis
+[xUnit.net 00:00:03.02]         offending | INT-CARRIER(+100, 0) | edge `M` at 3.000 s sure, pitch None, speed Hypothesis
+[xUnit.net 00:00:03.02]         offending | INT-CARRIER(+100, 0) | settled `T` at 2.180 s sure, pitch None, speed Hypothesis
+[xUnit.net 00:00:03.02]         offending | INT-CARRIER(+100, 0) | edge `E` at 3.680 s sure, pitch Proved, speed Hypothesis
+[xUnit.net 00:00:03.02]         offending | INT-CARRIER(+100, 0) | edge `E` at 4.000 s sure, pitch Proved, speed Hypothesis
+[xUnit.net 00:00:03.02]         offending | INT-CARRIER(+100, 0) | edge `H` at 4.500 s sure, pitch Proved, speed Hypothesis
+[xUnit.net 00:00:03.02]         offending | INT-CARRIER(+100, 0) | settled `E` at 3.680 s sure, pitch Hypothesis, speed Hypothesis
+[xUnit.net 00:00:03.02]         offending | INT-CARRIER(+100, 0) | settled `I` at 4.030 s sure, pitch Hypothesis, speed Hypothesis
+[xUnit.net 00:00:03.02]         offending | INT-CARRIER(+100, 0) | edge `Q` at 5.080 s sure, pitch Hypothesis, speed Hypothesis
+[xUnit.net 00:00:03.02]         offending | INT-CARRIER(+100, 0) | edge `Q` at 5.080 s sure, pitch Proved, speed Hypothesis
+[xUnit.net 00:00:03.02]         offending | INT-CARRIER(+100, 0) | edge `D` at 6.000 s sure, pitch Proved, speed Hypothesis
+[xUnit.net 00:00:03.02]         offending | INT-CARRIER(+100, 0) | settled `Q` at 5.080 s sure, pitch Proved, speed Hypothesis
+[xUnit.net 00:00:03.02]         offending | INT-CARRIER(+100, 0) | edge `C` at 6.280 s sure, pitch Proved, speed Hypothesis
+[xUnit.net 00:00:03.02]         offending | INT-CARRIER(+100, 0) | edge `E` at 6.500 s sure, pitch Proved, speed Hypothesis
+[xUnit.net 00:00:03.02]         offending | INT-CARRIER(+100, 0) | edge `C` at 6.280 s sure, pitch Hypothesis, speed Hypothesis
+[xUnit.net 00:00:03.02]         offending | INT-CARRIER(+100, 0) | edge `M` at 7.000 s sure, pitch Hypothesis, speed Hypothesis
+[xUnit.net 00:00:03.02]         offending | INT-CARRIER(+100, 0) | settled `C` at 6.280 s sure, pitch Hypothesis, speed Hypothesis
+[xUnit.net 00:00:03.02]         offending | INT-CARRIER(+100, 0) | edge `Q` at 7.345 s sure, pitch Hypothesis, speed Hypothesis
+[xUnit.net 00:00:03.02]         offending | INT-CARRIER(+100, 0) | edge `T` at 8.000 s sure, pitch Hypothesis, speed Hypothesis
+[xUnit.net 00:00:03.02]         offending | INT-CARRIER(+100, 0) | settled `Q` at 7.345 s sure, pitch Hypothesis, speed Hypothesis
+[xUnit.net 00:00:03.02]         offending | INT-CARRIER(+100, 0) | edge `D` at 8.280 s sure, pitch Hypothesis, speed Hypothesis
+[xUnit.net 00:00:03.03]         offending | INT-CARRIER(+100, 0) | edge `E` at 8.500 s sure, pitch Hypothesis, speed Hypothesis
+[xUnit.net 00:00:03.03]         offending | INT-CARRIER(+100, 0) | edge `D` at 8.280 s sure, pitch Proved, speed Hypothesis
+[xUnit.net 00:00:03.03]         offending | INT-CARRIER(+100, 0) | edge `E` at 8.545 s sure, pitch Proved, speed Hypothesis
+[xUnit.net 00:00:03.03]         offending | INT-CARRIER(+100, 0) | settled `D` at 8.280 s sure, pitch Proved, speed Hypothesis
+[xUnit.net 00:00:03.03]         offending | INT-CARRIER(+100, 0) | edge `N` at 9.345 s sure, pitch Proved, speed Hypothesis
+[xUnit.net 00:00:03.03]         offending | INT-CARRIER(+100, 0) | settled `E` at 8.545 s sure, pitch Hypothesis, speed Hypothesis
+[xUnit.net 00:00:03.03]         offending | INT-CARRIER(+100, 0) | edge `N` at 9.345 s sure, pitch Hypothesis, speed Hypothesis
+[xUnit.net 00:00:03.03]         offending | INT-CARRIER(+100, 0) | edge `M` at 10.000 s sure, pitch Hypothesis, speed Hypothesis
+[xUnit.net 00:00:03.03]         offending | INT-CARRIER(+100, 0) | settled `N` at 9.345 s sure, pitch Hypothesis, speed Hypothesis
+[xUnit.net 00:00:03.03]         offending | INT-CARRIER(+100, 0) | edge `0` at 10.810 s sure, pitch Proved, speed Hypothesis
+[xUnit.net 00:00:03.03]         offending | INT-CARRIER(+100, 0) | edge `D` at 11.500 s sure, pitch Proved, speed Hypothesis
+[xUnit.net 00:00:03.03]         offending | INT-CARRIER(+100, 0) | settled `0` at 10.810 s sure, pitch Hypothesis, speed Hypothesis
+[xUnit.net 00:00:03.03]         offending | INT-CARRIER(+100, 0) | edge `C` at 11.745 s sure, pitch Hypothesis, speed Hypothesis
+[xUnit.net 00:00:03.03]         offending | INT-CARRIER(+100, 0) | edge `E` at 12.000 s sure, pitch Hypothesis, speed Hypothesis
+[xUnit.net 00:00:03.03]         offending | INT-CARRIER(+100, 0) | edge `A` at 12.280 s sure, pitch Hypothesis, speed Hypothesis
+[xUnit.net 00:00:03.03]         offending | INT-CARRIER(+100, 0) | edge `E` at 12.500 s sure, pitch Hypothesis, speed Hypothesis
+[xUnit.net 00:00:03.03]         offending | INT-CARRIER(+100, 0) | settled `C` at 11.745 s sure, pitch Proved, speed Hypothesis
+[xUnit.net 00:00:03.03]         offending | INT-CARRIER(+100, 0) | edge `A` at 12.280 s sure, pitch Proved, speed Hypothesis
+[xUnit.net 00:00:03.03]         offending | INT-CARRIER(+100, 0) | edge `R` at 13.000 s sure, pitch Proved, speed Hypothesis
+  Failed Hamlet.RadioEngine.Tests.Cw.NoSureLetterWhileAcquiringTests.NothingIsEmittedSureUntilThePitchAndTheSpeedAreBothProved(carrierHz: 100, carrierDb: 0, wordsPerMinute: 18) [930 ms]
+  Error Message:
+   HM-REQ-102: 67 characters emitted sure while acquiring on INT-CARRIER(+100, 0); first: settled `C` at 1.745 s sure, pitch None, speed Hypothesis
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Cw.NoSureLetterWhileAcquiringTests.NothingIsEmittedSureUntilThePitchAndTheSpeedAreBothProved(Double carrierHz, Double carrierDb, Double wordsPerMinute) in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\NoSureLetterWhileAcquiringTests.cs:line 100
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+  Standard Output Messages:
+ case | INT-CARRIER(+100, 0) | 18 wpm | key `CQ CQ CQ DE N0CALL N0CALL K` exact | read `CT  EIQ CQ DE N0CALL N0CALL K`
+ offending | INT-CARRIER(+100, 0) | settled `C` at 1.745 s sure, pitch None, speed Hypothesis
+ offending | INT-CARRIER(+100, 0) | edge `M` at 3.000 s sure, pitch None, speed Hypothesis
+ offending | INT-CARRIER(+100, 0) | settled `T` at 2.180 s sure, pitch None, speed Hypothesis
+ offending | INT-CARRIER(+100, 0) | edge `E` at 3.680 s sure, pitch Proved, speed Hypothesis
+ offending | INT-CARRIER(+100, 0) | edge `E` at 4.000 s sure, pitch Proved, speed Hypothesis
+ offending | INT-CARRIER(+100, 0) | edge `H` at 4.500 s sure, pitch Proved, speed Hypothesis
+ offending | INT-CARRIER(+100, 0) | settled `E` at 3.680 s sure, pitch Hypothesis, speed Hypothesis
+ offending | INT-CARRIER(+100, 0) | settled `I` at 4.030 s sure, pitch Hypothesis, speed Hypothesis
+ offending | INT-CARRIER(+100, 0) | edge `Q` at 5.080 s sure, pitch Hypothesis, speed Hypothesis
+ offending | INT-CARRIER(+100, 0) | edge `Q` at 5.080 s sure, pitch Proved, speed Hypothesis
+ offending | INT-CARRIER(+100, 0) | edge `D` at 6.000 s sure, pitch Proved, speed Hypothesis
+ offending | INT-CARRIER(+100, 0) | settled `Q` at 5.080 s sure, pitch Proved, speed Hypothesis
+ offending | INT-CARRIER(+100, 0) | edge `C` at 6.280 s sure, pitch Proved, speed Hypothesis
+ offending | INT-CARRIER(+100, 0) | edge `E` at 6.500 s sure, pitch Proved, speed Hypothesis
+ offending | INT-CARRIER(+100, 0) | edge `C` at 6.280 s sure, pitch Hypothesis, speed Hypothesis
+ offending | INT-CARRIER(+100, 0) | edge `M` at 7.000 s sure, pitch Hypothesis, speed Hypothesis
+ offending | INT-CARRIER(+100, 0) | settled `C` at 6.280 s sure, pitch Hypothesis, speed Hypothesis
+ offending | INT-CARRIER(+100, 0) | edge `Q` at 7.345 s sure, pitch Hypothesis, speed Hypothesis
+ offending | INT-CARRIER(+100, 0) | edge `T` at 8.000 s sure, pitch Hypothesis, speed Hypothesis
+ offending | INT-CARRIER(+100, 0) | settled `Q` at 7.345 s sure, pitch Hypothesis, speed Hypothesis
+ offending | INT-CARRIER(+100, 0) | edge `D` at 8.280 s sure, pitch Hypothesis, speed Hypothesis
+ offending | INT-CARRIER(+100, 0) | edge `E` at 8.500 s sure, pitch Hypothesis, speed Hypothesis
+ offending | INT-CARRIER(+100, 0) | edge `D` at 8.280 s sure, pitch Proved, speed Hypothesis
+ offending | INT-CARRIER(+100, 0) | edge `E` at 8.545 s sure, pitch Proved, speed Hypothesis
+ offending | INT-CARRIER(+100, 0) | settled `D` at 8.280 s sure, pitch Proved, speed Hypothesis
+ offending | INT-CARRIER(+100, 0) | edge `N` at 9.345 s sure, pitch Proved, speed Hypothesis
+ offending | INT-CARRIER(+100, 0) | settled `E` at 8.545 s sure, pitch Hypothesis, speed Hypothesis
+ offending | INT-CARRIER(+100, 0) | edge `N` at 9.345 s sure, pitch Hypothesis, speed Hypothesis
+ offending | INT-CARRIER(+100, 0) | edge `M` at 10.000 s sure, pitch Hypothesis, speed Hypothesis
+ offending | INT-CARRIER(+100, 0) | settled `N` at 9.345 s sure, pitch Hypothesis, speed Hypothesis
+ offending | INT-CARRIER(+100, 0) | edge `0` at 10.810 s sure, pitch Proved, speed Hypothesis
+ offending | INT-CARRIER(+100, 0) | edge `D` at 11.500 s sure, pitch Proved, speed Hypothesis
+ offending | INT-CARRIER(+100, 0) | settled `0` at 10.810 s sure, pitch Hypothesis, speed Hypothesis
+ offending | INT-CARRIER(+100, 0) | edge `C` at 11.745 s sure, pitch Hypothesis, speed Hypothesis
+ offending | INT-CARRIER(+100, 0) | edge `E` at 12.000 s sure, pitch Hypothesis, speed Hypothesis
+ offending | INT-CARRIER(+100, 0) | edge `A` at 12.280 s sure, pitch Hypothesis, speed Hypothesis
+ offending | INT-CARRIER(+100, 0) | edge `E` at 12.500 s sure, pitch Hypothesis, speed Hypothesis
+ offending | INT-CARRIER(+100, 0) | settled `C` at 11.745 s sure, pitch Proved, speed Hypothesis
+ offending | INT-CARRIER(+100, 0) | edge `A` at 12.280 s sure, pitch Proved, speed Hypothesis
+ offending | INT-CARRIER(+100, 0) | edge `R` at 13.000 s sure, pitch Proved, speed Hypothesis
+
+
+[xUnit.net 00:00:03.77]     Hamlet.RadioEngine.Tests.Cw.NoSureLetterWhileAcquiringTests.NothingIsEmittedSureUntilThePitchAndTheSpeedAreBothProved(carrierHz: NaN, carrierDb: 0, wordsPerMinute: 18) [FAIL]
+[xUnit.net 00:00:03.77]       HM-REQ-102: 42 characters emitted sure while acquiring on the wanted alone; first: settled `C` at 1.745 s sure, pitch None, speed Hypothesis
+[xUnit.net 00:00:03.77]       Stack Trace:
+[xUnit.net 00:00:03.77]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\NoSureLetterWhileAcquiringTests.cs(100,0): at Hamlet.RadioEngine.Tests.Cw.NoSureLetterWhileAcquiringTests.NothingIsEmittedSureUntilThePitchAndTheSpeedAreBothProved(Double carrierHz, Double carrierDb, Double wordsPerMinute)
+[xUnit.net 00:00:03.77]            at InvokeStub_NoSureLetterWhileAcquiringTests.NothingIsEmittedSureUntilThePitchAndTheSpeedAreBothProved(Object, Span`1)
+[xUnit.net 00:00:03.77]            at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:03.77]       Output:
+[xUnit.net 00:00:03.77]         case | the wanted alone | 18 wpm | key `CQ CQ CQ DE N0CALL N0CALL K` exact | read `CQ CQ CQ DE N0CALL N0CALL K`
+[xUnit.net 00:00:03.77]         offending | the wanted alone | settled `C` at 1.745 s sure, pitch None, speed Hypothesis
+[xUnit.net 00:00:03.77]         offending | the wanted alone | edge `Q` at 2.810 s sure, pitch None, speed Hypothesis
+[xUnit.net 00:00:03.77]         offending | the wanted alone | edge `T` at 3.500 s sure, pitch None, speed Hypothesis
+[xUnit.net 00:00:03.77]         offending | the wanted alone | edge `C` at 4.010 s sure, pitch Hypothesis, speed Proved
+[xUnit.net 00:00:03.77]         offending | the wanted alone | edge `Z` at 5.000 s sure, pitch Hypothesis, speed Proved
+[xUnit.net 00:00:03.77]         offending | the wanted alone | settled `C` at 4.010 s sure, pitch Hypothesis, speed Proved
+[xUnit.net 00:00:03.77]         offending | the wanted alone | edge `Q` at 5.080 s sure, pitch Hypothesis, speed Proved
+[xUnit.net 00:00:03.77]         offending | the wanted alone | edge `C` at 6.280 s sure, pitch Hypothesis, speed Proved
+[xUnit.net 00:00:03.77]         offending | the wanted alone | edge `M` at 7.000 s sure, pitch Hypothesis, speed Proved
+[xUnit.net 00:00:03.77]         offending | the wanted alone | settled `C` at 6.280 s sure, pitch Hypothesis, speed Proved
+[xUnit.net 00:00:03.77]         offending | the wanted alone | edge `Q` at 7.345 s sure, pitch Hypothesis, speed Proved
+[xUnit.net 00:00:03.77]         offending | the wanted alone | edge `T` at 8.000 s sure, pitch Hypothesis, speed Proved
+[xUnit.net 00:00:03.77]         offending | the wanted alone | settled `Q` at 7.345 s sure, pitch Hypothesis, speed Proved
+[xUnit.net 00:00:03.77]         offending | the wanted alone | edge `D` at 8.280 s sure, pitch Hypothesis, speed Proved
+[xUnit.net 00:00:03.77]         offending | the wanted alone | edge `E` at 8.500 s sure, pitch Hypothesis, speed Proved
+[xUnit.net 00:00:03.77]         offending | the wanted alone | settled `E` at 8.545 s sure, pitch Hypothesis, speed Proved
+[xUnit.net 00:00:03.77]         offending | the wanted alone | edge `N` at 9.345 s sure, pitch Hypothesis, speed Proved
+[xUnit.net 00:00:03.77]         offending | the wanted alone | edge `M` at 10.000 s sure, pitch Hypothesis, speed Proved
+[xUnit.net 00:00:03.77]         offending | the wanted alone | settled `N` at 9.345 s sure, pitch Hypothesis, speed Proved
+[xUnit.net 00:00:03.77]         offending | the wanted alone | edge `0` at 10.810 s sure, pitch Hypothesis, speed Proved
+[xUnit.net 00:00:03.77]         offending | the wanted alone | settled `0` at 10.810 s sure, pitch Hypothesis, speed Proved
+[xUnit.net 00:00:03.77]         offending | the wanted alone | edge `C` at 11.745 s sure, pitch Hypothesis, speed Proved
+[xUnit.net 00:00:03.77]         offending | the wanted alone | edge `E` at 12.000 s sure, pitch Hypothesis, speed Proved
+[xUnit.net 00:00:03.77]         offending | the wanted alone | edge `A` at 12.280 s sure, pitch Hypothesis, speed Proved
+[xUnit.net 00:00:03.77]         offending | the wanted alone | edge `E` at 12.500 s sure, pitch Hypothesis, speed Proved
+[xUnit.net 00:00:03.77]         offending | the wanted alone | settled `N` at 14.680 s sure, pitch Hypothesis, speed Proved
+[xUnit.net 00:00:03.77]         offending | the wanted alone | edge `9` at 16.000 s sure, pitch Hypothesis, speed Proved
+[xUnit.net 00:00:03.77]         offending | the wanted alone | edge `0` at 16.145 s sure, pitch Hypothesis, speed Proved
+[xUnit.net 00:00:03.77]         offending | the wanted alone | edge `T` at 16.500 s sure, pitch Hypothesis, speed Proved
+[xUnit.net 00:00:03.77]         offending | the wanted alone | edge `K` at 17.000 s sure, pitch Hypothesis, speed Proved
+[xUnit.net 00:00:03.77]         offending | the wanted alone | settled `0` at 16.145 s sure, pitch Hypothesis, speed Proved
+[xUnit.net 00:00:03.77]         offending | the wanted alone | edge `C` at 17.080 s sure, pitch Hypothesis, speed Proved
+[xUnit.net 00:00:03.77]         offending | the wanted alone | edge `I` at 17.500 s sure, pitch Hypothesis, speed Proved
+[xUnit.net 00:00:03.77]         offending | the wanted alone | edge `A` at 17.610 s sure, pitch Hypothesis, speed Proved
+[xUnit.net 00:00:03.77]         offending | the wanted alone | edge `I` at 18.000 s sure, pitch Hypothesis, speed Proved
+[xUnit.net 00:00:03.77]         offending | the wanted alone | settled `C` at 17.080 s sure, pitch Hypothesis, speed Proved
+[xUnit.net 00:00:03.77]         offending | the wanted alone | edge `L` at 18.500 s sure, pitch Hypothesis, speed Proved
+[xUnit.net 00:00:03.77]         offending | the wanted alone | settled `L` at 18.410 s sure, pitch Hypothesis, speed Proved
+[xUnit.net 00:00:03.77]         offending | the wanted alone | edge `L` at 19.210 s sure, pitch Hypothesis, speed Proved
+[xUnit.net 00:00:03.77]         offending | the wanted alone | edge `N` at 20.000 s sure, pitch Hypothesis, speed Proved
+[xUnit.net 00:00:03.77]   Finished:    Hamlet.RadioEngine.Tests
+  Failed Hamlet.RadioEngine.Tests.Cw.NoSureLetterWhileAcquiringTests.NothingIsEmittedSureUntilThePitchAndTheSpeedAreBothProved(carrierHz: NaN, carrierDb: 0, wordsPerMinute: 18) [748 ms]
+  Error Message:
+   HM-REQ-102: 42 characters emitted sure while acquiring on the wanted alone; first: settled `C` at 1.745 s sure, pitch None, speed Hypothesis
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Cw.NoSureLetterWhileAcquiringTests.NothingIsEmittedSureUntilThePitchAndTheSpeedAreBothProved(Double carrierHz, Double carrierDb, Double wordsPerMinute) in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\NoSureLetterWhileAcquiringTests.cs:line 100
+   at InvokeStub_NoSureLetterWhileAcquiringTests.NothingIsEmittedSureUntilThePitchAndTheSpeedAreBothProved(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Standard Output Messages:
+ case | the wanted alone | 18 wpm | key `CQ CQ CQ DE N0CALL N0CALL K` exact | read `CQ CQ CQ DE N0CALL N0CALL K`
+ offending | the wanted alone | settled `C` at 1.745 s sure, pitch None, speed Hypothesis
+ offending | the wanted alone | edge `Q` at 2.810 s sure, pitch None, speed Hypothesis
+ offending | the wanted alone | edge `T` at 3.500 s sure, pitch None, speed Hypothesis
+ offending | the wanted alone | edge `C` at 4.010 s sure, pitch Hypothesis, speed Proved
+ offending | the wanted alone | edge `Z` at 5.000 s sure, pitch Hypothesis, speed Proved
+ offending | the wanted alone | settled `C` at 4.010 s sure, pitch Hypothesis, speed Proved
+ offending | the wanted alone | edge `Q` at 5.080 s sure, pitch Hypothesis, speed Proved
+ offending | the wanted alone | edge `C` at 6.280 s sure, pitch Hypothesis, speed Proved
+ offending | the wanted alone | edge `M` at 7.000 s sure, pitch Hypothesis, speed Proved
+ offending | the wanted alone | settled `C` at 6.280 s sure, pitch Hypothesis, speed Proved
+ offending | the wanted alone | edge `Q` at 7.345 s sure, pitch Hypothesis, speed Proved
+ offending | the wanted alone | edge `T` at 8.000 s sure, pitch Hypothesis, speed Proved
+ offending | the wanted alone | settled `Q` at 7.345 s sure, pitch Hypothesis, speed Proved
+ offending | the wanted alone | edge `D` at 8.280 s sure, pitch Hypothesis, speed Proved
+ offending | the wanted alone | edge `E` at 8.500 s sure, pitch Hypothesis, speed Proved
+ offending | the wanted alone | settled `E` at 8.545 s sure, pitch Hypothesis, speed Proved
+ offending | the wanted alone | edge `N` at 9.345 s sure, pitch Hypothesis, speed Proved
+ offending | the wanted alone | edge `M` at 10.000 s sure, pitch Hypothesis, speed Proved
+ offending | the wanted alone | settled `N` at 9.345 s sure, pitch Hypothesis, speed Proved
+ offending | the wanted alone | edge `0` at 10.810 s sure, pitch Hypothesis, speed Proved
+ offending | the wanted alone | settled `0` at 10.810 s sure, pitch Hypothesis, speed Proved
+ offending | the wanted alone | edge `C` at 11.745 s sure, pitch Hypothesis, speed Proved
+ offending | the wanted alone | edge `E` at 12.000 s sure, pitch Hypothesis, speed Proved
+ offending | the wanted alone | edge `A` at 12.280 s sure, pitch Hypothesis, speed Proved
+ offending | the wanted alone | edge `E` at 12.500 s sure, pitch Hypothesis, speed Proved
+ offending | the wanted alone | settled `N` at 14.680 s sure, pitch Hypothesis, speed Proved
+ offending | the wanted alone | edge `9` at 16.000 s sure, pitch Hypothesis, speed Proved
+ offending | the wanted alone | edge `0` at 16.145 s sure, pitch Hypothesis, speed Proved
+ offending | the wanted alone | edge `T` at 16.500 s sure, pitch Hypothesis, speed Proved
+ offending | the wanted alone | edge `K` at 17.000 s sure, pitch Hypothesis, speed Proved
+ offending | the wanted alone | settled `0` at 16.145 s sure, pitch Hypothesis, speed Proved
+ offending | the wanted alone | edge `C` at 17.080 s sure, pitch Hypothesis, speed Proved
+ offending | the wanted alone | edge `I` at 17.500 s sure, pitch Hypothesis, speed Proved
+ offending | the wanted alone | edge `A` at 17.610 s sure, pitch Hypothesis, speed Proved
+ offending | the wanted alone | edge `I` at 18.000 s sure, pitch Hypothesis, speed Proved
+ offending | the wanted alone | settled `C` at 17.080 s sure, pitch Hypothesis, speed Proved
+ offending | the wanted alone | edge `L` at 18.500 s sure, pitch Hypothesis, speed Proved
+ offending | the wanted alone | settled `L` at 18.410 s sure, pitch Hypothesis, speed Proved
+ offending | the wanted alone | edge `L` at 19.210 s sure, pitch Hypothesis, speed Proved
+ offending | the wanted alone | edge `N` at 20.000 s sure, pitch Hypothesis, speed Proved
+
+
+
+Test Run Failed.
+Total tests: 2
+     Failed: 2
+ Total time: 4.0996 Seconds
+RC=1 WALL=5s

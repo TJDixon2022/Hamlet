@@ -1,0 +1,19 @@
+unit470 task 2: the gate refused on MET-COVERAGE - real 403 -> 110 of 473, synthetic 159 -> 66 of 252; MET-CER-SURE real 33/436 -> 4/114, synthetic 14/173 -> 12/78 (rises); held as a patch, src not changed (2.4)
+
+The gate (DECIDED 3): in CwDecoder, a letter whose class would be sure is emitted dim while CwToneTracker.PitchProof or CwDecoder.SpeedProof is not proved. NoSureLetterWhileAcquiringTests (HM-REQ-102, HM-REQ-010) uses INT-CARRIER(+100, 0) and the wanted TX-ITU alone, 18 WPM, 15 dB, CH-AWGN, exact keys. It was red at HEAD (67 and 42 characters sure while acquiring, .run-unit/unit470-red.txt) and green under the gate.
+
+R78 under the gate:
+- Coverage falls on every condition that has a sure letter, real and synthetic. That refuses the gate.
+- MET-CER-SURE falls on the real set but rises on every synthetic condition with sure letters.
+- MET-INVENTED falls: real 33 -> 4, synthetic 14 -> 12. MET-WBE is unchanged.
+- Adjudicated 13/13, captures 51/51 and named 13/13 hold.
+- V-11: 29 of 35 recordings are worse on sure-and-right. Letters are identical; 685 sure became dim and 330 stayed sure.
+- The engine line goes to 176/178: CwFixtureTests.TheCleanRecordingsDecodeExactly fails on clean-12wpm and clean-18wpm.
+- Arbitration (b) harness and live go red.
+- The 7.052 opening: 20 -> 0 sure letters while acquiring, and HM-REQ-103 21 -> 1 of 24.
+
+The change and its test are .run-unit/unit470-gate.patch. src and tests are restored to HEAD, and the refusal is written in metrics.md under Unit 470. Step 2's count goes to 2 of 3.
+
+Exit, at the restored tree: build 0 errors; engine line 178/178; app line 276/278 then 278/278 on the one rerun (headless dispatcher loop, DECIDED 7); named 13/13, captures 51/51, adjudicated 13/13.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
