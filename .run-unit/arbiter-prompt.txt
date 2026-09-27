@@ -40,7 +40,6 @@ THE OTHER OPEN STEPS, AND THEIR UNMET CRITERIA:
     - [ ] 6.4 HM-REQ-083, one set of word boundaries for any span between the live and settled renderings, has a test naming it.
     - [ ] 6.6 The three floor tests and both carry-forward lines are green at exit.
   step 7 - The conditions can be generated - sections E, F and G: channel, sender and interference profiles, which nothing in the tree produces today.  [partial]
-    - [ ] 7.2 The generator produces the TX-* sender profiles, and HM-REQ-050 is measured on each must-tier profile at 15 dB reference.
     - [ ] 7.3 The generator produces the INT-* interference profiles, and HM-REQ-060, 061, 062 and 066 are measured against them.
     - [ ] 7.4 Every generated fixture carries its exact key by construction, and the report states what each does not prove (Â§12.5, V-04); a real capture is reported by the sender profile the spec names or as `not stated`, and is never counted toward a CH-* condition.
   step 8 - The record and the tests are put right - last, not first: the decision log, the traceability table, the 43 tests that measure something other than what their requirement states, and the 63 requirements with no test.  [not started]
@@ -136,6 +135,7 @@ block; blocker means it cleared something and moved no criterion.
   6.2 | unit 2 launched 2026-09-26T17:11:17.928Z | yes | executed | test naming HM-REQ-071 prosign one symbol and HM-REQ-072 prosign naming per terminal setting, watched failing first on synthetic keyed prosigns, state met or not, one change to emit a run with no character gap as one prosign symbol kept under R78
   6.3 | unit 14 launched 2026-09-26T14:10:24.546Z | yes | executed | report MET-WBE per condition and measure HM-REQ-080 and 081 against it, trace every wrong word boundary on the real and synthetic sets with gap length in units, thresholds, marks and spacing overlap, group by cause, build one boundary change against the largest movable group, kept under R78 with MET-WBE falling and V-11 holding per recording
   7.1 | unit 8 launched 2026-09-27T00:43:53.192Z | yes | executed | build a Watterson two-path Gaussian Doppler channel layer in the test fixtures for every CH-* profile CW_SPEC 9.1 gives values for, over the shaped noise band at an SNR in the 2500 Hz reference, prove spread power delay SNR and no digital silence on its own audio, write the recipe to channels.md, then one decode point per must profile for HM-REQ-040 and 041
+  7.2 | unit 7 launched 2026-09-27T14:44:23.272Z | no | executed | build TX-* sender profile keying in the test fixtures, exact key by construction, prove each profile's ratios and gaps on its own keying, over CH-AWGN at 15 dB reference, measure HM-REQ-050 via HM-REQ-013 on each must-tier profile, decoder unchanged
   9.1 | unit 3 launched 2026-09-26T18:14:50.259Z | no | executed | port fldigi cw.cxx receive path to C# as FldigiCwDecoder under Cw/Second with GPL-3 notice and upstream commit, decode one exact-key synthetic case, list functions ported and left out
   9.1 | unit 4 launched 2026-09-26T19:20:27.666Z | no | executed | audit FldigiCwDecoder against upstream cw.cxx line by line on the first element's path and trace the lost first dit sample by sample to a port-defect or upstream-behaviour verdict, repair toward upstream only, then fix the synthetic case construction in a committed file from that verdict and the real recordings as control before running it once
   9.2 | unit 1 launched 2026-09-26T16:46:45.870Z | not recorded | not recorded | port fldigi's CW receive modem faithfully as the second decoder of section M with its GPL-3 attribution, drive every keyed and synthetic recording through both decoders on the same harness and metrics, table the parity per HM-REQ-123, and name from the second decoder's source what it does differently where it wins
@@ -173,83 +173,155 @@ The whole file is at the repository root if you need the rest.
 
 ## 4. What's blocking us
 
-Nothing blocks this unit. Every item below is a plain reading or a log entry, not a request for a ruling.
+Nothing blocks 7.2. Each item below is a plain reading, not a ruling request.
 
-1. **Which rows are conditions is the arbiter's reading of `CW_SPEC.md` section 4, overrulable.**
-   - **The reading:** a condition is one named profile at one level. `synthetic, all`, a union across two senders and three levels, is a summary: printed, not asserted.
-   - **Rejected:** counting union rows as conditions. The document defines a condition as one profile at one SNR, and no per-row switch table can satisfy both a union and its sub-row once the order rule picks the port on the sub-row (466's section 4, item 1).
-   - **If the owner rules union rows are conditions, 9.7 reopens.**
-2. **Real, sender not stated is classed a condition.**
-   - **Why:** DECIDED (3) calls the real per-sender rows conditions "as unit 466 tabled them", and asserting the row cannot loosen HM-REQ-128's test.
-   - **The tension:** read strictly, the row names no profile, so `CW_SPEC.md` section 4 would not make it one. It groups 20 recordings of unnamed senders at unmeasured levels.
-   - **Recorded under R85 and carried on.** It is green either way (it does not lose).
-3. **HM-REQ-127's margin is 0.05, the requirement's recommended value, held provisionally.** It is unchanged here.
-4. **With 9.7 and 9.8 ticked, step 9's only open line is 9.4, which has no authorable route, and R86 holds steps 2 to 8 behind it.** All five mechanisms 9.3 named are recorded as refused, and so the next arbiter has no step R86 permits. This is logged for the owner, not a stop, because it touches neither transmit nor what the product promises the operator.
-5. **Tree mismatches from section 3.**
-   - `.run-unit\watched.rc` is absent. The runner deleted and then rewrote `watched.cpu`: task 0 committed it as it was, and the later rewrites are left unstaged.
-   - The reload's `RULES_AT` disagreement (HM-DEC-165 against CPS-DEC-0183) is logged and is not this unit's.
-   - `outcome-read`'s step titles for steps 2, 3 and 8 differ from `PHASE_PLAN.md`'s. Logged, not this unit's.
-6. **The headless dispatcher loop took app tests twice:** 2 at entry and 1 before task 1's commit, each a 1 ms loss. DECIDED (6) was applied: one rerun each time, both 278 of 278, so no type needed running alone. The exit run was clean.
-7. **Decode time moved between runs with no code change:** 65.50 s at entry against 64.27 s at 466's exit, then 64.97 s after task 1. The emitted text was byte-identical throughout, so this is run-to-run timing on this machine, not a change in the decoder.
+1. **The R86 mismatch.** R86 bars steps 2 to 8 until 9.4 has a kept change. This unit worked
+   step 7 anyway. 9.4 has no route left, because every mechanism 9.3 named, (A) to (E) and (W),
+   was refused under R78 by units 459, 462 and 463. `ARBITER.md` section 4, the launcher's
+   instruction to choose another step when every route is recorded no, and `PHASE_PLAN.md`
+   section 5 all direct a move. If the owner holds R86, this unit's work is fixtures and a
+   measurement, and nothing the operator reads has changed.
+2. **Every profile parameter is the arbiter's reading of `CW_SPEC.md` section 10, overrulable.**
+   - TX-KEYER-W: ratio 2.5 to 3.5, and "gaps ±30 %" read as each of the three gaps at 0.7 to
+     1.3 of its nominal, drawn independently. **Carries `[verify against WinKeyer
+     documentation]`.**
+   - TX-FARNS:
+     - the case's speed is the character speed;
+     - the character gap is drawn from 3 to 7 units;
+     - "word gap longer" takes the vendored example's number, HM-DEC-115's 500 ms over a 57 ms
+       dit, 8.77 units, in every case;
+     - dah and element gap are TX-ITU nominal.
+   - TX-TIGHT: HM-DEC-101 records no figure, so this is `CwFixtureRecipe`'s defaults, the
+     generator as HM-DEC-101 fitted it to 013347: 283 / 65 / 130 / 280 ms over a 105 ms dit.
+     HM-DEC-145's own measurement of the same capture reads dah 2.73, element gap 0.73 and
+     character gap 1.49, with no word gap. It agrees on the shape, but its character gap is
+     0.25 units wider. The fit was preferred because it gives all four lengths from one source.
+   - TX-BUG: ratio 3.5 to 5; the gaps are TX-ITU nominal, marked, because "dits short and
+     fast, gaps variable" has no number.
+   - TX-STRAIGHT and TX-SLOPPY are refused.
+   - Gold 1959 (`CW_SPEC.md` 12 item 6) is unvendored, so every hand-sent range is.
+3. **HM-REQ-050 is not met, recorded as a finding for the decoder steps and not chased here:**
+   - TX-ITU at 25 WPM: a sure extra `K` at the end. TX-BUG at 25 WPM does the same.
+   - TX-KEYER-W at 12 WPM: two placeholders inside `N0CALL`. At 25 WPM: a sure `<AR>` for the
+     opening `C`.
+   - TX-FARNS: sure word boundaries inside words at 12 and 18 WPM (MET-WBE 1/7 and 5/7). This
+     is HM-REQ-054's behaviour, measured only as it fell out. At 25 WPM one `C` is lost.
+   - TX-TIGHT: almost everything placeholders at all three speeds, 4, 1 and 1 of 21 sure and
+     right.
 
+   The tight fist and the Farnsworth word boundaries bear on steps 3 and 6. The opening and
+   closing letters at 25 WPM bear on step 5.
+4. **The switch changes nothing on these signals.** The live emitted transcript equals ours on
+   all 15 cases, and the port alone is worse on every one. Nothing was switched, and no case
+   was added to `CwSwitchTable` (parked).
+5. **The draws cover the ranges thinly.** The three KEYER-W ratios fell at 3.33 to 3.37 and the
+   three FARNS character gaps at 4.51 to 4.63, with the seeds fixed before any decode and
+   nothing re-seeded (V-14). A verdict at the ranges' ends (ratio 2.5, character gap 7) is not
+   in these cases.
+6. **7.4's "states what each does not prove"** is written for the sender fixtures in
+   `senders.md` section 4. 7.4 still waits on 7.3's INT-* profiles, so it was not ticked.
+7. **HM-REQ-050's verification row names "synthetic + 013347 and HM-DEC-115 captures".** The
+   captures were not measured here. They sit in `TheRequirementsAreMeasuredTests` under
+   inferred keys and with no SNR in the 2500 Hz reference, so they are not HM-REQ-013's
+   condition.
+8. **`CwChannel.Render` now goes through `RenderKeyed`.** The operations are the same ones in
+   the same order, and the channel proof is 71 of 71 before and after. No byte comparison
+   against the pre-change render was run.
+9. **Housekeeping.** Once, `tools/status.sh` was run from the fixtures folder and wrote a
+   `PROJECT_STATUS.md` there. It was moved to `.run-unit/unit468-stray-status.tmp` at once and
+   never staged. The root file was rewritten from the root.
+
+   R86's words, reported as a mismatch for the owner.
+   stays open. The R86 mismatch in one line: R86 bars steps 2 to 8
 ## 3. What you should see
 
-**The row classification** (`arbitration.md` section 8; `Decided2And3Rows`). `CW_SPEC.md` section 4: *"Every condition is a named profile from this file (`CH-*`, `TX-*`, `INT-*`, `IMP-*`) and an SNR in the reference bandwidth (§8), never prose."* The verification table, row 010: *"one row per condition profile"*.
+No visible change. This unit makes test signals and measures the decoder against them.
 
-| row | class | SNR | reason | asserted by HM-REQ-128's test |
-|---|---|---|---|---|
-| real HF, all | **live** | not measured | the row the live product runs under; the union of the 23 real recordings, judged on the live path only (DECIDED (3)) | yes, live path |
-| real TX-FARNS | condition | not measured | one named sender profile, one recording | yes, harness |
-| real TX-ITU (KD0UN) | condition | not measured | one named sender profile, one recording | yes, harness |
-| real TX-TIGHT | condition | not measured | one named sender profile, one recording | yes, harness |
-| real, sender not stated | condition | not measured | the real per-sender row for the 20 recordings section 10 names no sender for; a condition by DECIDED (3), though it names no profile (section 4, item 2) | yes, harness |
-| **synthetic, all** | **summary** | mixed: 0, 5 and 15 dB | the union of six rows, two senders at three levels: not one profile at one SNR | no, printed only |
-| syn TX-ITU, 0 dB | condition | 0 dB in the passband | one sender at one level | yes, harness |
-| syn TX-ITU, 5 dB | condition | 5 dB in the passband | one sender at one level | yes, harness |
-| syn TX-ITU, 15 dB | condition | 15 dB in the passband | one sender at one level | yes, harness |
-| syn gap 5, 0 dB | condition | 0 dB in the passband | one sender (character gap 5, inside TX-FARNS) at one level | yes, harness |
-| syn gap 5, 5 dB | condition | 5 dB in the passband | the same sender at one level | yes, harness |
-| syn gap 5, 15 dB | condition | 15 dB in the passband | the same sender at one level | yes, harness |
+**HM-REQ-050, at 15 dB in the 2500 Hz reference on CH-AWGN, ours alone.** Every figure is
+synthetic, exact. The key is `CQ CQ CQ DE N0CALL N0CALL K`: 21 characters, 7 words. HM-REQ-013
+asks for MET-COVERAGE 21/21, MET-CER-SURE 0 and MET-WBE 0.
 
-Synthetic levels are in-passband and not restated in the 2500 Hz reference, as every earlier unit tabled them.
+| profile | WPM | seed | ours read | MET-COVERAGE | MET-CER-SURE | MET-WBE | HM-REQ-013 |
+|---|---|---|---|---|---|---|---|
+| TX-ITU | 12 | 468000 | `CQ CQ CQ DE N0CALL N0CALL K` | 21/21 | 0/21 | 0/7 | met |
+| TX-ITU | 18 | 468001 | `CQ CQ CQ DE N0CALL N0CALL K` | 21/21 | 0/21 | 0/7 | met |
+| TX-ITU | 25 | 468002 | `CQ CQ CQ DE N0CALL N0CALL KK` | 21/21 | 1/22 | 0/7 | **not met** |
+| TX-KEYER-W | 12 | 468100 | `CQ CQ CQ DE N■0CALL N■CALL K` | 20/21 | 0/20 | 0/7 | **not met** |
+| TX-KEYER-W | 18 | 468101 | `CQ CQ CQ DE N0CALL N0CALL K` | 21/21 | 0/21 | 0/7 | met |
+| TX-KEYER-W | 25 | 468102 | `<AR>Q CQ CQ DE N0CALL N0CALL K` | 20/21 | 1/21 | 0/7 | **not met** |
+| TX-FARNS | 12 | 468200 | `C Q CQ CQ DE N0CALL N0CALL K` | 21/21 | 0/21 | 1/7 | **not met** |
+| TX-FARNS | 18 | 468201 | `C Q CQ CQ DE N0 C A LL N 0CALL K` | 21/21 | 0/21 | 5/7 | **not met** |
+| TX-FARNS | 25 | 468202 | `CQ  Q CQ DE N0CALL N0CALL K` | 20/21 | 0/20 | 0/7 | **not met** |
+| TX-TIGHT | 12 | 468300 | `■■■B■■■■<KN>■ ■ALLK` | 4/21 | 2/6 | 7/7 | **not met** |
+| TX-TIGHT | 18 | 468301 | `■■■B■■K` | 1/21 | 1/2 | 6/7 | **not met** |
+| TX-TIGHT | 25 | 468302 | `■■■B■■K` | 1/21 | 1/2 | 6/7 | **not met** |
 
-**The three-way table, harness, as unit 466 printed it, with a class column.** Each cell is arbitrated · ours alone · port alone. The last column is the output emitted under `CwSwitchTable`. `n.d.` means not defined. None of the figures has moved since 466: `arbitration.md` sections 3 and 4 regenerated byte-identical.
+**Per profile, met only if all three cases are:** TX-ITU not met (2 of 3), TX-KEYER-W not met
+(1 of 3), TX-FARNS not met (0 of 3), TX-TIGHT not met (0 of 3). The full printout, with
+MET-INVENTED, is `.run-unit/unit468-fists-t2.txt`.
 
-| row | class | 011 MET-INVENTED | 010 MET-CER-SURE | 012 coverage | 081 MET-WBE | loses? | switch | emitted (011, 010, 012, 081) | emitted no worse than the better alone? |
-|---|---|---|---|---|---|---|---|---|---|
-| **real HF, all** (harness; judged live) | live | 33/473 · 33/473 · 62/473 | 33/436 · 33/436 · 62/239 | 403/473 · 403/473 · 177/473 | 37/113 · 37/113 · 86/113 | no | arbitrate | 33/473, 33/436, 403/473, 37/113 | printed; asserted live, below |
-| real TX-FARNS | condition | 0/44 · 0/44 · 3/44 | 0/43 · 0/43 · 3/33 | 43/44 · 43/44 · 30/44 | 5/11 · 5/11 · 4/11 | yes, 081 | ours alone | 0/44, 0/43, 43/44, 5/11 | yes (better alone: ours, at 011) |
-| real TX-ITU | condition | 0/13 · 0/13 · 1/13 | 0/13 · 0/13 · 1/6 | 13/13 · 13/13 · 5/13 | 0/4 · 0/4 · 3/4 | no | arbitrate | 0/13, 0/13, 13/13, 0/4 | yes |
-| real TX-TIGHT | condition | 0/6 · 0/6 · 2/6 | 0/6 · 0/6 · 2/3 | 6/6 · 6/6 · 1/6 | 0/1 · 0/1 · 0/1 | no | arbitrate | 0/6, 0/6, 6/6, 0/1 | yes |
-| real, sender not stated | condition | 33/410 · 33/410 · 56/410 | 33/374 · 33/374 · 56/197 | 341/410 · 341/410 · 141/410 | 32/97 · 32/97 · 79/97 | no | arbitrate | 33/410, 33/374, 341/410, 32/97 | yes |
-| **synthetic, all** | **summary** | 14/252 · 14/252 · 34/252 | 14/173 · 14/173 · 34/168 | 159/252 · 159/252 · 134/252 | 44/84 · 44/84 · 56/84 | no | arbitrate (no recording runs under it) | 6/252, 6/164, **158/252**, **48/84** | **no: worse than ours alone on 012 and 081; not asserted** |
-| syn TX-ITU, 0 dB | condition | 0/63 · 0/63 · 21/63 | n.d. · n.d. · 21/27 | 0/63 · 0/63 · 6/63 | 18/21 · 18/21 · 15/21 | yes, 012, 081 | ours alone | 0/63, n.d., 0/63, 18/21 | yes (better alone: ours, at 011) |
-| syn TX-ITU, 5 dB | condition | 1/63 · 1/63 · 5/63 | 1/63 · 1/63 · 5/47 | 62/63 · 62/63 · 42/63 | 0/21 · 0/21 · 6/21 | no | arbitrate | 1/63, 1/63, 62/63, 0/21 | yes |
-| syn TX-ITU, 15 dB | condition | 1/63 · 1/63 · 2/63 | 1/64 · 1/64 · 2/56 | 63/63 · 63/63 · 54/63 | 0/21 · 0/21 · 3/21 | no | arbitrate | 1/63, 1/64, 63/63, 0/21 (013 0/63) | yes |
-| syn gap 5, 0 dB | condition | 0/21 · 0/21 · 2/21 | n.d. · n.d. · 2/3 | 0/21 · 0/21 · 1/21 | 6/7 · 6/7 · 6/7 | yes, 012 | ours alone | 0/21, n.d., 0/21, 6/7 | yes (better alone: ours, at 011) |
-| syn gap 5, 5 dB | condition | 11/21 · 11/21 · 3/21 | 11/25 · 11/25 · 3/16 | 14/21 · 14/21 · 13/21 | 8/7 · 8/7 · 12/7 | yes, 011, 010 | **port alone** | 3/21, 3/16, 13/21, 12/7 | yes (better alone: the port, at 011) |
-| syn gap 5, 15 dB | condition | 1/21 · 1/21 · 1/21 | 1/21 · 1/21 · 1/19 | 20/21 · 20/21 · 18/21 | 12/7 · 12/7 · 14/7 | no | arbitrate | 1/21, 1/21, 20/21, 12/7 (013 1/21) | yes |
+1. **The profile list** (`docs/phase-requirements/senders.md` section 1):
+   - Produced:
+     - TX-ITU (must): 3 : 1 : 3 : 7.
+     - TX-KEYER-W (must): ratio 2.5 to 3.5, each gap at 0.7 to 1.3 of nominal, `[verify]`.
+     - TX-FARNS (must): character gap 3 to 7 units at character speed; word gap 8.77 units,
+       the traffic net's.
+     - TX-TIGHT (must): 013347 as HM-DEC-101 fitted it, 2.695 : 0.619 : 1.238 : 2.667.
+     - TX-BUG (should): ratio 3.5 to 5, gaps nominal.
+   - Refused:
+     - TX-STRAIGHT: no number for the drift of ratio, gaps and speed.
+     - TX-SLOPPY: no number for the inconsistency, and errors change the characters sent.
+2. **The proof, red** (`.run-unit/unit468-senders-red.txt`, keyed 1:3:1:3:7 whatever the
+   profile): 12 failed, 4 passed (TX-ITU's 3 and the list fact). Each profile failed on its own
+   definition:
+   - TX-KEYER-W: its drawn ratio and all three gaps;
+   - TX-FARNS: the character gap, the word gap, the overall speed, and "character speed above
+     overall speed" (12.000 against 12.000 at 12 WPM);
+   - TX-TIGHT: every length, "element gaps shorter than the dit" (1.0000) and "character gaps
+     compressed" (3.0000);
+   - TX-BUG: ratio 3.0000 against 3.5 to 5.
 
-**The live row, on the live path**, as the test asserts it:
-- **real HF, all**: 011 33/473 · 33/473 · 64/453; 010 33/436 · 33/436 · 64/221; 012 403/473 · 403/473 · 157/453; 081 37/113 · 37/113 · 78/107; 083 10/331 · 10/331; 084 0/3 · 0/3 · 0/3.
-- **Verdict:** it does not lose, and ours is better by dominance. The switch is arbitrate, and the emitted output equals the arbitrated output.
-- **The other live rows** are 466's live table, `arbitration.md` section 4, unchanged. This was the drop candidate.
+   **The proof, green** (`.run-unit/unit468-senders-green.txt`): 16 of 16. At 18 WPM, measured
+   against stated:
 
-**The summary row, stated plainly** (`arbitration.md` section 8):
-- **What the switch costs:** `synthetic, all` emits worse than ours alone on 012 (158 against 159 of 252) and on 081 (48 against 44 of 84).
-- **Where the cost comes from:** the char-gap-5 5 dB row, switched to the port alone. There the emitted output has 13/21 right against ours' 14/21, and 12/7 word-boundary errors against ours' 8/7.
-- **What it gains:** on 011 and 010 the same set is better than ours alone (6/252 against 14/252, and 6/164 against 14/173).
-- Real HF, all emits no worse than ours alone in the harness on any metric.
+   | profile | dah/dit | element gap | character gap | word gap | overall WPM |
+   |---|---|---|---|---|---|
+   | TX-ITU | 2.9974 / 3 | 0.9976 / 1 | 2.9949 / 3 | 6.9900 / 7 | 18.000 / 18.000 |
+   | TX-KEYER-W | 3.3459 / 3.3506 | 0.7083 / 0.7115 | 3.2448 / 3.2531 | 6.9297 / 6.9448 | 17.862 / 17.862 |
+   | TX-FARNS | 2.9966 / 3 | 0.9968 / 1 | 4.5578 / 4.5672 | 8.7562 / 8.7719 | 16.177 / 16.177 |
+   | TX-TIGHT | 2.6933 / 2.6952 | 0.6167 / 0.6190 | 1.2346 / 1.2381 | 2.6614 / 2.6667 | 25.212 / 25.212 |
+   | TX-BUG | 3.7741 / 3.7777 | 0.9972 / 1 | 2.9944 / 3 | 6.9886 / 7 | 16.251 / 16.251 |
 
-**1. The red and green printouts of part (b)** (`.run-unit/unit467-watch-red.txt` and `.run-unit/unit467-green.txt`).
-- **Red, with the test's table empty:** `EveryHarnessRowIsNoWorseThanTheBetterDecoderAlone` failed on exactly these rows, 5 failure lines over 4 rows:
-  - real TX-FARNS: the table says Arbitrate, the rule says OursAlone.
-  - syn TX-ITU 0 dB: the table says Arbitrate, the rule says OursAlone.
-  - syn gap 5 0 dB: the table says Arbitrate, the rule says OursAlone.
-  - syn gap 5 5 dB: the table says Arbitrate, the rule says PortAlone; and it emitted worse than the better decoder alone (the port) on 011 and 010.
+3. **The should-tier cases, TX-BUG under HM-REQ-052:**
+   - 12 WPM met, 21/21, 0/21, 0/7;
+   - 18 WPM met, the same;
+   - 25 WPM not met: `... KK`, MET-CER-SURE 1/22.
 
-  Every other condition row was green. `synthetic, all` was printed as "Summary, printed, not asserted" and raised nothing. The live fact was green, 2 of 2: its row does not lose, so an empty table and the real table agree there.
-- **Green, with `CwSwitchTable.Rows`:** the harness fact passed, with all 10 condition rows at "emitted worse than the better alone on nothing". The live facts passed, 2 of 2. The same results held again at exit.
+   Not met, 2 of 3.
 
-**2. The byte-identical checks.**
-- Emitted harness transcript (1458 lines) after task 1: `cmp` identical to task 0's save and to 466's exit save.
+   Beside ours, the live emitted transcript reads all 15 cases exactly as ours reads them. The
+   port alone meets none of the 15: on every case its first `CQ` is lost or cut, it splits
+   TX-FARNS into single letters (MET-WBE 13/7 and 14/7), and it reads TX-TIGHT as `QTBK`,
+   `TÅBK` and `EEK`.
+4. **Commit table, the five at each commit:**
+
+   | commit | what | build | engine line | app line | named | captures | adjudicated |
+   |---|---|---|---|---|---|---|---|
+   | `2ac33910` | task 0: record, bump, entry, trace | 0 errors | 178/178 | 278/278 | 13/13 | 51/51 | 13/13 |
+   | `da20f5f8` | task 1: CwSender, proof, senders.md | 0 errors | 178/178 | 278/278 on the one rerun (first run 277, dispatcher loop) | 13/13 | 51/51 | 13/13 |
+   | `2398b076` | task 2: the fact, senders.md, metrics.md | 0 errors | 178/178 | 278/278 first run | 13/13 | 51/51 | 13/13 |
+   | `ddb65409` | tick 7.2 (plan lines only; code as `2398b076`) | as `2398b076`, not rerun | as `2398b076` | as `2398b076` | as `2398b076` | as `2398b076` | as `2398b076` |
+   | task 3 commit | exit round, output.md | 0 errors | 178/178 | 277/278 on the rerun; `TheChipSaysTheChosenModeTests` alone 6/6 (DECIDED (7)) | 13/13 | 51/51 | 13/13 |
+
+**Every figure, entry beside exit:**
+
+| check | entry | exit |
+|---|---|---|
+| build | 0 errors | 0 errors |
+| engine line | 178 of 178 | 178 of 178 |
+| app line | 278 of 278 | 277 of 278 on the rerun, and the lost type alone 6 of 6 (DECIDED (7)) |
+| floors: named, captures, adjudicated | 13, 51, 13 | 13, 51, 13 |
+| real set, inferred | MET-CER-SURE 33/436, coverage 403/473, MET-WBE 37/113 | the same |
+| synthetic set, exact | 14/173, 159/252, 44/84 | the same |
+| `TheChannelProfilesAreWhatTheySayTests` | 71 of 71 | 71 of 71 |
+| `TheSenderProfilesAreWhatTheySayTests` | did not exist | 16 of 16 |

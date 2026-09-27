@@ -59,21 +59,60 @@ WHY: one sentence, plain text, no punctuation beyond commas and full stops
 --- the section 4 text follows ---
 
 ﻿
-Nothing blocks this unit. Every item below is a plain reading or a log entry, not a request for a ruling.
+Nothing blocks 7.2. Each item below is a plain reading, not a ruling request.
 
-1. **Which rows are conditions is the arbiter's reading of `CW_SPEC.md` section 4, overrulable.**
-   - **The reading:** a condition is one named profile at one level. `synthetic, all`, a union across two senders and three levels, is a summary: printed, not asserted.
-   - **Rejected:** counting union rows as conditions. The document defines a condition as one profile at one SNR, and no per-row switch table can satisfy both a union and its sub-row once the order rule picks the port on the sub-row (466's section 4, item 1).
-   - **If the owner rules union rows are conditions, 9.7 reopens.**
-2. **Real, sender not stated is classed a condition.**
-   - **Why:** DECIDED (3) calls the real per-sender rows conditions "as unit 466 tabled them", and asserting the row cannot loosen HM-REQ-128's test.
-   - **The tension:** read strictly, the row names no profile, so `CW_SPEC.md` section 4 would not make it one. It groups 20 recordings of unnamed senders at unmeasured levels.
-   - **Recorded under R85 and carried on.** It is green either way (it does not lose).
-3. **HM-REQ-127's margin is 0.05, the requirement's recommended value, held provisionally.** It is unchanged here.
-4. **With 9.7 and 9.8 ticked, step 9's only open line is 9.4, which has no authorable route, and R86 holds steps 2 to 8 behind it.** All five mechanisms 9.3 named are recorded as refused, and so the next arbiter has no step R86 permits. This is logged for the owner, not a stop, because it touches neither transmit nor what the product promises the operator.
-5. **Tree mismatches from section 3.**
-   - `.run-unit\watched.rc` is absent. The runner deleted and then rewrote `watched.cpu`: task 0 committed it as it was, and the later rewrites are left unstaged.
-   - The reload's `RULES_AT` disagreement (HM-DEC-165 against CPS-DEC-0183) is logged and is not this unit's.
-   - `outcome-read`'s step titles for steps 2, 3 and 8 differ from `PHASE_PLAN.md`'s. Logged, not this unit's.
-6. **The headless dispatcher loop took app tests twice:** 2 at entry and 1 before task 1's commit, each a 1 ms loss. DECIDED (6) was applied: one rerun each time, both 278 of 278, so no type needed running alone. The exit run was clean.
-7. **Decode time moved between runs with no code change:** 65.50 s at entry against 64.27 s at 466's exit, then 64.97 s after task 1. The emitted text was byte-identical throughout, so this is run-to-run timing on this machine, not a change in the decoder.
+1. **The R86 mismatch.** R86 bars steps 2 to 8 until 9.4 has a kept change. This unit worked
+   step 7 anyway. 9.4 has no route left, because every mechanism 9.3 named, (A) to (E) and (W),
+   was refused under R78 by units 459, 462 and 463. `ARBITER.md` section 4, the launcher's
+   instruction to choose another step when every route is recorded no, and `PHASE_PLAN.md`
+   section 5 all direct a move. If the owner holds R86, this unit's work is fixtures and a
+   measurement, and nothing the operator reads has changed.
+2. **Every profile parameter is the arbiter's reading of `CW_SPEC.md` section 10, overrulable.**
+   - TX-KEYER-W: ratio 2.5 to 3.5, and "gaps Â±30 %" read as each of the three gaps at 0.7 to
+     1.3 of its nominal, drawn independently. **Carries `[verify against WinKeyer
+     documentation]`.**
+   - TX-FARNS:
+     - the case's speed is the character speed;
+     - the character gap is drawn from 3 to 7 units;
+     - "word gap longer" takes the vendored example's number, HM-DEC-115's 500 ms over a 57 ms
+       dit, 8.77 units, in every case;
+     - dah and element gap are TX-ITU nominal.
+   - TX-TIGHT: HM-DEC-101 records no figure, so this is `CwFixtureRecipe`'s defaults, the
+     generator as HM-DEC-101 fitted it to 013347: 283 / 65 / 130 / 280 ms over a 105 ms dit.
+     HM-DEC-145's own measurement of the same capture reads dah 2.73, element gap 0.73 and
+     character gap 1.49, with no word gap. It agrees on the shape, but its character gap is
+     0.25 units wider. The fit was preferred because it gives all four lengths from one source.
+   - TX-BUG: ratio 3.5 to 5; the gaps are TX-ITU nominal, marked, because "dits short and
+     fast, gaps variable" has no number.
+   - TX-STRAIGHT and TX-SLOPPY are refused.
+   - Gold 1959 (`CW_SPEC.md` 12 item 6) is unvendored, so every hand-sent range is.
+3. **HM-REQ-050 is not met, recorded as a finding for the decoder steps and not chased here:**
+   - TX-ITU at 25 WPM: a sure extra `K` at the end. TX-BUG at 25 WPM does the same.
+   - TX-KEYER-W at 12 WPM: two placeholders inside `N0CALL`. At 25 WPM: a sure `<AR>` for the
+     opening `C`.
+   - TX-FARNS: sure word boundaries inside words at 12 and 18 WPM (MET-WBE 1/7 and 5/7). This
+     is HM-REQ-054's behaviour, measured only as it fell out. At 25 WPM one `C` is lost.
+   - TX-TIGHT: almost everything placeholders at all three speeds, 4, 1 and 1 of 21 sure and
+     right.
+
+   The tight fist and the Farnsworth word boundaries bear on steps 3 and 6. The opening and
+   closing letters at 25 WPM bear on step 5.
+4. **The switch changes nothing on these signals.** The live emitted transcript equals ours on
+   all 15 cases, and the port alone is worse on every one. Nothing was switched, and no case
+   was added to `CwSwitchTable` (parked).
+5. **The draws cover the ranges thinly.** The three KEYER-W ratios fell at 3.33 to 3.37 and the
+   three FARNS character gaps at 4.51 to 4.63, with the seeds fixed before any decode and
+   nothing re-seeded (V-14). A verdict at the ranges' ends (ratio 2.5, character gap 7) is not
+   in these cases.
+6. **7.4's "states what each does not prove"** is written for the sender fixtures in
+   `senders.md` section 4. 7.4 still waits on 7.3's INT-* profiles, so it was not ticked.
+7. **HM-REQ-050's verification row names "synthetic + 013347 and HM-DEC-115 captures".** The
+   captures were not measured here. They sit in `TheRequirementsAreMeasuredTests` under
+   inferred keys and with no SNR in the 2500 Hz reference, so they are not HM-REQ-013's
+   condition.
+8. **`CwChannel.Render` now goes through `RenderKeyed`.** The operations are the same ones in
+   the same order, and the channel proof is 71 of 71 before and after. No byte comparison
+   against the pre-change render was run.
+9. **Housekeeping.** Once, `tools/status.sh` was run from the fixtures folder and wrote a
+   `PROJECT_STATUS.md` there. It was moved to `.run-unit/unit468-stray-status.tmp` at once and
+   never staged. The root file was rewritten from the root.

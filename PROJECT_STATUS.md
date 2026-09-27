@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-TASK: 3 of 3
-WORK_INSTRUCTION: 468 - the TX-* sender profiles generated with exact keys by construction, and HM-REQ-050 measured on each must-tier fist at 15 dB on CH-AWGN
-BALL: tim
+STATE: EXECUTING
+TASK: 0 of 3
+WORK_INSTRUCTION: 469 - the INT-* interference profiles generated with the wanted key exact by construction, and HM-REQ-060, 061, 062 and 066 measured against them
+BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-27T12:18:49-04:00
-NOTE: Unit 468 done: 7.2 ticked - five TX-* fists generated and proved, two refused; HM-REQ-050 not met on any of the four must fists (tight fist reads 1 of 21); exit round as at entry; screen unchanged
+UPDATED: 2026-09-27T12:55:02-04:00
+NOTE: Task 0 entry figures all as at 468's exit; trace written - nothing mixes over CH-AWGN, the engine names no competitor under 125 Hz; committing
 
 ---
 

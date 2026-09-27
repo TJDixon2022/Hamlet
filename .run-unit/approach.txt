@@ -1,1 +1,1 @@
-build TX-* sender profile keying in the test fixtures, exact key by construction, prove each profile's ratios and gaps on its own keying, over CH-AWGN at 15 dB reference, measure HM-REQ-050 via HM-REQ-013 on each must-tier profile, decoder unchanged
+build INT-ADJ INT-COCHAN INT-CARRIER INT-PILEUP interference layers mixed over the wanted TX-ITU station in the test fixtures before CH-AWGN noise, prove offset level keyed-or-steady and station count on the rendered mix watched red, measure HM-REQ-060 061 062 066 on ours with held pitch and competing report, decoder unchanged
