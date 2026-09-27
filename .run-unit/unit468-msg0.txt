@@ -1,0 +1,10 @@
+unit468 task 0: the record, 1.13.155, the runner's writes; entry round as at 467's exit, the trace of what the fixtures can key (7.2)
+
+Build 0 errors; engine line 178 of 178; app line 278 of 278; named floors 13 of 13,
+captures 51 of 51, adjudicated 13 of 13; metrics real 33/436 sure wrong, coverage
+403/473, WBE 37/113, synthetic 14/173, 159/252, 44/84; channel proof 71 of 71;
+arbitration part (a) 5 of 5, part (b) harness 1 of 1 and live 2 of 2.
+Trace: the recipe can key any dit, dah and gap lengths but draws nothing and has
+no jitter; CwChannel hard-wires TX-ITU keying.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

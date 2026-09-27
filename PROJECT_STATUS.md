@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-TASK: 2 of 2
-WORK_INSTRUCTION: 467 - HM-REQ-128 judged on conditions as CW_SPEC.md defines them: a union row is a summary, not a condition, and 9.7 is closed on the switch unit 466 built
-BALL: tim
+STATE: EXECUTING
+TASK: 0 of 3
+WORK_INSTRUCTION: 468 - the TX-* sender profiles generated with exact keys by construction, and HM-REQ-050 measured on each must-tier fist at 15 dB on CH-AWGN
+BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-27T10:36:08-04:00
-NOTE: Unit 467 done: 9.7 and 9.8 ticked - HM-REQ-128 holds on all 10 condition rows and the live row, synthetic, all printed as a summary; step 9 open only at 9.4, R86 leaves no authorable step; screen unchanged
+UPDATED: 2026-09-27T11:11:13-04:00
+NOTE: Task 0 entry figures all as at 467's exit; trace written - CwChannel hard-wires TX-ITU, the recipe draws nothing; committing
 
 ---
 

@@ -1,16 +1,19 @@
 ﻿
-1. **Is an aggregate row a "condition" for HM-REQ-128?** This blocks 9.7.
-   - **What the tree forces.** Condition rows are nested: `synthetic, all` is the union of its six sub-rows (parity.md section 3, 458 DECIDED (4)). The rule fixed at task 1 picks the port alone on the char-gap-5 5 dB sub-row, because 011 comes first. That makes `synthetic, all` worse than ours alone on 012 and 081 while better on 011 and 010.
-   - **No per-row table meets both rows.** Holding the sub-row at ours fails the sub-row (worse than the port on 011 and 010).
-   - **Reading A.** HM-REQ-128 is judged on the rows a recording is emitted under: each harness sub-row, and real HF, all live. Then 9.7 is met as built, and part (b) drops its assertion on `synthetic, all` and `real HF, all` in the harness.
-   - **Reading B.** Every tabled row, the aggregates included, is a condition. Then the order rule, or a no-port-alone-where-a-parent-row-loses rule, has to change.
-   - **Why the owner decides.** Changing either now, after the figure is seen, is what V-14 forbids a session to do.
-   - It touches neither transmit nor the screen: the live product arbitrates.
-2. **HM-REQ-127's margin is 0.05, the requirement's recommended value, held provisionally.** Unchanged here.
-3. **9.4 has no authorable route.** Its words and the five mechanisms 9.3 named are all recorded as refused, and R86 holds steps 2 to 8 behind 9.4. This is logged for the owner, not a stop. It touches neither transmit nor what the product promises the operator.
-4. **The port alone is picked on one row.** On synthetic, 5 dB, 5-unit character gaps, the switch table picks the port alone. That row's operator would read fldigi's text at its all-sure mapping: `E Q D N 0 C T L L 0C A L L K E`, every letter sure. That is 3 of 16 sure letters wrong (ours: 11 of 25), 13 of 21 sent letters right (ours: 14), and 12 word-space errors in 7 words (ours: 8). DECIDED (6) licenses this. The live product never runs under that row.
-5. **Three of the four switches change nothing today.** The port votes nowhere, so the arbitrated output is ours on every row. "Ours alone" on TX-FARNS, TX-ITU 0 dB and char-gap-5 0 dB emits the same text as arbitrating. These switches start to matter only once a recalibration lets the port vote there.
-6. **The live path and the harness disagree on one row.** Live, syn gap 5 at 15 dB loses to the port on 081 (8/7 against ours' 12/7). In the harness it does not. By the path rule the harness sets that row (arbitrate). This matters only if a synthetic row is ever run live.
-7. **Unpaired characters are not on the live sheet under the port alone.** Live, a character only ours read is not emitted, so it never reaches the sheet. The harness records it (emitted: none). No live row runs under the port alone.
-8. **The headless dispatcher loop took app tests at two runs**: task 3's first run lost 3, and the exit round lost 1 and then 5. DECIDED (9) was applied both times, and every type lost on a rerun passed alone.
-9. **Tree mismatches from section 3.** `.run-unit\watched.rc` is absent (the runner modified `watched.cpu`). The reload's `RULES_AT` disagreement and `outcome-read`'s step titles are logged and are not this unit's.
+Nothing blocks this unit. Every item below is a plain reading or a log entry, not a request for a ruling.
+
+1. **Which rows are conditions is the arbiter's reading of `CW_SPEC.md` section 4, overrulable.**
+   - **The reading:** a condition is one named profile at one level. `synthetic, all`, a union across two senders and three levels, is a summary: printed, not asserted.
+   - **Rejected:** counting union rows as conditions. The document defines a condition as one profile at one SNR, and no per-row switch table can satisfy both a union and its sub-row once the order rule picks the port on the sub-row (466's section 4, item 1).
+   - **If the owner rules union rows are conditions, 9.7 reopens.**
+2. **Real, sender not stated is classed a condition.**
+   - **Why:** DECIDED (3) calls the real per-sender rows conditions "as unit 466 tabled them", and asserting the row cannot loosen HM-REQ-128's test.
+   - **The tension:** read strictly, the row names no profile, so `CW_SPEC.md` section 4 would not make it one. It groups 20 recordings of unnamed senders at unmeasured levels.
+   - **Recorded under R85 and carried on.** It is green either way (it does not lose).
+3. **HM-REQ-127's margin is 0.05, the requirement's recommended value, held provisionally.** It is unchanged here.
+4. **With 9.7 and 9.8 ticked, step 9's only open line is 9.4, which has no authorable route, and R86 holds steps 2 to 8 behind it.** All five mechanisms 9.3 named are recorded as refused, and so the next arbiter has no step R86 permits. This is logged for the owner, not a stop, because it touches neither transmit nor what the product promises the operator.
+5. **Tree mismatches from section 3.**
+   - `.run-unit\watched.rc` is absent. The runner deleted and then rewrote `watched.cpu`: task 0 committed it as it was, and the later rewrites are left unstaged.
+   - The reload's `RULES_AT` disagreement (HM-DEC-165 against CPS-DEC-0183) is logged and is not this unit's.
+   - `outcome-read`'s step titles for steps 2, 3 and 8 differ from `PHASE_PLAN.md`'s. Logged, not this unit's.
+6. **The headless dispatcher loop took app tests twice:** 2 at entry and 1 before task 1's commit, each a 1 ms loss. DECIDED (6) was applied: one rerun each time, both 278 of 278, so no type needed running alone. The exit run was clean.
+7. **Decode time moved between runs with no code change:** 65.50 s at entry against 64.27 s at 466's exit, then 64.97 s after task 1. The emitted text was byte-identical throughout, so this is run-to-run timing on this machine, not a change in the decoder.

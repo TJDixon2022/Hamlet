@@ -1,1 +1,1 @@
-rule aggregate union rows are not conditions under CW_SPEC section 4 one named profile at one SNR, narrow HM-REQ-128 test part b to condition rows and the live row, re-watch red on an empty switch table, tick 9.7 on the switch unit 466 built with no switch or rule changed
+build TX-* sender profile keying in the test fixtures, exact key by construction, prove each profile's ratios and gaps on its own keying, over CH-AWGN at 15 dB reference, measure HM-REQ-050 via HM-REQ-013 on each must-tier profile, decoder unchanged
