@@ -12,6 +12,37 @@ denominator is the sure characters emitted, unit 439's reading of `CW_SPEC.md` 1
 **From unit 464, each decoder's confidence p and its calibration per condition (HM-REQ-124,
 MET-CAL) are in `calibration.md`, held-out by recording.**
 
+## Step 2 - closed partial at unit 471
+
+2.4: three consecutive units with no kept change, 460, 470 and 471, after 449's kept change.
+HM-REQ-010 is not met. MET-CER-SURE, with coverage as sure and right over sent (R82):
+
+| figure | real, 23 keyed, inferred key | synthetic, 12 cases, exact key |
+|---|---|---|
+| unit 439's baseline (unit 440's entry, same decoder) | 67 of 426 sure, 0.1573 (54 substituted, 13 added); coverage 359 over 473, 0.7590 | 24 of 180, 0.1333; coverage 156 over 252, 0.6190 |
+| unit 449's kept change, before -> after | 40 of 433, 0.0924 -> 33 of 436, 0.0757; coverage 393 -> 403 over 473 | 14 of 173 -> 14 of 173; coverage 159 over 252 both |
+| today (unit 471's exit, `src` as at `a2e07f6d`) | 33 of 436, 0.0757; coverage 403 over 473, 0.8520 | 14 of 173, 0.0809; coverage 159 over 252, 0.6310 |
+| HM-REQ-010, below 0.01, today per condition | sender not stated 33 of 374, 0.0882 - not met; TX-FARNS 0 of 43, TX-ITU 0 of 13, TX-TIGHT 0 of 6 - below it (none of the four is a requirement condition: no CH-* profile, no SNR in the 2500 Hz reference) | TX-ITU 15 dB 1 of 64, 0.0156 and 5 dB 1 of 63, 0.0159 - not met; character gap 5, 15 dB 1 of 21, 0.0476 and 5 dB 11 of 25, 0.4400 - not met; both 0 dB conditions no sure letter, so no number (coverage 0) |
+
+What is left, as 470's and 471's traces group it:
+- Inside acquiring, settled before any proof after them: real 29 (24 in recordings that never
+  reach both proved, among them all of unit 449's 13; 5 settled before a later proof); synthetic 0.
+- Inside acquiring, still unsettled at the first proof, re-read at the proved values: real 0;
+  synthetic 2 (`cq-18wpm-5db-char5`'s added `T` and `K`), both reading the same again.
+- Outside acquiring: real 4, synthetic 12.
+
+Every route tried at step 2:
+- 440, G1 (textbook gaps where the clipped character gap reaches the word gap): not kept, coverage as then written fell.
+- 441, G1 re-applied under R82: kept. 441, the marks' speed overrules the path's: kept.
+- 442, sure only where the reading beat its rival (rival margin): not kept.
+- 444, key-ups under half a dit left out of the gap clustering (gap duration): not kept.
+- 449, HM-DEC-127's floor at the survey's 10 dB: kept.
+- 460, a second form of 459's pair speed: no mechanism separated its gains from its losses; nothing built.
+- 470, no sure letter while acquiring (the acquisition gate): not kept, MET-COVERAGE.
+- 471, the acquiring stretch read again at the proved pitch and speed: not kept, MET-CER-SURE.
+- The excluded list's mark-shape edge (445), speed bounds (446) and from-cold move (448) were worked
+  under steps 3, 5 and 4.
+
 ## Unit 471 - the acquiring stretch read again at the proved pitch and speed, not kept
 
 Step 2, 2.4, HM-REQ-010 with HM-REQ-011 and 012 and MET-WBE as guards, HM-REQ-102 measured

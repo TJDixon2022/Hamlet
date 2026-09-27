@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 2 of 4
+TASK: 3 of 4
 WORK_INSTRUCTION: 471 - the letters read while acquiring are read again at the pitch and speed once proved, before they settle: step 2's third attempt at HM-REQ-010
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-27T17:46:09-04:00
-NOTE: Task 2 refused on MET-CER-SURE (real 33/436 unchanged, synthetic char-gap-5 5 dB rises); patch kept, src restored; committing the documents before task 3 closes step 2
+UPDATED: 2026-09-27T17:47:55-04:00
+NOTE: Task 3: step 2's closing section written, the PARKED.md line appended, 2.4 ticked in both plans; committing before the exit round
 
 ---
 
