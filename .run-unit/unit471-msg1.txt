@@ -1,0 +1,10 @@
+unit471 task 1: the trace - unsettled at proof real 33, synthetic 39; wrong to right 0 on both, right to wrong 1 on each; 449's 13 and 470's 29 all settled before any proof; the rule registered before any after-figure (2.4)
+
+WhatTheAcquiringLettersReadAtTheProvedValuesFact (HM-REQ-010, HM-REQ-102) asserts nothing. It drives the harness's decoder, reads both proof states at every read, and re-reads each acquiring letter's span at the first read after it with both proved, from the raw audio at the proved pitch and speed.
+Real, inferred key: 322 sure letters emitted while acquiring (29 wrong or added); 33 still unsettled at the first proof after them, all sure and right at HEAD - 32 re-read right, 1 lost (012403 `0`). 289 settled before proof (214 never proved after them).
+Synthetic, exact key: 95 (2 wrong or added); 39 unsettled at proof - 36 right to right, 1 right to wrong (cq-18wpm-5db `C` read `6`), 2 wrong to wrong. 56 settled before proof.
+Unit 449's 13: all in recordings that never reach both proved. Unit 470's 29: 24 never proved after them, 5 settled before the proof.
+The rule (DECIDED 3 and 4) is registered in .run-unit/unit471-trace.txt part 3: CwProbabilisticStream.ReadAgainAtProvedValues, called from CwDecoder.Step. Nothing under src changed.
+At exit: build 0 errors; engine line 178 of 178; app line 276 of 278 with two lost to the dispatcher loop, 278 of 278 on the one rerun (DECIDED 8); named 13 of 13, captures 51 of 51, adjudicated 13 of 13.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

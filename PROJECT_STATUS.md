@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 0 of 4
+TASK: 1 of 4
 WORK_INSTRUCTION: 471 - the letters read while acquiring are read again at the pitch and speed once proved, before they settle: step 2's third attempt at HM-REQ-010
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-27T16:44:10-04:00
-NOTE: Task 0 entry figures all as at 470's exit, texts byte-identical; committing the record and the runner's writes before reading the stream's window
+UPDATED: 2026-09-27T17:10:31-04:00
+NOTE: Task 1 five green (app line after one dispatcher rerun); committing the fact, the trace and the registered rule before building the re-read
 
 ---
 

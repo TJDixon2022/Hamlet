@@ -1,0 +1,542 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:01.80]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:02.05]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:02.05]   Starting:    Hamlet.RadioEngine.Tests
+[xUnit.net 00:01:05.61]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.WhatTheAcquiringLettersReadAtTheProvedValuesFact.EveryAcquiringLetterAtTheFirstProofAfterIt [1 m 3 s]
+  Standard Output Messages:
+ proof | real | unadjudicated/cw-2026-09-23-173723 | reads 56 | first both proved 9.00 s at 575.0 Hz, 17.1 WPM | times both became proved 5 | reads both proved 29 | letters settled before the first proof 11
+ proof | real | cw-2026-08-17-013347 | reads 56 | first both proved 22.00 s at 615.0 Hz, 20.0 WPM | times both became proved 2 | reads both proved 3 | letters settled before the first proof 47
+ proof | real | cw-2026-08-17-134712 | reads 56 | first both proved never | times both became proved 0 | reads both proved 0 | letters settled before the first proof 9
+ proof | real | unadjudicated/cw-2026-08-18-003758 | reads 56 | first both proved 14.00 s at 500.0 Hz, 24.0 WPM | times both became proved 3 | reads both proved 12 | letters settled before the first proof 23
+ proof | real | unadjudicated/cw-2026-08-24-012403 | reads 56 | first both proved 27.00 s at 440.0 Hz, 20.9 WPM | times both became proved 2 | reads both proved 7 | letters settled before the first proof 13
+ proof | real | cw-2026-08-18-004507 | reads 56 | first both proved 15.50 s at 495.0 Hz, 24.0 WPM | times both became proved 4 | reads both proved 14 | letters settled before the first proof 21
+ proof | real | unadjudicated/cw-2026-08-22-031838 | reads 56 | first both proved never | times both became proved 0 | reads both proved 0 | letters settled before the first proof 30
+ proof | real | unadjudicated/cw-2026-08-22-031905 | reads 56 | first both proved 18.00 s at 500.0 Hz, 17.8 WPM | times both became proved 1 | reads both proved 1 | letters settled before the first proof 21
+ proof | real | unadjudicated/cw-2026-08-22-031948 | reads 56 | first both proved never | times both became proved 0 | reads both proved 0 | letters settled before the first proof 31
+ proof | real | unadjudicated/cw-2026-08-22-032012 | reads 56 | first both proved never | times both became proved 0 | reads both proved 0 | letters settled before the first proof 43
+ proof | real | unadjudicated/cw-2026-08-22-032050 | reads 56 | first both proved never | times both became proved 0 | reads both proved 0 | letters settled before the first proof 47
+ proof | real | unadjudicated/cw-2026-08-22-032113 | reads 56 | first both proved never | times both became proved 0 | reads both proved 0 | letters settled before the first proof 45
+ proof | real | unadjudicated/cw-2026-08-22-032129 | reads 56 | first both proved never | times both became proved 0 | reads both proved 0 | letters settled before the first proof 43
+ proof | real | unadjudicated/cw-2026-09-24-004108 | reads 56 | first both proved 6.00 s at 625.0 Hz, 21.8 WPM | times both became proved 7 | reads both proved 31 | letters settled before the first proof 5
+ proof | real | unadjudicated/cw-2026-09-24-004133 | reads 56 | first both proved 4.00 s at 625.0 Hz, 21.8 WPM | times both became proved 7 | reads both proved 28 | letters settled before the first proof 2
+ proof | real | unadjudicated/cw-2026-09-24-004205 | reads 56 | first both proved 6.50 s at 620.0 Hz, 21.8 WPM | times both became proved 6 | reads both proved 33 | letters settled before the first proof 7
+ proof | real | unadjudicated/cw-2026-09-24-004234 | reads 56 | first both proved 5.00 s at 630.0 Hz, 21.8 WPM | times both became proved 8 | reads both proved 30 | letters settled before the first proof 3
+ proof | real | unadjudicated/cw-2026-09-24-004322 | reads 56 | first both proved 4.50 s at 625.0 Hz, 21.8 WPM | times both became proved 4 | reads both proved 41 | letters settled before the first proof 2
+ proof | real | unadjudicated/cw-2026-09-24-004347 | reads 56 | first both proved 3.00 s at 625.0 Hz, 20.9 WPM | times both became proved 8 | reads both proved 40 | letters settled before the first proof 0
+ proof | real | unadjudicated/cw-2026-09-24-004405 | reads 56 | first both proved 5.00 s at 625.0 Hz, 20.9 WPM | times both became proved 6 | reads both proved 42 | letters settled before the first proof 2
+ proof | real | unadjudicated/cw-2026-09-24-004427 | reads 56 | first both proved 3.50 s at 625.0 Hz, 20.9 WPM | times both became proved 6 | reads both proved 23 | letters settled before the first proof 1
+ proof | real | unadjudicated/cw-2026-09-24-004510 | reads 56 | first both proved 4.50 s at 595.0 Hz, 24.0 WPM | times both became proved 6 | reads both proved 17 | letters settled before the first proof 2
+ proof | real | unadjudicated/cw-2026-09-24-004550 | reads 56 | first both proved 5.00 s at 600.0 Hz, 24.0 WPM | times both became proved 4 | reads both proved 32 | letters settled before the first proof 5
+ proof | synthetic | cq-12wpm-15db | reads 58 | first both proved 11.50 s at 615.0 Hz, 12.0 WPM | times both became proved 3 | reads both proved 9 | letters settled before the first proof 5
+ proof | synthetic | cq-12wpm-5db | reads 58 | first both proved 11.50 s at 615.0 Hz, 12.0 WPM | times both became proved 3 | reads both proved 8 | letters settled before the first proof 5
+ proof | synthetic | cq-12wpm-0db | reads 58 | first both proved never | times both became proved 0 | reads both proved 0 | letters settled before the first proof 0
+ proof | synthetic | cq-18wpm-15db | reads 39 | first both proved 4.00 s at 625.0 Hz, 17.8 WPM | times both became proved 7 | reads both proved 20 | letters settled before the first proof 1
+ proof | synthetic | cq-18wpm-5db | reads 39 | first both proved 4.50 s at 615.0 Hz, 18.5 WPM | times both became proved 7 | reads both proved 19 | letters settled before the first proof 2
+ proof | synthetic | cq-18wpm-0db | reads 39 | first both proved never | times both became proved 0 | reads both proved 0 | letters settled before the first proof 0
+ proof | synthetic | cq-25wpm-15db | reads 28 | first both proved 3.50 s at 625.0 Hz, 24.0 WPM | times both became proved 4 | reads both proved 21 | letters settled before the first proof 1
+ proof | synthetic | cq-25wpm-5db | reads 28 | first both proved 3.50 s at 625.0 Hz, 26.7 WPM | times both became proved 4 | reads both proved 18 | letters settled before the first proof 1
+ proof | synthetic | cq-25wpm-0db | reads 28 | first both proved never | times both became proved 0 | reads both proved 0 | letters settled before the first proof 0
+ proof | synthetic | cq-18wpm-15db-char5 | reads 43 | first both proved 6.00 s at 615.0 Hz, 17.8 WPM | times both became proved 6 | reads both proved 18 | letters settled before the first proof 3
+ proof | synthetic | cq-18wpm-5db-char5 | reads 43 | first both proved 6.00 s at 615.0 Hz, 17.8 WPM | times both became proved 6 | reads both proved 24 | letters settled before the first proof 3
+ proof | synthetic | cq-18wpm-0db-char5 | reads 43 | first both proved never | times both became proved 0 | reads both proved 0 | letters settled before the first proof 0
+ letter | set | recording | span s | sent | HEAD emitted | HEAD class | against key | read at (mix Hz, WPM) | states at emission | first both proved after it (read s, pitch Hz, WPM) | first in recording | unsettled then | HEAD's edge then | window mix off proved, max Hz | re-read at proved | re-read class
+ letter | real | unadjudicated/cw-2026-09-23-173723 | 16.590 to 17.500 | `Q` | `Q` | sure | right | 585.0 Hz, 17.1 | pitch hypothesis, speed proved | 18.00 s, 585.0 Hz, 17.1 | no | yes | `Q` | 10.0 | `Q` | sure
+ letter | real | unadjudicated/cw-2026-09-23-173723 | 21.100 to 21.170 | `E` | `E` | sure | right | 575.0 Hz, 17.1 | pitch hypothesis, speed proved | 21.50 s, 575.0 Hz, 17.1 | no | yes | `E` | 10.0 | `E` | sure
+ letter | real | unadjudicated/cw-2026-09-23-173723 | 26.190 to 26.820 | `W` | `W` | sure | right | 600.0 Hz, 17.1 | pitch hypothesis, speed proved | 27.00 s, 600.0 Hz, 17.1 | no | yes | `W` | 25.0 | `W` | sure
+ letter | real | unadjudicated/cw-2026-09-23-173723 | 27.150 to 27.775 | `B` | `B` | sure | right | 600.0 Hz, 17.1 | pitch hypothesis, speed proved | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-09-23-173723 | 28.060 to 28.970 | `6` | `7` | sure | wrong | 600.0 Hz, 17.1 | pitch hypothesis, speed proved | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-09-23-173723 | 29.125 to 29.195 | `R` | `E` | sure | wrong | 600.0 Hz, 17.1 | pitch hypothesis, speed proved | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-09-23-173723 | 29.465 to 29.530 | `E` | `E` | sure | right | 600.0 Hz, 17.1 | pitch hypothesis, speed proved | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-09-23-173723 | 29.790 to 30.000 | `D` | `I` | sure | wrong | 600.0 Hz, 17.1 | pitch hypothesis, speed proved | never | no | no | - | - | - | -
+ letter | real | cw-2026-08-17-013347 | 22.530 to 23.310 | `V` | `V` | sure | right | 600.0 Hz, 19.2 | pitch hypothesis, speed proved | 28.50 s, 600.0 Hz, 19.2 | no | no | - | 25.0 | `V` | sure
+ letter | real | cw-2026-08-17-013347 | 23.495 to 23.925 | `A` | `A` | sure | right | 600.0 Hz, 19.2 | pitch hypothesis, speed proved | 28.50 s, 600.0 Hz, 19.2 | no | no | - | 25.0 | `A` | sure
+ letter | real | cw-2026-08-17-013347 | 24.095 to 25.230 | `3` | `3` | sure | right | 600.0 Hz, 19.2 | pitch hypothesis, speed proved | 28.50 s, 600.0 Hz, 19.2 | no | no | - | 25.0 | `3` | sure
+ letter | real | cw-2026-08-17-013347 | 25.395 to 26.175 | `V` | `V` | sure | right | 600.0 Hz, 19.2 | pitch hypothesis, speed proved | 28.50 s, 600.0 Hz, 19.2 | no | no | - | 25.0 | `V` | sure
+ letter | real | cw-2026-08-17-013347 | 26.310 to 26.925 | `R` | `R` | sure | right | 600.0 Hz, 19.2 | pitch hypothesis, speed proved | 28.50 s, 600.0 Hz, 19.2 | no | no | - | 25.0 | `R` | sure
+ letter | real | cw-2026-08-17-134712 | 21.225 to 21.530 | `N` | `N` | sure | right | 500.0 Hz, 18.0 | pitch none, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | cw-2026-08-17-134712 | 21.715 to 22.330 | `4` | `4` | sure | right | 500.0 Hz, 16.0 | pitch none, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | cw-2026-08-17-134712 | 22.485 to 23.000 | `L` | `L` | sure | right | 500.0 Hz, 18.0 | pitch none, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-18-003758 | 10.595 to 10.640 | `A` | `E` | sure | wrong | 500.0 Hz, 40.0 | pitch proved, speed hypothesis | 14.00 s, 500.0 Hz, 24.0 | yes | no | - | 15.0 | `4` | sure
+ letter | real | unadjudicated/cw-2026-08-18-003758 | 10.695 to 10.740 | `A` | `E` | sure | wrong | 500.0 Hz, 40.0 | pitch proved, speed hypothesis | 14.00 s, 500.0 Hz, 24.0 | yes | no | - | 15.0 | `4` | sure
+ letter | real | unadjudicated/cw-2026-08-18-003758 | 10.795 to 10.940 | `4` | `T` | sure | wrong | 500.0 Hz, 40.0 | pitch proved, speed hypothesis | 14.00 s, 500.0 Hz, 24.0 | yes | no | - | 15.0 | `4` | sure
+ letter | real | unadjudicated/cw-2026-08-18-003758 | 11.125 to 11.475 | `M` | `M` | sure | right | 500.0 Hz, 24.0 | pitch proved, speed hypothesis | 14.00 s, 500.0 Hz, 24.0 | yes | no | - | 15.0 | `M` | sure
+ letter | real | unadjudicated/cw-2026-08-18-003758 | 11.645 to 12.190 | `P` | `P` | sure | right | 500.0 Hz, 24.0 | pitch hypothesis, speed hypothesis | 14.00 s, 500.0 Hz, 24.0 | yes | no | - | 15.0 | `P` | sure
+ letter | real | unadjudicated/cw-2026-08-18-003758 | 14.865 to 15.110 | `N` | `N` | sure | right | 500.0 Hz, 24.0 | pitch hypothesis, speed proved | 15.50 s, 500.0 Hz, 24.0 | no | yes | `N` | 15.0 | `N` | sure
+ letter | real | unadjudicated/cw-2026-08-18-003758 | 15.275 to 15.420 | `I` | `I` | sure | right | 500.0 Hz, 24.0 | pitch hypothesis, speed proved | 15.50 s, 500.0 Hz, 24.0 | no | yes | `I` | 15.0 | `I` | sure
+ letter | real | unadjudicated/cw-2026-08-24-012403 | 20.030 to 20.445 | `D` | `D` | sure | right | 450.0 Hz, 20.0 | pitch hypothesis, speed hypothesis | 27.00 s, 440.0 Hz, 20.9 | yes | no | - | 10.0 | `D` | sure
+ letter | real | unadjudicated/cw-2026-08-24-012403 | 20.625 to 20.680 | `E` | `E` | sure | right | 435.0 Hz, 20.0 | pitch hypothesis, speed hypothesis | 27.00 s, 440.0 Hz, 20.9 | yes | no | - | 10.0 | `E` | sure
+ letter | real | unadjudicated/cw-2026-08-24-012403 | 21.095 to 21.620 | `K` | `K` | sure | right | 435.0 Hz, 20.0 | pitch hypothesis, speed hypothesis | 27.00 s, 440.0 Hz, 20.9 | yes | no | - | 10.0 | `K` | sure
+ letter | real | unadjudicated/cw-2026-08-24-012403 | 21.800 to 22.215 | `D` | `D` | sure | right | 435.0 Hz, 20.0 | pitch hypothesis, speed hypothesis | 27.00 s, 440.0 Hz, 20.9 | yes | no | - | 10.0 | `D` | sure
+ letter | real | unadjudicated/cw-2026-08-24-012403 | 22.395 to 23.515 | `0` | `0` | sure | right | 435.0 Hz, 20.0 | pitch hypothesis, speed hypothesis | 27.00 s, 440.0 Hz, 20.9 | yes | no | - | 10.0 | `0` | sure
+ letter | real | unadjudicated/cw-2026-08-24-012403 | 23.695 to 24.105 | `U` | `U` | sure | right | 435.0 Hz, 20.0 | pitch hypothesis, speed hypothesis | 27.00 s, 440.0 Hz, 20.9 | yes | no | - | 10.0 | `U` | sure
+ letter | real | unadjudicated/cw-2026-08-24-012403 | 24.285 to 24.580 | `N` | `N` | sure | right | 435.0 Hz, 20.0 | pitch hypothesis, speed hypothesis | 27.00 s, 440.0 Hz, 20.9 | yes | no | - | 10.0 | `N` | sure
+ letter | real | unadjudicated/cw-2026-08-24-012403 | 26.290 to 27.410 | `0` | `0` | sure | right | 450.0 Hz, 20.9 | pitch hypothesis, speed proved | 27.50 s, 450.0 Hz, 20.9 | no | yes | `0` | 15.0 | (nothing) | -
+ letter | real | cw-2026-08-18-004507 | 3.065 to 3.230 | `T` | `T` | sure | right | 525.0 Hz, 22.0 | pitch hypothesis, speed hypothesis | 15.50 s, 495.0 Hz, 24.0 | yes | no | - | - | outside the window | -
+ letter | real | cw-2026-08-18-004507 | 3.980 to 4.245 | `A` | `A` | sure | right | 525.0 Hz, 22.0 | pitch hypothesis, speed hypothesis | 15.50 s, 495.0 Hz, 24.0 | yes | no | - | 30.0 | `A` | sure
+ letter | real | cw-2026-08-18-004507 | 4.455 to 4.820 | `R` | `R` | sure | right | 525.0 Hz, 22.0 | pitch hypothesis, speed hypothesis | 15.50 s, 495.0 Hz, 24.0 | yes | no | - | 30.0 | `R` | sure
+ letter | real | cw-2026-08-18-004507 | 5.055 to 5.420 | `R` | `R` | sure | right | 525.0 Hz, 31.0 | pitch hypothesis, speed hypothesis | 15.50 s, 495.0 Hz, 24.0 | yes | no | - | 30.0 | `R` | sure
+ letter | real | cw-2026-08-18-004507 | 5.625 to 6.085 | `L` | `L` | sure | right | 525.0 Hz, 22.0 | pitch hypothesis, speed hypothesis | 15.50 s, 495.0 Hz, 24.0 | yes | no | - | 30.0 | `L` | sure
+ letter | real | cw-2026-08-18-004507 | 6.580 to 6.940 | `D` | `D` | sure | right | 525.0 Hz, 22.0 | pitch hypothesis, speed hypothesis | 15.50 s, 495.0 Hz, 24.0 | yes | no | - | 30.0 | `D` | sure
+ letter | real | cw-2026-08-18-004507 | 7.200 to 7.750 | `O` | `O` | sure | right | 525.0 Hz, 22.0 | pitch hypothesis, speed hypothesis | 15.50 s, 495.0 Hz, 24.0 | yes | no | - | 30.0 | `O` | sure
+ letter | real | cw-2026-08-18-004507 | 8.005 to 8.160 | `T` | `T` | sure | right | 500.0 Hz, 22.0 | pitch hypothesis, speed hypothesis | 15.50 s, 495.0 Hz, 24.0 | yes | no | - | 30.0 | `T` | sure
+ letter | real | cw-2026-08-18-004507 | 8.700 to 8.955 | `N` | `N` | sure | right | 500.0 Hz, 22.0 | pitch hypothesis, speed hypothesis | 15.50 s, 495.0 Hz, 24.0 | yes | no | - | 30.0 | `N` | sure
+ letter | real | cw-2026-08-18-004507 | 9.205 to 9.265 | `E` | `E` | sure | right | 500.0 Hz, 22.0 | pitch hypothesis, speed hypothesis | 15.50 s, 495.0 Hz, 24.0 | yes | no | - | 30.0 | `E` | sure
+ letter | real | cw-2026-08-18-004507 | 9.565 to 9.720 | `T` | `T` | sure | right | 500.0 Hz, 22.0 | pitch hypothesis, speed hypothesis | 15.50 s, 495.0 Hz, 24.0 | yes | no | - | 30.0 | `T` | sure
+ letter | real | cw-2026-08-18-004507 | 10.240 to 10.900 | `<BT>` | `<BT>` | sure | right | 500.0 Hz, 22.0 | pitch hypothesis, speed hypothesis | 15.50 s, 495.0 Hz, 24.0 | yes | no | - | 30.0 | `<BT>` | sure
+ letter | real | cw-2026-08-18-004507 | 11.910 to 11.965 | `E` | `E` | sure | right | 500.0 Hz, 36.9 | pitch proved, speed hypothesis | 15.50 s, 495.0 Hz, 24.0 | yes | no | - | 30.0 | `E` | sure
+ letter | real | cw-2026-08-18-004507 | 12.255 to 12.515 | `A` | `A` | sure | right | 500.0 Hz, 24.0 | pitch proved, speed hypothesis | 15.50 s, 495.0 Hz, 24.0 | yes | no | - | 30.0 | `A` | sure
+ letter | real | cw-2026-08-18-004507 | 12.725 to 13.280 | `C` | `C` | sure | right | 500.0 Hz, 24.0 | pitch proved, speed hypothesis | 15.50 s, 495.0 Hz, 24.0 | yes | no | - | 30.0 | `C` | sure
+ letter | real | cw-2026-08-18-004507 | 13.535 to 13.890 | `H` | `H` | sure | right | 500.0 Hz, 24.0 | pitch proved, speed hypothesis | 15.50 s, 495.0 Hz, 24.0 | yes | no | - | 30.0 | `H` | sure
+ letter | real | cw-2026-08-18-004507 | 15.265 to 15.520 | `A` | `A` | sure | right | 495.0 Hz, 24.0 | pitch hypothesis, speed proved | 16.00 s, 500.0 Hz, 24.0 | no | yes | `A` | 25.0 | `A` | sure
+ letter | real | cw-2026-08-18-004507 | 15.755 to 15.905 | `T` | `T` | sure | right | 500.0 Hz, 24.0 | pitch hypothesis, speed proved | 16.00 s, 500.0 Hz, 24.0 | no | yes | `T` | 25.0 | `T` | sure
+ letter | real | cw-2026-08-18-004507 | 16.120 to 16.270 | `I` | `I` | sure | right | 500.0 Hz, 24.0 | pitch hypothesis, speed proved | 16.50 s, 500.0 Hz, 24.0 | no | yes | `I` | 25.0 | `I` | sure
+ letter | real | cw-2026-08-18-004507 | 18.320 to 18.675 | `H` | `H` | sure | right | 500.0 Hz, 24.0 | pitch hypothesis, speed proved | 19.00 s, 500.0 Hz, 24.0 | no | yes | `H` | 25.0 | `H` | sure
+ letter | real | cw-2026-08-18-004507 | 18.905 to 19.160 | `A` | `A` | sure | right | 500.0 Hz, 24.0 | pitch hypothesis, speed proved | 19.50 s, 500.0 Hz, 24.0 | no | yes | `A` | 25.0 | `A` | sure
+ letter | real | cw-2026-08-18-004507 | 19.385 to 19.640 | `N` | `N` | sure | right | 500.0 Hz, 24.0 | pitch hypothesis, speed proved | 23.50 s, 505.0 Hz, 24.0 | no | no | - | 10.0 | `N` | sure
+ letter | real | cw-2026-08-18-004507 | 19.885 to 20.240 | `D` | `D` | sure | right | 500.0 Hz, 22.9 | pitch hypothesis, speed proved | 23.50 s, 505.0 Hz, 24.0 | no | no | - | 10.0 | `D` | sure
+ letter | real | cw-2026-08-18-004507 | 20.500 to 20.955 | `L` | `L` | sure | right | 500.0 Hz, 24.0 | pitch hypothesis, speed proved | 23.50 s, 505.0 Hz, 24.0 | no | no | - | 10.0 | `L` | sure
+ letter | real | cw-2026-08-18-004507 | 21.215 to 21.365 | `I` | `I` | sure | right | 500.0 Hz, 24.0 | pitch hypothesis, speed hypothesis | 23.50 s, 505.0 Hz, 24.0 | no | no | - | 10.0 | `I` | sure
+ letter | real | cw-2026-08-18-004507 | 21.600 to 21.855 | `N` | `N` | sure | right | 500.0 Hz, 24.0 | pitch hypothesis, speed hypothesis | 23.50 s, 505.0 Hz, 24.0 | no | no | - | 10.0 | `N` | sure
+ letter | real | cw-2026-08-18-004507 | 24.485 to 24.745 | `S` | `S` | sure | right | 500.0 Hz, 24.0 | pitch hypothesis, speed proved | 25.00 s, 500.0 Hz, 24.0 | no | yes | `S` | 5.0 | `S` | sure
+ letter | real | cw-2026-08-18-004507 | 25.355 to 25.715 | `M` | `M` | sure | right | 495.0 Hz, 24.0 | pitch hypothesis, speed proved | 29.50 s, 500.0 Hz, 24.0 | no | no | - | 5.0 | `M` | sure
+ letter | real | cw-2026-08-18-004507 | 25.945 to 25.995 | `E` | `E` | sure | right | 495.0 Hz, 24.0 | pitch hypothesis, speed proved | 29.50 s, 500.0 Hz, 24.0 | no | no | - | 5.0 | `E` | sure
+ letter | real | cw-2026-08-18-004507 | 26.285 to 26.540 | `S` | `S` | sure | right | 495.0 Hz, 24.0 | pitch hypothesis, speed proved | 29.50 s, 500.0 Hz, 24.0 | no | no | - | 5.0 | `S` | sure
+ letter | real | cw-2026-08-18-004507 | 26.765 to 27.025 | `S` | `S` | sure | right | 495.0 Hz, 24.0 | pitch hypothesis, speed hypothesis | 29.50 s, 500.0 Hz, 24.0 | no | no | - | 5.0 | `S` | sure
+ letter | real | cw-2026-08-18-004507 | 27.260 to 27.510 | `A` | `A` | sure | right | 495.0 Hz, 24.0 | pitch hypothesis, speed hypothesis | 29.50 s, 500.0 Hz, 24.0 | no | no | - | 5.0 | `A` | sure
+ letter | real | unadjudicated/cw-2026-08-22-031838 | 8.495 to 8.675 | `2` | `T` | sure | wrong | 525.0 Hz, 22.8 | pitch hypothesis, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-031838 | 9.485 to 9.685 | `,` | `T` | sure | wrong | 525.0 Hz, 28.2 | pitch hypothesis, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-031838 | 10.105 to 11.030 | `2` | `2` | sure | right | 525.0 Hz, 26.6 | pitch hypothesis, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-031838 | 11.225 to 12.415 | `,` | `,` | sure | right | 525.0 Hz, 20.9 | pitch hypothesis, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-031838 | 12.840 to 13.140 | `A` | `A` | sure | right | 525.0 Hz, 19.2 | pitch hypothesis, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-031838 | 13.335 to 13.620 | `N` | `N` | sure | right | 525.0 Hz, 19.2 | pitch hypothesis, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-031838 | 13.790 to 14.225 | `D` | `D` | sure | right | 525.0 Hz, 19.2 | pitch hypothesis, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-031838 | 15.980 to 16.530 | `W` | `W` | sure | right | 525.0 Hz, 27.4 | pitch hypothesis, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-031838 | 16.730 to 16.895 | `I` | `I` | sure | right | 525.0 Hz, 28.2 | pitch hypothesis, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-031838 | 17.010 to 17.290 | `T` | `A` | sure | wrong | 525.0 Hz, 28.2 | pitch hypothesis, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-031838 | 17.445 to 17.905 | `H` | `H` | sure | right | 525.0 Hz, 22.0 | pitch hypothesis, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-031838 | 18.340 to 18.640 | `A` | `A` | sure | right | 525.0 Hz, 22.0 | pitch hypothesis, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-031838 | 19.055 to 19.490 | `M` | `M` | sure | right | 525.0 Hz, 22.0 | pitch hypothesis, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-031838 | 19.685 to 19.755 | `E` | `E` | sure | right | 525.0 Hz, 20.0 | pitch hypothesis, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-031838 | 19.930 to 20.250 | `A` | `A` | sure | right | 525.0 Hz, 20.0 | pitch hypothesis, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-031838 | 20.405 to 20.745 | `N` | `N` | sure | right | 525.0 Hz, 22.0 | pitch hypothesis, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-031838 | 21.160 to 21.845 | `O` | `O` | sure | right | 525.0 Hz, 22.0 | pitch hypothesis, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-031838 | 22.000 to 22.560 | `F` | `F` | sure | right | 525.0 Hz, 20.0 | pitch hypothesis, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-031838 | 22.995 to 23.920 | `2` | `2` | sure | right | 525.0 Hz, 20.0 | pitch hypothesis, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-031838 | 24.115 to 24.185 | `R` | `T` | sure | wrong | 525.0 Hz, 34.3 | pitch hypothesis, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-031838 | 24.255 to 24.410 | `E` | `T` | sure | wrong | 525.0 Hz, 34.3 | pitch hypothesis, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-031905 | 4.750 to 5.175 | `D` | `D` | sure | right | 500.0 Hz, 17.8 | pitch none, speed hypothesis | 18.00 s, 500.0 Hz, 17.8 | yes | no | - | - | outside the window | -
+ letter | real | unadjudicated/cw-2026-08-22-031905 | 5.375 to 5.535 | `I` | `I` | sure | right | 500.0 Hz, 17.8 | pitch proved, speed hypothesis | 18.00 s, 500.0 Hz, 17.8 | yes | no | - | - | outside the window | -
+ letter | real | unadjudicated/cw-2026-08-22-031905 | 5.740 to 6.395 | `C` | `C` | sure | right | 500.0 Hz, 17.8 | pitch proved, speed hypothesis | 18.00 s, 500.0 Hz, 17.8 | yes | no | - | - | outside the window | -
+ letter | real | unadjudicated/cw-2026-08-22-031905 | 6.580 to 6.780 | `T` | `T` | sure | right | 500.0 Hz, 17.8 | pitch hypothesis, speed hypothesis | 18.00 s, 500.0 Hz, 17.8 | yes | no | - | 0.0 | `T` | sure
+ letter | real | unadjudicated/cw-2026-08-22-031905 | 6.935 to 7.005 | `E` | `E` | sure | right | 500.0 Hz, 17.8 | pitch hypothesis, speed hypothesis | 18.00 s, 500.0 Hz, 17.8 | yes | no | - | 0.0 | `E` | sure
+ letter | real | unadjudicated/cw-2026-08-22-031905 | 7.205 to 7.635 | `D` | `D` | sure | right | 500.0 Hz, 17.8 | pitch hypothesis, speed hypothesis | 18.00 s, 500.0 Hz, 17.8 | yes | no | - | 0.0 | `D` | sure
+ letter | real | unadjudicated/cw-2026-08-22-031905 | 8.055 to 9.115 | `1` | `1` | sure | right | 500.0 Hz, 17.8 | pitch hypothesis, speed hypothesis | 18.00 s, 500.0 Hz, 17.8 | yes | no | - | 0.0 | `1` | sure
+ letter | real | unadjudicated/cw-2026-08-22-031905 | 9.310 to 10.420 | `0` | `0` | sure | right | 500.0 Hz, 17.8 | pitch hypothesis, speed hypothesis | 18.00 s, 500.0 Hz, 17.8 | yes | no | - | 0.0 | `0` | sure
+ letter | real | unadjudicated/cw-2026-08-22-031905 | 10.615 to 11.640 | `.` | `.` | sure | right | 500.0 Hz, 17.8 | pitch hypothesis, speed hypothesis | 18.00 s, 500.0 Hz, 17.8 | yes | no | - | 0.0 | `.` | sure
+ letter | real | unadjudicated/cw-2026-08-22-031905 | 11.845 to 12.610 | `7` | `7` | sure | right | 500.0 Hz, 17.8 | pitch hypothesis, speed hypothesis | 18.00 s, 500.0 Hz, 17.8 | yes | no | - | 0.0 | `7` | sure
+ letter | real | unadjudicated/cw-2026-08-22-031905 | 13.035 to 13.590 | `E` | `K` | sure | wrong | 500.0 Hz, 17.8 | pitch hypothesis, speed hypothesis | 18.00 s, 500.0 Hz, 17.8 | yes | no | - | 0.0 | (nothing) | -
+ letter | real | unadjudicated/cw-2026-08-22-031905 | 14.155 to 14.450 | `N` | `N` | sure | right | 500.0 Hz, 17.8 | pitch hypothesis, speed hypothesis | 18.00 s, 500.0 Hz, 17.8 | yes | no | - | 0.0 | `N` | sure
+ letter | real | unadjudicated/cw-2026-08-22-031905 | 14.645 to 14.850 | `T` | `T` | sure | right | 500.0 Hz, 17.8 | pitch hypothesis, speed hypothesis | 18.00 s, 500.0 Hz, 17.8 | yes | no | - | 0.0 | `T` | sure
+ letter | real | unadjudicated/cw-2026-08-22-031905 | 15.010 to 15.210 | `I` | `I` | sure | right | 500.0 Hz, 18.5 | pitch hypothesis, speed hypothesis | 18.00 s, 500.0 Hz, 17.8 | yes | no | - | 0.0 | `I` | sure
+ letter | real | unadjudicated/cw-2026-08-22-031905 | 15.405 to 15.835 | `M` | `M` | sure | right | 500.0 Hz, 18.5 | pitch hypothesis, speed hypothesis | 18.00 s, 500.0 Hz, 17.8 | yes | no | - | 0.0 | `M` | sure
+ letter | real | unadjudicated/cw-2026-08-22-031905 | 15.995 to 16.065 | `E` | `E` | sure | right | 500.0 Hz, 18.5 | pitch hypothesis, speed hypothesis | 18.00 s, 500.0 Hz, 17.8 | yes | no | - | 0.0 | `E` | sure
+ letter | real | unadjudicated/cw-2026-08-22-031905 | 16.260 to 16.425 | `T` | `T` | sure | right | 500.0 Hz, 18.5 | pitch hypothesis, speed hypothesis | 18.00 s, 500.0 Hz, 17.8 | yes | no | - | 0.0 | `T` | sure
+ letter | real | unadjudicated/cw-2026-08-22-031905 | 16.885 to 17.310 | `R` | `R` | sure | right | 500.0 Hz, 17.8 | pitch hypothesis, speed proved | 18.00 s, 500.0 Hz, 17.8 | yes | yes | `R` | 0.0 | `R` | sure
+ letter | real | unadjudicated/cw-2026-08-22-031905 | 17.730 to 18.285 | `F` | `F` | sure | right | 500.0 Hz, 17.8 | pitch hypothesis, speed proved | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-031905 | 18.430 to 18.995 | `L` | `L` | sure | right | 500.0 Hz, 17.8 | pitch hypothesis, speed proved | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-031905 | 19.195 to 19.610 | `U` | `A` | sure | wrong | 500.0 Hz, 18.5 | pitch hypothesis, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-031905 | 19.805 to 20.465 | `X` | `X` | sure | right | 500.0 Hz, 18.5 | pitch hypothesis, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-031905 | 20.895 to 21.090 | `I` | `I` | sure | right | 500.0 Hz, 18.5 | pitch hypothesis, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-031905 | 21.290 to 21.585 | `S` | `S` | sure | right | 500.0 Hz, 18.5 | pitch hypothesis, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-031905 | 22.005 to 23.055 | `1` | `1` | sure | right | 500.0 Hz, 18.5 | pitch hypothesis, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-031905 | 23.250 to 24.155 | `2` | `2` | sure | right | 500.0 Hz, 18.5 | pitch hypothesis, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-031905 | 24.350 to 24.875 | `5` | `5` | sure | right | 500.0 Hz, 18.5 | pitch hypothesis, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-031905 | 25.070 to 26.250 | `,` | `,` | sure | right | 500.0 Hz, 18.5 | pitch hypothesis, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-031905 | 26.675 to 27.730 | `1` | `1` | sure | right | 500.0 Hz, 18.5 | pitch hypothesis, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-031905 | 27.890 to 28.850 | `2` | `2` | sure | right | 500.0 Hz, 18.5 | pitch hypothesis, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-031905 | 29.010 to 29.570 | `5` | `5` | sure | right | 500.0 Hz, 18.5 | pitch hypothesis, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-031948 | 2.875 to 3.945 | `1` | `1` | sure | right | 500.0 Hz, 18.5 | pitch hypothesis, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-031948 | 4.110 to 4.690 | `1` | `5` | sure | wrong | 500.0 Hz, 18.5 | pitch hypothesis, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-031948 | 4.890 to 6.040 | `0` | `0` | sure | right | 500.0 Hz, 18.5 | pitch hypothesis, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-031948 | 6.465 to 7.515 | `1` | `1` | sure | right | 500.0 Hz, 18.5 | pitch hypothesis, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-031948 | 7.715 to 8.770 | `1` | `1` | sure | right | 500.0 Hz, 17.8 | pitch hypothesis, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-031948 | 8.965 to 10.120 | `0` | `0` | sure | right | 500.0 Hz, 17.8 | pitch hypothesis, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-031948 | 10.320 to 11.470 | `,` | `,` | sure | right | 500.0 Hz, 18.5 | pitch hypothesis, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-031948 | 11.930 to 12.225 | `A` | `A` | sure | right | 500.0 Hz, 18.5 | pitch hypothesis, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-031948 | 12.420 to 12.700 | `N` | `N` | sure | right | 500.0 Hz, 18.5 | pitch hypothesis, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-031948 | 12.900 to 13.330 | `D` | `D` | sure | right | 500.0 Hz, 18.5 | pitch hypothesis, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-031948 | 13.750 to 14.805 | `1` | `1` | sure | right | 500.0 Hz, 18.5 | pitch hypothesis, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-031948 | 14.965 to 16.020 | `1` | `1` | sure | right | 500.0 Hz, 18.5 | pitch hypothesis, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-031948 | 16.220 to 17.410 | `0` | `0` | sure | right | 500.0 Hz, 22.9 | pitch hypothesis, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-031948 | 17.830 to 18.395 | `W` | `W` | sure | right | 500.0 Hz, 18.5 | pitch hypothesis, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-031948 | 18.550 to 18.755 | `I` | `I` | sure | right | 500.0 Hz, 18.5 | pitch hypothesis, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-031948 | 18.950 to 19.090 | `T` | `T` | sure | right | 500.0 Hz, 17.8 | pitch hypothesis, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-031948 | 19.285 to 19.715 | `H` | `H` | sure | right | 500.0 Hz, 17.8 | pitch hypothesis, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-031948 | 20.140 to 20.475 | `A` | `A` | sure | right | 500.0 Hz, 17.8 | pitch hypothesis, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-031948 | 20.900 to 21.310 | `M` | `M` | sure | right | 500.0 Hz, 18.5 | pitch hypothesis, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-031948 | 21.490 to 21.535 | `E` | `E` | sure | right | 500.0 Hz, 17.8 | pitch hypothesis, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-031948 | 21.730 to 22.020 | `A` | `A` | sure | right | 500.0 Hz, 17.8 | pitch hypothesis, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-031948 | 22.215 to 22.505 | `N` | `N` | sure | right | 500.0 Hz, 18.5 | pitch hypothesis, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-031948 | 22.960 to 23.625 | `O` | `O` | sure | right | 500.0 Hz, 17.8 | pitch hypothesis, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-031948 | 23.820 to 24.385 | `F` | `F` | sure | right | 500.0 Hz, 17.8 | pitch hypothesis, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-031948 | 24.795 to 25.850 | `1` | `1` | sure | right | 500.0 Hz, 17.8 | pitch hypothesis, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-031948 | 26.010 to 27.065 | `1` | `1` | sure | right | 500.0 Hz, 17.8 | pitch hypothesis, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-031948 | 27.265 to 28.055 | `7` | `7` | sure | right | 500.0 Hz, 17.8 | pitch hypothesis, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032012 | 1.600 to 1.765 | `O` | `T` | sure | wrong | 500.0 Hz, 22.9 | pitch none, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032012 | 1.960 to 2.525 | `F` | `F` | sure | right | 500.0 Hz, 22.9 | pitch none, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032012 | 2.935 to 3.990 | `1` | `1` | sure | right | 500.0 Hz, 20.0 | pitch none, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032012 | 4.150 to 5.205 | `1` | `1` | sure | right | 500.0 Hz, 17.8 | pitch none, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032012 | 5.405 to 6.195 | `7` | `7` | sure | right | 500.0 Hz, 17.8 | pitch none, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032012 | 6.390 to 7.425 | `-` | `.` | sure | added | 500.0 Hz, 17.8 | pitch none, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032012 | 7.610 to 8.640 | `-` | `1` | sure | added | 500.0 Hz, 18.5 | pitch none, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032012 | 8.840 to 9.885 | `.` | `.` | sure | right | 500.0 Hz, 18.5 | pitch none, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032012 | 10.570 to 11.125 | `L` | `L` | sure | right | 500.0 Hz, 18.5 | pitch proved, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032012 | 11.300 to 11.500 | `I` | `I` | sure | right | 500.0 Hz, 18.5 | pitch proved, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032012 | 11.655 to 11.995 | `N` | `N` | sure | right | 500.0 Hz, 18.5 | pitch proved, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032012 | 12.150 to 12.715 | `K` | `K` | sure | right | 500.0 Hz, 17.8 | pitch hypothesis, speed proved | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032012 | 12.910 to 13.195 | `S` | `S` | sure | right | 500.0 Hz, 17.8 | pitch hypothesis, speed proved | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032012 | 13.615 to 13.825 | `T` | `T` | sure | right | 500.0 Hz, 18.5 | pitch hypothesis, speed proved | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032012 | 14.020 to 14.655 | `O` | `O` | sure | right | 500.0 Hz, 18.5 | pitch hypothesis, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032012 | 15.120 to 15.415 | `A` | `A` | sure | right | 500.0 Hz, 18.5 | pitch hypothesis, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032012 | 15.610 to 16.035 | `R` | `R` | sure | right | 500.0 Hz, 18.5 | pitch hypothesis, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032012 | 16.175 to 16.385 | `T` | `T` | sure | right | 500.0 Hz, 18.5 | pitch hypothesis, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032012 | 16.575 to 16.720 | `I` | `I` | sure | right | 500.0 Hz, 18.5 | pitch hypothesis, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032012 | 16.920 to 17.585 | `C` | `C` | sure | right | 500.0 Hz, 18.5 | pitch hypothesis, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032012 | 17.770 to 18.335 | `L` | `L` | sure | right | 500.0 Hz, 18.5 | pitch hypothesis, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032012 | 18.530 to 18.600 | `E` | `E` | sure | right | 500.0 Hz, 18.5 | pitch hypothesis, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032012 | 18.750 to 19.095 | `S` | `S` | sure | right | 500.0 Hz, 18.5 | pitch hypothesis, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032012 | 19.520 to 20.175 | `O` | `O` | sure | right | 500.0 Hz, 18.5 | pitch hypothesis, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032012 | 20.370 to 20.800 | `R` | `R` | sure | right | 500.0 Hz, 18.5 | pitch hypothesis, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032012 | 21.220 to 21.910 | `O` | `O` | sure | right | 500.0 Hz, 17.8 | pitch hypothesis, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032012 | 22.095 to 22.270 | `T` | `T` | sure | right | 500.0 Hz, 17.8 | pitch hypothesis, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032012 | 22.470 to 22.900 | `H` | `H` | sure | right | 500.0 Hz, 17.8 | pitch hypothesis, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032012 | 23.080 to 23.110 | `E` | `E` | sure | right | 500.0 Hz, 17.8 | pitch hypothesis, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032012 | 23.300 to 23.720 | `R` | `R` | sure | right | 500.0 Hz, 17.8 | pitch hypothesis, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032012 | 24.145 to 24.710 | `W` | `W` | sure | right | 500.0 Hz, 17.8 | pitch hypothesis, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032012 | 24.900 to 24.975 | `E` | `E` | sure | right | 500.0 Hz, 17.8 | pitch hypothesis, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032012 | 25.135 to 25.695 | `B` | `B` | sure | right | 500.0 Hz, 17.8 | pitch hypothesis, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032012 | 25.890 to 26.185 | `S` | `S` | sure | right | 500.0 Hz, 17.8 | pitch hypothesis, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032012 | 26.385 to 26.590 | `I` | `I` | sure | right | 500.0 Hz, 18.5 | pitch hypothesis, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032012 | 26.740 to 26.950 | `T` | `T` | sure | right | 500.0 Hz, 18.5 | pitch hypothesis, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032012 | 27.135 to 27.175 | `E` | `E` | sure | right | 500.0 Hz, 18.5 | pitch hypothesis, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032012 | 27.375 to 27.670 | `S` | `S` | sure | right | 500.0 Hz, 18.5 | pitch hypothesis, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032012 | 28.085 to 28.540 | `M` | `M` | sure | right | 500.0 Hz, 18.5 | pitch hypothesis, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032012 | 28.700 to 28.765 | `E` | `E` | sure | right | 500.0 Hz, 18.5 | pitch hypothesis, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032012 | 28.965 to 29.240 | `N` | `N` | sure | right | 500.0 Hz, 18.5 | pitch hypothesis, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032012 | 29.435 to 29.625 | `T` | `T` | sure | right | 500.0 Hz, 18.5 | pitch hypothesis, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032012 | 29.800 to 30.000 | `I` | `I` | sure | right | 500.0 Hz, 18.5 | pitch hypothesis, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032050 | 2.085 to 2.295 | `I` | `I` | sure | right | 500.0 Hz, 17.8 | pitch none, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032050 | 2.445 to 2.880 | `U` | `U` | sure | right | 500.0 Hz, 17.8 | pitch none, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032050 | 3.065 to 3.640 | `L` | `L` | sure | right | 500.0 Hz, 18.5 | pitch none, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032050 | 3.785 to 4.350 | `L` | `L` | sure | right | 500.0 Hz, 18.5 | pitch none, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032050 | 4.540 to 4.615 | `E` | `E` | sure | right | 500.0 Hz, 18.5 | pitch none, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032050 | 4.785 to 4.955 | `T` | `T` | sure | right | 500.0 Hz, 18.5 | pitch none, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032050 | 5.155 to 5.305 | `I` | `I` | sure | right | 500.0 Hz, 24.0 | pitch none, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032050 | 5.505 to 5.800 | `N` | `N` | sure | right | 500.0 Hz, 18.5 | pitch none, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032050 | 6.260 to 6.900 | `C` | `C` | sure | right | 500.0 Hz, 20.0 | pitch none, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032050 | 7.095 to 7.390 | `A` | `A` | sure | right | 500.0 Hz, 22.9 | pitch none, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032050 | 7.590 to 7.875 | `N` | `N` | sure | right | 500.0 Hz, 20.0 | pitch none, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032050 | 8.295 to 8.840 | `B` | `B` | sure | right | 500.0 Hz, 18.5 | pitch none, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032050 | 9.035 to 9.105 | `E` | `E` | sure | right | 500.0 Hz, 18.5 | pitch none, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032050 | 9.535 to 10.095 | `F` | `F` | sure | right | 500.0 Hz, 18.5 | pitch none, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032050 | 10.290 to 10.925 | `O` | `O` | sure | right | 500.0 Hz, 18.5 | pitch none, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032050 | 11.120 to 11.195 | `-` | `T` | sure | added | 500.0 Hz, 34.3 | pitch none, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032050 | 11.260 to 11.545 | `U` | `A` | sure | wrong | 500.0 Hz, 34.3 | pitch none, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032050 | 11.740 to 12.025 | `N` | `N` | sure | right | 500.0 Hz, 18.5 | pitch none, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032050 | 12.220 to 12.655 | `D` | `D` | sure | right | 500.0 Hz, 17.8 | pitch none, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032050 | 13.080 to 13.280 | `I` | `I` | sure | right | 500.0 Hz, 18.5 | pitch none, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032050 | 13.440 to 13.765 | `N` | `N` | sure | right | 500.0 Hz, 18.5 | pitch none, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032050 | 14.180 to 14.315 | `T` | `T` | sure | right | 500.0 Hz, 18.5 | pitch none, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032050 | 14.520 to 14.585 | `E` | `E` | sure | right | 500.0 Hz, 18.5 | pitch none, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032050 | 14.765 to 15.295 | `L` | `L` | sure | right | 500.0 Hz, 18.5 | pitch none, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032050 | 15.485 to 15.555 | `E` | `E` | sure | right | 500.0 Hz, 18.5 | pitch none, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032050 | 15.750 to 16.375 | `P` | `W` | sure | wrong | 500.0 Hz, 18.5 | pitch none, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032050 | 16.570 to 17.005 | `R` | `R` | sure | right | 500.0 Hz, 18.5 | pitch none, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032050 | 17.200 to 17.345 | `I` | `I` | sure | right | 500.0 Hz, 18.5 | pitch none, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032050 | 17.540 to 17.745 | `N` | `T` | sure | wrong | 500.0 Hz, 17.8 | pitch none, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032050 | 18.015 to 18.215 | `T` | `T` | sure | right | 500.0 Hz, 17.8 | pitch none, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032050 | 18.360 to 18.435 | `E` | `E` | sure | right | 500.0 Hz, 17.8 | pitch none, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032050 | 18.625 to 19.050 | `R` | `R` | sure | right | 500.0 Hz, 17.8 | pitch none, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032050 | 19.245 to 20.345 | `,` | `,` | sure | right | 500.0 Hz, 18.5 | pitch none, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032050 | 21.040 to 21.735 | `P` | `P` | sure | right | 500.0 Hz, 17.8 | pitch none, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032050 | 21.890 to 22.225 | `A` | `A` | sure | right | 500.0 Hz, 17.8 | pitch none, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032050 | 23.280 to 23.800 | `K` | `K` | sure | right | 500.0 Hz, 18.5 | pitch hypothesis, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032050 | 23.995 to 24.045 | `E` | `E` | sure | right | 325.0 Hz, 28.2 | pitch hypothesis, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032050 | 25.810 to 26.130 | `D` | `H` | sure | wrong | 325.0 Hz, 21.0 | pitch hypothesis, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032050 | 26.995 to 27.085 | `I` | `I` | sure | right | 325.0 Hz, 31.4 | pitch hypothesis, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032050 | 26.995 to 27.090 | `E` | `E` | sure | right | 325.0 Hz, 16.0 | pitch hypothesis, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032113 | 1.545 to 1.690 | `A` | `A` | sure | right | 500.0 Hz, 30.0 | pitch none, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032113 | 1.890 to 2.410 | `K` | `K` | sure | right | 500.0 Hz, 28.2 | pitch none, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032113 | 2.605 to 2.675 | `E` | `E` | sure | right | 500.0 Hz, 18.5 | pitch none, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032113 | 2.875 to 3.015 | `T` | `T` | sure | right | 500.0 Hz, 22.9 | pitch none, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032113 | 4.765 to 5.040 | `A` | `A` | sure | right | 500.0 Hz, 28.2 | pitch none, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032113 | 5.240 to 5.515 | `N` | `N` | sure | right | 500.0 Hz, 28.2 | pitch none, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032113 | 5.710 to 6.135 | `D` | `O` | sure | wrong | 500.0 Hz, 30.0 | pitch none, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032113 | 6.535 to 6.740 | `I` | `I` | sure | right | 500.0 Hz, 24.0 | pitch none, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032113 | 6.905 to 7.215 | `N` | `N` | sure | right | 500.0 Hz, 24.0 | pitch none, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032113 | 7.375 to 7.555 | `T` | `T` | sure | right | 500.0 Hz, 28.2 | pitch none, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032113 | 7.750 to 7.820 | `E` | `E` | sure | right | 500.0 Hz, 28.2 | pitch none, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032113 | 7.955 to 8.375 | `R` | `R` | sure | right | 500.0 Hz, 28.2 | pitch none, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032113 | 8.560 to 8.900 | `N` | `N` | sure | right | 500.0 Hz, 28.2 | pitch none, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032113 | 9.035 to 9.105 | `E` | `E` | sure | right | 500.0 Hz, 28.2 | pitch none, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032113 | 9.300 to 9.455 | `T` | `T` | sure | right | 500.0 Hz, 28.2 | pitch none, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032113 | 10.600 to 10.670 | `E` | `E` | sure | right | 500.0 Hz, 28.2 | pitch none, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032113 | 10.865 to 11.285 | `R` | `R` | sure | right | 500.0 Hz, 16.9 | pitch none, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032113 | 11.420 to 11.760 | `S` | `S` | sure | right | 500.0 Hz, 16.9 | pitch none, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032113 | 11.925 to 12.100 | `I` | `I` | sure | right | 500.0 Hz, 17.8 | pitch none, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032113 | 12.295 to 12.955 | `O` | `O` | sure | right | 500.0 Hz, 17.8 | pitch none, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032113 | 13.150 to 13.445 | `N` | `N` | sure | right | 500.0 Hz, 17.8 | pitch none, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032113 | 13.640 to 13.940 | `S` | `S` | sure | right | 500.0 Hz, 17.8 | pitch none, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032129 | 4.110 to 4.175 | `2` | `T` | sure | wrong | 500.0 Hz, 32.0 | pitch none, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032129 | 4.110 to 4.990 | `0` | `J` | sure | wrong | 500.0 Hz, 17.8 | pitch none, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032129 | 4.110 to 4.995 | `2` | `2` | sure | right | 500.0 Hz, 25.3 | pitch none, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032129 | 5.185 to 5.850 | `6` | `6` | sure | right | 500.0 Hz, 19.2 | pitch none, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032129 | 6.490 to 7.180 | `P` | `P` | sure | right | 500.0 Hz, 25.3 | pitch none, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032129 | 7.335 to 7.810 | `R` | `G` | sure | wrong | 500.0 Hz, 28.2 | pitch none, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032129 | 7.945 to 8.645 | `O` | `O` | sure | right | 500.0 Hz, 24.0 | pitch none, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032129 | 8.840 to 9.495 | `P` | `P` | sure | right | 500.0 Hz, 19.2 | pitch none, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032129 | 9.695 to 9.990 | `A` | `A` | sure | right | 500.0 Hz, 19.2 | pitch none, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032129 | 10.190 to 10.750 | `G` | `G` | sure | right | 500.0 Hz, 18.5 | pitch none, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032129 | 10.910 to 11.245 | `A` | `A` | sure | right | 500.0 Hz, 18.5 | pitch none, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032129 | 11.400 to 11.600 | `T` | `T` | sure | right | 500.0 Hz, 18.5 | pitch none, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032129 | 11.800 to 11.940 | `I` | `I` | sure | right | 500.0 Hz, 18.5 | pitch none, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032129 | 12.140 to 12.830 | `O` | `O` | sure | right | 500.0 Hz, 17.8 | pitch none, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032129 | 12.985 to 13.315 | `N` | `N` | sure | right | 500.0 Hz, 17.8 | pitch none, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032129 | 13.720 to 14.265 | `F` | `F` | sure | right | 500.0 Hz, 18.5 | pitch none, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032129 | 14.425 to 15.100 | `O` | `O` | sure | right | 500.0 Hz, 18.5 | pitch none, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032129 | 15.295 to 15.705 | `R` | `R` | sure | right | 500.0 Hz, 18.5 | pitch none, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032129 | 15.860 to 15.935 | `E` | `E` | sure | right | 500.0 Hz, 18.5 | pitch none, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032129 | 16.130 to 16.825 | `C` | `C` | sure | right | 500.0 Hz, 17.8 | pitch none, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032129 | 16.985 to 17.320 | `A` | `A` | sure | right | 500.0 Hz, 17.8 | pitch none, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032129 | 17.475 to 17.815 | `S` | `S` | sure | right | 500.0 Hz, 17.8 | pitch none, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032129 | 17.960 to 18.175 | `T` | `T` | sure | right | 500.0 Hz, 17.8 | pitch none, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032129 | 18.600 to 19.150 | `B` | `B` | sure | right | 500.0 Hz, 17.8 | pitch none, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032129 | 19.315 to 19.775 | `U` | `U` | sure | right | 500.0 Hz, 17.8 | pitch none, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032129 | 19.910 to 20.250 | `-` | `A` | sure | added | 500.0 Hz, 17.8 | pitch none, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032129 | 20.390 to 20.460 | `L` | `E` | sure | wrong | 500.0 Hz, 17.8 | pitch none, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032129 | 20.655 to 21.195 | `L` | `L` | sure | right | 500.0 Hz, 17.8 | pitch none, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032129 | 21.330 to 21.405 | `E` | `E` | sure | right | 500.0 Hz, 17.8 | pitch none, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032129 | 21.600 to 21.800 | `T` | `T` | sure | right | 500.0 Hz, 17.8 | pitch none, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032129 | 21.940 to 22.145 | `I` | `I` | sure | right | 500.0 Hz, 17.8 | pitch none, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032129 | 22.335 to 22.615 | `N` | `N` | sure | right | 500.0 Hz, 17.8 | pitch none, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032129 | 23.030 to 23.350 | `A` | `A` | sure | right | 500.0 Hz, 17.8 | pitch none, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032129 | 23.515 to 23.945 | `R` | `R` | sure | right | 500.0 Hz, 17.8 | pitch none, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032129 | 24.135 to 24.685 | `L` | `L` | sure | right | 500.0 Hz, 17.8 | pitch none, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032129 | 24.835 to 25.535 | `P` | `P` | sure | right | 500.0 Hz, 18.5 | pitch none, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032129 | 25.735 to 26.875 | `0` | `0` | sure | right | 500.0 Hz, 18.5 | pitch none, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032129 | 27.070 to 27.850 | `3` | `3` | sure | right | 500.0 Hz, 18.5 | pitch none, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-08-22-032129 | 28.045 to 28.735 | `4` | `4` | sure | right | 500.0 Hz, 18.5 | pitch none, speed hypothesis | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-09-24-004108 | 14.800 to 15.285 | `K` | `K` | sure | right | 625.0 Hz, 21.8 | pitch hypothesis, speed proved | 15.50 s, 625.0 Hz, 21.8 | no | yes | `K` | 5.0 | `K` | sure
+ letter | real | unadjudicated/cw-2026-09-24-004133 | 6.885 to 7.265 | `D` | `D` | sure | right | 625.0 Hz, 21.8 | pitch hypothesis, speed proved | 7.50 s, 625.0 Hz, 21.8 | no | yes | `D` | 25.0 | `D` | sure
+ letter | real | unadjudicated/cw-2026-09-24-004205 | 23.720 to 24.425 | `Y` | `Y` | sure | right | 625.0 Hz, 21.8 | pitch hypothesis, speed proved | 24.50 s, 625.0 Hz, 21.8 | no | yes | `Y` | 5.0 | `Y` | sure
+ letter | real | unadjudicated/cw-2026-09-24-004205 | 27.040 to 27.640 | `O` | `O` | sure | right | 625.0 Hz, 21.8 | pitch hypothesis, speed proved | 28.00 s, 625.0 Hz, 21.8 | no | yes | `O` | 5.0 | `O` | sure
+ letter | real | unadjudicated/cw-2026-09-24-004205 | 28.310 to 28.680 | `D` | `D` | sure | right | 630.0 Hz, 21.8 | pitch hypothesis, speed proved | never | no | no | - | - | - | -
+ letter | real | unadjudicated/cw-2026-09-24-004234 | 2.320 to 2.910 | `O` | `O` | sure | right | 625.0 Hz, 21.8 | pitch none, speed hypothesis | 5.00 s, 630.0 Hz, 21.8 | yes | no | - | 30.0 | `O` | sure
+ letter | real | unadjudicated/cw-2026-09-24-004234 | 5.515 to 5.670 | `T` | `T` | sure | right | 625.0 Hz, 21.8 | pitch hypothesis, speed proved | 6.00 s, 625.0 Hz, 21.8 | no | yes | `T` | 25.0 | `T` | sure
+ letter | real | unadjudicated/cw-2026-09-24-004234 | 5.960 to 6.335 | `H` | `H` | sure | right | 630.0 Hz, 21.8 | pitch hypothesis, speed proved | 6.50 s, 630.0 Hz, 21.8 | no | yes | `H` | 30.0 | `H` | sure
+ letter | real | unadjudicated/cw-2026-09-24-004322 | 1.145 to 1.730 | `P` | `P` | sure | right | 600.0 Hz, 21.8 | pitch none, speed hypothesis | 4.50 s, 625.0 Hz, 21.8 | yes | no | - | 25.0 | `P` | sure
+ letter | real | unadjudicated/cw-2026-09-24-004322 | 2.115 to 2.705 | `O` | `O` | sure | right | 625.0 Hz, 21.8 | pitch none, speed hypothesis | 4.50 s, 625.0 Hz, 21.8 | yes | no | - | 25.0 | `O` | sure
+ letter | real | unadjudicated/cw-2026-09-24-004322 | 3.550 to 3.820 | `S` | `S` | sure | right | 625.0 Hz, 21.8 | pitch hypothesis, speed proved | 4.50 s, 625.0 Hz, 21.8 | yes | yes | `S` | 25.0 | `S` | sure
+ letter | real | unadjudicated/cw-2026-09-24-004322 | 15.245 to 15.865 | `O` | `O` | sure | right | 625.0 Hz, 21.8 | pitch hypothesis, speed hypothesis | 18.00 s, 625.0 Hz, 21.8 | no | no | - | 5.0 | `O` | sure
+ letter | real | unadjudicated/cw-2026-09-24-004322 | 24.625 to 25.110 | `L` | `L` | sure | right | 625.0 Hz, 21.8 | pitch hypothesis, speed proved | 25.50 s, 625.0 Hz, 21.8 | no | yes | `L` | 5.0 | `L` | sure
+ letter | real | unadjudicated/cw-2026-09-24-004347 | 3.575 to 3.725 | `I` | `I` | sure | right | 625.0 Hz, 21.8 | pitch hypothesis, speed proved | 4.00 s, 625.0 Hz, 20.9 | no | yes | `I` | 25.0 | `I` | sure
+ letter | real | unadjudicated/cw-2026-09-24-004347 | 3.915 to 4.410 | `L` | `L` | sure | right | 625.0 Hz, 21.8 | pitch hypothesis, speed proved | 4.50 s, 625.0 Hz, 20.9 | no | yes | `L` | 25.0 | `L` | sure
+ letter | real | unadjudicated/cw-2026-09-24-004347 | 7.070 to 7.440 | `U` | `U` | sure | right | 625.0 Hz, 20.9 | pitch hypothesis, speed proved | 7.50 s, 625.0 Hz, 20.9 | no | yes | `U` | 25.0 | `U` | sure
+ letter | real | unadjudicated/cw-2026-09-24-004347 | 13.265 to 13.860 | `O` | `O` | sure | right | 625.0 Hz, 21.8 | pitch hypothesis, speed proved | 14.00 s, 625.0 Hz, 21.8 | no | yes | `O` | 5.0 | `O` | sure
+ letter | real | unadjudicated/cw-2026-09-24-004347 | 14.550 to 14.820 | `A` | `A` | sure | right | 625.0 Hz, 21.8 | pitch hypothesis, speed proved | 16.50 s, 625.0 Hz, 21.8 | no | no | - | 5.0 | `A` | sure
+ letter | real | unadjudicated/cw-2026-09-24-004347 | 17.695 to 18.190 | `L` | `L` | sure | right | 620.0 Hz, 21.8 | pitch hypothesis, speed proved | 18.50 s, 620.0 Hz, 21.8 | no | yes | `L` | 5.0 | `L` | sure
+ letter | real | unadjudicated/cw-2026-09-24-004347 | 18.700 to 19.280 | `-` | `O` | sure | added | 620.0 Hz, 21.8 | pitch hypothesis, speed proved | 21.00 s, 625.0 Hz, 21.8 | no | no | - | 5.0 | `O` | sure
+ letter | real | unadjudicated/cw-2026-09-24-004347 | 20.175 to 20.655 | `W` | `W` | sure | right | 625.0 Hz, 21.8 | pitch hypothesis, speed proved | 21.00 s, 625.0 Hz, 21.8 | no | yes | `W` | 5.0 | `W` | sure
+ letter | real | unadjudicated/cw-2026-09-24-004427 | 6.850 to 7.115 | `A` | `A` | sure | right | 620.0 Hz, 21.8 | pitch hypothesis, speed proved | 7.50 s, 620.0 Hz, 21.8 | no | yes | `A` | 20.0 | `A` | sure
+ letter | real | unadjudicated/cw-2026-09-24-004427 | 7.460 to 7.615 | `T` | `T` | sure | right | 625.0 Hz, 21.8 | pitch hypothesis, speed proved | 8.00 s, 625.0 Hz, 21.8 | no | yes | `T` | 25.0 | `T` | sure
+ letter | real | unadjudicated/cw-2026-09-24-004427 | 7.925 to 8.510 | `O` | `O` | sure | right | 625.0 Hz, 21.8 | pitch hypothesis, speed proved | 11.50 s, 630.0 Hz, 21.8 | no | no | - | 30.0 | `O` | sure
+ letter | real | unadjudicated/cw-2026-09-24-004427 | 8.720 to 9.090 | `R` | `R` | sure | right | 625.0 Hz, 21.8 | pitch hypothesis, speed proved | 11.50 s, 630.0 Hz, 21.8 | no | no | - | 30.0 | `R` | sure
+ letter | real | unadjudicated/cw-2026-09-24-004427 | 11.600 to 12.295 | `Q` | `Q` | sure | right | 610.0 Hz, 21.8 | pitch hypothesis, speed proved | 12.50 s, 610.0 Hz, 21.8 | no | yes | `Q` | 20.0 | `Q` | sure
+ letter | real | unadjudicated/cw-2026-09-24-004427 | 12.490 to 12.780 | `S` | `S` | sure | right | 615.0 Hz, 21.8 | pitch hypothesis, speed proved | 13.00 s, 615.0 Hz, 21.8 | no | yes | `S` | 15.0 | `S` | sure
+ letter | real | unadjudicated/cw-2026-09-24-004427 | 12.970 to 13.485 | `L` | `L` | sure | right | 615.0 Hz, 21.8 | pitch hypothesis, speed proved | 17.00 s, 600.0 Hz, 20.0 | no | no | - | 30.0 | `L` | sure
+ letter | real | unadjudicated/cw-2026-09-24-004427 | 13.965 to 14.105 | `T` | `T` | sure | right | 615.0 Hz, 20.9 | pitch hypothesis, speed proved | 17.00 s, 600.0 Hz, 20.0 | no | no | - | 30.0 | `T` | sure
+ letter | real | unadjudicated/cw-2026-09-24-004427 | 14.425 to 14.710 | `N` | `N` | sure | right | 615.0 Hz, 20.9 | pitch hypothesis, speed proved | 17.00 s, 600.0 Hz, 20.0 | no | no | - | 30.0 | `N` | sure
+ letter | real | unadjudicated/cw-2026-09-24-004510 | 17.700 to 18.145 | `K` | `K` | sure | right | 595.0 Hz, 21.8 | pitch hypothesis, speed hypothesis | 20.50 s, 605.0 Hz, 22.9 | no | no | - | 10.0 | `K` | sure
+ letter | real | unadjudicated/cw-2026-09-24-004510 | 18.375 to 18.620 | `A` | `A` | sure | right | 595.0 Hz, 22.9 | pitch hypothesis, speed hypothesis | 20.50 s, 605.0 Hz, 22.9 | no | no | - | 10.0 | `A` | sure
+ letter | real | unadjudicated/cw-2026-09-24-004510 | 25.190 to 25.440 | `A` | `A` | sure | right | 600.0 Hz, 24.0 | pitch hypothesis, speed hypothesis | 27.50 s, 600.0 Hz, 24.0 | no | no | - | 5.0 | `A` | sure
+ letter | real | unadjudicated/cw-2026-09-24-004510 | 25.635 to 25.885 | `A` | `A` | sure | right | 600.0 Hz, 24.0 | pitch hypothesis, speed hypothesis | 27.50 s, 600.0 Hz, 24.0 | no | no | - | 5.0 | `A` | sure
+ letter | real | unadjudicated/cw-2026-09-24-004510 | 26.060 to 26.705 | `3` | `3` | sure | right | 600.0 Hz, 24.0 | pitch hypothesis, speed proved | 27.50 s, 600.0 Hz, 24.0 | no | yes | `3` | 5.0 | `3` | sure
+ letter | real | unadjudicated/cw-2026-09-24-004510 | 26.890 to 27.135 | `S` | `S` | sure | right | 600.0 Hz, 24.0 | pitch hypothesis, speed proved | 27.50 s, 600.0 Hz, 24.0 | no | yes | `S` | 5.0 | `S` | sure
+ letter | set | recording | span s | sent | HEAD emitted | HEAD class | against key | read at (mix Hz, WPM) | states at emission | first both proved after it (read s, pitch Hz, WPM) | first in recording | unsettled then | HEAD's edge then | window mix off proved, max Hz | re-read at proved | re-read class
+ letter | synthetic | cq-12wpm-15db | 1.015 to 2.110 | `C` | `C` | sure | right | 625.0 Hz, 12.0 | pitch none, speed hypothesis | 11.50 s, 615.0 Hz, 12.0 | yes | no | - | 15.0 | `C` | sure
+ letter | synthetic | cq-12wpm-15db | 2.420 to 3.710 | `Q` | `Q` | sure | right | 625.0 Hz, 12.0 | pitch none, speed hypothesis | 11.50 s, 615.0 Hz, 12.0 | yes | no | - | 15.0 | `Q` | sure
+ letter | synthetic | cq-12wpm-15db | 4.420 to 5.515 | `C` | `C` | sure | right | 625.0 Hz, 12.0 | pitch none, speed hypothesis | 11.50 s, 615.0 Hz, 12.0 | yes | no | - | 15.0 | `C` | sure
+ letter | synthetic | cq-12wpm-15db | 5.820 to 7.110 | `Q` | `Q` | sure | right | 625.0 Hz, 12.0 | pitch none, speed hypothesis | 11.50 s, 615.0 Hz, 12.0 | yes | no | - | 15.0 | `Q` | sure
+ letter | synthetic | cq-12wpm-15db | 7.820 to 8.910 | `C` | `C` | sure | right | 625.0 Hz, 12.0 | pitch none, speed hypothesis | 11.50 s, 615.0 Hz, 12.0 | yes | no | - | 15.0 | `C` | sure
+ letter | synthetic | cq-12wpm-15db | 9.215 to 10.510 | `Q` | `Q` | sure | right | 625.0 Hz, 12.0 | pitch hypothesis, speed proved | 11.50 s, 615.0 Hz, 12.0 | yes | yes | `Q` | 15.0 | `Q` | sure
+ letter | synthetic | cq-12wpm-15db | 11.215 to 11.910 | `D` | `D` | sure | right | 615.0 Hz, 12.0 | pitch hypothesis, speed proved | 19.50 s, 610.0 Hz, 12.0 | no | no | - | 15.0 | `D` | sure
+ letter | synthetic | cq-12wpm-15db | 12.220 to 12.310 | `E` | `E` | sure | right | 615.0 Hz, 12.0 | pitch hypothesis, speed proved | 19.50 s, 610.0 Hz, 12.0 | no | no | - | 15.0 | `E` | sure
+ letter | synthetic | cq-12wpm-15db | 13.020 to 13.510 | `N` | `N` | sure | right | 615.0 Hz, 12.0 | pitch hypothesis, speed hypothesis | 19.50 s, 610.0 Hz, 12.0 | no | no | - | 15.0 | `N` | sure
+ letter | synthetic | cq-12wpm-15db | 13.820 to 15.710 | `0` | `0` | sure | right | 615.0 Hz, 12.0 | pitch hypothesis, speed hypothesis | 19.50 s, 610.0 Hz, 12.0 | no | no | - | 15.0 | `0` | sure
+ letter | synthetic | cq-12wpm-15db | 16.020 to 17.110 | `C` | `C` | sure | right | 615.0 Hz, 12.0 | pitch hypothesis, speed hypothesis | 19.50 s, 610.0 Hz, 12.0 | no | no | - | 15.0 | `C` | sure
+ letter | synthetic | cq-12wpm-15db | 17.420 to 17.910 | `A` | `A` | sure | right | 615.0 Hz, 12.0 | pitch hypothesis, speed hypothesis | 19.50 s, 610.0 Hz, 12.0 | no | no | - | 15.0 | `A` | sure
+ letter | synthetic | cq-12wpm-15db | 19.420 to 20.310 | `L` | `L` | sure | right | 615.0 Hz, 12.0 | pitch hypothesis, speed proved | 20.50 s, 615.0 Hz, 12.0 | no | yes | `L` | 10.0 | `L` | sure
+ letter | synthetic | cq-12wpm-15db | 21.020 to 21.510 | `N` | `N` | sure | right | 615.0 Hz, 12.0 | pitch hypothesis, speed proved | 27.50 s, 615.0 Hz, 12.0 | no | no | - | 5.0 | `N` | sure
+ letter | synthetic | cq-12wpm-15db | 21.815 to 23.710 | `0` | `0` | sure | right | 615.0 Hz, 12.0 | pitch hypothesis, speed hypothesis | 27.50 s, 615.0 Hz, 12.0 | no | no | - | 5.0 | `0` | sure
+ letter | synthetic | cq-12wpm-15db | 24.020 to 25.110 | `C` | `C` | sure | right | 615.0 Hz, 12.0 | pitch hypothesis, speed hypothesis | 27.50 s, 615.0 Hz, 12.0 | no | no | - | 5.0 | `C` | sure
+ letter | synthetic | cq-12wpm-15db | 25.420 to 25.910 | `A` | `A` | sure | right | 615.0 Hz, 12.0 | pitch hypothesis, speed hypothesis | 27.50 s, 615.0 Hz, 12.0 | no | no | - | 5.0 | `A` | sure
+ letter | synthetic | cq-12wpm-15db | 27.420 to 28.310 | `L` | `L` | sure | right | 610.0 Hz, 12.0 | pitch hypothesis, speed proved | 28.50 s, 610.0 Hz, 12.0 | no | yes | `L` | 5.0 | `L` | sure
+ letter | synthetic | cq-12wpm-15db | 29.015 to 29.910 | `K` | `K` | sure | right | 600.0 Hz, 12.0 | pitch hypothesis, speed proved | never | no | no | - | - | - | -
+ letter | synthetic | cq-12wpm-5db | 1.025 to 2.110 | `C` | `C` | sure | right | 625.0 Hz, 12.0 | pitch none, speed hypothesis | 11.50 s, 615.0 Hz, 12.0 | yes | no | - | 15.0 | `C` | sure
+ letter | synthetic | cq-12wpm-5db | 2.420 to 3.710 | `Q` | `Q` | sure | right | 625.0 Hz, 11.7 | pitch none, speed hypothesis | 11.50 s, 615.0 Hz, 12.0 | yes | no | - | 15.0 | `Q` | sure
+ letter | synthetic | cq-12wpm-5db | 4.420 to 5.510 | `C` | `C` | sure | right | 625.0 Hz, 12.0 | pitch none, speed hypothesis | 11.50 s, 615.0 Hz, 12.0 | yes | no | - | 15.0 | `C` | sure
+ letter | synthetic | cq-12wpm-5db | 5.820 to 7.110 | `Q` | `Q` | sure | right | 625.0 Hz, 12.0 | pitch none, speed hypothesis | 11.50 s, 615.0 Hz, 12.0 | yes | no | - | 15.0 | `Q` | sure
+ letter | synthetic | cq-12wpm-5db | 7.820 to 8.915 | `C` | `C` | sure | right | 625.0 Hz, 12.0 | pitch none, speed hypothesis | 11.50 s, 615.0 Hz, 12.0 | yes | no | - | 15.0 | `C` | sure
+ letter | synthetic | cq-12wpm-5db | 9.215 to 10.510 | `Q` | `Q` | sure | right | 625.0 Hz, 12.0 | pitch hypothesis, speed proved | 11.50 s, 615.0 Hz, 12.0 | yes | yes | `Q` | 15.0 | `Q` | sure
+ letter | synthetic | cq-12wpm-5db | 11.220 to 11.910 | `D` | `D` | sure | right | 615.0 Hz, 12.0 | pitch hypothesis, speed proved | 19.50 s, 610.0 Hz, 11.7 | no | no | - | 15.0 | `D` | sure
+ letter | synthetic | cq-12wpm-5db | 12.220 to 12.305 | `E` | `E` | sure | right | 615.0 Hz, 12.0 | pitch hypothesis, speed proved | 19.50 s, 610.0 Hz, 11.7 | no | no | - | 15.0 | `E` | sure
+ letter | synthetic | cq-12wpm-5db | 13.020 to 13.510 | `N` | `N` | sure | right | 615.0 Hz, 12.0 | pitch hypothesis, speed hypothesis | 19.50 s, 610.0 Hz, 11.7 | no | no | - | 15.0 | `N` | sure
+ letter | synthetic | cq-12wpm-5db | 13.820 to 15.710 | `0` | `0` | sure | right | 615.0 Hz, 12.0 | pitch hypothesis, speed hypothesis | 19.50 s, 610.0 Hz, 11.7 | no | no | - | 15.0 | `0` | sure
+ letter | synthetic | cq-12wpm-5db | 16.020 to 17.115 | `C` | `C` | sure | right | 615.0 Hz, 12.0 | pitch hypothesis, speed hypothesis | 19.50 s, 610.0 Hz, 11.7 | no | no | - | 15.0 | `C` | sure
+ letter | synthetic | cq-12wpm-5db | 17.420 to 17.905 | `A` | `A` | sure | right | 615.0 Hz, 12.0 | pitch hypothesis, speed hypothesis | 19.50 s, 610.0 Hz, 11.7 | no | no | - | 15.0 | `A` | sure
+ letter | synthetic | cq-12wpm-5db | 19.415 to 20.310 | `L` | `L` | sure | right | 615.0 Hz, 12.0 | pitch hypothesis, speed proved | 20.50 s, 615.0 Hz, 11.7 | no | yes | `L` | 10.0 | `L` | sure
+ letter | synthetic | cq-12wpm-5db | 21.025 to 21.510 | `N` | `N` | sure | right | 615.0 Hz, 11.7 | pitch hypothesis, speed proved | 28.00 s, 615.0 Hz, 12.0 | no | no | - | 5.0 | `N` | sure
+ letter | synthetic | cq-12wpm-5db | 21.820 to 23.700 | `0` | `0` | sure | right | 615.0 Hz, 12.0 | pitch hypothesis, speed hypothesis | 28.00 s, 615.0 Hz, 12.0 | no | no | - | 5.0 | `0` | sure
+ letter | synthetic | cq-12wpm-5db | 24.020 to 25.100 | `C` | `C` | sure | right | 615.0 Hz, 12.0 | pitch hypothesis, speed hypothesis | 28.00 s, 615.0 Hz, 12.0 | no | no | - | 5.0 | `C` | sure
+ letter | synthetic | cq-12wpm-5db | 25.420 to 25.910 | `A` | `A` | sure | right | 615.0 Hz, 12.0 | pitch hypothesis, speed hypothesis | 28.00 s, 615.0 Hz, 12.0 | no | no | - | 5.0 | `A` | sure
+ letter | synthetic | cq-12wpm-5db | 27.420 to 28.310 | `L` | `L` | sure | right | 615.0 Hz, 12.0 | pitch hypothesis, speed proved | 28.50 s, 615.0 Hz, 12.0 | no | yes | `L` | 5.0 | `L` | sure
+ letter | synthetic | cq-12wpm-5db | 29.020 to 29.910 | `K` | `K` | sure | right | 615.0 Hz, 12.0 | pitch hypothesis, speed proved | never | no | no | - | - | - | -
+ letter | synthetic | cq-18wpm-15db | 1.020 to 1.745 | `C` | `C` | sure | right | 625.0 Hz, 17.8 | pitch none, speed hypothesis | 4.00 s, 625.0 Hz, 17.8 | yes | no | - | 25.0 | `C` | sure
+ letter | synthetic | cq-18wpm-15db | 3.285 to 4.010 | `C` | `C` | sure | right | 625.0 Hz, 17.8 | pitch hypothesis, speed proved | 4.50 s, 615.0 Hz, 17.8 | no | yes | `C` | 15.0 | `C` | sure
+ letter | synthetic | cq-18wpm-15db | 8.485 to 8.545 | `E` | `E` | sure | right | 615.0 Hz, 18.5 | pitch hypothesis, speed proved | 9.00 s, 615.0 Hz, 17.8 | no | yes | `E` | 15.0 | `E` | sure
+ letter | synthetic | cq-18wpm-15db | 9.015 to 9.345 | `N` | `N` | sure | right | 600.0 Hz, 18.5 | pitch hypothesis, speed proved | 9.50 s, 600.0 Hz, 18.5 | no | yes | `N` | 25.0 | `N` | sure
+ letter | synthetic | cq-18wpm-15db | 9.550 to 10.810 | `0` | `0` | sure | right | 600.0 Hz, 17.8 | pitch hypothesis, speed proved | 11.50 s, 625.0 Hz, 17.8 | no | yes | `0` | 25.0 | `0` | sure
+ letter | synthetic | cq-18wpm-15db | 14.350 to 14.675 | `N` | `N` | sure | right | 625.0 Hz, 18.5 | pitch hypothesis, speed proved | 15.00 s, 625.0 Hz, 17.8 | no | yes | `N` | 25.0 | `N` | sure
+ letter | synthetic | cq-18wpm-15db | 14.885 to 16.145 | `0` | `0` | sure | right | 625.0 Hz, 18.5 | pitch hypothesis, speed proved | 17.00 s, 625.0 Hz, 18.5 | no | yes | `0` | 25.0 | `0` | sure
+ letter | synthetic | cq-18wpm-15db | 16.350 to 17.080 | `C` | `C` | sure | right | 625.0 Hz, 18.5 | pitch hypothesis, speed proved | 20.50 s, 600.0 Hz, 18.5 | no | no | - | 25.0 | `C` | sure
+ letter | synthetic | cq-18wpm-15db | 17.280 to 17.610 | `A` | `A` | sure | right | 625.0 Hz, 18.5 | pitch hypothesis, speed proved | 20.50 s, 600.0 Hz, 18.5 | no | no | - | 25.0 | `A` | sure
+ letter | synthetic | cq-18wpm-15db | 17.815 to 18.410 | `L` | `L` | sure | right | 625.0 Hz, 18.5 | pitch hypothesis, speed proved | 20.50 s, 600.0 Hz, 18.5 | no | no | - | 25.0 | `L` | sure
+ letter | synthetic | cq-18wpm-5db | 1.955 to 2.810 | `Q` | `Q` | sure | right | 625.0 Hz, 18.5 | pitch none, speed proved | 4.50 s, 615.0 Hz, 18.5 | yes | no | - | 15.0 | `Q` | sure
+ letter | synthetic | cq-18wpm-5db | 3.285 to 4.000 | `C` | `C` | sure | right | 625.0 Hz, 18.5 | pitch hypothesis, speed proved | 4.50 s, 615.0 Hz, 18.5 | yes | yes | `C` | 15.0 | `C` | sure
+ letter | synthetic | cq-18wpm-5db | 6.485 to 7.325 | `Q` | `Q` | sure | right | 625.0 Hz, 18.5 | pitch hypothesis, speed proved | 7.50 s, 625.0 Hz, 18.5 | no | yes | `Q` | 25.0 | `Q` | sure
+ letter | synthetic | cq-18wpm-5db | 8.500 to 8.545 | `E` | `E` | sure | right | 615.0 Hz, 18.5 | pitch hypothesis, speed proved | 9.00 s, 615.0 Hz, 18.5 | no | yes | `E` | 15.0 | `E` | sure
+ letter | synthetic | cq-18wpm-5db | 9.015 to 9.340 | `N` | `N` | sure | right | 625.0 Hz, 18.5 | pitch hypothesis, speed proved | 9.50 s, 625.0 Hz, 18.5 | no | yes | `N` | 25.0 | `N` | sure
+ letter | synthetic | cq-18wpm-5db | 9.550 to 10.810 | `0` | `0` | sure | right | 615.0 Hz, 18.5 | pitch hypothesis, speed proved | 11.00 s, 615.0 Hz, 18.5 | no | yes | `0` | 15.0 | `0` | sure
+ letter | synthetic | cq-18wpm-5db | 13.285 to 13.875 | `L` | `L` | sure | right | 620.0 Hz, 17.8 | pitch hypothesis, speed proved | 14.00 s, 620.0 Hz, 18.5 | no | yes | `L` | 5.0 | `L` | sure
+ letter | synthetic | cq-18wpm-5db | 14.350 to 14.680 | `N` | `N` | sure | right | 620.0 Hz, 17.8 | pitch hypothesis, speed proved | 17.50 s, 625.0 Hz, 17.8 | no | no | - | 10.0 | `N` | sure
+ letter | synthetic | cq-18wpm-5db | 16.355 to 17.075 | `C` | `C` | sure | right | 625.0 Hz, 17.8 | pitch hypothesis, speed proved | 17.50 s, 625.0 Hz, 17.8 | no | yes | `6` | 10.0 | `6` | sure
+ letter | synthetic | cq-18wpm-5db | 17.290 to 17.610 | `A` | `A` | sure | right | 625.0 Hz, 17.8 | pitch hypothesis, speed proved | 20.00 s, 600.0 Hz, 17.8 | no | no | - | 25.0 | `A` | sure
+ letter | synthetic | cq-18wpm-5db | 17.820 to 18.410 | `L` | `L` | sure | right | 625.0 Hz, 17.8 | pitch hypothesis, speed proved | 20.00 s, 600.0 Hz, 17.8 | no | no | - | 25.0 | `L` | sure
+ letter | synthetic | cq-25wpm-15db | 1.015 to 1.540 | `C` | `C` | sure | right | 625.0 Hz, 24.0 | pitch none, speed hypothesis | 3.50 s, 625.0 Hz, 24.0 | yes | no | - | 25.0 | `C` | sure
+ letter | synthetic | cq-25wpm-15db | 3.320 to 3.940 | `Q` | `Q` | sure | right | 620.0 Hz, 24.0 | pitch hypothesis, speed proved | 4.00 s, 620.0 Hz, 24.0 | no | yes | `Q` | 20.0 | `Q` | sure
+ letter | synthetic | cq-25wpm-15db | 7.160 to 8.065 | `0` | `0` | sure | right | 615.0 Hz, 24.0 | pitch hypothesis, speed proved | 8.50 s, 615.0 Hz, 24.0 | no | yes | `0` | 15.0 | `0` | sure
+ letter | synthetic | cq-25wpm-15db | 8.220 to 8.740 | `C` | `C` | sure | right | 615.0 Hz, 24.0 | pitch hypothesis, speed proved | 10.50 s, 615.0 Hz, 24.0 | no | no | - | 15.0 | `C` | sure
+ letter | synthetic | cq-25wpm-15db | 10.620 to 10.850 | `N` | `N` | sure | right | 625.0 Hz, 24.0 | pitch hypothesis, speed proved | 11.00 s, 625.0 Hz, 24.0 | no | yes | `N` | 25.0 | `N` | sure
+ letter | synthetic | cq-25wpm-5db | 1.035 to 1.540 | `C` | `C` | sure | right | 625.0 Hz, 26.7 | pitch none, speed hypothesis | 3.50 s, 625.0 Hz, 26.7 | yes | no | - | 25.0 | `C` | sure
+ letter | synthetic | cq-25wpm-5db | 4.960 to 5.575 | `Q` | `Q` | sure | right | 625.0 Hz, 26.7 | pitch hypothesis, speed proved | 6.00 s, 625.0 Hz, 25.3 | no | yes | `Q` | 25.0 | `Q` | sure
+ letter | synthetic | cq-25wpm-5db | 5.920 to 6.240 | `D` | `D` | sure | right | 615.0 Hz, 26.7 | pitch hypothesis, speed proved | 6.50 s, 615.0 Hz, 26.7 | no | yes | `D` | 15.0 | `D` | sure
+ letter | synthetic | cq-25wpm-5db | 6.400 to 6.430 | `E` | `E` | sure | right | 615.0 Hz, 26.7 | pitch hypothesis, speed proved | 6.50 s, 615.0 Hz, 26.7 | no | yes | `E` | 15.0 | `E` | sure
+ letter | synthetic | cq-25wpm-5db | 8.895 to 9.115 | `A` | `A` | sure | right | 615.0 Hz, 25.3 | pitch hypothesis, speed proved | 9.50 s, 615.0 Hz, 25.3 | no | yes | `A` | 15.0 | `A` | sure
+ letter | synthetic | cq-25wpm-5db | 9.275 to 9.700 | `L` | `L` | sure | right | 615.0 Hz, 25.3 | pitch hypothesis, speed proved | 10.00 s, 615.0 Hz, 25.3 | no | yes | `L` | 15.0 | `L` | sure
+ letter | synthetic | cq-25wpm-5db | 9.850 to 10.275 | `L` | `L` | sure | right | 615.0 Hz, 25.3 | pitch hypothesis, speed proved | 13.00 s, 615.0 Hz, 25.3 | no | no | - | 15.0 | `L` | sure
+ letter | synthetic | cq-25wpm-5db | 10.620 to 10.845 | `N` | `N` | sure | right | 615.0 Hz, 25.3 | pitch hypothesis, speed proved | 13.00 s, 615.0 Hz, 25.3 | no | no | - | 15.0 | `N` | sure
+ letter | synthetic | cq-25wpm-5db | 13.120 to 13.535 | `L` | `L` | sure | right | 615.0 Hz, 25.3 | pitch hypothesis, speed proved | 14.00 s, 615.0 Hz, 25.3 | no | yes | `L` | 10.0 | `L` | sure
+ letter | synthetic | cq-25wpm-5db | 13.690 to 14.115 | `L` | `L` | sure | right | 620.0 Hz, 25.3 | pitch hypothesis, speed proved | 14.50 s, 620.0 Hz, 25.3 | no | yes | `L` | 5.0 | `L` | sure
+ letter | synthetic | cq-18wpm-15db-char5 | 1.015 to 1.745 | `C` | `C` | sure | right | 625.0 Hz, 17.8 | pitch none, speed hypothesis | 6.00 s, 615.0 Hz, 17.8 | yes | no | - | 15.0 | `C` | sure
+ letter | synthetic | cq-18wpm-15db-char5 | 2.085 to 2.945 | `Q` | `Q` | sure | right | 625.0 Hz, 17.8 | pitch none, speed hypothesis | 6.00 s, 615.0 Hz, 17.8 | yes | no | - | 15.0 | `Q` | sure
+ letter | synthetic | cq-18wpm-15db-char5 | 3.415 to 4.145 | `C` | `C` | sure | right | 625.0 Hz, 17.8 | pitch none, speed hypothesis | 6.00 s, 615.0 Hz, 17.8 | yes | no | - | 15.0 | `C` | sure
+ letter | synthetic | cq-18wpm-15db-char5 | 5.815 to 6.545 | `C` | `C` | sure | right | 615.0 Hz, 17.8 | pitch hypothesis, speed proved | 8.50 s, 625.0 Hz, 17.8 | no | no | - | 25.0 | `C` | sure
+ letter | synthetic | cq-18wpm-15db-char5 | 6.885 to 7.745 | `Q` | `Q` | sure | right | 615.0 Hz, 17.8 | pitch hypothesis, speed proved | 8.50 s, 625.0 Hz, 17.8 | no | yes | `Q` | 25.0 | `Q` | sure
+ letter | synthetic | cq-18wpm-15db-char5 | 9.550 to 9.880 | `N` | `N` | sure | right | 600.0 Hz, 17.8 | pitch hypothesis, speed proved | 10.00 s, 600.0 Hz, 17.8 | no | yes | `N` | 25.0 | `N` | sure
+ letter | synthetic | cq-18wpm-15db-char5 | 10.215 to 11.480 | `0` | `0` | sure | right | 600.0 Hz, 17.8 | pitch hypothesis, speed proved | 14.00 s, 650.0 Hz, 17.8 | no | no | - | 50.0 | `0` | sure
+ letter | synthetic | cq-18wpm-15db-char5 | 15.550 to 15.880 | `N` | `N` | sure | right | 625.0 Hz, 17.8 | pitch hypothesis, speed proved | 16.00 s, 625.0 Hz, 17.8 | no | yes | `N` | 25.0 | `N` | sure
+ letter | synthetic | cq-18wpm-15db-char5 | 16.215 to 17.480 | `0` | `0` | sure | right | 625.0 Hz, 18.5 | pitch hypothesis, speed proved | 18.00 s, 615.0 Hz, 18.5 | no | yes | `0` | 35.0 | `0` | sure
+ letter | synthetic | cq-18wpm-15db-char5 | 17.820 to 18.545 | `C` | `C` | sure | right | 615.0 Hz, 18.5 | pitch hypothesis, speed proved | 21.00 s, 615.0 Hz, 18.5 | no | no | - | 35.0 | `C` | sure
+ letter | synthetic | cq-18wpm-15db-char5 | 18.885 to 19.210 | `A` | `A` | sure | right | 615.0 Hz, 17.8 | pitch hypothesis, speed proved | 21.00 s, 615.0 Hz, 18.5 | no | no | - | 35.0 | `A` | sure
+ letter | synthetic | cq-18wpm-15db-char5 | 21.550 to 22.145 | `K` | `K` | sure | right | 615.0 Hz, 18.5 | pitch hypothesis, speed proved | 22.50 s, 615.0 Hz, 18.5 | no | yes | `K` | 35.0 | `K` | sure
+ letter | synthetic | cq-18wpm-5db-char5 | 1.020 to 1.745 | `C` | `C` | sure | right | 625.0 Hz, 17.8 | pitch none, speed hypothesis | 6.00 s, 615.0 Hz, 17.8 | yes | no | - | 15.0 | `C` | sure
+ letter | synthetic | cq-18wpm-5db-char5 | 2.095 to 2.940 | `Q` | `Q` | sure | right | 625.0 Hz, 17.1 | pitch none, speed hypothesis | 6.00 s, 615.0 Hz, 17.8 | yes | no | - | 15.0 | `Q` | sure
+ letter | synthetic | cq-18wpm-5db-char5 | 3.420 to 4.140 | `C` | `C` | sure | right | 625.0 Hz, 17.8 | pitch none, speed hypothesis | 6.00 s, 615.0 Hz, 17.8 | yes | no | - | 15.0 | `C` | sure
+ letter | synthetic | cq-18wpm-5db-char5 | 9.555 to 9.745 | `-` | `T` | sure | added | 625.0 Hz, 18.5 | pitch hypothesis, speed proved | 10.00 s, 625.0 Hz, 18.5 | no | yes | `T` | 25.0 | `T` | sure
+ letter | synthetic | cq-18wpm-5db-char5 | 11.045 to 11.475 | `-` | `K` | sure | added | 625.0 Hz, 18.5 | pitch hypothesis, speed proved | 12.00 s, 625.0 Hz, 18.5 | no | yes | `K` | 25.0 | `K` | sure
+ letter | synthetic | cq-18wpm-5db-char5 | 16.220 to 17.455 | `0` | `0` | sure | right | 615.0 Hz, 18.5 | pitch hypothesis, speed proved | 17.50 s, 615.0 Hz, 17.8 | no | yes | `0` | 15.0 | `0` | sure
+ letter | synthetic | cq-18wpm-5db-char5 | 18.890 to 19.215 | `A` | `A` | sure | right | 615.0 Hz, 17.8 | pitch hypothesis, speed proved | 20.00 s, 600.0 Hz, 17.8 | no | yes | `A` | 25.0 | `A` | sure
+ letter | synthetic | cq-18wpm-5db-char5 | 20.485 to 21.075 | `L` | `L` | sure | right | 625.0 Hz, 17.8 | pitch hypothesis, speed proved | 21.50 s, 625.0 Hz, 17.8 | no | yes | `L` | 25.0 | `L` | sure
+ letter | synthetic | cq-18wpm-5db-char5 | 21.550 to 22.140 | `K` | `K` | sure | right | 625.0 Hz, 17.8 | pitch hypothesis, speed proved | never | no | no | - | - | - | -
+ reach | set | condition | key | unsettled at proof | of them at the recording's first proof | wrong to right | right to wrong | right to right | wrong to wrong | sure to dim | dim to sure | letters added | letters lost
+ reach | real | real HF, no CH-* profile, SNR_2500 not measured, sender TX-FARNS (CW_SPEC.md 6.4 and 10, HM-DEC-115's traffic net) | inferred | 6 | 0 | 0 | 0 | 6 | 0 | 0 | 0 | 0 | 0
+ reach | real | real HF, no CH-* profile, SNR_2500 not measured, sender TX-ITU (CW_SPEC.md 10, the KD0UN capture) | inferred | 1 | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 1
+ reach | real | real HF, no CH-* profile, SNR_2500 not measured, sender not stated in CW_SPEC.md | inferred | 26 | 2 | 0 | 0 | 26 | 0 | 0 | 0 | 0 | 0
+ reach | real | all | inferred | 33 | 2 | 0 | 1 | 32 | 0 | 0 | 0 | 0 | 1
+ out of reach | set | condition | key | settled before proof | sure right | sure wrong or added | dim | never proved after it | of them, what an unbounded re-read would give: wrong to right | right to wrong | outside the window at proof
+ out of reach | real | real HF, no CH-* profile, SNR_2500 not measured, sender TX-FARNS (CW_SPEC.md 6.4 and 10, HM-DEC-115's traffic net) | inferred | 26 | 26 | 0 | 0 | 0 | 0 | 0 | 1
+ out of reach | real | real HF, no CH-* profile, SNR_2500 not measured, sender TX-ITU (CW_SPEC.md 10, the KD0UN capture) | inferred | 7 | 7 | 0 | 0 | 0 | 0 | 0 | 0
+ out of reach | real | real HF, no CH-* profile, SNR_2500 not measured, sender TX-TIGHT (CW_SPEC.md 10, HM-DEC-101) | inferred | 5 | 5 | 0 | 0 | 0 | 0 | 0 | 0
+ out of reach | real | real HF, no CH-* profile, SNR_2500 not measured, sender not stated in CW_SPEC.md | inferred | 251 | 222 | 29 | 0 | 214 | 1 | 0 | 3
+ out of reach | real | all | inferred | 289 | 260 | 29 | 0 | 214 | 1 | 0 | 4
+ reach | set | condition | key | unsettled at proof | of them at the recording's first proof | wrong to right | right to wrong | right to right | wrong to wrong | sure to dim | dim to sure | letters added | letters lost
+ reach | synthetic | synthetic, no fading, shaped noise band (not shown to be CH-AWGN), TX-ITU (1:3:1:3:7), 15 dB in the passband (not restated in the 2500 Hz reference) | exact | 12 | 1 | 0 | 0 | 12 | 0 | 0 | 0 | 0 | 0
+ reach | synthetic | synthetic, no fading, shaped noise band (not shown to be CH-AWGN), TX-ITU (1:3:1:3:7), 5 dB in the passband (not restated in the 2500 Hz reference) | exact | 17 | 2 | 0 | 1 | 16 | 0 | 0 | 0 | 0 | 0
+ reach | synthetic | synthetic, no fading, shaped noise band (not shown to be CH-AWGN), character gap 5 units, inside TX-FARNS's 3 to 7, 15 dB in the passband (not restated in the 2500 Hz reference) | exact | 5 | 0 | 0 | 0 | 5 | 0 | 0 | 0 | 0 | 0
+ reach | synthetic | synthetic, no fading, shaped noise band (not shown to be CH-AWGN), character gap 5 units, inside TX-FARNS's 3 to 7, 5 dB in the passband (not restated in the 2500 Hz reference) | exact | 5 | 0 | 0 | 0 | 3 | 2 | 0 | 0 | 0 | 0
+ reach | synthetic | all | exact | 39 | 3 | 0 | 1 | 36 | 2 | 0 | 0 | 0 | 0
+ out of reach | set | condition | key | settled before proof | sure right | sure wrong or added | dim | never proved after it | of them, what an unbounded re-read would give: wrong to right | right to wrong | outside the window at proof
+ out of reach | synthetic | synthetic, no fading, shaped noise band (not shown to be CH-AWGN), TX-ITU (1:3:1:3:7), 15 dB in the passband (not restated in the 2500 Hz reference) | exact | 22 | 22 | 0 | 0 | 1 | 0 | 0 | 0
+ out of reach | synthetic | synthetic, no fading, shaped noise band (not shown to be CH-AWGN), TX-ITU (1:3:1:3:7), 5 dB in the passband (not restated in the 2500 Hz reference) | exact | 23 | 23 | 0 | 0 | 1 | 0 | 0 | 0
+ out of reach | synthetic | synthetic, no fading, shaped noise band (not shown to be CH-AWGN), character gap 5 units, inside TX-FARNS's 3 to 7, 15 dB in the passband (not restated in the 2500 Hz reference) | exact | 7 | 7 | 0 | 0 | 0 | 0 | 0 | 0
+ out of reach | synthetic | synthetic, no fading, shaped noise band (not shown to be CH-AWGN), character gap 5 units, inside TX-FARNS's 3 to 7, 5 dB in the passband (not restated in the 2500 Hz reference) | exact | 4 | 4 | 0 | 0 | 1 | 0 | 0 | 0
+ out of reach | synthetic | all | exact | 56 | 56 | 0 | 0 | 3 | 0 | 0 | 0
+ 449 | recording | at s | sent | emitted | found | unsettled at proof | first both proved after it | re-read at proved
+ 449 | unadjudicated/cw-2026-08-22-032012 | 1.765 | `O` | `T` | yes | no | never | -
+ 449 | unadjudicated/cw-2026-08-22-032012 | 7.425 | `-` | `.` | yes | no | never | -
+ 449 | unadjudicated/cw-2026-08-22-032012 | 8.640 | `-` | `1` | yes | no | never | -
+ 449 | unadjudicated/cw-2026-08-22-032050 | 11.195 | `-` | `T` | yes | no | never | -
+ 449 | unadjudicated/cw-2026-08-22-032050 | 11.545 | `U` | `A` | yes | no | never | -
+ 449 | unadjudicated/cw-2026-08-22-032050 | 16.375 | `P` | `W` | yes | no | never | -
+ 449 | unadjudicated/cw-2026-08-22-032050 | 17.745 | `N` | `T` | yes | no | never | -
+ 449 | unadjudicated/cw-2026-08-22-032113 | 6.135 | `D` | `O` | yes | no | never | -
+ 449 | unadjudicated/cw-2026-08-22-032129 | 4.175 | `2` | `T` | yes | no | never | -
+ 449 | unadjudicated/cw-2026-08-22-032129 | 4.990 | `0` | `J` | yes | no | never | -
+ 449 | unadjudicated/cw-2026-08-22-032129 | 7.810 | `R` | `G` | yes | no | never | -
+ 449 | unadjudicated/cw-2026-08-22-032129 | 20.250 | `-` | `A` | yes | no | never | -
+ 449 | unadjudicated/cw-2026-08-22-032129 | 20.460 | `L` | `E` | yes | no | never | -
+ 470 | recording | at s | sent | emitted | class | unsettled at proof | first both proved after it | re-read at proved
+ 470 | unadjudicated/cw-2026-09-23-173723 | 28.970 | `6` | `7` | wrong | no | never | -
+ 470 | unadjudicated/cw-2026-09-23-173723 | 29.195 | `R` | `E` | wrong | no | never | -
+ 470 | unadjudicated/cw-2026-09-23-173723 | 30.000 | `D` | `I` | wrong | no | never | -
+ 470 | unadjudicated/cw-2026-08-18-003758 | 10.640 | `A` | `E` | wrong | no | 14.00 s | `4`
+ 470 | unadjudicated/cw-2026-08-18-003758 | 10.740 | `A` | `E` | wrong | no | 14.00 s | `4`
+ 470 | unadjudicated/cw-2026-08-18-003758 | 10.940 | `4` | `T` | wrong | no | 14.00 s | `4`
+ 470 | unadjudicated/cw-2026-08-22-031838 | 8.675 | `2` | `T` | wrong | no | never | -
+ 470 | unadjudicated/cw-2026-08-22-031838 | 9.685 | `,` | `T` | wrong | no | never | -
+ 470 | unadjudicated/cw-2026-08-22-031838 | 17.290 | `T` | `A` | wrong | no | never | -
+ 470 | unadjudicated/cw-2026-08-22-031838 | 24.185 | `R` | `T` | wrong | no | never | -
+ 470 | unadjudicated/cw-2026-08-22-031838 | 24.410 | `E` | `T` | wrong | no | never | -
+ 470 | unadjudicated/cw-2026-08-22-031905 | 13.590 | `E` | `K` | wrong | no | 18.00 s | ``
+ 470 | unadjudicated/cw-2026-08-22-031905 | 19.610 | `U` | `A` | wrong | no | never | -
+ 470 | unadjudicated/cw-2026-08-22-031948 | 4.690 | `1` | `5` | wrong | no | never | -
+ 470 | unadjudicated/cw-2026-08-22-032012 | 1.765 | `O` | `T` | wrong | no | never | -
+ 470 | unadjudicated/cw-2026-08-22-032012 | 7.425 | `-` | `.` | added | no | never | -
+ 470 | unadjudicated/cw-2026-08-22-032012 | 8.640 | `-` | `1` | added | no | never | -
+ 470 | unadjudicated/cw-2026-08-22-032050 | 11.195 | `-` | `T` | added | no | never | -
+ 470 | unadjudicated/cw-2026-08-22-032050 | 11.545 | `U` | `A` | wrong | no | never | -
+ 470 | unadjudicated/cw-2026-08-22-032050 | 16.375 | `P` | `W` | wrong | no | never | -
+ 470 | unadjudicated/cw-2026-08-22-032050 | 17.745 | `N` | `T` | wrong | no | never | -
+ 470 | unadjudicated/cw-2026-08-22-032050 | 26.130 | `D` | `H` | wrong | no | never | -
+ 470 | unadjudicated/cw-2026-08-22-032113 | 6.135 | `D` | `O` | wrong | no | never | -
+ 470 | unadjudicated/cw-2026-08-22-032129 | 4.175 | `2` | `T` | wrong | no | never | -
+ 470 | unadjudicated/cw-2026-08-22-032129 | 4.990 | `0` | `J` | wrong | no | never | -
+ 470 | unadjudicated/cw-2026-08-22-032129 | 7.810 | `R` | `G` | wrong | no | never | -
+ 470 | unadjudicated/cw-2026-08-22-032129 | 20.250 | `-` | `A` | added | no | never | -
+ 470 | unadjudicated/cw-2026-08-22-032129 | 20.460 | `L` | `E` | wrong | no | never | -
+ 470 | unadjudicated/cw-2026-09-24-004347 | 19.280 | `-` | `O` | added | no | 21.00 s | `O`
+ total | real | sure over the scored stretches 436, wrong or added 33 (cross-check against TheRequirementsAreMeasuredTests) | letters emitted while acquiring 322 (322 sure, 29 of them wrong or added) | unsettled at the first proof after them 33 (0 sure wrong or added) | settled before it 75 | never proved after them 214
+ total | synthetic | sure over the scored stretches 173, wrong or added 14 (cross-check against TheRequirementsAreMeasuredTests) | letters emitted while acquiring 95 (95 sure, 2 of them wrong or added) | unsettled at the first proof after them 39 (2 sure wrong or added) | settled before it 53 | never proved after them 3
+ total | 470's sure wrong or added inside acquiring, real | 29 | unsettled at proof 0 | settled before proof 5 | never proved after them 24
+
+
+
+Test Run Successful.
+Total tests: 1
+     Passed: 1
+ Total time: 1.0991 Minutes
+RC=0 WALL=66s
