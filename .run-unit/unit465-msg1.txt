@@ -1,0 +1,36 @@
+unit465 task 1: where the two readings meet - both decoders on one clock, paired by span, counted per condition; span rule, vote table and margin fixed before any arbitrated text (9.6)
+
+WhereTheTwoReadingsMeetFact.BothReadingsOnOneClock, a printer, serving HM-REQ-120 and
+125 to 127; printout .run-unit/unit465-meet.txt. Nothing under src changed.
+
+Fixed here, before any arbitrated text was seen (V-14):
+- Span rule (DECIDED (2)): two characters, one of each decoder, are on the same span
+  where their spans overlap by at least half the shorter span on the recording's clock;
+  one to one, the largest overlap first; word boundaries are not paired.
+- Vote table (DECIDED (3)): calibration.md section 2's held-out verdicts (unit 464,
+  efdd5d11); a decoder votes only where calibrated (HM-REQ-124): ours on real HF, all;
+  real HF, sender not stated; synthetic, all; synthetic TX-ITU 15 dB; the port on none.
+  Harness: a recording runs under its own condition row. Live: real HF, all.
+- Margin (DECIDED (5)): 0.05 on |p ours - p port|, HM-REQ-127's recommended value, held
+  until the owner rules; a tie is a disagreement's case.
+
+The clock: ours ends at CwCharacter.At and starts SpanHops x 5 ms before it; the port's
+span from its up events on the decision rows they were raised in, less the filter's
+512-sample lag. On 410 agreements the port less ours is -0.008 s at the start and
++0.005 s at the end (medians). The harness feeds the port the whole file through
+FldigiRateAdapter at the pitch instrument's median (BothDecodersAreScoredAlikeTests.Both).
+
+Counts, real HF all (inferred keys): agree 290, disagree 113, tie 16, one-sided ours 438,
+one-sided port 48. Synthetic all (exact keys): 120, 16, 2, 37, 32. On disagreements and
+ties the port's p is higher on 17 of 129 real and 0 of 18 synthetic.
+
+The port's frequency is readonly and constructor-set (FldigiCwDecoder.cs:281, 342): it
+follows a pitch change only by re-construction.
+
+Five at exit: build 0 errors; engine line 178 of 178; app line 276 of 278 with 2 lost to
+the dispatcher loop, rerun 275 of 278 with 3 others lost to it, each lost type run alone
+and passing (BindingHealthTests 1/1, TheFavoritesAreChipsTests 4/4,
+TheFavoritesAreUnderTheGreenZoneTests 3/3, ThePsk31ConversationCardTests 8/8); named
+13 of 13, captures 51 of 51, adjudicated 13 of 13.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
