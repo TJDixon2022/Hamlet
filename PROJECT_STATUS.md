@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 2 of 4
+TASK: 4 of 4
 WORK_INSTRUCTION: 460 - the three named floors settled on the owner's answer, and step 2's commits kept green
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-26T19:50:16-04:00
-NOTE: Task 1 committed, named 13 of 13 and the five green; task 2 applying 459's pair speed to the working tree to trace which windows it helped and which it broke
+UPDATED: 2026-09-26T20:18:44-04:00
+NOTE: Task 2 committed - no pair-rule mechanism separates helped from broken, task 3 not run; task 4 exit round starting with the build
 
 ---
 

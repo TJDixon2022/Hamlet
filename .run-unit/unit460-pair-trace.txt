@@ -1,0 +1,908 @@
+UNIT 460 TASK 2 (2.5, HM-REQ-010, HM-REQ-129) - WHERE 459'S PAIR SPEED HELPED AND WHERE IT BROKE
+
+Nothing under src is committed. 6a0b65a1's src diff was applied to the working tree only
+(.run-unit/unit460-pair-diff.patch), and src was restored from HEAD with git checkout. `git diff -- src`
+printed nothing afterwards (.run-unit/unit460-pairapply.sh prints it).
+
+HOW IT WAS READ
+- The printer is WhereThePairSpeedMovedTheUnitTests.EveryReadOnTheNamedRecordings. It needs no src change.
+  It drives our decoder hop by hop as the metrics do, keeping every read of the stream: 399 reads over
+  the seven recordings, one every 0.5 s over a 12 s window. At each read it applies 6a0b65a1's
+  CwUnitEstimator.PairUnit, copied line for line, and keeps every pair it took and every mark it passed
+  over as a spike. Every settled letter is aligned to its key by TheRequirementsAreMeasuredTests.Measure.
+- It was run twice, at HEAD (.run-unit/unit460-pair-head.txt) and with the diff applied
+  (.run-unit/unit460-pair-diff.txt), and the two runs were joined read by read
+  (.run-unit/unit460-pairjoin.sh).
+- SAMENESS: 399 of 399. On every read, the stream's own speed with the diff applied equals what the copied
+  rule predicts: the pair speed where the rule moves, and HEAD's speed where it does not. So every pair
+  printed below is the one the refused change used.
+- UNIT BEFORE is the path's unit at HEAD, after the marks' overrule. UNIT AFTER is the stream's unit with
+  the diff. MARKS IMPLY is CwUnitEstimator.MarkUnit over the window's marks.
+- KEY UNIT is the median, over the letters either run settled sure and right inside the window, of each
+  letter's own span (first mark to last, from the read it settled at) over the units of its pattern
+  (dit and inner gap 1, dah 3). A letter the key confirms was read element for element, so its span is
+  the sender's timing whatever speed the path had. EVERY KEY IS INFERRED (V-13). Where the window holds
+  no such letter, the direction is not given.
+- Samples are at 48000 Hz; each pair is printed in ms and in samples. One hop is 5 ms.
+
+FLDIGI AT 61b97f41 (.run-unit/fldigi, src/cw_rtty/cw.cxx unless named)
+- Seed. The constructor sets two_dots from the operator's speed, and the spike threshold at a quarter of
+  it (317-324). init() resets the tracking filter and runs it once with 2 x cw_send_dot_length, so the
+  16-slot average is filled with the operator's speed before any mark arrives (272-273). A change of
+  speed or of tracking resets the filter and two_dots to the send speed (481-487).
+- Averaging. Cmovavg (src/filters/filters.cxx:273-291) fills every slot with its first value only when
+  empty, and after that each value replaces the oldest of TRACKING_FILTER_SIZE = 16 (src/include/cw.h:70).
+  Once seeded, one pair moves two_dots by a sixteenth of its difference from the average.
+  cw_receive_speed = KWPM / (two_dots / 2) (501-502).
+- Spikes. cw_noise_spike_threshold = cw_receive_dot_length / 2 (515). A key-down shorter than that is
+  dropped before it can pair, and it does not become last_element (818-822). Because of the seed, this
+  is live from the first mark.
+- Pair acceptance. The current element must be more than 2 and less than 4 times the last, or the
+  reverse (832-843). update_tracking refuses a pair whose lengths are more than 4 apart, either element
+  under KWPM/200 (6 ms), or its dah over 3 x KWPM/5 (720 ms) (524-531), then runs the filter (533).
+  last_element is every non-spike element, across letter gaps too (844).
+- Classing. A dot is anything up to two_dots, a dash anything longer (846-855). update_tracking does not
+  ask how either element of a pair was classed.
+
+WHAT 6a0b65a1 DOES DIFFERENTLY, from its own code
+- The average is rebuilt from nothing on every read, over one 12 s window. It is filled with the
+  window's FIRST pair, which then holds 16 - (pairs - 1) of the 16 slots at the end. No seed is taken.
+- So until the first pair arrives the spike rule is off. After it, the threshold is half that pair's
+  dot.
+- Its pair test, its bounds and its average step are fldigi's.
+
+THE WINDOWS, one line each, then every window in full. 81 reads were moved, all over a scored stretch.
+Of those, 35 moved toward the key's unit, 16 away, and 30 had no sure-right letter in the window.
+
+  helped (the letters that turned right under the diff)
+    003758  r18-19   40.0 -> 22.0 WPM; key 49.8 ms (24.1 WPM); TOWARD; 21 pairs, first pair 55/155 holding
+            0 slots -> `A` and `4` of AA4MP: E E T to A 4
+    031838  r11-15   22.8-28.2 -> 16.5-17.0 WPM; no key letter in the window; 6-8 pairs, first pair 65/220
+            holding 9-11 slots -> the `2` read right (not sure), and the T read wrong there is gone
+    031838  r18-53   24.8-34.3 -> 16.1-21.6 WPM; key 61.1-62.3 ms (19.3-19.6 WPM); toward on 13 of the 14
+            with a key letter (r35 away); 9-25 pairs, first pair holding 0-8 slots
+    032113  r8-19    24-30 -> 16-19.5 WPM; key 55.0-60.4 ms (19.9-21.8 WPM); 13-21 pairs, first pair 30/85
+            holding 0-4 slots -> `D` (O to D) and `V` (placeholder to V) of AND and VERSIONS
+    032050  r20-21, r44  30-34 -> 17.9-18.1 WPM; key 60.7-62.7 ms (19.1-19.8 WPM); 21-22 pairs, 0 slots
+            -> `U` of FOUND, `C` of PACKET
+  broke
+    031948  r18-20   17.8-18.5 -> 8.2-8.6 WPM; key 61 ms (19.6 WPM); AWAY; 5-6 pairs, first pair 220/455
+            holding 11-12 slots -> `,` of 110, to a 20-element placeholder
+    031905  r3-7     17.8-18.5 -> 12.7-14.1 WPM; key 57.0-60.7 ms (19.8-21.1 WPM) where one is read; AWAY;
+            3-8 pairs, first pair 80/305 holding 9-14 slots -> PREDICTED to PLDICTED
+    004507  r21-22   32-37 -> 20.0-20.4 WPM; key 51.8 ms (23.2 WPM); TOWARD; 20-22 pairs, first pair
+            65-70/170 holding 0 slots -> the E of EACH read I
+    032050  r49-56   21-37 -> 11.0-15.9 WPM; key 61-63 ms (19.1-19.6 WPM); AWAY; 10-17 pairs, first
+            pair 85-155 holding 0-7 slots, with 150/320, 160/435, 130/305, 180/445 and 190/445 among them
+            -> PA■ KE    H IE S TSSI I reads PACKE   [H] E SEEIE: an I read right at 27.09 s is an E
+            read wrong, and the H read wrong at 26.13 s is kept, not sure
+
+THE DIFFERENCE, AS A MECHANISM
+- PAIR ACCEPTANCE does not separate them. Every pair in the broken windows passes fldigi's own test:
+  2 to 4 times apart, over 6 ms, dah under 720 ms (cw.cxx:524-531, 832-843). So there is no pair this
+  rule accepts that fldigi's would not. The pairs that pull the broken reads slow put a mark of 300 to
+  470 ms as their long element: 220/455, 80/305, 150/320, 130/305, 160/435, 180/445, 190/445. At the
+  key's 61 ms that is five to seven and a half units, longer than any single element. One such pair
+  also sits in a helped read (031838 r52, 210/470), outvoted there by 24 others. Those marks come from our trigger joining
+  elements across a short key-up, upstream of the rule. fldigi's update_tracking would take them too,
+  because it does not ask how either element was classed.
+- A COUNT, or the fill that stands in for fldigi's seed, does not separate them either. This is where
+  6a0b65a1 departs from fldigi: the window's first pair fills the average where fldigi's seed does, and
+  it keeps 16 - (n - 1) slots.
+  - It amplifies the merged first pairs of 031948 (11-12 slots) and 031905 (9-14 slots).
+  - It amplifies the first pairs of the helped reads just as much: 031838 r4-r19 hold 7-13 slots of
+    65/220, and 032113 r43-r56 hold 8-10 slots of 60-85/180-215.
+  - 004507's E and 032050's reads 49 and 52 broke with 0 or 1 slots held, where the fill is gone and
+    only the pairs themselves decide.
+  A rule that seeded the average as fldigi does would therefore undo part of 031838's help along with
+  031948 and 031905. It would leave 004507 and 032050's later reads as they are.
+- The same pairs, at comparable counts, move helped and broken windows alike. What differs is how many of
+  a window's marks are joined elements (032050's later reads, 031948, 031905), and in 004507's case a
+  Farnsworth sender read nearer its own speed breaking a letter the faster path had read right. Neither
+  is a mechanism of the pair rule. A limit on either would be a constant picked from these seven
+  recordings, which the instruction forbids.
+
+VERDICT: NO MECHANISM OF THE PAIR RULE SEPARATES THE HELPED WINDOWS FROM THE BROKEN ONES. No second
+form is registered. Task 3 is not run, and unit 460 counts as step 2's first of three units with no
+kept change (2.4's count 0 to 1).
+
+For the next author, a finding and not a rule: the broken moves rest on marks of five units or more
+that our trigger makes by joining elements. fldigi's own tracker gives such a mark one sixteenth of a
+vote because it is continuous and seeded, not because it refuses it.
+
+================================================================================================
+ONE LINE PER MOVED WINDOW (recording rREAD | unit before -> after | marks' unit | key's unit | direction | pairs | first pair || letters that changed there)
+003758 r7 | 37.5 ms (32.0 WPM) -> 52.0 ms (23.1 WPM) | marks marks imply 46.2 ms | key key - ms | no key letter in the window | 15 pairs of 34 marks, 2 | first first pair 35/105 ms holding 2 slots || 
+003758 r8 | 37.5 ms (32.0 WPM) -> 52.7 ms (22.8 WPM) | marks marks imply 44.7 ms | key key - ms | no key letter in the window | 16 pairs of 37 marks, 2 | first first pair 35/105 ms holding 1 slots || 
+003758 r9 | 37.5 ms (32.0 WPM) -> 49.6 ms (24.2 WPM) | marks marks imply 44.7 ms | key key - ms | no key letter in the window | 16 pairs of 42 marks, 1 | first first pair 30/100 ms holding 1 slots || 
+003758 r11 | 37.5 ms (32.0 WPM) -> 56.0 ms (21.4 WPM) | marks marks imply 41.8 ms | key key - ms | no key letter in the window | 16 pairs of 49 marks, 5 | first first pair 65/160 ms holding 1 slots || 
+003758 r12 | 47.5 ms (25.3 WPM) -> 59.9 ms (20.0 WPM) | marks marks imply 45.5 ms | key key - ms | no key letter in the window | 16 pairs of 52 marks, 6 | first first pair 60/160 ms holding 1 slots || 
+003758 r14 | 47.5 ms (25.3 WPM) -> 60.6 ms (19.8 WPM) | marks marks imply 47.4 ms | key key - ms | no key letter in the window | 19 pairs of 59 marks, 7 | first first pair 60/160 ms holding 0 slots || 
+003758 r16 | 45.0 ms (26.7 WPM) -> 58.1 ms (20.6 WPM) | marks marks imply 48.2 ms | key key 49.5 ms | AWAY from the key | 23 pairs of 66 marks, 9 | first first pair 60/155 ms holding 0 slots || 
+003758 r18 | 30.0 ms (40.0 WPM) -> 54.5 ms (22.0 WPM) | marks marks imply 25.8 ms | key key 49.8 ms | TOWARD the key | 21 pairs of 67 marks, 8 | first first pair 55/155 ms holding 0 slots || ; DIFF  A .- @10.250s Sure key=A right (stretch 0)
+003758 r19 | 30.0 ms (40.0 WPM) -> 54.5 ms (22.0 WPM) | marks marks imply 26.5 ms | key key 49.8 ms | TOWARD the key | 21 pairs of 69 marks, 8 | first first pair 55/155 ms holding 0 slots || ; HEAD  E . @10.640s Sure key=A wrong (stretch 0); HEAD  E . @10.740s Sure key=A wrong (stretch 0); HEAD  T - @10.940s Sure key=4 wrong (stretch 0); DIFF  4 ....- @10.940s Sure key=4 right (stretch 0)
+031838 r4 | 55.0 ms (21.8 WPM) -> 70.1 ms (17.1 WPM) | marks marks imply 55.5 ms | key key - ms | no key letter in the window | 5 pairs of 16 marks, 0 | first first pair 65/225 ms holding 12 slots || 
+031838 r6 | 55.0 ms (21.8 WPM) -> 70.0 ms (17.1 WPM) | marks marks imply 52.0 ms | key key - ms | no key letter in the window | 5 pairs of 23 marks, 1 | first first pair 65/225 ms holding 12 slots || 
+031838 r7 | 35.0 ms (34.3 WPM) -> 70.9 ms (16.9 WPM) | marks marks imply 37.1 ms | key key - ms | no key letter in the window | 5 pairs of 26 marks, 3 | first first pair 65/225 ms holding 12 slots || 
+031838 r8 | 35.0 ms (34.3 WPM) -> 73.0 ms (16.4 WPM) | marks marks imply 39.3 ms | key key - ms | no key letter in the window | 4 pairs of 29 marks, 3 | first first pair 65/225 ms holding 13 slots || 
+031838 r9 | 55.0 ms (21.8 WPM) -> 72.0 ms (16.7 WPM) | marks marks imply 52.7 ms | key key - ms | no key letter in the window | 4 pairs of 29 marks, 2 | first first pair 65/220 ms holding 13 slots || 
+031838 r10 | 53.4 ms (22.5 WPM) -> 72.0 ms (16.7 WPM) | marks marks imply 53.4 ms | key key - ms | no key letter in the window | 4 pairs of 33 marks, 4 | first first pair 65/220 ms holding 13 slots || 
+031838 r11 | 42.5 ms (28.2 WPM) -> 72.6 ms (16.5 WPM) | marks marks imply 52.7 ms | key key - ms | no key letter in the window | 6 pairs of 35 marks, 4 | first first pair 65/220 ms holding 11 slots || 
+031838 r12 | 52.7 ms (22.8 WPM) -> 72.0 ms (16.7 WPM) | marks marks imply 52.7 ms | key key - ms | no key letter in the window | 6 pairs of 38 marks, 5 | first first pair 65/220 ms holding 11 slots || 
+031838 r13 | 52.5 ms (22.9 WPM) -> 72.0 ms (16.7 WPM) | marks marks imply 52.7 ms | key key - ms | no key letter in the window | 6 pairs of 40 marks, 5 | first first pair 65/220 ms holding 11 slots || 
+031838 r14 | 52.5 ms (22.9 WPM) -> 71.6 ms (16.8 WPM) | marks marks imply 52.0 ms | key key - ms | no key letter in the window | 7 pairs of 43 marks, 5 | first first pair 65/220 ms holding 10 slots || ; DIFF  2 ..--- @8.345s NotSure key=2 right (stretch 0)
+031838 r15 | 52.7 ms (22.8 WPM) -> 70.5 ms (17.0 WPM) | marks marks imply 52.7 ms | key key - ms | no key letter in the window | 8 pairs of 46 marks, 5 | first first pair 65/220 ms holding 9 slots || ; HEAD  T - @8.675s Sure key=2 wrong (stretch 0)
+031838 r16 | 45.0 ms (26.7 WPM) -> 70.5 ms (17.0 WPM) | marks marks imply 51.2 ms | key key - ms | no key letter in the window | 8 pairs of 49 marks, 5 | first first pair 65/220 ms holding 9 slots || 
+031838 r17 | 45.0 ms (26.7 WPM) -> 70.1 ms (17.1 WPM) | marks marks imply 51.2 ms | key key - ms | no key letter in the window | 9 pairs of 51 marks, 5 | first first pair 65/220 ms holding 8 slots || 
+031838 r18 | 42.5 ms (28.2 WPM) -> 70.1 ms (17.1 WPM) | marks marks imply 48.3 ms | key key 61.7 ms | TOWARD the key | 9 pairs of 55 marks, 6 | first first pair 65/220 ms holding 8 slots || ; HEAD  T - @9.685s Sure key=, wrong (stretch 0)
+031838 r19 | 42.5 ms (28.2 WPM) -> 70.2 ms (17.1 WPM) | marks marks imply 48.3 ms | key key 61.7 ms | TOWARD the key | 10 pairs of 58 marks, 6 | first first pair 65/220 ms holding 7 slots || 
+031838 r20 | 45.2 ms (26.6 WPM) -> 64.5 ms (18.6 WPM) | marks marks imply 45.2 ms | key key 62.2 ms | TOWARD the key | 11 pairs of 62 marks, 7 | first first pair 65/220 ms holding 6 slots || ; HEAD  2 ..--- @11.030s Sure key=2 right (stretch 0); DIFF  2 ..--- @11.030s Sure key=2 right (stretch 0)
+031838 r21 | 45.0 ms (26.7 WPM) -> 62.1 ms (19.3 WPM) | marks marks imply 41.2 ms | key key 62.2 ms | TOWARD the key | 13 pairs of 63 marks, 7 | first first pair 65/220 ms holding 4 slots || 
+031838 r27 | 45.0 ms (26.7 WPM) -> 60.3 ms (19.9 WPM) | marks marks imply 37.1 ms | key key 61.7 ms | TOWARD the key | 13 pairs of 62 marks, 7 | first first pair 65/185 ms holding 4 slots || 
+031838 r29 | 43.9 ms (27.4 WPM) -> 55.9 ms (21.5 WPM) | marks marks imply 43.9 ms | key key 61.1 ms | TOWARD the key | 20 pairs of 67 marks, 4 | first first pair 30/95 ms holding 0 slots || ; HEAD  ■ ....--- @15.550s Placeholder key=2 placeholder (stretch 0); DIFF  ■ ...--- @15.550s Placeholder key=2 placeholder (stretch 0)
+031838 r30 | 44.5 ms (26.9 WPM) -> 56.3 ms (21.3 WPM) | marks marks imply 44.5 ms | key key 61.1 ms | TOWARD the key | 18 pairs of 64 marks, 4 | first first pair 30/100 ms holding 0 slots || 
+031838 r31 | 43.9 ms (27.4 WPM) -> 55.6 ms (21.6 WPM) | marks marks imply 43.9 ms | key key 61.4 ms | TOWARD the key | 16 pairs of 68 marks, 3 | first first pair 30/100 ms holding 1 slots || ; HEAD  W .-- @16.530s Sure key=W right (stretch 0); DIFF  W .-- @16.530s Sure key=W right (stretch 0); DIFF  I .. @16.895s Sure key=I right (stretch 0)
+031838 r32 | 42.5 ms (28.2 WPM) -> 59.2 ms (20.3 WPM) | marks marks imply 40.0 ms | key key 61.4 ms | TOWARD the key | 18 pairs of 69 marks, 6 | first first pair 40/155 ms holding 0 slots || ; HEAD  I .. @16.895s Sure key=I right (stretch 0); HEAD  A .- @17.290s Sure key=T wrong (stretch 0); DIFF  A .- @17.290s Sure key=T wrong (stretch 0)
+031838 r34 | 40.0 ms (30.0 WPM) -> 69.4 ms (17.3 WPM) | marks marks imply 40.0 ms | key key 61.4 ms | TOWARD the key | 15 pairs of 71 marks, 13 | first first pair 85/225 ms holding 2 slots || 
+031838 r35 | 54.5 ms (22.0 WPM) -> 70.7 ms (17.0 WPM) | marks marks imply 40.0 ms | key key 61.7 ms | AWAY from the key | 15 pairs of 73 marks, 16 | first first pair 90/215 ms holding 2 slots || ; HEAD  A .- @18.640s Sure key=A right (stretch 0); DIFF  A .- @18.640s Sure key=A right (stretch 0)
+031838 r46 | 35.0 ms (34.3 WPM) -> 64.3 ms (18.7 WPM) | marks marks imply 34.6 ms | key key 62.1 ms | TOWARD the key | 20 pairs of 71 marks, 9 | first first pair 80/200 ms holding 0 slots || ; HEAD  T - @24.185s Sure key=R wrong (stretch 0); HEAD  T - @24.410s Sure key=E wrong (stretch 0)
+031838 r52 | 48.3 ms (24.8 WPM) -> 68.5 ms (17.5 WPM) | marks marks imply 48.3 ms | key key 62.2 ms | TOWARD the key | 25 pairs of 67 marks, 2 | first first pair 25/65 ms holding 0 slots || 
+031838 r53 | 45.2 ms (26.6 WPM) -> 74.7 ms (16.1 WPM) | marks marks imply 45.2 ms | key key 62.3 ms | TOWARD the key | 21 pairs of 66 marks, 11 | first first pair 80/290 ms holding 0 slots || 
+032113 r8 | 42.5 ms (28.2 WPM) -> 61.4 ms (19.5 WPM) | marks marks imply 49.0 ms | key key 55.0 ms | TOWARD the key | 13 pairs of 26 marks, 2 | first first pair 30/85 ms holding 4 slots || ; HEAD  A .- @5.040s Sure key=A right (stretch 0); DIFF  A .- @5.040s Sure key=A right (stretch 0)
+032113 r9 | 42.5 ms (28.2 WPM) -> 61.5 ms (19.5 WPM) | marks marks imply 44.0 ms | key key 56.4 ms | TOWARD the key | 14 pairs of 29 marks, 2 | first first pair 30/85 ms holding 3 slots || ; HEAD  N -. @5.515s Sure key=N right (stretch 0); DIFF  N -. @5.515s Sure key=N right (stretch 0)
+032113 r10 | 40.0 ms (30.0 WPM) -> 63.0 ms (19.1 WPM) | marks marks imply 44.0 ms | key key 57.8 ms | TOWARD the key | 15 pairs of 31 marks, 2 | first first pair 30/85 ms holding 2 slots || ; HEAD  O --- @6.135s Sure key=D wrong (stretch 0); DIFF  D -.. @6.135s Sure key=D right (stretch 0)
+032113 r11 | 50.0 ms (24.0 WPM) -> 68.7 ms (17.5 WPM) | marks marks imply 46.6 ms | key key 60.0 ms | TOWARD the key | 17 pairs of 34 marks, 2 | first first pair 30/85 ms holding 0 slots || ; HEAD  I .. @6.740s Sure key=I right (stretch 0); DIFF  I .. @6.740s Sure key=I right (stretch 0)
+032113 r12 | 50.0 ms (24.0 WPM) -> 70.5 ms (17.0 WPM) | marks marks imply 44.0 ms | key key 60.0 ms | AWAY from the key | 17 pairs of 37 marks, 3 | first first pair 30/85 ms holding 0 slots || ; HEAD  N -. @7.215s Sure key=N right (stretch 0); DIFF  N -. @7.215s Sure key=N right (stretch 0)
+032113 r13 | 42.5 ms (28.2 WPM) -> 71.6 ms (16.8 WPM) | marks marks imply 41.1 ms | key key 60.4 ms | TOWARD the key | 17 pairs of 40 marks, 4 | first first pair 30/85 ms holding 0 slots || ; HEAD  T - @7.555s Sure key=T right (stretch 0); HEAD  E . @7.820s Sure key=E right (stretch 0); DIFF  T - @7.555s Sure key=T right (stretch 0); DIFF  E . @7.820s Sure key=E right (stretch 0)
+032113 r14 | 42.5 ms (28.2 WPM) -> 71.7 ms (16.7 WPM) | marks marks imply 41.1 ms | key key 60.4 ms | TOWARD the key | 18 pairs of 42 marks, 4 | first first pair 30/85 ms holding 0 slots || ; HEAD  R .-. @8.375s Sure key=R right (stretch 0); DIFF  R .-. @8.380s Sure key=R right (stretch 0)
+032113 r15 | 42.5 ms (28.2 WPM) -> 71.9 ms (16.7 WPM) | marks marks imply 38.9 ms | key key 60.4 ms | TOWARD the key | 19 pairs of 44 marks, 4 | first first pair 30/85 ms holding 0 slots || ; HEAD  N -. @8.900s Sure key=N right (stretch 0); DIFF  N -. @8.900s Sure key=N right (stretch 0)
+032113 r16 | 42.5 ms (28.2 WPM) -> 71.6 ms (16.8 WPM) | marks marks imply 36.6 ms | key key 60.0 ms | TOWARD the key | 19 pairs of 47 marks, 4 | first first pair 30/85 ms holding 0 slots || ; HEAD  E . @9.105s Sure key=E right (stretch 0); HEAD  T - @9.455s Sure key=T right (stretch 0); DIFF  E . @9.105s Sure key=E right (stretch 0); DIFF  T - @9.455s Sure key=T right (stretch 0)
+032113 r17 | 42.5 ms (28.2 WPM) -> 71.6 ms (16.8 WPM) | marks marks imply 34.2 ms | key key 60.4 ms | TOWARD the key | 19 pairs of 51 marks, 5 | first first pair 30/85 ms holding 0 slots || 
+032113 r18 | 42.5 ms (28.2 WPM) -> 74.5 ms (16.1 WPM) | marks marks imply 34.2 ms | key key 60.0 ms | TOWARD the key | 21 pairs of 53 marks, 5 | first first pair 30/85 ms holding 0 slots || ; HEAD  ■ .-.- @10.405s Placeholder key=V placeholder (stretch 0); DIFF  V ...- @10.405s Sure key=V right (stretch 0)
+032113 r19 | 42.5 ms (28.2 WPM) -> 74.5 ms (16.1 WPM) | marks marks imply 32.4 ms | key key 60.4 ms | TOWARD the key | 21 pairs of 57 marks, 5 | first first pair 30/85 ms holding 0 slots || ; HEAD  E . @10.670s Sure key=E right (stretch 0); DIFF  E . @10.670s Sure key=E right (stretch 0)
+032113 r43 | 50.0 ms (24.0 WPM) -> 68.3 ms (17.6 WPM) | marks marks imply 52.0 ms | key key 59.5 ms | TOWARD the key | 9 pairs of 52 marks, 5 | first first pair 85/180 ms holding 8 slots || 
+032113 r45 | 52.5 ms (22.9 WPM) -> 69.4 ms (17.3 WPM) | marks marks imply 63.2 ms | key key 59.5 ms | AWAY from the key | 9 pairs of 51 marks, 6 | first first pair 60/205 ms holding 8 slots || 
+032113 r47 | 45.0 ms (26.7 WPM) -> 69.5 ms (17.3 WPM) | marks marks imply 52.0 ms | key key - ms | no key letter in the window | 8 pairs of 46 marks, 7 | first first pair 65/200 ms holding 9 slots || 
+032113 r48 | 42.5 ms (28.2 WPM) -> 73.0 ms (16.4 WPM) | marks marks imply 49.0 ms | key key - ms | no key letter in the window | 8 pairs of 43 marks, 7 | first first pair 75/215 ms holding 9 slots || 
+032113 r50 | 45.0 ms (26.7 WPM) -> 72.8 ms (16.5 WPM) | marks marks imply 47.6 ms | key key - ms | no key letter in the window | 7 pairs of 38 marks, 5 | first first pair 85/200 ms holding 10 slots || 
+032113 r51 | 42.5 ms (28.2 WPM) -> 62.8 ms (19.1 WPM) | marks marks imply 49.0 ms | key key - ms | no key letter in the window | 7 pairs of 37 marks, 4 | first first pair 60/180 ms holding 10 slots || 
+032113 r52 | 47.5 ms (25.3 WPM) -> 64.8 ms (18.5 WPM) | marks marks imply 56.6 ms | key key - ms | no key letter in the window | 7 pairs of 36 marks, 4 | first first pair 65/180 ms holding 10 slots || 
+032113 r54 | 50.0 ms (24.0 WPM) -> 67.4 ms (17.8 WPM) | marks marks imply 53.2 ms | key key - ms | no key letter in the window | 7 pairs of 32 marks, 2 | first first pair 65/180 ms holding 10 slots || 
+032113 r55 | 42.5 ms (28.2 WPM) -> 71.8 ms (16.7 WPM) | marks marks imply 52.0 ms | key key - ms | no key letter in the window | 8 pairs of 34 marks, 7 | first first pair 70/180 ms holding 9 slots || 
+032113 r56 | 42.5 ms (28.2 WPM) -> 71.8 ms (16.7 WPM) | marks marks imply 52.0 ms | key key - ms | no key letter in the window | 8 pairs of 34 marks, 7 | first first pair 70/180 ms holding 9 slots || 
+031948 r18 | 67.5 ms (17.8 WPM) -> 146.3 ms (8.2 WPM) | marks marks imply 49.7 ms | key key 61.3 ms | AWAY from the key | 5 pairs of 41 marks, 4 | first first pair 220/455 ms holding 12 slots || ; HEAD  0 ----- @10.120s Sure key=0 right (stretch 0)
+031948 r19 | 67.5 ms (17.8 WPM) -> 146.3 ms (8.2 WPM) | marks marks imply 52.7 ms | key key 61.3 ms | AWAY from the key | 5 pairs of 44 marks, 6 | first first pair 220/455 ms holding 12 slots || 
+031948 r20 | 65.0 ms (18.5 WPM) -> 138.8 ms (8.6 WPM) | marks marks imply 54.8 ms | key key 60.8 ms | AWAY from the key | 6 pairs of 47 marks, 8 | first first pair 220/450 ms holding 11 slots || ; HEAD  , --..-- @11.470s Sure key=, right (stretch 0); DIFF  ■ .................... @11.470s Placeholder key=, placeholder (stretch 0)
+004507 r21 | 32.5 ms (36.9 WPM) -> 60.0 ms (20.0 WPM) | marks marks imply 35.0 ms | key key 51.9 ms | TOWARD the key | 22 pairs of 57 marks, 6 | first first pair 70/170 ms holding 0 slots || ; HEAD  E . @11.965s Sure key=E right (stretch 0); DIFF  I .. @11.965s Sure key=E wrong (stretch 0)
+004507 r22 | 37.5 ms (32.0 WPM) -> 58.8 ms (20.4 WPM) | marks marks imply 33.5 ms | key key 51.7 ms | TOWARD the key | 20 pairs of 46 marks, 5 | first first pair 65/170 ms holding 0 slots || 
+031905 r3 | 67.5 ms (17.8 WPM) -> 94.3 ms (12.7 WPM) | marks marks imply 76.6 ms | key key - ms | no key letter in the window | 3 pairs of 10 marks, 0 | first first pair 80/310 ms holding 14 slots || 
+031905 r4 | 67.5 ms (17.8 WPM) -> 90.5 ms (13.3 WPM) | marks marks imply 76.6 ms | key key - ms | no key letter in the window | 5 pairs of 11 marks, 0 | first first pair 80/305 ms holding 12 slots || 
+031905 r5 | 67.5 ms (17.8 WPM) -> 88.8 ms (13.5 WPM) | marks marks imply 75.7 ms | key key - ms | no key letter in the window | 6 pairs of 13 marks, 0 | first first pair 80/305 ms holding 11 slots || 
+031905 r6 | 67.5 ms (17.8 WPM) -> 87.2 ms (13.8 WPM) | marks marks imply 75.7 ms | key key 60.7 ms | AWAY from the key | 7 pairs of 16 marks, 1 | first first pair 80/305 ms holding 10 slots || 
+031905 r7 | 65.0 ms (18.5 WPM) -> 85.4 ms (14.1 WPM) | marks marks imply 75.7 ms | key key 57.0 ms | AWAY from the key | 8 pairs of 18 marks, 1 | first first pair 80/305 ms holding 9 slots || 
+032050 r12 | 52.5 ms (22.9 WPM) -> 67.0 ms (17.9 WPM) | marks marks imply 38.3 ms | key key 59.0 ms | AWAY from the key | 11 pairs of 37 marks, 2 | first first pair 80/175 ms holding 6 slots || ; HEAD  A .- @7.390s Sure key=A right (stretch 0); DIFF  A .- @7.390s Sure key=A right (stretch 0)
+032050 r20 | 40.0 ms (30.0 WPM) -> 67.3 ms (17.8 WPM) | marks marks imply 29.2 ms | key key 60.6 ms | TOWARD the key | 21 pairs of 49 marks, 5 | first first pair 80/170 ms holding 0 slots || 
+032050 r21 | 35.0 ms (34.3 WPM) -> 67.0 ms (17.9 WPM) | marks marks imply 23.8 ms | key key 60.7 ms | TOWARD the key | 22 pairs of 55 marks, 8 | first first pair 80/170 ms holding 0 slots || ; HEAD  T - @11.195s Sure key=- added (stretch 0); HEAD  A .- @11.545s Sure key=U wrong (stretch 0); DIFF  U ..- @11.545s Sure key=U right (stretch 0)
+032050 r44 | 40.0 ms (30.0 WPM) -> 66.3 ms (18.1 WPM) | marks marks imply 36.1 ms | key key 62.7 ms | TOWARD the key | 22 pairs of 56 marks, 3 | first first pair 25/80 ms holding 0 slots || ; HEAD  ■ ---- @23.080s Placeholder key=C placeholder (stretch 0); DIFF  C -.-. @23.080s Sure key=C right (stretch 0)
+032050 r46 | 42.5 ms (28.2 WPM) -> 67.4 ms (17.8 WPM) | marks marks imply 43.2 ms | key key 62.7 ms | TOWARD the key | 22 pairs of 60 marks, 2 | first first pair 25/95 ms holding 0 slots || ; HEAD  E . @24.045s Sure key=E right (stretch 0); DIFF  E . @24.045s Sure key=E right (stretch 0)
+032050 r47 | 40.0 ms (30.0 WPM) -> 64.6 ms (18.6 WPM) | marks marks imply 40.0 ms | key key 62.1 ms | TOWARD the key | 25 pairs of 61 marks, 1 | first first pair 10/35 ms holding 0 slots || 
+032050 r48 | 43.9 ms (27.4 WPM) -> 71.2 ms (16.9 WPM) | marks marks imply 43.9 ms | key key 62.7 ms | TOWARD the key | 17 pairs of 57 marks, 7 | first first pair 35/120 ms holding 0 slots || 
+032050 r49 | 45.0 ms (26.7 WPM) -> 80.7 ms (14.9 WPM) | marks marks imply 52.0 ms | key key 62.1 ms | AWAY from the key | 17 pairs of 51 marks, 7 | first first pair 90/335 ms holding 0 slots || 
+032050 r50 | 57.0 ms (21.0 WPM) -> 75.6 ms (15.9 WPM) | marks marks imply 57.0 ms | key key 62.7 ms | AWAY from the key | 14 pairs of 50 marks, 4 | first first pair 85/180 ms holding 3 slots || ; HEAD  H .... @26.130s Sure key=D wrong (stretch 0); DIFF  H .... @26.130s NotSure key=I wrong (stretch 0)
+032050 r52 | 38.2 ms (31.4 WPM) -> 89.8 ms (13.4 WPM) | marks marks imply 38.2 ms | key key 61.4 ms | AWAY from the key | 16 pairs of 47 marks, 7 | first first pair 90/185 ms holding 1 slots || ; HEAD  I .. @27.085s Sure key=I right (stretch 0); DIFF  E . @27.090s Sure key=N wrong (stretch 0)
+032050 r54 | 32.5 ms (36.9 WPM) -> 109.4 ms (11.0 WPM) | marks marks imply 39.8 ms | key key 62.0 ms | AWAY from the key | 10 pairs of 44 marks, 9 | first first pair 155/325 ms holding 7 slots || ; DIFF  E . @28.295s Sure key=E right (stretch 0)
+032050 r55 | 42.5 ms (28.2 WPM) -> 88.1 ms (13.6 WPM) | marks marks imply 38.2 ms | key key 62.0 ms | AWAY from the key | 11 pairs of 38 marks, 3 | first first pair 85/175 ms holding 6 slots || 
+032050 r56 | 42.5 ms (28.2 WPM) -> 88.1 ms (13.6 WPM) | marks marks imply 38.2 ms | key key 62.0 ms | AWAY from the key | 11 pairs of 38 marks, 3 | first first pair 85/175 ms holding 6 slots || 
+
+================================================================================================
+EVERY MOVED WINDOW IN FULL (.run-unit/unit460-pair-joined.txt)
+window | unadjudicated/cw-2026-08-18-003758 | read 7 | 0.000 to 6.000 s
+  unit  | before 37.5 ms (32.0 WPM) | after 52.0 ms (23.1 WPM) | marks imply 46.2 ms | window measured 32.0 WPM | key - ms over 0 letters | no key letter in the window
+  pairs | 15 pairs of 34 marks, 2 spikes passed over | pair unit 52.0 ms | first pair 35/105 ms, holding 2 of the 16 slots at the end
+  each  | 35/105ms=1680/5040smp->35.0 65/165ms=3120/7920smp->36.4 65/165ms=3120/7920smp->37.8 65/165ms=3120/7920smp->39.2 65/160ms=3120/7680smp->40.5 60/160ms=2880/7680smp->41.8 25/60ms=1200/2880smp->40.9 30/95ms=1440/4560smp->40.7 65/165ms=3120/7920smp->42.1 65/180ms=3120/8640smp->43.8 65/175ms=3120/8400smp->45.3 65/160ms=3120/7680smp->46.6 60/150ms=2880/7200smp->47.7 80/195ms=3840/9360smp->49.8 80/195ms=3840/9360smp->52.0
+  marks | 35 105 115 110 15 145 255 165 65 165 65 160 60 25 40 30 95 165 65 65 180 170 175 65 160 250 15 40 60 150 195 80 195 40 | spikes skipped 15 15
+  settled at this read:
+      HEAD  _  @4.270s gap key=  (stretch )
+      HEAD  U ..- @4.615s Sure key=- -
+      DIFF  U ..- @4.615s Sure key=- -
+window | unadjudicated/cw-2026-08-18-003758 | read 8 | 0.000 to 6.500 s
+  unit  | before 37.5 ms (32.0 WPM) | after 52.7 ms (22.8 WPM) | marks imply 44.7 ms | window measured 32.0 WPM | key - ms over 0 letters | no key letter in the window
+  pairs | 16 pairs of 37 marks, 2 spikes passed over | pair unit 52.7 ms | first pair 35/105 ms, holding 1 of the 16 slots at the end
+  each  | 35/105ms=1680/5040smp->35.0 65/165ms=3120/7920smp->36.4 65/165ms=3120/7920smp->37.8 65/165ms=3120/7920smp->39.2 65/160ms=3120/7680smp->40.5 60/160ms=2880/7680smp->41.8 25/60ms=1200/2880smp->40.9 30/95ms=1440/4560smp->40.7 65/165ms=3120/7920smp->42.1 65/180ms=3120/8640smp->43.8 65/175ms=3120/8400smp->45.3 65/160ms=3120/7680smp->46.6 60/150ms=2880/7200smp->47.7 80/195ms=3840/9360smp->49.8 80/195ms=3840/9360smp->52.0 40/150ms=1920/7200smp->52.7
+  marks | 35 105 115 110 15 145 255 165 65 165 65 160 60 25 40 30 95 165 65 65 180 170 175 65 160 250 15 40 60 150 195 80 195 40 150 85 165 | spikes skipped 15 15
+  settled at this read:
+      HEAD  _  @5.190s gap key=  (stretch )
+      DIFF  _  @5.420s gap key=  (stretch )
+window | unadjudicated/cw-2026-08-18-003758 | read 9 | 0.000 to 7.000 s
+  unit  | before 37.5 ms (32.0 WPM) | after 49.6 ms (24.2 WPM) | marks imply 44.7 ms | window measured 32.0 WPM | key - ms over 0 letters | no key letter in the window
+  pairs | 16 pairs of 42 marks, 1 spikes passed over | pair unit 49.6 ms | first pair 30/100 ms, holding 1 of the 16 slots at the end
+  each  | 30/100ms=1440/4800smp->32.5 65/160ms=3120/7680smp->34.0 65/165ms=3120/7920smp->35.5 65/165ms=3120/7920smp->37.1 65/160ms=3120/7680smp->38.6 60/160ms=2880/7680smp->40.0 25/60ms=1200/2880smp->39.3 30/95ms=1440/4560smp->39.2 65/165ms=3120/7920smp->40.8 65/155ms=3120/7440smp->42.2 75/170ms=3600/8160smp->44.0 60/160ms=2880/7680smp->45.4 60/150ms=2880/7200smp->46.6 35/80ms=1680/3840smp->46.4 80/195ms=3840/9360smp->48.7 40/150ms=1920/7200smp->49.6
+  marks | 30 100 110 110 145 250 160 65 165 65 160 60 25 40 30 95 165 65 65 155 170 75 80 60 160 250 15 40 60 150 25 35 35 80 195 40 150 85 50 90 165 235 | spikes skipped 15
+  settled at this read:
+      HEAD  _  @5.780s gap key=  (stretch )
+      DIFF  (none)
+window | unadjudicated/cw-2026-08-18-003758 | read 11 | 0.000 to 8.000 s
+  unit  | before 37.5 ms (32.0 WPM) | after 56.0 ms (21.4 WPM) | marks imply 41.8 ms | window measured 32.0 WPM | key - ms over 0 letters | no key letter in the window
+  pairs | 16 pairs of 49 marks, 5 spikes passed over | pair unit 56.0 ms | first pair 65/160 ms, holding 1 of the 16 slots at the end
+  each  | 65/160ms=3120/7680smp->56.3 65/160ms=3120/7680smp->56.3 65/160ms=3120/7680smp->56.3 65/160ms=3120/7680smp->56.3 60/160ms=2880/7680smp->56.2 35/90ms=1680/4320smp->54.6 65/165ms=3120/7920smp->54.7 65/155ms=3120/7440smp->54.6 75/165ms=3600/7920smp->54.8 60/155ms=2880/7440smp->54.7 60/150ms=2880/7200smp->54.5 35/75ms=1680/3600smp->52.7 75/195ms=3600/9360smp->53.4 60/235ms=2880/11280smp->54.5 70/260ms=3360/12480smp->56.1 60/160ms=2880/7680smp->56.0
+  marks | 15 100 110 110 145 185 160 65 160 65 160 60 25 35 25 90 165 65 65 155 165 75 80 60 155 230 15 40 60 150 25 35 35 75 195 35 150 85 50 85 165 235 60 260 70 85 15 60 160 | spikes skipped 25 25 15 25 15
+  settled at this read:
+      HEAD  A .- @6.640s Sure key=- -
+      DIFF  A .- @6.640s Sure key=- -
+window | unadjudicated/cw-2026-08-18-003758 | read 12 | 0.000 to 8.500 s
+  unit  | before 47.5 ms (25.3 WPM) | after 59.9 ms (20.0 WPM) | marks imply 45.5 ms | window measured 25.3 WPM | key - ms over 0 letters | no key letter in the window
+  pairs | 16 pairs of 52 marks, 6 spikes passed over | pair unit 59.9 ms | first pair 60/160 ms, holding 1 of the 16 slots at the end
+  each  | 60/160ms=2880/7680smp->55.0 60/160ms=2880/7680smp->55.0 65/160ms=3120/7680smp->55.1 65/160ms=3120/7680smp->55.2 60/160ms=2880/7680smp->55.2 60/160ms=2880/7680smp->55.2 65/160ms=3120/7680smp->55.2 60/155ms=2880/7440smp->55.2 75/165ms=3600/7920smp->55.5 60/155ms=2880/7440smp->55.4 60/150ms=2880/7200smp->55.2 70/195ms=3360/9360smp->55.9 60/235ms=2880/11280smp->57.1 70/260ms=3360/12480smp->58.8 60/160ms=2880/7680smp->58.8 60/230ms=2880/11040smp->59.9
+  marks | 15 100 110 105 145 185 160 60 160 65 160 60 20 35 25 25 60 160 65 60 155 165 75 80 60 155 230 15 40 60 150 25 35 35 70 195 35 150 80 45 85 165 235 60 260 70 85 15 60 160 230 60 | spikes skipped 20 25 25 15 25 15
+  settled at this read:
+      HEAD  N -. @7.035s Sure key=- -
+      HEAD  _  @7.410s gap key=  (stretch )
+      HEAD  E . @7.455s Sure key=- -
+      DIFF  N -. @7.035s Sure key=- -
+      DIFF  _  @7.410s gap key=  (stretch )
+      DIFF  E . @7.455s Sure key=- -
+window | unadjudicated/cw-2026-08-18-003758 | read 14 | 0.000 to 9.500 s
+  unit  | before 47.5 ms (25.3 WPM) | after 60.6 ms (19.8 WPM) | marks imply 47.4 ms | window measured 25.3 WPM | key - ms over 0 letters | no key letter in the window
+  pairs | 19 pairs of 59 marks, 7 spikes passed over | pair unit 60.6 ms | first pair 60/160 ms, holding 0 of the 16 slots at the end
+  each  | 60/160ms=2880/7680smp->55.0 60/160ms=2880/7680smp->55.0 65/160ms=3120/7680smp->55.1 65/160ms=3120/7680smp->55.2 60/160ms=2880/7680smp->55.2 60/160ms=2880/7680smp->55.2 65/160ms=3120/7680smp->55.2 60/155ms=2880/7440smp->55.2 75/165ms=3600/7920smp->55.5 60/155ms=2880/7440smp->55.4 60/150ms=2880/7200smp->55.2 70/195ms=3360/9360smp->55.9 60/235ms=2880/11280smp->57.1 70/260ms=3360/12480smp->58.8 60/160ms=2880/7680smp->58.8 60/230ms=2880/11040smp->59.9 65/245ms=3120/11760smp->61.3 60/140ms=2880/6720smp->61.0 60/140ms=2880/6720smp->60.6
+  marks | 15 100 110 105 145 185 160 60 160 65 160 60 20 35 25 25 60 160 65 60 155 165 75 80 60 155 230 15 40 60 150 25 35 35 70 195 35 150 80 45 85 165 235 60 260 70 85 15 60 160 230 60 245 65 60 30 140 60 45 | spikes skipped 20 25 25 15 25 15 30
+  settled at this read:
+      HEAD  N -. @8.335s Sure key=- -
+      DIFF  N -. @8.335s Sure key=- -
+window | unadjudicated/cw-2026-08-18-003758 | read 16 | 0.000 to 10.500 s
+  unit  | before 45.0 ms (26.7 WPM) | after 58.1 ms (20.6 WPM) | marks imply 48.2 ms | window measured 26.7 WPM | key 49.5 ms over 2 letters | AWAY from the key
+  pairs | 23 pairs of 66 marks, 9 spikes passed over | pair unit 58.1 ms | first pair 60/155 ms, holding 0 of the 16 slots at the end
+  each  | 60/155ms=2880/7440smp->53.8 60/160ms=2880/7680smp->53.8 65/160ms=3120/7680smp->54.0 65/160ms=3120/7680smp->54.1 60/160ms=2880/7680smp->54.2 55/155ms=2640/7440smp->54.1 60/155ms=2880/7440smp->54.1 60/145ms=2880/6960smp->54.0 70/165ms=3360/7920smp->54.3 60/155ms=2880/7440smp->54.3 60/225ms=2880/10800smp->55.4 60/150ms=2880/7200smp->55.3 60/225ms=2880/10800smp->56.4 70/260ms=3360/12480smp->58.2 60/160ms=2880/7680smp->58.3 60/225ms=2880/10800smp->59.4 60/180ms=2880/8640smp->59.8 60/180ms=2880/8640smp->60.1 60/140ms=2880/6720smp->59.7 60/140ms=2880/6720smp->59.3 60/160ms=2880/7680smp->59.3 35/90ms=1680/4320smp->58.0 65/160ms=3120/7680smp->58.1
+  marks | 15 100 110 105 135 185 155 60 160 65 160 60 20 20 25 20 55 155 60 60 145 165 70 75 60 155 225 15 60 150 20 30 35 35 195 35 150 80 45 85 165 225 60 260 70 80 60 160 225 60 25 180 60 60 30 140 60 45 40 60 160 35 90 160 15 65 | spikes skipped 20 20 25 20 15 20 25 30 15
+  settled at this read:
+      HEAD  E . @9.165s Sure key=- -
+      DIFF  E . @9.165s Sure key=- -
+window | unadjudicated/cw-2026-08-18-003758 | read 18 | 0.000 to 11.500 s
+  unit  | before 30.0 ms (40.0 WPM) | after 54.5 ms (22.0 WPM) | marks imply 25.8 ms | window measured 40.0 WPM | key 49.8 ms over 4 letters | TOWARD the key
+  pairs | 21 pairs of 67 marks, 8 spikes passed over | pair unit 54.5 ms | first pair 55/155 ms, holding 0 of the 16 slots at the end
+  each  | 55/155ms=2640/7440smp->52.5 55/160ms=2640/7680smp->52.6 65/160ms=3120/7680smp->52.8 65/160ms=3120/7680smp->53.0 60/160ms=2880/7680smp->53.2 55/155ms=2640/7440smp->53.2 55/155ms=2640/7440smp->53.2 60/155ms=2880/7440smp->53.3 55/145ms=2640/6960smp->53.1 60/160ms=2880/7680smp->53.3 60/160ms=2880/7680smp->53.4 60/210ms=2880/10080smp->54.4 60/175ms=2880/8400smp->54.8 60/175ms=2880/8400smp->55.2 60/135ms=2880/6480smp->54.9 35/135ms=1680/6480smp->54.3 60/160ms=2880/7680smp->54.5 60/160ms=2880/7680smp->54.5 60/160ms=2880/7680smp->54.5 65/160ms=3120/7680smp->54.5 60/160ms=2880/7680smp->54.5
+  marks | 10 100 110 105 135 160 155 55 160 65 160 60 15 20 55 155 55 60 115 165 40 60 60 155 225 15 55 145 15 30 160 30 150 80 20 80 155 20 160 60 25 55 85 70 80 60 160 210 60 175 60 60 135 35 35 60 160 60 160 15 65 60 60 60 160 165 160 | spikes skipped 15 20 15 15 20 20 25 15
+  settled at this read:
+      HEAD  _  @10.000s gap key=  (stretch )
+      HEAD  E . @10.045s Sure key=- -
+      HEAD  T - @10.250s Sure key=- -
+      HEAD  _  @10.395s gap key=  (stretch )
+      HEAD  E . @10.435s Sure key=- -
+      DIFF  A .- @10.250s Sure key=A right (stretch 0)
+window | unadjudicated/cw-2026-08-18-003758 | read 19 | 0.000 to 12.000 s
+  unit  | before 30.0 ms (40.0 WPM) | after 54.5 ms (22.0 WPM) | marks imply 26.5 ms | window measured 40.0 WPM | key 49.8 ms over 4 letters | TOWARD the key
+  pairs | 21 pairs of 69 marks, 8 spikes passed over | pair unit 54.5 ms | first pair 55/155 ms, holding 0 of the 16 slots at the end
+  each  | 55/155ms=2640/7440smp->52.5 55/160ms=2640/7680smp->52.6 65/160ms=3120/7680smp->52.8 65/160ms=3120/7680smp->53.0 60/160ms=2880/7680smp->53.2 55/155ms=2640/7440smp->53.2 55/155ms=2640/7440smp->53.2 60/155ms=2880/7440smp->53.3 55/145ms=2640/6960smp->53.1 60/160ms=2880/7680smp->53.3 60/160ms=2880/7680smp->53.4 60/210ms=2880/10080smp->54.4 60/175ms=2880/8400smp->54.8 60/175ms=2880/8400smp->55.2 60/135ms=2880/6480smp->54.9 35/135ms=1680/6480smp->54.3 60/160ms=2880/7680smp->54.5 60/160ms=2880/7680smp->54.5 60/160ms=2880/7680smp->54.5 65/160ms=3120/7680smp->54.5 60/160ms=2880/7680smp->54.5
+  marks | 10 100 110 105 135 160 155 55 160 65 160 60 15 20 55 155 55 60 115 165 40 60 60 155 225 15 55 145 15 30 160 30 150 80 20 80 155 20 160 60 25 55 85 70 80 60 160 210 60 175 60 60 135 35 35 60 160 60 160 15 65 60 60 60 160 165 160 115 160 | spikes skipped 15 20 15 15 20 20 25 15
+  settled at this read:
+      HEAD  E . @10.540s Sure key=- -
+      HEAD  E . @10.640s Sure key=A wrong (stretch 0)
+      HEAD  E . @10.740s Sure key=A wrong (stretch 0)
+      HEAD  T - @10.940s Sure key=4 wrong (stretch 0)
+      DIFF  4 ....- @10.940s Sure key=4 right (stretch 0)
+window | unadjudicated/cw-2026-08-22-031838 | read 4 | 0.000 to 4.500 s
+  unit  | before 55.0 ms (21.8 WPM) | after 70.1 ms (17.1 WPM) | marks imply 55.5 ms | window measured 21.8 WPM | key - ms over 0 letters | no key letter in the window
+  pairs | 5 pairs of 16 marks, 0 spikes passed over | pair unit 70.1 ms | first pair 65/225 ms, holding 12 of the 16 slots at the end
+  each  | 65/225ms=3120/10800smp->72.5 65/180ms=3120/8640smp->71.8 85/220ms=4080/10560smp->72.0 95/220ms=4560/10560smp->72.4 45/95ms=2160/4560smp->70.1
+  marks | 15 65 225 205 180 65 85 220 205 50 230 220 95 45 235 185 | spikes skipped 
+  settled at this read:
+      HEAD  3 ...-- @3.080s Sure key=- -
+      DIFF  3 ...-- @3.080s Sure key=- -
+window | unadjudicated/cw-2026-08-22-031838 | read 6 | 0.000 to 5.500 s
+  unit  | before 55.0 ms (21.8 WPM) | after 70.0 ms (17.1 WPM) | marks imply 52.0 ms | window measured 21.8 WPM | key - ms over 0 letters | no key letter in the window
+  pairs | 5 pairs of 23 marks, 1 spikes passed over | pair unit 70.0 ms | first pair 65/225 ms, holding 12 of the 16 slots at the end
+  each  | 65/225ms=3120/10800smp->72.5 60/180ms=2880/8640smp->71.7 85/220ms=4080/10560smp->72.0 95/220ms=4560/10560smp->72.3 45/95ms=2160/4560smp->70.0
+  marks | 15 65 225 205 180 60 85 220 205 50 230 220 95 45 235 185 125 85 15 45 85 85 165 | spikes skipped 15
+  settled at this read:
+      HEAD  , --..-- @4.440s Sure key=- -
+      DIFF  , --..-- @4.440s Sure key=- -
+window | unadjudicated/cw-2026-08-22-031838 | read 7 | 0.000 to 6.000 s
+  unit  | before 35.0 ms (34.3 WPM) | after 70.9 ms (16.9 WPM) | marks imply 37.1 ms | window measured 34.3 WPM | key - ms over 0 letters | no key letter in the window
+  pairs | 5 pairs of 26 marks, 3 spikes passed over | pair unit 70.9 ms | first pair 65/225 ms, holding 12 of the 16 slots at the end
+  each  | 65/225ms=3120/10800smp->72.5 90/205ms=4320/9840smp->72.6 85/220ms=4080/10560smp->72.8 95/220ms=4560/10560smp->73.2 45/95ms=2160/4560smp->70.9
+  marks | 15 65 225 205 10 90 60 85 220 205 50 230 220 95 45 235 185 120 85 15 45 85 85 165 260 25 | spikes skipped 10 15 25
+  settled at this read:
+      HEAD  _  @4.895s gap key=  (stretch )
+      DIFF  _  @4.895s gap key=  (stretch )
+window | unadjudicated/cw-2026-08-22-031838 | read 8 | 0.000 to 6.500 s
+  unit  | before 35.0 ms (34.3 WPM) | after 73.0 ms (16.4 WPM) | marks imply 39.3 ms | window measured 34.3 WPM | key - ms over 0 letters | no key letter in the window
+  pairs | 4 pairs of 29 marks, 3 spikes passed over | pair unit 73.0 ms | first pair 65/225 ms, holding 13 of the 16 slots at the end
+  each  | 65/225ms=3120/10800smp->72.5 85/205ms=4080/9840smp->72.5 85/220ms=4080/10560smp->72.7 90/220ms=4320/10560smp->73.0
+  marks | 15 65 225 205 10 85 60 85 220 205 50 15 200 220 90 45 235 185 120 85 45 80 85 160 260 25 190 220 165 | spikes skipped 10 15 25
+  settled at this read:
+      HEAD  A .- @5.045s Sure key=- -
+      HEAD  T - @5.180s Sure key=- -
+      DIFF  (none)
+window | unadjudicated/cw-2026-08-22-031838 | read 9 | 0.000 to 7.000 s
+  unit  | before 55.0 ms (21.8 WPM) | after 72.0 ms (16.7 WPM) | marks imply 52.7 ms | window measured 21.8 WPM | key - ms over 0 letters | no key letter in the window
+  pairs | 4 pairs of 29 marks, 2 spikes passed over | pair unit 72.0 ms | first pair 65/220 ms, holding 13 of the 16 slots at the end
+  each  | 65/220ms=3120/10560smp->71.3 85/200ms=4080/9600smp->71.3 85/220ms=4080/10560smp->71.6 90/220ms=4320/10560smp->72.0
+  marks | 65 220 200 85 60 85 220 205 45 15 200 220 90 45 230 185 120 85 45 80 85 160 260 25 185 220 165 235 180 | spikes skipped 15 25
+  settled at this read:
+      HEAD  3 ...-- @5.650s Sure key=- -
+      DIFF  3 ...-- @5.650s Sure key=- -
+window | unadjudicated/cw-2026-08-22-031838 | read 10 | 0.000 to 7.500 s
+  unit  | before 53.4 ms (22.5 WPM) | after 72.0 ms (16.7 WPM) | marks imply 53.4 ms | window measured 32.0 WPM | key - ms over 0 letters | no key letter in the window
+  pairs | 4 pairs of 33 marks, 4 spikes passed over | pair unit 72.0 ms | first pair 65/220 ms, holding 13 of the 16 slots at the end
+  each  | 65/220ms=3120/10560smp->71.3 85/200ms=4080/9600smp->71.3 85/220ms=4080/10560smp->71.6 90/220ms=4320/10560smp->72.0
+  marks | 65 220 200 85 60 85 220 205 50 15 200 220 90 45 235 185 120 85 45 80 85 160 260 25 190 220 165 255 180 30 45 215 35 | spikes skipped 15 25 30 35
+  settled at this read:
+      HEAD  (none)
+      DIFF  (none)
+window | unadjudicated/cw-2026-08-22-031838 | read 11 | 0.000 to 8.000 s
+  unit  | before 42.5 ms (28.2 WPM) | after 72.6 ms (16.5 WPM) | marks imply 52.7 ms | window measured 28.2 WPM | key - ms over 0 letters | no key letter in the window
+  pairs | 6 pairs of 35 marks, 4 spikes passed over | pair unit 72.6 ms | first pair 65/220 ms, holding 11 of the 16 slots at the end
+  each  | 65/220ms=3120/10560smp->71.3 85/200ms=4080/9600smp->71.3 85/220ms=4080/10560smp->71.6 90/220ms=4320/10560smp->72.0 85/215ms=4080/10320smp->72.2 85/225ms=4080/10800smp->72.6
+  marks | 65 220 200 85 60 85 220 205 45 15 200 220 90 45 230 185 120 85 45 80 85 160 260 25 185 220 165 235 180 30 45 215 35 85 225 | spikes skipped 15 25 30 35
+  settled at this read:
+      HEAD  _  @5.850s gap key=  (stretch )
+      HEAD  , --..-- @6.980s Sure key=- -
+      DIFF  0 ----- @6.980s Sure key=- -
+window | unadjudicated/cw-2026-08-22-031838 | read 12 | 0.000 to 8.500 s
+  unit  | before 52.7 ms (22.8 WPM) | after 72.0 ms (16.7 WPM) | marks imply 52.7 ms | window measured 34.3 WPM | key - ms over 0 letters | no key letter in the window
+  pairs | 6 pairs of 38 marks, 5 spikes passed over | pair unit 72.0 ms | first pair 65/220 ms, holding 11 of the 16 slots at the end
+  each  | 65/220ms=3120/10560smp->71.3 85/220ms=4080/10560smp->71.6 90/220ms=4320/10560smp->72.0 65/185ms=3120/8880smp->71.4 85/215ms=4080/10320smp->71.6 85/225ms=4080/10800smp->72.0
+  marks | 65 220 170 20 85 60 85 220 205 45 15 200 220 90 45 230 185 65 85 45 80 85 160 260 25 185 220 165 235 180 30 45 215 35 85 225 200 215 | spikes skipped 20 15 25 30 35
+  settled at this read:
+      HEAD  _  @7.425s gap key=  (stretch )
+      DIFF  _  @7.425s gap key=  (stretch )
+window | unadjudicated/cw-2026-08-22-031838 | read 13 | 0.000 to 9.000 s
+  unit  | before 52.5 ms (22.9 WPM) | after 72.0 ms (16.7 WPM) | marks imply 52.7 ms | window measured 22.9 WPM | key - ms over 0 letters | no key letter in the window
+  pairs | 6 pairs of 40 marks, 5 spikes passed over | pair unit 72.0 ms | first pair 65/220 ms, holding 11 of the 16 slots at the end
+  each  | 65/220ms=3120/10560smp->71.3 85/220ms=4080/10560smp->71.6 90/220ms=4320/10560smp->72.0 65/185ms=3120/8880smp->71.4 85/215ms=4080/10320smp->71.6 85/225ms=4080/10800smp->72.0
+  marks | 65 220 170 20 85 60 85 220 205 45 15 200 220 90 45 230 185 65 85 45 80 85 160 260 25 185 220 165 235 180 30 45 215 35 85 225 200 215 240 170 | spikes skipped 20 15 25 30 35
+  settled at this read:
+      HEAD  (none)
+      DIFF  (none)
+window | unadjudicated/cw-2026-08-22-031838 | read 14 | 0.000 to 9.500 s
+  unit  | before 52.5 ms (22.9 WPM) | after 71.6 ms (16.8 WPM) | marks imply 52.0 ms | window measured 22.9 WPM | key - ms over 0 letters | no key letter in the window
+  pairs | 7 pairs of 43 marks, 5 spikes passed over | pair unit 71.6 ms | first pair 65/220 ms, holding 10 of the 16 slots at the end
+  each  | 65/220ms=3120/10560smp->71.3 85/220ms=4080/10560smp->71.6 90/220ms=4320/10560smp->72.0 65/185ms=3120/8880smp->71.4 85/215ms=4080/10320smp->71.6 85/225ms=4080/10800smp->72.0 80/175ms=3840/8400smp->71.6
+  marks | 65 220 170 20 85 60 85 220 205 45 15 200 220 90 45 230 185 65 85 45 80 85 160 260 25 185 220 165 235 180 30 45 215 35 85 225 200 215 240 170 85 80 175 | spikes skipped 20 15 25 30 35
+  settled at this read:
+      HEAD  2 ..--- @8.345s Sure key=- -
+      DIFF  2 ..--- @8.345s NotSure key=2 right (stretch 0)
+window | unadjudicated/cw-2026-08-22-031838 | read 15 | 0.000 to 10.000 s
+  unit  | before 52.7 ms (22.8 WPM) | after 70.5 ms (17.0 WPM) | marks imply 52.7 ms | window measured 30.0 WPM | key - ms over 0 letters | no key letter in the window
+  pairs | 8 pairs of 46 marks, 5 spikes passed over | pair unit 70.5 ms | first pair 65/220 ms, holding 9 of the 16 slots at the end
+  each  | 65/220ms=3120/10560smp->71.3 85/200ms=4080/9600smp->71.3 85/220ms=4080/10560smp->71.6 90/220ms=4320/10560smp->72.0 85/215ms=4080/10320smp->72.2 85/225ms=4080/10800smp->72.6 80/175ms=3840/8400smp->72.1 45/135ms=2160/6480smp->70.5
+  marks | 65 220 200 85 60 85 220 205 45 15 200 220 90 45 230 185 120 85 45 80 85 160 260 25 185 220 165 235 180 30 45 215 35 85 225 200 215 240 170 85 80 175 220 45 135 10 | spikes skipped 15 25 30 35 10
+  settled at this read:
+      HEAD  T - @8.675s Sure key=2 wrong (stretch 0)
+      DIFF  (none)
+window | unadjudicated/cw-2026-08-22-031838 | read 16 | 0.000 to 10.500 s
+  unit  | before 45.0 ms (26.7 WPM) | after 70.5 ms (17.0 WPM) | marks imply 51.2 ms | window measured 26.7 WPM | key - ms over 0 letters | no key letter in the window
+  pairs | 8 pairs of 49 marks, 5 spikes passed over | pair unit 70.5 ms | first pair 65/220 ms, holding 9 of the 16 slots at the end
+  each  | 65/220ms=3120/10560smp->71.3 85/200ms=4080/9600smp->71.3 85/220ms=4080/10560smp->71.6 90/220ms=4320/10560smp->72.0 85/215ms=4080/10320smp->72.2 85/225ms=4080/10800smp->72.6 80/175ms=3840/8400smp->72.1 45/135ms=2160/6480smp->70.5
+  marks | 65 220 200 85 60 85 220 205 45 15 200 220 90 45 230 185 120 85 45 80 85 160 260 25 185 220 165 235 180 30 45 215 35 85 225 200 215 240 170 85 80 175 220 45 135 10 70 80 85 | spikes skipped 15 25 30 35 10
+  settled at this read:
+      HEAD  (none)
+      DIFF  (none)
+window | unadjudicated/cw-2026-08-22-031838 | read 17 | 0.000 to 11.000 s
+  unit  | before 45.0 ms (26.7 WPM) | after 70.1 ms (17.1 WPM) | marks imply 51.2 ms | window measured 26.7 WPM | key - ms over 0 letters | no key letter in the window
+  pairs | 9 pairs of 51 marks, 5 spikes passed over | pair unit 70.1 ms | first pair 65/220 ms, holding 8 of the 16 slots at the end
+  each  | 65/220ms=3120/10560smp->71.3 85/200ms=4080/9600smp->71.3 85/220ms=4080/10560smp->71.6 90/220ms=4320/10560smp->72.0 85/215ms=4080/10320smp->72.2 85/225ms=4080/10800smp->72.6 80/175ms=3840/8400smp->72.1 45/135ms=2160/6480smp->70.5 85/175ms=4080/8400smp->70.1
+  marks | 65 220 200 85 60 85 220 205 45 15 200 220 90 45 230 185 120 85 45 80 85 160 260 25 185 220 165 235 180 30 45 215 35 85 225 200 215 240 170 85 80 175 220 45 135 10 70 80 85 175 210 | spikes skipped 15 25 30 35 10
+  settled at this read:
+      HEAD  (none)
+      DIFF  (none)
+window | unadjudicated/cw-2026-08-22-031838 | read 18 | 0.000 to 11.500 s
+  unit  | before 42.5 ms (28.2 WPM) | after 70.1 ms (17.1 WPM) | marks imply 48.3 ms | window measured 28.2 WPM | key 61.7 ms over 1 letters | TOWARD the key
+  pairs | 9 pairs of 55 marks, 6 spikes passed over | pair unit 70.1 ms | first pair 65/220 ms, holding 8 of the 16 slots at the end
+  each  | 65/220ms=3120/10560smp->71.3 85/200ms=4080/9600smp->71.3 85/220ms=4080/10560smp->71.6 90/220ms=4320/10560smp->72.0 85/215ms=4080/10320smp->72.2 85/225ms=4080/10800smp->72.6 80/175ms=3840/8400smp->72.1 45/135ms=2160/6480smp->70.5 85/175ms=4080/8400smp->70.1
+  marks | 65 220 200 85 60 85 220 205 45 15 200 220 90 45 230 185 120 85 45 80 85 160 260 25 185 220 165 235 180 30 45 215 35 85 225 200 215 240 170 85 80 175 220 45 135 10 70 80 85 175 210 175 20 40 205 | spikes skipped 15 25 30 35 10 20
+  settled at this read:
+      HEAD  T - @9.685s Sure key=, wrong (stretch 0)
+      HEAD  _  @10.105s gap key=  (stretch )
+      DIFF  _  @10.105s gap key=  (stretch )
+window | unadjudicated/cw-2026-08-22-031838 | read 19 | 0.000 to 12.000 s
+  unit  | before 42.5 ms (28.2 WPM) | after 70.2 ms (17.1 WPM) | marks imply 48.3 ms | window measured 28.2 WPM | key 61.7 ms over 1 letters | TOWARD the key
+  pairs | 10 pairs of 58 marks, 6 spikes passed over | pair unit 70.2 ms | first pair 65/220 ms, holding 7 of the 16 slots at the end
+  each  | 65/220ms=3120/10560smp->71.3 85/200ms=4080/9600smp->71.3 85/220ms=4080/10560smp->71.6 90/220ms=4320/10560smp->72.0 85/215ms=4080/10320smp->72.2 85/225ms=4080/10800smp->72.6 80/175ms=3840/8400smp->72.1 45/135ms=2160/6480smp->70.5 85/175ms=4080/8400smp->70.1 80/215ms=3840/10320smp->70.2
+  marks | 65 220 200 85 60 85 220 205 45 15 200 220 90 45 230 185 120 85 45 80 85 160 260 25 185 220 165 235 180 30 45 215 35 85 225 200 215 240 170 85 80 175 220 45 135 10 70 80 85 175 210 175 20 40 205 215 80 50 | spikes skipped 15 25 30 35 10 20
+  settled at this read:
+      HEAD  (none)
+      DIFF  (none)
+window | unadjudicated/cw-2026-08-22-031838 | read 20 | 0.500 to 12.500 s
+  unit  | before 45.2 ms (26.6 WPM) | after 64.5 ms (18.6 WPM) | marks imply 45.2 ms | window measured 36.9 WPM | key 62.2 ms over 2 letters | TOWARD the key
+  pairs | 11 pairs of 62 marks, 7 spikes passed over | pair unit 64.5 ms | first pair 65/220 ms, holding 6 of the 16 slots at the end
+  each  | 65/220ms=3120/10560smp->71.3 85/220ms=4080/10560smp->71.6 90/220ms=4320/10560smp->72.0 65/185ms=3120/8880smp->71.4 40/100ms=1920/4800smp->69.1 35/85ms=1680/4080smp->66.6 85/220ms=4080/10560smp->66.9 80/175ms=3840/8400smp->66.4 40/135ms=1920/6480smp->64.7 85/175ms=4080/8400smp->64.3 80/215ms=3840/10320smp->64.5
+  marks | 65 220 170 20 85 60 85 220 205 45 15 180 220 90 45 230 185 65 80 45 80 85 160 260 25 185 220 165 230 180 30 100 20 40 35 85 220 200 215 215 170 85 80 175 215 40 135 10 70 80 85 175 210 175 20 40 200 215 80 50 215 215 | spikes skipped 20 15 25 30 20 10 20
+  settled at this read:
+      HEAD  2 ..--- @11.030s Sure key=2 right (stretch 0)
+      DIFF  2 ..--- @11.030s Sure key=2 right (stretch 0)
+window | unadjudicated/cw-2026-08-22-031838 | read 21 | 1.000 to 13.000 s
+  unit  | before 45.0 ms (26.7 WPM) | after 62.1 ms (19.3 WPM) | marks imply 41.2 ms | window measured 26.7 WPM | key 62.2 ms over 2 letters | TOWARD the key
+  pairs | 13 pairs of 63 marks, 7 spikes passed over | pair unit 62.1 ms | first pair 65/220 ms, holding 4 of the 16 slots at the end
+  each  | 65/220ms=3120/10560smp->71.3 85/220ms=4080/10560smp->71.6 90/220ms=4320/10560smp->72.0 65/185ms=3120/8880smp->71.4 85/180ms=4080/8640smp->71.1 40/85ms=1920/4080smp->68.6 35/80ms=1680/3840smp->65.9 80/215ms=3840/10320smp->66.1 80/170ms=3840/8160smp->65.5 80/175ms=3840/8400smp->65.1 40/135ms=1920/6480smp->63.4 65/135ms=3120/6480smp->62.0 80/210ms=3840/10080smp->62.1
+  marks | 65 220 15 125 15 85 60 85 220 200 180 220 90 45 220 185 65 50 45 80 85 160 220 25 185 220 165 220 180 30 85 10 40 35 80 215 200 215 215 170 80 80 175 210 40 135 65 80 85 170 210 175 15 35 200 210 80 50 215 210 115 25 75 | spikes skipped 15 15 25 30 10 15 25
+  settled at this read:
+      HEAD  (none)
+      DIFF  (none)
+window | unadjudicated/cw-2026-08-22-031838 | read 27 | 4.000 to 16.000 s
+  unit  | before 45.0 ms (26.7 WPM) | after 60.3 ms (19.9 WPM) | marks imply 37.1 ms | window measured 26.7 WPM | key 61.7 ms over 5 letters | TOWARD the key
+  pairs | 13 pairs of 62 marks, 7 spikes passed over | pair unit 60.3 ms | first pair 65/185 ms, holding 4 of the 16 slots at the end
+  each  | 65/185ms=3120/8880smp->62.5 65/180ms=3120/8640smp->62.4 35/80ms=1680/3840smp->60.3 80/215ms=3840/10320smp->61.0 80/170ms=3840/8160smp->61.0 80/175ms=3840/8400smp->61.1 40/90ms=1920/4320smp->59.2 80/210ms=3840/10080smp->59.8 75/215ms=3600/10320smp->60.5 80/180ms=3840/8640smp->60.6 75/180ms=3600/8640smp->60.7 80/165ms=3840/7920smp->60.6 70/160ms=3360/7680smp->60.3
+  marks | 210 185 65 50 45 80 80 160 220 20 165 220 165 220 180 25 65 40 35 80 215 200 215 215 170 80 80 175 210 40 90 80 85 170 210 175 15 195 210 80 50 215 210 110 75 215 20 10 160 80 180 75 80 125 20 110 80 165 215 160 25 70 | spikes skipped 20 25 15 20 10 20 25
+  settled at this read:
+      HEAD  (none)
+      DIFF  _  @14.565s gap key=  (stretch )
+window | unadjudicated/cw-2026-08-22-031838 | read 29 | 5.000 to 17.000 s
+  unit  | before 43.9 ms (27.4 WPM) | after 55.9 ms (21.5 WPM) | marks imply 43.9 ms | window measured 34.3 WPM | key 61.1 ms over 7 letters | TOWARD the key
+  pairs | 20 pairs of 67 marks, 4 spikes passed over | pair unit 55.9 ms | first pair 30/95 ms, holding 0 of the 16 slots at the end
+  each  | 30/95ms=1440/4560smp->31.3 40/95ms=1920/4560smp->31.4 35/80ms=1680/3840smp->31.3 80/215ms=3840/10320smp->33.9 80/170ms=3840/8160smp->35.9 80/175ms=3840/8400smp->37.9 40/135ms=1920/6480smp->38.7 85/175ms=4080/8400smp->40.8 80/210ms=3840/10080smp->43.4 25/75ms=1200/3600smp->43.0 75/215ms=3600/10320smp->45.5 80/185ms=3840/8880smp->47.7 80/200ms=3840/9600smp->50.2 75/200ms=3600/9600smp->52.5 35/80ms=1680/3840smp->52.3 35/125ms=1680/6000smp->52.9 80/165ms=3840/7920smp->54.8 30/75ms=1440/3600smp->54.3 80/215ms=3840/10320smp->57.1 55/165ms=2640/7920smp->55.9
+  marks | 55 85 160 220 25 185 220 165 220 180 30 95 15 40 35 80 215 200 215 215 170 80 80 175 215 40 135 70 80 85 175 210 175 15 35 200 210 80 50 215 210 115 25 75 215 20 185 80 200 75 80 35 125 20 110 80 165 215 160 30 75 80 215 165 55 80 40 | spikes skipped 15 15 20 20
+  settled at this read:
+      HEAD  ■ ....--- @15.550s Placeholder key=2 placeholder (stretch 0)
+      HEAD  _  @15.980s gap key=  (stretch )
+      DIFF  ■ ...--- @15.550s Placeholder key=2 placeholder (stretch 0)
+      DIFF  _  @15.980s gap key=  (stretch )
+window | unadjudicated/cw-2026-08-22-031838 | read 30 | 5.500 to 17.500 s
+  unit  | before 44.5 ms (26.9 WPM) | after 56.3 ms (21.3 WPM) | marks imply 44.5 ms | window measured 34.3 WPM | key 61.1 ms over 7 letters | TOWARD the key
+  pairs | 18 pairs of 64 marks, 4 spikes passed over | pair unit 56.3 ms | first pair 30/100 ms, holding 0 of the 16 slots at the end
+  each  | 30/100ms=1440/4800smp->32.5 40/100ms=1920/4800smp->32.7 35/80ms=1680/3840smp->32.4 80/220ms=3840/10560smp->35.1 80/170ms=3840/8160smp->37.0 80/175ms=3840/8400smp->38.9 40/135ms=1920/6480smp->39.6 85/175ms=4080/8400smp->41.6 80/210ms=3840/10080smp->44.1 80/185ms=3840/8880smp->46.3 80/200ms=3840/9600smp->48.6 75/200ms=3600/9600smp->50.9 35/80ms=1680/3840smp->50.6 35/125ms=1680/6000smp->51.1 80/165ms=3840/7920smp->52.9 30/75ms=1440/3600smp->52.5 80/215ms=3840/10320smp->55.1 55/165ms=2640/7920smp->56.3
+  marks | 165 25 185 220 165 220 180 30 100 15 40 35 80 220 200 215 215 170 80 80 175 215 40 135 70 80 85 175 210 175 15 35 200 210 80 50 215 210 115 25 305 20 185 80 200 75 80 35 125 20 110 80 165 215 160 30 75 80 215 165 55 80 40 335 | spikes skipped 15 15 20 20
+  settled at this read:
+      HEAD  (none)
+      DIFF  (none)
+window | unadjudicated/cw-2026-08-22-031838 | read 31 | 6.000 to 18.000 s
+  unit  | before 43.9 ms (27.4 WPM) | after 55.6 ms (21.6 WPM) | marks imply 43.9 ms | window measured 40.0 WPM | key 61.4 ms over 8 letters | TOWARD the key
+  pairs | 16 pairs of 68 marks, 3 spikes passed over | pair unit 55.6 ms | first pair 30/100 ms, holding 1 of the 16 slots at the end
+  each  | 30/100ms=1440/4800smp->32.5 35/85ms=1680/4080smp->32.3 85/220ms=4080/10560smp->35.1 80/175ms=3840/8400smp->37.0 40/135ms=1920/6480smp->37.7 85/175ms=4080/8400smp->39.8 80/210ms=3840/10080smp->42.3 80/185ms=3840/8880smp->44.4 80/200ms=3840/9600smp->46.7 75/200ms=3600/9600smp->49.0 35/85ms=1680/4080smp->48.8 35/125ms=1680/6000smp->49.3 80/165ms=3840/7920smp->51.1 40/125ms=1920/6000smp->51.6 80/215ms=3840/10320smp->54.2 55/165ms=2640/7920smp->55.6
+  marks | 15 220 165 230 180 30 100 20 40 35 85 220 200 215 215 170 85 80 175 215 40 135 10 70 80 85 175 210 175 20 40 200 210 80 50 215 210 115 25 305 20 30 185 80 200 75 85 35 125 20 110 80 165 215 160 40 125 80 215 165 55 80 40 335 80 80 80 70 | spikes skipped 10 20 20
+  settled at this read:
+      HEAD  W .-- @16.530s Sure key=W right (stretch 0)
+      DIFF  W .-- @16.530s Sure key=W right (stretch 0)
+      DIFF  I .. @16.895s Sure key=I right (stretch 0)
+window | unadjudicated/cw-2026-08-22-031838 | read 32 | 6.500 to 18.500 s
+  unit  | before 42.5 ms (28.2 WPM) | after 59.2 ms (20.3 WPM) | marks imply 40.0 ms | window measured 28.2 WPM | key 61.4 ms over 8 letters | TOWARD the key
+  pairs | 18 pairs of 69 marks, 6 spikes passed over | pair unit 59.2 ms | first pair 40/155 ms, holding 0 of the 16 slots at the end
+  each  | 40/155ms=1920/7440smp->48.8 35/85ms=1680/4080smp->47.6 85/220ms=4080/10560smp->49.3 80/175ms=3840/8400smp->50.2 40/135ms=1920/6480smp->49.9 85/175ms=4080/8400smp->50.9 80/215ms=3840/10320smp->52.5 115/305ms=5520/14640smp->56.0 80/185ms=3840/8880smp->57.1 80/200ms=3840/9600smp->58.4 75/200ms=3600/9600smp->59.7 35/85ms=1680/4080smp->58.5 35/125ms=1680/6000smp->58.0 80/170ms=3840/8160smp->58.8 30/80ms=1440/3840smp->57.5 80/215ms=3840/10320smp->59.1 60/165ms=2880/7920smp->59.5 30/70ms=1440/3360smp->59.2
+  marks | 235 180 30 155 40 35 85 220 200 215 215 170 85 80 175 215 40 135 10 70 80 85 175 210 175 20 40 200 215 80 50 215 215 115 25 305 20 30 185 80 200 75 85 35 125 20 110 80 170 215 160 190 30 80 215 165 60 80 45 335 80 80 80 70 70 25 30 60 55 | spikes skipped 10 20 25 20 20 25
+  settled at this read:
+      HEAD  I .. @16.895s Sure key=I right (stretch 0)
+      HEAD  A .- @17.290s Sure key=T wrong (stretch 0)
+      DIFF  A .- @17.290s Sure key=T wrong (stretch 0)
+window | unadjudicated/cw-2026-08-22-031838 | read 34 | 7.500 to 19.500 s
+  unit  | before 40.0 ms (30.0 WPM) | after 69.4 ms (17.3 WPM) | marks imply 40.0 ms | window measured 40.0 WPM | key 61.4 ms over 10 letters | TOWARD the key
+  pairs | 15 pairs of 71 marks, 13 spikes passed over | pair unit 69.4 ms | first pair 85/225 ms, holding 2 of the 16 slots at the end
+  each  | 85/225ms=4080/10800smp->77.5 80/175ms=3840/8400smp->76.6 45/135ms=2160/6480smp->74.6 85/175ms=4080/8400smp->73.8 80/215ms=3840/10320smp->73.6 115/305ms=5520/14640smp->75.3 80/185ms=3840/8880smp->74.6 80/200ms=3840/9600smp->74.1 75/200ms=3600/9600smp->73.6 80/170ms=3840/8160smp->72.7 80/190ms=3840/9120smp->72.0 80/215ms=3840/10320smp->71.8 60/165ms=2880/7920smp->70.5 55/215ms=2640/10320smp->69.8 65/215ms=3120/10320smp->69.4
+  marks | 85 225 200 215 240 170 85 80 175 220 45 135 10 70 80 85 175 210 175 20 40 200 215 80 50 215 215 115 25 305 20 30 185 80 200 75 85 35 125 20 110 80 170 215 160 190 35 80 215 165 60 80 45 335 40 80 80 80 70 90 30 30 90 55 215 25 65 20 15 45 220 | spikes skipped 10 20 25 20 30 35 20 35 30 30 25 20 15
+  settled at this read:
+      HEAD  (none)
+      DIFF  _  @18.340s gap key=  (stretch )
+window | unadjudicated/cw-2026-08-22-031838 | read 35 | 8.000 to 20.000 s
+  unit  | before 54.5 ms (22.0 WPM) | after 70.7 ms (17.0 WPM) | marks imply 40.0 ms | window measured 48.0 WPM | key 61.7 ms over 11 letters | AWAY from the key
+  pairs | 15 pairs of 73 marks, 16 spikes passed over | pair unit 70.7 ms | first pair 90/215 ms, holding 2 of the 16 slots at the end
+  each  | 90/215ms=4320/10320smp->76.3 80/175ms=3840/8400smp->75.5 45/135ms=2160/6480smp->73.5 85/175ms=4080/8400smp->72.8 85/215ms=4080/10320smp->72.7 115/305ms=5520/14640smp->74.5 80/185ms=3840/8880smp->73.9 80/200ms=3840/9600smp->73.5 75/200ms=3600/9600smp->73.0 80/170ms=3840/8160smp->72.2 80/195ms=3840/9360smp->71.7 80/215ms=3840/10320smp->71.6 60/165ms=2880/7920smp->70.3 75/215ms=3600/10320smp->70.1 75/270ms=3600/12960smp->70.7
+  marks | 90 215 240 170 85 80 175 220 45 135 10 70 80 85 175 210 180 20 40 205 215 85 50 215 215 115 35 305 20 30 185 80 200 75 85 35 125 20 115 80 170 220 160 195 10 35 80 215 165 60 80 45 335 45 85 80 80 70 90 30 30 160 215 25 75 20 15 270 180 10 95 30 65 | spikes skipped 10 20 35 20 30 35 20 10 35 30 30 25 20 15 10 30
+  settled at this read:
+      HEAD  A .- @18.640s Sure key=A right (stretch 0)
+      DIFF  A .- @18.640s Sure key=A right (stretch 0)
+window | unadjudicated/cw-2026-08-22-031838 | read 46 | 13.500 to 25.500 s
+  unit  | before 35.0 ms (34.3 WPM) | after 64.3 ms (18.7 WPM) | marks imply 34.6 ms | window measured 34.3 WPM | key 62.1 ms over 13 letters | TOWARD the key
+  pairs | 20 pairs of 71 marks, 9 spikes passed over | pair unit 64.3 ms | first pair 80/200 ms, holding 0 of the 16 slots at the end
+  each  | 80/200ms=3840/9600smp->70.0 75/200ms=3600/9600smp->69.9 35/85ms=1680/4080smp->67.4 35/125ms=1680/6000smp->65.5 80/170ms=3840/8160smp->65.1 35/95ms=1680/4560smp->62.7 95/215ms=4560/10320smp->63.2 35/95ms=1680/4560smp->60.9 80/215ms=3840/10320smp->61.1 80/270ms=3840/12960smp->62.2 65/215ms=3120/10320smp->62.2 80/255ms=3840/12240smp->63.0 40/85ms=1920/4080smp->60.6 80/180ms=3840/8640smp->60.3 80/180ms=3840/8640smp->60.0 85/175ms=4080/8400smp->59.7 80/170ms=3840/8160smp->59.2 80/215ms=3840/10320smp->59.5 80/215ms=3840/10320smp->62.3 80/210ms=3840/10080smp->64.3
+  marks | 80 200 75 85 35 125 20 115 80 170 220 160 195 15 35 95 215 165 110 80 45 335 45 85 80 80 75 95 30 35 160 215 25 80 20 15 270 180 15 95 30 65 215 255 80 115 80 40 235 175 215 40 85 80 180 80 20 110 80 130 85 175 215 175 30 120 170 80 215 80 210 | spikes skipped 20 15 30 25 20 15 15 30 20
+  settled at this read:
+      HEAD  _  @24.115s gap key=  (stretch )
+      HEAD  T - @24.185s Sure key=R wrong (stretch 0)
+      HEAD  T - @24.410s Sure key=E wrong (stretch 0)
+      DIFF  (none)
+window | unadjudicated/cw-2026-08-22-031838 | read 52 | 16.500 to 28.500 s
+  unit  | before 48.3 ms (24.8 WPM) | after 68.5 ms (17.5 WPM) | marks imply 48.3 ms | window measured 40.0 WPM | key 62.2 ms over 11 letters | TOWARD the key
+  pairs | 25 pairs of 67 marks, 2 spikes passed over | pair unit 68.5 ms | first pair 25/65 ms, holding 0 of the 16 slots at the end
+  each  | 25/65ms=1200/3120smp->22.5 55/215ms=2640/10320smp->25.3 25/65ms=1200/3120smp->25.3 20/65ms=960/3120smp->25.2 15/45ms=720/2160smp->24.8 30/95ms=1440/4560smp->25.3 30/65ms=1440/3120smp->25.4 65/215ms=3120/10320smp->28.4 80/250ms=3840/12000smp->32.1 20/45ms=960/2160smp->31.7 35/80ms=1680/3840smp->32.1 80/180ms=3840/8640smp->34.8 80/180ms=3840/8640smp->37.4 85/175ms=4080/8400smp->40.1 80/170ms=3840/8160smp->42.6 80/215ms=3840/10320smp->45.8 75/215ms=3600/10320smp->48.9 75/210ms=3600/10080smp->49.1 210/470ms=10080/22560smp->58.4 80/230ms=3840/11040smp->61.9 80/215ms=3840/10320smp->65.5 70/215ms=3360/10320smp->68.0 70/210ms=3360/10080smp->70.9 60/210ms=2880/10080smp->70.8 60/125ms=2880/6000smp->68.5
+  marks | 40 55 80 40 335 80 80 80 70 65 25 30 60 55 215 25 65 20 15 45 215 180 95 30 65 215 250 80 50 45 20 215 175 210 35 80 80 180 80 20 110 75 130 85 175 215 175 115 170 80 215 75 210 220 210 470 315 230 80 215 70 210 10 60 25 125 215 | spikes skipped 10 25
+  settled at this read:
+      HEAD  (none)
+      DIFF  (none)
+window | unadjudicated/cw-2026-08-22-031838 | read 53 | 17.000 to 29.000 s
+  unit  | before 45.2 ms (26.6 WPM) | after 74.7 ms (16.1 WPM) | marks imply 45.2 ms | window measured 36.9 WPM | key 62.3 ms over 9 letters | TOWARD the key
+  pairs | 21 pairs of 66 marks, 11 spikes passed over | pair unit 74.7 ms | first pair 80/290 ms, holding 0 of the 16 slots at the end
+  each  | 80/290ms=3840/13920smp->92.5 55/215ms=2640/10320smp->90.9 65/215ms=3120/10320smp->89.5 65/215ms=3120/10320smp->88.1 80/250ms=3840/12000smp->87.5 80/210ms=3840/10080smp->86.3 80/180ms=3840/8640smp->84.5 80/180ms=3840/8640smp->82.8 85/175ms=4080/8400smp->81.1 80/170ms=3840/8160smp->79.2 80/215ms=3840/10320smp->78.0 75/215ms=3600/10320smp->76.8 75/210ms=3600/10080smp->75.5 210/470ms=10080/22560smp->80.3 80/230ms=3840/11040smp->79.4 80/215ms=3840/10320smp->78.2 70/215ms=3360/10320smp->76.9 70/210ms=3360/10080smp->77.0 60/210ms=2880/10080smp->76.9 60/125ms=2880/6000smp->75.4 80/205ms=3840/9840smp->74.7
+  marks | 290 80 80 80 70 65 25 30 60 55 215 25 65 20 15 45 215 180 95 30 65 215 250 80 50 45 20 215 175 210 35 80 80 180 80 20 110 75 130 85 175 215 175 115 170 80 215 75 210 220 210 470 315 230 80 215 70 210 10 60 25 125 215 205 80 115 | spikes skipped 25 30 25 20 15 30 20 35 20 10 25
+  settled at this read:
+      HEAD  (none)
+      DIFF  (none)
+window | unadjudicated/cw-2026-08-22-032113 | read 8 | 0.000 to 6.500 s
+  unit  | before 42.5 ms (28.2 WPM) | after 61.4 ms (19.5 WPM) | marks imply 49.0 ms | window measured 28.2 WPM | key 55.0 ms over 7 letters | TOWARD the key
+  pairs | 13 pairs of 26 marks, 2 spikes passed over | pair unit 61.4 ms | first pair 30/85 ms, holding 4 of the 16 slots at the end
+  each  | 30/85ms=1440/4080smp->28.8 85/175ms=4080/8400smp->31.0 80/175ms=3840/8400smp->33.2 80/180ms=3840/8640smp->35.5 40/140ms=1920/6720smp->36.5 55/140ms=2640/6720smp->37.7 55/160ms=2640/7680smp->39.3 160/425ms=7680/20400smp->46.6 80/290ms=3840/13920smp->50.6 45/145ms=2160/6960smp->51.8 85/255ms=4080/12240smp->55.3 85/225ms=4080/10800smp->58.4 85/225ms=4080/10800smp->61.4
+  marks | 30 85 175 80 180 40 140 55 160 425 80 290 220 45 45 145 165 25 255 85 15 225 85 85 100 65 | spikes skipped 25 15
+  settled at this read:
+      HEAD  _  @4.765s gap key=  (stretch )
+      HEAD  A .- @5.040s Sure key=A right (stretch 0)
+      HEAD  _  @5.240s gap key=  (stretch )
+      DIFF  _  @4.765s gap key=  (stretch )
+      DIFF  A .- @5.040s Sure key=A right (stretch 0)
+window | unadjudicated/cw-2026-08-22-032113 | read 9 | 0.000 to 7.000 s
+  unit  | before 42.5 ms (28.2 WPM) | after 61.5 ms (19.5 WPM) | marks imply 44.0 ms | window measured 28.2 WPM | key 56.4 ms over 8 letters | TOWARD the key
+  pairs | 14 pairs of 29 marks, 2 spikes passed over | pair unit 61.5 ms | first pair 30/85 ms, holding 3 of the 16 slots at the end
+  each  | 30/85ms=1440/4080smp->28.8 85/175ms=4080/8400smp->31.0 80/175ms=3840/8400smp->33.2 80/180ms=3840/8640smp->35.5 40/140ms=1920/6720smp->36.5 55/140ms=2640/6720smp->37.7 55/160ms=2640/7680smp->39.3 160/425ms=7680/20400smp->46.6 80/290ms=3840/13920smp->50.6 45/145ms=2160/6960smp->51.8 85/255ms=4080/12240smp->55.3 85/225ms=4080/10800smp->58.4 85/225ms=4080/10800smp->61.4 35/85ms=1680/4080smp->61.5
+  marks | 30 85 175 80 180 40 140 55 160 425 80 290 220 45 45 145 165 25 255 85 15 225 85 85 100 65 130 85 35 | spikes skipped 25 15
+  settled at this read:
+      HEAD  N -. @5.515s Sure key=N right (stretch 0)
+      HEAD  _  @5.710s gap key=  (stretch )
+      DIFF  N -. @5.515s Sure key=N right (stretch 0)
+window | unadjudicated/cw-2026-08-22-032113 | read 10 | 0.000 to 7.500 s
+  unit  | before 40.0 ms (30.0 WPM) | after 63.0 ms (19.1 WPM) | marks imply 44.0 ms | window measured 30.0 WPM | key 57.8 ms over 9 letters | TOWARD the key
+  pairs | 15 pairs of 31 marks, 2 spikes passed over | pair unit 63.0 ms | first pair 30/85 ms, holding 2 of the 16 slots at the end
+  each  | 30/85ms=1440/4080smp->28.8 85/175ms=4080/8400smp->31.0 80/175ms=3840/8400smp->33.2 80/175ms=3840/8400smp->35.4 40/120ms=1920/5760smp->36.1 55/120ms=2640/5760smp->37.0 55/155ms=2640/7440smp->38.5 155/425ms=7440/20400smp->45.8 80/290ms=3840/13920smp->49.8 45/145ms=2160/6960smp->50.9 80/255ms=3840/12240smp->54.4 80/225ms=3840/10800smp->57.3 85/225ms=4080/10800smp->60.4 35/85ms=1680/4080smp->60.5 85/190ms=4080/9120smp->63.0
+  marks | 30 85 175 80 175 40 120 55 155 425 80 290 215 45 45 145 165 25 255 80 15 225 85 85 100 65 130 85 35 190 85 | spikes skipped 25 15
+  settled at this read:
+      HEAD  O --- @6.135s Sure key=D wrong (stretch 0)
+      DIFF  D -.. @6.135s Sure key=D right (stretch 0)
+window | unadjudicated/cw-2026-08-22-032113 | read 11 | 0.000 to 8.000 s
+  unit  | before 50.0 ms (24.0 WPM) | after 68.7 ms (17.5 WPM) | marks imply 46.6 ms | window measured 24.0 WPM | key 60.0 ms over 11 letters | TOWARD the key
+  pairs | 17 pairs of 34 marks, 2 spikes passed over | pair unit 68.7 ms | first pair 30/85 ms, holding 0 of the 16 slots at the end
+  each  | 30/85ms=1440/4080smp->28.8 85/175ms=4080/8400smp->31.0 80/175ms=3840/8400smp->33.2 80/180ms=3840/8640smp->35.5 40/140ms=1920/6720smp->36.5 55/140ms=2640/6720smp->37.7 55/160ms=2640/7680smp->39.3 160/425ms=7680/20400smp->46.6 80/290ms=3840/13920smp->50.6 45/145ms=2160/6960smp->51.8 85/255ms=4080/12240smp->55.3 85/225ms=4080/10800smp->58.4 85/225ms=4080/10800smp->61.4 35/85ms=1680/4080smp->61.5 85/190ms=4080/9120smp->64.0 85/195ms=4080/9360smp->66.6 55/195ms=2640/9360smp->68.7
+  marks | 30 85 175 80 180 40 140 55 160 425 80 290 220 45 45 145 165 25 255 85 15 225 85 85 100 65 130 85 35 190 85 195 55 90 | spikes skipped 25 15
+  settled at this read:
+      HEAD  _  @6.535s gap key=  (stretch )
+      HEAD  I .. @6.740s Sure key=I right (stretch 0)
+      DIFF  _  @6.535s gap key=  (stretch )
+      DIFF  I .. @6.740s Sure key=I right (stretch 0)
+window | unadjudicated/cw-2026-08-22-032113 | read 12 | 0.000 to 8.500 s
+  unit  | before 50.0 ms (24.0 WPM) | after 70.5 ms (17.0 WPM) | marks imply 44.0 ms | window measured 24.0 WPM | key 60.0 ms over 13 letters | AWAY from the key
+  pairs | 17 pairs of 37 marks, 3 spikes passed over | pair unit 70.5 ms | first pair 30/85 ms, holding 0 of the 16 slots at the end
+  each  | 30/85ms=1440/4080smp->28.8 85/175ms=4080/8400smp->31.0 80/175ms=3840/8400smp->33.2 80/180ms=3840/8640smp->35.5 40/140ms=1920/6720smp->36.5 55/140ms=2640/6720smp->37.7 55/160ms=2640/7680smp->39.3 160/425ms=7680/20400smp->46.6 80/290ms=3840/13920smp->50.6 50/145ms=2400/6960smp->51.9 85/255ms=4080/12240smp->55.4 85/225ms=4080/10800smp->58.4 85/225ms=4080/10800smp->61.5 35/85ms=1680/4080smp->61.6 85/190ms=4080/9120smp->64.1 85/245ms=4080/11760smp->67.4 95/220ms=4560/10560smp->70.5
+  marks | 30 85 175 80 180 40 140 55 160 425 80 290 220 45 50 145 165 25 255 85 15 225 85 85 100 65 130 85 35 190 85 245 55 90 95 220 35 | spikes skipped 25 15 35
+  settled at this read:
+      HEAD  N -. @7.215s Sure key=N right (stretch 0)
+      DIFF  N -. @7.215s Sure key=N right (stretch 0)
+window | unadjudicated/cw-2026-08-22-032113 | read 13 | 0.000 to 9.000 s
+  unit  | before 42.5 ms (28.2 WPM) | after 71.6 ms (16.8 WPM) | marks imply 41.1 ms | window measured 28.2 WPM | key 60.4 ms over 14 letters | TOWARD the key
+  pairs | 17 pairs of 40 marks, 4 spikes passed over | pair unit 71.6 ms | first pair 30/85 ms, holding 0 of the 16 slots at the end
+  each  | 30/85ms=1440/4080smp->28.8 85/175ms=4080/8400smp->31.0 80/175ms=3840/8400smp->33.2 80/175ms=3840/8400smp->35.4 40/120ms=1920/5760smp->36.1 155/425ms=7440/20400smp->43.4 80/290ms=3840/13920smp->47.3 45/145ms=2160/6960smp->48.5 80/255ms=3840/12240smp->52.0 80/225ms=3840/10800smp->54.9 85/225ms=4080/10800smp->58.0 35/85ms=1680/4080smp->58.0 85/190ms=4080/9120smp->60.5 85/195ms=4080/9360smp->63.1 55/195ms=2640/9360smp->65.2 95/220ms=4560/10560smp->68.4 100/220ms=4800/10560smp->71.6
+  marks | 30 85 175 80 175 40 120 155 425 80 290 215 45 45 145 165 25 255 80 15 225 85 85 100 25 10 130 85 35 190 85 195 55 90 95 220 30 40 220 100 | spikes skipped 15 25 10 30
+  settled at this read:
+      HEAD  T - @7.555s Sure key=T right (stretch 0)
+      HEAD  E . @7.820s Sure key=E right (stretch 0)
+      DIFF  T - @7.555s Sure key=T right (stretch 0)
+      DIFF  E . @7.820s Sure key=E right (stretch 0)
+window | unadjudicated/cw-2026-08-22-032113 | read 14 | 0.000 to 9.500 s
+  unit  | before 42.5 ms (28.2 WPM) | after 71.7 ms (16.7 WPM) | marks imply 41.1 ms | window measured 28.2 WPM | key 60.4 ms over 16 letters | TOWARD the key
+  pairs | 18 pairs of 42 marks, 4 spikes passed over | pair unit 71.7 ms | first pair 30/85 ms, holding 0 of the 16 slots at the end
+  each  | 30/85ms=1440/4080smp->28.8 85/175ms=4080/8400smp->31.0 80/175ms=3840/8400smp->33.2 80/175ms=3840/8400smp->35.4 40/120ms=1920/5760smp->36.1 155/425ms=7440/20400smp->43.4 80/290ms=3840/13920smp->47.3 45/145ms=2160/6960smp->48.5 80/255ms=3840/12240smp->52.0 80/225ms=3840/10800smp->54.9 85/225ms=4080/10800smp->58.0 35/85ms=1680/4080smp->58.0 85/190ms=4080/9120smp->60.5 85/195ms=4080/9360smp->63.1 55/195ms=2640/9360smp->65.2 95/220ms=4560/10560smp->68.4 100/220ms=4800/10560smp->71.6 85/185ms=4080/8880smp->71.7
+  marks | 30 85 175 80 175 40 120 155 425 80 290 215 45 45 145 165 25 255 80 15 225 85 85 100 25 10 130 85 35 190 85 195 55 90 95 220 30 40 220 100 85 185 | spikes skipped 15 25 10 30
+  settled at this read:
+      HEAD  R .-. @8.375s Sure key=R right (stretch 0)
+      DIFF  R .-. @8.380s Sure key=R right (stretch 0)
+window | unadjudicated/cw-2026-08-22-032113 | read 15 | 0.000 to 10.000 s
+  unit  | before 42.5 ms (28.2 WPM) | after 71.9 ms (16.7 WPM) | marks imply 38.9 ms | window measured 28.2 WPM | key 60.4 ms over 16 letters | TOWARD the key
+  pairs | 19 pairs of 44 marks, 4 spikes passed over | pair unit 71.9 ms | first pair 30/85 ms, holding 0 of the 16 slots at the end
+  each  | 30/85ms=1440/4080smp->28.8 85/175ms=4080/8400smp->31.0 80/175ms=3840/8400smp->33.2 80/175ms=3840/8400smp->35.4 40/120ms=1920/5760smp->36.1 155/425ms=7440/20400smp->43.4 80/290ms=3840/13920smp->47.3 45/145ms=2160/6960smp->48.5 80/255ms=3840/12240smp->52.0 80/225ms=3840/10800smp->54.9 85/225ms=4080/10800smp->58.0 35/85ms=1680/4080smp->58.0 85/190ms=4080/9120smp->60.5 85/195ms=4080/9360smp->63.1 55/195ms=2640/9360smp->65.2 95/220ms=4560/10560smp->68.4 100/220ms=4800/10560smp->71.6 85/185ms=4080/8880smp->71.7 80/185ms=3840/8880smp->71.9
+  marks | 30 85 175 80 175 40 120 155 425 80 290 215 45 45 145 165 25 255 80 15 225 85 85 100 25 10 130 85 35 190 85 195 55 90 95 220 30 40 220 100 85 185 80 60 | spikes skipped 15 25 10 30
+  settled at this read:
+      HEAD  N -. @8.900s Sure key=N right (stretch 0)
+      DIFF  N -. @8.900s Sure key=N right (stretch 0)
+window | unadjudicated/cw-2026-08-22-032113 | read 16 | 0.000 to 10.500 s
+  unit  | before 42.5 ms (28.2 WPM) | after 71.6 ms (16.8 WPM) | marks imply 36.6 ms | window measured 28.2 WPM | key 60.0 ms over 17 letters | TOWARD the key
+  pairs | 19 pairs of 47 marks, 4 spikes passed over | pair unit 71.6 ms | first pair 30/85 ms, holding 0 of the 16 slots at the end
+  each  | 30/85ms=1440/4080smp->28.8 85/175ms=4080/8400smp->31.0 80/175ms=3840/8400smp->33.2 80/175ms=3840/8400smp->35.4 35/115ms=1680/5520smp->35.9 155/425ms=7440/20400smp->43.2 80/290ms=3840/13920smp->47.2 45/145ms=2160/6960smp->48.4 80/255ms=3840/12240smp->51.8 80/225ms=3840/10800smp->54.8 85/225ms=4080/10800smp->57.8 35/85ms=1680/4080smp->57.9 85/190ms=4080/9120smp->60.4 85/195ms=4080/9360smp->63.0 55/195ms=2640/9360smp->65.1 90/220ms=4320/10560smp->68.1 100/220ms=4800/10560smp->71.3 85/185ms=4080/8880smp->71.5 80/185ms=3840/8880smp->71.6
+  marks | 30 85 175 80 175 35 115 155 425 80 290 215 45 45 145 160 25 255 80 15 225 85 85 100 25 10 85 85 35 190 85 195 55 90 90 220 30 40 220 100 85 185 80 60 85 80 155 | spikes skipped 15 25 10 30
+  settled at this read:
+      HEAD  E . @9.105s Sure key=E right (stretch 0)
+      HEAD  T - @9.455s Sure key=T right (stretch 0)
+      DIFF  E . @9.105s Sure key=E right (stretch 0)
+      DIFF  T - @9.455s Sure key=T right (stretch 0)
+window | unadjudicated/cw-2026-08-22-032113 | read 17 | 0.000 to 11.000 s
+  unit  | before 42.5 ms (28.2 WPM) | after 71.6 ms (16.8 WPM) | marks imply 34.2 ms | window measured 28.2 WPM | key 60.4 ms over 18 letters | TOWARD the key
+  pairs | 19 pairs of 51 marks, 5 spikes passed over | pair unit 71.6 ms | first pair 30/85 ms, holding 0 of the 16 slots at the end
+  each  | 30/85ms=1440/4080smp->28.8 85/175ms=4080/8400smp->31.0 80/175ms=3840/8400smp->33.2 80/175ms=3840/8400smp->35.4 35/115ms=1680/5520smp->35.9 155/425ms=7440/20400smp->43.2 80/290ms=3840/13920smp->47.2 45/145ms=2160/6960smp->48.4 80/255ms=3840/12240smp->51.8 80/225ms=3840/10800smp->54.8 85/225ms=4080/10800smp->57.8 35/85ms=1680/4080smp->57.9 85/190ms=4080/9120smp->60.4 85/195ms=4080/9360smp->63.0 55/195ms=2640/9360smp->65.1 90/220ms=4320/10560smp->68.1 100/220ms=4800/10560smp->71.3 85/185ms=4080/8880smp->71.5 80/185ms=3840/8880smp->71.6
+  marks | 30 85 175 80 175 35 115 155 425 80 290 215 45 45 145 160 25 255 80 15 225 85 85 100 25 10 85 85 35 190 85 195 55 90 90 220 30 40 220 100 85 185 80 60 85 80 155 85 85 25 60 | spikes skipped 15 25 10 30 25
+  settled at this read:
+      HEAD  _  @9.905s gap key=  (stretch )
+      DIFF  _  @9.905s gap key=  (stretch )
+window | unadjudicated/cw-2026-08-22-032113 | read 18 | 0.000 to 11.500 s
+  unit  | before 42.5 ms (28.2 WPM) | after 74.5 ms (16.1 WPM) | marks imply 34.2 ms | window measured 28.2 WPM | key 60.0 ms over 19 letters | TOWARD the key
+  pairs | 21 pairs of 53 marks, 5 spikes passed over | pair unit 74.5 ms | first pair 30/85 ms, holding 0 of the 16 slots at the end
+  each  | 30/85ms=1440/4080smp->28.8 85/175ms=4080/8400smp->31.0 80/175ms=3840/8400smp->33.2 80/175ms=3840/8400smp->35.4 35/115ms=1680/5520smp->35.9 155/425ms=7440/20400smp->43.2 80/290ms=3840/13920smp->47.2 45/145ms=2160/6960smp->48.4 80/255ms=3840/12240smp->51.8 80/225ms=3840/10800smp->54.8 85/225ms=4080/10800smp->57.8 35/85ms=1680/4080smp->57.9 85/190ms=4080/9120smp->60.4 85/195ms=4080/9360smp->63.0 55/195ms=2640/9360smp->65.1 90/220ms=4320/10560smp->68.1 100/220ms=4800/10560smp->71.3 85/185ms=4080/8880smp->71.5 80/185ms=3840/8880smp->71.6 60/220ms=2880/10560smp->72.0 85/220ms=4080/10560smp->74.5
+  marks | 30 85 175 80 175 35 115 155 425 80 290 215 45 45 145 160 25 255 80 15 225 85 85 100 25 10 85 85 35 190 85 195 55 90 90 220 30 40 220 100 85 185 80 60 85 80 155 85 85 25 60 220 85 | spikes skipped 15 25 10 30 25
+  settled at this read:
+      HEAD  ■ .-.- @10.405s Placeholder key=V placeholder (stretch 0)
+      DIFF  V ...- @10.405s Sure key=V right (stretch 0)
+window | unadjudicated/cw-2026-08-22-032113 | read 19 | 0.000 to 12.000 s
+  unit  | before 42.5 ms (28.2 WPM) | after 74.5 ms (16.1 WPM) | marks imply 32.4 ms | window measured 28.2 WPM | key 60.4 ms over 20 letters | TOWARD the key
+  pairs | 21 pairs of 57 marks, 5 spikes passed over | pair unit 74.5 ms | first pair 30/85 ms, holding 0 of the 16 slots at the end
+  each  | 30/85ms=1440/4080smp->28.8 85/175ms=4080/8400smp->31.0 80/175ms=3840/8400smp->33.2 80/175ms=3840/8400smp->35.4 35/115ms=1680/5520smp->35.9 155/425ms=7440/20400smp->43.2 80/290ms=3840/13920smp->47.2 45/145ms=2160/6960smp->48.4 80/255ms=3840/12240smp->51.8 80/225ms=3840/10800smp->54.8 85/225ms=4080/10800smp->57.8 35/85ms=1680/4080smp->57.9 85/190ms=4080/9120smp->60.4 85/195ms=4080/9360smp->63.0 55/195ms=2640/9360smp->65.1 90/220ms=4320/10560smp->68.1 100/220ms=4800/10560smp->71.3 85/185ms=4080/8880smp->71.5 80/185ms=3840/8880smp->71.6 60/220ms=2880/10560smp->72.0 85/220ms=4080/10560smp->74.5
+  marks | 30 85 175 80 175 35 115 155 425 80 290 215 45 45 145 160 25 255 80 15 225 85 85 100 25 10 85 85 35 190 85 195 55 90 90 220 30 40 220 100 85 185 80 60 85 80 155 85 85 25 60 220 85 85 85 85 55 | spikes skipped 15 25 10 30 25
+  settled at this read:
+      HEAD  E . @10.670s Sure key=E right (stretch 0)
+      DIFF  E . @10.670s Sure key=E right (stretch 0)
+window | unadjudicated/cw-2026-08-22-032113 | read 43 | 12.000 to 24.000 s
+  unit  | before 50.0 ms (24.0 WPM) | after 68.3 ms (17.6 WPM) | marks imply 52.0 ms | window measured 24.0 WPM | key 59.5 ms over 4 letters | TOWARD the key
+  pairs | 9 pairs of 52 marks, 5 spikes passed over | pair unit 68.3 ms | first pair 85/180 ms, holding 8 of the 16 slots at the end
+  each  | 85/180ms=4080/8640smp->66.3 55/175ms=2640/8400smp->65.7 60/235ms=2880/11280smp->66.2 60/200ms=2880/9600smp->66.1 80/200ms=3840/9600smp->66.3 60/215ms=2880/10320smp->66.5 85/215ms=4080/10320smp->67.0 85/290ms=4080/13920smp->68.8 50/185ms=2400/8880smp->68.3
+  marks | 85 180 225 175 55 235 60 200 80 70 35 50 35 45 30 195 215 180 100 90 60 215 85 65 275 40 220 210 220 185 225 170 220 180 45 20 85 290 225 165 170 85 85 85 110 30 80 65 25 50 185 30 | spikes skipped 30 20 30 25 30
+  settled at this read:
+      HEAD  I .. @22.510s Sure key=- -
+      DIFF  _  @22.470s gap key=  (stretch )
+      DIFF  E . @22.510s Sure key=- -
+window | unadjudicated/cw-2026-08-22-032113 | read 45 | 13.000 to 25.000 s
+  unit  | before 52.5 ms (22.9 WPM) | after 69.4 ms (17.3 WPM) | marks imply 63.2 ms | window measured 22.9 WPM | key 59.5 ms over 2 letters | AWAY from the key
+  pairs | 9 pairs of 51 marks, 6 spikes passed over | pair unit 69.4 ms | first pair 60/205 ms, holding 8 of the 16 slots at the end
+  each  | 60/205ms=2880/9840smp->66.3 85/205ms=4080/9840smp->66.6 60/215ms=2880/10320smp->66.8 85/215ms=4080/10320smp->67.3 70/275ms=3360/13200smp->68.6 45/140ms=2160/6720smp->67.3 140/290ms=6720/13920smp->69.9 55/185ms=2640/8880smp->69.5 70/185ms=3360/8880smp->69.4
+  marks | 55 265 60 205 85 70 75 50 35 45 30 200 215 180 105 90 60 215 85 70 275 40 220 210 220 185 225 170 225 180 45 140 290 225 165 30 170 85 85 85 110 30 80 65 25 55 185 30 70 25 90 | spikes skipped 30 30 30 25 30 25
+  settled at this read:
+      HEAD  (none)
+      DIFF  (none)
+window | unadjudicated/cw-2026-08-22-032113 | read 47 | 14.000 to 26.000 s
+  unit  | before 45.0 ms (26.7 WPM) | after 69.5 ms (17.3 WPM) | marks imply 52.0 ms | window measured 26.7 WPM | key - ms over 0 letters | no key letter in the window
+  pairs | 8 pairs of 46 marks, 7 spikes passed over | pair unit 69.5 ms | first pair 65/200 ms, holding 9 of the 16 slots at the end
+  each  | 65/200ms=3120/9600smp->66.3 60/220ms=2880/10560smp->66.5 85/220ms=4080/10560smp->67.1 90/275ms=4320/13200smp->68.7 45/140ms=2160/6720smp->67.4 140/290ms=6720/13920smp->70.0 55/185ms=2640/8880smp->69.6 70/185ms=3360/8880smp->69.5
+  marks | 75 50 85 65 200 215 180 105 90 60 220 85 90 275 40 220 210 220 240 225 170 225 180 45 140 290 225 165 30 20 170 85 85 85 150 85 70 25 55 185 30 70 25 90 25 30 | spikes skipped 30 20 25 30 25 25 30
+  settled at this read:
+      HEAD  T - @24.750s Sure key=- -
+      DIFF  E . @24.750s Sure key=- -
+window | unadjudicated/cw-2026-08-22-032113 | read 48 | 14.500 to 26.500 s
+  unit  | before 42.5 ms (28.2 WPM) | after 73.0 ms (16.4 WPM) | marks imply 49.0 ms | window measured 28.2 WPM | key - ms over 0 letters | no key letter in the window
+  pairs | 8 pairs of 43 marks, 7 spikes passed over | pair unit 73.0 ms | first pair 75/215 ms, holding 9 of the 16 slots at the end
+  each  | 75/215ms=3600/10320smp->72.5 60/220ms=2880/10560smp->72.3 85/220ms=4080/10560smp->72.6 90/275ms=4320/13200smp->73.8 45/140ms=2160/6720smp->72.1 140/290ms=6720/13920smp->74.3 55/185ms=2640/8880smp->73.5 70/185ms=3360/8880smp->73.0
+  marks | 75 215 180 105 90 60 220 85 90 275 40 220 210 220 240 225 170 225 180 45 140 290 225 165 30 20 170 85 85 85 150 85 70 25 55 185 30 70 25 90 25 30 60 | spikes skipped 30 20 25 30 25 25 30
+  settled at this read:
+      HEAD  T - @24.755s Sure key=- -
+      HEAD  _  @25.405s gap key=  (stretch )
+      HEAD  E . @25.435s Sure key=- -
+      DIFF  _  @25.405s gap key=  (stretch )
+      DIFF  E . @25.435s Sure key=- -
+window | unadjudicated/cw-2026-08-22-032113 | read 50 | 15.500 to 27.500 s
+  unit  | before 45.0 ms (26.7 WPM) | after 72.8 ms (16.5 WPM) | marks imply 47.6 ms | window measured 26.7 WPM | key - ms over 0 letters | no key letter in the window
+  pairs | 7 pairs of 38 marks, 5 spikes passed over | pair unit 72.8 ms | first pair 85/200 ms, holding 10 of the 16 slots at the end
+  each  | 85/200ms=4080/9600smp->71.3 95/280ms=4560/13440smp->72.7 60/180ms=2880/8640smp->72.0 60/140ms=2880/6720smp->70.6 140/290ms=6720/13920smp->72.9 85/230ms=4080/11040smp->73.4 60/190ms=2880/9120smp->72.8
+  marks | 200 85 95 280 40 225 210 220 280 230 170 225 180 60 140 290 225 165 35 230 85 90 85 150 85 15 70 50 60 190 45 90 25 90 30 65 100 20 | spikes skipped 35 15 25 30 20
+  settled at this read:
+      HEAD  I .. @26.335s Sure key=- -
+      DIFF  E . @26.335s Sure key=- -
+window | unadjudicated/cw-2026-08-22-032113 | read 51 | 16.000 to 28.000 s
+  unit  | before 42.5 ms (28.2 WPM) | after 62.8 ms (19.1 WPM) | marks imply 49.0 ms | window measured 28.2 WPM | key - ms over 0 letters | no key letter in the window
+  pairs | 7 pairs of 37 marks, 4 spikes passed over | pair unit 62.8 ms | first pair 60/180 ms, holding 10 of the 16 slots at the end
+  each  | 60/180ms=2880/8640smp->60.0 60/140ms=2880/6720smp->59.4 140/290ms=6720/13920smp->62.3 85/230ms=4080/11040smp->63.5 60/190ms=2880/9120smp->63.7 50/190ms=2400/9120smp->63.7 55/130ms=2640/6240smp->62.8
+  marks | 20 280 40 225 210 220 280 230 170 225 180 60 140 290 225 165 35 230 85 90 85 150 85 15 80 50 60 190 50 55 130 25 90 30 65 100 20 | spikes skipped 15 25 30 20
+  settled at this read:
+      HEAD  I .. @26.705s Sure key=- -
+      DIFF  I .. @26.705s Sure key=- -
+window | unadjudicated/cw-2026-08-22-032113 | read 52 | 16.500 to 28.500 s
+  unit  | before 47.5 ms (25.3 WPM) | after 64.8 ms (18.5 WPM) | marks imply 56.6 ms | window measured 25.3 WPM | key - ms over 0 letters | no key letter in the window
+  pairs | 7 pairs of 36 marks, 4 spikes passed over | pair unit 64.8 ms | first pair 65/180 ms, holding 10 of the 16 slots at the end
+  each  | 65/180ms=3120/8640smp->61.3 65/145ms=3120/6960smp->60.7 90/230ms=4320/11040smp->61.9 60/190ms=2880/9120smp->62.0 55/190ms=2640/9120smp->62.0 55/135ms=2640/6480smp->61.1 130/350ms=6240/16800smp->64.8
+  marks | 175 210 220 280 235 170 225 180 65 145 290 225 165 35 230 90 90 90 150 85 15 80 55 60 190 55 55 135 30 90 45 65 130 25 20 350 | spikes skipped 15 30 25 20
+  settled at this read:
+      HEAD  (none)
+      DIFF  (none)
+window | unadjudicated/cw-2026-08-22-032113 | read 54 | 17.500 to 29.500 s
+  unit  | before 50.0 ms (24.0 WPM) | after 67.4 ms (17.8 WPM) | marks imply 53.2 ms | window measured 24.0 WPM | key - ms over 0 letters | no key letter in the window
+  pairs | 7 pairs of 32 marks, 2 spikes passed over | pair unit 67.4 ms | first pair 65/180 ms, holding 10 of the 16 slots at the end
+  each  | 65/180ms=3120/8640smp->61.3 65/150ms=3120/7200smp->60.8 90/235ms=4320/11280smp->62.0 60/140ms=2880/6720smp->61.3 40/95ms=1920/4560smp->59.6 170/360ms=8160/17280smp->64.1 100/360ms=4800/17280smp->67.4
+  marks | 20 240 170 225 180 65 150 295 435 35 235 90 90 100 150 290 265 65 20 60 140 70 40 95 50 75 135 30 15 170 360 100 | spikes skipped 20 15
+  settled at this read:
+      HEAD  W .-- @28.295s Sure key=- -
+      HEAD  E . @28.420s Sure key=- -
+      DIFF  W .-- @28.295s Sure key=- -
+window | unadjudicated/cw-2026-08-22-032113 | read 55 | 18.000 to 30.000 s
+  unit  | before 42.5 ms (28.2 WPM) | after 71.8 ms (16.7 WPM) | marks imply 52.0 ms | window measured 28.2 WPM | key - ms over 0 letters | no key letter in the window
+  pairs | 8 pairs of 34 marks, 7 spikes passed over | pair unit 71.8 ms | first pair 70/180 ms, holding 9 of the 16 slots at the end
+  each  | 70/180ms=3360/8640smp->62.5 90/285ms=4320/13680smp->64.5 70/270ms=3360/12960smp->65.9 60/145ms=2880/6960smp->65.2 45/95ms=2160/4560smp->63.4 80/180ms=3840/8640smp->63.6 175/365ms=8400/17520smp->68.1 120/365ms=5760/17520smp->71.8
+  marks | 230 180 70 485 435 285 90 90 105 445 270 25 70 25 20 60 145 80 45 45 95 30 95 80 180 40 20 175 25 365 20 120 145 170 | spikes skipped 25 25 20 30 20 25 20
+  settled at this read:
+      HEAD  (none)
+      DIFF  W .-- @28.305s Sure key=- -
+window | unadjudicated/cw-2026-08-22-032113 | read 56 | 18.000 to 30.000 s
+  unit  | before 42.5 ms (28.2 WPM) | after 71.8 ms (16.7 WPM) | marks imply 52.0 ms | window measured 28.2 WPM | key - ms over 0 letters | no key letter in the window
+  pairs | 8 pairs of 34 marks, 7 spikes passed over | pair unit 71.8 ms | first pair 70/180 ms, holding 9 of the 16 slots at the end
+  each  | 70/180ms=3360/8640smp->62.5 90/285ms=4320/13680smp->64.5 70/270ms=3360/12960smp->65.9 60/145ms=2880/6960smp->65.2 45/95ms=2160/4560smp->63.4 80/180ms=3840/8640smp->63.6 175/365ms=8400/17520smp->68.1 120/365ms=5760/17520smp->71.8
+  marks | 230 180 70 485 435 285 90 90 105 445 270 25 70 25 20 60 145 80 45 45 95 30 95 80 180 40 20 175 25 365 20 120 145 170 | spikes skipped 25 25 20 30 20 25 20
+  settled at this read:
+      HEAD  _  @29.065s gap key=  (stretch )
+      HEAD  T - @29.670s Sure key=- -
+      HEAD  I .. @30.000s Sure key=- -
+      DIFF  _  @29.410s gap key=  (stretch )
+      DIFF  A .- @29.670s Sure key=- -
+      DIFF  I .. @30.000s Sure key=- -
+window | unadjudicated/cw-2026-08-22-031948 | read 18 | 0.000 to 11.500 s
+  unit  | before 67.5 ms (17.8 WPM) | after 146.3 ms (8.2 WPM) | marks imply 49.7 ms | window measured 17.8 WPM | key 61.3 ms over 6 letters | AWAY from the key
+  pairs | 5 pairs of 41 marks, 4 spikes passed over | pair unit 146.3 ms | first pair 220/455 ms, holding 12 of the 16 slots at the end
+  each  | 220/455ms=10560/21840smp->168.8 85/220ms=4080/10560smp->163.0 85/270ms=4080/12960smp->158.0 85/220ms=4080/10560smp->152.2 85/215ms=4080/10320smp->146.3
+  marks | 90 145 215 200 315 455 220 40 85 90 85 85 85 270 215 165 220 185 20 315 220 180 220 180 170 175 220 180 220 255 220 175 220 180 15 175 220 85 55 215 180 | spikes skipped 40 20 15 55
+  settled at this read:
+      HEAD  0 ----- @10.120s Sure key=0 right (stretch 0)
+      DIFF  (none)
+window | unadjudicated/cw-2026-08-22-031948 | read 19 | 0.000 to 12.000 s
+  unit  | before 67.5 ms (17.8 WPM) | after 146.3 ms (8.2 WPM) | marks imply 52.7 ms | window measured 17.8 WPM | key 61.3 ms over 6 letters | AWAY from the key
+  pairs | 5 pairs of 44 marks, 6 spikes passed over | pair unit 146.3 ms | first pair 220/455 ms, holding 12 of the 16 slots at the end
+  each  | 220/455ms=10560/21840smp->168.8 85/220ms=4080/10560smp->163.0 85/270ms=4080/12960smp->158.0 85/220ms=4080/10560smp->152.2 85/215ms=4080/10320smp->146.3
+  marks | 90 145 215 200 315 455 220 40 85 90 85 85 85 270 215 165 220 185 20 315 220 180 220 180 170 175 220 180 220 255 220 175 220 180 15 175 220 85 55 215 180 150 65 45 | spikes skipped 40 20 15 55 65 45
+  settled at this read:
+      HEAD  (none)
+      DIFF  (none)
+window | unadjudicated/cw-2026-08-22-031948 | read 20 | 0.500 to 12.500 s
+  unit  | before 65.0 ms (18.5 WPM) | after 138.8 ms (8.6 WPM) | marks imply 54.8 ms | window measured 18.5 WPM | key 60.8 ms over 7 letters | AWAY from the key
+  pairs | 6 pairs of 47 marks, 8 spikes passed over | pair unit 138.8 ms | first pair 220/450 ms, holding 11 of the 16 slots at the end
+  each  | 220/450ms=10560/21600smp->167.5 85/220ms=4080/10560smp->161.8 85/230ms=4080/11040smp->156.3 85/220ms=4080/10560smp->150.5 85/215ms=4080/10320smp->144.8 75/215ms=3600/10320smp->138.8
+  marks | 90 145 215 200 315 450 220 40 85 85 85 85 80 230 215 165 220 185 20 315 215 180 215 175 30 100 175 215 180 220 235 220 175 220 180 15 175 220 85 55 215 180 150 65 45 215 75 | spikes skipped 40 80 20 30 15 55 65 45
+  settled at this read:
+      HEAD  , --..-- @11.470s Sure key=, right (stretch 0)
+      DIFF  ■ .................... @11.470s Placeholder key=, placeholder (stretch 0)
+window | cw-2026-08-18-004507 | read 21 | 1.000 to 13.000 s
+  unit  | before 32.5 ms (36.9 WPM) | after 60.0 ms (20.0 WPM) | marks imply 35.0 ms | window measured 36.9 WPM | key 51.9 ms over 14 letters | TOWARD the key
+  pairs | 22 pairs of 57 marks, 6 spikes passed over | pair unit 60.0 ms | first pair 70/170 ms, holding 0 of the 16 slots at the end
+  each  | 70/170ms=3360/8160smp->60.0 50/175ms=2400/8400smp->59.8 45/105ms=2160/5040smp->58.4 70/170ms=3360/8160smp->58.4 70/170ms=3360/8160smp->58.4 70/170ms=3360/8160smp->58.4 70/155ms=3360/7440smp->58.1 70/170ms=3360/8160smp->58.1 75/170ms=3600/8160smp->58.2 70/170ms=3360/8160smp->58.2 50/170ms=2400/8160smp->57.9 70/170ms=3360/8160smp->57.9 65/170ms=3120/8160smp->57.8 65/190ms=3120/9120smp->58.0 65/235ms=3120/11280smp->59.0 70/235ms=3360/11280smp->60.0 40/90ms=1920/4320smp->58.3 50/170ms=2400/8160smp->58.2 50/190ms=2400/9120smp->59.6 70/190ms=3360/9120smp->59.9 75/170ms=3600/8160smp->60.0 70/170ms=3360/8160smp->60.0
+  marks | 25 35 70 140 15 70 170 175 50 25 45 25 105 140 170 70 170 70 25 155 170 70 40 75 170 70 70 20 50 170 70 75 65 170 170 170 20 190 65 65 235 70 90 40 170 50 190 70 75 75 170 15 110 70 55 70 170 | spikes skipped 25 25 25 20 20 15
+  settled at this read:
+      HEAD  _  @11.400s gap key=  (stretch )
+      HEAD  _  @11.910s gap key=  (stretch )
+      HEAD  E . @11.965s Sure key=E right (stretch 0)
+      DIFF  _  @11.810s gap key=  (stretch )
+      DIFF  I .. @11.965s Sure key=E wrong (stretch 0)
+window | cw-2026-08-18-004507 | read 22 | 1.500 to 13.500 s
+  unit  | before 37.5 ms (32.0 WPM) | after 58.8 ms (20.4 WPM) | marks imply 33.5 ms | window measured 32.0 WPM | key 51.7 ms over 15 letters | TOWARD the key
+  pairs | 20 pairs of 46 marks, 5 spikes passed over | pair unit 58.8 ms | first pair 65/170 ms, holding 0 of the 16 slots at the end
+  each  | 65/170ms=3120/8160smp->58.8 35/135ms=1680/6480smp->57.7 70/170ms=3360/8160smp->57.8 70/170ms=3360/8160smp->57.9 70/170ms=3360/8160smp->58.0 70/170ms=3360/8160smp->58.0 70/170ms=3360/8160smp->58.1 70/170ms=3360/8160smp->58.2 70/170ms=3360/8160smp->58.3 65/170ms=3120/8160smp->58.3 65/170ms=3120/8160smp->58.3 70/170ms=3360/8160smp->58.4 70/170ms=3360/8160smp->58.4 45/170ms=2160/8160smp->58.1 45/170ms=2160/8160smp->57.8 70/170ms=3360/8160smp->57.9 65/170ms=3120/8160smp->57.9 70/170ms=3360/8160smp->59.0 65/170ms=3120/8160smp->58.9 65/170ms=3120/8160smp->58.8
+  marks | 65 65 170 175 25 30 35 135 170 70 170 70 110 170 70 25 70 170 70 70 170 65 65 15 170 170 170 175 170 70 70 10 170 45 170 70 70 65 170 70 20 65 170 270 170 65 | spikes skipped 25 25 15 10 20
+  settled at this read:
+      HEAD  _  @12.255s gap key=  (stretch )
+      DIFF  _  @12.255s gap key=  (stretch )
+window | unadjudicated/cw-2026-08-22-031905 | read 3 | 0.000 to 4.000 s
+  unit  | before 67.5 ms (17.8 WPM) | after 94.3 ms (12.7 WPM) | marks imply 76.6 ms | window measured 17.8 WPM | key - ms over 0 letters | no key letter in the window
+  pairs | 3 pairs of 10 marks, 0 spikes passed over | pair unit 94.3 ms | first pair 80/310 ms, holding 14 of the 16 slots at the end
+  each  | 80/310ms=3840/14880smp->97.5 80/220ms=3840/10560smp->96.1 75/200ms=3600/9600smp->94.3
+  marks | 80 310 210 305 60 80 220 200 75 80 | spikes skipped 
+  settled at this read:
+      HEAD  ■ .--.- @2.605s Placeholder key=- -
+      DIFF  ■ ..--.- @2.605s Placeholder key=- -
+window | unadjudicated/cw-2026-08-22-031905 | read 4 | 0.000 to 4.500 s
+  unit  | before 67.5 ms (17.8 WPM) | after 90.5 ms (13.3 WPM) | marks imply 76.6 ms | window measured 17.8 WPM | key - ms over 0 letters | no key letter in the window
+  pairs | 5 pairs of 11 marks, 0 spikes passed over | pair unit 90.5 ms | first pair 80/305 ms, holding 12 of the 16 slots at the end
+  each  | 80/305ms=3840/14640smp->96.3 80/220ms=3840/10560smp->94.9 75/200ms=3600/9600smp->93.2 80/220ms=3840/10560smp->91.9 80/220ms=3840/10560smp->90.5
+  marks | 75 305 210 305 80 220 200 75 80 220 80 | spikes skipped 
+  settled at this read:
+      HEAD  _  @3.030s gap key=  (stretch )
+      DIFF  _  @3.030s gap key=  (stretch )
+window | unadjudicated/cw-2026-08-22-031905 | read 5 | 0.000 to 5.000 s
+  unit  | before 67.5 ms (17.8 WPM) | after 88.8 ms (13.5 WPM) | marks imply 75.7 ms | window measured 17.8 WPM | key - ms over 0 letters | no key letter in the window
+  pairs | 6 pairs of 13 marks, 0 spikes passed over | pair unit 88.8 ms | first pair 80/305 ms, holding 11 of the 16 slots at the end
+  each  | 80/305ms=3840/14640smp->96.3 80/220ms=3840/10560smp->94.9 75/200ms=3600/9600smp->93.2 80/215ms=3840/10320smp->91.8 80/215ms=3840/10320smp->90.4 80/200ms=3840/9600smp->88.8
+  marks | 75 305 210 305 80 220 200 75 80 215 80 80 200 | spikes skipped 
+  settled at this read:
+      HEAD  P .--. @3.715s Sure key=- -
+      DIFF  P .--. @3.715s Sure key=- -
+window | unadjudicated/cw-2026-08-22-031905 | read 6 | 0.000 to 5.500 s
+  unit  | before 67.5 ms (17.8 WPM) | after 87.2 ms (13.8 WPM) | marks imply 75.7 ms | window measured 17.8 WPM | key 60.7 ms over 1 letters | AWAY from the key
+  pairs | 7 pairs of 16 marks, 1 spikes passed over | pair unit 87.2 ms | first pair 80/305 ms, holding 10 of the 16 slots at the end
+  each  | 80/305ms=3840/14640smp->96.3 80/220ms=3840/10560smp->94.9 75/200ms=3600/9600smp->93.2 80/215ms=3840/10320smp->91.8 80/215ms=3840/10320smp->90.4 80/200ms=3840/9600smp->88.8 85/200ms=4080/9600smp->87.2
+  marks | 75 305 210 305 80 220 200 75 80 215 80 80 200 85 80 40 | spikes skipped 40
+  settled at this read:
+      HEAD  R .-. @4.345s Sure key=- -
+      DIFF  (none)
+window | unadjudicated/cw-2026-08-22-031905 | read 7 | 0.000 to 6.000 s
+  unit  | before 65.0 ms (18.5 WPM) | after 85.4 ms (14.1 WPM) | marks imply 75.7 ms | window measured 18.5 WPM | key 57.0 ms over 2 letters | AWAY from the key
+  pairs | 8 pairs of 18 marks, 1 spikes passed over | pair unit 85.4 ms | first pair 80/305 ms, holding 9 of the 16 slots at the end
+  each  | 80/305ms=3840/14640smp->96.3 80/220ms=3840/10560smp->94.9 75/200ms=3600/9600smp->93.2 80/215ms=3840/10320smp->91.8 80/215ms=3840/10320smp->90.4 80/200ms=3840/9600smp->88.8 85/200ms=4080/9600smp->87.2 75/195ms=3600/9360smp->85.4
+  marks | 75 305 210 305 80 220 200 75 80 215 80 80 200 85 80 40 75 195 | spikes skipped 40
+  settled at this read:
+      HEAD  E . @4.550s Sure key=- -
+      DIFF  L .-.. @4.550s Sure key=- -
+window | unadjudicated/cw-2026-08-22-032050 | read 12 | 0.000 to 8.500 s
+  unit  | before 52.5 ms (22.9 WPM) | after 67.0 ms (17.9 WPM) | marks imply 38.3 ms | window measured 22.9 WPM | key 59.0 ms over 11 letters | AWAY from the key
+  pairs | 11 pairs of 37 marks, 2 spikes passed over | pair unit 67.0 ms | first pair 80/175 ms, holding 6 of the 16 slots at the end
+  each  | 80/175ms=3840/8400smp->63.8 85/175ms=4080/8400smp->63.8 80/215ms=3840/10320smp->64.5 85/185ms=4080/8880smp->64.7 80/185ms=3840/8880smp->64.8 35/80ms=1680/3840smp->62.7 85/175ms=4080/8400smp->62.7 85/290ms=4080/13920smp->64.6 85/290ms=4080/13920smp->66.5 85/175ms=4080/8400smp->66.6 70/215ms=3360/10320smp->67.0
+  marks | 80 80 85 80 175 15 115 175 85 85 110 215 80 50 45 85 185 80 35 50 215 40 55 25 40 175 85 290 85 175 35 215 70 40 35 40 230 | spikes skipped 15 25
+  settled at this read:
+      HEAD  A .- @7.390s Sure key=A right (stretch 0)
+      DIFF  A .- @7.390s Sure key=A right (stretch 0)
+window | unadjudicated/cw-2026-08-22-032050 | read 20 | 0.500 to 12.500 s
+  unit  | before 40.0 ms (30.0 WPM) | after 67.3 ms (17.8 WPM) | marks imply 29.2 ms | window measured 30.0 WPM | key 60.6 ms over 17 letters | TOWARD the key
+  pairs | 21 pairs of 49 marks, 5 spikes passed over | pair unit 67.3 ms | first pair 80/170 ms, holding 0 of the 16 slots at the end
+  each  | 80/170ms=3840/8160smp->62.5 85/175ms=4080/8400smp->62.7 80/175ms=3840/8400smp->62.7 80/210ms=3840/10080smp->63.4 85/185ms=4080/8880smp->63.7 80/185ms=3840/8880smp->63.9 35/80ms=1680/3840smp->61.8 80/175ms=3840/8400smp->61.9 80/285ms=3840/13680smp->63.7 85/285ms=4080/13680smp->65.5 85/175ms=4080/8400smp->65.7 70/210ms=3360/10080smp->66.2 70/195ms=3360/9360smp->66.4 85/195ms=4080/9360smp->66.9 85/175ms=4080/8400smp->67.0 85/175ms=4080/8400smp->67.2 80/195ms=3840/9360smp->67.6 80/195ms=3840/9360smp->67.8 60/215ms=2880/10320smp->68.1 80/170ms=3840/8160smp->67.5 80/175ms=3840/8400smp->67.3
+  marks | 80 80 80 80 170 10 85 175 80 80 110 210 80 45 15 85 185 80 35 215 40 20 175 80 285 85 175 30 210 70 195 85 175 85 75 80 80 195 80 155 215 170 20 90 60 215 170 80 175 | spikes skipped 10 15 20 30 20
+  settled at this read:
+      HEAD  (none)
+      DIFF  (none)
+window | unadjudicated/cw-2026-08-22-032050 | read 21 | 1.000 to 13.000 s
+  unit  | before 35.0 ms (34.3 WPM) | after 67.0 ms (17.9 WPM) | marks imply 23.8 ms | window measured 34.3 WPM | key 60.7 ms over 18 letters | TOWARD the key
+  pairs | 22 pairs of 55 marks, 8 spikes passed over | pair unit 67.0 ms | first pair 80/170 ms, holding 0 of the 16 slots at the end
+  each  | 80/170ms=3840/8160smp->62.5 85/175ms=4080/8400smp->62.7 80/175ms=3840/8400smp->62.7 80/210ms=3840/10080smp->63.4 85/185ms=4080/8880smp->63.7 80/185ms=3840/8880smp->63.9 35/80ms=1680/3840smp->61.8 80/175ms=3840/8400smp->61.9 80/285ms=3840/13680smp->63.7 85/285ms=4080/13680smp->65.5 85/175ms=4080/8400smp->65.7 70/210ms=3360/10080smp->66.2 70/195ms=3360/9360smp->66.4 85/195ms=4080/9360smp->66.9 85/175ms=4080/8400smp->67.0 85/175ms=4080/8400smp->67.2 80/195ms=3840/9360smp->67.6 80/195ms=3840/9360smp->67.8 60/215ms=2880/10320smp->68.1 80/170ms=3840/8160smp->67.5 80/175ms=3840/8400smp->67.3 75/175ms=3600/8400smp->67.0
+  marks | 80 80 80 80 170 10 85 175 80 80 110 210 80 45 15 85 185 80 35 215 40 20 175 80 285 85 175 30 210 70 195 85 175 85 75 80 80 195 80 155 215 170 20 90 60 215 170 80 175 75 80 20 60 30 20 | spikes skipped 10 15 20 30 20 20 30 20
+  settled at this read:
+      HEAD  T - @11.195s Sure key=- added (stretch 0)
+      HEAD  A .- @11.545s Sure key=U wrong (stretch 0)
+      DIFF  U ..- @11.545s Sure key=U right (stretch 0)
+window | unadjudicated/cw-2026-08-22-032050 | read 44 | 12.500 to 24.500 s
+  unit  | before 40.0 ms (30.0 WPM) | after 66.3 ms (18.1 WPM) | marks imply 36.1 ms | window measured 30.0 WPM | key 62.7 ms over 18 letters | TOWARD the key
+  pairs | 22 pairs of 56 marks, 3 spikes passed over | pair unit 66.3 ms | first pair 25/80 ms, holding 0 of the 16 slots at the end
+  each  | 25/80ms=1200/3840smp->26.3 35/80ms=1680/3840smp->26.4 90/230ms=4320/11040smp->29.8 55/150ms=2640/7200smp->31.3 80/210ms=3840/10080smp->34.2 30/80ms=1440/3840smp->34.3 85/285ms=4080/13680smp->38.4 85/175ms=4080/8400smp->40.9 80/175ms=3840/8400smp->43.2 40/85ms=1920/4080smp->43.5 85/210ms=4080/10080smp->46.5 80/165ms=3840/7920smp->48.7 80/175ms=3840/8400smp->51.0 80/215ms=3840/10320smp->54.0 80/215ms=3840/10320smp->57.0 80/215ms=3840/10320smp->59.9 80/195ms=3840/9360smp->62.6 85/195ms=4080/9360smp->65.2 85/175ms=4080/8400smp->64.2 75/175ms=3600/8400smp->64.9 75/175ms=3600/8400smp->64.3 60/175ms=2880/8400smp->66.3
+  marks | 25 80 15 60 30 20 85 80 35 230 90 55 150 75 45 210 80 45 80 30 215 285 85 175 80 85 40 10 215 20 210 85 85 165 80 155 210 150 220 160 130 80 175 215 80 80 215 15 215 80 195 85 175 75 175 60 | spikes skipped 10 20 15
+  settled at this read:
+      HEAD  ■ ---- @23.080s Placeholder key=C placeholder (stretch 0)
+      HEAD  _  @23.280s gap key=  (stretch )
+      DIFF  C -.-. @23.080s Sure key=C right (stretch 0)
+window | unadjudicated/cw-2026-08-22-032050 | read 46 | 13.500 to 25.500 s
+  unit  | before 42.5 ms (28.2 WPM) | after 67.4 ms (17.8 WPM) | marks imply 43.2 ms | window measured 28.2 WPM | key 62.7 ms over 16 letters | TOWARD the key
+  pairs | 22 pairs of 60 marks, 2 spikes passed over | pair unit 67.4 ms | first pair 25/95 ms, holding 0 of the 16 slots at the end
+  each  | 25/95ms=1200/4560smp->30.0 35/95ms=1680/4560smp->30.2 85/310ms=4080/14880smp->34.5 85/175ms=4080/8400smp->36.6 30/85ms=1440/4080smp->36.6 30/85ms=1440/4080smp->36.5 90/260ms=4320/12480smp->40.1 55/155ms=2640/7440smp->41.5 60/165ms=2880/7920smp->43.1 80/230ms=3840/11040smp->46.1 80/180ms=3840/8640smp->48.3 85/220ms=4080/10560smp->51.2 85/215ms=4080/10320smp->54.0 60/215ms=2880/10320smp->56.4 60/220ms=2880/10560smp->58.9 85/220ms=4080/10560smp->61.8 85/200ms=4080/9600smp->64.4 85/200ms=4080/9600smp->66.8 85/175ms=4080/8400smp->64.7 80/175ms=3840/8400smp->64.6 80/175ms=3840/8400smp->66.8 40/115ms=1920/5520smp->67.4
+  marks | 440 15 10 20 175 25 95 35 310 85 110 85 85 20 40 220 290 50 90 175 85 30 85 45 15 15 230 20 260 90 95 165 85 55 155 215 160 225 165 60 55 230 80 180 220 85 85 215 60 220 85 200 85 175 80 175 40 115 105 60 | spikes skipped 15 15
+  settled at this read:
+      HEAD  E . @24.045s Sure key=E right (stretch 0)
+      DIFF  E . @24.045s Sure key=E right (stretch 0)
+window | unadjudicated/cw-2026-08-22-032050 | read 47 | 14.000 to 26.000 s
+  unit  | before 40.0 ms (30.0 WPM) | after 64.6 ms (18.6 WPM) | marks imply 40.0 ms | window measured 40.0 WPM | key 62.1 ms over 15 letters | TOWARD the key
+  pairs | 25 pairs of 61 marks, 1 spikes passed over | pair unit 64.6 ms | first pair 10/35 ms, holding 0 of the 16 slots at the end
+  each  | 10/35ms=480/1680smp->11.3 35/95ms=1680/4560smp->12.6 90/240ms=4320/11520smp->17.0 85/175ms=4080/8400smp->20.4 30/85ms=1440/4080smp->21.5 30/85ms=1440/4080smp->22.6 20/45ms=960/2160smp->22.9 90/260ms=4320/12480smp->27.7 75/160ms=3600/7680smp->30.6 65/230ms=3120/11040smp->34.5 80/230ms=3840/11040smp->38.7 80/180ms=3840/8640smp->42.0 85/220ms=4080/10560smp->46.1 30/85ms=1440/4080smp->47.2 30/85ms=1440/4080smp->48.3 85/220ms=4080/10560smp->52.3 60/220ms=2880/10560smp->56.0 60/220ms=2880/10560smp->58.4 85/220ms=4080/10560smp->58.0 85/200ms=4080/9600smp->58.4 85/200ms=4080/9600smp->61.0 85/200ms=4080/9600smp->63.7 80/200ms=3840/9600smp->67.0 80/180ms=3840/8640smp->65.6 40/130ms=1920/6240smp->64.6
+  marks | 10 225 35 10 95 35 340 240 90 85 15 20 40 220 290 205 175 85 30 85 45 20 15 230 25 260 90 10 95 165 85 75 160 215 160 225 165 95 55 65 230 80 180 220 85 30 85 220 60 220 85 200 85 200 80 180 40 130 110 60 80 | spikes skipped 10
+  settled at this read:
+      HEAD  (none)
+      DIFF  (none)
+window | unadjudicated/cw-2026-08-22-032050 | read 48 | 14.500 to 26.500 s
+  unit  | before 43.9 ms (27.4 WPM) | after 71.2 ms (16.9 WPM) | marks imply 43.9 ms | window measured 40.0 WPM | key 62.7 ms over 14 letters | TOWARD the key
+  pairs | 17 pairs of 57 marks, 7 spikes passed over | pair unit 71.2 ms | first pair 35/120 ms, holding 0 of the 16 slots at the end
+  each  | 35/120ms=1680/5760smp->38.8 90/335ms=4320/16080smp->43.0 40/90ms=1920/4320smp->42.6 85/180ms=4080/8640smp->44.3 45/100ms=2160/4800smp->44.1 115/265ms=5520/12720smp->47.7 85/240ms=4080/11520smp->50.3 80/305ms=3840/14640smp->53.9 80/180ms=3840/8640smp->55.5 90/220ms=4320/10560smp->58.0 85/220ms=4080/10560smp->60.3 65/220ms=3120/10560smp->62.3 65/220ms=3120/10560smp->64.4 85/220ms=4080/10560smp->66.7 85/205ms=4080/9840smp->68.8 85/205ms=4080/9840smp->70.9 40/130ms=1920/6240smp->71.2
+  marks | 120 35 340 335 90 20 20 40 220 295 210 180 85 60 100 45 20 15 255 25 265 115 15 15 145 170 85 240 215 160 230 165 100 55 305 10 80 180 220 90 70 85 220 65 220 85 205 85 360 180 40 130 115 60 80 75 60 | spikes skipped 20 20 20 15 15 15 10
+  settled at this read:
+      HEAD  _  @24.715s gap key=  (stretch )
+      HEAD  _  @25.405s gap key=  (stretch )
+      DIFF  _  @25.140s gap key=  (stretch )
+window | unadjudicated/cw-2026-08-22-032050 | read 49 | 15.000 to 27.000 s
+  unit  | before 45.0 ms (26.7 WPM) | after 80.7 ms (14.9 WPM) | marks imply 52.0 ms | window measured 26.7 WPM | key 62.1 ms over 13 letters | AWAY from the key
+  pairs | 17 pairs of 51 marks, 7 spikes passed over | pair unit 80.7 ms | first pair 90/335 ms, holding 0 of the 16 slots at the end
+  each  | 90/335ms=4320/16080smp->106.3 65/220ms=3120/10560smp->104.1 85/180ms=4080/8640smp->101.6 105/280ms=5040/13440smp->100.9 120/270ms=5760/12960smp->100.4 85/175ms=4080/8400smp->97.8 85/240ms=4080/11520smp->96.3 120/305ms=5760/14640smp->96.3 90/220ms=4320/10560smp->94.5 85/220ms=4080/10560smp->92.6 65/220ms=3120/10560smp->90.4 65/225ms=3120/10800smp->88.3 85/225ms=4080/10800smp->86.5 85/205ms=4080/9840smp->84.4 95/205ms=4560/9840smp->82.4 180/380ms=8640/18240smp->84.5 45/135ms=2160/6480smp->80.7
+  marks | 70 335 90 65 50 220 295 210 180 85 65 105 45 20 280 25 40 270 120 15 170 175 85 240 215 160 235 165 190 305 120 195 220 90 95 85 220 65 225 85 205 95 380 180 45 135 115 65 105 180 20 | spikes skipped 50 45 20 25 40 15 20
+  settled at this read:
+      HEAD  _  @25.440s gap key=  (stretch )
+      HEAD  _  @25.810s gap key=  (stretch )
+      DIFF  _  @25.270s gap key=  (stretch )
+      DIFF  _  @25.810s gap key=  (stretch )
+window | unadjudicated/cw-2026-08-22-032050 | read 50 | 15.500 to 27.500 s
+  unit  | before 57.0 ms (21.0 WPM) | after 75.6 ms (15.9 WPM) | marks imply 57.0 ms | window measured 28.2 WPM | key 62.7 ms over 14 letters | AWAY from the key
+  pairs | 14 pairs of 50 marks, 4 spikes passed over | pair unit 75.6 ms | first pair 85/180 ms, holding 3 of the 16 slots at the end
+  each  | 85/180ms=4080/8640smp->66.3 45/105ms=2160/5040smp->64.5 85/175ms=4080/8400smp->64.4 85/240ms=4080/11520smp->65.3 120/305ms=5760/14640smp->67.8 100/225ms=4800/10800smp->68.8 85/220ms=4080/10560smp->69.4 65/220ms=3120/10560smp->69.7 65/225ms=3120/10800smp->70.1 105/225ms=5040/10800smp->71.1 105/340ms=5040/16320smp->73.9 180/390ms=8640/18720smp->78.7 45/135ms=2160/6480smp->77.3 50/105ms=2400/5040smp->75.6
+  marks | 70 65 50 220 295 210 180 85 65 105 45 25 285 25 40 270 145 20 170 175 85 240 215 160 235 165 225 305 120 195 225 100 95 85 220 65 225 105 340 390 180 45 135 115 65 50 105 205 25 105 | spikes skipped 25 25 20 25
+  settled at this read:
+      HEAD  H .... @26.130s Sure key=D wrong (stretch 0)
+      DIFF  H .... @26.130s NotSure key=I wrong (stretch 0)
+window | unadjudicated/cw-2026-08-22-032050 | read 52 | 16.500 to 28.500 s
+  unit  | before 38.2 ms (31.4 WPM) | after 89.8 ms (13.4 WPM) | marks imply 38.2 ms | window measured 40.0 WPM | key 61.4 ms over 14 letters | AWAY from the key
+  pairs | 16 pairs of 47 marks, 7 spikes passed over | pair unit 89.8 ms | first pair 90/185 ms, holding 1 of the 16 slots at the end
+  each  | 90/185ms=4320/8880smp->68.8 45/110ms=2160/5280smp->66.9 150/320ms=7200/15360smp->69.9 85/175ms=4080/8400smp->69.7 85/265ms=4080/12720smp->70.9 160/435ms=7680/20880smp->75.9 130/305ms=6240/14640smp->78.4 100/225ms=4800/10800smp->79.1 85/225ms=4080/10800smp->79.7 70/225ms=3360/10800smp->80.0 70/225ms=3360/10800smp->80.3 105/225ms=5040/10800smp->81.2 105/340ms=5040/16320smp->83.8 180/445ms=8640/21360smp->89.3 45/135ms=2160/6480smp->87.8 110/295ms=5280/14160smp->89.8
+  marks | 155 185 90 65 110 45 25 285 30 320 150 20 170 175 85 265 215 160 435 230 305 130 195 225 100 95 85 225 70 225 105 340 445 180 45 135 120 145 110 205 15 10 25 15 110 295 65 | spikes skipped 25 30 20 15 10 25 15
+  settled at this read:
+      HEAD  I .. @27.085s Sure key=I right (stretch 0)
+      DIFF  E . @27.090s Sure key=N wrong (stretch 0)
+window | unadjudicated/cw-2026-08-22-032050 | read 54 | 17.500 to 29.500 s
+  unit  | before 32.5 ms (36.9 WPM) | after 109.4 ms (11.0 WPM) | marks imply 39.8 ms | window measured 36.9 WPM | key 62.0 ms over 12 letters | AWAY from the key
+  pairs | 10 pairs of 44 marks, 9 spikes passed over | pair unit 109.4 ms | first pair 155/325 ms, holding 7 of the 16 slots at the end
+  each  | 155/325ms=7440/15600smp->120.0 85/175ms=4080/8400smp->116.6 85/265ms=4080/12720smp->114.5 160/455ms=7680/21840smp->116.6 130/305ms=6240/14640smp->115.9 100/225ms=4800/10800smp->113.5 95/225ms=4560/10800smp->111.0 70/225ms=3360/10800smp->108.1 190/445ms=9120/21360smp->110.5 110/295ms=5280/14160smp->109.4
+  marks | 260 30 325 155 25 170 175 85 265 235 160 455 230 305 130 215 225 100 95 95 225 70 360 340 445 190 45 135 120 145 15 110 205 20 15 25 15 110 295 65 85 130 25 15 | spikes skipped 25 45 15 20 15 25 15 25 15
+  settled at this read:
+      HEAD  _  @28.235s gap key=  (stretch )
+      HEAD  T - @28.295s Sure key=- -
+      DIFF  E . @28.295s Sure key=E right (stretch 0)
+window | unadjudicated/cw-2026-08-22-032050 | read 55 | 18.000 to 30.000 s
+  unit  | before 42.5 ms (28.2 WPM) | after 88.1 ms (13.6 WPM) | marks imply 38.2 ms | window measured 28.2 WPM | key 62.0 ms over 12 letters | AWAY from the key
+  pairs | 11 pairs of 38 marks, 3 spikes passed over | pair unit 88.1 ms | first pair 85/175 ms, holding 6 of the 16 slots at the end
+  each  | 85/175ms=4080/8400smp->65.0 85/265ms=4080/12720smp->66.4 160/460ms=7680/22080smp->72.0 130/310ms=6240/14880smp->74.8 105/230ms=5040/11040smp->76.0 100/360ms=4800/17280smp->79.1 190/445ms=9120/21360smp->85.0 45/135ms=2160/6480smp->83.8 110/235ms=5280/11280smp->85.1 75/235ms=3600/11280smp->85.9 110/295ms=5280/14160smp->88.1
+  marks | 230 155 25 175 175 85 265 235 160 460 230 310 130 220 230 105 100 360 450 340 445 190 45 135 120 145 15 110 235 75 110 295 65 85 130 25 20 105 | spikes skipped 15 25 20
+  settled at this read:
+      HEAD  S ... @28.760s Sure key=- -
+      DIFF  E . @28.760s Sure key=- -
+window | unadjudicated/cw-2026-08-22-032050 | read 56 | 18.000 to 30.000 s
+  unit  | before 42.5 ms (28.2 WPM) | after 88.1 ms (13.6 WPM) | marks imply 38.2 ms | window measured 28.2 WPM | key 62.0 ms over 12 letters | AWAY from the key
+  pairs | 11 pairs of 38 marks, 3 spikes passed over | pair unit 88.1 ms | first pair 85/175 ms, holding 6 of the 16 slots at the end
+  each  | 85/175ms=4080/8400smp->65.0 85/265ms=4080/12720smp->66.4 160/460ms=7680/22080smp->72.0 130/310ms=6240/14880smp->74.8 105/230ms=5040/11040smp->76.0 100/360ms=4800/17280smp->79.1 190/445ms=9120/21360smp->85.0 45/135ms=2160/6480smp->83.8 110/235ms=5280/11280smp->85.1 75/235ms=3600/11280smp->85.9 110/295ms=5280/14160smp->88.1
+  marks | 230 155 25 175 175 85 265 235 160 460 230 310 130 220 230 105 100 360 450 340 445 190 45 135 120 145 15 110 235 75 110 295 65 85 130 25 20 105 | spikes skipped 15 25 20
+  settled at this read:
+      HEAD  S ... @29.135s Sure key=- -
+      HEAD  I .. @29.345s Sure key=- -
+      HEAD  _  @29.855s gap key=  (stretch )
+      HEAD  I .. @30.000s Sure key=- -
+      DIFF  I .. @29.320s Sure key=- -
+      DIFF  E . @30.000s Sure key=- -
+stretch | cw-2026-08-18-004507 | letters 1.155 to 29.765 s
+stretch | unadjudicated/cw-2026-08-22-031905 | letters 1.565 to 29.570 s
+stretch | unadjudicated/cw-2026-08-22-032113 | letters 0.615 to 29.410 s
+stretch | unadjudicated/cw-2026-08-22-031838 | letters 1.060 to 26.685 s
+stretch | unadjudicated/cw-2026-08-18-003758 | letters 0.715 to 29.805 s
+stretch | recording | letters 0.000 to 0.000 s
+stretch | unadjudicated/cw-2026-08-22-031948 | letters 0.535 to 28.055 s
+stretch | unadjudicated/cw-2026-08-22-032050 | letters 0.565 to 29.855 s
+total | reads checked 399 | sameness 399 of 399 | moved reads 81, 81 over a stretch and 0 outside | over a stretch toward the key 35, away 16, no key letter in the window 30
