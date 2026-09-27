@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-TASK: 4 of 4
-WORK_INSTRUCTION: 460 - the three named floors settled on the owner's answer, and step 2's commits kept green
+STATE: EXECUTING
+TASK: 0 of 4
+WORK_INSTRUCTION: 461 - the channel profiles are generated: CH-AWGN and the Watterson CH-* conditions, proved on their own audio
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-26T20:37:57-04:00
-NOTE: Unit 460 done: three named floors re-banked (17:37 38, 032113 43, 032129 42), 2.5 ticked with 3 of 3 commits green; pair-speed trace found no separating mechanism, task 3 not run; output.md written
+UPDATED: 2026-09-26T21:04:46-04:00
+NOTE: Entry round: saving every keyed recording's text with each character's class
 
 ---
 

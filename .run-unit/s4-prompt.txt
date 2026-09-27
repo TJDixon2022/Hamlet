@@ -59,28 +59,34 @@ WHY: one sentence, plain text, no punctuation beyond commas and full stops
 --- the section 4 text follows ---
 
 ﻿
-1. **The task 2 test is left in the tree red.** Ruling taken by the session, overrulable:
-   `TheSpeedFollowsTheSendersMarkPairsTests` stays as written, failing at 28 of 31 sure wrong at
-   HEAD, as the standing evidence for HM-REQ-010 under bursts between letters. Reasoning: it was
-   built from 032050's measured window before the change, the change it was written for was
-   refused, and it is the test the next 9.4 attempt should turn green. It is outside both
-   carry-forward lines, so the lines stay green. Rejected: deleting it, which throws away an exact
-   case of the failure; marking it skipped, which hides a red requirement; loosening its assertion
-   to the change's 1 of 22, which is V-14's fixture fitting. Needs the owner only if a red test in
-   the tree is unwanted between units.
-2. **What 9.4 tries next.** Ruling for the next author, not taken here: the refused pair speed
-   fixed the speed overshoots it was aimed at, and it broke three reads it was not aimed at
-   (031948's `110,`, 004507's `EACH`, 031905's `PREDICTED`). The next unit should trace those
-   three reads - which windows moved speed, and whether the pairs there were few or mixed - before
-   any second form is built. Rejected here: narrowing the rule (a larger edge, a full 16-pair
-   average) after seeing R78's numbers, which is tuning a constant to the fixture that refused it;
-   and taking (A) as task 3, which the trace says cannot recover 17:37's dahs.
-3. **Step 2's MET-CER-SURE has a measured lever.** Recorded, not ruled: the refused change took the
-   real set from 33 of 436 to 25 of 431 with coverage up by 3 and MET-WBE level. No step 2 line is
-   ticked or moved (443 DECIDED (3)).
-4. **The instruction's departure list disagreed with the tree twice** (003758's first A, 004234's
-   U, where the port is wrong too). Taken as the tree has it; logged, not repaired.
-5. **CW reading taken from fldigi's source (R85), one line:** fldigi seeds its tracker at the
-   operator's speed setting (`cw.cxx:272-273`, `progdefaults.CWspeed` 18); ours took no seed and
-   started at the first pair, as `Cmovavg::run` does when empty (`filters.cxx:273`), because
-   Hamlet's receiver has no operator speed and a default would be a prior on the sender.
+Nothing blocks the next unit.
+
+1. **`PARKED.md`'s header says nothing reads it back as a decision; this unit read one of its
+   `RESOLVED:` lines as the owner's answer.**
+   - *Proposed ruling:* a `RESOLVED:` line committed by the owner outside any unit is read as the
+     owner's answer to the question it quotes, and the header is amended to say so.
+   - *Reasoning:* 443 DECIDED (3) and 448 DECIDED (6) rested on that question, and the instruction
+     applied the answer. The header still says the opposite, and the next author will meet the
+     contradiction.
+   - *Rejected:* editing the header in this unit. The instruction forbids it, and it is the owner's
+     file.
+2. **The owner's 17:37 answer quotes "the condition's MET-WBE fell 58 to 52"; those are the real
+   set's totals.**
+   - *Proposed ruling:* the answer stands as written. The condition's own figure, 51 to 45 over the
+     same printouts, moved the same way, and at HEAD it is 32.
+   - *Reasoning:* the answer's premise holds on either reading, so nothing re-banked on it changes.
+   - *Rejected:* holding 17:37 red on the wording.
+3. **2.4's count is now 1 of 3.** This unit kept no `src` change. Logged, not a question.
+4. **The floor lines of steps 3 to 9 are no longer held by the floors.**
+   - *Proposed ruling:* each is ticked at its own step's next exit that reads the five green. 3.6 is
+     judged, like 2.5, over every commit of step 3 from the unit that ticks it.
+   - *Reasoning:* the plan words them per step.
+   - *Rejected:* ticking them here. The instruction forbids it, and no step-3 to step-9 commit was
+     made.
+5. **The finding for HM-REQ-010's next author**, logged under R85, not asked. 459's pair speed breaks
+   where our trigger joins elements into marks of five units or more: 031948, 031905 and 032050's
+   later reads. fldigi's tracker takes the same pairs but gives each one a sixteenth of a vote,
+   because its average is continuous and seeded, not because it refuses them. 004507's `EACH` broke
+   at a speed near the sender's own (TX-FARNS), which is not a speed-tracking failure.
+6. **The runner rewrote `.run-unit/watched.cpu` during the unit.** It was committed at task 0 as found,
+   and the exit commit carries it as it stands. Logged.
