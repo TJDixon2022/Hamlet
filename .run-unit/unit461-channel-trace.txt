@@ -1,0 +1,142 @@
+UNIT 461 TASK 1 - THE TRACE: WHAT THE TREE ALREADY MAKES, AND THE CHANNEL IT LACKS
+==================================================================================
+Read and printed; nothing under src is touched. The one thing run is the printer
+TheNoiseBandIsMeasuredFact (tests/Hamlet.RadioEngine.Tests/Cw/Fixtures), with the
+spectrum helper CwSpectrum beside it; both assert nothing. Raw printout:
+.run-unit/unit461-band-t1.txt.
+
+All line numbers are tests/Hamlet.RadioEngine.Tests/Cw/Fixtures/CwFixtureGenerator.cs at f50b2397.
+
+1. WHAT CwFixtureGenerator DOES, STAGE BY STAGE
+-----------------------------------------------
+sample rate    SampleRate = 8000 (line 92). Every output is 8000 samples a second.
+
+keying         KeyEdges (365-465) turns the recipe's own dit, dah, element, character and word
+envelope       gaps into a list of key-change instants. Lead-in 1.0 s (LeadInSeconds, 140) plus any
+               preamble before the first mark; tail 1.5 s (TailSeconds, 143) after the last edge.
+               A caret joins letters into a prosign with an element gap (417-436).
+edge shaping   Gate (636-641): raised cosine, 5 ms rise and 5 ms fall (EdgeSeconds, 137), inside
+               each element - the rise starts on the leading edge, the fall ends on the trailing
+               edge, so the edge instants are exact and the half-amplitude mark is 5 ms short.
+
+tone           RenderKeying (566-633): sin(phase), phase accumulated per sample from
+               ToneHz + DriftHz * sin(2 pi t / 10 s) (585-586) + DriftHzPerSecond * t (588-591);
+               added as amplitude * gate * fade on top of the noise already in the buffer (631).
+               The recipe default is 615 Hz drifting +/- 3 Hz.
+
+ShapedNoise    (477-534) xorshift32 uniforms (481-487), Box-Muller to unit-variance Gaussian white
+               noise (489-503); three cascaded RBJ bandpass biquads, constant-0-dB-peak form
+               (b0 = alpha, b2 = -alpha), centre sqrt(350 * 870) = 551.8 Hz, Q = 551.8 / 520 = 1.061
+               (508-514, Bandpass 537-563); the shaped part scaled to RMS 0.02 exactly (517-525);
+               the unshaped white added underneath at 0.02 * 10^(-30/20) (526-531), the "30 dB
+               skirt". It returns 0.02 (533): the RMS of the shaped part alone.
+  measured     total RMS 0.02002 (-33.97 dBFS) - the skirt adds 0.1 % of power. The skirt is 30 dB
+               down in TOTAL power but 41.8 to 42.5 dB below the peak in DENSITY (at 2000 Hz and
+               100 Hz), because it is spread over 4000 Hz and the band over about 300.
+               -3 dB points of the measured density: 436 to 691 Hz, not 350 to 870.
+
+SignalToNoiseDb  applied at 336 (Generate) and 273-274 (Together): tone amplitude =
+               sqrt(2) * 0.02 * 10^(snr/20), so tone RMS over the shaped band's RMS is the recipe's
+               figure. That is an SNR in the band's own equivalent bandwidth - neither 2500 Hz nor
+               the 520 Hz between the named edges. Confirms the instruction: a finding, not
+               repaired here (CW_SPEC 8.1 re-labels every such figure).
+
+QSB            (612-629) a deterministic sinusoid cos(2 pi QsbHz t), depth split +/- depth/2 dB
+               about the stated level, on the tone only. One path, no delay, no random process -
+               it is IMP-QSB's "sinusoidal envelope", not a CH-* profile.
+
+after          clamp to +/-1 (344-347); preamble mutes at -82 dBFS (655-704) when asked.
+
+2. THE BAND'S EQUIVALENT NOISE BANDWIDTH, MEASURED
+--------------------------------------------------
+Two seeded runs (461001, 461002), 410.1 s each, of band alone (Generate at -400 dB, the tree's
+own way of taking the noise alone), Hann Welch 4096 points (1.95 Hz bins), density averaged over
+the bins within 4 Hz of each frequency. ENBW = total power / density there.
+
+  referred to          measured    predicted from the biquads    offset to 2500 Hz (8.1)
+  peak (570 Hz bin)    290.2 Hz    293.5 Hz                      -9.35 dB
+  600 Hz               320.1 Hz    319.8 Hz                      -8.93 dB
+  615 Hz               340.1 Hz    342.1 Hz                      -8.66 dB
+
+  Measured and predicted agree within 0.05 dB at both tones, so the layer may compute the
+  offset from the biquads' response and the test measures it from the audio.
+
+  THE NUMBER EVERY LATER SNR IN THIS UNIT RESTS ON: the density BESIDE THE TONE (8.2: "noise is
+  measured inside the receiver passband ... beside the tone"), so the offset depends on the
+  pitch: -8.93 dB at 600 Hz, the pitch task 3 uses. SNR_2500 = SNR_in-passband - 8.93 dB there.
+
+  The existing tiers re-labelled at 615 Hz (the synthetic set's tone): EasyDb 15 dB in the
+  passband = +6.3 dB reference; WorkingDb 5 dB = -3.7 dB; EdgeDb 0 dB = -8.7 dB.
+  FINDING: 8.1's table gives -7.0 dB for a 500 Hz (FIL2) passband and HM-DEC-097's "0 dB in the
+  passband" is recorded as -7 dB reference. The generator's band is narrower than 500 Hz
+  equivalent, so ITS 0 dB is -8.7 dB reference, 1.7 dB lower than the label a reader would
+  assume. Not repaired (no existing fixture is altered).
+
+3. WHAT EACH CH-* PROFILE NEEDS THAT THE TREE LACKS
+---------------------------------------------------
+Nothing in tests or src produces a CH-* profile. The three CH-* mentions (TheRequirementsAre
+MeasuredTests 28-33, 61, 172; BothDecodersAreScoredAlikeTests 600, 638) are labels saying the
+recording is NOT on a named channel. No mismatch with the instruction.
+
+  two paths          absent - one tone per station.
+  a delay            absent - no path is delayed; Together overlaps two different stations.
+  complex Gaussian   absent - the only fade is QSB's deterministic real sinusoid; no random
+  tap per path with  process, no phase, no Doppler spectrum.
+  Gaussian Doppler
+  spectrum
+  equal mean power   not applicable until there are two paths.
+  SNR in 2500 Hz     absent - every SNR in the fixtures is in the band's own bandwidth.
+
+  CH-AWGN: the tree's no-fading case is an unfaded tone over the shaped band, which is the
+  receiver's view of white noise at its input. What it lacks is only the SNR label: the layer
+  keeps the shaped band (V-06) and states the SNR from the density beside the tone.
+
+  Construction for task 2 (the author's, taken): complex baseband
+  A [h1(t) e(t) + h2(t) e(t - tau)] exp(j 2 pi f0 t), real part, with hk = gk / sqrt(2) so the two
+  paths carry equal power and their sum the unfaded power (see 4b); e(t) = KeyEdges + Gate at the
+  TX-ITU recipe; the band from ShapedNoise added after. tau at 8000 samples a second is a whole
+  number of samples for every profile (4, 16, 48, 4, 8, 16, 8, 24, 56). Each gk: complex white
+  Gaussian at a tap rate of 64 x spread (128 sigma), through a sampled Gaussian FIR whose power
+  response is the Gaussian Doppler spectrum, normalised to unit power, linearly interpolated to
+  8000 Hz (images near the tap rate about 42 dB down).
+
+4. THE OPEN DEFINITIONS, READ UNDER R85
+---------------------------------------
+Sources: CW_SPEC.md 8.1, 8.2, 9.1; C. C. Watterson, J. R. Juroshek, W. D. Bensema, "Experimental
+confirmation of an HF channel model", IEEE Trans. Commun. Technol. COM-18(6), Dec 1970;
+CCIR Rec. 520 (now ITU-R F.520) and ITU-R F.1487. None of the three published sources is vendored
+(CW_SPEC 12 item 2); they are read from their published descriptions, not from a file in the tree.
+
+ a. SPREAD. The author's reading is taken: the frequency spread is 2 sigma, twice the standard
+    deviation of each path's Gaussian Doppler power spectrum S(f) ~ exp(-f^2 / (2 sigma^2)), with
+    no frequency shift. Watterson et al. define the spread as 2 sigma of the Gaussian spectrum and
+    CCIR 520 / F.1487 tabulate "frequency spread" on that definition. So sigma = spread / 2.
+    Measured as 2 sqrt(second moment) of the tap's power spectrum.
+
+ b. WHERE THE NOISE ENTERS. The author's reading is taken: after the fading. The Watterson model
+    is a tapped delay line whose taps fade; the additive noise is the receiver's and the band's,
+    not the path's, and CW_SPEC 8.2 measures it in the receiver passband. So the noise is never
+    faded, and the SNR is the unfaded mean signal power against the noise. "Two paths of equal
+    power" (9.1) is read as two paths whose SUM is the unfaded power, each carrying half: with
+    each gk at unit power, hk = gk / sqrt(2). Without that the faded signal would sit 3 dB above
+    the SNR it is labelled with.
+    SNR_2500 = S / (N0(f0) * 2500 Hz), S the tone's mean power in a mark (A^2 / 2 unfaded; the
+    long-run mean when faded), N0(f0) the band's one-sided density beside the tone.
+
+ c. TX-ITU IN THE TREE. The recipe defaults are NOT TX-ITU (105 / 283 / 65 / 130 / 280 ms is
+    013347's fist). SyntheticCq.Recipe(wpm, snr, seed) at its default characterGapUnits of 3 IS
+    exactly 1:3:1:3:7 at the key-change instants: dit 1200/wpm, dah 3, element gap 1, character
+    gap 3, word gap 7 (SyntheticCq.cs 71-87). It is named TX-ITU. Two things ride on it that are
+    not the keying ratio: the 5 ms raised-cosine edges inside each element (the emission's rise
+    and fall, CW_SPEC 7), and the recipe's default +/- 3 Hz drift. The channel layer keys its
+    envelope through the same KeyEdges and Gate and holds the pitch fixed (no drift), because the
+    channel's construction has one f0.
+
+FINDINGS FOR SECTION 4
+  - The generator's in-passband SNR is in a 320 Hz (at 600 Hz) / 340 Hz (at 615 Hz) equivalent
+    bandwidth: its 0 dB is -8.7 dB reference at 615 Hz, not the -7 dB a 500 Hz label suggests.
+  - The "30 dB skirt" is 30 dB in total power, about 42 dB in density.
+  - F.1487's own test SNRs are, as I recall it, stated in a 3 kHz noise bandwidth; CW_SPEC 8.1's
+    2500 Hz wins here. To check when 12 item 2 is vendored: the two differ by 0.8 dB.
+  - CH-MDV: 9.1 gives no values. From memory F.1487 lists a mid-latitude disturbed NVIS row at
+    7 ms and 1 Hz; that is recalled, not read, and is NOT used (DECIDED (3)). The layer refuses it.

@@ -1,0 +1,28 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:01.65]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:01.87]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:01.88]   Starting:    Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:04.87]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheNoiseBandIsMeasuredFact.TheBandsEquivalentBandwidthIsPrinted [2 s]
+  Standard Output Messages:
+ run | seed 461001 | 410.1 s | rms -33.97 dBFS
+ run | seed 461002 | 410.1 s | rms -33.97 dBFS
+ band | total power -33.97 dBFS (rms 0.02002) | spectrum integrates to -33.97 dBFS | target rms 0.02000 is -33.98 dBFS
+ band | peak density at 570.3 Hz, -58.60 dB/Hz | -3 dB from 436 to 691 Hz | -30 dB skirt at 100 Hz -42.5 dB, at 2000 Hz -41.8 dB
+ enbw | referred to peak | measured 290.2 Hz, offset to 2500 Hz -9.35 dB | predicted from the biquads 293.5 Hz, offset -9.30 dB
+ enbw | referred to 600 Hz (SyntheticCq.StartingPitchHz) | measured 320.1 Hz, offset to 2500 Hz -8.93 dB | predicted from the biquads 319.8 Hz, offset -8.93 dB
+ enbw | referred to 615 Hz (the recipe default) | measured 340.1 Hz, offset to 2500 Hz -8.66 dB | predicted from the biquads 342.1 Hz, offset -8.64 dB
+ relabel | EasyDb 15.0 dB in the passband at 615 Hz | 6.3 dB reference
+ relabel | WorkingDb 5.0 dB in the passband at 615 Hz | -3.7 dB reference
+ relabel | EdgeDb 0.0 dB in the passband at 615 Hz | -8.7 dB reference
+
+
+
+Test Run Successful.
+Total tests: 1
+     Passed: 1
+ Total time: 5.2062 Seconds
+RC=0 WALL=6s

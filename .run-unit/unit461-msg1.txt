@@ -1,0 +1,20 @@
+unit461 task 1: the trace - the band's equivalent bandwidth beside a 600 Hz tone is 320.1 Hz, so its in-passband SNR is 8.93 dB above the 2500 Hz reference; no CH-* producer, TX-ITU is SyntheticCq's textbook recipe (7.1)
+
+.run-unit/unit461-channel-trace.txt: CwFixtureGenerator stage by stage
+with lines; the band measured over two 410 s seeded runs of ShapedNoise's
+own output (Generate at -400 dB): ENBW 290.2 Hz at the peak, 320.1 Hz at
+600 Hz, 340.1 Hz at 615 Hz, the biquads predicting 293.5, 319.8, 342.1.
+The generator's 0 dB in the passband is -8.7 dB reference at 615 Hz, not
+-7. The 30 dB skirt is 30 dB in power, about 42 dB in density. Two
+paths, delay, Gaussian-Doppler taps and a 2500 Hz SNR are all absent.
+R85 readings: spread is 2 sigma of the Gaussian Doppler spectrum; noise
+after the fading, each path carrying half the unfaded power; TX-ITU is
+SyntheticCq.Recipe at 1:3:1:3:7, the recipe defaults are not.
+
+New in the test fixtures, asserting nothing: CwSpectrum (a radix-two
+transform and Welch average, the tests' own) and TheNoiseBandIsMeasuredFact.
+Nothing under src changed. At this commit: build 0 errors; engine line
+178 of 178; app line 278 of 278; named 13 of 13; captures 51 of 51;
+adjudicated 13 of 13.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

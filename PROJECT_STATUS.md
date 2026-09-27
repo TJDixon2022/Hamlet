@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 0 of 4
+TASK: 1 of 4
 WORK_INSTRUCTION: 461 - the channel profiles are generated: CH-AWGN and the Watterson CH-* conditions, proved on their own audio
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-26T21:04:46-04:00
-NOTE: Entry round: saving every keyed recording's text with each character's class
+UPDATED: 2026-09-26T21:24:31-04:00
+NOTE: Task 1 trace done and the five green at it; committing, then building the channel layer
 
 ---
 
