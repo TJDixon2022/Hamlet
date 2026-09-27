@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 0 of 4
+TASK: 1 of 4
 WORK_INSTRUCTION: 462 - one fldigi technique earns its place in ours: the spike rule, the two-dot class edge or the word-space edge, screened under R78
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-26T23:25:04-04:00
-NOTE: Task 0 figures all as at 461's exit; committing the record, the runner's writes and the entry printouts
+UPDATED: 2026-09-26T23:36:32-04:00
+NOTE: Task 1 done: C ranks first at +4 (5 fixable, 1 at risk), B -17, W -81; committing the fact and its printout
 
 ---
 
