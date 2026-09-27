@@ -1,0 +1,23 @@
+unit465: tick 9.6 in both copies of PHASE_PLAN.md - both decoders read the same samples live and in the harness, agreement, disagreement and tie by the arbiter, one transcript with no decoder named, both readings on the sheet, each watched failing first (9.6)
+
+The six conditions of work instruction 465 section 2, each with its test green and
+watched failing first on an injected synthetic case:
+1. Same samples, same time (HM-REQ-120): BothDecodersReadTheSameSamplesTests - red at
+   the stub stage of the live wiring, green at 7aed2ea6; the harness feeds both from
+   sample 0 of the same file (task 1).
+2. Agreement with the more confident's class (125), 3. disagreement to the higher p
+   with both on the record (126), 4. a tie within 0.05 dim and never sure (127):
+   TheHigherCalibratedReadingWinsTests - 8 of 8 red against a stub arbiter, green at
+   4c9a8433; the sheet marks the tie (TheOperatorSeesOneTranscriptTests, red at a stub
+   ArbitrationLine).
+5. One transcript, no decoder name (121): TheOperatorSeesOneTranscriptTests - the sheet
+   cases red at a stub ArbitrationLine; the tab case watched red against a temporary
+   stub CwArbiter.Arbitrate that put both readings of the span on the transcript
+   (.run-unit/unit465-one-red-tab.txt: two characters on one span), the committed
+   arbiter then restored, the tree checked equal to 7aed2ea6 under src and tests, and
+   3 of 3 and 8 of 8 green again. This commit adds that account to the test's remarks.
+6. Each named for its requirement and watched failing first: as above.
+
+Nothing else ticked: 9.4, 9.7, 9.8 and every line of steps 2 to 8 as they were.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

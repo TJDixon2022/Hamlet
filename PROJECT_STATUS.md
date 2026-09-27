@@ -6,8 +6,8 @@ WORK_INSTRUCTION: 465 - one transcript from two readers: both decoders read the 
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-27T05:49:48-04:00
-NOTE: Task 3 - live wiring in; 120 and 121 green; live corpus identical to ours on all 35; decode 52 s to 65 s; committing
+UPDATED: 2026-09-27T05:51:39-04:00
+NOTE: Task 3 - all six of 9.6s conditions hold, each test green and watched red; ticking 9.6 in both plan copies
 
 ---
 

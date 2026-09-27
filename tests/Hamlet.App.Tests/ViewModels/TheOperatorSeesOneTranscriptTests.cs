@@ -19,9 +19,10 @@ namespace Hamlet.App.Tests.ViewModels;
 /// <see cref="MainWindowViewModel.ArbitrationLine"/> that wrote nothing: both
 /// sheet cases red (`.run-unit/unit465-one-red.txt`). The tab case was red there
 /// only on this test's own first defect, reading the main window's comments,
-/// which cite the project arbiter's rulings and are never drawn; it holds at the
-/// parent commit too, because nothing before this unit named a decoder on the
-/// tab.</para>
+/// which cite the project arbiter's rulings and are never drawn; so it was
+/// watched red again against a stub <see cref="CwArbiter.Arbitrate"/> that put
+/// both readings of the span on the transcript, and failed on one character per
+/// span (`.run-unit/unit465-one-red-tab.txt`).</para>
 /// </remarks>
 public sealed class TheOperatorSeesOneTranscriptTests
 {
