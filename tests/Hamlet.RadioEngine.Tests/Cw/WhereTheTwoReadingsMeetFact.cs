@@ -379,6 +379,84 @@ public sealed class WhereTheTwoReadingsMeetFact
         Assert.Equal(BothDecodersAreScoredAlikeTests.Rows.Count, perRecording.Count);
     }
 
+    /// <remarks>
+    /// Work instruction 465 task 2, item 5: all 35 through <see cref="CwArbiter"/>
+    /// under <see cref="CwVoteTable"/>, each recording under its own condition row.
+    /// Prints the arbitrated transcript in task 0's save format, the arbiter's own
+    /// records counted per case per condition in task 1's format, and a check that
+    /// <see cref="CwSecondHarvester"/> reads the port exactly as task 1's clock did.
+    /// Asserts only that the harvester and task 1 agree; the comparison with task 0's
+    /// save is made on the printout.
+    /// </remarks>
+    [Fact]
+    public void TheCorpusThroughTheArbiter()
+    {
+        var byRow = new List<(BothDecodersAreScoredAlikeTests.Row Row, CwArbitrated Result)>();
+        var harvestDiffers = 0;
+
+        foreach (var r in BothDecodersAreScoredAlikeTests.Rows)
+        {
+            var second = Array.Empty<CwSecondReading>() as IReadOnlyList<CwSecondReading>;
+
+            if (r.Port is not null)
+            {
+                var run = WhatEachDecoderKnowsAboutEachCharacterFact.RunPort(r);
+                var task1 = PortOnTheClock(run, r.Port.Settled, FldigiConfidence.For(run));
+
+                second = CwSecondHarvester.Of(run);
+
+                var same = second.Count == task1.Count && second.Zip(task1).All(x =>
+                    x.First.Text == x.Second.Character.Text && x.First.Confidence == x.Second.Character.Confidence
+                    && x.First.P.Equals(x.Second.P) && x.First.Start.Equals(x.Second.Start) && x.First.End.Equals(x.Second.End));
+
+                Print($"harvest check | {r.Name} | {(same ? "same" : "DIFFERS")} | {second.Count} readings, task 1 {task1.Count}");
+                harvestDiffers += same ? 0 : 1;
+            }
+
+            var result = CwArbiter.Arbitrate(r.Ours.Settled, second, CwVoteTable.For(r.Condition));
+
+            byRow.Add((r, result));
+
+            for (var i = 0; i < result.Characters.Count; i++)
+            {
+                var c = result.Characters[i];
+
+                Print(string.Create(Invariant,
+                    $"save | ours | {r.Name} | {i} | {Visible(c.Text)} | {ClassOf(c)} | {P(c.Probability)}"));
+            }
+        }
+
+        Print("arbiter count | condition | key | recordings | agree | disagree | tie within 0.05 | one-sided ours | one-sided port | emitted from ours | emitted from the port | not emitted | ours votes | port votes");
+
+        foreach (var real in new[] { true, false })
+        {
+            var set = byRow.Where(x => x.Row.Real == real).ToList();
+
+            ArbiterCount(real ? "real HF, all" : "synthetic, all", real, set);
+
+            foreach (var g in set.GroupBy(x => x.Row.Condition).OrderBy(g => g.Key, StringComparer.Ordinal))
+            {
+                ArbiterCount(g.Key, real, g.ToList());
+            }
+        }
+
+        Assert.Equal(0, harvestDiffers);
+    }
+
+    private void ArbiterCount(string label, bool real, IReadOnlyList<(BothDecodersAreScoredAlikeTests.Row Row, CwArbitrated Result)> rows)
+    {
+        var all = rows.SelectMany(x => x.Result.Records).ToList();
+        var cases = new[]
+        {
+            CwArbitrationCase.Agree, CwArbitrationCase.Disagree, CwArbitrationCase.Tie,
+            CwArbitrationCase.OneSidedOurs, CwArbitrationCase.OneSidedSecond,
+        };
+        var vote = CwVoteTable.For(label);
+
+        Print(string.Create(Invariant,
+            $"arbiter count | {label} | {(real ? "inferred" : "exact")} | {rows.Count} | {string.Join(" | ", cases.Select(c => all.Count(r => r.Case == c)))} | {all.Count(r => r.Emitted == CwReader.Ours)} | {all.Count(r => r.Emitted == CwReader.Second)} | {all.Count(r => r.Emitted is null)} | {(vote.Ours ? "votes" : "advisory")} | {(vote.Second ? "votes" : "advisory")}"));
+    }
+
     private void Count(string label, bool real, IReadOnlyList<(BothDecodersAreScoredAlikeTests.Row Row, IReadOnlyList<Meeting> Meetings)> rows)
     {
         var all = rows.SelectMany(x => x.Meetings).ToList();

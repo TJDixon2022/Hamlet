@@ -1,0 +1,13 @@
+ condition | key | recordings | agree | disagree | tie within 0.05 | one-sided ours | one-sided port 
+ real HF, all | inferred | 23 | 290 | 113 | 16 | 438 | 48 
+ real HF, no CH-* profile, SNR_2500 not measured, sender TX-FARNS (CW_SPEC.md 6.4 and 10, HM-DEC-115's traffic net) | inferred | 1 | 30 | 2 | 0 | 17 | 2 
+ real HF, no CH-* profile, SNR_2500 not measured, sender TX-ITU (CW_SPEC.md 10, the KD0UN capture) | inferred | 1 | 8 | 2 | 0 | 9 | 3 
+ real HF, no CH-* profile, SNR_2500 not measured, sender TX-TIGHT (CW_SPEC.md 10, HM-DEC-101) | inferred | 1 | 9 | 19 | 2 | 27 | 4 
+ real HF, no CH-* profile, SNR_2500 not measured, sender not stated in CW_SPEC.md | inferred | 20 | 243 | 90 | 14 | 385 | 39 
+ synthetic, all | exact | 12 | 120 | 16 | 2 | 37 | 32 
+ synthetic, no fading, shaped noise band (not shown to be CH-AWGN), TX-ITU (1:3:1:3:7), 0 dB in the passband (not restated in the 2500 Hz reference) | exact | 3 | 0 | 0 | 0 | 0 | 27 
+ synthetic, no fading, shaped noise band (not shown to be CH-AWGN), TX-ITU (1:3:1:3:7), 15 dB in the passband (not restated in the 2500 Hz reference) | exact | 3 | 54 | 2 | 0 | 8 | 0 
+ synthetic, no fading, shaped noise band (not shown to be CH-AWGN), TX-ITU (1:3:1:3:7), 5 dB in the passband (not restated in the 2500 Hz reference) | exact | 3 | 42 | 6 | 0 | 16 | 0 
+ synthetic, no fading, shaped noise band (not shown to be CH-AWGN), character gap 5 units, inside TX-FARNS's 3 to 7, 0 dB in the passband (not restated in the 2500 Hz reference) | exact | 1 | 0 | 0 | 0 | 0 | 4 
+ synthetic, no fading, shaped noise band (not shown to be CH-AWGN), character gap 5 units, inside TX-FARNS's 3 to 7, 15 dB in the passband (not restated in the 2500 Hz reference) | exact | 1 | 17 | 1 | 1 | 2 | 0 
+ synthetic, no fading, shaped noise band (not shown to be CH-AWGN), character gap 5 units, inside TX-FARNS's 3 to 7, 5 dB in the passband (not restated in the 2500 Hz reference) | exact | 1 | 7 | 7 | 1 | 11 | 1 
