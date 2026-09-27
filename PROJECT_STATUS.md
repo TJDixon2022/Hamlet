@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 0 of 2
+TASK: 1 of 2
 WORK_INSTRUCTION: 467 - HM-REQ-128 judged on conditions as CW_SPEC.md defines them: a union row is a summary, not a condition, and 9.7 is closed on the switch unit 466 built
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-27T09:26:41-04:00
-NOTE: Task 0 entry figures all as at 466's exit (decode time 65.50 s against 64.27 s); both emitted saves byte-identical to 466's exit; committing
+UPDATED: 2026-09-27T10:09:17-04:00
+NOTE: Task 1 done - part (b) narrowed to 10 condition rows and the live row, re-watched red on the 4 losing rows then green; committing
 
 ---
 

@@ -131,6 +131,29 @@ namespace Hamlet.RadioEngine.Tests.Cw;
 /// switch beside a character only where it is not `arbitrate`. The CW tab never
 /// shows a decoder or a switch (HM-REQ-121).</item>
 /// </list>
+///
+/// <para>**4. WHICH ROWS ARE CONDITIONS** (work instruction 467, DECIDED (2) and
+/// (3); the arbiter's reading, overrulable). `CW_SPEC.md` section 4: "Every
+/// condition is a named profile from this file (`CH-*`, `TX-*`, `INT-*`, `IMP-*`)
+/// and an SNR in the reference bandwidth (§8), never prose." The verification
+/// table's row 010: "one row per condition profile". The one copy of the
+/// classification is <see cref="TheArbitrationEarnsItsPlaceTests.Decided2And3Rows"/>;
+/// this fact prints it into arbitration.md section 8. None of the rules above
+/// changes, and no switch does.</para>
+/// <list type="bullet">
+/// <item>**Condition, 10 rows**, asserted by HM-REQ-128's test on the harness:
+/// real TX-FARNS, TX-ITU and TX-TIGHT, each one named sender, SNR not measured;
+/// real, sender not stated, the per-sender row for the 20 recordings section 10
+/// names no sender for, SNR not measured, a condition by DECIDED (3) though it
+/// names no profile; and the six synthetic rows, TX-ITU and character gap 5
+/// (inside TX-FARNS) each at 0, 5 and 15 dB in the passband.</item>
+/// <item>**The live product's row**, real HF, all: the union of the 23 real
+/// recordings, which the product runs under, asserted on the live path only.
+/// Its harness figures are printed beside it.</item>
+/// <item>**Summary**, synthetic, all: the union of the six synthetic rows, two
+/// senders at three levels, not one profile at one SNR. Printed with all three
+/// figures and the output emitted under the switch, and not asserted.</item>
+/// </list>
 /// </remarks>
 public sealed class TheArbitrationEarnsItsPlaceFact
 {
@@ -551,9 +574,13 @@ public sealed class TheArbitrationEarnsItsPlaceFact
             spanCounts[path] = new (int, int)[3];
         }
 
+        var harnessSpanReadings = new Dictionary<string, IReadOnlyList<IReadOnlyList<CwCharacter>>>(StringComparer.Ordinal);
+
         foreach (var recording in WhatTheNamedWordsReadTests.Recordings)
         {
             var readings = SpanReadings(recording);
+
+            harnessSpanReadings[recording] = readings["harness"];
 
             foreach (var span in WhatTheNamedWordsReadTests.Spans.Where(s => s.Recording == recording))
             {
@@ -646,7 +673,47 @@ public sealed class TheArbitrationEarnsItsPlaceFact
             }
         }
 
-        var md = Markdown(harnessRows, liveRows, decided, spanLines, verdictLines, harness.Count(h => h.Row.Port is not null));
+        // Work instruction 467: the output emitted under the switch table in the harness, scored by the same rows, for section 8.
+        var emittedSpans = new (int, int)[3];
+
+        foreach (var recording in WhatTheNamedWordsReadTests.Recordings)
+        {
+            var plain = harnessSpanReadings[recording];
+            var switched = SpanReadings(recording, true)["harness"];
+
+            foreach (var span in WhatTheNamedWordsReadTests.Spans.Where(s => s.Recording == recording))
+            {
+                for (var o = 0; o < 3; o++)
+                {
+                    var met = ReadSpan(span, o == 0 ? switched[0] : plain[o]).Met ? 1 : 0;
+
+                    emittedSpans[o] = (emittedSpans[o].Item1 + met, emittedSpans[o].Item2 + 1);
+                }
+            }
+        }
+
+        var emittedRows = Rows(
+            harness.Select(h => h.Three with
+                {
+                    Emitted = new IReadOnlyList<CwCharacter>?[]
+                    {
+                        CwArbiter.Arbitrate(h.Row.Ours.Settled, h.Second, CwVoteTable.For(h.Row.Condition), CwSwitchTable.For(h.Row.Condition)).Characters,
+                        h.Three.Emitted[1],
+                        h.Three.Emitted[2],
+                    },
+                })
+                .ToList(),
+            new Dictionary<string, (int, int)[]> { ["x"] = emittedSpans });
+
+        foreach (var row in harnessRows)
+        {
+            var e = emittedRows.Single(r => r.Label == row.Label).Figures[0];
+
+            Print($"class | {row.Label} | {TheArbitrationEarnsItsPlaceTests.ClassOf(row.Label)?.ToString() ?? "unclassified"} | emitted under {SwitchWord(CwSwitchTable.For(row.Label))} | "
+                  + string.Join(", ", CwSwitchTable.Order.Where(e.ContainsKey).Select(m => $"{m} {Text(e, m)}")));
+        }
+
+        var md = Markdown(harnessRows, liveRows, decided, spanLines, verdictLines, harness.Count(h => h.Row.Port is not null), emittedRows);
 
         File.WriteAllText(Path.Combine(CwToneSurveyTests.RepositoryRoot(), "docs", "phase-requirements", "arbitration.md"), md);
 
@@ -686,12 +753,12 @@ public sealed class TheArbitrationEarnsItsPlaceFact
     private static string Markdown(
         IReadOnlyList<PathRow> harnessRows, IReadOnlyList<PathRow> liveRows,
         IReadOnlyList<(string Label, string Path, CwSwitchVerdict Verdict)> decided,
-        IReadOnlyList<string> spanLines, IReadOnlyList<string> verdictLines, int portRun)
+        IReadOnlyList<string> spanLines, IReadOnlyList<string> verdictLines, int portRun, IReadOnlyList<PathRow> emittedRows)
     {
         var md = new StringBuilder();
 
         md.Append("# Arbitration: the arbitrated transcript, ours alone and the port alone (HM-REQ-128)\n\n");
-        md.Append("Written by `TheArbitrationEarnsItsPlaceFact.TheThreeWayTable` (work instruction 466, task 2; PHASE_PLAN.md 9.7). ");
+        md.Append("Written by `TheArbitrationEarnsItsPlaceFact.TheThreeWayTable` (work instruction 466, task 2; section 8 by work instruction 467; PHASE_PLAN.md 9.7). ");
         md.Append("The metric list and the loss, better-decoder and path rules were fixed in that fact's header at `9eef6850`, before any ");
         md.Append("three-way figure was computed (V-14), and are `CwSwitchTable.Choose`. Every figure goes through ");
         md.Append("`TheRequirementsAreMeasuredTests.Measure` and the same `CwMetrics` calls, each with its key's kind (V-11, V-13). ");
@@ -756,7 +823,88 @@ public sealed class TheArbitrationEarnsItsPlaceFact
         md.Append("- **The port's figures are at parity.md section 1's all-sure mapping**; its MET-CER-SURE is its whole character error.\n");
         md.Append("- **Who votes is `CwVoteTable`'s**, calibration.md section 2's held-out verdicts, unchanged here; the switch sits beside it and does not edit it.\n");
 
+        Conditions(md, harnessRows, emittedRows);
+
         return md.ToString();
+    }
+
+    // Section 8 (work instruction 467): every row's class under DECIDED (2) and (3), and the union rows with all three figures and the emitted output.
+    private static void Conditions(StringBuilder md, IReadOnlyList<PathRow> harnessRows, IReadOnlyList<PathRow> emittedRows)
+    {
+        md.Append("\n## 8. Which rows are conditions (work instruction 467, DECIDED (2) and (3))\n\n");
+        md.Append("`CW_SPEC.md` section 4: *\"Every condition is a named profile from this file (`CH-*`, `TX-*`, `INT-*`, `IMP-*`) and an SNR in the reference bandwidth (§8), never prose.\"* ");
+        md.Append("`CW_REQUIREMENTS.md`'s verification table, row 010: *\"one row per condition profile\"*. ");
+        md.Append("So a **condition** is one named sender or channel profile at one level, and HM-REQ-128's test asserts it on the harness. ");
+        md.Append("**The live product's row**, real HF, all, is asserted on the live path, the path the product runs (unit 466 DECIDED (5)). ");
+        md.Append("A **summary** is a union across levels or profiles. It is printed below with all three figures and the output emitted under the switch, and is not asserted. ");
+        md.Append("This is the arbiter's reading, overrulable. The one copy of the list is `TheArbitrationEarnsItsPlaceTests.Decided2And3Rows`. No rule of `9eef6850` and no switch changes.\n\n");
+
+        md.Append("| row | class | SNR | why | HM-REQ-128's test asserts it |\n|---|---|---|---|---|\n");
+
+        foreach (var (row, cls, snr, reason) in TheArbitrationEarnsItsPlaceTests.Decided2And3Rows)
+        {
+            var asserts = cls switch
+            {
+                TheArbitrationEarnsItsPlaceTests.RowClass.Condition => "yes, harness",
+                TheArbitrationEarnsItsPlaceTests.RowClass.Live => "yes, live path",
+                _ => "no, printed only",
+            };
+
+            md.Append($"| {row} | {cls.ToString().ToLowerInvariant()} | {snr} | {reason} | {asserts} |\n");
+        }
+
+        md.Append("\n**The union rows in the harness**, arbitrated, ours alone, the port alone, and the output emitted under `CwSwitchTable`. ");
+        md.Append("Real HF, all is also a union; the test judges it on the live path, where the switch is arbitrate and the emitted output is the arbitrated output (section 4).\n\n");
+        md.Append("| row | class | metric | arbitrated | ours alone | port alone | emitted | emitted against ours alone | against the port alone |\n|---|---|---|---|---|---|---|---|---|\n");
+
+        var unions = harnessRows.Where(r => TheArbitrationEarnsItsPlaceTests.ClassOf(r.Label) != TheArbitrationEarnsItsPlaceTests.RowClass.Condition).ToList();
+
+        foreach (var row in unions)
+        {
+            var e = emittedRows.Single(r => r.Label == row.Label).Figures[0];
+            var cls = TheArbitrationEarnsItsPlaceTests.ClassOf(row.Label)?.ToString().ToLowerInvariant() ?? "unclassified";
+
+            foreach (var m in CwSwitchTable.Order.Where(m => row.Figures.Any(f => f.ContainsKey(m))))
+            {
+                md.Append($"| {row.Label} | {cls} | {m} | {Text(row.Figures[0], m)} | {Text(row.Figures[1], m)} | {Text(row.Figures[2], m)} | {Text(e, m)} | ");
+                md.Append($"{Versus(m, e, row.Figures[1])} | {Versus(m, e, row.Figures[2])} |\n");
+            }
+        }
+
+        md.Append('\n');
+
+        // Where a union row's emitted output is worse than ours alone, say so, and name the member rows whose emitted figure moves off ours on that metric.
+        foreach (var row in unions)
+        {
+            var e = emittedRows.Single(r => r.Label == row.Label).Figures[0];
+            var ours = row.Figures[1];
+            var worse = CwSwitchTable.Order.Where(m => e.ContainsKey(m) && ours.ContainsKey(m) && CwSwitchTable.Compare(m, e[m], ours[m]) > 0).ToList();
+
+            if (worse.Count == 0)
+            {
+                md.Append($"- **{row.Label}** emits no worse than ours alone on any metric.\n");
+                continue;
+            }
+
+            md.Append($"- **{row.Label} emits worse than ours alone** on {string.Join(" and ", worse.Select(m => $"{m} ({Text(e, m)} against {Text(ours, m)})"))}.");
+
+            var members = harnessRows.Where(r => r.Kind == row.Kind && TheArbitrationEarnsItsPlaceTests.ClassOf(r.Label) == TheArbitrationEarnsItsPlaceTests.RowClass.Condition);
+
+            foreach (var member in members)
+            {
+                var me = emittedRows.Single(r => r.Label == member.Label).Figures[0];
+                var moved = worse.Where(m => me.ContainsKey(m) && member.Figures[1].ContainsKey(m) && CwSwitchTable.Compare(m, me[m], member.Figures[1][m]) != 0).ToList();
+
+                if (moved.Count > 0)
+                {
+                    md.Append($" It comes from **{member.Label}**, switched to {SwitchWord(CwSwitchTable.For(member.Label))}: ");
+                    md.Append(string.Join(", ", moved.Select(m => $"{m} {Text(me, m)} emitted against ours' {Text(member.Figures[1], m)}")));
+                    md.Append('.');
+                }
+            }
+
+            md.Append(" A summary row is not asserted by HM-REQ-128's test.\n");
+        }
     }
 
     private void Print(string line) => _output.WriteLine(line);

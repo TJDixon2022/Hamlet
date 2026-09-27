@@ -1,0 +1,9 @@
+unit467 task 1: conditions named under CW_SPEC.md section 4 - 10 condition rows, the live row real HF, all, the summary synthetic, all; HM-REQ-128 part (b) narrowed to them and re-watched red against an empty table on TX-FARNS, TX-ITU 0 dB, char-gap-5 0 dB and char-gap-5 5 dB, then green (9.7)
+
+- TheArbitrationEarnsItsPlaceTests: Decided2And3Rows, the one list (DECIDED (2) and (3)), quoting CW_SPEC.md section 4; part (b) asserts the condition rows on the harness and real HF, all on the live path; every computed row must be classified and every listed row computed; summary rows printed, not asserted. Part (a) untouched. The table part (b) reads is one field, emptied only for the re-watch (CLAUDE.md 12.5).
+- TheArbitrationEarnsItsPlaceFact: header paragraph 4 names the classes; TheThreeWayTable scores the output emitted under the switch in the harness and writes arbitration.md section 8 - the classification, and the union rows with all three figures and the emitted output. Sections 1 to 7 unchanged.
+- synthetic, all emits worse than ours alone on 012 (158 against 159 of 252) and 081 (48 against 44 of 84), from char-gap-5 5 dB's port-alone switch; printed, not asserted.
+- No line under src changes; no switch, rule, metric or threshold changes. Emitted transcripts, harness and live, byte-identical to task 0's saves; the port byte-identical to 19109b51.
+- At this commit: build 0 errors; engine line 178/178; app line 277/278 then 278/278 on the one rerun (DECIDED (6)); captures 51/51; adjudicated 13/13; named 13/13.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

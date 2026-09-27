@@ -1,6 +1,6 @@
 # Arbitration: the arbitrated transcript, ours alone and the port alone (HM-REQ-128)
 
-Written by `TheArbitrationEarnsItsPlaceFact.TheThreeWayTable` (work instruction 466, task 2; PHASE_PLAN.md 9.7). The metric list and the loss, better-decoder and path rules were fixed in that fact's header at `9eef6850`, before any three-way figure was computed (V-14), and are `CwSwitchTable.Choose`. Every figure goes through `TheRequirementsAreMeasuredTests.Measure` and the same `CwMetrics` calls, each with its key's kind (V-11, V-13). The port was run on 35 of 35 recordings in the harness.
+Written by `TheArbitrationEarnsItsPlaceFact.TheThreeWayTable` (work instruction 466, task 2; section 8 by work instruction 467; PHASE_PLAN.md 9.7). The metric list and the loss, better-decoder and path rules were fixed in that fact's header at `9eef6850`, before any three-way figure was computed (V-14), and are `CwSwitchTable.Choose`. Every figure goes through `TheRequirementsAreMeasuredTests.Measure` and the same `CwMetrics` calls, each with its key's kind (V-11, V-13). The port was run on 35 of 35 recordings in the harness.
 
 ## 1. The metrics and the rules
 
@@ -308,3 +308,41 @@ Written by `TheArbitrationEarnsItsPlaceFact.TheThreeWayTable` (work instruction 
 - **No row is a CH-* condition**, so no must-tier verdict here is the requirement's own; each is the tree's nearest row, labelled.
 - **The port's figures are at parity.md section 1's all-sure mapping**; its MET-CER-SURE is its whole character error.
 - **Who votes is `CwVoteTable`'s**, calibration.md section 2's held-out verdicts, unchanged here; the switch sits beside it and does not edit it.
+
+## 8. Which rows are conditions (work instruction 467, DECIDED (2) and (3))
+
+`CW_SPEC.md` section 4: *"Every condition is a named profile from this file (`CH-*`, `TX-*`, `INT-*`, `IMP-*`) and an SNR in the reference bandwidth (§8), never prose."* `CW_REQUIREMENTS.md`'s verification table, row 010: *"one row per condition profile"*. So a **condition** is one named sender or channel profile at one level, and HM-REQ-128's test asserts it on the harness. **The live product's row**, real HF, all, is asserted on the live path, the path the product runs (unit 466 DECIDED (5)). A **summary** is a union across levels or profiles. It is printed below with all three figures and the output emitted under the switch, and is not asserted. This is the arbiter's reading, overrulable. The one copy of the list is `TheArbitrationEarnsItsPlaceTests.Decided2And3Rows`. No rule of `9eef6850` and no switch changes.
+
+| row | class | SNR | why | HM-REQ-128's test asserts it |
+|---|---|---|---|---|
+| real HF, all | live | not measured | the row the live product runs under (CwVoteTable.LiveCondition); the union of all 23 real recordings, so judged on the live path only (DECIDED (3)) and printed from the harness beside it | yes, live path |
+| real HF, no CH-* profile, SNR_2500 not measured, sender TX-FARNS (CW_SPEC.md 6.4 and 10, HM-DEC-115's traffic net) | condition | not measured | one named sender profile, TX-FARNS, one recording | yes, harness |
+| real HF, no CH-* profile, SNR_2500 not measured, sender TX-ITU (CW_SPEC.md 10, the KD0UN capture) | condition | not measured | one named sender profile, TX-ITU, one recording | yes, harness |
+| real HF, no CH-* profile, SNR_2500 not measured, sender TX-TIGHT (CW_SPEC.md 10, HM-DEC-101) | condition | not measured | one named sender profile, TX-TIGHT, one recording | yes, harness |
+| real HF, no CH-* profile, SNR_2500 not measured, sender not stated in CW_SPEC.md | condition | not measured | the real per-sender row for the 20 recordings whose sender CW_SPEC.md section 10 does not name; a condition row by DECIDED (3), though it names no profile, and asserting it cannot loosen the test | yes, harness |
+| synthetic, all | summary | mixed: 0, 5 and 15 dB in the passband | the union of the six synthetic rows, two senders at three levels: not one profile at one SNR | no, printed only |
+| synthetic, no fading, shaped noise band (not shown to be CH-AWGN), TX-ITU (1:3:1:3:7), 0 dB in the passband (not restated in the 2500 Hz reference) | condition | 0 dB in the passband | one sender, TX-ITU, at one level | yes, harness |
+| synthetic, no fading, shaped noise band (not shown to be CH-AWGN), TX-ITU (1:3:1:3:7), 15 dB in the passband (not restated in the 2500 Hz reference) | condition | 15 dB in the passband | one sender, TX-ITU, at one level | yes, harness |
+| synthetic, no fading, shaped noise band (not shown to be CH-AWGN), TX-ITU (1:3:1:3:7), 5 dB in the passband (not restated in the 2500 Hz reference) | condition | 5 dB in the passband | one sender, TX-ITU, at one level | yes, harness |
+| synthetic, no fading, shaped noise band (not shown to be CH-AWGN), character gap 5 units, inside TX-FARNS's 3 to 7, 0 dB in the passband (not restated in the 2500 Hz reference) | condition | 0 dB in the passband | one sender, character gap 5 inside TX-FARNS, at one level | yes, harness |
+| synthetic, no fading, shaped noise band (not shown to be CH-AWGN), character gap 5 units, inside TX-FARNS's 3 to 7, 15 dB in the passband (not restated in the 2500 Hz reference) | condition | 15 dB in the passband | one sender, character gap 5 inside TX-FARNS, at one level | yes, harness |
+| synthetic, no fading, shaped noise band (not shown to be CH-AWGN), character gap 5 units, inside TX-FARNS's 3 to 7, 5 dB in the passband (not restated in the 2500 Hz reference) | condition | 5 dB in the passband | one sender, character gap 5 inside TX-FARNS, at one level | yes, harness |
+
+**The union rows in the harness**, arbitrated, ours alone, the port alone, and the output emitted under `CwSwitchTable`. Real HF, all is also a union; the test judges it on the live path, where the switch is arbitrate and the emitted output is the arbitrated output (section 4).
+
+| row | class | metric | arbitrated | ours alone | port alone | emitted | emitted against ours alone | against the port alone |
+|---|---|---|---|---|---|---|---|---|
+| real HF, all | live | 011 | 33 / 473 (0.070) | 33 / 473 (0.070) | 62 / 473 (0.131) | 33 / 473 (0.070) | equal | better |
+| real HF, all | live | 010 | 33 / 436 (0.076) | 33 / 436 (0.076) | 62 / 239 (0.259) | 33 / 436 (0.076) | equal | better |
+| real HF, all | live | 012 | 403 / 473 (0.852) | 403 / 473 (0.852) | 177 / 473 (0.374) | 403 / 473 (0.852) | equal | better |
+| real HF, all | live | 014 | 0 / 0 (not defined) | 0 / 0 (not defined) | not compared | 0 / 0 (not defined) | not compared | not compared |
+| real HF, all | live | 081 | 37 / 113 (0.327) | 37 / 113 (0.327) | 86 / 113 (0.761) | 37 / 113 (0.327) | equal | better |
+| real HF, all | live | 084 | 0 / 3 (0.000) | 0 / 3 (0.000) | 0 / 3 (0.000) | 0 / 3 (0.000) | equal | equal |
+| synthetic, all | summary | 011 | 14 / 252 (0.056) | 14 / 252 (0.056) | 34 / 252 (0.135) | 6 / 252 (0.024) | better | better |
+| synthetic, all | summary | 010 | 14 / 173 (0.081) | 14 / 173 (0.081) | 34 / 168 (0.202) | 6 / 164 (0.037) | better | better |
+| synthetic, all | summary | 012 | 159 / 252 (0.631) | 159 / 252 (0.631) | 134 / 252 (0.532) | 158 / 252 (0.627) | WORSE | better |
+| synthetic, all | summary | 014 | 0 / 0 (not defined) | 0 / 0 (not defined) | not compared | 0 / 0 (not defined) | not compared | not compared |
+| synthetic, all | summary | 081 | 44 / 84 (0.524) | 44 / 84 (0.524) | 56 / 84 (0.667) | 48 / 84 (0.571) | WORSE | better |
+
+- **real HF, all** emits no worse than ours alone on any metric.
+- **synthetic, all emits worse than ours alone** on 012 (158 / 252 (0.627) against 159 / 252 (0.631)) and 081 (48 / 84 (0.571) against 44 / 84 (0.524)). It comes from **synthetic, no fading, shaped noise band (not shown to be CH-AWGN), character gap 5 units, inside TX-FARNS's 3 to 7, 5 dB in the passband (not restated in the 2500 Hz reference)**, switched to port alone: 012 13 / 21 (0.619) emitted against ours' 14 / 21 (0.667), 081 12 / 7 (1.714) emitted against ours' 8 / 7 (1.143). A summary row is not asserted by HM-REQ-128's test.
