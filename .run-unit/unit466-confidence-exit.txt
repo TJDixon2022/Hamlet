@@ -1,0 +1,59 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.07]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.27]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.27]   Starting:    Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:01.38]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.EveryCharacterCarriesAConfidenceTests.OnASyntheticCaseEveryCharacterOfBothHasAProbability [1 s]
+  Standard Output Messages:
+ ours | C | margin 103.943 | p 0.9738
+ ours | Q | margin 90.857 | p 0.9721
+ ours | C | margin 82.552 | p 0.9708
+ ours | Q | margin 45.68 | p 0.9619
+ ours | C | margin 60.161 | p 0.9663
+ ours | Q | margin 32.298 | p 0.9556
+ ours | D | margin 93.665 | p 0.9725
+ ours | E | margin Infinity | p 0.9211
+ ours | N | margin 39.923 | p 0.9596
+ ours | 0 | margin 34.741 | p 0.957
+ ours | C | margin 41.297 | p 0.9602
+ ours | A | margin 61.012 | p 0.9666
+ ours | L | margin 75.221 | p 0.9696
+ ours | L | margin 117.949 | p 0.9752
+ ours | N | margin 46.364 | p 0.9622
+ ours | 0 | margin 32.026 | p 0.9554
+ ours | C | margin 39.661 | p 0.9594
+ ours | A | margin 57.409 | p 0.9656
+ ours | L | margin 54.962 | p 0.9649
+ ours | L | margin 70.016 | p 0.9686
+ ours | K | margin 126.741 | p 0.976
+ port | E | . | p 0.2346
+ port | Q | --.- | p 0.5743
+ port | C | -.-. | p 0.8185
+ port | Q | --.- | p 0.8702
+ port | D | -.. | p 0.8841
+ port | E | . | p 0.8824
+ port | N | -. | p 0.8878
+ port | 0 | ----- | p 0.9057
+ port | C | -.-. | p 0.9071
+ port | A | .- | p 0.9094
+ port | L | .-.. | p 0.9003
+ port | L | .-.. | p 0.8895
+ port | N | -. | p 0.8864
+ port | 0 | ----- | p 0.9128
+ port | C | -.-. | p 0.9112
+ port | A | .- | p 0.9072
+ port | L | .-.. | p 0.9024
+ port | L | .-.. | p 0.8938
+ port | K | -.- | p 0.9022
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.EveryCharacterCarriesAConfidenceTests.TheMeasureGivesTheAnswerAHandCountGives [8 ms]
+
+Test Run Successful.
+Total tests: 2
+     Passed: 2
+ Total time: 1.6711 Seconds
+RC=0 WALL=2s

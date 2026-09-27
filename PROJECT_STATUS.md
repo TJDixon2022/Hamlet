@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: EXECUTING
-TASK: 3 of 4
+STATE: COMPLETED
+TASK: 4 of 4
 WORK_INSTRUCTION: 466 - the arbitration earns its place: arbitrated, ours alone and the port alone scored on every metric of sections B and I per condition, and the arbitration switched off wherever it loses
-BALL: code
+BALL: tim
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-27T08:12:54-04:00
-NOTE: Task 3 - switch built; HM-REQ-128 test red first, green on live and the 4 losing rows, red on synthetic, all; five green; committing
+UPDATED: 2026-09-27T08:49:23-04:00
+NOTE: Unit 466 done, 9.7 left open: switch built, HM-REQ-128 holds on the live row and all 4 losing rows but not on the aggregate synthetic, all; owner's reading asked in output.md section 4 item 1; screen unchanged
 
 ---
 
