@@ -1,0 +1,143 @@
+unit 462 - technique C, screened in the working tree and refused under R78 (DECIDED (4)): real MET-WBE 37 to 38 (deleted 8 to 9), on 031838 (deleted 1 to 2), while MET-CER-SURE 33/436 to 32/438, MET-INVENTED 33 to 32 and coverage 403 to 406 moved the right way; synthetic unchanged; adjudicated 13 of 13
+
+== the four metrics per condition, task 0's entry then with C in
+ total | real | MET-CER-SURE 33 wrong or added of 436 sure (28 substituted, 5 added), 0.0757 | MET-COVERAGE 403 sure and right over 473 sent, 0.8520 (436 sure emitted, 0.9218 as the spec wrote it before R82) | MET-WBE 37 (29 inserted, 8 deleted) over 113 words, 0.3274 | inferred keys
+ total | synthetic | MET-CER-SURE 14 wrong or added of 173 sure (8 substituted, 6 added), 0.0809 | MET-COVERAGE 159 sure and right over 252 sent, 0.6310 (173 sure emitted, 0.6865 as the spec wrote it before R82) | MET-WBE 44 (13 inserted, 31 deleted) over 84 words, 0.5238 | exact keys
+ total | real keyed recordings | 33 invented (5 sure added, 28 sure wrong) over 473 sent | inferred keys | 23 of 23 recordings measured | share 0.0698
+ total | old count | 6 added named characters, 1 single-element, over the same recordings and stretches
+ total | synthetic CQ set | 14 invented (6 sure added, 8 sure wrong) over 252 sent | exact keys | never sole evidence
+ total | real | MET-CER-SURE 32 wrong or added of 438 sure (27 substituted, 5 added), 0.0731 | MET-COVERAGE 406 sure and right over 473 sent, 0.8584 (438 sure emitted, 0.9260 as the spec wrote it before R82) | MET-WBE 38 (29 inserted, 9 deleted) over 113 words, 0.3363 | inferred keys
+ total | synthetic | MET-CER-SURE 14 wrong or added of 173 sure (8 substituted, 6 added), 0.0809 | MET-COVERAGE 159 sure and right over 252 sent, 0.6310 (173 sure emitted, 0.6865 as the spec wrote it before R82) | MET-WBE 44 (13 inserted, 31 deleted) over 84 words, 0.5238 | exact keys
+ total | real keyed recordings | 32 invented (5 sure added, 27 sure wrong) over 473 sent | inferred keys | 23 of 23 recordings measured | share 0.0677
+ total | old count | 6 added named characters, 1 single-element, over the same recordings and stretches
+ total | synthetic CQ set | 14 invented (6 sure added, 8 sure wrong) over 252 sent | exact keys | never sole evidence
+
+== per condition, as parity.md tables them, with C in
+| **real HF, all** | inferred | ours 23 of 23, port 23 of 23 | 32 of 438 (0.073) | 62 of 239 (0.259) | 32 / 473 (0.068) | 62 / 473 (0.131) | 406 / 473 (0.858) | 177 / 473 (0.374) | 38 (29 ins, 9 del) / 113 (0.336) | 86 (25 ins, 61 del) / 113 (0.761) |
+| **synthetic, all** | exact | ours 12 of 12, port 12 of 12 | 14 of 173 (0.081) | 34 of 168 (0.202) | 14 / 252 (0.056) | 34 / 252 (0.135) | 159 / 252 (0.631) | 134 / 252 (0.532) | 44 (13 ins, 31 del) / 84 (0.524) | 56 (24 ins, 32 del) / 84 (0.667) |
+
+== adjudicated readings with C in
+Total tests: 13
+     Passed: 13
+
+== decode time, entry then with C in (ours s over the audio s)
+.run-unit/unit462-parity-entry.md:| real HF, inferred keys | 23 | 690.0 | 51.65 | 3.62 | 8.88 |
+.run-unit/unit462-parity-screen-C.md:| real HF, inferred keys | 23 | 690.0 | 51.22 | 3.66 | 8.88 |
+.run-unit/unit462-parity-entry.md:| synthetic, exact keys | 12 | 279.5 | 8.43 | 1.45 | 0.00 |
+.run-unit/unit462-parity-screen-C.md:| synthetic, exact keys | 12 | 279.5 | 8.14 | 1.49 | 0.00 |
+
+== the port's texts with C in against task 0's
+byte-identical
+
+== V-11: every recording's row, task 0's (<) against C in (>); rows not printed did not move
+17c17
+< unadjudicated/cw-2026-08-22-031838 | emitted 21 | wrong 5 | added 0 | sent 26 | right 16 | ins 0 | del 1 
+---
+> unadjudicated/cw-2026-08-22-031838 | emitted 21 | wrong 5 | added 0 | sent 26 | right 16 | ins 0 | del 2 
+21,23c21,23
+< unadjudicated/cw-2026-08-22-032050 | emitted 40 | wrong 4 | added 1 | sent 50 | right 35 | ins 1 | del 1 
+< unadjudicated/cw-2026-08-22-032113 | emitted 22 | wrong 1 | added 0 | sent 25 | right 21 | ins 3 | del 0 
+< unadjudicated/cw-2026-08-22-032129 | emitted 39 | wrong 4 | added 1 | sent 38 | right 34 | ins 0 | del 0 
+---
+> unadjudicated/cw-2026-08-22-032050 | emitted 41 | wrong 4 | added 1 | sent 50 | right 36 | ins 1 | del 1 
+> unadjudicated/cw-2026-08-22-032113 | emitted 23 | wrong 1 | added 0 | sent 25 | right 22 | ins 3 | del 0 
+> unadjudicated/cw-2026-08-22-032129 | emitted 39 | wrong 3 | added 1 | sent 38 | right 35 | ins 0 | del 0 
+
+== V-11: the full table with C in
+cq-12wpm-0db | emitted 0 | wrong 0 | added 0 | sent 21 | right 0 | ins 0 | del 6 
+cq-12wpm-15db | emitted 21 | wrong 0 | added 0 | sent 21 | right 21 | ins 0 | del 0 
+cq-12wpm-5db | emitted 21 | wrong 0 | added 0 | sent 21 | right 21 | ins 0 | del 0 
+cq-18wpm-0db | emitted 0 | wrong 0 | added 0 | sent 21 | right 0 | ins 0 | del 6 
+cq-18wpm-0db-char5 | emitted 0 | wrong 0 | added 0 | sent 21 | right 0 | ins 0 | del 6 
+cq-18wpm-15db | emitted 21 | wrong 0 | added 0 | sent 21 | right 21 | ins 0 | del 0 
+cq-18wpm-15db-char5 | emitted 21 | wrong 1 | added 0 | sent 21 | right 20 | ins 7 | del 5 
+cq-18wpm-5db | emitted 20 | wrong 0 | added 0 | sent 21 | right 20 | ins 0 | del 0 
+cq-18wpm-5db-char5 | emitted 25 | wrong 7 | added 4 | sent 21 | right 14 | ins 6 | del 2 
+cq-25wpm-0db | emitted 0 | wrong 0 | added 0 | sent 21 | right 0 | ins 0 | del 6 
+cq-25wpm-15db | emitted 22 | wrong 0 | added 1 | sent 21 | right 21 | ins 0 | del 0 
+cq-25wpm-5db | emitted 22 | wrong 0 | added 1 | sent 21 | right 21 | ins 0 | del 0 
+cw-2026-08-17-013347 | emitted 6 | wrong 0 | added 0 | sent 6 | right 6 | ins 0 | del 0 
+cw-2026-08-17-134712 | emitted 3 | wrong 0 | added 0 | sent 3 | right 3 | ins 0 | del 0 
+cw-2026-08-18-004507 | emitted 43 | wrong 0 | added 0 | sent 44 | right 43 | ins 5 | del 0 
+unadjudicated/cw-2026-08-18-003758 | emitted 11 | wrong 3 | added 0 | sent 11 | right 8 | ins 0 | del 0 
+unadjudicated/cw-2026-08-22-031838 | emitted 21 | wrong 5 | added 0 | sent 26 | right 16 | ins 0 | del 2 
+unadjudicated/cw-2026-08-22-031905 | emitted 32 | wrong 2 | added 0 | sent 33 | right 30 | ins 1 | del 0 
+unadjudicated/cw-2026-08-22-031948 | emitted 27 | wrong 1 | added 0 | sent 28 | right 26 | ins 0 | del 0 
+unadjudicated/cw-2026-08-22-032012 | emitted 43 | wrong 1 | added 2 | sent 42 | right 40 | ins 1 | del 1 
+unadjudicated/cw-2026-08-22-032050 | emitted 41 | wrong 4 | added 1 | sent 50 | right 36 | ins 1 | del 1 
+unadjudicated/cw-2026-08-22-032113 | emitted 23 | wrong 1 | added 0 | sent 25 | right 22 | ins 3 | del 0 
+unadjudicated/cw-2026-08-22-032129 | emitted 39 | wrong 3 | added 1 | sent 38 | right 35 | ins 0 | del 0 
+unadjudicated/cw-2026-08-24-012403 | emitted 13 | wrong 0 | added 0 | sent 13 | right 13 | ins 0 | del 0 
+unadjudicated/cw-2026-09-23-173723 | emitted 20 | wrong 3 | added 0 | sent 20 | right 17 | ins 6 | del 1 
+unadjudicated/cw-2026-09-24-004108 | emitted 4 | wrong 2 | added 0 | sent 8 | right 2 | ins 1 | del 0 
+unadjudicated/cw-2026-09-24-004133 | emitted 5 | wrong 0 | added 0 | sent 6 | right 5 | ins 2 | del 0 
+unadjudicated/cw-2026-09-24-004205 | emitted 8 | wrong 0 | added 0 | sent 8 | right 8 | ins 1 | del 0 
+unadjudicated/cw-2026-09-24-004234 | emitted 9 | wrong 2 | added 0 | sent 14 | right 7 | ins 2 | del 2 
+unadjudicated/cw-2026-09-24-004322 | emitted 32 | wrong 0 | added 0 | sent 40 | right 32 | ins 4 | del 2 
+unadjudicated/cw-2026-09-24-004347 | emitted 24 | wrong 0 | added 1 | sent 23 | right 23 | ins 1 | del 0 
+unadjudicated/cw-2026-09-24-004405 | emitted 6 | wrong 0 | added 0 | sent 6 | right 6 | ins 0 | del 0 
+unadjudicated/cw-2026-09-24-004427 | emitted 9 | wrong 0 | added 0 | sent 10 | right 9 | ins 0 | del 0 
+unadjudicated/cw-2026-09-24-004510 | emitted 11 | wrong 0 | added 0 | sent 11 | right 11 | ins 0 | del 0 
+unadjudicated/cw-2026-09-24-004550 | emitted 8 | wrong 0 | added 0 | sent 8 | right 8 | ins 1 | del 0 
+
+== our texts, task 0's (<) against C in (>)
+76c76
+<  text | cw-2026-08-17-013347 |  E EI I HIAEIHEEEA E EEE HEEIEE IEEETE I EE IEEI TEEITEHAEWVRRVA3VRRR  
+---
+>  text | cw-2026-08-17-013347 |  E EI I HIAEIHEEEA E EEE HEEIEE IEEETE I EE IEEI EEEITEHAEWVRRVA3VRRR  
+81c81
+<  text | unadjudicated/cw-2026-08-18-003126 |    U <BT> I WATCH AT L EAST 2 MOVIESA DAY WID X■ WHY NNOTT   , WESNRNS , E
+---
+>  text | unadjudicated/cw-2026-08-18-003126 |    S 5 I WATCH AT L EAST 2 MOVIESA DAY WID X■ WHY NNOTT   , WESNRNS , E
+87c87
+<  text | unadjudicated/cw-2026-08-22-031838 |   A 3, AT3 , 2TT 2, AND ■ WIAHA MEAN OF 2 TT 
+---
+>  text | unadjudicated/cw-2026-08-22-031838 |   A 3, IE3 , 2TT 2, AND ■ WIAHA MEAN OF 2TT 
+91,93c91,93
+<  text | unadjudicated/cw-2026-08-22-032050 |     IULLETIN CAN BE FOTAND IN TELEWRITTER, PA■ KE    H IE S TSSI I
+<  text | unadjudicated/cw-2026-08-22-032113 |    A KET■ A N O INTERNET ■ERSIONS OF  200J6   I I ITT EEIIIWE TI
+<  text | unadjudicated/cw-2026-08-22-032129 |  ■ MTMTJ26 PGOPAGATION FORECAST BUAELETIN ARLP034 
+---
+>  text | unadjudicated/cw-2026-08-22-032050 |     IULLETIN CAN BE FOTAND IN TELEWRITTER, PAC KE    H IE S ESSI I
+>  text | unadjudicated/cw-2026-08-22-032113 |    I KET■ A N D INTERNET VERSIONS OF  200J6   I I IET EEIIIWE TI
+>  text | unadjudicated/cw-2026-08-22-032129 |  2 MTMEJ26 PROPAGATION FORECAST BUAELETIN ARLP034 
+95,97c95,97
+<  text | unadjudicated/cw-2026-08-23-001831 |  E IE E U  KT■TQ  OQ <AR> SGEQ K5QQ 5NNDELA RR SNN TTTO  TUKV
+<  text | unadjudicated/cw-2026-08-23-001952 | HET E  E ■HINWEFU  EENEMCON TA K8T     I  ■ E I IIIIEE   MNS    B0   
+<  text | unadjudicated/cw-2026-08-23-002016 |   H■ S   B■ IEE   ONA■T SIT E■      EE  I I   E     KTIE0NH VNN JEENG  
+---
+>  text | unadjudicated/cw-2026-08-23-001831 |  E IE E S  KTYT■  OZ <AR> SGEQ K5QQ 5NNDELA RR SNN TTTO  TUKV
+>  text | unadjudicated/cw-2026-08-23-001952 | HET E  E ■HINWEFU  EEIETECOI TA K8T     I  ■ E I IIIIEE   MNS    B0   
+>  text | unadjudicated/cw-2026-08-23-002016 |   H■ S   B■ IEE   KNII■T SIE E■      EE  I I   E     KTIE0NH VNN JEENR  
+99c99
+<  text | unadjudicated/cw-2026-08-25-011552 |  T C <AS> R 4  XDE K ■GJAK1Z JA  K1ZJA <AR>    
+---
+>  text | unadjudicated/cw-2026-08-25-011552 |  E C <AS> R 4  XDE K ■GJAK1Z JA  K1ZJA <AR>    
+101,102c101,102
+<  text | unadjudicated/cw-2026-08-25-012823 |  E S SE EE  TTNT KEMTEEO IN U T  E
+<  text | unadjudicated/cw-2026-08-25-012922 |  I W W M   E TTTTT II  WA T T S WI QJ SAY73ESTKSTK S73 D NDH
+---
+>  text | unadjudicated/cw-2026-08-25-012823 |  E S SE EE  TENT DDEATEEGD IN U  E  E
+>  text | unadjudicated/cw-2026-08-25-012922 |  I W W M   ET ETTTT II  WA T T S WI LL SAY73ESTKSTK S73 D NDH
+104c104
+<  text | unadjudicated/cw-2026-08-25-013150 |    4 MO ■4 MW K   F  GE GE TE ES NICE TO HEAR YOU AGN ■EEE <BT> BEEN SEVERAL MONT
+---
+>  text | unadjudicated/cw-2026-08-25-013150 |    4 MW ■4 MW K   F  GE GE TE ES NICE TO HEAR YOU AGN ■EEE <BT> BEEN SEVERAL MONT
+108,111c108,111
+<  text | unadjudicated/cw-2026-08-25-013637 |  TE MP NEVEN T REV■R G OT AB OVE 7 5 F ES CLEAR S KY LI TE BR EEZE ALL DAY JUST AWE SO
+<  text | unadjudicated/cw-2026-08-25-021410 |     A    T O MTTT  YMTT  O AOIHI DT RIGHR IS  FLENT 66OAM
+<  text | unadjudicated/cw-2026-08-25-021629 |     ET MTT  OET    O ATT  MT S T  5 5 99 5 5  ■■ IN M I  M
+<  text | unadjudicated/cw-2026-08-25-021825 |    IE E IETOUENT KOC1UEK K    
+---
+>  text | unadjudicated/cw-2026-08-25-013637 |  TE MP NEVEN T REV■R G OT AB OVE 7 5 F ES CLEAR S KY LI TE BR EEZE ALL DAY JUST AWE SG
+>  text | unadjudicated/cw-2026-08-25-021410 |     A    T U MMT  XMTT  R ■IHI DT RIGHR IS  FLENT 66OAM
+>  text | unadjudicated/cw-2026-08-25-021629 |     EE AET  GET    IT IM  AE  S T  5 5 99 5 5  ■■ IN M I  M
+>  text | unadjudicated/cw-2026-08-25-021825 |    IE E IETOUENT KKC1UEK K    
+114c114
+<  text | unadjudicated/cw-2026-09-24-003919 |     EITEETNXNIK       EANQNID        EANQNIK    E
+---
+>  text | unadjudicated/cw-2026-09-24-003919 |     EITEETIXNIK       EANQIID        EAI■NIK    E
+120c120
+<  text | unadjudicated/cw-2026-09-24-004322 |   P O N S ORED AMERICA 25 9 OPERATION X ALL LOGS WILA
+---
+>  text | unadjudicated/cw-2026-09-24-004322 |   P O N S ORED AMERICA 25 9 OPERATION X ALL LOGS WILI
