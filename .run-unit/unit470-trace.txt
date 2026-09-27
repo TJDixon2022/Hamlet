@@ -1,0 +1,215 @@
+unit 470 task 1 - the trace: what each sure letter was printed under
+====================================================================
+
+Part 1 - the code, read before any decode (HEAD ab98456b, src identical to 1f6f20e8)
+--------------------------------------------------------------------------------------
+
+1. Where our decoder assigns a character's class.
+   src/Hamlet.RadioEngine/Cw/CwProbabilisticStream.cs:750 `Character(...)`:
+     Unreadable where the alphabet does not know the pattern;
+     High (sure) where GapsFitTheUnit(character, result, window) holds (every inner gap within
+       InnerGapEdge units of the path's unit - HM-REQ-015, unit 445);
+     Low (dim) otherwise.
+   It is called at CwProbabilisticStream.cs:609, which raises CharacterSettled, and for the
+   leading edge (LeadingEdgeChanged, line 621). `CwProbabilisticDecoder` itself assigns no class;
+   the stream that hosts it does. The metrics read the class as CwSymbol.Of does
+   (tests CwMetrics.cs:48): High = Sure, Low = NotSure, Unreadable = Placeholder.
+
+2. Where CwPitchProof and CwSpeedProof are computed, and whether both are known at emission.
+   CwPitchProof: CwToneTracker.PitchProof (CwToneTracker.cs:478), a live property:
+     None where no pitch was measured (_reportedHz NaN); Proved where the current survey verdict's
+     keyed candidate is at exactly the reported pitch; Hypothesis otherwise.
+   CwSpeedProof: CwDecoder.SpeedProof (CwDecoder.cs:696), a live property:
+     None where the stream's last read has no text or no speed; Proved where WordsPerMinute names
+     a number (not re-acquiring after a follow, 6 to 48 WPM), the stream's unit was measured
+     (estimator's dit or the marks' overrule, not the grid's winner), the tracker found keying in
+     the last six surveys (KeyingRecently), and that keying was within half the mixdown filter of
+     the pitch the stream reads; Hypothesis otherwise.
+   BOTH ARE KNOWN AT THE MOMENT A CHARACTER IS EMITTED. Neither is computed after the fact for the
+   report: both are properties of current state, read on demand. CwDecoder hosts the tracker and
+   the stream; the stream raises CharacterSettled from inside CwProbabilisticStream.Process
+   (CwDecoder.Step, CwDecoder.cs:899), after it has set Last and UnitWasMeasured for this read
+   (CwProbabilisticStream.cs:533-534, before :609), and after the tracker has processed the same
+   hop (CwDecoder.cs:853). So in CwDecoder's CharacterSettled and LeadingEdgeChanged handlers
+   (CwDecoder.cs:129 and :137), _tracker.PitchProof and SpeedProof are the states at emission.
+   The stream cannot see them (it holds no tracker), so the class cannot be gated where it is
+   assigned without handing the stream the tracker. The gate therefore sits in CwDecoder, where
+   the proof states are first known together, on our character before it meets the arbiter.
+
+   What "at emission" means here: a character settles after the decision delay, so its audio (At)
+   is earlier than the moment it is emitted. The states read are those at the emission moment,
+   which is what DECIDED (3) says ("at its emission").
+
+3. Departures of the proof states from their RESOLVED lines (reported, not repaired).
+   (a) Pitch. RESOLVED: "proved when the independent survey admits keying at that pitch AND at
+       least one whole character has resolved at it; hypothesis when a tone is tracked but keying
+       is not admitted or no character has resolved". The tree's PitchProof has the first half
+       (the current keyed verdict is at the reported pitch) and NOT the second: no character need
+       have resolved at the pitch for Proved. Departure: the tree can say Proved before any
+       character has resolved. The gate reads the tree as it stands, so on this clause's account
+       it dims fewer letters than the RESOLVED line would, never more. Recorded.
+   (b) Speed. RESOLVED: "proved only while characters resolve at it with the marks' unit within
+       10 percent of the path's (HM-REQ-031); when the tone stops or the pitch changes it drops to
+       hypothesis". The tree's SpeedProof has "the tone stops" (KeyingRecently, six surveys) and
+       "the pitch changes" (SpeedIsReacquiring after a follow of half the filter or more, and the
+       last keying within half the filter of the stream's pitch). It has no explicit test that
+       the marks' unit is within 10 percent of the path's: "measured" is the estimator's dit or
+       the marks' overrule rather than the grid's winner. Unit 451's trace found 0 of 24418 proved
+       synthetic hops more than 10 percent off the constructed speed, so on the synthetic set the
+       two agree in effect; on real audio the 10 percent clause is not checked. Departure recorded.
+   (c) The tree's pitch None is "no pitch measured" (_reportedHz NaN) where RESOLVED says "no tone
+       tracked". The tracker always points somewhere (a bank centre) and reports no measured pitch
+       until the survey admits keying, so the two coincide in practice. Not a departure in effect.
+
+4. How the arbiter takes our class (CwDecoder.Arbitrated, CwArbiter.Decide).
+   The harness every metric here is measured through (TheRequirementsAreMeasuredTests,
+   TheSeventeenThirtySevenCaptureTests.Settle, the floors) builds CwDecoder without the second
+   reader, so Arbitrated returns our character unchanged: the emitted transcript there IS our
+   class. The gate's effect on every R78 figure is therefore exactly the gate.
+   With the second reader on (the application, and TheArbitrationEarnsItsPlaceTests part (b)),
+   the live switch is Arbitrate (CwSwitchTable "real HF, all"). CwArbiter.Decide:
+     no partner: ours as it is (a gated letter stays dim);
+     OursAlone: ours as it is;
+     only one votes / neither: the voter's reading at its own class - where only the port votes,
+       the port's class is emitted and our gate does not reach it;
+     both vote and agree: the more confident decoder's class - where the port's p beats ours, the
+       port's class is emitted, which can put sure back on a letter our gate dimmed;
+     both vote and tie: dim;
+     both vote and differ: the higher p at its own class.
+   So in the application the gate is the gate on OUR reading; a port reading of the same span that
+   wins the arbitration can still reach the screen sure while acquiring. This is the arbiter as
+   ruled (HM-REQ-121 to 127, 466), untouched here (section 7 parks every switch and the vote
+   table). The live vote at "real HF, all" is read from CwVoteTable.Live.
+
+5. The gate as the tree will implement it: see Part 3 (DECIDED (3), registered before any
+   after-figure exists).
+
+Part 2 - the decode at HEAD, nothing under src changed (printouts .run-unit/unit470-trace-head.txt and unit470-opening-head.txt)
+---------------------------------------------------------------------------------------------
+first sure | real | unadjudicated/cw-2026-09-23-173723 | first keyed verdict 8.04 s | `T` at 0.875 s, pitch none, speed hypothesis | first character both proved at 8.180 s
+first sure | real | cw-2026-08-17-013347 | first keyed verdict 21.54 s | `E` at 0.320 s, pitch none, speed hypothesis | first character both proved at 20.690 s
+first sure | real | cw-2026-08-17-134712 | first keyed verdict none s | `E` at 14.570 s, pitch none, speed hypothesis | first character both proved at never s
+first sure | real | unadjudicated/cw-2026-08-18-003758 | first keyed verdict 2.54 s | `R` at 2.920 s, pitch proved, speed hypothesis | first character both proved at 13.055 s
+first sure | real | unadjudicated/cw-2026-08-24-012403 | first keyed verdict 20.54 s | `D` at 14.410 s, pitch hypothesis, speed hypothesis | first character both proved at 25.525 s
+first sure | real | cw-2026-08-18-004507 | first keyed verdict 2.04 s | `E` at 0.045 s, pitch hypothesis, speed hypothesis | first character both proved at 14.700 s
+first sure | real | unadjudicated/cw-2026-08-22-031838 | first keyed verdict 4.54 s | `A` at 1.860 s, pitch none, speed hypothesis | first character both proved at never s
+first sure | real | unadjudicated/cw-2026-08-22-031905 | first keyed verdict 6.54 s | `P` at 3.715 s, pitch none, speed hypothesis | first character both proved at 16.690 s
+first sure | real | unadjudicated/cw-2026-08-22-031948 | first keyed verdict 3.04 s | `T` at 2.175 s, pitch proved, speed hypothesis | first character both proved at never s
+first sure | real | unadjudicated/cw-2026-08-22-032012 | first keyed verdict 12.04 s | `T` at 1.765 s, pitch none, speed hypothesis | first character both proved at never s
+first sure | real | unadjudicated/cw-2026-08-22-032050 | first keyed verdict 24.04 s | `I` at 2.295 s, pitch none, speed hypothesis | first character both proved at never s
+first sure | real | unadjudicated/cw-2026-08-22-032113 | first keyed verdict 20.54 s | `A` at 1.690 s, pitch none, speed hypothesis | first character both proved at never s
+first sure | real | unadjudicated/cw-2026-08-22-032129 | first keyed verdict none s | `M` at 3.200 s, pitch none, speed hypothesis | first character both proved at never s
+first sure | real | unadjudicated/cw-2026-09-24-004108 | first keyed verdict 5.54 s | `H` at 0.895 s, pitch none, speed hypothesis | first character both proved at 5.590 s
+first sure | real | unadjudicated/cw-2026-09-24-004133 | first keyed verdict 3.54 s | `1` at 0.920 s, pitch none, speed hypothesis | first character both proved at 3.350 s
+first sure | real | unadjudicated/cw-2026-09-24-004205 | first keyed verdict 6.04 s | `E` at 1.870 s, pitch none, speed hypothesis | first character both proved at 9.010 s
+first sure | real | unadjudicated/cw-2026-09-24-004234 | first keyed verdict 4.54 s | `E` at 0.115 s, pitch none, speed hypothesis | first character both proved at 3.565 s
+first sure | real | unadjudicated/cw-2026-09-24-004322 | first keyed verdict 4.04 s | `P` at 1.730 s, pitch none, speed hypothesis | first character both proved at 3.225 s
+first sure | real | unadjudicated/cw-2026-09-24-004347 | first keyed verdict 2.54 s | `O` at 0.840 s, pitch proved, speed proved | first character both proved at 0.840 s
+first sure | real | unadjudicated/cw-2026-09-24-004405 | first keyed verdict 4.54 s | `T` at 1.735 s, pitch none, speed hypothesis | first character both proved at 3.865 s
+first sure | real | unadjudicated/cw-2026-09-24-004427 | first keyed verdict 3.04 s | `F` at 2.480 s, pitch proved, speed proved | first character both proved at 2.480 s
+first sure | real | unadjudicated/cw-2026-09-24-004510 | first keyed verdict 4.04 s | `1` at 2.100 s, pitch none, speed hypothesis | first character both proved at 3.935 s
+first sure | real | unadjudicated/cw-2026-09-24-004550 | first keyed verdict 4.54 s | `I` at 0.225 s, pitch none, speed hypothesis | first character both proved at 3.680 s
+first sure | synthetic | cq-12wpm-15db | first keyed verdict 11.04 s | `C` at 2.110 s, pitch none, speed hypothesis | first character both proved at 19.110 s
+first sure | synthetic | cq-12wpm-5db | first keyed verdict 11.04 s | `C` at 2.110 s, pitch none, speed hypothesis | first character both proved at 19.105 s
+first sure | synthetic | cq-12wpm-0db | first keyed verdict 4.04 s | no sure character | first character both proved at never s
+first sure | synthetic | cq-18wpm-15db | first keyed verdict 3.54 s | `C` at 1.745 s, pitch none, speed hypothesis | first character both proved at 2.810 s
+first sure | synthetic | cq-18wpm-5db | first keyed verdict 3.54 s | `Q` at 2.810 s, pitch none, speed proved | first character both proved at 5.070 s
+first sure | synthetic | cq-18wpm-0db | first keyed verdict none s | no sure character | first character both proved at never s
+first sure | synthetic | cq-25wpm-15db | first keyed verdict 3.04 s | `C` at 1.540 s, pitch none, speed hypothesis | first character both proved at 2.305 s
+first sure | synthetic | cq-25wpm-5db | first keyed verdict 3.04 s | `C` at 1.540 s, pitch none, speed hypothesis | first character both proved at 2.305 s
+first sure | synthetic | cq-25wpm-0db | first keyed verdict none s | no sure character | first character both proved at never s
+first sure | synthetic | cq-18wpm-15db-char5 | first keyed verdict 5.54 s | `C` at 1.745 s, pitch none, speed hypothesis | first character both proved at 5.345 s
+first sure | synthetic | cq-18wpm-5db-char5 | first keyed verdict 5.54 s | `C` at 1.745 s, pitch none, speed hypothesis | first character both proved at 5.340 s
+first sure | synthetic | cq-18wpm-0db-char5 | first keyed verdict none s | no sure character | first character both proved at never s
+acquiring | set | condition | key | inside: right | inside: wrong or added | outside: right | outside: wrong or added | sure emitted | MET-CER-SURE
+acquiring | real | real HF, no CH-* profile, SNR_2500 not measured, sender TX-FARNS (CW_SPEC.md 6.4 and 10, HM-DEC-115's traffic net) | inferred | 32 | 0 | 11 | 0 | 43 | 0 of 43, 0.0000
+acquiring | real | real HF, no CH-* profile, SNR_2500 not measured, sender TX-ITU (CW_SPEC.md 10, the KD0UN capture) | inferred | 8 | 0 | 5 | 0 | 13 | 0 of 13, 0.0000
+acquiring | real | real HF, no CH-* profile, SNR_2500 not measured, sender TX-TIGHT (CW_SPEC.md 10, HM-DEC-101) | inferred | 5 | 0 | 1 | 0 | 6 | 0 of 6, 0.0000
+acquiring | real | real HF, no CH-* profile, SNR_2500 not measured, sender not stated in CW_SPEC.md | inferred | 248 | 29 | 93 | 4 | 374 | 33 of 374, 0.0882
+acquiring | real | all | inferred | 293 | 29 | 110 | 4 | 436 | 33 of 436, 0.0757
+which | real | pitch not proved, speed proved | right 58 | wrong or added 4
+which | real | speed not proved, pitch proved | right 10 | wrong or added 3
+which | real | neither proved | right 225 | wrong or added 22
+states | real | pitch hypothesis, speed hypothesis | right 127 | wrong or added 9
+states | real | pitch hypothesis, speed proved | right 58 | wrong or added 4
+states | real | pitch none, speed hypothesis | right 98 | wrong or added 13
+states | real | pitch proved, speed hypothesis | right 10 | wrong or added 3
+verdict | real | before the tracker's first keyed verdict (448) | right 108 | wrong or added 13 | of them inside acquiring (resolution) 119
+dim | real | dim precision (HM-REQ-014): 0 right of 0 dim, NaN | dim rate: 0 dim of 436 named letters in the scored stretches
+acquiring | set | condition | key | inside: right | inside: wrong or added | outside: right | outside: wrong or added | sure emitted | MET-CER-SURE
+acquiring | synthetic | synthetic, no fading, shaped noise band (not shown to be CH-AWGN), TX-ITU (1:3:1:3:7), 15 dB in the passband (not restated in the 2500 Hz reference) | exact | 34 | 0 | 29 | 1 | 64 | 1 of 64, 0.0156
+acquiring | synthetic | synthetic, no fading, shaped noise band (not shown to be CH-AWGN), TX-ITU (1:3:1:3:7), 5 dB in the passband (not restated in the 2500 Hz reference) | exact | 40 | 0 | 22 | 1 | 63 | 1 of 63, 0.0159
+acquiring | synthetic | synthetic, no fading, shaped noise band (not shown to be CH-AWGN), character gap 5 units, inside TX-FARNS's 3 to 7, 15 dB in the passband (not restated in the 2500 Hz reference) | exact | 12 | 0 | 8 | 1 | 21 | 1 of 21, 0.0476
+acquiring | synthetic | synthetic, no fading, shaped noise band (not shown to be CH-AWGN), character gap 5 units, inside TX-FARNS's 3 to 7, 5 dB in the passband (not restated in the 2500 Hz reference) | exact | 7 | 2 | 7 | 9 | 25 | 11 of 25, 0.4400
+acquiring | synthetic | all | exact | 93 | 2 | 66 | 12 | 173 | 14 of 173, 0.0809
+which | synthetic | pitch not proved, speed proved | right 60 | wrong or added 2
+which | synthetic | speed not proved, pitch proved | right 0 | wrong or added 0
+which | synthetic | neither proved | right 33 | wrong or added 0
+states | synthetic | pitch hypothesis, speed hypothesis | right 14 | wrong or added 0
+states | synthetic | pitch hypothesis, speed proved | right 59 | wrong or added 2
+states | synthetic | pitch none, speed hypothesis | right 19 | wrong or added 0
+states | synthetic | pitch none, speed proved | right 1 | wrong or added 0
+verdict | synthetic | before the tracker's first keyed verdict (448) | right 27 | wrong or added 0 | of them inside acquiring (resolution) 22
+dim | synthetic | dim precision (HM-REQ-014): 0 right of 0 dim, NaN | dim rate: 0 dim of 173 named letters in the scored stretches
+449 | recording | at s | sent | emitted | found at HEAD | sure | inside acquiring | pitch proof | speed proof | before first keyed verdict (448)
+449 | unadjudicated/cw-2026-08-22-032012 | 1.765 | `O` | `T` | yes | yes | yes | none | hypothesis | yes
+449 | unadjudicated/cw-2026-08-22-032012 | 7.425 | `-` | `.` | yes | yes | yes | none | hypothesis | yes
+449 | unadjudicated/cw-2026-08-22-032012 | 8.640 | `-` | `1` | yes | yes | yes | none | hypothesis | yes
+449 | unadjudicated/cw-2026-08-22-032050 | 11.195 | `-` | `T` | yes | yes | yes | none | hypothesis | yes
+449 | unadjudicated/cw-2026-08-22-032050 | 11.545 | `U` | `A` | yes | yes | yes | none | hypothesis | yes
+449 | unadjudicated/cw-2026-08-22-032050 | 16.375 | `P` | `W` | yes | yes | yes | none | hypothesis | yes
+449 | unadjudicated/cw-2026-08-22-032050 | 17.745 | `N` | `T` | yes | yes | yes | none | hypothesis | yes
+449 | unadjudicated/cw-2026-08-22-032113 | 6.135 | `D` | `O` | yes | yes | yes | none | hypothesis | yes
+449 | unadjudicated/cw-2026-08-22-032129 | 4.175 | `2` | `T` | yes | yes | yes | none | hypothesis | yes
+449 | unadjudicated/cw-2026-08-22-032129 | 4.990 | `0` | `J` | yes | yes | yes | none | hypothesis | yes
+449 | unadjudicated/cw-2026-08-22-032129 | 7.810 | `R` | `G` | yes | yes | yes | none | hypothesis | yes
+449 | unadjudicated/cw-2026-08-22-032129 | 20.250 | `-` | `A` | yes | yes | yes | none | hypothesis | yes
+449 | unadjudicated/cw-2026-08-22-032129 | 20.460 | `L` | `E` | yes | yes | yes | none | hypothesis | yes
+449 | total | 13 of unit 449's 13 are sure and inside acquiring
+total | real | 436 sure: 403 right, 28 wrong, 5 added | inside acquiring 293 right (the coverage the gate costs), 29 wrong or added (the MET-CER-SURE it saves) | outside 110 right, 4 wrong or added
+total | synthetic | 173 sure: 159 right, 8 wrong, 6 added | inside acquiring 93 right (the coverage the gate costs), 2 wrong or added (the MET-CER-SURE it saves) | outside 66 right, 12 wrong or added
+opening | first keyed verdict (448's acquiring end) 26.04 s | sent, inferred, each file read alone, 0 to 46.2 s | EII ETNHHK EANQNID EANQNIK E
+opening | text 0 to 46.2 s, sure as itself, (dim), {emitted while acquiring} | {EII ETNHHK        EANQNI}D          {EAN(■)IK     }
+hm-req-102 | opening | sure letters inside acquiring (resolution), 0 to 46.2 s: 20 (20 right, 0 wrong or added) | E@20.64/right I@21.07/right I@21.49/right E@21.82/right T@22.22/right N@22.56/right H@23.33/right H@24.01/right K@24.68/right E@30.55/right A@31.06/right N@31.48/right Q@32.30/right N@32.66/right I@32.95/right E@39.82/right A@40.25/right N@40.69/right I@42.10/right K@42.75/right
+hm-req-102 | opening | sure letters before the first keyed verdict (448), 0 to 26.04 s: 9 (9 right, 0 wrong or added) | E@20.64/right I@21.07/right I@21.49/right E@21.82/right T@22.22/right N@22.56/right H@23.33/right H@24.01/right K@24.68/right
+opening | HM-REQ-103 | 21 of 24 opening characters read sure and right (21 sure emitted), inferred
+first sure | opening | 7.052 opening | first keyed verdict 26.04 s | `E` at 20.640 s, pitch none, speed hypothesis | first character both proved at 33.475 s
+
+Reading of Part 2 (HEAD):
+- Real, inferred keys: 436 sure; inside acquiring 293 right and 29 wrong or added; outside 110 right
+  and 4 wrong or added. The gate would cost at most 293 sure-and-right letters of coverage
+  (403 -> 110 over 473) to save at most 29 of the 33 wrong or added (33 of 436 -> 4 of 143).
+- Synthetic, exact keys: 173 sure; inside 93 right and 2 wrong or added; outside 66 right and 12
+  wrong or added. At most 159 -> 66 over 252 coverage for 14 of 173 -> 12 of 78.
+- Unit 449's 13: all 13 found at HEAD, all sure and inside acquiring, every one with pitch none and
+  speed hypothesis, every one before the first keyed verdict.
+- 448's acquiring (before the first keyed verdict) is a strict subset in effect: 121 real sure
+  letters before it (108 right, 13 wrong), 119 of them inside the resolution's acquiring. The
+  resolution's acquiring is far wider than 448's: on 7 of the 23 real recordings no character is
+  ever emitted with both states proved.
+- The 7.052 opening: 20 sure letters inside acquiring (resolution) over 0 to 46.2 s, all right
+  against 448's reference; 9 before the first keyed verdict at 26.04 s, as unit 448 measured.
+- These are upper bounds on the gate's effect: the gate changes no letter and no proof state, so
+  each sure letter inside acquiring becomes dim and nothing else moves, by construction.
+
+Part 3 - the rule, registered before any after-figure exists (DECIDED (3), as the tree implements it)
+--------------------------------------------------------------------------------------------------------
+Where: CwDecoder (src/Hamlet.RadioEngine/Cw/CwDecoder.cs), in the two handlers that take our
+stream's characters - CharacterSettled (before Arbitrated) and LeadingEdgeChanged (before the edge
+is arbitrated or raised). That is where the pitch's and the speed's proof states are first known
+together (Part 1, item 2); the stream that assigns the class holds no tracker.
+
+Rule: a character whose Confidence is High is emitted with Confidence Low when, at that moment,
+_tracker.PitchProof is not CwPitchProof.Proved or SpeedProof is not CwSpeedProof.Proved.
+- Word gaps, Low and Unreadable characters pass unchanged. No letter changes, none is dropped,
+  none goes below dim, none is raised, nothing is promoted after the fact.
+- No constant, threshold, grace period or character count. Both states are read as they stand;
+  nothing about how either is computed changes (R75, R76, section 7).
+- One form only. If refused, no second form is tried (V-14).
+- The port (Cw/Second/), the arbiter, the switch and vote tables are not touched; with the second
+  reader on, the arbiter receives our gated character as Part 1, item 4 describes.
+
+The test: NoSureLetterWhileAcquiringTests, naming HM-REQ-102 and HM-REQ-010, on a generated case
+with its key exact by construction - watched red at HEAD first.
+The keep rule: 2.2 as written, per condition, real and synthetic, key's kind beside each figure;
+MET-COVERAGE falling refuses (DECIDED (4)).

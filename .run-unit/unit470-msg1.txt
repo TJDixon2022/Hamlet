@@ -1,0 +1,11 @@
+unit470 task 1: the trace - inside acquiring real 293 right / 29 wrong or added, synthetic 93 / 2; 13 of 449's 13 inside; the gate registered before any after-figure (2.4)
+
+WhatTheSureLettersWerePrintedUnderFact (HM-REQ-102, HM-REQ-010) asserts nothing. It reads CwToneTracker.PitchProof and CwDecoder.SpeedProof in the settle handler, which is the moment of emission, through the same harness and CwMetrics as TheRequirementsAreMeasuredTests.
+
+Real, inferred keys: 436 sure; inside acquiring 293 right, 29 wrong or added; outside 110 right, 4 wrong or added. Synthetic, exact keys: 173 sure; inside 93 right, 2 wrong or added; outside 66 right, 12 wrong or added. All 13 of unit 449's acquisition letters are sure and inside acquiring, each with pitch none and speed hypothesis. 7.052 opening: 20 sure letters inside acquiring over 0 to 46.2 s, and 9 before the first keyed verdict at 26.04 s, as unit 448 measured.
+
+Both proof states are live properties, known at emission. Departures from the RESOLVED lines are reported, not repaired: pitch Proved does not require a resolved character, and speed Proved does not test the marks' unit against the path's 10 percent. DECIDED (3) is registered in .run-unit/unit470-trace.txt Part 3. TX-* and INT-* columns dropped (first drop candidate).
+
+Exit: build 0 errors; engine line 178/178; app line 277/278 twice (headless dispatcher loop, a different type each run), Unit376TheTopBandTests alone 5/5 (DECIDED 7); named 13/13, captures 51/51, adjudicated 13/13.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
