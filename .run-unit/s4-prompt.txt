@@ -59,39 +59,37 @@ WHY: one sentence, plain text, no punctuation beyond commas and full stops
 --- the section 4 text follows ---
 
 ﻿
-Most-blocking first.
+1. **R86 and 9.4, as a plain reading.** 9.4 asks for "one technique 9.3 named", and the five
+   mechanisms 9.3 named are all refused under R78. That leaves 9.4 no authorable route. R86 holds
+   steps 2 to 8 behind 9.4. Step 9's 9.5 to 9.7 carry the loop meanwhile; 9.5 is now ticked, and
+   9.6 and 9.7 remain. Only the owner can change how R86 or 9.4 reads. This is logged for the
+   owner and is not a stop: it touches neither transmit nor what the product promises the
+   operator.
+2. **R85 readings, one line each, recorded and acted on:**
+   - "right" for a dim character is the scorer's alignment, key character equal to it, exactly as
+     for sure;
+   - a bin is floor(10p), the last closed at 1;
+   - a bin counts at 10 characters and a condition at 30, as DECIDED (4);
+   - fldigi's receiver can honestly be read for the level its own squelch metric reads
+     (sig_avg over noise_floor, cw.cxx:635-636) and for how far each element fell from the
+     dot/dash split it was judged by (cw.cxx:847).
+3. **For 9.6, a finding and not a question.**
+   - **The port.** Under HM-REQ-124, the port is calibrated on no condition, so it votes nowhere.
+     An arbiter built on today's maps would always take ours on a disagreement.
+   - **Ours.** Ours' p spans only 0.77 to 0.99, nearly all in bins 8 and 9. It is calibrated
+     where it is because it is close to a base rate, not because it picks out its wrong letters
+     (task 1's print: MarginLlr's quintiles run 0.84 to 0.98 right).
+   - **The port's timing margin** falls in right share at both ends. The form fixed at task 1 was
+     linear and was not bent after the print (V-14).
 
-1. **Every mechanism 9.3 named has now been refused at 9.4, and R86 still bars steps 2 to 8.** This
-   is a plain fact, and what happens next is the next arbiter's to decide. Each mechanism, with the
-   recording and metric that refused it:
-   - (A) detection: A1 on 004507, coverage (43 to 0; real coverage 403 to 38); A2 on 173723,
-     MET-INVENTED (sure added 0 to 2; real MET-CER-SURE 33 to 39). Unit 463.
-   - (B) the spike rule: every real metric worse, three recordings worse. Unit 462.
-   - (C) the two-dot class edge: 031838, MET-WBE. Unit 462.
-   - (D) pair speed tracking: 031948's adjudicated reading broken, three recordings worse. Unit 459.
-   - (E) 880-888, inside W: 032113, coverage; 031838 and 004550, MET-WBE. Unit 462.
-
-   No ruling is proposed here and no new technique.
-2. **This unit's R85 readings, recorded and carried on with.**
-   - The speed in force is the speed the read is decoded at, as 462 read it. fldigi's own front end
-     follows the operator's configured `CWspeed`, not its tracked receive speed (395-396, 416, 428),
-     and ours has no operator speed.
-   - The 5 x WPM / 1.2 Hz low-pass is fldigi's matched-filter option. Its default is a fixed 150 Hz
-     (`CWmfilt` off). A1 took the instruction's form, as DECIDED (2) fixes it.
-   - fldigi's weights of 200 and 1000 decimated samples at 500 a second become 80 and 400 hops of
-     5 ms.
-   - The AGC division sits between the envelope and `LogLikelihoods`: the lattice, grid included,
-     scores the divided window, and every timing measurement reads the raw one.
-3. **Finding: our likelihood's noise scale assumes a Rayleigh envelope.** sigma is read from the
-   quarter point by an identity that holds for one quadrature pair of noise. fldigi's half-dit
-   boxcar averages many decimated magnitudes, and that narrows the noise's spread around its mean,
-   so the same identity reads the noise as higher against the marks. Keyed levels fell from 3.7 to
-   2.2 sigma on 17:37 and from 14.3 to 7.9 on a 15 dB case. That, and not the bandwidth itself, is
-   what the task 1 print shows behind A1's collapse. This is recorded as a finding, and nothing is
-   proposed from it.
-4. **Finding: the parity harness's "port byte-identical" check can move without the port.** Under
-   A1 one port line disappeared from the save: 17:37's `CQDW SRED`. The port was untouched. The
-   harness prints the port's text over the stretch ours scored, and under A1 ours scored none on
-   17:37. A later unit judging the port by this file should know that.
-5. **The tree: no `.run-unit\watched.rc`, as unit 459 also found.** The `RULES_AT` disagreement and
-   `outcome-read`'s step titles for steps 2, 3 and 8 are logged, not repaired, and not this unit's.
+   A better port confidence would need a new form, fixed afresh before measurement. That is a
+   later unit's choice, not this one's.
+4. **The adapter's input, against the instruction's words.** `FldigiConfidence` needs the port's
+   decision rows (`TraceDecisions` on) as well as `Emissions` and `KeyEvents` (section 1). 9.6 will
+   have to run the port with the trace on. The trace records and changes nothing; the port's texts
+   were byte-identical with it on.
+5. **Port characters outside the scored stretches.** The harness locates each decoder's stretches
+   in that decoder's own text, not in ours'. 220 of the port's 651 printed non-space characters fall
+   outside every stretch located in its text (and 406 of ours' 1032 outside ours'). They carry a p
+   and are unscored. This is 463's section 4 item 4 again, parked, and noted only because task 1's
+   rows come from the same harness.

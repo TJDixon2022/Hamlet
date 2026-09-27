@@ -1,0 +1,20 @@
+unit465 task 0: the record, 1.13.152, the runner's writes; entry round as at 464's exit; both decoders' characters saved with class and p (9.6)
+
+Entry, measured: build 0 errors; engine line 178 of 178; app line 278 of 278;
+named floors 13 of 13, captures 51 of 51, adjudicated 13 of 13; real MET-CER-SURE
+33 of 436, MET-INVENTED 33 over 473, coverage 403 over 473, MET-WBE 37 over 113
+(inferred keys); synthetic 14 of 173, 14 over 252, 159 over 252, 44 over 84 (exact
+keys); the port per parity.md real 62 of 239, coverage 177, synthetic 34 of 168,
+coverage 134; BothDecodersAreScoredAlikeTests 5 of 5; EveryCharacterCarriesA-
+ConfidenceTests 2 of 2; the port's own tests 8 of 8; decode time ours 51.64 s over
+690 s of real audio. Every per-recording row identical to 464's exit.
+
+Saves: .run-unit/unit465-text-before.txt (ours, 1467 characters and word
+boundaries, class and p) and .run-unit/unit465-port-before.txt (the port, 818),
+printed by WhereTheTwoReadingsMeetFact.EachDecodersCharactersWithClassAndP.
+
+Tree mismatch: .run-unit/watched.rc is not present; the runner deleted
+.run-unit/watched.cpu instead, committed as it is. .run-unit/fldigi/ and
+SESSION.lock untracked and not staged.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

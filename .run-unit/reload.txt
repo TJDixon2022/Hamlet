@@ -1,5 +1,5 @@
 ﻿RELOAD - PHASE_CONTROL.md section 3
-measured 2026-09-27T01:53:03-04:00  root C:\Source\HamLet
+measured 2026-09-27T04:01:03-04:00  root C:\Source\HamLet
 Every line below was read from the tree at that moment. Nothing is remembered.
 
 ==============================================================
@@ -21,7 +21,7 @@ Every line below was read from the tree at that moment. Nothing is remembered.
 ==============================================================
 
   branch : main
-  HEAD   : 99c90b69
+  HEAD   : 71ac86be
   uncommitted at the root : 3
       M PHASE_OUTCOME.md
       M PHASE_STATUS.md
@@ -39,7 +39,7 @@ Every line below was read from the tree at that moment. Nothing is remembered.
 ==============================================================
 
   --- PHASE_PLAN.md ---
-  378 lines, 29533 bytes
+  378 lines, 29532 bytes
   PHASE: Hamlet meets the CW requirements
   PHASE_SET: 2026-09-25
   DESCRIPTION: CW_REQUIREMENTS.md and CW_SPEC.md at the repository root are the specification from here on. Sixty-eight requirements, sixty-five of them must-tier, and section T shows fourteen groups with no test at all. This phase traces what exists, builds the metrics the requirements are written in - invented characters, sure-character error, coverage, word-boundary error, acquisition time - and then meets the requirements group by group, highest tier first. Every unit recenters on those two documents. Judged by requirement ids and, at the end, by Tim at the radio.
@@ -345,7 +345,7 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   - [x] 9.2 HM-REQ-123: both decoders read every keyed recording and the synthetic set through the same harness and are scored through the same scorer and metrics; `docs/phase-requirements/parity.md` tables MET-CER-SURE, MET-INVENTED, sure-and-right coverage and MET-WBE for each, per recording and per condition, with the key's kind, and states how the second decoder's unclassed output was mapped.
   - [x] 9.3 For every recording where the second decoder scores better, the report prints both texts and names from its source what it does differently on that stretch; where it reads text on a recording ours reads as nothing, it says so by name.
   - [ ] 9.4 HM-REQ-129: one technique 9.3 named is taken into our decoder as a change in its own commit, judged under R78, with the second decoder left as ported.
-  - [ ] 9.5 HM-REQ-124: each decoder attaches a confidence to every character, and calibration is measured per condition on the keyed corpus - characters emitted at confidence p right within 5 points of p - with the conditions where each decoder is calibrated named; the second decoder is given a confidence, since fldigi carries none, and the report says what it is derived from.
+  - [x] 9.5 HM-REQ-124: each decoder attaches a confidence to every character, and calibration is measured per condition on the keyed corpus - characters emitted at confidence p right within 5 points of p - with the conditions where each decoder is calibrated named; the second decoder is given a confidence, since fldigi carries none, and the report says what it is derived from.
   - [ ] 9.6 HM-REQ-120, 121, 125, 126, 127: both decoders read the same samples at the same time; agreement emits with the more confident's class; disagreement emits the higher calibrated confidence's character with both recorded on the sheet; a tie within the margin emits dim, never sure; the CW tab shows one transcript and no decoder name; each watched failing first on an injected synthetic case.
   - [ ] 9.7 HM-REQ-128: the arbitrated output is measured against each decoder alone on every metric of sections B and I on every condition, and where it loses on a condition the arbitration is switched off there and the better decoder alone is used; the report tables all three per condition.
   - [ ] 9.8 The three floor tests and both carry-forward lines are green at exit.
@@ -420,13 +420,13 @@ Every line below was read from the tree at that moment. Nothing is remembered.
     metrics after six units were rejected on counts that no requirement states.
 
   --- PHASE_STATUS.md ---
-  16 lines, 2716 bytes
+  16 lines, 2657 bytes
   PHASE: Hamlet meets the CW requirements
   PHASE_SET: 2026-09-25
   DESCRIPTION: CW_REQUIREMENTS.md and CW_SPEC.md at the repository root are the specification from here on. Sixty-eight requirements, sixty-five of them must-tier, and section T shows fourteen groups with no test at all. This phase traces what exists, builds the metrics the requirements are written in - invented characters, sure-character error, coverage, word-boundary error, acquisition time - and then meets the requirements group by group, highest tier first. Every unit recenters on those two documents. Judged by requirement ids and, at the end, by Tim at the radio.
   CURRENT_STEP: 2
-  WORK_INSTRUCTION: 463 - the last fldigi technique nobody has tried: its detection front end, a half-dit integrator at the speed in force and its AGC-normalized level, screened on every recording and kept under R78
-  HEARTBEAT: 2026-09-27 01:53:00
+  WORK_INSTRUCTION: 464 - a number on every letter: both decoders give each character a confidence p, calibration measured per condition on the keyed corpus
+  HEARTBEAT: 2026-09-27 04:01:01
   STEP: 0 | done | Every CW test is traced - section T names, for each requirement, the test that proves it or the word none, and every existing CW test names the requirement it proves or is marked as proving none.
   STEP: 1 | done | The metrics exist - MET-INVENTED, MET-CER-SURE, MET-COVERAGE and MET-WBE are computed over the corpus and reported per condition, so the requirements can be measured at all.
   STEP: 2 | partial | The decoder stops printing wrong letters with confidence - MET-CER-SURE driven toward HM-REQ-010's one in a hundred, from the 54 sure-but-wrong characters unit 439 measured.
@@ -439,7 +439,7 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   STEP: 9 | partial | Two decoders read the same audio - section M: fldigi's CW modem ported faithfully as the second decoder, both scored on every recording before either votes, both confidences calibrated against the keys, and the arbitration that emits one transcript, never worse than the better decoder alone.
 
   --- PHASE_OUTCOME.md ---
-  744 lines, 158257 bytes
+  774 lines, 166574 bytes
   PHASE: Hamlet meets the CW requirements
   PHASE_SET: 2026-09-25
   DESCRIPTION: CW_REQUIREMENTS.md and CW_SPEC.md at the repository root are the specification from here on. Sixty-eight requirements, sixty-five of them must-tier, and section T shows fourteen groups with no test at all. This phase traces what exists, builds the metrics the requirements are written in - invented characters, sure-character error, coverage, word-boundary error, acquisition time - and then meets the requirements group by group, highest tier first. Every unit recenters on those two documents. Judged by requirement ids and, at the end, by Tim at the radio.
@@ -1184,6 +1184,36 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   ADVANCED: no
   ATTEMPT: 9.4 | unit 2 launched 2026-09-27T04:32:04.219Z | no | executed | take fldigi's detection front end into our envelope - a half-dit boxcar behind the 5 x WPM / 1.2 Hz low-pass at the speed the read is decoded at, and fldigi's attack/decay AGC peak normalization - screen each form alone on all 35 recordings and commit the one R78 keeps, speed choice unchanged, the port untouched
   REASON: 9.4 | unit 2 launched 2026-09-27T04:32:04.219Z | the unit ran to completion and the criterion did not flip from unmet to met
+  
+  ## UNIT 464 - STEP 9
+  
+  STEP: 9
+  APPROACH: attach a numeric confidence p to every character of both decoders - ours from its rival margin, the port from its own AGC level and element timing read outside Cw/Second - fit one logistic per decoder fixed before any number is seen, and measure calibration held-out by recording per condition in ten reliability bins against HM-REQ-124's 5 points, no letter or class changed
+  MOVE: work around
+  WHY: PHASE_PLAN.md section 6's R86 bars steps 2 to 8 until 9.4 has a kept change, so the launcher's step 2 line 2.4 cannot move, and 9.4's "one technique 9.3 named" has no route left now that all five mechanisms 9.3 named are recorded refused; step 9's own next line, 9.5 (HM-REQ-124), is permitted by R86, is what section M orders before any vote, has never been attempted, and the loop test finds no entry for this approach.
+  STATE: partial
+  DECIDED: author's, overrulable - (1) step 9 criterion 9.5 is worked instead of the launcher's step 2 on R86 (PHASE_PLAN.md section 6, the owner's commit 6de324b1), as units 462 and 463's arbiters did, and 9.4 is not re-attempted because every mechanism 9.3 named is refused and a sixth attempt would restate one; this is not a step-2 unit and 2.4's count stays at 1 of 3; (2) the confidence is a logistic over features fixed at task 1 before any calibration number - ours' MarginLlr, the port's level margin (sig_avg over noise_floor) and timing margin (distance from two_dots) read from its public Emissions and KeyEvents, never by changing Cw/Second - one map per decoder pooled over the real and synthetic sets, not per condition; (3) the calibration verdict is taken held-out by recording (fit on 34, measure the 35th) and the in-sample figure is printed beside it, because a map measured on what it was fitted to proves nothing (CLAUDE.md 12.5, V-13); (4) calibrated on a condition means every bin of width 0.1 holding at least 10 characters, and the condition overall, within 5 points of mean p, with at least 30 scored characters, else not measurable; right is the scorer's verdict, wrong and added are wrong, placeholders are unscored as MET-CAL's placeholder bin, and dim characters are scored like sure ones; (5) no letter, class or threshold of either decoder changes, texts byte-identical, so R78's keep rule is not engaged; (6) 9.5 is ticked when both decoders carry p on every character and the calibrated conditions are named, whether or not any condition is calibrated, as the criterion's own words ask; (7) R86 with 9.4's exhausted route is reported in section 4 as a reading for the owner and not a stop, since it touches neither transmit nor what the product promises; (8) the app line's headless dispatcher-loop loss: one rerun, and any type lost again is run alone and must pass, named in the report.
+  LICENCE: PHASE_PLAN.md step 9 lines 9.3, 9.4 and 9.5, section R (R84, R85), section 6 (R86, the second decoder is faithful, V-14), R61, R72, R77, R80; CW_REQUIREMENTS.md HM-REQ-013, 014, 121, 122, 124, 129, V-11, V-13, V-14; CW_SPEC.md MET-CAL; docs/phase-requirements/parity.md sections 1 and 3; fldigi cw.cxx at 61b97f41; unit 463's report section 4; HM-DEC-155; HM-DEC-165; FACT-004; CLAUDE.md 0.0, 0.2 and 12.5
+  ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
+  ADVANCES: step 9 criterion 5
+  RUN: session launched with SESSION.lock already present (PID 37056, 01:57:15); the lock is the launcher's and was not taken or released by the session.
+  
+  ## UNIT 3 - STEP 9
+  
+  STEP: 9
+  APPROACH: attach a numeric confidence p to every character of both decoders - ours from its rival margin, the port from its own AGC level and element timing read outside Cw/Second - fit one logistic per decoder fixed before any number is seen, and measure calibration held-out by recording per condition in ten reliability bins against HM-REQ-124's 5 points, no letter or class changed
+  HIT: section 4 asked nothing inside the two stops - author's, overrulable, the loop continued - Every item is a plan reading, a recorded interpretation, a finding or a harness note, and none asks the owner to decide anything about keying, transmit or what the product promises the operator.
+  MOVE: work around
+  WHY: PHASE_PLAN.md section 6's R86 bars steps 2 to 8 until 9.4 has a kept change, so the launcher's step 2 line 2.4 cannot move, and 9.4's 'one technique 9.3 named' has no route left now that all five mechanisms 9.3 named are recorded refused; step 9's own next line, 9.5 (HM-REQ-124), is permitted by R86, is what section M orders before any vote, has never been attempted, and the loop test finds no entry for this approach.
+  DECIDED: author's, overrulable - (1) step 9 criterion 9.5 is worked instead of the launcher's step 2 on R86 (PHASE_PLAN.md section 6, the owner's commit 6de324b1), as units 462 and 463's arbiters did, and 9.4 is not re-attempted because every mechanism 9.3 named is refused and a sixth attempt would restate one; this is not a step-2 unit and 2.4's count stays at 1 of 3; (2) the confidence is a logistic over features fixed at task 1 before any calibration number - ours' MarginLlr, the port's level margin (sig_avg over noise_floor) and timing margin (distance from two_dots) read from its public Emissions and KeyEvents, never by changing Cw/Second - one map per decoder pooled over the real and synthetic sets, not per condition; (3) the calibration verdict is taken held-out by recording (fit on 34, measure the 35th) and the in-sample figure is printed beside it, because a map measured on what it was fitted to proves nothing (CLAUDE.md 12.5, V-13); (4) calibrated on a condition means every bin of width 0.1 holding at least 10 characters, and the condition overall, within 5 points of mean p, with at least 30 scored characters, else not measurable; right is the scorer's verdict, wrong and added are wrong, placeholders are unscored as MET-CAL's placeholder bin, and dim characters are scored like sure ones; (5) no letter, class or threshold of either decoder changes, texts byte-identical, so R78's keep rule is not engaged; (6) 9.5 is ticked when both decoders carry p on every character and the calibrated conditions are named, whether or not any condition is calibrated, as the criterion's own words ask; (7) R86 with 9.4's exhausted route is reported in section 4 as a reading for the owner and not a stop, since it touches neither transmit nor what the product promises; (8) the app line's headless dispatcher-loop loss: one rerun, and any type lost again is run alone and must pass, named in the report.
+  LICENCE: PHASE_PLAN.md step 9 lines 9.3, 9.4 and 9.5, section R (R84, R85), section 6 (R86, the second decoder is faithful, V-14), R61, R72, R77, R80; CW_REQUIREMENTS.md HM-REQ-013, 014, 121, 122, 124, 129, V-11, V-13, V-14; CW_SPEC.md MET-CAL; docs/phase-requirements/parity.md sections 1 and 3; fldigi cw.cxx at 61b97f41; unit 463's report section 4; HM-DEC-155; HM-DEC-165; FACT-004; CLAUDE.md 0.0, 0.2 and 12.5
+  COST: 8.674325199999997
+  ACCOMPLISHED: every letter either decoder reads now carries a number saying how likely it is to be right, and Hamlet knows, condition by condition, where each decoder's 90% really means 90% - which is what decides, in the next step, which of the two gets the vote when they disagree
+  FATE: executed
+  STATE_AFTER: partial
+  STATE_WHY: the checkboxes say partial and the judge said done - the checkboxes win. The judge-s reason: The report shows every part of 9.5 met, since the test found p on all 1683 characters of both decoders, held-out calibration was measured per condition against the 5 point line with full reliability tables, the conditions where each decoder is calibrated are named with the port on none, and the port's p is stated as coming from its level margin at cw.cxx 635-636 and its timing margin at cw.cxx 847.
+  ADVANCED: yes
+  ATTEMPT: 9.5 | unit 3 launched 2026-09-27T05:57:13.517Z | yes | executed | attach a numeric confidence p to every character of both decoders - ours from its rival margin, the port from its own AGC level and element timing read outside Cw/Second - fit one logistic per decoder fixed before any number is seen, and measure calibration held-out by recording per condition in ten reliability bins against HM-REQ-124's 5 points, no letter or class changed
 
   --- CLAUDE.md ---
   1405 lines, 212255 bytes
@@ -1206,17 +1236,17 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   to run every unit. Run TEST_CMD yourself if the number matters.
 
   --- PROJECT_STATUS.md ---
-  19 lines, 929 bytes
+  19 lines, 869 bytes
   PROTOCOL: 2
   PROJECT: Hamlet
   STATE: COMPLETED
   TASK: 4 of 4
-  WORK_INSTRUCTION: 463 - the last fldigi technique nobody has tried: its detection front end, a half-dit integrator at the speed in force and its AGC-normalized level, screened on every recording and kept under R78
-  BALL: code
+  WORK_INSTRUCTION: 464 - a number on every letter: both decoders give each character a confidence p, calibration measured per condition on the keyed corpus
+  BALL: tim
   NEXT_PASTE: none
   RULES_AT: HM-DEC-165 (2026-09-19)
-  UPDATED: 2026-09-27T01:51:52-04:00
-  NOTE: Unit 463 done: A1 and A2 both refused under R78 and reverted (A2 closest - adjudicated held, 11 recordings worse); every mechanism 9.3 named now refused; 9.4 open; exit as entry; output.md written
+  UPDATED: 2026-09-27T03:59:27-04:00
+  NOTE: Unit 464 done: 9.5 ticked - both decoders carry p; held-out, ours calibrated on 4 of 12 conditions, the port on none (advisory everywhere under HM-REQ-124); texts byte-identical; output.md written
   
   ---
   
