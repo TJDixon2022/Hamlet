@@ -1,0 +1,5 @@
+unit464: tick 9.5 in both copies of PHASE_PLAN.md - both decoders carry a p on every character, calibration measured held-out per condition, the conditions named, the port's derivation stated (9.5)
+
+Ours calibrated on 4 conditions and the port on none, per calibration.md; the criterion asks that they be named, and a decoder calibrated nowhere is the finding, not a bar to the tick (464 DECIDED (6)). Nothing else ticked.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

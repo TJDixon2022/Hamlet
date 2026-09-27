@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 2 of 4
+TASK: 3 of 4
 WORK_INSTRUCTION: 464 - a number on every letter: both decoders give each character a confidence p, calibration measured per condition on the keyed corpus
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-27T03:29:13-04:00
-NOTE: Task 2 gate green, texts byte-identical; committing the property, the adapter, the test and the constants
+UPDATED: 2026-09-27T03:32:37-04:00
+NOTE: Task 3 committed at efdd5d11; ticking 9.5 in both copies of PHASE_PLAN.md
 
 ---
 
