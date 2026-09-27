@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 1 of 4
+TASK: 2 of 4
 WORK_INSTRUCTION: 472 - where the invented letters sit against what was sent: step 3's first attempt at HM-REQ-011 since unit 445, with every commit green
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-27T19:12:30-04:00
-NOTE: Task 1 - committing the fact and the trace with the rule registered, five green
+UPDATED: 2026-09-27T19:39:34-04:00
+NOTE: Task 2 - kept: committing the change, its test and metrics.md, five green under the change
 
 ---
 

@@ -12,6 +12,75 @@ denominator is the sure characters emitted, unit 439's reading of `CW_SPEC.md` 1
 **From unit 464, each decoder's confidence p and its calibration per condition (HM-REQ-124,
 MET-CAL) are in `calibration.md`, held-out by recording.**
 
+## Unit 472 - a letter beside a key-up under 0.62 of the character gap in force prints dim, kept
+
+Step 3, 3.2, HM-REQ-011 with HM-REQ-010 and 012 and MET-WBE as guards. The trace
+(`WhereTheInventedLettersSitFact`, `.run-unit/unit472-trace.txt`, `.run-unit/unit472-sit-t1b.txt`)
+placed every sure invented letter against the sent text through `CwMetrics`' own alignment, and on
+the synthetic set also against the generator's key edges. Real, inferred, 33: 28 stand-ins and 5
+added in a character gap, all but 4 stand-ins emitted while acquiring. Synthetic, exact, 14: 11
+splits (one sent letter read as two) and 3 stand-ins. The largest group no earlier route acted on
+was 6 splits, all on `cq-18wpm-5db-char5`. In each, a dit lost between two element gaps left 3.2
+to 3.6 units of key-up where the sender's character gap is 5 (held at 357 ms), so `D` printed
+sure as `T` and `E`. The quantity is the shorter key-up beside the letter that the path read as a
+character gap, over the character gap in force. For 5 of the 6 it is 0.588 to 0.60; the lowest
+sure right letter on either set is at 0.632 (`032113` `R` and `S`). The rule was registered at
+`62bb097f` before any after-figure. The change: `CwProbabilisticStream.Character` emits `Low` where
+`NearGapFitsTheCharacterGap` finds that key-up under `NearGapShare` = 0.62 of the held character
+gap, or of three units where none is held. It acts on the settled letters and on the leading edge
+alike. The test `TheInventedLettersAreNotPrintedSureTests` (HM-REQ-011) was watched red at HEAD
+(`.run-unit/unit472-red.txt`: `T` and `E` sure over the sent `D` at 8.200 to 8.667 s) and is green
+under the change.
+
+| part of R78 | before (HEAD `62bb097f`) | under the change | verdict |
+|---|---|---|---|
+| MET-INVENTED, real, inferred | 33 over 473 (5 added, 28 wrong), 0.0698 | 25 over 473 (4 added, 21 wrong), 0.0529 | falls |
+| MET-INVENTED, synthetic, exact | 14 over 252 (6 added, 8 wrong), 0.0556 | 7 over 252 (4 added, 3 wrong), 0.0278 | falls |
+| MET-CER-SURE, real, inferred | 33 of 436, 0.0757 | 25 of 428, 0.0584 | falls |
+| MET-CER-SURE, synthetic, exact | 14 of 173, 0.0809 | 7 of 166, 0.0422 | falls |
+| sure-and-right coverage, real, inferred | 403 over 473, 0.8520 | 403 over 473, 0.8520 | holds |
+| sure-and-right coverage, synthetic, exact | 159 over 252, 0.6310 | 159 over 252, 0.6310 | holds |
+| MET-WBE, real, inferred | 37 over 113, 0.3274 | 37 over 113, 0.3274 | unchanged |
+| MET-WBE, synthetic, exact | 44 over 84, 0.5238 | 44 over 84, 0.5238 | unchanged |
+| dim precision (HM-REQ-014), scored stretches | real no dim letter; synthetic no dim letter | real 0 right of 8 dim, 0.0000; synthetic 0 right of 7 dim, 0.0000 | reported |
+| adjudicated readings | 13 of 13 | 13 of 13 | hold |
+| V-11, 35 recordings, four metrics | - | 0 worse; 5 recordings fewer wrong or added, sure-and-right held | holds |
+| named floors / captures | 13 of 13 / 51 of 51 | 13 of 13 / 51 of 51 | hold |
+| carry-forward, engine / app | 178 of 178 / 278 of 278 | 178 of 178 / 278 of 278 | hold |
+| `TheArbitrationEarnsItsPlaceTests` (a), (b) harness, (b) live | 5 / 1 / 2 passed | 5 / 1 / 2 passed | hold |
+
+Per condition, key's kind beside each, before -> after:
+
+| condition | key | MET-INVENTED | MET-CER-SURE | coverage | MET-WBE |
+|---|---|---|---|---|---|
+| real, sender not stated (20 recordings) | inferred | 33 over 410 (5 added, 28 wrong) -> 25 over 410 (4 added, 21 wrong) | 33 of 374, 0.0882 -> 25 of 366, 0.0683 | 0.8317 -> 0.8317 | 32 of 97 -> 32 of 97 |
+| real, TX-FARNS | inferred | 0 over 44 -> 0 over 44 | 0 of 43 -> 0 of 43 | 0.9773 -> 0.9773 | 5 of 11 -> 5 of 11 |
+| real, TX-ITU | inferred | 0 over 13 -> 0 over 13 | 0 of 13 -> 0 of 13 | 1.0000 -> 1.0000 | 0 of 4 -> 0 of 4 |
+| real, TX-TIGHT | inferred | 0 over 6 -> 0 over 6 | 0 of 6 -> 0 of 6 | 1.0000 -> 1.0000 | 0 of 1 -> 0 of 1 |
+| synthetic, ITU 0 dB | exact | 0 over 63 -> the same | no sure letter -> the same | 0.0000 -> 0.0000 | 18 of 21 -> 18 of 21 |
+| synthetic, ITU 5 dB | exact | 1 over 63 (1 added) -> the same | 1 of 63, 0.0159 -> the same | 0.9841 -> 0.9841 | 0 of 21 -> 0 of 21 |
+| synthetic, ITU 15 dB | exact | 1 over 63 (1 added) -> the same | 1 of 64, 0.0156 -> the same | 1.0000 -> 1.0000 | 0 of 21 -> 0 of 21 |
+| synthetic, char gap 5, 0 dB | exact | 0 over 21 -> the same | no sure letter -> the same | 0.0000 -> 0.0000 | 6 of 7 -> 6 of 7 |
+| synthetic, char gap 5, 5 dB | exact | 11 over 21 (4 added, 7 wrong) -> 4 over 21 (2 added, 2 wrong) | 11 of 25, 0.4400 -> 4 of 18, 0.2222 | 0.6667 -> 0.6667 | 8 of 7 -> 8 of 7 |
+| synthetic, char gap 5, 15 dB | exact | 1 over 21 (1 wrong) -> the same | 1 of 21, 0.0476 -> the same | 0.9524 -> 0.9524 | 12 of 7 -> 12 of 7 |
+
+**Kept: MET-INVENTED falls on both sets and nothing in R78 gets worse.** V-11 rows that moved:
+`cq-18wpm-5db-char5` wrong 7 -> 2, added 4 -> 2; `003758` wrong 3 -> 0; `031838` wrong 5 -> 4;
+`032050` wrong 4 -> 3, added 1 -> 0; `004234` wrong 2 -> 0; sure-and-right unchanged on every row.
+Texts moved on 10 of the 35, every one sure -> dim and no letter changed; the port's texts are
+byte-identical. Outside the keyed stretches, where no key says right or wrong, letters on `013347`
+(9), `134712` (2), `004507` (2) and `031948` (2) also went dim; that is a finding, not a refusal.
+The edge is narrow: 0.62 against the lowest right letter at 0.632, and the sixth split letter
+(12.005 s `T`, 0.658) is not reached. Decode time was not measured (the instruction's first drop).
+
+**The running MET-INVENTED figure (3.3):** real 33 over 473 (5 added, 28 wrong), inferred ->
+**25 over 473 (4 added, 21 wrong), 0.0529**; synthetic 14 over 252 (6 added, 8 wrong), exact ->
+**7 over 252 (4 added, 3 wrong), 0.0278**. HM-REQ-011's zero is not met on any condition with an
+invented letter left.
+
+**Step 3's count of consecutive units with no kept change: 0 of 3** (unit 472 kept a change; the
+count was 0 after unit 445, and no unit worked step 3 between them).
+
 ## Step 2 - closed partial at unit 471
 
 2.4: three consecutive units with no kept change, 460, 470 and 471, after 449's kept change.

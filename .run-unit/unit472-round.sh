@@ -57,6 +57,9 @@ case "$1" in
     ;;
 esac
 case "$1" in
+  red)
+    sh $R "red-$2" engine 300 "$3" "Test: TheInventedLettersAreNotPrintedSureTests, the split D of cq-18wpm-5db-char5" "FullyQualifiedName~.TheInventedLettersAreNotPrintedSureTests." --no-build
+    ;;
   sit)
     sh $R "sit-$2" engine 600 "$3" "Task 1 trace: every sure invented letter placed against the sent text, real then synthetic, with the right letters beside them" "FullyQualifiedName~.WhereTheInventedLettersSitFact." --no-build
     ;;

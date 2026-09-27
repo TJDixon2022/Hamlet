@@ -569,9 +569,14 @@ public sealed class CwProbabilisticStream
             : _envelopeCount - _delayHops;
 
         var edge = new List<CwCharacter>();
+        var spaced = Spaced(result, characterGap, wordFrom).ToList();
+        var characterGapInForce = _structureHeld ? _heldGaps.CharacterMilliseconds : 3 * unitMs;
 
-        foreach (var (character, removed) in Spaced(result, characterGap, wordFrom))
+        for (var index = 0; index < spaced.Count; index++)
         {
+            var (character, removed) = spaced[index];
+            var nearGapFits = NearGapFitsTheCharacterGap(spaced, index, characterGapInForce);
+
             var absolute = windowStartHop + character.EndHop;
             var at = TimeSpan.FromSeconds(
                 absolute * CwProbabilisticDecoder.HopMilliseconds / 1000.0);
@@ -606,7 +611,7 @@ public sealed class CwProbabilisticStream
 
                 if (!removed)
                 {
-                    CharacterSettled?.Invoke(Character(character, result, at, window));
+                    CharacterSettled?.Invoke(Character(character, result, at, window, nearGapFits));
                 }
 
                 continue;
@@ -614,7 +619,7 @@ public sealed class CwProbabilisticStream
 
             if (!removed)
             {
-                edge.Add(Character(character, result, at, window));
+                edge.Add(Character(character, result, at, window, nearGapFits));
             }
         }
 
@@ -641,6 +646,72 @@ public sealed class CwProbabilisticStream
     /// and no right one. Author's, from the trace, not moved after R78's numbers.
     /// </remarks>
     internal const double InnerGapEdge = 6.5;
+
+    /// <summary>
+    /// How short, as a share of the character gap in force, a key-up the path read
+    /// between two letters may be before the letters beside it are shown dimmed.
+    /// </summary>
+    /// <remarks>
+    /// Under the lowest sure-right letter in unit 472's trace over both sets, 0.632
+    /// (`032113`'s `R` and `S`), and over five of the six split letters no earlier
+    /// route touched, 0.588 to 0.60, all on `cq-18wpm-5db-char5`: a dit lost between
+    /// two element gaps reads as three units of key-up where this sender's character
+    /// gap is five. Author's, from the trace, registered before R78's numbers.
+    /// </remarks>
+    internal const double NearGapShare = 0.62;
+
+    /// <summary>
+    /// Whether the shorter key-up between a letter and the named letter either side
+    /// of it in the same read, where the read keeps no word space, is at least
+    /// <see cref="NearGapShare"/> of the character gap in force.
+    /// </summary>
+    /// <remarks>
+    /// **SPAN TO SPAN, FROM THE PATH'S OWN LETTERS** (HM-REQ-011, work instruction
+    /// 472): durations only, never which letters they are (R72). A letter with no
+    /// such neighbour fits, and so does every letter where no character gap is known.
+    /// </remarks>
+    private static bool NearGapFitsTheCharacterGap(
+        IReadOnlyList<(CwProbabilisticCharacter Character, bool Removed)> spaced, int index, double characterGapMs)
+    {
+        var self = spaced[index].Character;
+
+        if (self.Pattern.Length == 0 || !(characterGapMs > 0))
+        {
+            return true;
+        }
+
+        var start = self.EndHop - Math.Max(1, self.SpanHops);
+        var shortest = double.PositiveInfinity;
+
+        foreach (var step in new[] { -1, 1 })
+        {
+            var spaceKept = false;
+
+            for (var j = index + step; j >= 0 && j < spaced.Count; j += step)
+            {
+                var (other, removed) = spaced[j];
+
+                if (other.Pattern.Length == 0)
+                {
+                    spaceKept |= !removed;
+                    continue;
+                }
+
+                var keyUp = step < 0
+                    ? start - other.EndHop
+                    : other.EndHop - Math.Max(1, other.SpanHops) - self.EndHop;
+
+                if (!spaceKept && keyUp > 0)
+                {
+                    shortest = Math.Min(shortest, keyUp * CwProbabilisticDecoder.HopMilliseconds);
+                }
+
+                break;
+            }
+        }
+
+        return !(shortest < NearGapShare * characterGapMs);
+    }
 
     /// <summary>How far past the character gap a gap must run to be a word gap.</summary>
     /// <remarks>
@@ -748,14 +819,14 @@ public sealed class CwProbabilisticStream
     /// guessed letter (HM-DEC-048).
     /// </remarks>
     private CwCharacter Character(
-        CwProbabilisticCharacter character, CwProbabilisticResult result, TimeSpan at, double[] window)
+        CwProbabilisticCharacter character, CwProbabilisticResult result, TimeSpan at, double[] window, bool nearGapFits)
     {
         var known = character.Text != "#";
 
         return new CwCharacter(
             known ? character.Text : MorseAlphabet.Unreadable,
             !known ? CwConfidence.Unreadable
-                : GapsFitTheUnit(character, result, window) ? CwConfidence.High
+                : GapsFitTheUnit(character, result, window) && nearGapFits ? CwConfidence.High
                 : CwConfidence.Low,
             result.LikelihoodRatio,
             character.Pattern,
