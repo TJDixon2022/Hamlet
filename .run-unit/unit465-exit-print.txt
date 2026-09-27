@@ -1,0 +1,69 @@
+RC=0 WALL=123s
+Total tests: 1
+     Passed: 1
+  1467 .run-unit/unit465-text-exit.txt
+   818 .run-unit/unit465-port-exit.txt
+  2285 total
+ours BYTE-IDENTICAL to before
+port BYTE-IDENTICAL to before
+RC=0 WALL=122s
+Total tests: 1
+     Passed: 1
+1467 .run-unit/unit465-arbitrated-exit.txt
+ARBITRATED TEXT, CLASS AND P BYTE-IDENTICAL to ours at task 0
+35
+== arbiter's counts against task 1's
+COUNTS IDENTICAL to task 1
+ arbiter count | real HF, all | inferred | 23 | 290 | 113 | 16 | 438 | 48 | 857 | 0 | 48 | votes | advisory
+ arbiter count | synthetic, all | exact | 12 | 120 | 16 | 2 | 37 | 32 | 175 | 0 | 32 | votes | advisory
+== git diff 19109b51 -- src/Hamlet.RadioEngine/Cw/Second/:
+(end)
+== git diff 7e209cb4 over the eleven transmit files:
+== end transmit
+ src/Hamlet.App/ViewModels/MainWindowViewModel.cs   |  74 ++++-
+ src/Hamlet.RadioEngine/Cw/CwArbiter.cs             | 351 +++++++++++++++++++++
+ src/Hamlet.RadioEngine/Cw/CwCharacter.cs           |  27 ++
+ .../Cw/CwCharacterProbability.cs                   |  46 +++
+ src/Hamlet.RadioEngine/Cw/CwDecoder.cs             | 220 +++++++++++--
+ src/Hamlet.RadioEngine/Cw/CwProbabilisticStream.cs |   1 +
+ src/Hamlet.RadioEngine/Cw/CwSecondReader.cs        | 275 ++++++++++++++++
+ src/Hamlet.RadioEngine/Cw/CwSecondReading.cs       | 142 +++++++++
+ src/Hamlet.RadioEngine/Cw/CwVoteTable.cs           |  86 +++++
+ src/Hamlet.RadioEngine/Cw/FldigiConfidence.cs      | 171 ++++++++++
+ 10 files changed, 1373 insertions(+), 20 deletions(-)
+== git status
+ M .run-unit/watched.cpu
+ M PROJECT_STATUS.md
+?? .run-unit/fldigi/
+?? .run-unit/unit465-adjudicated-exit.txt
+?? .run-unit/unit465-arbitrated-exit.txt
+?? .run-unit/unit465-build-exit.txt
+?? .run-unit/unit465-captures-exit.txt
+?? .run-unit/unit465-cf-app-exit.txt
+?? .run-unit/unit465-cf-engine-exit.txt
+?? .run-unit/unit465-confidence-exit.txt
+?? .run-unit/unit465-corpus-exit.txt
+?? .run-unit/unit465-counts-arbiter-exit.txt
+?? .run-unit/unit465-exit-print.sh
+?? .run-unit/unit465-exit-print.txt
+?? .run-unit/unit465-exit-run.sh
+?? .run-unit/unit465-metrics-exit.txt
+?? .run-unit/unit465-named-exit.txt
+?? .run-unit/unit465-one-exit.txt
+?? .run-unit/unit465-pairs-exit.txt
+?? .run-unit/unit465-parity-exit.md
+?? .run-unit/unit465-parity-exit.txt
+?? .run-unit/unit465-port-exit.txt
+?? .run-unit/unit465-same-exit.txt
+?? .run-unit/unit465-save-exit.txt
+?? .run-unit/unit465-second-exit.txt
+?? .run-unit/unit465-text-exit.txt
+?? .run-unit/unit465-v11-exit.txt
+?? .run-unit/unit465-wins-exit.txt
+?? SESSION.lock
+== this unit's commits
+cf38e1c4 unit465: tick 9.6 in both copies of PHASE_PLAN.md - both decoders read the same samples live and in the harness, agreement, disagreement and tie by the arbiter, one transcript with no decoder named, both readings on the sheet, each watched failing first (9.6)
+7aed2ea6 unit465 task 3: live - the port reads the same hops at 8000 Hz at our pitch, the CW tab reads the arbiter only, the sheet records both readings; HM-REQ-120 and 121 watched failing first (9.6)
+4c9a8433 unit465 task 2: the arbiter, the vote table and the 0.05 margin; HM-REQ-124 to 127 watched failing first; the corpus through the arbiter identical to ours on all 35 (9.6)
+089c4bb8 unit465 task 1: where the two readings meet - both decoders on one clock, paired by span, counted per condition; span rule, vote table and margin fixed before any arbitrated text (9.6)
+d3915f01 unit465 task 0: the record, 1.13.152, the runner's writes; entry round as at 464's exit; both decoders' characters saved with class and p (9.6)

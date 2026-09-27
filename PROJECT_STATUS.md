@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: EXECUTING
-TASK: 3 of 4
+STATE: COMPLETED
+TASK: 4 of 4
 WORK_INSTRUCTION: 465 - one transcript from two readers: both decoders read the same samples live, an arbiter emits each character by agreement, calibrated confidence and tie
-BALL: code
+BALL: tim
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-27T05:51:39-04:00
-NOTE: Task 3 - all six of 9.6s conditions hold, each test green and watched red; ticking 9.6 in both plan copies
+UPDATED: 2026-09-27T06:16:03-04:00
+NOTE: Unit 465 done: 9.6 ticked - the port reads live beside ours, one arbiter, one transcript, both readings on the sheet; port advisory everywhere today, so the screen is unchanged; output.md written
 
 ---
 

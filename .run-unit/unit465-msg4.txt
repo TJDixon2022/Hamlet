@@ -1,0 +1,18 @@
+unit465 task 4: exit round - every figure as at entry, ours alone, the port alone and the arbitrated transcript byte-identical to task 0's saves, the port byte-identical; 9.6 ticked; output.md written (9.6)
+
+Exit, each as at entry: build 0 errors; engine line 178 of 178; app line 278 of 278;
+named 13 of 13, captures 51 of 51, adjudicated 13 of 13; real 33 of 436, 33 over 473,
+403 over 473, 37 over 113 (inferred keys); synthetic 14 of 173, 14 over 252, 159 over
+252, 44 over 84 (exact keys), no per-recording row moved; the port per parity.md
+unchanged; BothDecodersAreScoredAlikeTests 5 of 5; EveryCharacterCarriesAConfidence-
+Tests 2 of 2; the port's own tests 8 of 8; TheHigherCalibratedReadingWinsTests 8 of 8;
+BothDecodersReadTheSameSamplesTests 3 of 3; TheOperatorSeesOneTranscriptTests 3 of 3;
+TheSpeedFollowsTheSendersMarkPairsTests red at 28 of 31, as at entry, not required.
+
+git diff 19109b51 -- Cw/Second and git diff 7e209cb4 over the eleven transmit files
+print nothing. .run-unit/fldigi/ and SESSION.lock untracked, not staged. parity.md
+restored after the parity run; its copy is .run-unit/unit465-parity-exit.md.
+
+Ticked this unit: 9.6 only (cf38e1c4). output.md validated, all six rules.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
