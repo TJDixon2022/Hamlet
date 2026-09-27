@@ -1,0 +1,11 @@
+unit469 task 2: HM-REQ-060 not met (2 of 6), 061 not met (0 of 6), 062 not met (4 of 12), 066 met (3 of 3, weak: named on 2-12% of hops at 125 Hz) - ours at 15 dB ref on CH-AWGN, synthetic exact keys (7.3)
+
+TheInterferenceIsMeasuredFact reads 27 cases and 3 controls through ours (CwDecoder hop by hop from 600 Hz, scored by TheRequirementsAreMeasuredTests.Measure and CwMetrics against the wanted key alone), with the tracked pitch at every wanted word end, the station selected after the first sure character and CwDecodeReport.Competitor at every hop; the emitted transcript under CwSwitchTable.Live equals ours in all 27 cases and the port alone is worse or empty in each.
+
+060: at 12 WPM the tracker walks to the adjacent station and ours prints `N0AAA UP DE` sure (MET-CER-SURE 24/38); at 25 WPM held but `EA UP` printed sure (6/24). 061: 12 WPM prints the adjacent station's letters (19/33, 22/36); 18 WPM one sure extra N (1/22); 25 WPM the control's own extra K. 062: from cold the tracker sits on the carrier through the first word at +50 and +100 Hz and at +200 Hz above 0 dB, printing sure T's off it (worst 2/2 at +50 Hz +20 dB); met at +200 Hz 0 dB and +500 Hz. 066: met on the pre-fixed any-hop reading only, never at 100 Hz (CwCompetitor.SeparationHz 125), levels 4-7 dB off. Controls: 12 and 18 WPM whole, 25 WPM adds a sure K (1/22).
+
+Table in interference.md, running line in metrics.md. Nothing under src.
+
+At this commit: build 0 errors; engine line 178/178; app line 277/278 on the one rerun (first run 275, headless dispatcher loop), TheWindowHoldsBelowItsMinimumTests alone 3/3 (DECIDED 8); floors named 13/13, captures 51/51, adjudicated 13/13.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

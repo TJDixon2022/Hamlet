@@ -1,0 +1,274 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:01.78]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:01.99]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:02.00]   Starting:    Hamlet.RadioEngine.Tests
+[xUnit.net 00:01:23.34]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.TheInterferenceIsMeasuredFact.EachRequirementOnItsVerificationRowsCondition [1 m 21 s]
+  Standard Output Messages:
+ key | CQ CQ CQ DE N0CALL N0CALL K | synthetic, exact | wanted TX-ITU at 600 Hz, 15 dB in the 2500 Hz reference on CH-AWGN
+ readings | held: every tracked pitch at a wanted word's end within 25 Hz of the wanted | selected: every tracked pitch from the first sure character to the wanted's last key-up within 25 Hz of the wanted | competing: the report's Competitor at any hop from the second station's first mark to the wanted's last key-up, within 25 Hz of the second station | HM-REQ-010 with nothing sure is not met
+ control | 12 wpm | seed 469000 | the wanted alone | MET-CER-SURE 0/21 0.00 (0 substituted, 0 added) | MET-INVENTED 0/21 | sure and right 21/21 1.00 | MET-WBE 0/7 0.00 | pitch at word ends 600 600 600 600 600 600 600 | competing null (the app writes `none admitted ...` or `none found ...`) | read `CQ CQ CQ DE N0CALL N0CALL K` | synthetic, exact
+ control | 18 wpm | seed 469001 | the wanted alone | MET-CER-SURE 0/21 0.00 (0 substituted, 0 added) | MET-INVENTED 0/21 | sure and right 21/21 1.00 | MET-WBE 0/7 0.00 | pitch at word ends 600 600 600 600 600 600 575 | competing null (the app writes `none admitted ...` or `none found ...`) | read `CQ CQ CQ DE N0CALL N0CALL K` | synthetic, exact
+ control | 25 wpm | seed 469002 | the wanted alone | MET-CER-SURE 1/22 0.05 (0 substituted, 1 added) | MET-INVENTED 1/21 | sure and right 21/21 1.00 | MET-WBE 0/7 0.00 | pitch at word ends 600 600 600 600 600 600 600 | competing null (the app writes `none admitted ...` or `none found ...`) | read `CQ CQ CQ DE N0CALL N0CALL KK` | synthetic, exact
+ requirement | HM-REQ-060 | row: INT-ADJ(100, 0, 25) | 010, 011 on wanted | held
+ case | HM-REQ-060 | INT-ADJ(+100, 0, 25) | wanted 12 wpm | seed 469000 | headroom x 1 | MET-CER-SURE 24/38 0.63 (7 substituted, 17 added) | MET-INVENTED 24/21 | sure and right 14/21 0.67 | MET-WBE 8/7 1.14 | held NO, HM-REQ-010 NOT MET, HM-REQ-011 NOT MET | NOT MET | synthetic, exact
+   key       `CQ CQ CQ DE N0CALL N0CALL K`
+   ours      `CQ CQ CQ DEE■H N0AAA UP DE N0AAA UP DE N0AAA ET TTT`
+   control   `CQ CQ CQ DE N0CALL N0CALL K` | MET-CER-SURE 0/21 0.00 (0 substituted, 0 added) | MET-INVENTED 0/21 | sure and right 21/21 1.00 | MET-WBE 0/7 0.00
+   pitch     wanted 600 Hz, interferer 700 Hz | tracked at the wanted's word ends 600 600 600 600 700 600 600 | control 600 600 600 600 600 600 600
+   competing at the end: null (the app writes `none admitted ...` or `none found ...`) | interference at the end: none
+   interferer `DE N0AAA UP DE N0AAA UP DE N0AAA UP DE N0AAA UP DE N0AAA UP DE` - in the sidecar, never scored
+   emitted (live, switch as it stands) | MET-CER-SURE 24/38 0.63 (7 substituted, 17 added) | MET-INVENTED 24/21 | sure and right 14/21 0.67 | MET-WBE 8/7 1.14 | read `CQ CQ CQ DEE■H N0AAA UP DE N0AAA UP DE N0AAA ET TTT`
+   port alone | MET-CER-SURE 1/2 0.50 (1 substituted, 0 added) | MET-INVENTED 1/21 | sure and right 1/21 0.05 | MET-WBE 6/7 0.86 | read `TE`
+ case | HM-REQ-060 | INT-ADJ(-100, 0, 25) | wanted 12 wpm | seed 469000 | headroom x 1 | MET-CER-SURE 23/37 0.62 (7 substituted, 16 added) | MET-INVENTED 23/21 | sure and right 14/21 0.67 | MET-WBE 8/7 1.14 | held NO, HM-REQ-010 NOT MET, HM-REQ-011 NOT MET | NOT MET | synthetic, exact
+   key       `CQ CQ CQ DE N0CALL N0CALL K`
+   ours      `CQ CQ CQ DEE■H N0AAA UP DE N0AAA UP DE N0AAA UP DE`
+   control   `CQ CQ CQ DE N0CALL N0CALL K` | MET-CER-SURE 0/21 0.00 (0 substituted, 0 added) | MET-INVENTED 0/21 | sure and right 21/21 1.00 | MET-WBE 0/7 0.00
+   pitch     wanted 600 Hz, interferer 500 Hz | tracked at the wanted's word ends 600 600 600 600 500 500 500 | control 600 600 600 600 600 600 600
+   competing at the end: null (the app writes `none admitted ...` or `none found ...`) | interference at the end: none
+   interferer `DE N0AAA UP DE N0AAA UP DE N0AAA UP DE N0AAA UP DE N0AAA UP DE` - in the sidecar, never scored
+   emitted (live, switch as it stands) | MET-CER-SURE 23/37 0.62 (7 substituted, 16 added) | MET-INVENTED 23/21 | sure and right 14/21 0.67 | MET-WBE 8/7 1.14 | read `CQ CQ CQ DEE■H N0AAA UP DE N0AAA UP DE N0AAA UP DE`
+   port alone | MET-CER-SURE 3/3 1.00 (3 substituted, 0 added) | MET-INVENTED 3/21 | sure and right 0/21 0.00 | MET-WBE 6/7 0.86 | read `TZ<INT>`
+ case | HM-REQ-060 | INT-ADJ(+100, 0, 25) | wanted 18 wpm | seed 469001 | headroom x 1 | MET-CER-SURE 0/21 0.00 (0 substituted, 0 added) | MET-INVENTED 0/21 | sure and right 21/21 1.00 | MET-WBE 0/7 0.00 | held yes, HM-REQ-010 met, HM-REQ-011 met | met | synthetic, exact
+   key       `CQ CQ CQ DE N0CALL N0CALL K`
+   ours      `CQ CQ CQ DE N0CALL N0CALL K`
+   control   `CQ CQ CQ DE N0CALL N0CALL K` | MET-CER-SURE 0/21 0.00 (0 substituted, 0 added) | MET-INVENTED 0/21 | sure and right 21/21 1.00 | MET-WBE 0/7 0.00
+   pitch     wanted 600 Hz, interferer 700 Hz | tracked at the wanted's word ends 600 600 600 600 600 600 575 | control 600 600 600 600 600 600 575
+   competing at the end: null (the app writes `none admitted ...` or `none found ...`) | interference at the end: none
+   interferer `DE N0AAA UP DE N0AAA UP DE N0AAA UP DE` - in the sidecar, never scored
+   emitted (live, switch as it stands) | MET-CER-SURE 0/21 0.00 (0 substituted, 0 added) | MET-INVENTED 0/21 | sure and right 21/21 1.00 | MET-WBE 0/7 0.00 | read `CQ CQ CQ DE N0CALL N0CALL K`
+   port alone | MET-CER-SURE 1/5 0.20 (1 substituted, 0 added) | MET-INVENTED 1/21 | sure and right 4/21 0.19 | MET-WBE 5/7 0.71 | read `E■C■DL K`
+ case | HM-REQ-060 | INT-ADJ(-100, 0, 25) | wanted 18 wpm | seed 469001 | headroom x 1 | MET-CER-SURE 0/21 0.00 (0 substituted, 0 added) | MET-INVENTED 0/21 | sure and right 21/21 1.00 | MET-WBE 0/7 0.00 | held yes, HM-REQ-010 met, HM-REQ-011 met | met | synthetic, exact
+   key       `CQ CQ CQ DE N0CALL N0CALL K`
+   ours      `CQ CQ CQ DE N0CALL N0CALL K`
+   control   `CQ CQ CQ DE N0CALL N0CALL K` | MET-CER-SURE 0/21 0.00 (0 substituted, 0 added) | MET-INVENTED 0/21 | sure and right 21/21 1.00 | MET-WBE 0/7 0.00
+   pitch     wanted 600 Hz, interferer 500 Hz | tracked at the wanted's word ends 600 600 600 600 600 600 600 | control 600 600 600 600 600 600 575
+   competing at the end: null (the app writes `none admitted ...` or `none found ...`) | interference at the end: none
+   interferer `DE N0AAA UP DE N0AAA UP DE N0AAA UP DE` - in the sidecar, never scored
+   emitted (live, switch as it stands) | MET-CER-SURE 0/21 0.00 (0 substituted, 0 added) | MET-INVENTED 0/21 | sure and right 21/21 1.00 | MET-WBE 0/7 0.00 | read `CQ CQ CQ DE N0CALL N0CALL K`
+   port alone | MET-CER-SURE 1/5 0.20 (1 substituted, 0 added) | MET-INVENTED 1/21 | sure and right 4/21 0.19 | MET-WBE 5/7 0.71 | read `E■C■DL K`
+ case | HM-REQ-060 | INT-ADJ(+100, 0, 25) | wanted 25 wpm | seed 469002 | headroom x 1 | MET-CER-SURE 6/24 0.25 (3 substituted, 3 added) | MET-INVENTED 6/21 | sure and right 18/21 0.86 | MET-WBE 2/7 0.29 | held yes, HM-REQ-010 NOT MET, HM-REQ-011 NOT MET | NOT MET | synthetic, exact
+   key       `CQ CQ CQ DE N0CALL N0CALL K`
+   ours      `CQ CQ CQ DE N0CALL EA UP EALL KK`
+   control   `CQ CQ CQ DE N0CALL N0CALL KK` | MET-CER-SURE 1/22 0.05 (0 substituted, 1 added) | MET-INVENTED 1/21 | sure and right 21/21 1.00 | MET-WBE 0/7 0.00
+   pitch     wanted 600 Hz, interferer 700 Hz | tracked at the wanted's word ends 600 600 600 600 600 595 595 | control 600 600 600 600 600 600 600
+   competing at the end: null (the app writes `none admitted ...` or `none found ...`) | interference at the end: none
+   interferer `DE N0AAA UP DE N0AAA UP DE` - in the sidecar, never scored
+   emitted (live, switch as it stands) | MET-CER-SURE 6/24 0.25 (3 substituted, 3 added) | MET-INVENTED 6/21 | sure and right 18/21 0.86 | MET-WBE 2/7 0.29 | read `CQ CQ CQ DE N0CALL EA UP EALL KK`
+   port alone | MET-CER-SURE 4/5 0.80 (4 substituted, 0 added) | MET-INVENTED 4/21 | sure and right 1/21 0.05 | MET-WBE 6/7 0.86 | read `EOKRT`
+ case | HM-REQ-060 | INT-ADJ(-100, 0, 25) | wanted 25 wpm | seed 469002 | headroom x 1 | MET-CER-SURE 7/23 0.30 (5 substituted, 2 added) | MET-INVENTED 7/21 | sure and right 16/21 0.76 | MET-WBE 5/7 0.71 | held yes, HM-REQ-010 NOT MET, HM-REQ-011 NOT MET | NOT MET | synthetic, exact
+   key       `CQ CQ CQ DE N0CALL N0CALL K`
+   ours      `CQ CQ CQ DE N0CALL EA UP DE L KK`
+   control   `CQ CQ CQ DE N0CALL N0CALL KK` | MET-CER-SURE 1/22 0.05 (0 substituted, 1 added) | MET-INVENTED 1/21 | sure and right 21/21 1.00 | MET-WBE 0/7 0.00
+   pitch     wanted 600 Hz, interferer 500 Hz | tracked at the wanted's word ends 600 595 600 600 600 600 600 | control 600 600 600 600 600 600 600
+   competing at the end: null (the app writes `none admitted ...` or `none found ...`) | interference at the end: none
+   interferer `DE N0AAA UP DE N0AAA UP DE` - in the sidecar, never scored
+   emitted (live, switch as it stands) | MET-CER-SURE 7/23 0.30 (5 substituted, 2 added) | MET-INVENTED 7/21 | sure and right 16/21 0.76 | MET-WBE 5/7 0.71 | read `CQ CQ CQ DE N0CALL EA UP DE L KK`
+   port alone | MET-CER-SURE 2/3 0.67 (2 substituted, 0 added) | MET-INVENTED 2/21 | sure and right 1/21 0.05 | MET-WBE 6/7 0.86 | read `E■KR`
+ requirement | HM-REQ-060 | ours | NOT MET | 2 of 6 cases met; met only if all are | synthetic, exact, CH-AWGN 15 dB on the wanted
+ requirement | HM-REQ-061 | row: INT-ADJ(50, -6, 25) | 010, 011 on wanted | held
+ case | HM-REQ-061 | INT-ADJ(+50, -6, 25) | wanted 12 wpm | seed 469000 | headroom x 1 | MET-CER-SURE 19/33 0.58 (7 substituted, 12 added) | MET-INVENTED 19/21 | sure and right 14/21 0.67 | MET-WBE 9/7 1.29 | held NO, HM-REQ-010 NOT MET, HM-REQ-011 NOT MET | NOT MET | synthetic, exact
+   key       `CQ CQ CQ DE N0CALL N0CALL K`
+   ours      `CQ CQ CQ DE N0EE H UP SE N0AAA UT E DE N0A E ET K`
+   control   `CQ CQ CQ DE N0CALL N0CALL K` | MET-CER-SURE 0/21 0.00 (0 substituted, 0 added) | MET-INVENTED 0/21 | sure and right 21/21 1.00 | MET-WBE 0/7 0.00
+   pitch     wanted 600 Hz, interferer 650 Hz | tracked at the wanted's word ends 600 600 600 600 650 600 600 | control 600 600 600 600 600 600 600
+   competing at the end: null (the app writes `none admitted ...` or `none found ...`) | interference at the end: none
+   interferer `DE N0AAA UP DE N0AAA UP DE N0AAA UP DE N0AAA UP DE N0AAA UP DE` - in the sidecar, never scored
+   emitted (live, switch as it stands) | MET-CER-SURE 19/33 0.58 (7 substituted, 12 added) | MET-INVENTED 19/21 | sure and right 14/21 0.67 | MET-WBE 9/7 1.29 | read `CQ CQ CQ DE N0EE H UP SE N0AAA UT E DE N0A E ET K`
+   port alone | MET-CER-SURE 6/12 0.50 (6 substituted, 0 added) | MET-INVENTED 6/21 | sure and right 6/21 0.29 | MET-WBE 3/7 0.43 | read `T KÅ RQ LEF0CAL`
+ case | HM-REQ-061 | INT-ADJ(-50, -6, 25) | wanted 12 wpm | seed 469000 | headroom x 1 | MET-CER-SURE 22/36 0.61 (7 substituted, 15 added) | MET-INVENTED 22/21 | sure and right 14/21 0.67 | MET-WBE 8/7 1.14 | held yes, HM-REQ-010 NOT MET, HM-REQ-011 NOT MET | NOT MET | synthetic, exact
+   key       `CQ CQ CQ DE N0CALL N0CALL K`
+   ours      `CQ CQ CQ DE ESH N0AAA UP EI ET TT TTTE T TET TLL K`
+   control   `CQ CQ CQ DE N0CALL N0CALL K` | MET-CER-SURE 0/21 0.00 (0 substituted, 0 added) | MET-INVENTED 0/21 | sure and right 21/21 1.00 | MET-WBE 0/7 0.00
+   pitch     wanted 600 Hz, interferer 550 Hz | tracked at the wanted's word ends 600 600 600 595 600 575 600 | control 600 600 600 600 600 600 600
+   competing at the end: null (the app writes `none admitted ...` or `none found ...`) | interference at the end: none
+   interferer `DE N0AAA UP DE N0AAA UP DE N0AAA UP DE N0AAA UP DE N0AAA UP DE` - in the sidecar, never scored
+   emitted (live, switch as it stands) | MET-CER-SURE 22/36 0.61 (7 substituted, 15 added) | MET-INVENTED 22/21 | sure and right 14/21 0.67 | MET-WBE 8/7 1.14 | read `CQ CQ CQ DE ESH N0AAA UP EI ET TT TTTE T TET TLL K`
+   port alone | MET-CER-SURE 6/10 0.60 (6 substituted, 0 added) | MET-INVENTED 6/21 | sure and right 4/21 0.19 | MET-WBE 5/7 0.71 | read `T KÅ <AR>Q LE A LI`
+ case | HM-REQ-061 | INT-ADJ(+50, -6, 25) | wanted 18 wpm | seed 469001 | headroom x 1 | MET-CER-SURE 1/22 0.05 (0 substituted, 1 added) | MET-INVENTED 1/21 | sure and right 21/21 1.00 | MET-WBE 0/7 0.00 | held yes, HM-REQ-010 NOT MET, HM-REQ-011 NOT MET | NOT MET | synthetic, exact
+   key       `CQ CQ CQ DE N0CALL N0CALL K`
+   ours      `CQ CQ CQ DE N0CALL NN0CALL K`
+   control   `CQ CQ CQ DE N0CALL N0CALL K` | MET-CER-SURE 0/21 0.00 (0 substituted, 0 added) | MET-INVENTED 0/21 | sure and right 21/21 1.00 | MET-WBE 0/7 0.00
+   pitch     wanted 600 Hz, interferer 650 Hz | tracked at the wanted's word ends 600 600 600 600 600 600 575 | control 600 600 600 600 600 600 575
+   competing at the end: null (the app writes `none admitted ...` or `none found ...`) | interference at the end: none
+   interferer `DE N0AAA UP DE N0AAA UP DE N0AAA UP DE` - in the sidecar, never scored
+   emitted (live, switch as it stands) | MET-CER-SURE 1/22 0.05 (0 substituted, 1 added) | MET-INVENTED 1/21 | sure and right 21/21 1.00 | MET-WBE 0/7 0.00 | read `CQ CQ CQ DE N0CALL NN0CALL K`
+   port alone | MET-CER-SURE 4/17 0.24 (4 substituted, 0 added) | MET-INVENTED 4/21 | sure and right 13/21 0.62 | MET-WBE 4/7 0.57 | read `RQPQ DEN■CADLTCALL K`
+ case | HM-REQ-061 | INT-ADJ(-50, -6, 25) | wanted 18 wpm | seed 469001 | headroom x 1 | MET-CER-SURE 1/22 0.05 (0 substituted, 1 added) | MET-INVENTED 1/21 | sure and right 21/21 1.00 | MET-WBE 0/7 0.00 | held yes, HM-REQ-010 NOT MET, HM-REQ-011 NOT MET | NOT MET | synthetic, exact
+   key       `CQ CQ CQ DE N0CALL N0CALL K`
+   ours      `CQ CQ CQ DE N0CALL NN0CALL K`
+   control   `CQ CQ CQ DE N0CALL N0CALL K` | MET-CER-SURE 0/21 0.00 (0 substituted, 0 added) | MET-INVENTED 0/21 | sure and right 21/21 1.00 | MET-WBE 0/7 0.00
+   pitch     wanted 600 Hz, interferer 550 Hz | tracked at the wanted's word ends 600 600 600 600 600 600 600 | control 600 600 600 600 600 600 575
+   competing at the end: null (the app writes `none admitted ...` or `none found ...`) | interference at the end: none
+   interferer `DE N0AAA UP DE N0AAA UP DE N0AAA UP DE` - in the sidecar, never scored
+   emitted (live, switch as it stands) | MET-CER-SURE 1/22 0.05 (0 substituted, 1 added) | MET-INVENTED 1/21 | sure and right 21/21 1.00 | MET-WBE 0/7 0.00 | read `CQ CQ CQ DE N0CALL NN0CALL K`
+   port alone | MET-CER-SURE 5/16 0.31 (5 substituted, 0 added) | MET-INVENTED 5/21 | sure and right 11/21 0.52 | MET-WBE 4/7 0.57 | read `RQECQ CT■CLLTCALL K`
+ case | HM-REQ-061 | INT-ADJ(+50, -6, 25) | wanted 25 wpm | seed 469002 | headroom x 1 | MET-CER-SURE 1/22 0.05 (0 substituted, 1 added) | MET-INVENTED 1/21 | sure and right 21/21 1.00 | MET-WBE 0/7 0.00 | held yes, HM-REQ-010 NOT MET, HM-REQ-011 NOT MET | NOT MET | synthetic, exact
+   key       `CQ CQ CQ DE N0CALL N0CALL K`
+   ours      `CQ CQ CQ DE N0CALL N0CALL KK`
+   control   `CQ CQ CQ DE N0CALL N0CALL KK` | MET-CER-SURE 1/22 0.05 (0 substituted, 1 added) | MET-INVENTED 1/21 | sure and right 21/21 1.00 | MET-WBE 0/7 0.00
+   pitch     wanted 600 Hz, interferer 650 Hz | tracked at the wanted's word ends 600 600 600 600 605 600 600 | control 600 600 600 600 600 600 600
+   competing at the end: null (the app writes `none admitted ...` or `none found ...`) | interference at the end: none
+   interferer `DE N0AAA UP DE N0AAA UP DE` - in the sidecar, never scored
+   emitted (live, switch as it stands) | MET-CER-SURE 1/22 0.05 (0 substituted, 1 added) | MET-INVENTED 1/21 | sure and right 21/21 1.00 | MET-WBE 0/7 0.00 | read `CQ CQ CQ DE N0CALL N0CALL KK`
+   port alone | MET-CER-SURE 6/14 0.43 (6 substituted, 0 added) | MET-INVENTED 6/21 | sure and right 8/21 0.38 | MET-WBE 4/7 0.57 | read `EAGQ I0CT■TCALL K`
+ case | HM-REQ-061 | INT-ADJ(-50, -6, 25) | wanted 25 wpm | seed 469002 | headroom x 1 | MET-CER-SURE 1/22 0.05 (0 substituted, 1 added) | MET-INVENTED 1/21 | sure and right 21/21 1.00 | MET-WBE 0/7 0.00 | held yes, HM-REQ-010 NOT MET, HM-REQ-011 NOT MET | NOT MET | synthetic, exact
+   key       `CQ CQ CQ DE N0CALL N0CALL K`
+   ours      `CQ CQ CQ DE N0CALL N0CALL KK`
+   control   `CQ CQ CQ DE N0CALL N0CALL KK` | MET-CER-SURE 1/22 0.05 (0 substituted, 1 added) | MET-INVENTED 1/21 | sure and right 21/21 1.00 | MET-WBE 0/7 0.00
+   pitch     wanted 600 Hz, interferer 550 Hz | tracked at the wanted's word ends 600 600 600 600 600 600 600 | control 600 600 600 600 600 600 600
+   competing at the end: null (the app writes `none admitted ...` or `none found ...`) | interference at the end: none
+   interferer `DE N0AAA UP DE N0AAA UP DE` - in the sidecar, never scored
+   emitted (live, switch as it stands) | MET-CER-SURE 1/22 0.05 (0 substituted, 1 added) | MET-INVENTED 1/21 | sure and right 21/21 1.00 | MET-WBE 0/7 0.00 | read `CQ CQ CQ DE N0CALL N0CALL KK`
+   port alone | MET-CER-SURE 6/14 0.43 (6 substituted, 0 added) | MET-INVENTED 6/21 | sure and right 8/21 0.38 | MET-WBE 5/7 0.71 | read `EANQA0CETCALL K`
+ requirement | HM-REQ-061 | ours | NOT MET | 0 of 6 cases met; met only if all are | synthetic, exact, CH-AWGN 15 dB on the wanted
+ requirement | HM-REQ-062 | row: INT-CARRIER at 0, +10, +20 dB, offsets 50-500 Hz | station selected | keyed station
+ case | HM-REQ-062 | INT-CARRIER(+50, 0) | wanted 18 wpm | seed 469001 | headroom x 1 | MET-CER-SURE 22/29 0.76 (14 substituted, 8 added) | MET-INVENTED 22/21 | sure and right 7/21 0.33 | MET-WBE 9/7 1.29 | station selected: THE CARRIER - 334 of 3681 hops from the first sure character (1.86 s) to the wanted's last key-up (20.27 s) more than 25 Hz off, furthest 650.0 Hz | NOT MET | synthetic, exact
+   key       `CQ CQ CQ DE N0CALL N0CALL K`
+   ours      `U   Q CQ DE I T<KN> TETE ET ETEE ETEE NN0ISL K`
+   control   `CQ CQ CQ DE N0CALL N0CALL K` | MET-CER-SURE 0/21 0.00 (0 substituted, 0 added) | MET-INVENTED 0/21 | sure and right 21/21 1.00 | MET-WBE 0/7 0.00
+   pitch     wanted 600 Hz, interferer 650 Hz | tracked at the wanted's word ends 650 600 605 605 610 600 600 | control 600 600 600 600 600 600 575
+   competing at the end: null (the app writes `none admitted ...` or `none found ...`) | interference at the end: none
+   interferer `` - in the sidecar, never scored
+   emitted (live, switch as it stands) | MET-CER-SURE 22/29 0.76 (14 substituted, 8 added) | MET-INVENTED 22/21 | sure and right 7/21 0.33 | MET-WBE 9/7 1.29 | read `U   Q CQ DE I T<KN> TETE ET ETEE ETEE NN0ISL K`
+   port alone | MET-CER-SURE 6/9 0.67 (6 substituted, 0 added) | MET-INVENTED 6/21 | sure and right 3/21 0.14 | MET-WBE 4/7 0.57 | read `HEI NEAII T`
+ case | HM-REQ-062 | INT-CARRIER(+50, +10) | wanted 18 wpm | seed 469001 | headroom x 0.9427 | MET-CER-SURE 1/2 0.50 (1 substituted, 0 added) | MET-INVENTED 1/21 | sure and right 1/21 0.05 | MET-WBE 7/7 1.00 | station selected: THE CARRIER - 272 of 3619 hops from the first sure character (2.17 s) to the wanted's last key-up (20.27 s) more than 25 Hz off, furthest 650.0 Hz | NOT MET | synthetic, exact
+   key       `CQ CQ CQ DE N0CALL N0CALL K`
+   ours      `T  E`
+   control   `CQ CQ CQ DE N0CALL N0CALL K` | MET-CER-SURE 0/21 0.00 (0 substituted, 0 added) | MET-INVENTED 0/21 | sure and right 21/21 1.00 | MET-WBE 0/7 0.00
+   pitch     wanted 600 Hz, interferer 650 Hz | tracked at the wanted's word ends 650 600 610 610 610 600 600 | control 600 600 600 600 600 600 575
+   competing at the end: null (the app writes `none admitted ...` or `none found ...`) | interference at the end: none
+   interferer `` - in the sidecar, never scored
+   emitted (live, switch as it stands) | MET-CER-SURE 1/2 0.50 (1 substituted, 0 added) | MET-INVENTED 1/21 | sure and right 1/21 0.05 | MET-WBE 7/7 1.00 | read `T  E`
+   port alone | MET-CER-SURE 0/1 0.00 (0 substituted, 0 added) | MET-INVENTED 0/21 | sure and right 1/21 0.05 | MET-WBE 6/7 0.86 | read `E`
+ case | HM-REQ-062 | INT-CARRIER(+50, +20) | wanted 18 wpm | seed 469001 | headroom x 0.3634 | MET-CER-SURE 2/2 1.00 (2 substituted, 0 added) | MET-INVENTED 2/21 | sure and right 0/21 0.00 | MET-WBE 5/7 0.71 | station selected: THE CARRIER - 272 of 3619 hops from the first sure character (2.17 s) to the wanted's last key-up (20.27 s) more than 25 Hz off, furthest 650.0 Hz | NOT MET | synthetic, exact
+   key       `CQ CQ CQ DE N0CALL N0CALL K`
+   ours      `T T`
+   control   `CQ CQ CQ DE N0CALL N0CALL K` | MET-CER-SURE 0/21 0.00 (0 substituted, 0 added) | MET-INVENTED 0/21 | sure and right 21/21 1.00 | MET-WBE 0/7 0.00
+   pitch     wanted 600 Hz, interferer 650 Hz | tracked at the wanted's word ends 650 600 600 605 605 600 600 | control 600 600 600 600 600 600 575
+   competing at the end: null (the app writes `none admitted ...` or `none found ...`) | interference at the end: none
+   interferer `` - in the sidecar, never scored
+   emitted (live, switch as it stands) | MET-CER-SURE 2/2 1.00 (2 substituted, 0 added) | MET-INVENTED 2/21 | sure and right 0/21 0.00 | MET-WBE 5/7 0.71 | read `T T`
+   port alone | MET-CER-SURE 0/0 (nothing to divide by) (0 substituted, 0 added) | MET-INVENTED 0/21 | sure and right 0/21 0.00 | MET-WBE 6/7 0.86 | read ``
+ case | HM-REQ-062 | INT-CARRIER(+100, 0) | wanted 18 wpm | seed 469001 | headroom x 1 | MET-CER-SURE 3/22 0.14 (2 substituted, 1 added) | MET-INVENTED 3/21 | sure and right 19/21 0.90 | MET-WBE 2/7 0.29 | station selected: THE CARRIER - 300 of 3704 hops from the first sure character (1.75 s) to the wanted's last key-up (20.27 s) more than 25 Hz off, furthest 700.0 Hz | NOT MET | synthetic, exact
+   key       `CQ CQ CQ DE N0CALL N0CALL K`
+   ours      `CT  EIQ CQ DE N0CALL N0CALL K`
+   control   `CQ CQ CQ DE N0CALL N0CALL K` | MET-CER-SURE 0/21 0.00 (0 substituted, 0 added) | MET-INVENTED 0/21 | sure and right 21/21 1.00 | MET-WBE 0/7 0.00
+   pitch     wanted 600 Hz, interferer 700 Hz | tracked at the wanted's word ends 700 600 600 600 600 600 575 | control 600 600 600 600 600 600 575
+   competing at the end: null (the app writes `none admitted ...` or `none found ...`) | interference at the end: none
+   interferer `` - in the sidecar, never scored
+   emitted (live, switch as it stands) | MET-CER-SURE 3/22 0.14 (2 substituted, 1 added) | MET-INVENTED 3/21 | sure and right 19/21 0.90 | MET-WBE 2/7 0.29 | read `CT  EIQ CQ DE N0CALL N0CALL K`
+   port alone | MET-CER-SURE 2/7 0.29 (2 substituted, 0 added) | MET-INVENTED 2/21 | sure and right 5/21 0.24 | MET-WBE 5/7 0.71 | read `NAL ■CADE`
+ case | HM-REQ-062 | INT-CARRIER(+100, +10) | wanted 18 wpm | seed 469001 | headroom x 0.9407 | MET-CER-SURE 3/19 0.16 (3 substituted, 0 added) | MET-INVENTED 3/21 | sure and right 16/21 0.76 | MET-WBE 1/7 0.14 | station selected: THE CARRIER - 272 of 3619 hops from the first sure character (2.17 s) to the wanted's last key-up (20.27 s) more than 25 Hz off, furthest 700.0 Hz | NOT MET | synthetic, exact
+   key       `CQ CQ CQ DE N0CALL N0CALL K`
+   ours      `T T  T CQ DE N0CAL■ N0CALL K`
+   control   `CQ CQ CQ DE N0CALL N0CALL K` | MET-CER-SURE 0/21 0.00 (0 substituted, 0 added) | MET-INVENTED 0/21 | sure and right 21/21 1.00 | MET-WBE 0/7 0.00
+   pitch     wanted 600 Hz, interferer 700 Hz | tracked at the wanted's word ends 700 600 600 600 600 600 575 | control 600 600 600 600 600 600 575
+   competing at the end: null (the app writes `none admitted ...` or `none found ...`) | interference at the end: none
+   interferer `` - in the sidecar, never scored
+   emitted (live, switch as it stands) | MET-CER-SURE 3/19 0.16 (3 substituted, 0 added) | MET-INVENTED 3/21 | sure and right 16/21 0.76 | MET-WBE 1/7 0.14 | read `T T  T CQ DE N0CAL■ N0CALL K`
+   port alone | MET-CER-SURE 0/0 (nothing to divide by) (0 substituted, 0 added) | MET-INVENTED 0/21 | sure and right 0/21 0.00 | MET-WBE 6/7 0.86 | read ``
+ case | HM-REQ-062 | INT-CARRIER(+100, +20) | wanted 18 wpm | seed 469001 | headroom x 0.3631 | MET-CER-SURE 3/20 0.15 (3 substituted, 0 added) | MET-INVENTED 3/21 | sure and right 17/21 0.81 | MET-WBE 1/7 0.14 | station selected: THE CARRIER - 272 of 3619 hops from the first sure character (2.17 s) to the wanted's last key-up (20.27 s) more than 25 Hz off, furthest 700.0 Hz | NOT MET | synthetic, exact
+   key       `CQ CQ CQ DE N0CALL N0CALL K`
+   ours      `T T E CQ DE N0CALL N0CALL K`
+   control   `CQ CQ CQ DE N0CALL N0CALL K` | MET-CER-SURE 0/21 0.00 (0 substituted, 0 added) | MET-INVENTED 0/21 | sure and right 21/21 1.00 | MET-WBE 0/7 0.00
+   pitch     wanted 600 Hz, interferer 700 Hz | tracked at the wanted's word ends 700 600 595 595 605 595 575 | control 600 600 600 600 600 600 575
+   competing at the end: null (the app writes `none admitted ...` or `none found ...`) | interference at the end: none
+   interferer `` - in the sidecar, never scored
+   emitted (live, switch as it stands) | MET-CER-SURE 3/20 0.15 (3 substituted, 0 added) | MET-INVENTED 3/21 | sure and right 17/21 0.81 | MET-WBE 1/7 0.14 | read `T T E CQ DE N0CALL N0CALL K`
+   port alone | MET-CER-SURE 0/0 (nothing to divide by) (0 substituted, 0 added) | MET-INVENTED 0/21 | sure and right 0/21 0.00 | MET-WBE 6/7 0.86 | read ``
+ case | HM-REQ-062 | INT-CARRIER(+200, 0) | wanted 18 wpm | seed 469001 | headroom x 1 | MET-CER-SURE 0/21 0.00 (0 substituted, 0 added) | MET-INVENTED 0/21 | sure and right 21/21 1.00 | MET-WBE 0/7 0.00 | station selected: the keyed station - 0 of 3704 hops from the first sure character (1.75 s) to the wanted's last key-up (20.27 s) more than 25 Hz off, furthest 575.0 Hz | met | synthetic, exact
+   key       `CQ CQ CQ DE N0CALL N0CALL K`
+   ours      `CQ CQ CQ DE N0CALL N0CALL K`
+   control   `CQ CQ CQ DE N0CALL N0CALL K` | MET-CER-SURE 0/21 0.00 (0 substituted, 0 added) | MET-INVENTED 0/21 | sure and right 21/21 1.00 | MET-WBE 0/7 0.00
+   pitch     wanted 600 Hz, interferer 800 Hz | tracked at the wanted's word ends 600 600 600 600 600 600 575 | control 600 600 600 600 600 600 575
+   competing at the end: null (the app writes `none admitted ...` or `none found ...`) | interference at the end: none
+   interferer `` - in the sidecar, never scored
+   emitted (live, switch as it stands) | MET-CER-SURE 0/21 0.00 (0 substituted, 0 added) | MET-INVENTED 0/21 | sure and right 21/21 1.00 | MET-WBE 0/7 0.00 | read `CQ CQ CQ DE N0CALL N0CALL K`
+   port alone | MET-CER-SURE 1/19 0.05 (1 substituted, 0 added) | MET-INVENTED 1/21 | sure and right 18/21 0.86 | MET-WBE 1/7 0.14 | read `NQ CQ DE N0CALL N0CALL K`
+ case | HM-REQ-062 | INT-CARRIER(+200, +10) | wanted 18 wpm | seed 469001 | headroom x 0.9404 | MET-CER-SURE 2/19 0.11 (2 substituted, 0 added) | MET-INVENTED 2/21 | sure and right 17/21 0.81 | MET-WBE 2/7 0.29 | station selected: THE CARRIER - 272 of 3619 hops from the first sure character (2.17 s) to the wanted's last key-up (20.27 s) more than 25 Hz off, furthest 800.0 Hz | NOT MET | synthetic, exact
+   key       `CQ CQ CQ DE N0CALL N0CALL K`
+   ours      `T  T CQ DE N0CALL N0CALL K`
+   control   `CQ CQ CQ DE N0CALL N0CALL K` | MET-CER-SURE 0/21 0.00 (0 substituted, 0 added) | MET-INVENTED 0/21 | sure and right 21/21 1.00 | MET-WBE 0/7 0.00
+   pitch     wanted 600 Hz, interferer 800 Hz | tracked at the wanted's word ends 800 600 600 600 600 600 575 | control 600 600 600 600 600 600 575
+   competing at the end: null (the app writes `none admitted ...` or `none found ...`) | interference at the end: a tone at 800 Hz, +45.2 dB over the band floor, present 0%
+   interferer `` - in the sidecar, never scored
+   emitted (live, switch as it stands) | MET-CER-SURE 2/19 0.11 (2 substituted, 0 added) | MET-INVENTED 2/21 | sure and right 17/21 0.81 | MET-WBE 2/7 0.29 | read `T  T CQ DE N0CALL N0CALL K`
+   port alone | MET-CER-SURE 1/17 0.06 (1 substituted, 0 added) | MET-INVENTED 1/21 | sure and right 16/21 0.76 | MET-WBE 2/7 0.29 | read `NQ DE N0CALL N0CALL K`
+ case | HM-REQ-062 | INT-CARRIER(+200, +20) | wanted 18 wpm | seed 469001 | headroom x 0.363 | MET-CER-SURE 3/20 0.15 (3 substituted, 0 added) | MET-INVENTED 3/21 | sure and right 17/21 0.81 | MET-WBE 1/7 0.14 | station selected: THE CARRIER - 272 of 3619 hops from the first sure character (2.17 s) to the wanted's last key-up (20.27 s) more than 25 Hz off, furthest 800.0 Hz | NOT MET | synthetic, exact
+   key       `CQ CQ CQ DE N0CALL N0CALL K`
+   ours      `T T  T CQ DE N0CALL N0CALL K`
+   control   `CQ CQ CQ DE N0CALL N0CALL K` | MET-CER-SURE 0/21 0.00 (0 substituted, 0 added) | MET-INVENTED 0/21 | sure and right 21/21 1.00 | MET-WBE 0/7 0.00
+   pitch     wanted 600 Hz, interferer 800 Hz | tracked at the wanted's word ends 800 600 600 600 600 600 575 | control 600 600 600 600 600 600 575
+   competing at the end: null (the app writes `none admitted ...` or `none found ...`) | interference at the end: a tone at 800 Hz, +55.1 dB over the band floor, present 0%
+   interferer `` - in the sidecar, never scored
+   emitted (live, switch as it stands) | MET-CER-SURE 3/20 0.15 (3 substituted, 0 added) | MET-INVENTED 3/21 | sure and right 17/21 0.81 | MET-WBE 1/7 0.14 | read `T T  T CQ DE N0CALL N0CALL K`
+   port alone | MET-CER-SURE 1/16 0.06 (1 substituted, 0 added) | MET-INVENTED 1/21 | sure and right 15/21 0.71 | MET-WBE 2/7 0.29 | read `K DE N0CALL N0CALL K`
+ case | HM-REQ-062 | INT-CARRIER(+500, 0) | wanted 18 wpm | seed 469001 | headroom x 1 | MET-CER-SURE 0/21 0.00 (0 substituted, 0 added) | MET-INVENTED 0/21 | sure and right 21/21 1.00 | MET-WBE 0/7 0.00 | station selected: the keyed station - 0 of 3704 hops from the first sure character (1.75 s) to the wanted's last key-up (20.27 s) more than 25 Hz off, furthest 575.0 Hz | met | synthetic, exact
+   key       `CQ CQ CQ DE N0CALL N0CALL K`
+   ours      `CQ CQ CQ DE N0CALL N0CALL K`
+   control   `CQ CQ CQ DE N0CALL N0CALL K` | MET-CER-SURE 0/21 0.00 (0 substituted, 0 added) | MET-INVENTED 0/21 | sure and right 21/21 1.00 | MET-WBE 0/7 0.00
+   pitch     wanted 600 Hz, interferer 1100 Hz | tracked at the wanted's word ends 600 600 600 600 600 600 575 | control 600 600 600 600 600 600 575
+   competing at the end: null (the app writes `none admitted ...` or `none found ...`) | interference at the end: none
+   interferer `` - in the sidecar, never scored
+   emitted (live, switch as it stands) | MET-CER-SURE 0/21 0.00 (0 substituted, 0 added) | MET-INVENTED 0/21 | sure and right 21/21 1.00 | MET-WBE 0/7 0.00 | read `CQ CQ CQ DE N0CALL N0CALL K`
+   port alone | MET-CER-SURE 1/19 0.05 (1 substituted, 0 added) | MET-INVENTED 1/21 | sure and right 18/21 0.86 | MET-WBE 1/7 0.14 | read `NQ CQ DE N0CALL N0CALL K`
+ case | HM-REQ-062 | INT-CARRIER(+500, +10) | wanted 18 wpm | seed 469001 | headroom x 0.9407 | MET-CER-SURE 0/21 0.00 (0 substituted, 0 added) | MET-INVENTED 0/21 | sure and right 21/21 1.00 | MET-WBE 0/7 0.00 | station selected: the keyed station - 0 of 3704 hops from the first sure character (1.75 s) to the wanted's last key-up (20.27 s) more than 25 Hz off, furthest 575.0 Hz | met | synthetic, exact
+   key       `CQ CQ CQ DE N0CALL N0CALL K`
+   ours      `CQ CQ CQ DE N0CALL N0CALL K`
+   control   `CQ CQ CQ DE N0CALL N0CALL K` | MET-CER-SURE 0/21 0.00 (0 substituted, 0 added) | MET-INVENTED 0/21 | sure and right 21/21 1.00 | MET-WBE 0/7 0.00
+   pitch     wanted 600 Hz, interferer 1100 Hz | tracked at the wanted's word ends 600 600 600 600 600 600 575 | control 600 600 600 600 600 600 575
+   competing at the end: null (the app writes `none admitted ...` or `none found ...`) | interference at the end: none
+   interferer `` - in the sidecar, never scored
+   emitted (live, switch as it stands) | MET-CER-SURE 0/21 0.00 (0 substituted, 0 added) | MET-INVENTED 0/21 | sure and right 21/21 1.00 | MET-WBE 0/7 0.00 | read `CQ CQ CQ DE N0CALL N0CALL K`
+   port alone | MET-CER-SURE 1/19 0.05 (1 substituted, 0 added) | MET-INVENTED 1/21 | sure and right 18/21 0.86 | MET-WBE 1/7 0.14 | read `NQ CQ DE N0CALL N0CALL K`
+ case | HM-REQ-062 | INT-CARRIER(+500, +20) | wanted 18 wpm | seed 469001 | headroom x 0.3631 | MET-CER-SURE 0/21 0.00 (0 substituted, 0 added) | MET-INVENTED 0/21 | sure and right 21/21 1.00 | MET-WBE 0/7 0.00 | station selected: the keyed station - 0 of 3704 hops from the first sure character (1.75 s) to the wanted's last key-up (20.27 s) more than 25 Hz off, furthest 575.0 Hz | met | synthetic, exact
+   key       `CQ CQ CQ DE N0CALL N0CALL K`
+   ours      `CQ CQ CQ DE N0CALL N0CALL K`
+   control   `CQ CQ CQ DE N0CALL N0CALL K` | MET-CER-SURE 0/21 0.00 (0 substituted, 0 added) | MET-INVENTED 0/21 | sure and right 21/21 1.00 | MET-WBE 0/7 0.00
+   pitch     wanted 600 Hz, interferer 1100 Hz | tracked at the wanted's word ends 600 600 600 600 600 600 575 | control 600 600 600 600 600 600 575
+   competing at the end: null (the app writes `none admitted ...` or `none found ...`) | interference at the end: none
+   interferer `` - in the sidecar, never scored
+   emitted (live, switch as it stands) | MET-CER-SURE 0/21 0.00 (0 substituted, 0 added) | MET-INVENTED 0/21 | sure and right 21/21 1.00 | MET-WBE 0/7 0.00 | read `CQ CQ CQ DE N0CALL N0CALL K`
+   port alone | MET-CER-SURE 1/18 0.06 (1 substituted, 0 added) | MET-INVENTED 1/21 | sure and right 17/21 0.81 | MET-WBE 1/7 0.14 | read `K CQ DE N0CALL N0CALL K`
+ requirement | HM-REQ-062 | ours | NOT MET | 4 of 12 cases met; met only if all are | synthetic, exact, CH-AWGN 15 dB on the wanted
+ requirement | HM-REQ-066 | row: second signal within veto margin (6 dB, DECIDED 6) | competing reported | yes
+ case | HM-REQ-066 | INT-ADJ(+100, 0, 25) | wanted 18 wpm | seed 469001 | headroom x 1 | MET-CER-SURE 0/21 0.00 (0 substituted, 0 added) | MET-INVENTED 0/21 | sure and right 21/21 1.00 | MET-WBE 0/7 0.00 | competing reported: yes - the second station at 700 Hz named on 78 of 3400 hops from its first mark (3.27 s) to the wanted's last key-up; any competitor on 78 hops: `125 Hz above at +4.3 dB relative (700 Hz)` / `125 Hz above at +4.2 dB relative (700 Hz)` / `125 Hz above at +4.1 dB relative (700 Hz)` / `125 Hz above at +4.4 dB relative (700 Hz)`; at the end of the case the report's Competitor is null (the app writes `none admitted ...` or `none found ...`) | met | synthetic, exact
+   key       `CQ CQ CQ DE N0CALL N0CALL K`
+   ours      `CQ CQ CQ DE N0CALL N0CALL K`
+   control   `CQ CQ CQ DE N0CALL N0CALL K` | MET-CER-SURE 0/21 0.00 (0 substituted, 0 added) | MET-INVENTED 0/21 | sure and right 21/21 1.00 | MET-WBE 0/7 0.00
+   pitch     wanted 600 Hz, interferer 700 Hz | tracked at the wanted's word ends 600 600 600 600 600 600 575 | control 600 600 600 600 600 600 575
+   competing at the end: null (the app writes `none admitted ...` or `none found ...`) | interference at the end: none
+   interferer `DE N0AAA UP DE N0AAA UP DE N0AAA UP DE` - in the sidecar, never scored
+   emitted (live, switch as it stands) | MET-CER-SURE 0/21 0.00 (0 substituted, 0 added) | MET-INVENTED 0/21 | sure and right 21/21 1.00 | MET-WBE 0/7 0.00 | read `CQ CQ CQ DE N0CALL N0CALL K`
+   port alone | MET-CER-SURE 1/5 0.20 (1 substituted, 0 added) | MET-INVENTED 1/21 | sure and right 4/21 0.19 | MET-WBE 5/7 0.71 | read `E■C■DL K`
+ case | HM-REQ-066 | INT-ADJ(+100, -2.4, 25) | wanted 18 wpm | seed 469001 | headroom x 1 | MET-CER-SURE 1/22 0.05 (0 substituted, 1 added) | MET-INVENTED 1/21 | sure and right 21/21 1.00 | MET-WBE 0/7 0.00 | competing reported: yes - the second station at 700 Hz named on 374 of 3400 hops from its first mark (3.27 s) to the wanted's last key-up; any competitor on 460 hops: `125 Hz above at -9.2 dB relative (725 Hz)` / `125 Hz above at -9.3 dB relative (725 Hz)` / `125 Hz above at -9.4 dB relative (725 Hz)` / `125 Hz above at -9.5 dB relative (725 Hz)`; at the end of the case the report's Competitor is null (the app writes `none admitted ...` or `none found ...`) | met | synthetic, exact
+   key       `CQ CQ CQ DE N0CALL N0CALL K`
+   ours      `CQ CQ CQ DE N00CALL N0CALL K`
+   control   `CQ CQ CQ DE N0CALL N0CALL K` | MET-CER-SURE 0/21 0.00 (0 substituted, 0 added) | MET-INVENTED 0/21 | sure and right 21/21 1.00 | MET-WBE 0/7 0.00
+   pitch     wanted 600 Hz, interferer 700 Hz | tracked at the wanted's word ends 600 600 600 600 600 600 600 | control 600 600 600 600 600 600 575
+   competing at the end: null (the app writes `none admitted ...` or `none found ...`) | interference at the end: none
+   interferer `DE N0AAA UP DE N0AAA UP DE N0AAA UP DE` - in the sidecar, never scored
+   emitted (live, switch as it stands) | MET-CER-SURE 1/22 0.05 (0 substituted, 1 added) | MET-INVENTED 1/21 | sure and right 21/21 1.00 | MET-WBE 0/7 0.00 | read `CQ CQ CQ DE N00CALL N0CALL K`
+   port alone | MET-CER-SURE 3/6 0.50 (3 substituted, 0 added) | MET-INVENTED 3/21 | sure and right 3/21 0.14 | MET-WBE 5/7 0.71 | read `TEDDL K`
+ case | HM-REQ-066 | INT-ADJ(+100, -6, 25) | wanted 18 wpm | seed 469001 | headroom x 1 | MET-CER-SURE 0/21 0.00 (0 substituted, 0 added) | MET-INVENTED 0/21 | sure and right 21/21 1.00 | MET-WBE 0/7 0.00 | competing reported: yes - the second station at 700 Hz named on 392 of 3400 hops from its first mark (3.27 s) to the wanted's last key-up; any competitor on 392 hops: `125 Hz above at -12.9 dB relative (725 Hz)` / `125 Hz above at -13.1 dB relative (725 Hz)` / `125 Hz above at -13.0 dB relative (725 Hz)` / `125 Hz above at -13.2 dB relative (725 Hz)`; at the end of the case the report's Competitor is null (the app writes `none admitted ...` or `none found ...`) | met | synthetic, exact
+   key       `CQ CQ CQ DE N0CALL N0CALL K`
+   ours      `CQ CQ CQ DE N0CALL N0CALL K`
+   control   `CQ CQ CQ DE N0CALL N0CALL K` | MET-CER-SURE 0/21 0.00 (0 substituted, 0 added) | MET-INVENTED 0/21 | sure and right 21/21 1.00 | MET-WBE 0/7 0.00
+   pitch     wanted 600 Hz, interferer 700 Hz | tracked at the wanted's word ends 600 600 600 600 600 600 600 | control 600 600 600 600 600 600 575
+   competing at the end: null (the app writes `none admitted ...` or `none found ...`) | interference at the end: none
+   interferer `DE N0AAA UP DE N0AAA UP DE N0AAA UP DE` - in the sidecar, never scored
+   emitted (live, switch as it stands) | MET-CER-SURE 0/21 0.00 (0 substituted, 0 added) | MET-INVENTED 0/21 | sure and right 21/21 1.00 | MET-WBE 0/7 0.00 | read `CQ CQ CQ DE N0CALL N0CALL K`
+   port alone | MET-CER-SURE 5/16 0.31 (5 substituted, 0 added) | MET-INVENTED 5/21 | sure and right 11/21 0.52 | MET-WBE 3/7 0.43 | read `RQ PQ CT■CADLTCALL K`
+ requirement | HM-REQ-066 | ours | met | 3 of 3 cases met; met only if all are | synthetic, exact, CH-AWGN 15 dB on the wanted
+
+
+
+Test Run Successful.
+Total tests: 1
+     Passed: 1
+ Total time: 1.3940 Minutes
+RC=0 WALL=84s

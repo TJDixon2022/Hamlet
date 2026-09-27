@@ -126,7 +126,88 @@ wanted's own pitch; INT-PILEUP 0 distinct stations. Saved as `.run-unit/unit469-
 Then green, 21 of 21, `.run-unit/unit469-int-green.txt`: worst offset error 0.009 Hz, worst
 level error 0.022 dB, every carrier's swing 0.04 dB or less.
 
-## 4. What these fixtures do not prove
+## 4. The measurement - HM-REQ-060, 061, 062 and 066 on ours
+
+2026-09-27, unit 469, `TheInterferenceIsMeasuredFact` (a printer; asserts only that 27 cases and
+3 controls were read). **Every figure: synthetic, exact key** (`SyntheticCq.Text`, 21 characters,
+7 words), CH-AWGN at 15 dB in the 2500 Hz reference on the wanted, decoder unchanged. Ours is
+`CwDecoder` from 600 Hz hop by hop, scored by `TheRequirementsAreMeasuredTests.Measure` and
+`CwMetrics` against the wanted key alone. Printout: `.run-unit/unit469-measure-t2.txt`.
+
+**Readings, fixed before any decode and the arbiter's (DECIDED (5), (6)):** *held* - the tracked
+pitch at each of the wanted's 7 word ends within 25 Hz of 600 Hz; *keyed station selected* -
+every tracked pitch from the first sure character to the wanted's last key-up within 25 Hz of
+600 Hz; *competing reported* - at any hop from the second station's first mark to the wanted's
+last key-up, `CwDecodeReport.Competitor` names a tone within 25 Hz of the second station.
+HM-REQ-010 is MET-CER-SURE below 1 % (so 0 errors at these counts; nothing sure is not met);
+HM-REQ-011 is MET-INVENTED 0. A requirement is met only if all its cases are.
+
+**Controls, the wanted alone on the same band:** 12 WPM 0/21, 18 WPM 0/21, both read whole;
+**25 WPM MET-CER-SURE 1/22, MET-INVENTED 1/21**, `... N0CALL KK` - the wanted alone at 25 WPM
+already adds a sure `K` (unit 468's TX-ITU finding), so no 25 WPM case can meet HM-REQ-010 here.
+
+| req | interferer | wanted | ours read (key `CQ CQ CQ DE N0CALL N0CALL K`) | pitch at word ends | held / selected / competing | MET-CER-SURE | MET-INVENTED | case |
+|---|---|---|---|---|---|---|---|---|
+| 060 | INT-ADJ(+100, 0, 25) | 12 | `CQ CQ CQ DEE■H N0AAA UP DE N0AAA UP DE N0AAA ET TTT` | 600 600 600 600 **700** 600 600 | held **no** | 24/38 | 24/21 | not met |
+| 060 | INT-ADJ(−100, 0, 25) | 12 | `CQ CQ CQ DEE■H N0AAA UP DE N0AAA UP DE N0AAA UP DE` | 600 600 600 600 **500 500 500** | held **no** | 23/37 | 23/21 | not met |
+| 060 | INT-ADJ(+100, 0, 25) | 18 | `CQ CQ CQ DE N0CALL N0CALL K` | 600 … 575 | held | 0/21 | 0/21 | **met** |
+| 060 | INT-ADJ(−100, 0, 25) | 18 | `CQ CQ CQ DE N0CALL N0CALL K` | 600 … 600 | held | 0/21 | 0/21 | **met** |
+| 060 | INT-ADJ(+100, 0, 25) | 25 | `CQ CQ CQ DE N0CALL EA UP EALL KK` | 600 … 595 595 | held | 6/24 | 6/21 | not met |
+| 060 | INT-ADJ(−100, 0, 25) | 25 | `CQ CQ CQ DE N0CALL EA UP DE L KK` | 600 595 600 … | held | 7/23 | 7/21 | not met |
+| 061 | INT-ADJ(+50, −6, 25) | 12 | `CQ CQ CQ DE N0EE H UP SE N0AAA UT E DE N0A E ET K` | 600 600 600 600 **650** 600 600 | held **no** | 19/33 | 19/21 | not met |
+| 061 | INT-ADJ(−50, −6, 25) | 12 | `CQ CQ CQ DE ESH N0AAA UP EI ET TT TTTE T TET TLL K` | 600 600 600 595 600 575 600 | held | 22/36 | 22/21 | not met |
+| 061 | INT-ADJ(+50, −6, 25) | 18 | `CQ CQ CQ DE N0CALL NN0CALL K` | 600 … 575 | held | 1/22 | 1/21 | not met |
+| 061 | INT-ADJ(−50, −6, 25) | 18 | `CQ CQ CQ DE N0CALL NN0CALL K` | 600 … 600 | held | 1/22 | 1/21 | not met |
+| 061 | INT-ADJ(+50, −6, 25) | 25 | `CQ CQ CQ DE N0CALL N0CALL KK` | 600 … 605 … | held | 1/22 | 1/21 | not met (as its control) |
+| 061 | INT-ADJ(−50, −6, 25) | 25 | `CQ CQ CQ DE N0CALL N0CALL KK` | 600 … 600 | held | 1/22 | 1/21 | not met (as its control) |
+| 062 | INT-CARRIER(+50, 0) | 18 | `U   Q CQ DE I T<KN> TETE ET ETEE ETEE NN0ISL K` | **650** 600 605 605 610 600 600 | **the carrier** (334 of 3681 hops off) | 22/29 | 22/21 | not met |
+| 062 | INT-CARRIER(+50, +10) | 18 | `T  E` | **650** 600 610 610 610 600 600 | **the carrier** (272 of 3619) | 1/2 | 1/21 | not met |
+| 062 | INT-CARRIER(+50, +20) | 18 | `T T` | **650** 600 600 605 605 600 600 | **the carrier** (272 of 3619) | 2/2 | 2/21 | not met |
+| 062 | INT-CARRIER(+100, 0) | 18 | `CT  EIQ CQ DE N0CALL N0CALL K` | **700** 600 … 575 | **the carrier** (300 of 3704) | 3/22 | 3/21 | not met |
+| 062 | INT-CARRIER(+100, +10) | 18 | `T T  T CQ DE N0CAL■ N0CALL K` | **700** 600 … 575 | **the carrier** (272 of 3619) | 3/19 | 3/21 | not met |
+| 062 | INT-CARRIER(+100, +20) | 18 | `T T E CQ DE N0CALL N0CALL K` | **700** 600 595 595 605 595 575 | **the carrier** (272 of 3619) | 3/20 | 3/21 | not met |
+| 062 | INT-CARRIER(+200, 0) | 18 | `CQ CQ CQ DE N0CALL N0CALL K` | 600 … 575 | the keyed station | 0/21 | 0/21 | **met** |
+| 062 | INT-CARRIER(+200, +10) | 18 | `T  T CQ DE N0CALL N0CALL K` | **800** 600 … 575 | **the carrier** (272 of 3619) | 2/19 | 2/21 | not met |
+| 062 | INT-CARRIER(+200, +20) | 18 | `T T  T CQ DE N0CALL N0CALL K` | **800** 600 … 575 | **the carrier** (272 of 3619) | 3/20 | 3/21 | not met |
+| 062 | INT-CARRIER(+500, 0) | 18 | `CQ CQ CQ DE N0CALL N0CALL K` | 600 … 575 | the keyed station | 0/21 | 0/21 | **met** |
+| 062 | INT-CARRIER(+500, +10) | 18 | `CQ CQ CQ DE N0CALL N0CALL K` | 600 … 575 | the keyed station | 0/21 | 0/21 | **met** |
+| 062 | INT-CARRIER(+500, +20) | 18 | `CQ CQ CQ DE N0CALL N0CALL K` | 600 … 575 | the keyed station | 0/21 | 0/21 | **met** |
+| 066 | INT-ADJ(+100, 0, 25) | 18 | `CQ CQ CQ DE N0CALL N0CALL K` | 600 … 575 | competing named on 78 of 3400 hops: `125 Hz above at +4.3 dB relative (700 Hz)` | 0/21 | 0/21 | **met** |
+| 066 | INT-ADJ(+100, −2.4, 25) | 18 | `CQ CQ CQ DE N00CALL N0CALL K` | 600 … 600 | named on 374 of 3400: `125 Hz above at -9.2 dB relative (725 Hz)` | 1/22 | 1/21 | **met** |
+| 066 | INT-ADJ(+100, −6, 25) | 18 | `CQ CQ CQ DE N0CALL N0CALL K` | 600 … 600 | named on 392 of 3400: `125 Hz above at -12.9 dB relative (725 Hz)` | 0/21 | 0/21 | **met** |
+
+Every control read `CQ CQ CQ DE N0CALL N0CALL K` whole at 12 and 18 WPM (pitch at word ends
+`600 600 600 600 600 600 600` at 12, ending `575` at 18) and `... N0CALL KK` at 25.
+
+**Per requirement, ours:**
+
+- **HM-REQ-060: not met, 2 of 6 cases.** Met at 18 WPM on both sides. At 12 WPM the tracker is
+  on the adjacent station at the fifth word end and ours prints the adjacent station's
+  `N0AAA UP DE` as sure letters: the pitch was lost and the interferer's letters were printed
+  as sure. At 25 WPM the pitch is held and the adjacent station's `EA UP` is printed sure
+  inside the wanted's text.
+- **HM-REQ-061: not met, 0 of 6.** At 12 WPM the adjacent station's letters are printed sure,
+  once with the pitch lost (+50) and once with it held (−50). At 18 WPM one sure extra `N`;
+  at 25 WPM the control's own extra `K` and nothing more.
+- **HM-REQ-062: not met, 4 of 12.** The carrier is present from the first sample, so the
+  tracker starts on it: at +50 and +100 Hz at every level and at +200 Hz at +10 and +20 dB,
+  the tracked pitch at the first word's end is the carrier's and ours prints sure `T`s off it
+  before moving to the keyed station. At +50 Hz, +10 and +20 dB, inside the detector's
+  reach, the wanted is barely read at all. Met at +200 Hz 0 dB and at +500 Hz, where the
+  carrier (1100 Hz) is outside the band's passband.
+- **HM-REQ-066: met, 3 of 3, on the reading fixed before the decode.** The report names the
+  second station on 2 %, 11 % and 12 % of the hops the two key together, never at 100 Hz: it
+  names it only when a neighbouring 25 Hz bin puts it at 125 Hz, `CwCompetitor.SeparationHz`,
+  the least offset the engine will name. The level it gives is +4.3 dB for a 0 dB station and
+  about −9 and −13 dB for −2.4 and −6 dB stations. On a reading that asked for the report
+  whenever both key, it would not be met; the reading is overrulable.
+
+**Beside ours, for reading only:** the transcript the live path emits under
+`CwSwitchTable.Live` as it stands is ours, character for character, in all 27 cases. The port
+alone is worse in every case, or empty (the +50 Hz carrier at +20 dB and the +100 Hz carrier at
++10 and +20 dB).
+
+## 5. What these fixtures do not prove
 
 `CLAUDE.md` 12.5, V-04. An interferer here is a clean TX-ITU tone or a steady tone at one
 level, with no fading, drift or chirp, keyed with the same 5 ms edges as the wanted. Nobody
