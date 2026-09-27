@@ -86,9 +86,9 @@ FOLLOWS: report   it drifted to the output - the criterion was chosen because
 and where it is report, one more line saying what it cited instead:
 FOLLOWED: one sentence, plain text
 
-The instruction it produced named  step 7 criterion 1  and gave this WHY:
+The instruction it produced named  step 9 criterion 4  and gave this WHY:
 
-PHASE_PLAN.md step 7 line 7.1 asks that the generator produce the CH-* channel profiles CW_SPEC.md names, each with a shaped noise band and never digital silence (V-06), with every recipe stated, and step 7's own text says no requirement can be judged at its condition without them; step 2's only open line 2.4 is a count at 1 of 3 that no unit can flip this pass and unit 460 did not advance, so the plan's section 5 independence routes the work here, and the loop test finds no entry for this approach.
+PHASE_PLAN.md section 6's R86 bars steps 2 to 8 until 9.4 has a kept change, so 9.4 is the only line that can move and step 2's 2.4 cannot; unit 459's one 9.4 attempt took technique (D), pair speed tracking, and was refused under R78, so this unit works around it with the three techniques 9.3 named that nobody has tried, each at fldigi's fixed ratio and screened before any commit, and the loop test finds no entry for it.
 
 Answer with the lines asked for above and nothing else, beginning with:
 
@@ -97,30 +97,92 @@ WHY: one sentence, plain text, no punctuation beyond commas and full stops
 
 --- the step from the phase plan follows ---
 
-﻿STEP: 7 | The conditions can be generated - sections E, F and G: channel, sender and interference profiles, which nothing in the tree produces today.
-## Step 7 - The conditions can be generated
+﻿STEP: 9 | Two decoders read the same audio - section M: fldigi's CW modem ported faithfully as the second decoder, both scored on every recording before either votes, both confidences calibrated against the keys, and the arbitration that emits one transcript, never worse than the better decoder alone.
+## Step 9 - Two decoders read the same audio
 
-**Delivers:** sections E, F and G. Nothing in the tree produces these, and without them no
-requirement can be judged at its own condition (unit 439's finding 1).
+**Delivers:** section M, HM-REQ-120 to 129. **Preferred over steps 2 to 7 until 9.2 is met**,
+because every later change to ours is better aimed with the comparison in hand.
 
-**Entry:** steps 0 and 1 met.
+**Entry:** steps 0 and 1 met; `CW_REQUIREMENTS.md` v1.1 with section M at the root.
 
 **Exit:**
-- [x] 7.1 The generator produces the CH-* channel profiles `CW_SPEC.md` names, each carrying a shaped noise band and never digital silence (V-06), with the recipe for every case stated so another unit can rebuild them.
-- [ ] 7.2 The generator produces the TX-* sender profiles, and HM-REQ-050 is measured on each must-tier profile at 15 dB reference.
-- [ ] 7.3 The generator produces the INT-* interference profiles, and HM-REQ-060, 061, 062 and 066 are measured against them.
-- [ ] 7.4 Every generated fixture carries its exact key by construction, and the report states what each does not prove (Â§12.5, V-04); a real capture is reported by the sender profile the spec names or as `not stated`, and is never counted toward a CH-* condition.
-- [x] 7.5 The three floor tests and both carry-forward lines are green at exit.
+- [x] 9.1 HM-REQ-122: fldigi's CW receive modem is ported to C# under `src/Hamlet.RadioEngine/Cw/Second/` as `FldigiCwDecoder`, faithful to the upstream source, receive path only, no word or dictionary logic, with the GPL-3 notice, the authors and the upstream commit in the file; it decodes one synthetic case whose key is exact, and the report names every function ported and every one left out.
+- [x] 9.2 HM-REQ-123: both decoders read every keyed recording and the synthetic set through the same harness and are scored through the same scorer and metrics; `docs/phase-requirements/parity.md` tables MET-CER-SURE, MET-INVENTED, sure-and-right coverage and MET-WBE for each, per recording and per condition, with the key's kind, and states how the second decoder's unclassed output was mapped.
+- [x] 9.3 For every recording where the second decoder scores better, the report prints both texts and names from its source what it does differently on that stretch; where it reads text on a recording ours reads as nothing, it says so by name.
+- [ ] 9.4 HM-REQ-129: one technique 9.3 named is taken into our decoder as a change in its own commit, judged under R78, with the second decoder left as ported.
+- [ ] 9.5 HM-REQ-124: each decoder attaches a confidence to every character, and calibration is measured per condition on the keyed corpus - characters emitted at confidence p right within 5 points of p - with the conditions where each decoder is calibrated named; the second decoder is given a confidence, since fldigi carries none, and the report says what it is derived from.
+- [ ] 9.6 HM-REQ-120, 121, 125, 126, 127: both decoders read the same samples at the same time; agreement emits with the more confident's class; disagreement emits the higher calibrated confidence's character with both recorded on the sheet; a tie within the margin emits dim, never sure; the CW tab shows one transcript and no decoder name; each watched failing first on an injected synthetic case.
+- [ ] 9.7 HM-REQ-128: the arbitrated output is measured against each decoder alone on every metric of sections B and I on every condition, and where it loses on a condition the arbitration is switched off there and the better decoder alone is used; the report tables all three per condition.
+- [ ] 9.8 The three floor tests and both carry-forward lines are green at exit.
 
-**Depends on:** steps 0 and 1. Independent of steps 2 to 6.
+**Depends on:** steps 0 and 1.
 
+## Â§5 Dependencies
 
---- what the script saw ---
-criteria-count.bat saw step 7 criterion 1 flip from unmet to met in
-PHASE_PLAN.md during this unit. THE COUNT IS THE SCRIPT'S; you do not count.
-Answer one more line after WHY:
-HONEST: yes   if the report shows that criterion honestly met
-HONEST: no    if the marker was turned without the criterion being met
+Steps 0 and 1 are met by the hand-run unit 439 and are ticked at the next unit's task 0 from
+its report. **Steps 2, 3, 4, 5, 6 and 7 each depend only on those two**, so there are six
+independent places to route and the loop need never stall for want of work. **Step 9 is preferred until 9.2 is met** (R84). **Step 8 is last
+and no unit is authored against it while any criterion of steps 2 to 7 or 9 is open** (R80).
+
+## Â§6 Branching
+
+- **Three stops only**: keying, transmit or the radio's safety; money past the budget; a fact
+  the product states to the operator about a signal, a station or a send. A threshold, a
+  window, a test's shape, a filter, a timeout: decide, mark author's, continue.
+- **The later ruling wins. A done step is closed. Every remaining step Tim's: halt.**
+- **A stop 3 is legitimate only when a criterion of the step being worked cannot be met without
+  the ruling** (R65). A carried ask, a section 4 question, a parked item or a finding noticed
+  in passing **never halts the loop**.
+- **Where this plan and the two documents differ, the documents win**, and the difference is a
+  finding in the report.
+- **R78 is the keep rule.** A change is kept on a requirement's metric, not on a character
+  count. **A capture row's count falling is reported, not rejected**, when no requirement's
+  metric got worse. **V-11 still stands**: no change may redden an earlier capture to green a
+  newer one, and that is judged on the requirements' metrics.
+- **A requirement with a TBD threshold** (HM-REQ-032, 065, 092) is measured and the measurement
+  reported; the threshold is the owner's and its absence never halts a unit.
+- **A test that proves no requirement is never deleted in this phase.** It is listed, and its
+  fate is a later ruling (HM-DEC-103).
+- **No fixture is admitted by lowering a gate** (V-04), and **no separation limit, confirmation
+  rule or plausibility bound is loosened to pass a fixture** (V-14).
+- **A run lost before any assertion** counts neither way and is re-run once.
+- **Steps 2 to 8 are not authorable until 9.4 has a kept change** (R86). Every unit is step 9's until a technique from the second decoder is kept in ours.
+- **A CW question is answered from the documents, never raised to the owner** (R85).
+- **The second decoder is faithful, not improved** (HM-REQ-122, 129). A technique goes into
+  ours, judged under R78; the second decoder stays as ported.
+- **The second decoder votes only where it is calibrated** (HM-REQ-124), and the arbitration
+  is switched off on any condition where it loses to a single decoder (HM-REQ-128).
+- **No unit is authored for the record or for the tests** (R80) while a criterion of steps 2 to
+  7 is open and authorable. A unit records a ruling only when its own instruction carries one.
+- **Anything would change what keys or transmits.** `MOVE: stop`.
+- **A package is needed.** `MOVE: stop`.
+- **A CW test costing more than 300 s** never goes on a carry-forward line.
+
+## Â§7 Carried
+
+The correctness phase's 5.1, Tim's, at `docs/phase-correctness-run/`; its 3.6, 6.5, 7.1, 7.2,
+7.4, 7.6 and 7.8, each reappearing here as a requirement id; every item of its `PARKED.md`;
+unit 427's six findings, including the PSK31 CQ with a grid reading as no station, and the
+three UI items that differ from what the owner asked; **the window reflowing when the radio
+announces a frequency change into the data range, and the stale sentence saying the operator's
+license covers Morse on an FT8 frequency** - both banked 2026-09-25 and not in this phase's
+scope; the seven rulings of section R, of which the first is answered by R72; the attenuator
+sentence outside an owned block.
+
+## Â§8 Revision record
+
+- **2026-09-26.** R84 two decoders read the same audio, ordered by section M of
+  `CW_REQUIREMENTS.md` v1.1; step 9 with eight criteria, preferred until the parity table
+  exists. R85 a CW question is answered from the documents and never raised to the owner.
+
+- **2026-09-25, after unit 439's hand run.** R80 the record and the tests come last, as step 8;
+  R81 MET-CER-SURE and MET-INVENTED come first, as steps 2 and 3, on unit 439's measurement of
+  67 invented - 13 added and 54 sure-but-wrong - where the tree had been counting 17. Steps 2
+  to 8 rewritten; steps 0 and 1 met by the hand run.
+
+- **2026-09-25.** Written from the interview: R77 to R79; nine steps; the criteria named
+  against requirement ids; the keep rule moved from character counts to the requirements' own
+  metrics after six units were rejected on counts that no requirement states.
 
 --- the unit's report follows ---
 
@@ -128,343 +190,308 @@ READ IN THIS ORDER.
 
 A. Phase goal: Hamlet meets the CW requirements. Steps by the plan -
    0 done, 1 done, 2 4 of 5, 3 3 of 6, 4 5 of 7, 5 1 of 6, 6 3 of 6,
-   7 2 of 5, 8 0 of 6, 9 3 of 8.
-B. Step 7, criterion 7.1: CH-* profiles produced 10 of 10 with values,
-   CH-MDV refused by name; proved on their own audio - spread 18 of 18
-   paths (9 of 9 profiles), power 9 of 9, delay 9 of 9, SNR in the 2500 Hz
-   reference 3 of 3 within 0.5 dB, V-06 held; recipe in channels.md
-   written; 7.1 ticked; 7.5 ticked.
-   Task 3 ran: HM-REQ-013 on CH-AWGN +15 dB not met;
-   HM-REQ-040 at -4 dB on CH-LM not met, CH-MM not met;
-   HM-REQ-041 at -1 dB on CH-HM not met; one point each, no floor
-   claimed.
-C. The findings weighed against A and B: section 4 raises 7 items. None is
-   in the way of 7.1 or 7.5, which are both ticked. Two bear on HM-REQ-040
-   and 041 being measured as sweeps. Item 1: on every CH-AWGN case both
-   decoders lose the first character at the 1.0 s lead-in, on our audio and
-   on the untouched generator's, so any sweep's reading of HM-REQ-013 or 020
-   carries it until that is ruled on. Item 3: on the fading profiles our
-   decoder is mostly sure and wrong even at +15 dB, so a sweep today would
-   find no floor for 040 or 041 at any SNR. Neither stops the sweep being
-   run. None of the 7 asks the owner anything about keying, transmit, or
-   what the product tells the operator.
+   7 2 of 5, 8 0 of 6, 9 3 of 8; steps 2 to 8 still barred by R86.
+B. Step 9, criterion 9.4: HM-REQ-129 - techniques screened C, B, W in
+   that order. C refused on 031838, MET-WBE. B refused on 031905,
+   MET-CER-SURE, with every real metric worse. W refused on 032113,
+   coverage, and on 031838 and 004550, MET-WBE. None kept: real
+   (inferred) MET-CER-SURE 33 of 436, MET-INVENTED 33, coverage 403 and
+   MET-WBE 37 unchanged; synthetic (exact) 14, 14, 159, 44 unchanged;
+   adjudicated 13 of 13; V-11 0 of 35 worse at exit (C 1, B 3, W 3 of
+   35 while screened); the port byte-identical yes; 9.4 open.
+C. The findings weighed against A and B: section 4 raises 5 items. Item
+   1 is in the way of 9.4. W moved every total on both sets the right way
+   and was refused only by V-11's per-recording test as DECIDED (4)
+   reads it. Whether that reading is R78's is the owner's question.
+   Item 2 bears on how the next 9.4 attempt is chosen. None is in the
+   way of 9.5, which R86 does not yet reach. None asks anything about
+   keying, transmit, or what the product tells the operator.
 
-UNIT:       461 - complete at task 4 of 4, none dropped - 2026-09-26 22:27
-PHASE GOAL: Hamlet's CW decoder meets every requirement in CW_REQUIREMENTS.md, each proved by a test that names it, at the condition the requirement names.
-UNIT GOAL:  Give the test fixtures every fading channel CW_SPEC.md 9.1 gives numbers for, plus CH-AWGN, over the project's noise band and at an SNR stated in the 2500 Hz reference. Prove each one on its own audio against the published model, write the recipe down, and take one first reading of our decoder on the must profiles. Nothing under src changes.
-ADVANCED:   yes - PHASE_PLAN.md 7.1 is ticked in both copies. All ten profiles with values are produced and proved on spread, power, delay, SNR and V-06, CH-MDV is refused by name, and channels.md is written. 7.5 is ticked too: all four commits exited green on the five, and the exit round agrees.
-NUMBER:     CH-* profiles produced and proved 0 -> 10 of 10; in-passband to 2500 Hz reference offset -8.93 dB at 600 Hz (-8.66 dB at 615 Hz); HM-REQ-040/041 at their SNR not met on CH-LM, CH-MM and CH-HM; real MET-CER-SURE 33/436 to 33/436 (inferred, unchanged)
-DRIFT:      step 2 1 (460 said 0; the ledger judged 460 ADVANCED: no); step 3 0; step 4 1; step 5 1; step 6 0; step 7 0 (advanced); step 9 1
+UNIT:       462 - complete at task 4 of 4, none dropped - 2026-09-27 00:20
+PHASE GOAL: Hamlet's CW decoder meets every requirement in CW_REQUIREMENTS.md at the condition each names, proved by a test that names it. For now the plan routes everything through step 9: fldigi's receiver beside ours, until one of its techniques earns a place in ours.
+UNIT GOAL:  Find where ours decides spikes, dit against dah, and letter and word gaps. Measure what fldigi's three untried edges would move on our own reads. Screen them one at a time at fldigi's own ratios, and keep the first one R78 says makes ours read better with no recording reading worse, the port untouched.
+ADVANCED:   no - 9.4 is not ticked. All three techniques were screened and refused under R78 and reverted. W came closest: it moved all eight totals the right way, and V-11 found 032113, 031838 and 004550 worse.
+NUMBER:     HM-REQ-129 not met; real MET-CER-SURE 33/436 to 33/436 (inferred); synthetic 14/173 to 14/173 (exact); MET-INVENTED real 33 to 33; coverage real 403 to 403; MET-WBE real 37 to 37; the port byte-identical yes
+DRIFT:      step 2 1; step 3 0; step 4 1; step 5 1; step 6 0; step 7 0; step 9 2 (was 1)
 
 ## 1. What Claude did
 
-**Complete at task 4 of 4, none dropped.** Task 3, the drop candidate, ran.
+**Complete at task 4 of 4, none dropped.** Task 3, the drop candidate, ran: it screened B and W.
 
 - **Where.** Development machine, Claude Code. `PROJECT: Hamlet` confirmed by the gate: the four
   files are present, there is no `CoreHMI.sln` or `MURC.sln`, and the root is `C:\Source\HamLet`.
-- **Branch.** `main`, pushed after every commit.
-- **The lock.** `SESSION.lock` was already there (PID 34860, 20:43:54). It is the launcher's; the
-  session neither took it nor released it.
+  Branch `main`, pushed after every commit.
+- **The lock.** `SESSION.lock` was already there (PID 40900, 23:02:00). It is the launcher's. The
+  session neither took it nor released it, and did not commit it.
 
 **The tree against the instruction.** Mismatches are reported, not repaired.
-- **Matched.** HEAD was `e6140891`. Both copies of the plan had 2.1, 2.2, 2.3 and 2.5 ticked, and
-  2.4 and 7.1 to 7.5 open. `ShapedNoise` shapes to 350 to 870 Hz at 8000 Hz, and
-  `SignalToNoiseDb` is set in the band's own bandwidth. Nothing produced a CH-* profile.
-- **No `watched.rc`.** There was no `.run-unit/watched.rc`. The runner had deleted
-  `.run-unit/watched.cpu`; task 0 committed that deletion. The runner then wrote the file again
-  during the session. The exit commit carries it as it stands.
-- **The carry-forward line.** `tools/run-carry-forward.sh` carries an older engine list of 133
-  tests. The line is the list in `docs/carry-forward-tests.txt`: 178 engine tests and 278 app
-  tests. Every figure here uses the document's list, read by `.run-unit/unit461-cf.sh`.
-- **A `STOP` file.** An empty `STOP` appeared at the root at 21:01, during task 0. By the
-  runner's 089 design this is the owner ending the night: it is read between units, never
-  mid-unit. The unit finished. The file was neither staged nor deleted.
+- **Matched.**
+  - HEAD was `6de324b1`.
+  - Both copies of `PHASE_PLAN.md` are identical: 9.1 to 9.3 ticked, 9.4 to 9.8 open, and R86 in
+    section 6.
+  - `git diff 19109b51 -- src/Hamlet.RadioEngine/Cw/Second/` printed nothing.
+  - 459's three tools are in the tree. `WhatSetTheSpeedAtEachDeparture` is a method of
+    `WhereOursLosesWhatThePortKeepsTests`, not a type.
+  - `CwUnitEstimator.PairUnit` is not in `src`.
+- **The runner's files.** There was no `.run-unit/watched.rc`. `.run-unit/watched.cpu` was
+  deleted at the start; the runner then wrote it again during the session, so it is committed as it
+  stands. `WORK_INSTRUCTIONS.md` was modified by the runner and is committed as it was.
+- **Both copies of `PHASE_STATUS.md` differ beyond the fields task 0 sets.** The docs copy has no
+  `HEARTBEAT` line and no `STEP: 9` line, and shows steps 2 to 7 as `not started`. The root copy
+  shows them `partial`. Both now name 462 at `CURRENT_STEP: 9`; the rest was not repaired.
+- **Logged as the instruction asks, and not re-checked or repaired.** The `RULES_AT` disagreement
+  (HM-DEC-165 against CPS-DEC-0183), and `outcome-read`'s step titles for steps 2, 3 and 8.
+- **The carry-forward lines** were read from `docs/carry-forward-tests.txt` (178 and 278), as 461
+  did, because `tools/run-carry-forward.sh` still carries an older list. There was no dispatcher-loop
+  loss at entry or at exit, so DECIDED (8) was not needed.
 
-**Task 0 - the record and the entry figures** (`f50b2397`).
-- **The record.** `## UNIT 461 - STEP 7` is in both copies of `PHASE_OUTCOME.md`. Both copies of
-  `PHASE_STATUS.md` name 461 at `CURRENT_STEP: 7`. The version went from 1.13.147 to 1.13.148.
-  The runner's writes were committed as they were.
-- **The entry figures, every one as at 460's exit.**
+**Task 0 - the record and the entry figures** (`258c95e6`).
+- **The record.** `## UNIT 462 - STEP 9` is in both copies of `PHASE_OUTCOME.md`. `PHASE_STATUS.md`
+  names 462 at `CURRENT_STEP: 9` in both copies. The version went from 1.13.148 to 1.13.149. The
+  runner's writes were committed as they were; `.run-unit/fldigi/` was not staged.
+- **The entry figures, every one as at 461's exit.**
   - build 0 errors;
   - engine line 178 of 178; app line 278 of 278;
   - named 13 of 13; captures 51 of 51; adjudicated 13 of 13;
-  - the real set and the synthetic set, every metric as at 460's exit;
-  - the generator's guards: 13 of 13 and 2 of 2.
-- **The texts.** All 126 lines were saved. They are identical to 460's exit.
+  - both sets' four metrics as in section 3;
+  - `BothDecodersAreScoredAlikeTests` 5 of 5; the port 8 of 8;
+  - ours 51.65 s over 690 s of real audio.
+- **The saves.**
+  - Ours: 126 lines in `.run-unit/unit462-text-before.txt`.
+  - The port: 74 lines in `.run-unit/unit462-port-before.txt`, byte-identical to 459's save.
+  - V-11: the 35-row table in `.run-unit/unit462-v11-before.txt`.
+- **A mismatch in the saves.** The tree's text printer
+  (`WhereTheSureAddedLettersComeFromTests.EveryRecordingAsTheOperatorReadsIt`) prints text without
+  classes. Each character's class, and the scorer's verdict on it, come from task 1's fact, which
+  drives the same harness. They are in `.run-unit/unit462-text-before-classes.txt`.
+- The parity run rewrites the decode-time rows of `docs/phase-requirements/parity.md` each time. A
+  copy was kept under `.run-unit` each time, and the committed file was restored.
 
-**Task 1 - the trace** (`6af44dd7`).
-- **The trace file.** `.run-unit/unit461-channel-trace.txt` walks `CwFixtureGenerator` stage by
-  stage, with line numbers.
-- **The band's equivalent noise bandwidth.** Measured from `ShapedNoise`'s own output: two
-  410 s seeded runs through the public `Generate` with the tone at -400 dB.
-  - 290.2 Hz referred to the peak, 320.1 Hz at 600 Hz, and 340.1 Hz at 615 Hz.
-  - The three biquads predict 293.5, 319.8 and 342.1 Hz.
-  - **So the in-passband SNR is 8.93 dB above the 2500 Hz reference at 600 Hz.**
-- **Two tools,** both asserting nothing: `CwSpectrum` (the tests' own FFT and Welch average) and
-  `TheNoiseBandIsMeasuredFact`.
+**Task 1 - the trace** (`d616e680`).
+- **The fact.** `WhatFldigisEdgesWouldMoveFact` (HM-REQ-129) asserts nothing and changed nothing
+  under `src`. Its printout is `.run-unit/unit462-edges.txt`.
+- **How it drives.** It drives all 35 through 459's `Drive`, exactly as the metrics do. It finds
+  every settled letter on 459's copy of `DecodeAt`: 908 of 908 reads spelled alike, and 1032 of
+  1032 letters were found. Every letter and every boundary carries the scorer's own verdict from
+  `TheRequirementsAreMeasuredTests`' alignments.
+- **What it found.** Ours makes no edge decision at all except the shortest span. Dit against dah,
+  and every gap class, is decided by likelihood. The ranking and the three forms are in section 3.
 
-**Task 2 - the layer, the proof and the recipe** (`2914d1f2`).
-- **The layer.** `CwChannel` in the test fixtures. `Generate(profile, snr_2500, message, wpm,
-  pitch, seed)` returns the audio, the exact key, and a sidecar that carries the profile's
-  status.
-- **The proof.** `TheChannelProfilesAreWhatTheySayTests`: 71 of 71. Section 3 has its table.
-- **The recipe.** `docs/phase-requirements/channels.md`.
-- **7.1 is ticked in both copies.**
+**Task 2 - the first screen, C** (`fa5225b9`, evidence only).
+- **Refused.** It was built into both lattices through one `Spans` helper and judged in the working
+  tree. The real set's MET-WBE went from 37 to 38, and V-11 found 031838 worse on MET-WBE.
+- **Reverted.** `git diff -- src` printed nothing afterwards. The patch and full numbers are in
+  `.run-unit/unit462-C-refused.patch` and `.txt`.
 
-**Task 3 - one reading** (`7af558b3`).
-- **The fact.** `TheChannelConditionsAreReadFact` decoded 30 cases.
-- **The trace.** A V-04 trace of the CH-AWGN +15 dB opening misread, with the fldigi port's
-  reading beside ours.
-- **The printout.** `.run-unit/unit461-conditions.txt`.
+**Task 3 - B, then W** (`7fc1b56a`, evidence only).
+- **B was refused.** All four real metrics got worse, and V-11 found three recordings worse.
+- **W was refused.** All eight totals moved the right way, but V-11 found three recordings worse.
+- **Both reverted.** `git diff -- src` printed nothing after each. The evidence is in
+  `.run-unit/unit462-B-refused.*` and `.run-unit/unit462-W-refused.*`.
+- **Nothing was narrowed, re-edged or combined.**
 
-**Task 4 - the exit round.** Every figure is as at entry. Section 3 gives them. 7.5 is ticked in
-both copies.
+**Task 4 - the exit round.** Every figure is as at entry (section 3).
+- 459's `TheSpeedFollowsTheSendersMarkPairsTests` is red at 28 of 31, as 459 left it.
+- 9.4 is not ticked, and no other line is.
 
 **Decisions I made for myself:**
-1. **Three generator methods widened.** `CwFixtureGenerator.KeyEdges`, `ShapedNoise` and `Gate`
-   went from `private` to `internal`, so that the layer keys and fills its audio exactly as the
-   generator does rather than through a copy. That is the only change to the file.
-   `TheSyntheticCqRebuildsTests` compares every committed synthetic WAV byte for byte, and it
-   stayed 13 of 13.
-2. **The band at half level.** The layer uses the band at 0.5 of its level (RMS 0.01,
-   -40 dBFS). At +15 dB reference a faded peak would otherwise clip. The proof shows 0 samples
-   clipped on every output.
-3. **SNR referred to the tone.** The SNR is referred to the band's density at the tone, not at
-   the band's peak, because 8.2 says "beside the tone". At 600 Hz that is -8.93 dB; referred to
-   the peak it would be -9.35 dB.
-4. **Each path at half power.** Each path carries half the unfaded power (`g/sqrt(2)`). The
-   instruction's formula, with unit-power paths, would put the faded signal 3 dB above its
-   label, against the instruction's own power check.
-5. **A gap in the power check, closed.** Round B of the watched-red builds showed that the power
-   assertion measured the tap processes, not the paths rendered into the audio: a render that
-   dropped path 2 passed it. I added a check that each rendered path carries its tap process's
-   power over the same samples, at the 0.3 dB already stated, and re-ran round B. Power then went
-   red on 9 of 9.
-6. **A looser identity check.** `TheOutputIsThePiecesSummed` is the proof's own check that the
-   output is the pieces summed. Its first run went red on float rounding: the phase was summed in
-   another order, and the two differed by 5e-13. It now compares to 1e-9. This is not one of the
-   eight measured tolerances.
-7. **The judgement for task 3, fixed before its first run.** A requirement is met at its point
-   only if each of the three seeds meets every clause.
-8. **The seed rule for task 3.** 461400 + 10 x the profile's row + the seed index, written in
-   channels.md before the run.
+1. **Task 2's refusal evidence was committed on its own** (`fa5225b9`) before task 3 began, as the
+   prompt's commit-per-task rule asks. The instruction lists one evidence commit for task 3; there
+   are two, and neither touches `src`.
+2. **Each technique went into the rival-margin lattice (`MarginAndRival`) as well as `DecodeAt`.**
+   The rival lattice's own remarks say it scores every segment "exactly as DecodeAt scores it,
+   between the same shortest and longest spans". Its margin is for the record only; nothing reads
+   it back.
+3. **Rounding at the edges.** A span in whole hops is set against the edge in dits, rounded as
+   fldigi's inequalities fall:
+   - (B): a mark is kept at `span >= unit / 2`, as `element_usec < threshold` is dropped;
+   - (C): a dit is `span <= 2 x unit`, as `element_usec <= two_dots`;
+   - (W): a gap under 2 dits is an element gap, 2 to 4 dits a character gap, and over 4 a word gap.
+
+   Each has a 1e-9 guard against the unit's floating-point error.
+4. **W's gap kinds are bounded by the dit, even with held gaps.** Where the sender's own gaps are
+   held, W still bounds each gap kind by the dit edges, and keeps the held wanted lengths for the
+   penalty only. So the three kinds cover every span without a hole. The element gap's own floor
+   and the word gap's own ceiling stay as they were.
+5. **Refused screens were timed and their texts saved before reverting** (136 s each), so that the
+   refusal records show what each technique actually changed on the page.
+6. **The fact's `refused-D` match was corrected at task 4,** after writing this report showed its
+   031905 line was wrong. It had reported no event on `PREDICTED` because the scored stretch opens
+   on `DICTED`. The fact was rerun: every other line of its printout is unchanged, and the ranking
+   and the forms were not touched.
+7. **The screens' floors were not run.** Every screen was refused on R78's rule 1 or on V-11 before
+   the floors would have been reached. The instruction runs the floors only for a kept change.
 
 ## 2. What the owner should expect
 
-The screen reads exactly as before, because nothing under `src` changed. Every recording decodes
-to the same text it did at the start of the unit. What is new is in the test fixtures. The decoder
-can now be put through the fading the published HF channel models describe, at a signal level
-stated the way the requirements state it:
-- quiet, moderate and disturbed conditions;
-- at low, mid and high latitude;
-- over the same noise band the other fixtures use.
+The screen reads exactly as before: all three of fldigi's edges were tried and taken back out, so
+every recording shows the same letters it did yesterday. The one that came closest was fldigi's
+word-space rule, the one that ends a letter after two dits of silence and starts a new word after
+four. With it in, the synthetic CQ at 18 WPM and 5 dB read `DE N0NNALL` where Hamlet prints junk,
+and the QSO on 004234 read `THANK YOU` instead of `HANTT TK■ET`. Across the real recordings it
+printed two fewer wrong letters and two fewer wrong spaces, and on the synthetic set nine fewer
+wrong letters. What stood in its way were three recordings it made worse:
+- `VERSIONS` on the 032113 bulletin became `■E■IONS`;
+- the `2 TT` on 031838 lost its space;
+- `KA2GJV` and `ROBIN` on 004550 were split as `KA2 G JV` and `RO B IN`.
 
-So the owner can ask how our decoder copes with a signal fading the way a real path fades, and get
-a number for each named condition. The first answer is not good. On the moderate fading profiles,
-at a signal a listener would call loud, it prints mostly confident wrong letters. That was always
-true; it was just unmeasured. **What will look wrong but is not:** a new printer,
-`TheChannelConditionsAreReadFact`, shows HM-REQ-013, 040 and 041 as "not met". It is a reading and
-asserts nothing, and it is on neither carry-forward line, so nothing goes red.
+The rules say one worse recording refuses the change. What will look wrong but is not: 459's
+`TheSpeedFollowsTheSendersMarkPairsTests` still fails when run alone. It is on neither carry-forward
+line, and it was left red on purpose.
 
 ## 3. What you should see
 
-**The profile table.** Measured at exit (deterministic, the same at every run). Delay and spread
-are 9.1's figures. Spread is two sigma per path, measured from 2^18 taps. Power ratio is path 1
-against path 2; the sum is against the unfaded power. Delay is every mark on the tap-applied
-signals. V-06 is the lowest 10 ms block against the band's RMS, at -7 and +15 dB reference; the
-limit was -30 dB, and nothing clipped. SNR was measured on CH-AWGN, the one profile the instruction
-asks it of. Every other profile sets its level through the same `A` and does not measure it
-separately.
+**The screen table.** Each technique screened in the working tree, against task 0's figures. The
+four real (inferred key) and four synthetic (exact key) numbers are MET-CER-SURE,
+MET-INVENTED, coverage and MET-WBE.
 
-| id | delay | spread | status | spread measured, path 1 / path 2 | power ratio (sum) | delay measured | SNR at -7 / -4 / +15 ref | V-06 lowest block, -7 / +15 |
+| technique | real before | real with it | synthetic before | synthetic with it | adjudicated | V-11 worse | decode, ours over 690 s | verdict |
 |---|---|---|---|---|---|---|---|---|
-| CH-LQ | 0.5 ms | 0.5 Hz | [verify] | 0.5008 / 0.4975 Hz | -0.13 dB (+0.05) | 0.500 ms, 4 samples every mark | - | -8.46 / -8.21 dB, held |
-| CH-LM | 2 ms | 1.5 Hz | confirmed | 1.4998 / 1.5066 Hz | 0.00 dB (-0.02) | 2.000 ms, 16 | - | -8.28 / -7.41 dB, held |
-| CH-LD | 6 ms | 10 Hz | [verify] | 9.9898 / 10.0360 Hz | 0.00 dB (-0.01) | 6.000 ms, 48 | - | -8.14 / -7.85 dB, held |
-| CH-MQ | 0.5 ms | 0.1 Hz | [verify] | 0.1003 / 0.1007 Hz | +0.10 dB (-0.01) | 0.500 ms, 4 | - | -7.02 / -9.67 dB, held |
-| CH-MM | 1 ms | 0.5 Hz | [verify] | 0.5004 / 0.5000 Hz | -0.10 dB (-0.01) | 1.000 ms, 8 | - | -8.42 / -8.87 dB, held |
-| CH-MD | 2 ms | 1 Hz | [verify] | 1.0063 / 1.0048 Hz | +0.08 dB (-0.03) | 2.000 ms, 16 | - | -7.90 / -8.54 dB, held |
-| CH-HQ | 1 ms | 0.5 Hz | [verify] | 0.4994 / 0.4972 Hz | -0.04 dB (-0.04) | 1.000 ms, 8 | - | -8.08 / -8.44 dB, held |
-| CH-HM | 3 ms | 10 Hz | [verify] | 10.0576 / 9.9261 Hz | -0.15 dB (-0.02) | 3.000 ms, 24 | - | -8.36 / -8.53 dB, held |
-| CH-HD | 7 ms | 30 Hz | [verify] | 29.9442 / 29.9661 Hz | +0.01 dB (-0.02) | 7.000 ms, 56 | - | -8.28 / -8.56 dB, held |
-| CH-AWGN | - | - | project baseline | - | - | - | -6.94 / -4.00 / +14.97 dB | -8.88 / -7.07 dB, held |
-| CH-MDV | - | - | [read from Annex 3] | **refused by name** | | | | |
+| C, two-dot class edge, `cw.cxx:846-855` | 33/436, 33, 403, 37 (29 ins, 8 del) | 32/438, 32, 406, **38 (29 ins, 9 del)** | 14/173, 14, 159, 44 (13, 31) | 14/173, 14, 159, 44 (13, 31) | 13 of 13 | 1: 031838 (MET-WBE, deleted 1 to 2) | 51.22 s (entry 51.65) | **refused**, MET-WBE real the wrong way, and V-11 |
+| B, half-dit spike rule, `cw.cxx:515, 818-822` | as above | **36/437, 36, 401, 39 (30, 9)** | as above | 12/172, 12, 160, **46 (15, 31)** | 13 of 13 | 3: 031905 (sure wrong 2 to 4, coverage 30 to 28, MET-WBE 1 to 3), 032050 (sure added 1 to 2), cq-18wpm-5db-char5 (added 4 to 5, inserted 6 to 8) | 52.03 s | **refused**, every real metric the wrong way, and V-11 |
+| W, word-space edge, `cw.cxx:883-914` | as above | 31/436, 31, 405, 35 (27, 8) | as above | 5/170, 5, 165, 43 (12, 31) | 13 of 13 | 3: 032113 (coverage, sure right 21 to 19), 031838 (MET-WBE, deleted 1 to 2), 004550 (MET-WBE, inserted 1 to 2) | 49.50 s | **refused**, on V-11 alone |
 
-Other results of the proof:
-- **Doppler shift.** Every path's mean shift was within 0.7 % of its spread (tolerance 5 %). The
-  largest was CH-LM path 1, at 0.64 %.
-- **Rendered paths.** Each rendered path carried its tap process's power to 0.000 dB.
-- **The key.** 10 of 10.
-- **Determinism.** 10 of 10.
-- **The refusal.** The CH-MDV refusal message names 9.1's silence and 12 item 2.
+The port was byte-identical at every screen, and `BothDecodersAreScoredAlikeTests` was 5 of 5 at
+each. On V-11, W also made 004234 (sure wrong 2 to 0), 17:37 (inserted 6 to 3) and
+cq-18wpm-5db-char5 (wrong 7 to 1, added 4 to 1) better.
 
-**1. Task 1's offset and the three R85 readings.**
-- **The offset.** The band's ENBW beside a 600 Hz tone is 320.1 Hz measured (319.8 predicted),
-  so the offset is **-8.93 dB**. It is -8.66 dB at 615 Hz, and -9.35 dB referred to the peak.
-- **Spread** is 2 sigma of each path's Gaussian Doppler power spectrum, with no shift. This is
-  the author's reading, taken. The sources are Watterson, Juroshek and Bensema, IEEE
-  Trans. Commun. Technol. COM-18(6), 1970, and CCIR Rec. 520 / ITU-R F.1487. None of them is
-  vendored.
-- **Noise enters after the fading** and is never faded. The author's reading is taken. In the
-  Watterson model the paths fade and the noise is the receiver's, and CW_SPEC 8.2 measures it
-  in the receiver passband. One addition: "equal power" is read as two halves summing to the
-  unfaded power.
-- **TX-ITU in the tree.** The recipe defaults are not TX-ITU: 105/283/65/130/280 ms is 013347's
-  fist. `SyntheticCq.Recipe` is exactly 1:3:1:3:7 at the key-change instants, and is named TX-ITU.
-  Two things ride on it: its 5 ms raised-cosine edges and the recipe's ±3 Hz drift. The layer
-  holds the pitch fixed.
+**1. Task 1: ours' edges beside fldigi's, in dits, and the ranking.**
 
-**2. How each assertion was watched failing first.** The good layer was saved to
-`.run-unit/unit461-CwChannel-good.tmp` and broken on purpose. The whole type was run, and the
-layer was restored and checked by md5. No broken state was committed.
+| decision | where in ours | ours | fldigi |
+|---|---|---|---|
+| a mark is formed | `CwProbabilisticDecoder.cs` 894-1085 (per-hop key-down and key-up log-likelihoods), 1257-1304 `DecodeAt` | a key-down segment the segmental Viterbi chooses; nothing is thresholded | 610-656, the detector against its squelch |
+| a spike is discarded | 542 and 1265 (and 1509): no key-down segment under `max(1, (int)(0.45 x want))` hops; 1609-1626 `Judged` and 1644 `IsStrayElement` drop characters, never marks | **0.45**, truncated to a 5 ms hop | **0.5** (515, 818-822) |
+| dit or dah | 526-533, 1291-1293: the length penalty `ln(span/want)/0.35`, squared; spans 0.45 to 2.2 for a dit, 1.35 to 6.6 for a dah | by likelihood, crossing at **1.73** | **2** (846-855) |
+| element, character or word gap | 530-532 (1, 3, 7 units), or the held gaps (`CwProbabilisticStream.cs` 497-504); then the relabel, 713-734, which only takes spaces out | by likelihood, **1.73** and **4.58** (or the held gaps' geometric means), then the relabel | **2** and **4** (883-914) |
+| the dit in force | `CwProbabilisticStream.cs` 442-449 (the measured speed, else the grid), 516-531 (the marks' overrule) | the unit of the read's own speed, 1200 / WPM ms | the tracked `two_dots` (502-515) |
 
-**Round A** had seven faults at once and turned 48 red. What each fault did:
+The ranking. Fixable events sit in wrong or added letters, or at wrong boundaries; at-risk events
+sit in right ones. Letters outside any scored stretch, and dim letters and placeholders, count as
+neither.
 
-| fault | what went red | the measured figure |
-|---|---|---|
-| spread read as sigma | spread, 9 of 9 | +100 %: 3.0028 Hz for 1.5 |
-| noise before the fading | V-06, 6 of 9 | lowest block -44.34 dB on CH-LM (limit -30) |
-| SNR in the band's own bandwidth | SNR, 3 of 3 | -9.0 dB off |
-| each path at full power | power, 9 of 9 | sum +3.0 dB |
-| the key run together | key, 10 of 10 | |
-| the noise seed not alone | determinism, 10 of 10 | |
-| CH-MDV given invented values | refusal | no exception |
+| rank | technique | events | fixable | at risk | neither | net |
+|---|---|---|---|---|---|---|
+| 1 | C | 20 | 5 | 1 | 14 | +4 |
+| 2 | B | 110 | 6 | 23 | 81 | -17 |
+| 3 | W | 246 | 17 | 98 | 131 | -81 |
 
-V-06 caught the noise-before-fading fault on 6 of the 9 fading profiles only. The three fast
-profiles (CH-LD, CH-HM, CH-HD) fade for less than a 10 ms block.
+- **Also listed for B, not counted:** 48 marks of half a dit or more that ours takes as key-up.
+  (B)'s form does not restore them.
+- **None had zero fixable events,** so all three were screened.
+- **The three reads that refused (D):**
+  - 031948 `110,`: one W event, an unscored boundary, neither.
+  - 004507 `EACH`: two W events, both at a right boundary (at risk).
+  - 031905 `PREDICTED`: one B event, the `I` at 5.375 s, 0.44 dits (at risk).
+  - B did break 031905, but on `10.7` (`10■T7`), where task 1 had flagged the `.`'s 0.44-dit dit
+    at risk. The fact's first printout, committed at task 1, reported 0 events on `PREDICTED`: its
+    word match missed a stretch that opens mid-word (`DICTED`). That was corrected and rerun at
+    task 4. Nothing else in the printout changed.
+- **The forms, fixed before any screen,** are the `form |` lines of the printout. The dit in each is
+  the unit of the speed the lattice is run at.
 
-**Round B** had one fault: path 2 dropped from the render.
-- The delay went red on 9 of 9: the path had no onsets.
-- **Power stayed green.** Decision 5 in section 1 closed the gap. Re-run, power went red on 9 of 9:
-  path 2 rendered at -Infinity dB against its taps.
+**2. Every recording a kept change moved: none, since nothing was kept.** For the record, these are
+the lines that refused W and C. Text is the scored stretch where there is one.
 
-Printouts: `.run-unit/unit461-channel-watchA.txt`, `-watchB.txt`, `-watchB2.txt`.
+```
+032113 (inferred)  key        ACKET, AND INTERNET VERSIONS
+                   ours       A KET■ A N O INTERNET ■ERSIONS
+                   with W     A KET■ A N O INTERNET ■E■IONS
+                   with C     I KET■ A N D INTERNET VERSIONS
+                   port       T TNDINE OJ
+031838 (inferred)  key        2, 2, AND 2 WITH A MEAN OF 2.9. PRE
+                   ours       2TT 2, AND ■ WIAHA MEAN OF 2 TT
+                   with W     2T 2, AND ■ WIAHA MEUN OF 2TT
+                   with C     2TT 2, AND ■ WIAHA MEAN OF 2TT
+                   port       2, 2, AN■TWV2F 2P
+004550 (inferred)  key        DE KA2GJV
+                   ours       ... A3HB DE KA2 GJV HW ROBIN?
+                   with W     ... A3HB DE KA2 G JV HW RO B IN ?
+                   port       D■2 GJV
+004234 (inferred)  key        OT COM <BT> THANK YOU
+                   ours       C O M <BT> T HANTT TK■ET
+                   with W     C O M <BT> T HANK YOU
+                   port       T T AN■U O
+```
 
-**3. Task 3's table.** TX-ITU at 20 wpm, `SyntheticCq.Text`, 600 Hz, three seeds, an exact key.
-The figures are the three seeds pooled. In full, per seed, in `.run-unit/unit461-conditions.txt`.
+Every line each technique moved is in the texts diff inside its `.run-unit/unit462-<C|B|W>-refused.txt`.
 
-| profile | SNR (ref) | key | MET-CER-SURE | MET-INVENTED | MET-COVERAGE | MET-WBE | texts, the three seeds |
-|---|---|---|---|---|---|---|---|
-| CH-AWGN | +15 | exact | 3 of 63, 0.048 | 3/63 | 60/63, 0.952 | 0/21 | `<AR>Q CQ CQ DE N0CALL N0CALL K` on all three |
-| CH-AWGN | -4 | exact | 7 of 62, 0.113 | 7/63 | 55/63, 0.873 | 1/21 | clean; `<AR>Q CQ CQ DE I ■IL N0CALL K`; `CQ NNQ CQ DE NMOCALL N0CALL K` |
-| CH-AWGN | -7 | exact | 0 of 0 | 0/63 | 0/63 | 18/21 | nothing emitted, all three |
-| CH-AWGN | -10 | exact | 0 of 0 | 0/63 | 0/63 | 18/21 | nothing emitted, all three |
-| CH-LM | +15 | exact | 52 of 65, 0.800 | 52/63 | 13/63, 0.206 | 35/21 | `R E ■ K K Q EMMT T AA L E M A E K`; ... |
-| CH-LM | -4 | exact | 58 of 63, 0.921 | 58/63 | 5/63, 0.079 | 32/21 | `TE ART K I KQ EUME IAR ■ M AA K`; ... |
-| CH-MM | +15 | exact | 30 of 57, 0.526 | 30/63 | 27/63, 0.429 | 22/21 | `■ ■ CQ CZ DE NG TC SL N O CA D K`; ... |
-| CH-MM | -4 | exact | 31 of 49, 0.633 | 31/63 | 18/63, 0.286 | 21/21 | `E ■ CG SN EE N E EL`; ... |
-| CH-HM | +15 | exact | 117 of 121, 0.967 | 117/63 | 4/63, 0.063 | 44/21 | `■IEEE IEE EU HSS T T E4IE ...`; ... |
-| CH-HM | -1 | exact | 111 of 115, 0.965 | 111/63 | 4/63, 0.063 | 44/21 | `■ ETEE IEEEU HSS I T E4ETT ...`; ... |
+**3. The kept change's test** was not written, because no change was kept.
 
-The verdicts, each on one point with no floor claimed:
-- **HM-REQ-013 is not met.** On every seed the first `C` is read as `<AR>`; everything after it
-  is right.
-- **HM-REQ-040 is not met** on CH-LM or on CH-MM.
-- **HM-REQ-041 is not met** on CH-HM.
-
-**The V-04 trace of the +15 dB opening** (seed 461490). I changed one thing at a time between the
-channel's case and the existing generator:
-- **Ours** reads `<AR>Q` on every variant but one. That includes the untouched
-  `CwFixtureGenerator.Generate` at the set's own 15 dB tier and 20 wpm. The exception is the old
-  generator at 615 Hz with drift, at the same in-band SNR.
-- **The fldigi port** misreads the opening on every variant: `RQ`, `NQ`, `T`, `EK`, or it drops a
-  `CQ`.
-- So the channel layer does not cause it. It is the first character at the shared 1.0 s lead-in,
-  at a speed (20 wpm) the synthetic set never covered.
-- Nothing was lowered. It is item 1 below.
-
-**4. Every commit of the unit, with the five at its exit.**
+**4. Every commit, with the five at its exit.**
 
 | commit | task | build | engine line | app line | named | captures | adjudicated |
 |---|---|---|---|---|---|---|---|
-| f50b2397 | 0 | 0 errors | 178 of 178 | 278 of 278 | 13 of 13 | 51 of 51 | 13 of 13 |
-| 6af44dd7 | 1 | 0 errors | 178 of 178 | 278 of 278 | 13 of 13 | 51 of 51 | 13 of 13 |
-| 2914d1f2 | 2 | 0 errors | 178 of 178 | 277, one dispatcher-loop loss (`ThePsk31ConversationCardTests.NoSlotClockUnderPsk31AndFt8AndFt4StillShowIt`); rerun 278 of 278 | 13 of 13 | 51 of 51 | 13 of 13 |
-| 7af558b3 | 3 | 0 errors | 178 of 178 | 278 of 278 | 13 of 13 | 51 of 51 | 13 of 13 |
-| task 4 (this) | 4 | 0 errors | 178 of 178 | 278 of 278 | 13 of 13 | 51 of 51 | 13 of 13 |
+| 258c95e6 | 0 | 0 errors | 178 of 178 | 278 of 278 | 13 of 13 | 51 of 51 | 13 of 13 |
+| d616e680 | 1 | 0 errors | not run at the commit | not run at the commit | not run at the commit | not run at the commit | not run at the commit |
+| fa5225b9 | 2 | 0 errors | not run at the commit | not run at the commit | not run at the commit | not run at the commit | not run at the commit |
+| 7fc1b56a | 3 | 0 errors | 178 of 178 | 278 of 278 | 13 of 13 | 51 of 51 | 13 of 13 |
+| task 4 (this) | 4 | 0 errors | 178 of 178 (7fc1b56a's run) | 278 of 278 (7fc1b56a's run) | 13 of 13 (7fc1b56a's run) | 51 of 51 (7fc1b56a's run) | 13 of 13 (7fc1b56a's run) |
 
-The generator's guards were green at entry, at task 2 and at exit: 13 of 13 and 2 of 2.
+- **Where the exit round ran.** On 7fc1b56a's tree, which is why that row carries the figures.
+- **d616e680 and fa5225b9.** The exit round was not run at either. `git diff d616e680 7fc1b56a --
+  src tests` prints nothing, so both carry the same code the exit round passed. d616e680 differs
+  from 258c95e6 only by the new fact, which is on neither line.
+- **The task 4 commit.** It changes only the fact's `refused-D` word match, which is on neither
+  line, and was built at 0 errors (`t4fact`).
+- **The builds.** Each "0 errors" is the build on that tree: `t1b`, `revert-C`, `exit` and
+  `t4fact`.
+- **The dispatcher loop.** There was none at entry or exit.
 
 **The exit round against entry.**
-- **The five.** Build 0 errors; engine 178 of 178; app 278 of 278; named 13 of 13; captures 51 of
-  51; adjudicated 13 of 13.
-- **The real set, inferred key.** Every figure the same at exit as at entry:
-  - MET-CER-SURE 33 of 436;
-  - MET-INVENTED 33 over 473;
-  - coverage 403 over 473;
-  - MET-WBE 37 (29 inserted, 8 deleted) over 113.
-- **The synthetic set, exact key.** Every figure the same at exit as at entry:
-  - MET-CER-SURE 14 of 173;
-  - MET-INVENTED 14 over 252;
-  - coverage 159 over 252;
-  - MET-WBE 44 (13 inserted, 31 deleted) over 84.
-- **No row moved.**
-- **The guards and the new proof.** Generator guards 13 of 13 and 2 of 2;
-  `TheChannelProfilesAreWhatTheySayTests` 71 of 71.
-- **Nothing else changed.** `git diff e6140891 -- src` and the diff over `Cw/Second` are both
-  empty. `git diff 7e209cb4` over the eleven transmit files is empty, and all eleven are present.
-  Our texts are identical to task 0's save (126 lines). `git status` shows `.run-unit/fldigi/`
-  still untracked. Printout: `.run-unit/unit461-tx-exit.txt`.
+- **Both sets' four metrics:** unchanged, and no row moved. Real (inferred): MET-CER-SURE 33 of 436,
+  MET-INVENTED 33 / 473, coverage 403 / 473, MET-WBE 37 (29 ins, 8 del) / 113. Synthetic (exact):
+  14 of 173, 14 / 252, 159 / 252, 44 (13, 31) / 84.
+- **The tests:** `BothDecodersAreScoredAlikeTests` 5 of 5; the port 8 of 8;
+  `TheSpeedFollowsTheSendersMarkPairsTests` 1 of 1 red, 28 of 31 sure wrong or added (not required
+  green).
+- **Decode time:** ours 51.88 s.
+- **The diffs, all empty:** `git diff 19109b51 -- src/Hamlet.RadioEngine/Cw/Second/`;
+  `git diff 7e209cb4` over the eleven transmit files, all present; `git diff 6de324b1 -- src`.
+- **The texts:** the port's byte-identical to task 0's save (74 lines), ours identical (126 lines).
+- **`git status`** shows `.run-unit/fldigi/` still untracked.
+- **Printout:** `.run-unit/unit462-tx-exit.txt`.
 
-**No visible change in the application.** This unit only gives the tests conditions to measure
-against.
+**No visible change in the application.** This unit only measured and refused.
 
 ## 4. What's blocking us
 
-Most-blocking first. None blocks 7.1 or 7.5.
+Most-blocking first.
 
-1. **Both decoders lose the first character of a 20 wpm CH-AWGN case at the 1.0 s lead-in.** This
-   happens on the channel's audio and on the untouched generator's alike. HM-REQ-013 at +15 dB
-   therefore cannot be met by any fixture built this way, whatever the decoder does after the
-   first character.
-   - *Proposed ruling:* read V-04's "a fixture the reference decoder cannot read is a generator
-     defect" as not reaching this case. The reference decoder misreads the opening on every
-     variant, including the existing generator's own output. So this is acquisition
-     (MET-TACQ), scored as the decoder's. The channel layer keeps the generator's 1.0 s
-     lead-in.
-   - *Reasoning:* the misread moves with the seed and the pitch, not with the channel. It
-     reproduces on `CwFixtureGenerator.Generate` unchanged, at the set's own 15 dB tier. The
-     port's first-element loss at the lead-in is already on record (457's verdict (b)).
-   - *Rejected:* lengthening the lead-in or adding a run-up for the channel cases. That would
-     hide an acquisition fault from HM-REQ-013 and make the channel cases differ in shape from
-     the synthetic set.
-2. **The tree's synthetic tiers are not the SNR their labels suggest.** The generator's
-   in-passband SNR is in a 340 Hz equivalent bandwidth at 615 Hz. So the set's 15, 5 and 0 dB are
-   +6.3, -3.7 and -8.7 dB reference. They are not -7 dB for "0 dB", as a 500 Hz passband would
-   make it. `TheRequirementsAreMeasuredTests` already labels them "not restated in the 2500 Hz
-   reference".
-   - *Proposed ruling:* a later unit restates each synthetic condition label with the measured
-     offset. No fixture's bytes change.
-   - *Rejected:* restating it here, which is traceability work outside this unit (R80).
-3. **On the fading profiles our decoder is sure and wrong, not dim.** At +15 dB reference:
-   - CH-LM: MET-CER-SURE 0.80, coverage 0.21;
-   - CH-MM: MET-CER-SURE 0.53, coverage 0.43;
-   - CH-HM: MET-CER-SURE 0.97, with MET-INVENTED at 1.86 of the characters sent.
-
-   That is the 0.0 failure, and HM-REQ-011's, on every must fading profile. A sweep for HM-REQ-040
-   and 041 can now be run, but it will find no floor until the decoder copes with fading.
-   - *Proposed ruling:* the fading profiles enter the per-condition metrics as a new condition
-     set, beside the real and synthetic sets, when a decoder unit next works HM-REQ-010 or 011.
-     They are never counted into those sets' totals.
-   - *Rejected:* adding them to the floors now. A number nobody chose does not become a floor
-     in the unit that first measures it.
-4. **CH-AWGN at -7 and -10 dB reference emits nothing.** It emits nothing at all, not even
-   placeholders, on all three seeds. It matches the set's own 0 dB cases (-8.7 dB reference),
-   which also read empty. At HM-REQ-020's -7 dB reference, HM-REQ-011 holds only because nothing
-   is emitted (MET-INVENTED 0), and HM-REQ-010 has no number (0 sure characters). Logged; it is
-   step 2's, and not chased.
-5. **Unvendored sources I believe differ from, or add to, 9.1.** From memory, and not used:
-   - F.1487 states its test SNRs in a 3 kHz noise bandwidth; CW_SPEC 8.1's 2500 Hz wins here,
-     and the two differ by 0.8 dB.
-   - F.1487's mid-latitude disturbed NVIS row is 7 ms and 1 Hz.
-   - *Proposed ruling:* both are checked when 12 item 2 is vendored, and CH-MDV is built then
-     from the vendored row.
-6. **V-06's 10 ms test is not sensitive to faded noise on the fast profiles.** "Noise before
-   the fading" put blocks 44 dB under the band on the slow profiles, but not on CH-LD, CH-HM or
-   CH-HD, whose fades are shorter than a block. The type still went red on that build.
-   - *Proposed ruling:* no change. V-06 asks about silence, which it catches everywhere. Where
-     the noise enters is proved by construction and by the slow profiles.
-7. **`tools/run-carry-forward.sh` is stale.** It runs 133 engine tests, not the 178 of
-   `docs/carry-forward-tests.txt`. This unit ran the document's list.
-   - *Proposed ruling:* the tool reads its filters from the document, as
-     `.run-unit/unit461-cf.sh` does. Logged; not repaired here (CLAUDE.md 12.6).
+1. **W is held out by V-11 as DECIDED (4) reads it, and whether R78 means that is the owner's.**
+   - *What happened.* W moved all eight totals the right way and held the 13 adjudicated readings.
+     V-11 as this unit applied it refused W: one recording worse on any one metric refuses the
+     change.
+   - *Why the reading matters.* R78 itself says the capture floors "stay as V-11's overfitting
+     guard", and that no change may redden an earlier capture to green a newer one. Read that
+     narrowly, the floors are the guard, not a per-recording metric test. W's floors were not run,
+     because it was refused before them.
+   - *Proposed ruling:* keep DECIDED (4) as written. Per-recording V-11 on the four metrics is how
+     459 was judged, and moving the bar after W's numbers were seen is exactly what V-14 and
+     DECIDED (3) forbid.
+   - *What the next unit may still do.* It may run W's saved patch unchanged against the three
+     floor tests, as evidence for the owner, not as a keep.
+   - *Rejected:* keeping W here on a narrower reading of V-11, which would decide the rule by the
+     change it lets through.
+   - *Needs the owner* only if R78's guard is meant to be the floors alone.
+2. **The trace's net count misjudged W.** C ranked first at +4, and W last at -81, yet W was the
+   one that moved all eight totals right. The trace's at-risk flags were borne out where it named
+   them: B broke 031905's flagged `.`.
+   - *Why.* The trace counts first-order events: a letter's own marks and gaps set against an
+     edge. A changed edge re-chooses every span on the lattice, so what it fixes elsewhere is not
+     counted.
+   - *Proposed ruling for the next 9.4 author:* rank candidates by a screen, not by a count of
+     edge events. Every screen here took about 10 minutes.
+   - *Rejected:* re-ranking here after the numbers were seen.
+3. **The refusals were narrow.** W was refused on three recordings, each by one or two characters
+   or boundaries (`VERSIONS`, `2 TT`, `KA2GJV`/`ROBIN`). C was refused on one boundary on 031838,
+   and 031838's boundary refused W as well. Logged, not chased: no technique was narrowed (V-14,
+   DECIDED (3)).
+4. **R85 readings, one line each.**
+   - The dit in force is the unit of the speed the read was decoded at, 1200 / WPM, whether that
+     speed was measured, won on the grid or taken from the marks.
+   - A spike is dropped at the lattice's shortest key-down span. fldigi's reset of the character in
+     progress was not taken.
+   - "Ends a character" inside a lattice means the path's gap segment is the letter-gap or word-gap
+     kind. The relabel, which only takes spaces out, was left as it is.
+5. **The two `PHASE_STATUS.md` copies differ beyond the fields a unit sets** (section 1). Logged, not
+   repaired.

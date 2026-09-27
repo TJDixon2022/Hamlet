@@ -144,10 +144,163 @@ block; blocker means it cleared something and moved no criterion.
   9.1 | unit 4 launched 2026-09-26T19:20:27.666Z | no | executed | audit FldigiCwDecoder against upstream cw.cxx line by line on the first element's path and trace the lost first dit sample by sample to a port-defect or upstream-behaviour verdict, repair toward upstream only, then fix the synthetic case construction in a committed file from that verdict and the real recordings as control before running it once
   9.2 | unit 1 launched 2026-09-26T16:46:45.870Z | not recorded | not recorded | port fldigi's CW receive modem faithfully as the second decoder of section M with its GPL-3 attribution, drive every keyed and synthetic recording through both decoders on the same harness and metrics, table the parity per HM-REQ-123, and name from the second decoder's source what it does differently where it wins
   9.2 | unit 5 launched 2026-09-26T20:22:18.127Z | yes | executed | score FldigiCwDecoder and our decoder on the same audio of every keyed recording and the synthetic set through the same CwMetrics calls, sameness of our row watched failing first, map the port's unclassed characters to sure and its no-match output to placeholder, and table MET-CER-SURE MET-INVENTED coverage and MET-WBE per recording and per condition in parity.md
+  9.4 | unit 1 launched 2026-09-27T03:01:59.436Z | no | executed | trace ours against fldigi's untried edges - half-dit spike rule, two-dot dit/dah class edge, four-dit word-space edge - rank by fixable against at-risk events, then screen each in the working tree at fldigi's own ratio in rank order and commit the first kept under R78 as its own change, the port untouched
   9.4 | unit 6 launched 2026-09-26T21:33:57.611Z | no | executed | trace every sure letter ours prints wrong where the fldigi port reads it right, classify the lost element as never keyed, spiked, misclassed or cut by a gap or speed rule, then build the port mechanism behind the largest group into our decoder in its own commit, kept under R78, the port untouched
 
 If every route you can see at a criterion is recorded as no, say so in WHY
 and choose another criterion or another step. Do not restate a failed
 approach in different words: the refusal matches on the words that carry
 meaning, not on the phrasing.
-THERE IS NO PREVIOUS REPORT AT THIS ROOT. Author from the criteria above.
+
+============================================================
+ THE PREVIOUS UNIT-S REPORT - AN INDICATOR: EVIDENCE, NOT A LIST OF WORK, AND
+ NEVER A SOURCE OF TARGETS
+============================================================
+AN INDICATOR TUNES HOW YOU APPROACH THE CRITERION YOU HAVE ALREADY CHOSEN FROM THE
+PLAN ABOVE. IT NEVER CHOOSES THE CRITERION - the owner-s ruling of 2026-09-23: the
+phase goal is the prime directive, and this is a helper. A WHY that gives this
+report as its reason for choosing a criterion is refused before the unit runs.
+
+Read this as EVIDENCE ABOUT A CRITERION: what was measured, what was found, what
+a check missed. It is NOT the next thing to work on, and a question it raises is
+not a task. THE WORK IS THE UNMET CRITERIA AT THE TOP OF THIS PROMPT. If nothing
+here bears on one of them, author from them anyway.
+
+THIS REPORT WAS TOO LONG FOR ITS SHARE OF THE PROMPT AND WAS SELECTED FROM.
+Kept, in this order: section 4, then any line naming a mismatch, then section 3.
+The whole file is at the repository root if you need the rest.
+
+## 4. What's blocking us
+
+Most-blocking first.
+
+1. **W is held out by V-11 as DECIDED (4) reads it, and whether R78 means that is the owner's.**
+   - *What happened.* W moved all eight totals the right way and held the 13 adjudicated readings.
+     V-11 as this unit applied it refused W: one recording worse on any one metric refuses the
+     change.
+   - *Why the reading matters.* R78 itself says the capture floors "stay as V-11's overfitting
+     guard", and that no change may redden an earlier capture to green a newer one. Read that
+     narrowly, the floors are the guard, not a per-recording metric test. W's floors were not run,
+     because it was refused before them.
+   - *Proposed ruling:* keep DECIDED (4) as written. Per-recording V-11 on the four metrics is how
+     459 was judged, and moving the bar after W's numbers were seen is exactly what V-14 and
+     DECIDED (3) forbid.
+   - *What the next unit may still do.* It may run W's saved patch unchanged against the three
+     floor tests, as evidence for the owner, not as a keep.
+   - *Rejected:* keeping W here on a narrower reading of V-11, which would decide the rule by the
+     change it lets through.
+   - *Needs the owner* only if R78's guard is meant to be the floors alone.
+2. **The trace's net count misjudged W.** C ranked first at +4, and W last at -81, yet W was the
+   one that moved all eight totals right. The trace's at-risk flags were borne out where it named
+   them: B broke 031905's flagged `.`.
+   - *Why.* The trace counts first-order events: a letter's own marks and gaps set against an
+     edge. A changed edge re-chooses every span on the lattice, so what it fixes elsewhere is not
+     counted.
+   - *Proposed ruling for the next 9.4 author:* rank candidates by a screen, not by a count of
+     edge events. Every screen here took about 10 minutes.
+   - *Rejected:* re-ranking here after the numbers were seen.
+3. **The refusals were narrow.** W was refused on three recordings, each by one or two characters
+   or boundaries (`VERSIONS`, `2 TT`, `KA2GJV`/`ROBIN`). C was refused on one boundary on 031838,
+   and 031838's boundary refused W as well. Logged, not chased: no technique was narrowed (V-14,
+   DECIDED (3)).
+4. **R85 readings, one line each.**
+   - The dit in force is the unit of the speed the read was decoded at, 1200 / WPM, whether that
+     speed was measured, won on the grid or taken from the marks.
+   - A spike is dropped at the lattice's shortest key-down span. fldigi's reset of the character in
+     progress was not taken.
+   - "Ends a character" inside a lattice means the path's gap segment is the letter-gap or word-gap
+     kind. The relabel, which only takes spaces out, was left as it is.
+5. **The two `PHASE_STATUS.md` copies differ beyond the fields a unit sets** (section 1). Logged, not
+   repaired.
+
+**The tree against the instruction.** Mismatches are reported, not repaired.
+- **A mismatch in the saves.** The tree's text printer
+## 3. What you should see
+
+**The screen table.** Each technique screened in the working tree, against task 0's figures. The
+four real (inferred key) and four synthetic (exact key) numbers are MET-CER-SURE,
+MET-INVENTED, coverage and MET-WBE.
+
+| technique | real before | real with it | synthetic before | synthetic with it | adjudicated | V-11 worse | decode, ours over 690 s | verdict |
+|---|---|---|---|---|---|---|---|---|
+| C, two-dot class edge, `cw.cxx:846-855` | 33/436, 33, 403, 37 (29 ins, 8 del) | 32/438, 32, 406, **38 (29 ins, 9 del)** | 14/173, 14, 159, 44 (13, 31) | 14/173, 14, 159, 44 (13, 31) | 13 of 13 | 1: 031838 (MET-WBE, deleted 1 to 2) | 51.22 s (entry 51.65) | **refused**, MET-WBE real the wrong way, and V-11 |
+| B, half-dit spike rule, `cw.cxx:515, 818-822` | as above | **36/437, 36, 401, 39 (30, 9)** | as above | 12/172, 12, 160, **46 (15, 31)** | 13 of 13 | 3: 031905 (sure wrong 2 to 4, coverage 30 to 28, MET-WBE 1 to 3), 032050 (sure added 1 to 2), cq-18wpm-5db-char5 (added 4 to 5, inserted 6 to 8) | 52.03 s | **refused**, every real metric the wrong way, and V-11 |
+| W, word-space edge, `cw.cxx:883-914` | as above | 31/436, 31, 405, 35 (27, 8) | as above | 5/170, 5, 165, 43 (12, 31) | 13 of 13 | 3: 032113 (coverage, sure right 21 to 19), 031838 (MET-WBE, deleted 1 to 2), 004550 (MET-WBE, inserted 1 to 2) | 49.50 s | **refused**, on V-11 alone |
+
+The port was byte-identical at every screen, and `BothDecodersAreScoredAlikeTests` was 5 of 5 at
+each. On V-11, W also made 004234 (sure wrong 2 to 0), 17:37 (inserted 6 to 3) and
+cq-18wpm-5db-char5 (wrong 7 to 1, added 4 to 1) better.
+
+**1. Task 1: ours' edges beside fldigi's, in dits, and the ranking.**
+
+| decision | where in ours | ours | fldigi |
+|---|---|---|---|
+| a mark is formed | `CwProbabilisticDecoder.cs` 894-1085 (per-hop key-down and key-up log-likelihoods), 1257-1304 `DecodeAt` | a key-down segment the segmental Viterbi chooses; nothing is thresholded | 610-656, the detector against its squelch |
+| a spike is discarded | 542 and 1265 (and 1509): no key-down segment under `max(1, (int)(0.45 x want))` hops; 1609-1626 `Judged` and 1644 `IsStrayElement` drop characters, never marks | **0.45**, truncated to a 5 ms hop | **0.5** (515, 818-822) |
+| dit or dah | 526-533, 1291-1293: the length penalty `ln(span/want)/0.35`, squared; spans 0.45 to 2.2 for a dit, 1.35 to 6.6 for a dah | by likelihood, crossing at **1.73** | **2** (846-855) |
+| element, character or word gap | 530-532 (1, 3, 7 units), or the held gaps (`CwProbabilisticStream.cs` 497-504); then the relabel, 713-734, which only takes spaces out | by likelihood, **1.73** and **4.58** (or the held gaps' geometric means), then the relabel | **2** and **4** (883-914) |
+| the dit in force | `CwProbabilisticStream.cs` 442-449 (the measured speed, else the grid), 516-531 (the marks' overrule) | the unit of the read's own speed, 1200 / WPM ms | the tracked `two_dots` (502-515) |
+
+The ranking. Fixable events sit in wrong or added letters, or at wrong boundaries; at-risk events
+sit in right ones. Letters outside any scored stretch, and dim letters and placeholders, count as
+neither.
+
+| rank | technique | events | fixable | at risk | neither | net |
+|---|---|---|---|---|---|---|
+| 1 | C | 20 | 5 | 1 | 14 | +4 |
+| 2 | B | 110 | 6 | 23 | 81 | -17 |
+| 3 | W | 246 | 17 | 98 | 131 | -81 |
+
+- **Also listed for B, not counted:** 48 marks of half a dit or more that ours takes as key-up.
+  (B)'s form does not restore them.
+- **None had zero fixable events,** so all three were screened.
+- **The three reads that refused (D):**
+  - 031948 `110,`: one W event, an unscored boundary, neither.
+  - 004507 `EACH`: two W events, both at a right boundary (at risk).
+  - 031905 `PREDICTED`: one B event, the `I` at 5.375 s, 0.44 dits (at risk).
+  - B did break 031905, but on `10.7` (`10■T7`), where task 1 had flagged the `.`'s 0.44-dit dit
+    at risk. The fact's first printout, committed at task 1, reported 0 events on `PREDICTED`: its
+    word match missed a stretch that opens mid-word (`DICTED`). That was corrected and rerun at
+    task 4. Nothing else in the printout changed.
+- **The forms, fixed before any screen,** are the `form |` lines of the printout. The dit in each is
+  the unit of the speed the lattice is run at.
+
+**2. Every recording a kept change moved: none, since nothing was kept.** For the record, these are
+the lines that refused W and C. Text is the scored stretch where there is one.
+
+```
+032113 (inferred)  key        ACKET, AND INTERNET VERSIONS
+                   ours       A KET■ A N O INTERNET ■ERSIONS
+                   with W     A KET■ A N O INTERNET ■E■IONS
+                   with C     I KET■ A N D INTERNET VERSIONS
+                   port       T TNDINE OJ
+031838 (inferred)  key        2, 2, AND 2 WITH A MEAN OF 2.9. PRE
+                   ours       2TT 2, AND ■ WIAHA MEAN OF 2 TT
+                   with W     2T 2, AND ■ WIAHA MEUN OF 2TT
+                   with C     2TT 2, AND ■ WIAHA MEAN OF 2TT
+                   port       2, 2, AN■TWV2F 2P
+004550 (inferred)  key        DE KA2GJV
+                   ours       ... A3HB DE KA2 GJV HW ROBIN?
+                   with W     ... A3HB DE KA2 G JV HW RO B IN ?
+                   port       D■2 GJV
+004234 (inferred)  key        OT COM <BT> THANK YOU
+                   ours       C O M <BT> T HANTT TK■ET
+                   with W     C O M <BT> T HANK YOU
+                   port       T T AN■U O
+```
+
+Every line each technique moved is in the texts diff inside its `.run-unit/unit462-<C|B|W>-refused.txt`.
+
+**3. The kept change's test** was not written, because no change was kept.
+
+**4. Every commit, with the five at its exit.**
+
+| commit | task | build | engine line | app line | named | captures | adjudicated |
+|---|---|---|---|---|---|---|---|
+| 258c95e6 | 0 | 0 errors | 178 of 178 | 278 of 278 | 13 of 13 | 51 of 51 | 13 of 13 |
+| d616e680 | 1 | 0 errors | not run at the commit | not run at the commit | not run at the commit | not run at the commit | not run at the commit |
+| fa5225b9 | 2 | 0 errors | not run at the commit | not run at the commit | not run at the commit | not run at the commit | not run at the commit |
+| 7fc1b56a | 3 | 0 errors | 178 of 178 | 278 of 278 | 13 of 13 | 51 of 51 | 13 of 13 |
+| task 4 (this) | 4 | 0 errors | 178 of 178 (7fc1b56a's run) | 278 of 278 (7fc1b56a's run) | 13 of 13 (7fc1b56a's run) | 51 of 51 (7fc1b56a's run) | 13 of 13 (7fc1b56a's run) |
+
+- **Where the exit round ran.** On 7fc1b56a's tree, which is why that row carries the figures.

@@ -1,0 +1,497 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.06]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.26]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.26]   Starting:    Hamlet.RadioEngine.Tests
+[xUnit.net 00:02:05.52]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.WhatFldigisEdgesWouldMoveFact.EveryEventOfTheThreeEdgesOverAll35 [2 m 5 s]
+  Standard Output Messages:
+ edges | where ours decides, file:line at HEAD | ours | fldigi, cw.cxx at 61b97f41
+ edges | a mark is formed | CwProbabilisticDecoder.cs:894-986 Envelope, 988-1085 LogLikelihoods (per-hop key-down and key-up log-likelihoods, nothing thresholded), 1257-1304 DecodeAt (a mark is a key-down segment the segmental Viterbi chooses) | by likelihood over whole segments | 610-656: the detector's envelope against its squelch, key-down and key-up events
+ edges | a short mark is discarded | CwProbabilisticDecoder.cs:542 and 1265 (and the rival lattice 1509): no key-down segment shorter than max(1, (int)(0.45 x want)) hops, so a shorter mark is absorbed by the key-up segment around it; 1609-1626 Judged and 1644-1645 IsStrayElement drop whole characters (1.0 per hop, one element under a span of 13), never a mark | 0.45 dit, truncated to whole 5 ms hops | 515, 818-822: a mark under 0.5 dit is ignored (the state goes idle)
+ edges | a mark becomes a dit or a dah | CwProbabilisticDecoder.cs:526-533 Kinds (dit 1 unit, dah 3), 1291-1293 the length penalty ln(span/want)/0.35 squared, 580; spans bounded by 542 and 544 (dit 0.45 to 2.2 units, dah 1.35 to 6.6) | by likelihood: the two penalties cross at sqrt(3) = 1.73 units, evidence being identical | 846-855: 2 dits (a mark up to two_dots is a dit)
+ edges | a gap becomes an element, character or word gap | CwProbabilisticDecoder.cs:530-532 Kinds (1, 3, 7 units) or, with structure held, the sender's own three gaps (CwProbabilisticStream.cs:497-504, CwProbabilisticDecoder.cs:1230-1237), scored by the same penalty; then CwProbabilisticStream.cs:713-734 Spaced takes out a word space shorter than the sender's character gap x sqrt(7/3), or than 549-562's boundary, and never adds one | by likelihood: element|character at sqrt(1 x 3) = 1.73 units, character|word at sqrt(3 x 7) = 4.58 units (textbook) or at the geometric means of the held gaps; then the relabel | 883-914: under 2 dits nothing, 2 to 4 dits a character ends, over 4 dits a word space
+ edges | the dit in force | CwProbabilisticStream.cs:442-449 the window's measured speed, else the 8 to 40 WPM grid at CwProbabilisticDecoder.cs:771-783; 516-531 the marks' overrule past 1.25; the unit is 1200 / WPM ms of the speed the read was decoded at, and the held gaps are the sender's ms, not units | one read's speed per 12 s window | 502-515: cw_receive_dot_length from the tracked two_dots
+ edges | side by side, in dits | spike: ours 0.45 (truncated to a hop), fldigi 0.5 | dit|dah: ours 1.73 by likelihood, fldigi 2 | element|character gap: ours 1.73 by likelihood (or the held gaps' mean), fldigi 2 | character|word gap: ours 4.58 by likelihood (or the held gaps' mean) then the relabel, fldigi 4
+ text-class | unadjudicated/cw-2026-09-23-173723 | inferred |  T/Su  E/Su A/Su B/Su N/Su I/Su R/Su E/Su D/Su W/Su B/Su Z/Su  W/Su B/Su 6/Su R/Su E/Su D/Su  C/Sr Q/Sr  C/Sr Q/Sr  C/Sr Q/Sr  D/Sr E/Sr W/Sr B/Sr 6/Sr  R/Sr E/Sr  D/Sr  W/Sr  B/Sr  7/Sw E/Sw  E/Sr  I/Sw
+ text-class | cw-2026-08-17-013347 | inferred |  E/Su  E/Su I/Su  I/Su  H/Su I/Su A/Su E/Su I/Su H/Su E/Su E/Su E/Su A/Su  E/Su  E/Su E/Su E/Su  H/Su E/Su E/Su I/Su E/Su E/Su  I/Su E/Su E/Su E/Su T/Su E/Su  I/Su  E/Su E/Su  I/Su E/Su E/Su I/Su  T/Su E/Su E/Su I/Su T/Su E/Su H/Su A/Su E/Su W/Su V/Su R/Su R/Su V/Sr A/Sr 3/Sr V/Sr R/Sr R/Sr R/Su
+ text-class | cw-2026-08-17-134712 | inferred |        E/Su  ■/Pu    N/Su T/Su     N/Sr 4/Sr L/Sr Q/Su  K/Su
+ text-class | unadjudicated/cw-2026-08-18-003758 | inferred |    ■/Pu R/Su  L/Su  T/Su  U/Su    I/Su A/Su N/Su  E/Su A/Su N/Su D/Su E/Su  A/Su  E/Su T/Su  E/Su E/Su E/Sw E/Sw T/Sw M/Sr P/Sr //Sr 4/Sr  Q/Sr N/Sr I/Sr K/Sr K/Su    E/Su A/Su N/Su  E/Su A/Su N/Su Q/Su N/Su I/Su K/Su         E/Su A/Su N/Su  E/Su
+ text-class | unadjudicated/cw-2026-08-24-012403 | inferred |  D/Su E/Su Q/Su  6/Su Q/Su   Q/Su  D/Sr E/Sr  K/Sr D/Sr 0/Sr U/Sr N/Sr  K/Sr D/Sr 0/Sr U/Sr N/Sr  K/Sr
+ text-class | cw-2026-08-18-004507 | inferred | E/Su 5/Su  I/Su  E/Su  A/Su  T/Sr  A/Sr R/Sr R/Sr L/Sr  D/Sr  O/Sr  T/Sr  N/Sr  E/Sr  T/Sr  <BT>/Sr   E/Sr  A/Sr C/Sr H/Sr  S/Sr T/Sr A/Sr T/Sr I/Sr O/Sr N/Sr  H/Sr A/Sr N/Sr D/Sr L/Sr I/Sr N/Sr G/Sr  T/Sr H/Sr I/Sr S/Sr  M/Sr E/Sr S/Sr S/Sr A/Sr G/Sr E/Sr  P/Sr E/Su
+ text-class | unadjudicated/cw-2026-08-22-031838 | inferred |   A/Su  3/Su ,/Su  A/Su T/Su 3/Su  ,/Su  2/Su T/Sw T/Sw  2/Sr ,/Sr  A/Sr N/Sr D/Sr  ■/Pp  W/Sr I/Sr A/Sw H/Sr A/Sr  M/Sr E/Sr A/Sr N/Sr  O/Sr F/Sr  2/Sr  T/Sw T/Sw
+ text-class | unadjudicated/cw-2026-08-22-031905 | inferred |  ■/Pu  P/Su R/Su E/Su D/Sr I/Sr C/Sr T/Sr E/Sr D/Sr  1/Sr 0/Sr ./Sr 7/Sr  K/Sw  N/Sr T/Sr I/Sr M/Sr E/Sr T/Sr E/Sr R/Sr  F/Sr L/Sr A/Sw X/Sr  I/Sr S/Sr  1/Sr 2/Sr 5/Sr ,/Sr  1/Sr 2/Sr 5/Sr T/Su
+ text-class | unadjudicated/cw-2026-08-22-031948 | inferred |     T/Su M/Su  1/Sr 5/Sw 0/Sr  1/Sr 1/Sr 0/Sr ,/Sr  A/Sr N/Sr D/Sr  1/Sr 1/Sr 0/Sr  W/Sr I/Sr T/Sr H/Sr  A/Sr  M/Sr E/Sr A/Sr N/Sr  O/Sr F/Sr  1/Sr 1/Sr 7/Sr ./Su W/Su
+ text-class | unadjudicated/cw-2026-08-22-032012 | inferred |   T/Sw  F/Sr  1/Sr 1/Sr 7/Sr ./Sa 1/Sa ./Sr  L/Sr I/Sr N/Sr K/Sr S/Sr  T/Sr O/Sr  A/Sr R/Sr T/Sr I/Sr C/Sr L/Sr E/Sr S/Sr  O/Sr R/Sr  O/Sr T/Sr H/Sr E/Sr R/Sr  W/Sr E/Sr B/Sr S/Sr I/Sr T/Sr E/Sr S/Sr  M/Sr E/Sr N/Sr T/Sr I/Sr
+ text-class | unadjudicated/cw-2026-08-22-032050 | inferred |     I/Sr U/Sr L/Sr L/Sr E/Sr T/Sr I/Sr N/Sr  C/Sr A/Sr N/Sr  B/Sr E/Sr  F/Sr O/Sr T/Sa A/Sw N/Sr D/Sr  I/Sr N/Sr  T/Sr E/Sr L/Sr E/Sr W/Sw R/Sr I/Sr T/Sw T/Sr E/Sr R/Sr ,/Sr  P/Sr A/Sr ■/Pp  K/Sr E/Sr     H/Sw  I/Sr E/Sr  S/Su  T/Su S/Su S/Su I/Su  I/Su
+ text-class | unadjudicated/cw-2026-08-22-032113 | inferred |    A/Sr  K/Sr E/Sr T/Sr ■/Pp  A/Sr  N/Sr  O/Sw  I/Sr N/Sr T/Sr E/Sr R/Sr N/Sr E/Sr T/Sr  ■/Pp E/Sr R/Sr S/Sr I/Sr O/Sr N/Sr S/Sr  O/Su F/Su   2/Su 0/Su 0/Su J/Su 6/Su    I/Su  I/Su  I/Su T/Su T/Su  E/Su E/Su I/Su I/Su I/Su W/Su E/Su  T/Su I/Su
+ text-class | unadjudicated/cw-2026-08-22-032129 | inferred |  ■/Pu  M/Su T/Su M/Su T/Sw J/Sw 2/Sr 6/Sr  P/Sr G/Sw O/Sr P/Sr A/Sr G/Sr A/Sr T/Sr I/Sr O/Sr N/Sr  F/Sr O/Sr R/Sr E/Sr C/Sr A/Sr S/Sr T/Sr  B/Sr U/Sr A/Sa E/Sw L/Sr E/Sr T/Sr I/Sr N/Sr  A/Sr R/Sr L/Sr P/Sr 0/Sr 3/Sr 4/Sr
+ text-class | unadjudicated/cw-2026-09-24-004108 | inferred |  H/Su R/Su  N/Su R/Su  2/Su  0/Su  R/Su  H/Su  X/Su  G/Su  K/Su  E/Su 8/Su  W/Su  G/Sw  K/Sr 2/Sr  6/Sw  S/Su T/Su M/Su W/Su  O/Su H/Su  S/Su E/Su P/Su 1/Su 9/Su  R/Su I/Su C/Su
+ text-class | unadjudicated/cw-2026-09-24-004133 | inferred | 1/Su  9/Su  R/Su  I/Su  C/Sr  H/Sr  A/Sr R/Sr D/Sr  D/Su  J/Su  G/Su E/Su L/Su  ■/Pu  0/Su  D/Su T/Su  U/Su T/Su  5/Su 0/Su  0/Su  5/Su  H/Su  ■/Pu  8/Su
+ text-class | unadjudicated/cw-2026-09-24-004205 | inferred |  ■/Pu  E/Su M/Su  M/Su  A/Su H/Su A/Su  N/Su E/Su  6/Su  8/Su  1/Su 3/Su 5/Su  ■/Pu  E/Su M/Su A/Su I/Su R/Su  F/Su  J/Su U/Su  G/Su  E/Su L/Su  A/Sr T/Sr  Y/Sr A/Sr H/Sr  O/Sr O/Sr  D/Sr O/Su E/Su
+ text-class | unadjudicated/cw-2026-09-24-004234 | inferred | E/Su   C/Su  O/Sr  M/Sr  <BT>/Sr  T/Sr  H/Sr A/Sr N/Sr T/Sw T/Sw  T/Su K/Su ■/Pu E/Su T/Su  F/Su O/Su R/Su  O/Su N/Su  H/Su Y/Su P/Su P/Su  N/Su  A/Su I/Su R/Su  Q/Su S/Su O/Su  W/Su I/Su T/Su H/Su  W/Su
+ text-class | unadjudicated/cw-2026-09-24-004322 | inferred |   P/Sr  O/Sr  N/Sr  S/Sr  O/Sr R/Sr E/Sr D/Sr  A/Sr M/Sr E/Sr R/Sr I/Sr C/Sr A/Sr  2/Su 5/Su  9/Su  O/Sr P/Sr E/Sr R/Sr A/Sr T/Sr I/Sr O/Sr N/Sr  X/Su  A/Sr L/Sr L/Sr  L/Sr O/Sr G/Sr S/Sr  W/Sr I/Su L/Su A/Su
+ text-class | unadjudicated/cw-2026-09-24-004347 | inferred | O/Su  G/Su  S/Su  W/Su  I/Sr L/Sr L/Sr  B/Sr E/Sr  U/Sr P/Sr L/Sr O/Sr A/Sr D/Sr E/Sr D/Sr  T/Sr O/Sr  A/Sr R/Sr R/Sr L/Sr  L/Sr  O/Sa O/Sr T/Sr W/Sr  <BT>/Su  A/Su N/Su T/Su H/Su O/Su N/Su Y/Su  L/Su U/Su S/Su N/Su
+ text-class | unadjudicated/cw-2026-09-24-004405 | inferred |   T/Su  W/Su  <BT>/Su  A/Su  N/Su  T/Su  H/Su O/Su N/Su Y/Su  L/Su U/Su S/Su C/Su R/Su E/Su  K/Su  8/Su  Z/Su  T/Su  W/Su 1/Su A/Su W/Su //Su 8/Su 8/Su  ■/Pu O/Sr O/Sr R/Sr D/Sr I/Sr N/Sr A/Su T/Su
+ text-class | unadjudicated/cw-2026-09-24-004427 | inferred | ■/Pu  F/Su O/Su O/Su R/Su D/Su I/Su N/Su A/Sr T/Sr O/Sr R/Sr  <AR>/Su N/Su  Q/Sr S/Sr L/Sr  T/Sr N/Sr 6/Su T/Su B/Su R/Su E/Su  C/Su  E/Su  D/Su E/Su W/Su I/Su 2/Su G/Su  K/Su 8/Su 8/Su N/Su E/Su T/Su  T/Su U/Su  E/Su A/Su T/Su
+ text-class | unadjudicated/cw-2026-09-24-004510 | inferred |   1/Su U/Su  R/Su L/Su T/Su T/Su   S/Su  S/Su B/Su  Y/Su A/Su K/Su Y/Su A/Su K/Su   E/Su   K/Sr A/Sr 2/Sr G/Sr J/Sr V/Sr  T/Su Q/Su N/Su V/Su  A/Sr A/Sr 3/Sr S/Sr B/Sr  S/Su E/Su  I/Su
+ text-class | unadjudicated/cw-2026-09-24-004550 | inferred | I/Su  N/Su  5/Su  3/Su R/Su N/Su  1/Su  T/Su H/Su  N/Su  B/Su  O/Su T/Su E/Su I/Su  N/Su A/Su N/Su X/Su  K/Su  A/Su 3/Su H/Su B/Su  D/Sr E/Sr  K/Sr A/Sr 2/Sr  G/Sr J/Sr V/Sr  H/Su W/Su  R/Su O/Su B/Su I/Su N/Su ?/Su    T/Su
+ text-class | cq-12wpm-15db | exact |  C/Sr Q/Sr  C/Sr Q/Sr  C/Sr Q/Sr  D/Sr E/Sr  N/Sr 0/Sr C/Sr A/Sr L/Sr L/Sr  N/Sr 0/Sr C/Sr A/Sr L/Sr L/Sr  K/Sr
+ text-class | cq-12wpm-5db | exact |  C/Sr Q/Sr  C/Sr Q/Sr  C/Sr Q/Sr  D/Sr E/Sr  N/Sr 0/Sr C/Sr A/Sr L/Sr L/Sr  N/Sr 0/Sr C/Sr A/Sr L/Sr L/Sr  K/Sr
+ text-class | cq-12wpm-0db | exact | 
+ text-class | cq-18wpm-15db | exact |  C/Sr Q/Sr  C/Sr Q/Sr  C/Sr Q/Sr  D/Sr E/Sr  N/Sr 0/Sr C/Sr A/Sr L/Sr L/Sr  N/Sr 0/Sr C/Sr A/Sr L/Sr L/Sr  K/Sr
+ text-class | cq-18wpm-5db | exact |  ■/Pp Q/Sr  C/Sr Q/Sr  C/Sr Q/Sr  D/Sr E/Sr  N/Sr 0/Sr C/Sr A/Sr L/Sr L/Sr  N/Sr 0/Sr C/Sr A/Sr L/Sr L/Sr  K/Sr
+ text-class | cq-18wpm-0db | exact | 
+ text-class | cq-25wpm-15db | exact |   C/Sr Q/Sr  C/Sr Q/Sr  C/Sr Q/Sr  D/Sr E/Sr  N/Sr 0/Sr C/Sr A/Sr L/Sr L/Sr  N/Sr 0/Sr C/Sr A/Sr L/Sr L/Sr  K/Sa K/Sr
+ text-class | cq-25wpm-5db | exact |   C/Sr Q/Sr  C/Sr Q/Sr  C/Sr Q/Sr  D/Sr E/Sr  N/Sr 0/Sr C/Sr A/Sr L/Sr L/Sr  N/Sr 0/Sr C/Sr A/Sr L/Sr L/Sr  K/Sa K/Sr
+ text-class | cq-25wpm-0db | exact | 
+ text-class | cq-18wpm-15db-char5 | exact |  C/Sr  Q/Sr C/Sr Q/Sr C/Sr Q/Sr D/Sr E/Sr N/Sr 0/Sr  C/Sr  A/Sr  E/Sw  L/Sr N/Sr  0/Sr C/Sr A/Sr L/Sr  L/Sr  K/Sr
+ text-class | cq-18wpm-5db-char5 | exact |  C/Sr  Q/Sr C/Sr  Q/Sr  C/Sr  Q/Sr  T/Sa E/Sw E/Sr  T/Sa  ■/Pp K/Sa T/Sa D/Sw U/Sw U/Sw E/Sw U/Sw E/Sw N/Sr  0/Sr C/Sr A/Sr L/Sr  L/Sr  K/Sr
+ text-class | cq-18wpm-0db-char5 | exact | 
+ sameness | 908 of 908 reads: the copied lattice spells exactly the letters the read printed; letters found on the path 1032, not found 0; gaps between letters not on one path, skipped 58
+ event | technique | recording | key | at s | ms | dits at the dit in force | what | letter | scorer | key word | effect
+ event | C | unadjudicated/cw-2026-09-23-173723 | inferred | 0.685 | 190 | 1.87 | dah at or under two dits (fldigi: a dit) | `T` - | unscored |  | neither
+ event | C | unadjudicated/cw-2026-09-23-173723 | inferred | 2.570 | 135 | 1.86 | dah at or under two dits (fldigi: a dit) | `B` -... | unscored |  | neither
+ event | W | unadjudicated/cw-2026-09-23-173723 | inferred | 3.120 | 135 | 1.86 | gap between letters read as a character gap (path kind letter; fldigi: element), boundary unscored | `B`|`N` -. | unscored|unscored |  | neither
+ event | W | unadjudicated/cw-2026-09-23-173723 | inferred | 3.605 | 140 | 1.93 | gap between letters read as a character gap (path kind letter; fldigi: element), boundary unscored | `N`|`I` .. | unscored|unscored |  | neither
+ event | C | unadjudicated/cw-2026-09-23-173723 | inferred | 5.060 | 125 | 1.79 | dah at or under two dits (fldigi: a dit) | `D` -.. | unscored |  | neither
+ event | W | unadjudicated/cw-2026-09-23-173723 | inferred | 22.050 | 320 | 4.57 | gap between letters read as a character gap (path kind word; fldigi: word), boundary right, no space | `W`|`B` -... | right|right | WB6RED | at risk
+ event | W | unadjudicated/cw-2026-09-23-173723 | inferred | 25.100 | 250 | 3.57 | gap between letters read as a word gap (path kind word; fldigi: character), boundary inserted | `E`|`D` -.. | right|right | WB6RED | fixable
+ event | W | unadjudicated/cw-2026-09-23-173723 | inferred | 29.195 | 270 | 3.86 | gap between letters read as a word gap (path kind word; fldigi: character), boundary inserted | `E`|`E` . | wrong|right | WB6RED | fixable
+ event | W | unadjudicated/cw-2026-09-23-173723 | inferred | 29.530 | 260 | 3.71 | gap between letters read as a word gap (path kind word; fldigi: character), boundary inserted | `E`|`I` .. | right|wrong | WB6RED | fixable
+ event | B | cw-2026-08-17-013347 | inferred | 0.295 | 25 | 0.42 | dit kept under half a dit | `E` . | unscored |  | neither
+ event | B | cw-2026-08-17-013347 | inferred | 0.655 | 25 | 0.42 | dit kept under half a dit | `E` . | unscored |  | neither
+ event | W | cw-2026-08-17-013347 | inferred | 0.680 | 110 | 1.83 | gap between letters read as a character gap (path kind letter; fldigi: element), boundary unscored | `E`|`I` .. | unscored|unscored |  | neither
+ event | B | cw-2026-08-17-013347 | inferred | 1.375 | 25 | 0.42 | dit kept under half a dit | `I` .. | unscored |  | neither
+ event | B | cw-2026-08-17-013347 | inferred | 1.490 | 25 | 0.42 | dit kept under half a dit | `I` .. | unscored |  | neither
+ event | B | cw-2026-08-17-013347 | inferred | 2.330 | 25 | 0.42 | dit kept under half a dit | `I` .. | unscored |  | neither
+ event | B | cw-2026-08-17-013347 | inferred | 2.455 | 25 | 0.42 | dit kept under half a dit | `I` .. | unscored |  | neither
+ event | B | cw-2026-08-17-013347 | inferred | 2.690 | 25 | 0.42 | dit kept under half a dit | `A` .- | unscored |  | neither
+ event | B | cw-2026-08-17-013347 | inferred | 3.180 | 25 | 0.42 | dit kept under half a dit | `E` . | unscored |  | neither
+ event | B | cw-2026-08-17-013347 | inferred | 3.415 | 25 | 0.42 | dit kept under half a dit | `I` .. | unscored |  | neither
+ event | B | cw-2026-08-17-013347 | inferred | 3.535 | 25 | 0.42 | dit kept under half a dit | `I` .. | unscored |  | neither
+ event | B | cw-2026-08-17-013347 | inferred | 3.975 | 25 | 0.42 | dit kept under half a dit | `H` .... | unscored |  | neither
+ event | B | cw-2026-08-17-013347 | inferred | 4.375 | 25 | 0.42 | dit kept under half a dit | `E` . | unscored |  | neither
+ event | B | cw-2026-08-17-013347 | inferred | 4.505 | 25 | 0.42 | dit kept under half a dit | `E` . | unscored |  | neither
+ event | W | cw-2026-08-17-013347 | inferred | 4.400 | 105 | 1.75 | gap between letters read as a character gap (path kind letter; fldigi: element), boundary unscored | `E`|`E` . | unscored|unscored |  | neither
+ event | B | cw-2026-08-17-013347 | inferred | 4.640 | 25 | 0.42 | dit kept under half a dit | `E` . | unscored |  | neither
+ event | W | cw-2026-08-17-013347 | inferred | 4.530 | 110 | 1.83 | gap between letters read as a character gap (path kind letter; fldigi: element), boundary unscored | `E`|`E` . | unscored|unscored |  | neither
+ event | B | cw-2026-08-17-013347 | inferred | 5.465 | 25 | 0.42 | dit kept under half a dit | `E` . | unscored |  | neither
+ event | B | cw-2026-08-17-013347 | inferred | 6.180 | 25 | 0.42 | dit kept under half a dit | `E` . | unscored |  | neither
+ event | B | cw-2026-08-17-013347 | inferred | 6.310 | 25 | 0.42 | dit kept under half a dit | `E` . | unscored |  | neither
+ event | W | cw-2026-08-17-013347 | inferred | 6.205 | 105 | 1.75 | gap between letters read as a character gap (path kind letter; fldigi: element), boundary unscored | `E`|`E` . | unscored|unscored |  | neither
+ event | B | cw-2026-08-17-013347 | inferred | 6.700 | 25 | 0.42 | dit kept under half a dit | `H` .... | unscored |  | neither
+ event | B | cw-2026-08-17-013347 | inferred | 6.905 | 25 | 0.42 | dit kept under half a dit | `H` .... | unscored |  | neither
+ event | B | cw-2026-08-17-013347 | inferred | 7.020 | 25 | 0.42 | dit kept under half a dit | `H` .... | unscored |  | neither
+ event | B | cw-2026-08-17-013347 | inferred | 7.150 | 25 | 0.42 | dit kept under half a dit | `E` . | unscored |  | neither
+ event | W | cw-2026-08-17-013347 | inferred | 7.045 | 105 | 1.75 | gap between letters read as a character gap (path kind letter; fldigi: element), boundary unscored | `H`|`E` . | unscored|unscored |  | neither
+ event | B | cw-2026-08-17-013347 | inferred | 7.380 | 25 | 0.42 | dit kept under half a dit | `E` . | unscored |  | neither
+ event | B | cw-2026-08-17-013347 | inferred | 7.720 | 25 | 0.42 | dit kept under half a dit | `I` .. | unscored |  | neither
+ event | B | cw-2026-08-17-013347 | inferred | 7.995 | 25 | 0.42 | dit kept under half a dit | `E` . | unscored |  | neither
+ event | W | cw-2026-08-17-013347 | inferred | 7.745 | 250 | 4.17 | gap between letters read as a character gap (path kind letter; fldigi: word), boundary unscored | `I`|`E` . | unscored|unscored |  | neither
+ event | B | cw-2026-08-17-013347 | inferred | 8.225 | 25 | 0.42 | dit kept under half a dit | `E` . | unscored |  | neither
+ event | B | cw-2026-08-17-013347 | inferred | 9.190 | 25 | 0.42 | dit kept under half a dit | `I` .. | unscored |  | neither
+ event | B | cw-2026-08-17-013347 | inferred | 10.035 | 25 | 0.42 | dit kept under half a dit | `E` . | unscored |  | neither
+ event | W | cw-2026-08-17-013347 | inferred | 9.735 | 300 | 5.00 | gap between letters read as a character gap (path kind word; fldigi: word), boundary unscored | `E`|`E` . | unscored|unscored |  | neither
+ event | W | cw-2026-08-17-013347 | inferred | 10.060 | 330 | 5.50 | gap between letters read as a character gap (path kind word; fldigi: word), boundary unscored | `E`|`T` - | unscored|unscored |  | neither
+ event | W | cw-2026-08-17-013347 | inferred | 10.540 | 330 | 5.50 | gap between letters read as a character gap (path kind word; fldigi: word), boundary unscored | `T`|`E` . | unscored|unscored |  | neither
+ event | B | cw-2026-08-17-013347 | inferred | 11.470 | 25 | 0.42 | dit kept under half a dit | `I` .. | unscored |  | neither
+ event | B | cw-2026-08-17-013347 | inferred | 12.560 | 25 | 0.42 | dit kept under half a dit | `E` . | unscored |  | neither
+ event | W | cw-2026-08-17-013347 | inferred | 12.280 | 280 | 4.67 | gap between letters read as a character gap (path kind word; fldigi: word), boundary unscored | `E`|`E` . | unscored|unscored |  | neither
+ event | B | cw-2026-08-17-013347 | inferred | 13.880 | 25 | 0.42 | dit kept under half a dit | `E` . | unscored |  | neither
+ event | C | cw-2026-08-17-013347 | inferred | 15.205 | 120 | 2.00 | dah at or under two dits (fldigi: a dit) | `T` - | unscored |  | neither
+ event | B | cw-2026-08-17-013347 | inferred | 15.445 | 25 | 0.42 | dit kept under half a dit | `E` . | unscored |  | neither
+ event | B | cw-2026-08-17-013347 | inferred | 15.695 | 25 | 0.40 | dit kept under half a dit | `E` . | unscored |  | neither
+ event | B | cw-2026-08-17-013347 | inferred | 16.050 | 25 | 0.40 | dit kept under half a dit | `I` .. | unscored |  | neither
+ event | W | cw-2026-08-17-013347 | inferred | 16.075 | 320 | 5.12 | gap between letters read as a character gap (path kind word; fldigi: word), boundary unscored | `I`|`T` - | unscored|unscored |  | neither
+ event | B | cw-2026-08-17-013347 | inferred | 17.010 | 30 | 0.48 | dit kept under half a dit | `E` . | unscored |  | neither
+ event | W | cw-2026-08-17-013347 | inferred | 16.655 | 355 | 5.68 | gap between letters read as a character gap (path kind word; fldigi: word), boundary unscored | `T`|`E` . | unscored|unscored |  | neither
+ event | B | cw-2026-08-17-013347 | inferred | 17.490 | 30 | 0.48 | dit kept under half a dit | `H` .... | unscored |  | neither
+ event | B | cw-2026-08-17-013347 | inferred | 17.615 | 25 | 0.40 | dit kept under half a dit | `H` .... | unscored |  | neither
+ event | B | cw-2026-08-17-013347 | inferred | 17.735 | 25 | 0.40 | dit kept under half a dit | `H` .... | unscored |  | neither
+ event | W | cw-2026-08-17-013347 | inferred | 17.040 | 330 | 5.28 | gap between letters read as a character gap (path kind word; fldigi: word), boundary unscored | `E`|`H` .... | unscored|unscored |  | neither
+ event | B | cw-2026-08-17-013347 | inferred | 18.575 | 25 | 0.40 | dit kept under half a dit | `E` . | unscored |  | neither
+ event | W | cw-2026-08-17-013347 | inferred | 18.240 | 335 | 5.36 | gap between letters read as a character gap (path kind word; fldigi: word), boundary unscored | `A`|`E` . | unscored|unscored |  | neither
+ event | W | cw-2026-08-17-013347 | inferred | 18.600 | 285 | 4.75 | gap between letters read as a character gap (path kind word; fldigi: word), boundary unscored | `E`|`W` .-- | unscored|unscored |  | neither
+ event | W | cw-2026-08-17-013347 | inferred | 22.190 | 340 | 5.44 | gap between letters read as a character gap (path kind word; fldigi: word), boundary unscored | `R`|`V` ...- | unscored|right | VA3VRR | neither
+ event | B- | cw-2026-08-17-134712 | inferred | 13.950 | 50 | 0.84 | mark of the unprinted letter . beside it | `E` . | unscored |  | neither
+ event | B- | cw-2026-08-17-134712 | inferred | 14.965 | 30 | 0.50 | mark of the unprinted letter . beside it | `E` . | unscored |  | neither
+ event | B | cw-2026-08-17-134712 | inferred | 17.255 | 25 | 0.42 | dit kept under half a dit | `■` ......... | unscored |  | neither
+ event | B | cw-2026-08-17-134712 | inferred | 17.310 | 25 | 0.42 | dit kept under half a dit | `■` ......... | unscored |  | neither
+ event | B | cw-2026-08-17-134712 | inferred | 17.690 | 25 | 0.42 | dit kept under half a dit | `■` ......... | unscored |  | neither
+ event | B | cw-2026-08-17-134712 | inferred | 17.990 | 25 | 0.42 | dit kept under half a dit | `■` ......... | unscored |  | neither
+ event | B- | cw-2026-08-17-134712 | inferred | 17.000 | 55 | 0.92 | mark of the unprinted letter . beside it | `■` ......... | unscored |  | neither
+ event | W | cw-2026-08-17-134712 | inferred | 19.295 | 65 | 1.73 | gap between letters read as a character gap (path kind letter; fldigi: element), boundary unscored | `N`|`T` - | unscored|unscored |  | neither
+ event | B | unadjudicated/cw-2026-08-18-003758 | inferred | 1.745 | 15 | 0.40 | dit kept under half a dit | `■` .--.- | unscored |  | neither
+ event | B | unadjudicated/cw-2026-08-18-003758 | inferred | 6.100 | 20 | 0.42 | dit kept under half a dit | `I` .. | unscored |  | neither
+ event | W | unadjudicated/cw-2026-08-18-003758 | inferred | 6.185 | 210 | 5.60 | gap between letters read as a character gap (path kind word; fldigi: word), boundary unscored | `I`|`A` .- | unscored|unscored |  | neither
+ event | W | unadjudicated/cw-2026-08-18-003758 | inferred | 7.455 | 210 | 4.20 | gap between letters read as a character gap (path kind letter; fldigi: word), boundary unscored | `E`|`A` .- | unscored|unscored |  | neither
+ event | W | unadjudicated/cw-2026-08-18-003758 | inferred | 8.335 | 225 | 4.50 | gap between letters read as a character gap (path kind letter; fldigi: word), boundary unscored | `N`|`D` -.. | unscored|unscored |  | neither
+ event | W | unadjudicated/cw-2026-08-18-003758 | inferred | 8.905 | 210 | 4.67 | gap between letters read as a character gap (path kind word; fldigi: word), boundary unscored | `D`|`E` . | unscored|unscored |  | neither
+ event | W | unadjudicated/cw-2026-08-18-003758 | inferred | 10.540 | 55 | 1.83 | gap between letters read as a character gap (path kind letter; fldigi: element), boundary unscored | `E`|`E` . | unscored|wrong | AA4MP/4 | fixable
+ event | W | unadjudicated/cw-2026-08-18-003758 | inferred | 10.640 | 55 | 1.83 | gap between letters read as a character gap (path kind letter; fldigi: element), boundary right, no space | `E`|`E` . | wrong|wrong | AA4MP/4 | fixable
+ event | W | unadjudicated/cw-2026-08-18-003758 | inferred | 10.740 | 55 | 1.83 | gap between letters read as a character gap (path kind letter; fldigi: element), boundary right, no space | `E`|`T` - | wrong|wrong | AA4MP/4 | fixable
+ event | W | unadjudicated/cw-2026-08-18-003758 | inferred | 12.190 | 220 | 4.40 | gap between letters read as a character gap (path kind letter; fldigi: word), boundary right, no space | `P`|`/` -..-. | right|right | AA4MP/4 | at risk
+ event | W | unadjudicated/cw-2026-08-18-003758 | inferred | 15.420 | 225 | 4.50 | gap between letters read as a character gap (path kind letter; fldigi: word), boundary right, no space | `I`|`K` -.- | right|right | QNIK | at risk
+ event | W | unadjudicated/cw-2026-08-18-003758 | inferred | 19.500 | 235 | 4.70 | gap between letters read as a character gap (path kind word; fldigi: word), boundary unscored | `E`|`A` .- | unscored|unscored |  | neither
+ event | W | unadjudicated/cw-2026-08-18-003758 | inferred | 20.800 | 220 | 4.40 | gap between letters read as a character gap (path kind letter; fldigi: word), boundary unscored | `E`|`A` .- | unscored|unscored |  | neither
+ event | W | unadjudicated/cw-2026-08-18-003758 | inferred | 23.170 | 210 | 4.20 | gap between letters read as a character gap (path kind letter; fldigi: word), boundary unscored | `I`|`K` -.- | unscored|unscored |  | neither
+ event | C | unadjudicated/cw-2026-08-18-003758 | inferred | 28.910 | 100 | 2.00 | dah at or under two dits (fldigi: a dit) | `A` .- | unscored |  | neither
+ event | W | unadjudicated/cw-2026-08-18-003758 | inferred | 28.590 | 215 | 4.30 | gap between letters read as a character gap (path kind letter; fldigi: word), boundary unscored | `E`|`A` .- | unscored|unscored |  | neither
+ event | B- | unadjudicated/cw-2026-08-24-012403 | inferred | 13.560 | 30 | 0.50 | mark of the unprinted letter . beside it | `D` -.. | unscored |  | neither
+ event | B- | unadjudicated/cw-2026-08-24-012403 | inferred | 18.030 | 30 | 0.50 | mark of the unprinted letter . beside it | `Q` --.- | unscored |  | neither
+ event | B- | unadjudicated/cw-2026-08-24-012403 | inferred | 18.380 | 85 | 1.42 | mark of the unprinted letter ... beside it | `Q` --.- | unscored |  | neither
+ event | B- | unadjudicated/cw-2026-08-24-012403 | inferred | 18.495 | 55 | 0.92 | mark of the unprinted letter ... beside it | `Q` --.- | unscored |  | neither
+ event | B- | unadjudicated/cw-2026-08-24-012403 | inferred | 18.620 | 50 | 0.83 | mark of the unprinted letter ... beside it | `Q` --.- | unscored |  | neither
+ event | B | cw-2026-08-18-004507 | inferred | 0.025 | 20 | 0.37 | dit kept under half a dit | `E` . | unscored |  | neither
+ event | B | cw-2026-08-18-004507 | inferred | 0.145 | 20 | 0.37 | dit kept under half a dit | `5` ..... | unscored |  | neither
+ event | B | cw-2026-08-18-004507 | inferred | 0.185 | 20 | 0.37 | dit kept under half a dit | `5` ..... | unscored |  | neither
+ event | B | cw-2026-08-18-004507 | inferred | 0.320 | 25 | 0.46 | dit kept under half a dit | `5` ..... | unscored |  | neither
+ event | W | cw-2026-08-18-004507 | inferred | 0.045 | 100 | 1.83 | gap between letters read as a character gap (path kind letter; fldigi: element), boundary unscored | `E`|`5` ..... | unscored|unscored |  | neither
+ event | B | cw-2026-08-18-004507 | inferred | 2.120 | 20 | 0.37 | dit kept under half a dit | `E` . | unscored |  | neither
+ event | W | cw-2026-08-18-004507 | inferred | 12.515 | 210 | 4.20 | gap between letters read as a character gap (path kind letter; fldigi: word), boundary right, no space | `A`|`C` -.-. | right|right | EACH | at risk
+ event | W | cw-2026-08-18-004507 | inferred | 13.280 | 255 | 5.10 | gap between letters read as a character gap (path kind word; fldigi: word), boundary right, no space | `C`|`H` .... | right|right | EACH | at risk
+ event | W | cw-2026-08-18-004507 | inferred | 14.700 | 220 | 4.40 | gap between letters read as a character gap (path kind letter; fldigi: word), boundary right, no space | `S`|`T` - | right|right | STATION | at risk
+ event | W | cw-2026-08-18-004507 | inferred | 15.520 | 235 | 4.70 | gap between letters read as a character gap (path kind word; fldigi: word), boundary right, no space | `A`|`T` - | right|right | STATION | at risk
+ event | W | cw-2026-08-18-004507 | inferred | 15.905 | 215 | 4.30 | gap between letters read as a character gap (path kind letter; fldigi: word), boundary right, no space | `T`|`I` .. | right|right | STATION | at risk
+ event | W | cw-2026-08-18-004507 | inferred | 16.270 | 270 | 5.40 | gap between letters read as a character gap (path kind word; fldigi: word), boundary right, no space | `I`|`O` --- | right|right | STATION | at risk
+ event | W | cw-2026-08-18-004507 | inferred | 17.095 | 230 | 4.60 | gap between letters read as a character gap (path kind letter; fldigi: word), boundary right, no space | `O`|`N` -. | right|right | STATION | at risk
+ event | W | cw-2026-08-18-004507 | inferred | 18.675 | 230 | 4.60 | gap between letters read as a character gap (path kind letter; fldigi: word), boundary right, no space | `H`|`A` .- | right|right | HANDLING | at risk
+ event | W | cw-2026-08-18-004507 | inferred | 19.160 | 225 | 4.50 | gap between letters read as a character gap (path kind letter; fldigi: word), boundary right, no space | `A`|`N` -. | right|right | HANDLING | at risk
+ event | W | cw-2026-08-18-004507 | inferred | 19.640 | 245 | 4.67 | gap between letters read as a character gap (path kind letter; fldigi: word), boundary right, no space | `N`|`D` -.. | right|right | HANDLING | at risk
+ event | W | cw-2026-08-18-004507 | inferred | 20.240 | 260 | 5.20 | gap between letters read as a character gap (path kind letter; fldigi: word), boundary right, no space | `D`|`L` .-.. | right|right | HANDLING | at risk
+ event | W | cw-2026-08-18-004507 | inferred | 20.955 | 260 | 5.20 | gap between letters read as a character gap (path kind letter; fldigi: word), boundary right, no space | `L`|`I` .. | right|right | HANDLING | at risk
+ event | W | cw-2026-08-18-004507 | inferred | 21.365 | 235 | 4.70 | gap between letters read as a character gap (path kind letter; fldigi: word), boundary right, no space | `I`|`N` -. | right|right | HANDLING | at risk
+ event | W | cw-2026-08-18-004507 | inferred | 23.295 | 265 | 5.30 | gap between letters read as a character gap (path kind letter; fldigi: word), boundary right, no space | `T`|`H` .... | right|right | THIS | at risk
+ event | W | cw-2026-08-18-004507 | inferred | 23.915 | 225 | 4.50 | gap between letters read as a character gap (path kind letter; fldigi: word), boundary right, no space | `H`|`I` .. | right|right | THIS | at risk
+ event | W | cw-2026-08-18-004507 | inferred | 25.715 | 230 | 4.60 | gap between letters read as a character gap (path kind letter; fldigi: word), boundary right, no space | `M`|`E` . | right|right | MESSAGE | at risk
+ event | W | cw-2026-08-18-004507 | inferred | 25.995 | 290 | 5.80 | gap between letters read as a character gap (path kind letter; fldigi: word), boundary right, no space | `E`|`S` ... | right|right | MESSAGE | at risk
+ event | W | cw-2026-08-18-004507 | inferred | 26.540 | 225 | 4.50 | gap between letters read as a character gap (path kind letter; fldigi: word), boundary right, no space | `S`|`S` ... | right|right | MESSAGE | at risk
+ event | W | cw-2026-08-18-004507 | inferred | 27.025 | 235 | 4.70 | gap between letters read as a character gap (path kind letter; fldigi: word), boundary right, no space | `S`|`A` .- | right|right | MESSAGE | at risk
+ event | W | cw-2026-08-18-004507 | inferred | 27.510 | 240 | 4.80 | gap between letters read as a character gap (path kind letter; fldigi: word), boundary right, no space | `A`|`G` --. | right|right | MESSAGE | at risk
+ event | W | cw-2026-08-18-004507 | inferred | 28.205 | 330 | 6.60 | gap between letters read as a character gap (path kind word; fldigi: word), boundary right, no space | `G`|`E` . | right|right | MESSAGE | at risk
+ event | B | cw-2026-08-18-004507 | inferred | 29.980 | 20 | 0.40 | dit kept under half a dit | `E` . | unscored |  | neither
+ event | W | cw-2026-08-18-004507 | inferred | 29.765 | 215 | 4.30 | gap between letters read as a character gap (path kind letter; fldigi: word), boundary unscored | `P`|`E` . | right|unscored |  | neither
+ event | C | unadjudicated/cw-2026-08-22-031838 | inferred | 4.980 | 65 | 1.86 | dah at or under two dits (fldigi: a dit) | `A` .- | unscored |  | neither
+ event | C | unadjudicated/cw-2026-08-22-031838 | inferred | 5.110 | 70 | 2.00 | dah at or under two dits (fldigi: a dit) | `T` - | unscored |  | neither
+ event | W | unadjudicated/cw-2026-08-22-031838 | inferred | 5.045 | 65 | 1.86 | gap between letters read as a character gap (path kind letter; fldigi: element), boundary unscored | `A`|`T` - | unscored|unscored |  | neither
+ event | B | unadjudicated/cw-2026-08-22-031838 | inferred | 7.425 | 25 | 0.48 | dit kept under half a dit | `2` ..--- | unscored |  | neither
+ event | B- | unadjudicated/cw-2026-08-22-031838 | inferred | 8.785 | 130 | 2.47 | mark of the unprinted letter -..-- beside it | `T` - | wrong | 2, | neither
+ event | B- | unadjudicated/cw-2026-08-22-031838 | inferred | 8.990 | 60 | 1.14 | mark of the unprinted letter -..-- beside it | `T` - | wrong | 2, | neither
+ event | B- | unadjudicated/cw-2026-08-22-031838 | inferred | 9.130 | 50 | 0.95 | mark of the unprinted letter -..-- beside it | `T` - | wrong | 2, | neither
+ event | B- | unadjudicated/cw-2026-08-22-031838 | inferred | 9.260 | 150 | 2.85 | mark of the unprinted letter -..-- beside it | `T` - | wrong | 2, | neither
+ event | B- | unadjudicated/cw-2026-08-22-031838 | inferred | 9.485 | 185 | 3.51 | mark of the unprinted letter -..-- beside it | `T` - | wrong | 2, | neither
+ event | B- | unadjudicated/cw-2026-08-22-031838 | inferred | 9.275 | 135 | 3.18 | mark of the unprinted letter - beside it | `T` - | wrong | 2, | neither
+ event | B | unadjudicated/cw-2026-08-22-031838 | inferred | 14.515 | 20 | 0.46 | dit kept under half a dit | `■` ....--- | placeholder | 2 | neither
+ event | B | unadjudicated/cw-2026-08-22-031838 | inferred | 14.570 | 20 | 0.46 | dit kept under half a dit | `■` ....--- | placeholder | 2 | neither
+ event | W | unadjudicated/cw-2026-08-22-031838 | inferred | 16.530 | 200 | 4.71 | gap between letters read as a character gap (path kind word; fldigi: word), boundary right, no space | `W`|`I` .. | right|right | WITH | at risk
+ event | C | unadjudicated/cw-2026-08-22-031838 | inferred | 24.115 | 70 | 2.00 | dah at or under two dits (fldigi: a dit) | `T` - | wrong | PRE | fixable
+ event | B | unadjudicated/cw-2026-08-22-031905 | inferred | 5.375 | 30 | 0.44 | dit kept under half a dit | `I` .. | right | DICTED | at risk
+ event | B- | unadjudicated/cw-2026-08-22-031905 | inferred | 9.310 | 145 | 2.15 | mark of the unprinted letter ----- beside it | `1` .---- | right | 10.7 | neither
+ event | B- | unadjudicated/cw-2026-08-22-031905 | inferred | 9.520 | 200 | 2.96 | mark of the unprinted letter ----- beside it | `1` .---- | right | 10.7 | neither
+ event | B- | unadjudicated/cw-2026-08-22-031905 | inferred | 9.790 | 155 | 2.30 | mark of the unprinted letter ----- beside it | `1` .---- | right | 10.7 | neither
+ event | B- | unadjudicated/cw-2026-08-22-031905 | inferred | 10.015 | 195 | 2.89 | mark of the unprinted letter ----- beside it | `1` .---- | right | 10.7 | neither
+ event | B- | unadjudicated/cw-2026-08-22-031905 | inferred | 10.280 | 140 | 2.07 | mark of the unprinted letter ----- beside it | `1` .---- | right | 10.7 | neither
+ event | B | unadjudicated/cw-2026-08-22-031905 | inferred | 11.355 | 30 | 0.44 | dit kept under half a dit | `.` .-.-.- | right | 10.7 | at risk
+ event | B- | unadjudicated/cw-2026-08-22-031905 | inferred | 13.035 | 200 | 2.96 | mark of the unprinted letter -.- beside it | `7` --... | right | 10.7 | neither
+ event | B- | unadjudicated/cw-2026-08-22-031905 | inferred | 13.310 | 55 | 0.81 | mark of the unprinted letter -.- beside it | `7` --... | right | 10.7 | neither
+ event | B- | unadjudicated/cw-2026-08-22-031905 | inferred | 13.410 | 175 | 2.59 | mark of the unprinted letter -.- beside it | `7` --... | right | 10.7 | neither
+ event | B | unadjudicated/cw-2026-08-22-031905 | inferred | 16.885 | 30 | 0.44 | dit kept under half a dit | `R` .-. | right | CENTIMETER | at risk
+ event | B | unadjudicated/cw-2026-08-22-031905 | inferred | 21.420 | 30 | 0.46 | dit kept under half a dit | `S` ... | right | IS | at risk
+ event | B | unadjudicated/cw-2026-08-22-031905 | inferred | 23.385 | 30 | 0.46 | dit kept under half a dit | `2` ..--- | right | 125, | at risk
+ event | B | unadjudicated/cw-2026-08-22-031905 | inferred | 24.845 | 30 | 0.46 | dit kept under half a dit | `5` ..... | right | 125, | at risk
+ event | B | unadjudicated/cw-2026-08-22-031905 | inferred | 29.410 | 25 | 0.38 | dit kept under half a dit | `5` ..... | right | 125 | at risk
+ event | W | unadjudicated/cw-2026-08-22-031948 | inferred | 2.175 | 65 | 1.86 | gap between letters read as a character gap (path kind letter; fldigi: element), boundary unscored | `T`|`M` -- | unscored|unscored |  | neither
+ event | W | unadjudicated/cw-2026-08-22-031948 | inferred | 2.680 | 195 | 3.00 | gap between letters read as a word gap (path kind letter; fldigi: character), boundary unscored | `M`|`1` .---- | unscored|right | 110, | neither
+ event | B | unadjudicated/cw-2026-08-22-031948 | inferred | 11.930 | 30 | 0.46 | dit kept under half a dit | `A` .- | right | AND | at risk
+ event | W | unadjudicated/cw-2026-08-22-032012 | inferred | 1.765 | 195 | 3.71 | gap between letters read as a word gap (path kind letter; fldigi: character), boundary inserted | `T`|`F` ..-. | wrong|right | OF | fixable
+ event | B | unadjudicated/cw-2026-08-22-032012 | inferred | 15.120 | 30 | 0.46 | dit kept under half a dit | `A` .- | right | ARTICLES | at risk
+ event | B | unadjudicated/cw-2026-08-22-032012 | inferred | 15.610 | 25 | 0.38 | dit kept under half a dit | `R` .-. | right | ARTICLES | at risk
+ event | B | unadjudicated/cw-2026-08-22-032012 | inferred | 23.080 | 30 | 0.44 | dit kept under half a dit | `E` . | right | OTHER | at risk
+ event | B | unadjudicated/cw-2026-08-22-032050 | inferred | 5.770 | 30 | 0.46 | dit kept under half a dit | `N` -. | right | BULLETIN | at risk
+ event | W | unadjudicated/cw-2026-08-22-032050 | inferred | 10.925 | 195 | 5.57 | gap between letters read as a character gap (path kind word; fldigi: word), boundary right, no space | `O`|`T` - | right|added | FOUND | at risk
+ event | W | unadjudicated/cw-2026-08-22-032050 | inferred | 11.195 | 65 | 1.86 | gap between letters read as a character gap (path kind letter; fldigi: element), boundary right, no space | `T`|`A` .- | added|wrong | FOUND | fixable
+ event | B | unadjudicated/cw-2026-08-22-032050 | inferred | 14.765 | 30 | 0.46 | dit kept under half a dit | `L` .-.. | right | TELEPRINTER, | at risk
+ event | B | unadjudicated/cw-2026-08-22-032050 | inferred | 15.750 | 25 | 0.38 | dit kept under half a dit | `W` .-- | wrong | TELEPRINTER, | fixable
+ event | B | unadjudicated/cw-2026-08-22-032050 | inferred | 17.315 | 30 | 0.46 | dit kept under half a dit | `I` .. | right | TELEPRINTER, | at risk
+ event | C | unadjudicated/cw-2026-08-22-032050 | inferred | 22.650 | 70 | 1.75 | dah at or under two dits (fldigi: a dit) | `■` ---- | placeholder | PACKET, | neither
+ event | C | unadjudicated/cw-2026-08-22-032050 | inferred | 23.010 | 70 | 1.75 | dah at or under two dits (fldigi: a dit) | `■` ---- | placeholder | PACKET, | neither
+ event | W | unadjudicated/cw-2026-08-22-032050 | inferred | 23.080 | 200 | 3.08 | gap between letters read as a word gap (path kind letter; fldigi: character), boundary inserted | `■`|`K` -.- | placeholder|right | PACKET, | fixable
+ event | W | unadjudicated/cw-2026-08-22-032050 | inferred | 23.800 | 195 | 4.59 | gap between letters read as a character gap (path kind word; fldigi: word), boundary right, no space | `K`|`E` . | right|right | PACKET, | at risk
+ event | B | unadjudicated/cw-2026-08-22-032050 | inferred | 26.995 | 15 | 0.39 | dit kept under half a dit | `I` .. | right | INTE | at risk
+ event | B | unadjudicated/cw-2026-08-22-032050 | inferred | 27.640 | 30 | 0.40 | dit kept under half a dit | `S` ... | unscored |  | neither
+ event | C | unadjudicated/cw-2026-08-22-032050 | inferred | 28.235 | 60 | 1.85 | dah at or under two dits (fldigi: a dit) | `T` - | unscored |  | neither
+ event | B | unadjudicated/cw-2026-08-22-032050 | inferred | 28.680 | 15 | 0.35 | dit kept under half a dit | `S` ... | unscored |  | neither
+ event | B | unadjudicated/cw-2026-08-22-032050 | inferred | 28.710 | 15 | 0.35 | dit kept under half a dit | `S` ... | unscored |  | neither
+ event | B | unadjudicated/cw-2026-08-22-032050 | inferred | 28.740 | 20 | 0.47 | dit kept under half a dit | `S` ... | unscored |  | neither
+ event | W | unadjudicated/cw-2026-08-22-032050 | inferred | 28.295 | 385 | 9.06 | gap between letters read as a character gap (path kind word; fldigi: word), boundary unscored | `T`|`S` ... | unscored|unscored |  | neither
+ event | B | unadjudicated/cw-2026-08-22-032050 | inferred | 29.120 | 15 | 0.35 | dit kept under half a dit | `S` ... | unscored |  | neither
+ event | W | unadjudicated/cw-2026-08-22-032050 | inferred | 28.760 | 260 | 6.12 | gap between letters read as a character gap (path kind word; fldigi: word), boundary unscored | `S`|`S` ... | unscored|unscored |  | neither
+ event | B | unadjudicated/cw-2026-08-22-032050 | inferred | 29.295 | 20 | 0.47 | dit kept under half a dit | `I` .. | unscored |  | neither
+ event | B | unadjudicated/cw-2026-08-22-032050 | inferred | 29.330 | 15 | 0.35 | dit kept under half a dit | `I` .. | unscored |  | neither
+ event | B | unadjudicated/cw-2026-08-22-032113 | inferred | 1.545 | 15 | 0.38 | dit kept under half a dit | `A` .- | right | ACKET, | at risk
+ event | C | unadjudicated/cw-2026-08-22-032113 | inferred | 1.620 | 70 | 1.75 | dah at or under two dits (fldigi: a dit) | `A` .- | right | ACKET, | at risk
+ event | C | unadjudicated/cw-2026-08-22-032113 | inferred | 5.930 | 70 | 1.75 | dah at or under two dits (fldigi: a dit) | `O` --- | wrong | AND | fixable
+ event | C | unadjudicated/cw-2026-08-22-032113 | inferred | 6.065 | 70 | 1.75 | dah at or under two dits (fldigi: a dit) | `O` --- | wrong | AND | fixable
+ event | W | unadjudicated/cw-2026-08-22-032113 | inferred | 7.555 | 195 | 4.59 | gap between letters read as a character gap (path kind word; fldigi: word), boundary right, no space | `T`|`E` . | right|right | INTERNET | at risk
+ event | B | unadjudicated/cw-2026-08-22-032113 | inferred | 8.355 | 20 | 0.47 | dit kept under half a dit | `R` .-. | right | INTERNET | at risk
+ event | W | unadjudicated/cw-2026-08-22-032113 | inferred | 8.375 | 185 | 4.35 | gap between letters read as a character gap (path kind letter; fldigi: word), boundary right, no space | `R`|`N` -. | right|right | INTERNET | at risk
+ event | W | unadjudicated/cw-2026-08-22-032113 | inferred | 9.105 | 195 | 4.59 | gap between letters read as a character gap (path kind word; fldigi: word), boundary right, no space | `E`|`T` - | right|right | INTERNET | at risk
+ event | C | unadjudicated/cw-2026-08-22-032113 | inferred | 9.990 | 75 | 1.76 | dah at or under two dits (fldigi: a dit) | `■` .-.- | placeholder | VERSIONS | neither
+ event | W | unadjudicated/cw-2026-08-22-032113 | inferred | 10.405 | 195 | 4.59 | gap between letters read as a character gap (path kind word; fldigi: word), boundary right, no space | `■`|`E` . | placeholder|right | VERSIONS | at risk
+ event | W | unadjudicated/cw-2026-08-22-032113 | inferred | 11.285 | 135 | 1.90 | gap between letters read as a character gap (path kind letter; fldigi: element), boundary right, no space | `R`|`S` ... | right|right | VERSIONS | at risk
+ event | B | unadjudicated/cw-2026-08-22-032113 | inferred | 16.370 | 30 | 0.44 | dit kept under half a dit | `2` ..--- | unscored |  | neither
+ event | B | unadjudicated/cw-2026-08-22-032113 | inferred | 22.405 | 20 | 0.40 | dit kept under half a dit | `I` .. | unscored |  | neither
+ event | B | unadjudicated/cw-2026-08-22-032113 | inferred | 23.380 | 25 | 0.47 | dit kept under half a dit | `I` .. | unscored |  | neither
+ event | B | unadjudicated/cw-2026-08-22-032113 | inferred | 24.140 | 30 | 0.43 | dit kept under half a dit | `I` .. | unscored |  | neither
+ event | B | unadjudicated/cw-2026-08-22-032113 | inferred | 24.240 | 30 | 0.43 | dit kept under half a dit | `I` .. | unscored |  | neither
+ event | C | unadjudicated/cw-2026-08-22-032113 | inferred | 24.665 | 85 | 1.89 | dah at or under two dits (fldigi: a dit) | `T` - | unscored |  | neither
+ event | W | unadjudicated/cw-2026-08-22-032113 | inferred | 24.270 | 395 | 8.78 | gap between letters read as a character gap (path kind word; fldigi: word), boundary unscored | `I`|`T` - | unscored|unscored |  | neither
+ event | W | unadjudicated/cw-2026-08-22-032113 | inferred | 25.435 | 480 | 8.35 | gap between letters read as a character gap (path kind word; fldigi: word), boundary unscored | `E`|`E` . | unscored|unscored |  | neither
+ event | B | unadjudicated/cw-2026-08-22-032113 | inferred | 26.220 | 20 | 0.44 | dit kept under half a dit | `I` .. | unscored |  | neither
+ event | W | unadjudicated/cw-2026-08-22-032113 | inferred | 25.945 | 275 | 6.11 | gap between letters read as a character gap (path kind word; fldigi: word), boundary unscored | `E`|`I` .. | unscored|unscored |  | neither
+ event | B | unadjudicated/cw-2026-08-22-032113 | inferred | 26.685 | 20 | 0.47 | dit kept under half a dit | `I` .. | unscored |  | neither
+ event | W | unadjudicated/cw-2026-08-22-032113 | inferred | 26.705 | 695 | 13.24 | gap between letters read as a character gap (path kind word; fldigi: word), boundary unscored | `I`|`I` .. | unscored|unscored |  | neither
+ event | B | unadjudicated/cw-2026-08-22-032113 | inferred | 27.890 | 20 | 0.40 | dit kept under half a dit | `W` .-- | unscored |  | neither
+ event | W | unadjudicated/cw-2026-08-22-032113 | inferred | 27.555 | 335 | 6.70 | gap between letters read as a character gap (path kind word; fldigi: word), boundary unscored | `I`|`W` .-- | unscored|unscored |  | neither
+ event | B | unadjudicated/cw-2026-08-22-032113 | inferred | 28.400 | 20 | 0.40 | dit kept under half a dit | `E` . | unscored |  | neither
+ event | W | unadjudicated/cw-2026-08-22-032113 | inferred | 29.670 | 195 | 4.59 | gap between letters read as a character gap (path kind word; fldigi: word), boundary unscored | `T`|`I` .. | unscored|unscored |  | neither
+ event | C | unadjudicated/cw-2026-08-22-032129 | inferred | 1.670 | 75 | 1.88 | dah at or under two dits (fldigi: a dit) | `■` -.--- | unscored |  | neither
+ event | W | unadjudicated/cw-2026-08-22-032129 | inferred | 3.200 | 70 | 1.75 | gap between letters read as a character gap (path kind letter; fldigi: element), boundary unscored | `M`|`T` - | unscored|unscored |  | neither
+ event | W | unadjudicated/cw-2026-08-22-032129 | inferred | 3.415 | 70 | 1.75 | gap between letters read as a character gap (path kind letter; fldigi: element), boundary unscored | `T`|`M` -- | unscored|unscored |  | neither
+ event | C | unadjudicated/cw-2026-08-22-032129 | inferred | 4.110 | 65 | 1.73 | dah at or under two dits (fldigi: a dit) | `T` - | wrong | 2026 | fixable
+ event | W | unadjudicated/cw-2026-08-22-032129 | inferred | 3.910 | 200 | 5.33 | gap between letters read as a character gap (path kind word; fldigi: word), boundary unscored | `M`|`T` - | unscored|wrong | 2026 | neither
+ event | C | unadjudicated/cw-2026-08-22-032129 | inferred | 7.335 | 75 | 1.76 | dah at or under two dits (fldigi: a dit) | `G` --. | wrong | PROPAGATION | fixable
+ event | B | unadjudicated/cw-2026-08-22-032129 | inferred | 8.840 | 30 | 0.48 | dit kept under half a dit | `P` .--. | right | PROPAGATION | at risk
+ event | B | unadjudicated/cw-2026-08-22-032129 | inferred | 11.800 | 25 | 0.38 | dit kept under half a dit | `I` .. | right | PROPAGATION | at risk
+ event | B | unadjudicated/cw-2026-08-22-032129 | inferred | 13.845 | 25 | 0.38 | dit kept under half a dit | `F` ..-. | right | FORECAST | at risk
+ event | B | unadjudicated/cw-2026-08-22-032129 | inferred | 15.295 | 30 | 0.46 | dit kept under half a dit | `R` .-. | right | FORECAST | at risk
+ event | B | unadjudicated/cw-2026-08-22-032129 | inferred | 27.335 | 25 | 0.38 | dit kept under half a dit | `3` ...-- | right | ARLP034 | at risk
+ event | B | unadjudicated/cw-2026-08-22-032129 | inferred | 28.315 | 30 | 0.46 | dit kept under half a dit | `4` ....- | right | ARLP034 | at risk
+ event | W | unadjudicated/cw-2026-09-24-004108 | inferred | 0.895 | 215 | 4.10 | gap between letters read as a character gap (path kind letter; fldigi: word), boundary unscored | `H`|`R` .-. | unscored|unscored |  | neither
+ event | W | unadjudicated/cw-2026-09-24-004108 | inferred | 10.995 | 580 | 10.55 | gap between letters read as a character gap (path kind word; fldigi: word), boundary unscored | `E`|`8` ---.. | unscored|unscored |  | neither
+ event | W | unadjudicated/cw-2026-09-24-004108 | inferred | 15.285 | 740 | 13.45 | gap between letters read as a character gap (path kind word; fldigi: word), boundary right, no space | `K`|`2` ..--- | right|right | KA2GJV | at risk
+ event | W | unadjudicated/cw-2026-09-24-004108 | inferred | 18.775 | 315 | 5.73 | gap between letters read as a character gap (path kind word; fldigi: word), boundary unscored | `S`|`T` - | unscored|unscored |  | neither
+ event | W | unadjudicated/cw-2026-09-24-004108 | inferred | 19.245 | 315 | 5.73 | gap between letters read as a character gap (path kind word; fldigi: word), boundary unscored | `T`|`M` -- | unscored|unscored |  | neither
+ event | W | unadjudicated/cw-2026-09-24-004108 | inferred | 19.935 | 435 | 7.91 | gap between letters read as a character gap (path kind word; fldigi: word), boundary unscored | `M`|`W` .-- | unscored|unscored |  | neither
+ event | W | unadjudicated/cw-2026-09-24-004108 | inferred | 22.145 | 270 | 4.91 | gap between letters read as a character gap (path kind word; fldigi: word), boundary unscored | `O`|`H` .... | unscored|unscored |  | neither
+ event | W | unadjudicated/cw-2026-09-24-004108 | inferred | 23.780 | 230 | 4.18 | gap between letters read as a character gap (path kind letter; fldigi: word), boundary unscored | `S`|`E` . | unscored|unscored |  | neither
+ event | W | unadjudicated/cw-2026-09-24-004108 | inferred | 24.835 | 395 | 7.18 | gap between letters read as a character gap (path kind word; fldigi: word), boundary unscored | `P`|`1` .---- | unscored|unscored |  | neither
+ event | W | unadjudicated/cw-2026-09-24-004108 | inferred | 26.155 | 285 | 5.18 | gap between letters read as a character gap (path kind word; fldigi: word), boundary unscored | `1`|`9` ----. | unscored|unscored |  | neither
+ event | W | unadjudicated/cw-2026-09-24-004108 | inferred | 28.580 | 335 | 6.09 | gap between letters read as a character gap (path kind word; fldigi: word), boundary unscored | `R`|`I` .. | unscored|unscored |  | neither
+ event | W | unadjudicated/cw-2026-09-24-004108 | inferred | 29.065 | 320 | 5.82 | gap between letters read as a character gap (path kind word; fldigi: word), boundary unscored | `I`|`C` -.-. | unscored|unscored |  | neither
+ event | B | unadjudicated/cw-2026-09-24-004133 | inferred | 0.020 | 20 | 0.44 | dit kept under half a dit | `1` .---- | unscored |  | neither
+ event | W | unadjudicated/cw-2026-09-24-004133 | inferred | 6.645 | 240 | 4.36 | gap between letters read as a character gap (path kind letter; fldigi: word), boundary right, no space | `R`|`D` -.. | right|right | ICHARD | at risk
+ event | B- | unadjudicated/cw-2026-09-24-004133 | inferred | 10.565 | 40 | 0.73 | mark of the unprinted letter ... beside it | `J` .--- | unscored |  | neither
+ event | B- | unadjudicated/cw-2026-09-24-004133 | inferred | 10.675 | 35 | 0.64 | mark of the unprinted letter ... beside it | `J` .--- | unscored |  | neither
+ event | B- | unadjudicated/cw-2026-09-24-004133 | inferred | 10.785 | 70 | 1.27 | mark of the unprinted letter ... beside it | `J` .--- | unscored |  | neither
+ event | W | unadjudicated/cw-2026-09-24-004133 | inferred | 11.815 | 435 | 7.91 | gap between letters read as a character gap (path kind word; fldigi: word), boundary unscored | `G`|`E` . | unscored|unscored |  | neither
+ event | W | unadjudicated/cw-2026-09-24-004133 | inferred | 12.290 | 325 | 5.91 | gap between letters read as a character gap (path kind word; fldigi: word), boundary unscored | `E`|`L` .-.. | unscored|unscored |  | neither
+ event | B | unadjudicated/cw-2026-09-24-004133 | inferred | 13.945 | 20 | 0.36 | dit kept under half a dit | `■` .-.- | unscored |  | neither
+ event | W | unadjudicated/cw-2026-09-24-004133 | inferred | 16.995 | 590 | 10.73 | gap between letters read as a character gap (path kind word; fldigi: word), boundary unscored | `D`|`T` - | unscored|unscored |  | neither
+ event | B | unadjudicated/cw-2026-09-24-004133 | inferred | 18.875 | 20 | 0.36 | dit kept under half a dit | `U` ..- | unscored |  | neither
+ event | W | unadjudicated/cw-2026-09-24-004133 | inferred | 20.805 | 490 | 8.91 | gap between letters read as a character gap (path kind word; fldigi: word), boundary unscored | `5`|`0` ----- | unscored|unscored |  | neither
+ event | B | unadjudicated/cw-2026-09-24-004133 | inferred | 25.540 | 20 | 0.36 | dit kept under half a dit | `H` .... | unscored |  | neither
+ event | B | unadjudicated/cw-2026-09-24-004133 | inferred | 26.740 | 20 | 0.36 | dit kept under half a dit | `■` ..---- | unscored |  | neither
+ event | W | unadjudicated/cw-2026-09-24-004205 | inferred | 3.745 | 325 | 5.91 | gap between letters read as a character gap (path kind word; fldigi: word), boundary unscored | `A`|`H` .... | unscored|unscored |  | neither
+ event | W | unadjudicated/cw-2026-09-24-004205 | inferred | 4.445 | 240 | 4.36 | gap between letters read as a character gap (path kind letter; fldigi: word), boundary unscored | `H`|`A` .- | unscored|unscored |  | neither
+ event | W | unadjudicated/cw-2026-09-24-004205 | inferred | 10.270 | 310 | 5.64 | gap between letters read as a character gap (path kind word; fldigi: word), boundary unscored | `1`|`3` ...-- | unscored|unscored |  | neither
+ event | W | unadjudicated/cw-2026-09-24-004205 | inferred | 11.280 | 335 | 6.09 | gap between letters read as a character gap (path kind word; fldigi: word), boundary unscored | `3`|`5` ..... | unscored|unscored |  | neither
+ event | W | unadjudicated/cw-2026-09-24-004205 | inferred | 14.145 | 330 | 6.00 | gap between letters read as a character gap (path kind word; fldigi: word), boundary unscored | `E`|`M` -- | unscored|unscored |  | neither
+ event | W | unadjudicated/cw-2026-09-24-004205 | inferred | 15.325 | 230 | 4.18 | gap between letters read as a character gap (path kind letter; fldigi: word), boundary unscored | `A`|`I` .. | unscored|unscored |  | neither
+ event | B | unadjudicated/cw-2026-09-24-004205 | inferred | 17.110 | 20 | 0.36 | dit kept under half a dit | `F` ..-. | unscored |  | neither
+ event | W | unadjudicated/cw-2026-09-24-004205 | inferred | 18.750 | 365 | 6.64 | gap between letters read as a character gap (path kind word; fldigi: word), boundary unscored | `J`|`U` ..- | unscored|unscored |  | neither
+ event | W | unadjudicated/cw-2026-09-24-004205 | inferred | 20.880 | 295 | 5.36 | gap between letters read as a character gap (path kind word; fldigi: word), boundary unscored | `E`|`L` .-.. | unscored|unscored |  | neither
+ event | W | unadjudicated/cw-2026-09-24-004205 | inferred | 22.645 | 230 | 4.18 | gap between letters read as a character gap (path kind letter; fldigi: word), boundary right, no space | `A`|`T` - | right|right | AT | at risk
+ event | W | unadjudicated/cw-2026-09-24-004205 | inferred | 24.425 | 325 | 5.91 | gap between letters read as a character gap (path kind word; fldigi: word), boundary right, no space | `Y`|`A` .- | right|right | YAHOO | at risk
+ event | W | unadjudicated/cw-2026-09-24-004205 | inferred | 25.015 | 340 | 6.18 | gap between letters read as a character gap (path kind word; fldigi: word), boundary right, no space | `A`|`H` .... | right|right | YAHOO | at risk
+ event | W | unadjudicated/cw-2026-09-24-004205 | inferred | 26.750 | 290 | 5.27 | gap between letters read as a character gap (path kind word; fldigi: word), boundary right, no space | `O`|`O` --- | right|right | YAHOO | at risk
+ event | W | unadjudicated/cw-2026-09-24-004205 | inferred | 28.680 | 365 | 6.64 | gap between letters read as a character gap (path kind word; fldigi: word), boundary unscored | `D`|`O` --- | right|unscored |  | neither
+ event | W | unadjudicated/cw-2026-09-24-004205 | inferred | 29.645 | 260 | 4.73 | gap between letters read as a character gap (path kind word; fldigi: word), boundary unscored | `O`|`E` . | unscored|unscored |  | neither
+ event | B- | unadjudicated/cw-2026-09-24-004234 | inferred | 0.255 | 40 | 0.73 | mark of the unprinted letter . beside it | `E` . | unscored |  | neither
+ event | B- | unadjudicated/cw-2026-09-24-004234 | inferred | 0.610 | 145 | 2.64 | mark of the unprinted letter - beside it | `C` -.-. | unscored |  | neither
+ event | W | unadjudicated/cw-2026-09-24-004234 | inferred | 6.335 | 235 | 4.27 | gap between letters read as a character gap (path kind letter; fldigi: word), boundary right, no space | `H`|`A` .- | right|right | THANK | at risk
+ event | W | unadjudicated/cw-2026-09-24-004234 | inferred | 6.835 | 240 | 4.36 | gap between letters read as a character gap (path kind letter; fldigi: word), boundary right, no space | `A`|`N` -. | right|right | THANK | at risk
+ event | W | unadjudicated/cw-2026-09-24-004234 | inferred | 7.330 | 235 | 4.27 | gap between letters read as a character gap (path kind letter; fldigi: word), boundary deleted | `N`|`T` - | right|wrong | YOU | fixable
+ event | B | unadjudicated/cw-2026-09-24-004234 | inferred | 9.260 | 20 | 0.36 | dit kept under half a dit | `K` -.- | unscored |  | neither
+ event | B | unadjudicated/cw-2026-09-24-004234 | inferred | 9.920 | 20 | 0.36 | dit kept under half a dit | `■` -.-.- | unscored |  | neither
+ event | B | unadjudicated/cw-2026-09-24-004234 | inferred | 10.135 | 20 | 0.36 | dit kept under half a dit | `■` -.-.- | unscored |  | neither
+ event | W | unadjudicated/cw-2026-09-24-004234 | inferred | 9.450 | 285 | 5.18 | gap between letters read as a character gap (path kind letter; fldigi: word), boundary unscored | `K`|`■` -.-.- | unscored|unscored |  | neither
+ event | B- | unadjudicated/cw-2026-09-24-004234 | inferred | 11.690 | 55 | 1.00 | mark of the unprinted letter . beside it | `T` - | unscored |  | neither
+ event | W | unadjudicated/cw-2026-09-24-004234 | inferred | 12.190 | 355 | 6.45 | gap between letters read as a character gap (path kind letter; fldigi: word), boundary unscored | `F`|`O` --- | unscored|unscored |  | neither
+ event | W | unadjudicated/cw-2026-09-24-004234 | inferred | 15.335 | 380 | 6.91 | gap between letters read as a character gap (path kind word; fldigi: word), boundary unscored | `O`|`N` -. | unscored|unscored |  | neither
+ event | W | unadjudicated/cw-2026-09-24-004234 | inferred | 17.340 | 425 | 7.73 | gap between letters read as a character gap (path kind word; fldigi: word), boundary unscored | `H`|`Y` -.-- | unscored|unscored |  | neither
+ event | W | unadjudicated/cw-2026-09-24-004234 | inferred | 18.470 | 295 | 5.36 | gap between letters read as a character gap (path kind letter; fldigi: word), boundary unscored | `Y`|`P` .--. | unscored|unscored |  | neither
+ event | B- | unadjudicated/cw-2026-09-24-004234 | inferred | 20.460 | 35 | 0.64 | mark of the unprinted letter .. beside it | `P` .--. | unscored |  | neither
+ event | W | unadjudicated/cw-2026-09-24-004234 | inferred | 22.260 | 270 | 4.91 | gap between letters read as a character gap (path kind letter; fldigi: word), boundary unscored | `A`|`I` .. | unscored|unscored |  | neither
+ event | W | unadjudicated/cw-2026-09-24-004234 | inferred | 24.770 | 245 | 4.45 | gap between letters read as a character gap (path kind letter; fldigi: word), boundary unscored | `Q`|`S` ... | unscored|unscored |  | neither
+ event | W | unadjudicated/cw-2026-09-24-004234 | inferred | 25.280 | 245 | 4.45 | gap between letters read as a character gap (path kind letter; fldigi: word), boundary unscored | `S`|`O` --- | unscored|unscored |  | neither
+ event | W | unadjudicated/cw-2026-09-24-004234 | inferred | 27.350 | 255 | 4.64 | gap between letters read as a character gap (path kind letter; fldigi: word), boundary unscored | `W`|`I` .. | unscored|unscored |  | neither
+ event | W | unadjudicated/cw-2026-09-24-004234 | inferred | 27.760 | 230 | 4.18 | gap between letters read as a character gap (path kind letter; fldigi: word), boundary unscored | `I`|`T` - | unscored|unscored |  | neither
+ event | W | unadjudicated/cw-2026-09-24-004234 | inferred | 28.140 | 225 | 4.09 | gap between letters read as a character gap (path kind letter; fldigi: word), boundary unscored | `T`|`H` .... | unscored|unscored |  | neither
+ event | B- | unadjudicated/cw-2026-09-24-004322 | inferred | 0.680 | 40 | 0.73 | mark of the unprinted letter ... beside it | `P` .--. | right | SPONSORED | neither
+ event | B- | unadjudicated/cw-2026-09-24-004322 | inferred | 0.790 | 40 | 0.73 | mark of the unprinted letter ... beside it | `P` .--. | right | SPONSORED | neither
+ event | W | unadjudicated/cw-2026-09-24-004322 | inferred | 5.330 | 245 | 4.45 | gap between letters read as a character gap (path kind letter; fldigi: word), boundary right, no space | `R`|`E` . | right|right | SPONSORED | at risk
+ event | W | unadjudicated/cw-2026-09-24-004322 | inferred | 5.615 | 245 | 4.45 | gap between letters read as a character gap (path kind letter; fldigi: word), boundary right, no space | `E`|`D` -.. | right|right | SPONSORED | at risk
+ event | W | unadjudicated/cw-2026-09-24-004322 | inferred | 7.315 | 305 | 5.55 | gap between letters read as a character gap (path kind word; fldigi: word), boundary right, no space | `A`|`M` -- | right|right | AMERICA | at risk
+ event | W | unadjudicated/cw-2026-09-24-004322 | inferred | 7.990 | 260 | 4.73 | gap between letters read as a character gap (path kind word; fldigi: word), boundary right, no space | `M`|`E` . | right|right | AMERICA | at risk
+ event | W | unadjudicated/cw-2026-09-24-004322 | inferred | 8.300 | 240 | 4.36 | gap between letters read as a character gap (path kind letter; fldigi: word), boundary right, no space | `E`|`R` .-. | right|right | AMERICA | at risk
+ event | W | unadjudicated/cw-2026-09-24-004322 | inferred | 8.920 | 265 | 4.82 | gap between letters read as a character gap (path kind word; fldigi: word), boundary right, no space | `R`|`I` .. | right|right | AMERICA | at risk
+ event | W | unadjudicated/cw-2026-09-24-004322 | inferred | 9.335 | 260 | 4.73 | gap between letters read as a character gap (path kind word; fldigi: word), boundary right, no space | `I`|`C` -.-. | right|right | AMERICA | at risk
+ event | W | unadjudicated/cw-2026-09-24-004322 | inferred | 10.190 | 225 | 4.09 | gap between letters read as a character gap (path kind letter; fldigi: word), boundary right, no space | `C`|`A` .- | right|right | AMERICA | at risk
+ event | W | unadjudicated/cw-2026-09-24-004322 | inferred | 12.215 | 310 | 5.64 | gap between letters read as a character gap (path kind word; fldigi: word), boundary unscored | `2`|`5` ..... | unscored|unscored |  | neither
+ event | W | unadjudicated/cw-2026-09-24-004322 | inferred | 15.865 | 225 | 4.09 | gap between letters read as a character gap (path kind letter; fldigi: word), boundary right, no space | `O`|`P` .--. | right|right | OPERATION | at risk
+ event | W | unadjudicated/cw-2026-09-24-004322 | inferred | 16.685 | 320 | 5.82 | gap between letters read as a character gap (path kind word; fldigi: word), boundary right, no space | `P`|`E` . | right|right | OPERATION | at risk
+ event | W | unadjudicated/cw-2026-09-24-004322 | inferred | 17.050 | 250 | 4.55 | gap between letters read as a character gap (path kind letter; fldigi: word), boundary right, no space | `E`|`R` .-. | right|right | OPERATION | at risk
+ event | W | unadjudicated/cw-2026-09-24-004322 | inferred | 17.670 | 245 | 4.45 | gap between letters read as a character gap (path kind letter; fldigi: word), boundary right, no space | `R`|`A` .- | right|right | OPERATION | at risk
+ event | W | unadjudicated/cw-2026-09-24-004322 | inferred | 18.180 | 315 | 5.73 | gap between letters read as a character gap (path kind word; fldigi: word), boundary right, no space | `A`|`T` - | right|right | OPERATION | at risk
+ event | W | unadjudicated/cw-2026-09-24-004322 | inferred | 18.645 | 270 | 4.91 | gap between letters read as a character gap (path kind word; fldigi: word), boundary right, no space | `T`|`I` .. | right|right | OPERATION | at risk
+ event | W | unadjudicated/cw-2026-09-24-004322 | inferred | 19.070 | 275 | 5.00 | gap between letters read as a character gap (path kind word; fldigi: word), boundary right, no space | `I`|`O` --- | right|right | OPERATION | at risk
+ event | W | unadjudicated/cw-2026-09-24-004322 | inferred | 25.110 | 325 | 5.91 | gap between letters read as a character gap (path kind word; fldigi: word), boundary right, no space | `L`|`O` --- | right|right | LOGS | at risk
+ event | W | unadjudicated/cw-2026-09-24-004322 | inferred | 26.030 | 275 | 5.00 | gap between letters read as a character gap (path kind word; fldigi: word), boundary right, no space | `O`|`G` --. | right|right | LOGS | at risk
+ event | W | unadjudicated/cw-2026-09-24-004322 | inferred | 26.790 | 320 | 5.82 | gap between letters read as a character gap (path kind word; fldigi: word), boundary right, no space | `G`|`S` ... | right|right | LOGS | at risk
+ event | W | unadjudicated/cw-2026-09-24-004322 | inferred | 28.505 | 260 | 4.73 | gap between letters read as a character gap (path kind letter; fldigi: word), boundary unscored | `W`|`I` .. | right|unscored |  | neither
+ event | C | unadjudicated/cw-2026-09-24-004322 | inferred | 29.895 | 105 | 1.91 | dah at or under two dits (fldigi: a dit) | `A` .- | unscored |  | neither
+ event | W | unadjudicated/cw-2026-09-24-004347 | inferred | 8.240 | 295 | 5.36 | gap between letters read as a character gap (path kind word; fldigi: word), boundary right, no space | `P`|`L` .-.. | right|right | UPLOADED | at risk
+ event | W | unadjudicated/cw-2026-09-24-004347 | inferred | 9.025 | 350 | 6.36 | gap between letters read as a character gap (path kind word; fldigi: word), boundary right, no space | `L`|`O` --- | right|right | UPLOADED | at risk
+ event | W | unadjudicated/cw-2026-09-24-004347 | inferred | 10.425 | 290 | 5.27 | gap between letters read as a character gap (path kind word; fldigi: word), boundary right, no space | `A`|`D` -.. | right|right | UPLOADED | at risk
+ event | W | unadjudicated/cw-2026-09-24-004347 | inferred | 11.085 | 310 | 5.64 | gap between letters read as a character gap (path kind word; fldigi: word), boundary right, no space | `D`|`E` . | right|right | UPLOADED | at risk
+ event | W | unadjudicated/cw-2026-09-24-004347 | inferred | 11.435 | 290 | 5.27 | gap between letters read as a character gap (path kind word; fldigi: word), boundary right, no space | `E`|`D` -.. | right|right | UPLOADED | at risk
+ event | W | unadjudicated/cw-2026-09-24-004347 | inferred | 13.020 | 245 | 4.45 | gap between letters read as a character gap (path kind letter; fldigi: word), boundary right, no space | `T`|`O` --- | right|right | TO | at risk
+ event | W | unadjudicated/cw-2026-09-24-004347 | inferred | 14.820 | 355 | 6.45 | gap between letters read as a character gap (path kind letter; fldigi: word), boundary right, no space | `A`|`R` .-. | right|right | ARRL | at risk
+ event | W | unadjudicated/cw-2026-09-24-004347 | inferred | 15.555 | 240 | 4.36 | gap between letters read as a character gap (path kind letter; fldigi: word), boundary right, no space | `R`|`R` .-. | right|right | ARRL | at risk
+ event | W | unadjudicated/cw-2026-09-24-004347 | inferred | 19.285 | 390 | 7.09 | gap between letters read as a character gap (path kind word; fldigi: word), boundary right, no space | `O`|`T` - | right|right | LOTW | at risk
+ event | W | unadjudicated/cw-2026-09-24-004347 | inferred | 19.820 | 355 | 6.45 | gap between letters read as a character gap (path kind letter; fldigi: word), boundary right, no space | `T`|`W` .-- | right|right | LOTW | at risk
+ event | W | unadjudicated/cw-2026-09-24-004347 | inferred | 22.990 | 255 | 4.43 | gap between letters read as a character gap (path kind letter; fldigi: word), boundary unscored | `A`|`N` -. | unscored|unscored |  | neither
+ event | W | unadjudicated/cw-2026-09-24-004347 | inferred | 23.510 | 300 | 5.22 | gap between letters read as a character gap (path kind letter; fldigi: word), boundary unscored | `N`|`T` - | unscored|unscored |  | neither
+ event | W | unadjudicated/cw-2026-09-24-004347 | inferred | 23.960 | 300 | 5.22 | gap between letters read as a character gap (path kind letter; fldigi: word), boundary unscored | `T`|`H` .... | unscored|unscored |  | neither
+ event | W | unadjudicated/cw-2026-09-24-004347 | inferred | 24.640 | 280 | 4.87 | gap between letters read as a character gap (path kind letter; fldigi: word), boundary unscored | `H`|`O` --- | unscored|unscored |  | neither
+ event | W | unadjudicated/cw-2026-09-24-004347 | inferred | 25.515 | 225 | 4.09 | gap between letters read as a character gap (path kind letter; fldigi: word), boundary unscored | `O`|`N` -. | unscored|unscored |  | neither
+ event | W | unadjudicated/cw-2026-09-24-004347 | inferred | 26.000 | 230 | 4.18 | gap between letters read as a character gap (path kind letter; fldigi: word), boundary unscored | `N`|`Y` -.-- | unscored|unscored |  | neither
+ event | W | unadjudicated/cw-2026-09-24-004347 | inferred | 28.150 | 285 | 5.18 | gap between letters read as a character gap (path kind letter; fldigi: word), boundary unscored | `L`|`U` ..- | unscored|unscored |  | neither
+ event | W | unadjudicated/cw-2026-09-24-004347 | inferred | 28.805 | 275 | 5.00 | gap between letters read as a character gap (path kind letter; fldigi: word), boundary unscored | `U`|`S` ... | unscored|unscored |  | neither
+ event | W | unadjudicated/cw-2026-09-24-004347 | inferred | 29.345 | 375 | 6.82 | gap between letters read as a character gap (path kind word; fldigi: word), boundary unscored | `S`|`N` -. | unscored|unscored |  | neither
+ event | W | unadjudicated/cw-2026-09-24-004405 | inferred | 6.550 | 280 | 5.09 | gap between letters read as a character gap (path kind word; fldigi: word), boundary unscored | `H`|`O` --- | unscored|unscored |  | neither
+ event | W | unadjudicated/cw-2026-09-24-004405 | inferred | 7.425 | 225 | 4.09 | gap between letters read as a character gap (path kind letter; fldigi: word), boundary unscored | `O`|`N` -. | unscored|unscored |  | neither
+ event | W | unadjudicated/cw-2026-09-24-004405 | inferred | 7.915 | 225 | 4.09 | gap between letters read as a character gap (path kind letter; fldigi: word), boundary unscored | `N`|`Y` -.-- | unscored|unscored |  | neither
+ event | W | unadjudicated/cw-2026-09-24-004405 | inferred | 10.060 | 285 | 5.18 | gap between letters read as a character gap (path kind word; fldigi: word), boundary unscored | `L`|`U` ..- | unscored|unscored |  | neither
+ event | W | unadjudicated/cw-2026-09-24-004405 | inferred | 10.715 | 275 | 5.00 | gap between letters read as a character gap (path kind word; fldigi: word), boundary unscored | `U`|`S` ... | unscored|unscored |  | neither
+ event | W | unadjudicated/cw-2026-09-24-004405 | inferred | 11.260 | 370 | 6.73 | gap between letters read as a character gap (path kind word; fldigi: word), boundary unscored | `S`|`C` -.-. | unscored|unscored |  | neither
+ event | W | unadjudicated/cw-2026-09-24-004405 | inferred | 12.225 | 285 | 5.18 | gap between letters read as a character gap (path kind word; fldigi: word), boundary unscored | `C`|`R` .-. | unscored|unscored |  | neither
+ event | W | unadjudicated/cw-2026-09-24-004405 | inferred | 18.535 | 315 | 5.73 | gap between letters read as a character gap (path kind word; fldigi: word), boundary unscored | `W`|`1` .---- | unscored|unscored |  | neither
+ event | W | unadjudicated/cw-2026-09-24-004405 | inferred | 19.780 | 265 | 4.82 | gap between letters read as a character gap (path kind word; fldigi: word), boundary unscored | `1`|`A` .- | unscored|unscored |  | neither
+ event | W | unadjudicated/cw-2026-09-24-004405 | inferred | 20.300 | 260 | 4.73 | gap between letters read as a character gap (path kind word; fldigi: word), boundary unscored | `A`|`W` .-- | unscored|unscored |  | neither
+ event | W | unadjudicated/cw-2026-09-24-004405 | inferred | 21.045 | 350 | 6.36 | gap between letters read as a character gap (path kind word; fldigi: word), boundary unscored | `W`|`/` -..-. | unscored|unscored |  | neither
+ event | W | unadjudicated/cw-2026-09-24-004405 | inferred | 22.100 | 345 | 6.27 | gap between letters read as a character gap (path kind word; fldigi: word), boundary unscored | `/`|`8` ---.. | unscored|unscored |  | neither
+ event | B | unadjudicated/cw-2026-09-24-004405 | inferred | 24.105 | 20 | 0.36 | dit kept under half a dit | `■` ...-. | unscored |  | neither
+ event | W | unadjudicated/cw-2026-09-24-004405 | inferred | 24.680 | 375 | 6.82 | gap between letters read as a character gap (path kind word; fldigi: word), boundary unscored | `■`|`O` --- | unscored|right | OORDIN | neither
+ event | W | unadjudicated/cw-2026-09-24-004405 | inferred | 25.655 | 265 | 4.82 | gap between letters read as a character gap (path kind word; fldigi: word), boundary right, no space | `O`|`O` --- | right|right | OORDIN | at risk
+ event | W | unadjudicated/cw-2026-09-24-004405 | inferred | 26.515 | 240 | 4.36 | gap between letters read as a character gap (path kind letter; fldigi: word), boundary right, no space | `O`|`R` .-. | right|right | OORDIN | at risk
+ event | W | unadjudicated/cw-2026-09-24-004405 | inferred | 27.130 | 320 | 5.82 | gap between letters read as a character gap (path kind word; fldigi: word), boundary right, no space | `R`|`D` -.. | right|right | OORDIN | at risk
+ event | W | unadjudicated/cw-2026-09-24-004405 | inferred | 27.825 | 310 | 5.64 | gap between letters read as a character gap (path kind word; fldigi: word), boundary right, no space | `D`|`I` .. | right|right | OORDIN | at risk
+ event | W | unadjudicated/cw-2026-09-24-004405 | inferred | 28.285 | 245 | 4.45 | gap between letters read as a character gap (path kind letter; fldigi: word), boundary right, no space | `I`|`N` -. | right|right | OORDIN | at risk
+ event | W | unadjudicated/cw-2026-09-24-004405 | inferred | 28.795 | 255 | 4.64 | gap between letters read as a character gap (path kind word; fldigi: word), boundary unscored | `N`|`A` .- | right|unscored |  | neither
+ event | W | unadjudicated/cw-2026-09-24-004405 | inferred | 29.315 | 345 | 6.27 | gap between letters read as a character gap (path kind word; fldigi: word), boundary unscored | `A`|`T` - | unscored|unscored |  | neither
+ event | W | unadjudicated/cw-2026-09-24-004427 | inferred | 2.480 | 380 | 6.91 | gap between letters read as a character gap (path kind word; fldigi: word), boundary unscored | `F`|`O` --- | unscored|unscored |  | neither
+ event | W | unadjudicated/cw-2026-09-24-004427 | inferred | 3.455 | 265 | 4.82 | gap between letters read as a character gap (path kind word; fldigi: word), boundary unscored | `O`|`O` --- | unscored|unscored |  | neither
+ event | W | unadjudicated/cw-2026-09-24-004427 | inferred | 4.315 | 240 | 4.36 | gap between letters read as a character gap (path kind letter; fldigi: word), boundary unscored | `O`|`R` .-. | unscored|unscored |  | neither
+ event | W | unadjudicated/cw-2026-09-24-004427 | inferred | 4.930 | 320 | 5.82 | gap between letters read as a character gap (path kind word; fldigi: word), boundary unscored | `R`|`D` -.. | unscored|unscored |  | neither
+ event | W | unadjudicated/cw-2026-09-24-004427 | inferred | 5.625 | 310 | 5.64 | gap between letters read as a character gap (path kind word; fldigi: word), boundary unscored | `D`|`I` .. | unscored|unscored |  | neither
+ event | W | unadjudicated/cw-2026-09-24-004427 | inferred | 6.085 | 245 | 4.45 | gap between letters read as a character gap (path kind letter; fldigi: word), boundary unscored | `I`|`N` -. | unscored|unscored |  | neither
+ event | W | unadjudicated/cw-2026-09-24-004427 | inferred | 6.595 | 255 | 4.64 | gap between letters read as a character gap (path kind word; fldigi: word), boundary unscored | `N`|`A` .- | unscored|right | ATOR | neither
+ event | W | unadjudicated/cw-2026-09-24-004427 | inferred | 7.115 | 345 | 6.27 | gap between letters read as a character gap (path kind word; fldigi: word), boundary right, no space | `A`|`T` - | right|right | ATOR | at risk
+ event | W | unadjudicated/cw-2026-09-24-004427 | inferred | 7.615 | 310 | 5.64 | gap between letters read as a character gap (path kind word; fldigi: word), boundary right, no space | `T`|`O` --- | right|right | ATOR | at risk
+ event | W | unadjudicated/cw-2026-09-24-004427 | inferred | 10.335 | 285 | 5.18 | gap between letters read as a character gap (path kind word; fldigi: word), boundary unscored | `<AR>`|`N` -. | unscored|unscored |  | neither
+ event | W | unadjudicated/cw-2026-09-24-004427 | inferred | 14.105 | 320 | 5.57 | gap between letters read as a character gap (path kind word; fldigi: word), boundary right, no space | `T`|`N` -. | right|right | TNX | at risk
+ event | B- | unadjudicated/cw-2026-09-24-004427 | inferred | 16.185 | 45 | 0.75 | mark of the unprinted letter .. beside it | `T` - | unscored |  | neither
+ event | B- | unadjudicated/cw-2026-09-24-004427 | inferred | 16.300 | 45 | 0.75 | mark of the unprinted letter .. beside it | `T` - | unscored |  | neither
+ event | W | unadjudicated/cw-2026-09-24-004427 | inferred | 15.525 | 305 | 5.08 | gap between letters read as a character gap (path kind word; fldigi: word), boundary unscored | `6`|`T` - | unscored|unscored |  | neither
+ event | W | unadjudicated/cw-2026-09-24-004427 | inferred | 16.345 | 245 | 4.26 | gap between letters read as a character gap (path kind letter; fldigi: word), boundary unscored | `B`|`R` .-. | unscored|unscored |  | neither
+ event | B- | unadjudicated/cw-2026-09-24-004427 | inferred | 17.500 | 35 | 0.61 | mark of the unprinted letter . beside it | `E` . | unscored |  | neither
+ event | W | unadjudicated/cw-2026-09-24-004427 | inferred | 19.725 | 240 | 4.17 | gap between letters read as a character gap (path kind letter; fldigi: word), boundary unscored | `D`|`E` . | unscored|unscored |  | neither
+ event | W | unadjudicated/cw-2026-09-24-004427 | inferred | 20.020 | 235 | 4.09 | gap between letters read as a character gap (path kind letter; fldigi: word), boundary unscored | `E`|`W` .-- | unscored|unscored |  | neither
+ event | W | unadjudicated/cw-2026-09-24-004427 | inferred | 22.185 | 315 | 5.48 | gap between letters read as a character gap (path kind word; fldigi: word), boundary unscored | `2`|`G` --. | unscored|unscored |  | neither
+ event | W | unadjudicated/cw-2026-09-24-004510 | inferred | 2.100 | 220 | 4.40 | gap between letters read as a character gap (path kind letter; fldigi: word), boundary unscored | `1`|`U` ..- | unscored|unscored |  | neither
+ event | W | unadjudicated/cw-2026-09-24-004510 | inferred | 4.575 | 215 | 4.30 | gap between letters read as a character gap (path kind letter; fldigi: word), boundary unscored | `L`|`T` - | unscored|unscored |  | neither
+ event | B- | unadjudicated/cw-2026-09-24-004510 | inferred | 6.650 | 35 | 0.70 | mark of the unprinted letter ... beside it | `S` ... | unscored |  | neither
+ event | B- | unadjudicated/cw-2026-09-24-004510 | inferred | 6.765 | 25 | 0.50 | mark of the unprinted letter ... beside it | `S` ... | unscored |  | neither
+ event | B- | unadjudicated/cw-2026-09-24-004510 | inferred | 6.870 | 60 | 1.20 | mark of the unprinted letter ... beside it | `S` ... | unscored |  | neither
+ event | B- | unadjudicated/cw-2026-09-24-004510 | inferred | 7.585 | 30 | 0.60 | mark of the unprinted letter . beside it | `S` ... | unscored |  | neither
+ event | B- | unadjudicated/cw-2026-09-24-004510 | inferred | 7.720 | 25 | 0.50 | mark of the unprinted letter . beside it | `S` ... | unscored |  | neither
+ event | W | unadjudicated/cw-2026-09-24-004510 | inferred | 8.440 | 275 | 5.50 | gap between letters read as a character gap (path kind word; fldigi: word), boundary unscored | `S`|`B` -... | unscored|unscored |  | neither
+ event | W | unadjudicated/cw-2026-09-24-004510 | inferred | 11.800 | 305 | 5.81 | gap between letters read as a character gap (path kind word; fldigi: word), boundary unscored | `K`|`Y` -.-- | unscored|unscored |  | neither
+ event | W | unadjudicated/cw-2026-09-24-004510 | inferred | 12.750 | 235 | 4.48 | gap between letters read as a character gap (path kind letter; fldigi: word), boundary unscored | `Y`|`A` .- | unscored|unscored |  | neither
+ event | B- | unadjudicated/cw-2026-09-24-004510 | inferred | 16.210 | 35 | 0.61 | mark of the unprinted letter . beside it | `E` . | unscored |  | neither
+ event | W | unadjudicated/cw-2026-09-24-004510 | inferred | 18.145 | 230 | 4.38 | gap between letters read as a character gap (path kind letter; fldigi: word), boundary right, no space | `K`|`A` .- | right|right | KA2GJV | at risk
+ event | W | unadjudicated/cw-2026-09-24-004510 | inferred | 19.560 | 275 | 5.24 | gap between letters read as a character gap (path kind word; fldigi: word), boundary right, no space | `2`|`G` --. | right|right | KA2GJV | at risk
+ event | W | unadjudicated/cw-2026-09-24-004510 | inferred | 20.275 | 225 | 4.50 | gap between letters read as a character gap (path kind letter; fldigi: word), boundary right, no space | `G`|`J` .--- | right|right | KA2GJV | at risk
+ event | W | unadjudicated/cw-2026-09-24-004510 | inferred | 21.145 | 225 | 4.50 | gap between letters read as a character gap (path kind letter; fldigi: word), boundary right, no space | `J`|`V` ...- | right|right | KA2GJV | at risk
+ event | W | unadjudicated/cw-2026-09-24-004510 | inferred | 22.635 | 325 | 6.50 | gap between letters read as a character gap (path kind word; fldigi: word), boundary unscored | `T`|`Q` --.- | unscored|unscored |  | neither
+ event | W | unadjudicated/cw-2026-09-24-004510 | inferred | 27.135 | 255 | 5.10 | gap between letters read as a character gap (path kind word; fldigi: word), boundary right, no space | `S`|`B` -... | right|right | AA3SB | at risk
+ event | W | unadjudicated/cw-2026-09-24-004550 | inferred | 8.125 | 235 | 4.70 | gap between letters read as a character gap (path kind word; fldigi: word), boundary unscored | `O`|`T` - | unscored|unscored |  | neither
+ event | B- | unadjudicated/cw-2026-09-24-004550 | inferred | 12.360 | 35 | 0.70 | mark of the unprinted letter . beside it | `K` -.- | unscored |  | neither
+ event | B- | unadjudicated/cw-2026-09-24-004550 | inferred | 12.470 | 145 | 2.90 | mark of the unprinted letter .- beside it | `A` .- | unscored |  | neither
+ event | W | unadjudicated/cw-2026-09-24-004550 | inferred | 13.065 | 245 | 4.90 | gap between letters read as a character gap (path kind word; fldigi: word), boundary unscored | `A`|`3` ...-- | unscored|unscored |  | neither
+ event | W | unadjudicated/cw-2026-09-24-004550 | inferred | 14.025 | 225 | 4.50 | gap between letters read as a character gap (path kind letter; fldigi: word), boundary unscored | `3`|`H` .... | unscored|unscored |  | neither
+ event | W | unadjudicated/cw-2026-09-24-004550 | inferred | 19.120 | 245 | 4.45 | gap between letters read as a character gap (path kind letter; fldigi: word), boundary right, no space | `G`|`J` .--- | right|right | KA2GJV | at risk
+ event | W | unadjudicated/cw-2026-09-24-004550 | inferred | 20.070 | 235 | 4.27 | gap between letters read as a character gap (path kind letter; fldigi: word), boundary right, no space | `J`|`V` ...- | right|right | KA2GJV | at risk
+ event | W | unadjudicated/cw-2026-09-24-004550 | inferred | 22.780 | 230 | 4.18 | gap between letters read as a character gap (path kind letter; fldigi: word), boundary unscored | `R`|`O` --- | unscored|unscored |  | neither
+ event | W | unadjudicated/cw-2026-09-24-004550 | inferred | 23.605 | 240 | 4.36 | gap between letters read as a character gap (path kind letter; fldigi: word), boundary unscored | `O`|`B` -... | unscored|unscored |  | neither
+ event | W | unadjudicated/cw-2026-09-24-004550 | inferred | 24.330 | 250 | 4.55 | gap between letters read as a character gap (path kind letter; fldigi: word), boundary unscored | `B`|`I` .. | unscored|unscored |  | neither
+ event | W | unadjudicated/cw-2026-09-24-004550 | inferred | 25.165 | 240 | 4.36 | gap between letters read as a character gap (path kind letter; fldigi: word), boundary unscored | `N`|`?` ..--.. | unscored|unscored |  | neither
+ event | B- | unadjudicated/cw-2026-09-24-004550 | inferred | 28.565 | 50 | 0.91 | mark of the unprinted letter ..-. beside it | `T` - | unscored |  | neither
+ event | B- | unadjudicated/cw-2026-09-24-004550 | inferred | 28.675 | 45 | 0.82 | mark of the unprinted letter ..-. beside it | `T` - | unscored |  | neither
+ event | B- | unadjudicated/cw-2026-09-24-004550 | inferred | 28.800 | 165 | 3.00 | mark of the unprinted letter ..-. beside it | `T` - | unscored |  | neither
+ event | B- | unadjudicated/cw-2026-09-24-004550 | inferred | 29.020 | 45 | 0.82 | mark of the unprinted letter ..-. beside it | `T` - | unscored |  | neither
+ event | B- | unadjudicated/cw-2026-09-24-004550 | inferred | 29.795 | 55 | 1.00 | mark of the unprinted letter .. beside it | `T` - | unscored |  | neither
+ event | B- | unadjudicated/cw-2026-09-24-004550 | inferred | 29.905 | 50 | 0.91 | mark of the unprinted letter .. beside it | `T` - | unscored |  | neither
+ event | W | cq-18wpm-15db-char5 | exact | 2.945 | 470 | 6.96 | gap between letters read as a character gap (path kind word; fldigi: word), boundary deleted | `Q`|`C` -.-. | right|right | CQ | fixable
+ event | W | cq-18wpm-15db-char5 | exact | 4.145 | 340 | 5.04 | gap between letters read as a character gap (path kind word; fldigi: word), boundary right, no space | `C`|`Q` --.- | right|right | CQ | at risk
+ event | W | cq-18wpm-15db-char5 | exact | 5.345 | 470 | 6.96 | gap between letters read as a character gap (path kind word; fldigi: word), boundary deleted | `Q`|`C` -.-. | right|right | CQ | fixable
+ event | W | cq-18wpm-15db-char5 | exact | 6.545 | 340 | 5.04 | gap between letters read as a character gap (path kind word; fldigi: word), boundary right, no space | `C`|`Q` --.- | right|right | CQ | at risk
+ event | W | cq-18wpm-15db-char5 | exact | 7.745 | 470 | 6.96 | gap between letters read as a character gap (path kind word; fldigi: word), boundary deleted | `Q`|`D` -.. | right|right | DE | fixable
+ event | W | cq-18wpm-15db-char5 | exact | 8.675 | 340 | 5.04 | gap between letters read as a character gap (path kind word; fldigi: word), boundary right, no space | `D`|`E` . | right|right | DE | at risk
+ event | W | cq-18wpm-15db-char5 | exact | 9.080 | 470 | 6.96 | gap between letters read as a character gap (path kind word; fldigi: word), boundary deleted | `E`|`N` -. | right|right | N0CALL | fixable
+ event | W | cq-18wpm-15db-char5 | exact | 9.880 | 335 | 4.96 | gap between letters read as a character gap (path kind word; fldigi: word), boundary right, no space | `N`|`0` ----- | right|right | N0CALL | at risk
+ event | W | cq-18wpm-15db-char5 | exact | 15.080 | 470 | 6.96 | gap between letters read as a character gap (path kind word; fldigi: word), boundary deleted | `L`|`N` -. | right|right | N0CALL | fixable
+ event | W | cq-18wpm-15db-char5 | exact | 17.480 | 340 | 5.23 | gap between letters read as a character gap (path kind word; fldigi: word), boundary right, no space | `0`|`C` -.-. | right|right | N0CALL | at risk
+ event | W | cq-18wpm-15db-char5 | exact | 18.545 | 340 | 5.04 | gap between letters read as a character gap (path kind word; fldigi: word), boundary right, no space | `C`|`A` .- | right|right | N0CALL | at risk
+ event | W | cq-18wpm-15db-char5 | exact | 19.210 | 340 | 5.23 | gap between letters read as a character gap (path kind word; fldigi: word), boundary right, no space | `A`|`L` .-.. | right|right | N0CALL | at risk
+ event | W | cq-18wpm-5db-char5 | exact | 2.940 | 480 | 7.11 | gap between letters read as a character gap (path kind word; fldigi: word), boundary deleted | `Q`|`C` -.-. | right|right | CQ | fixable
+ event | W | cq-18wpm-5db-char5 | exact | 8.680 | 345 | 5.31 | gap between letters read as a character gap (path kind letter; fldigi: word), boundary right, no space | `E`|`E` . | wrong|right | DE | at risk
+ event | B | cq-18wpm-5db-char5 | exact | 10.450 | 25 | 0.38 | dit kept under half a dit | `■` -.-.- | placeholder | DE | neither
+ event | B | cq-18wpm-5db-char5 | exact | 10.700 | 25 | 0.38 | dit kept under half a dit | `■` -.-.- | placeholder | DE | neither
+ event | B | cq-18wpm-5db-char5 | exact | 11.235 | 25 | 0.38 | dit kept under half a dit | `K` -.- | added | DE | fixable
+ event | W | cq-18wpm-5db-char5 | exact | 11.475 | 345 | 5.31 | gap between letters read as a character gap (path kind letter; fldigi: word), boundary right, no space | `K`|`T` - | added|added | DE | at risk
+ event | B | cq-18wpm-5db-char5 | exact | 12.445 | 25 | 0.38 | dit kept under half a dit | `D` -.. | wrong | N0CALL | fixable
+ event | B | cq-18wpm-5db-char5 | exact | 12.980 | 25 | 0.38 | dit kept under half a dit | `U` ..- | wrong | N0CALL | fixable
+ event | W | cq-18wpm-5db-char5 | exact | 12.545 | 340 | 5.23 | gap between letters read as a character gap (path kind letter; fldigi: word), boundary right, no space | `D`|`U` ..- | wrong|wrong | N0CALL | at risk
+ event | B | cq-18wpm-5db-char5 | exact | 13.635 | 25 | 0.38 | dit kept under half a dit | `U` ..- | wrong | N0CALL | fixable
+ event | W | cq-18wpm-5db-char5 | exact | 13.215 | 340 | 5.23 | gap between letters read as a character gap (path kind letter; fldigi: word), boundary right, no space | `U`|`U` ..- | wrong|wrong | N0CALL | at risk
+ event | B | cq-18wpm-5db-char5 | exact | 14.565 | 25 | 0.38 | dit kept under half a dit | `U` ..- | wrong | N0CALL | fixable
+ event | W | cq-18wpm-5db-char5 | exact | 14.145 | 340 | 5.23 | gap between letters read as a character gap (path kind letter; fldigi: word), boundary right, no space | `E`|`U` ..- | wrong|wrong | N0CALL | at risk
+ event | W | cq-18wpm-5db-char5 | exact | 15.075 | 475 | 7.04 | gap between letters read as a character gap (path kind word; fldigi: word), boundary deleted | `E`|`N` -. | wrong|right | N0CALL | fixable
+ event | W | cq-18wpm-5db-char5 | exact | 17.455 | 365 | 5.41 | gap between letters read as a character gap (path kind word; fldigi: word), boundary right, no space | `0`|`C` -.-. | right|right | N0CALL | at risk
+ event | W | cq-18wpm-5db-char5 | exact | 18.540 | 350 | 5.19 | gap between letters read as a character gap (path kind word; fldigi: word), boundary right, no space | `C`|`A` .- | right|right | N0CALL | at risk
+ event | W | cq-18wpm-5db-char5 | exact | 19.215 | 340 | 5.04 | gap between letters read as a character gap (path kind word; fldigi: word), boundary right, no space | `A`|`L` .-.. | right|right | N0CALL | at risk
+ rank | technique | events | fixable (in wrong or added letters, at wrong boundaries) | at risk (in right letters, at right boundaries) | neither | fixable less at risk
+ rank | C | 20 | 5 | 1 | 14 | 4
+ rank | B | 110 | 6 | 23 | 81 | -17
+ rank | W | 246 | 17 | 98 | 131 | -81
+ rank | B- | 48 | listed only: marks at or over half a dit that ours discards, which (B)'s form does not restore
+ refused-D | 031948 `110,` | 1 event(s): W gap between letters read as a word gap (path kind letter; fldigi: character), boundary unscored at 2.680 s, 3.00 dits, neither
+ refused-D | 004507 `EACH` | 2 event(s): W gap between letters read as a character gap (path kind letter; fldigi: word), boundary right, no space at 12.515 s, 4.20 dits, at risk; W gap between letters read as a character gap (path kind word; fldigi: word), boundary right, no space at 13.280 s, 5.10 dits, at risk
+ refused-D | 031905 `PREDICTED` | 1 event(s): B dit kept under half a dit at 5.375 s, 0.44 dits, at risk
+ form | C | where: CwProbabilisticDecoder, the span bounds of the two mark kinds, in DecodeAt (1265-1266) and in the rival lattice (1509-1510) alike | edge: 2 dits - a key-down span of at most floor(2 x unit) hops can only be a dit and a longer one only a dah (cw.cxx:846-855, element_usec <= two_dots); the length penalty is unchanged | the dit: the unit of the speed the lattice is run at, 1200 / WPM / 5 hops, the read's own speed whether measured, won on the grid or overruled by the marks
+ form | B | where: CwProbabilisticDecoder, the shortest key-down span, in DecodeAt (1265) and in the rival lattice (1509) alike | edge: 0.5 dit - no key-down segment shorter than ceil(unit / 2) hops, the larger of that and today's floor, so a shorter mark falls to the key-up segment around it (cw.cxx:515, 818-822); fldigi's reset of the character in progress is not taken | the dit: the unit of the speed the lattice is run at, as for C
+ form | W | where: CwProbabilisticDecoder, the span bounds of the three key-up kinds, in DecodeAt (1265-1266) and in the rival lattice (1509-1510) alike; CwProbabilisticStream's relabel (Spaced) is left as it is, since it only takes spaces out | edges: 2 and 4 dits - an element gap only under 2 dits (longest ceil(2 x unit) - 1 hops), a character gap from 2 to 4 dits (ceil(2 x unit) to floor(4 x unit) hops), a word gap only past 4 dits (from floor(4 x unit) + 1 hops) (cw.cxx:883-914); each kind's wanted length and so its penalty unchanged, held gaps included | the dit: the unit of the speed the lattice is run at, as for C, whether or not the sender's gaps are held
+
+
+
+Test Run Successful.
+Total tests: 1
+     Passed: 1
+ Total time: 2.0965 Minutes
+RC=0 WALL=127s

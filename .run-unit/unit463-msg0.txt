@@ -1,0 +1,16 @@
+unit463 task 0: entry at step 9 - every figure as at 462's exit, both decoders' texts, ours' classes and the 35-row V-11 table saved; the runner's writes as they are; 1.13.150 (9.4)
+
+Build 0 errors. Engine line 178 of 178. App line 278 of 278 on the one rerun
+(first run lost 2 TheCqPressWritesTheLabelTheOperatorPressed cases to Avalonia's
+headless dispatcher loop, DECIDED (8)). Floors: named 13 of 13, captures 51 of 51,
+adjudicated 13 of 13. Port's own tests 8 of 8; both decoders scored alike 5 of 5.
+
+Real (inferred): MET-CER-SURE 33 of 436, MET-INVENTED 33 over 473, coverage 403
+over 473, MET-WBE 37 (29 ins, 8 del) over 113. Synthetic (exact): 14 of 173, 14
+over 252, 159 over 252, 44 (13 ins, 31 del) over 84. Ours decodes 690 s of real
+audio in 51.47 s.
+
+Record: UNIT 463 - STEP 9 in both PHASE_OUTCOME.md copies; PHASE_STATUS.md names
+463 at CURRENT_STEP 9 in both copies. Version 1.13.149 to 1.13.150.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

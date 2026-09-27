@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-TASK: 4 of 4
-WORK_INSTRUCTION: 462 - one fldigi technique earns its place in ours: the spike rule, the two-dot class edge or the word-space edge, screened under R78
+STATE: EXECUTING
+TASK: 0 of 4
+WORK_INSTRUCTION: 463 - the last fldigi technique nobody has tried: its detection front end, a half-dit integrator at the speed in force and its AGC-normalized level, screened on every recording and kept under R78
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-27T00:25:40-04:00
-NOTE: Unit 462 done: C, B and W all refused under R78 and reverted (W closest - every total right, 3 recordings worse); 9.4 open; exit as entry; output.md written
+UPDATED: 2026-09-27T00:58:29-04:00
+NOTE: Task 0 figures all as at 462s exit; committing the record, the runner writes and the entry printouts
 
 ---
 
