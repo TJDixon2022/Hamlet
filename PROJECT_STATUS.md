@@ -6,8 +6,8 @@ WORK_INSTRUCTION: 468 - the TX-* sender profiles generated with exact keys by co
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-27T11:52:01-04:00
-NOTE: Task 2 done - HM-REQ-050 not met on TX-ITU, KEYER-W, FARNS, TIGHT; floors and both lines green; committing, then the 7.2 tick
+UPDATED: 2026-09-27T11:52:19-04:00
+NOTE: Task 2 - ticking 7.2: profiles produced, proof watched red then green, recipe written, HM-REQ-050 measured (not met on all four)
 
 ---
 
