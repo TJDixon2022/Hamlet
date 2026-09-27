@@ -57,6 +57,9 @@ case "$1" in
     ;;
 esac
 case "$1" in
+  sit)
+    sh $R "sit-$2" engine 600 "$3" "Task 1 trace: every sure invented letter placed against the sent text, real then synthetic, with the right letters beside them" "FullyQualifiedName~.WhereTheInventedLettersSitFact." --no-build
+    ;;
   parity)
     sh $R "parity-$2" engine 600 "$3" "Both decoders scored alike over every keyed recording" "FullyQualifiedName~.BothDecodersAreScoredAlikeTests." --no-build
     ;;

@@ -1,0 +1,81 @@
+HM-REQ-011: "On every condition at or above the sensitivity floor, the decoder shall keep MET-INVENTED at zero." (CW_REQUIREMENTS.md line 51; must)
+
+Unit 472, task 1 - where the invented letters sit against what was sent. Printout: .run-unit/unit472-sit-t1b.txt
+(WhereTheInventedLettersSitFact.EverySureInventedLetterAgainstTheSentText; t1 was the first pass, before the held gaps and the corrected 443 flag).
+
+1. THE SCORER, READ FIRST (tests/Hamlet.RadioEngine.Tests/Cw/CwMetrics.cs)
+- CwMetrics.Align takes every space out of both sides, encodes each symbol (a prosign one) as one character,
+  and aligns with CwScorer.Whole - CwScorer's own Levenshtein - so characters and boundaries are scored apart.
+- Each step carries the key symbol or null and the decoded symbol or null, the key characters consumed before
+  and after it, and whether the decode had a word boundary before it.
+- CwMetrics.Invented counts only decoded symbols of class Sure: Key null is a sure ADDED letter; a Key that
+  differs from the decoded text is a sure SUBSTITUTED (wrong) letter. Over KeyCharacters sent.
+- The trace uses this alignment and no other: the same Measure path (TheRequirementsAreMeasuredTests.Covered,
+  CwMetrics.Symbols, CwMetrics.Align) on the same 23 real keyed recordings and 12 synthetic cases, decoded hop
+  by hop from 600 Hz and flushed. Cross-check: real 33 invented (5 added, 28 substituted) over 473, 436 sure;
+  synthetic 14 (6 added, 8 substituted) over 252, 173 sure - the same as TheRequirementsAreMeasuredTests.
+
+2. WHERE A LETTER SITS (DECIDED (4), read as the arbiter's and overrulable)
+- Alignment reading (both sets): added letter at a key word boundary or a stretch end = word gap, else character
+  gap; a letter in a run of decoded steps, one standing for a key character and the rest added, that spells that
+  character's Morse = split; a substituted letter whose Morse is its key character's and one or two deleted
+  neighbours' spelled together = merge; any other substituted = stand-in.
+- Timing reading (synthetic only, key exact by construction): sent marks rebuilt from CwFixtureGenerator.KeyEdges;
+  the letter's span shifted by the median lag of the sure right letters in its case (start 17-20 ms, end 8-12 ms);
+  the sent characters with a mark centre inside the span. Two or more = merge; one shared with another emitted
+  letter = split; one alone = stand-in; none = word or character gap by the sent words either side.
+- The table uses the timing reading where the key is exact and the alignment reading where it is inferred.
+  The two readings agree on only 2 of the synthetic 14: the alignment files most splits as an added letter in a
+  word gap or a stand-in. So real's "0 splits" is the alignment's reading and may understate splits (section 4).
+
+3. THE FIVE-POSITION TABLE (invented = sure added + sure substituted; "none" = no earlier route acted on it)
+
+| position | real (inferred) invented | of them no route | synthetic (exact) invented | of them no route | earlier routes on the position |
+|---|---|---|---|---|---|
+| word gap | 0 | 0 | 0 | 0 | - |
+| character gap | 5 (5 added) | 0 | 0 | 0 | all 5 acquiring (470 gate, 471 re-read); 1 also overlaps a neighbour (443) |
+| split | 0 | 0 | 11 (5 added, 6 subst.) | 6 | 2 the 25 WPM `KK` double read (443); 3 under 1 nat (442), 1 of them acquiring (470/471); fldigi (E)/(W) gap rules concern it, refused |
+| merge | 0 | 0 | 0 | 0 | 445's inner-gap edge (kept) acts on merges; fldigi (E) |
+| stand-in | 28 (28 subst.) | 4 | 3 (1 added, 2 subst.) | 2 | 24 real acquiring (470/471), 4 of them under 1 nat (442), 2 overlap (443); fldigi (A) detection, (B) spike, (C) classing, (D) speed |
+
+By condition: real all in "sender not stated"; synthetic splits: character gap 5 units 5 dB 9, TX-ITU 5 dB 1, TX-ITU 15 dB 1;
+synthetic stand-ins: character gap 5 units 5 dB 2, 15 dB 1. Right letters: real 403 one-for-one; synthetic 157 one-for-one, 2 in splits.
+
+LARGEST GROUP NO EARLIER ROUTE ACTED ON: split, 6 (real 0, synthetic 6), all cq-18wpm-5db-char5 (character gap 5 units, 5 dB, exact):
+  8.405 `T` (sent D), 8.680 `E` (sent D), 12.005 `T` (sent C), 13.870 `U` (sent C), 14.145 `E` (sent A), 15.075 `E` (sent L).
+  Next largest: real stand-in, 4.
+
+WHAT THE SPLITS ARE: one sent letter read as two, with a key-up of 210-235 ms (3.2-3.6 units) between the pieces,
+where the sender's character gap is 5 units and the stream holds 357 ms. D (-..) came out `T` then `E` with 215 ms between:
+element gap + a dit the envelope did not lift + element gap = 1 + 1 + 1 units, which is a TX-ITU character gap to the eye.
+Every piece is pitch proved and speed proved; none overlaps a neighbour; worst mark and worst inner gap within the
+right letters' range; rival margins 1.00 to 3 nats. No single measured quantity separates them from the right letters
+(every column of the edge lines, both sets).
+
+4. THE QUANTITY, AND THE RIGHT LETTERS AT RISK
+Quantity: the shorter key-up beside the letter that the decoder read as a character gap (no word gap settled there),
+span to span between the decoder's own letters, over the character gap in force (the stream's held character-gap length,
+or three units at the read's speed where no structure is held).
+- Group of 6: 0.588 to 0.658; 5 of them at 0.588-0.60, the sixth (12.005 `T`) at 0.658.
+- Sure right letters measured: 512 over both sets; lowest 0.632, highest 4.485.
+- Right letters at or under 0.658: real 2 of 403 - unadjudicated/cw-2026-08-22-032113 11.285 `R` 0.632 and 11.760 `S` 0.632;
+  synthetic 0 of 159. No right letter lies under 0.632 on either set.
+- Invented letters under every right letter (under 0.632): split 7 (the 5 above, 11.475 `K` 0.43 and 14.805 `U` 0.59, both 442's),
+  character gap 1 (032050 11.195 `T` 0.62), stand-in 6 (003758 10.640 `E`, 10.740 `E`, 10.940 `T` 0.61; 032050 11.545 `A` 0.62;
+  004234 7.715 `T`, 8.045 `T` 0.59). All real ones are acquiring.
+
+5. THE RULE, REGISTERED BEFORE ANY AFTER-FIGURE EXISTS
+In CwProbabilisticStream.Character (src/Hamlet.RadioEngine/Cw/CwProbabilisticStream.cs), a known letter that
+GapsFitTheUnit would emit High is emitted Low instead where the shorter key-up between it and the named letter
+before or after it in the same read, taken span to span from the path's own characters (EndHop and SpanHops) and
+only on a side where the read places no word space that the relabel keeps, is shorter than 0.62 of the character
+gap in force - the stream's held character-gap length where structure is held, otherwise three units at the
+read's speed. The quantity is the one this trace measured. The edge 0.62 is not from CW_SPEC.md's timing: section
+10 gives no line between one and five units that parts a lost dit (1 + 1 + 1 = 3 units) from a five-unit
+character gap. It is a line no sure right letter crosses on either set: the lowest right letter lies at 0.632
+(032113's `R` and `S`), every synthetic right letter higher, and under it lie 5 of the group's 6 at 0.588 to 0.60.
+The sixth, at 0.658, is not reached, and the edge is not moved to reach it. Nothing is dropped, retracted,
+raised or re-classed after settling; no letter, key or text is read (R72); one constant is added.
+Named risk: the trace's neighbours are the settled letters, the stream's are the read's, so a letter at the
+leading edge of a read may see a different neighbour or none; that difference is measured by R78, not argued.
+One form only.
