@@ -1,5 +1,5 @@
 ﻿RELOAD - PHASE_CONTROL.md section 3
-measured 2026-09-27T12:19:46-04:00  root C:\Source\HamLet
+measured 2026-09-27T14:05:39-04:00  root C:\Source\HamLet
 Every line below was read from the tree at that moment. Nothing is remembered.
 
 ==============================================================
@@ -21,7 +21,7 @@ Every line below was read from the tree at that moment. Nothing is remembered.
 ==============================================================
 
   branch : main
-  HEAD   : e058da0c
+  HEAD   : 1f6f20e8
   uncommitted at the root : 3
       M PHASE_OUTCOME.md
       M PHASE_STATUS.md
@@ -310,7 +310,7 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   **Exit:**
   - [x] 7.1 The generator produces the CH-* channel profiles `CW_SPEC.md` names, each carrying a shaped noise band and never digital silence (V-06), with the recipe for every case stated so another unit can rebuild them.
   - [x] 7.2 The generator produces the TX-* sender profiles, and HM-REQ-050 is measured on each must-tier profile at 15 dB reference.
-  - [ ] 7.3 The generator produces the INT-* interference profiles, and HM-REQ-060, 061, 062 and 066 are measured against them.
+  - [x] 7.3 The generator produces the INT-* interference profiles, and HM-REQ-060, 061, 062 and 066 are measured against them.
   - [ ] 7.4 Every generated fixture carries its exact key by construction, and the report states what each does not prove (Â§12.5, V-04); a real capture is reported by the sender profile the spec names or as `not stated`, and is never counted toward a CH-* condition.
   - [x] 7.5 The three floor tests and both carry-forward lines are green at exit.
   
@@ -420,13 +420,13 @@ Every line below was read from the tree at that moment. Nothing is remembered.
     metrics after six units were rejected on counts that no requirement states.
 
   --- PHASE_STATUS.md ---
-  16 lines, 2661 bytes
+  16 lines, 2666 bytes
   PHASE: Hamlet meets the CW requirements
   PHASE_SET: 2026-09-25
   DESCRIPTION: CW_REQUIREMENTS.md and CW_SPEC.md at the repository root are the specification from here on. Sixty-eight requirements, sixty-five of them must-tier, and section T shows fourteen groups with no test at all. This phase traces what exists, builds the metrics the requirements are written in - invented characters, sure-character error, coverage, word-boundary error, acquisition time - and then meets the requirements group by group, highest tier first. Every unit recenters on those two documents. Judged by requirement ids and, at the end, by Tim at the radio.
   CURRENT_STEP: 2
-  WORK_INSTRUCTION: 468 - the TX-* sender profiles generated with exact keys by construction, and HM-REQ-050 measured on each must-tier fist at 15 dB on CH-AWGN
-  HEARTBEAT: 2026-09-27 12:19:44
+  WORK_INSTRUCTION: 469 - the INT-* interference profiles generated with the wanted key exact by construction, and HM-REQ-060, 061, 062 and 066 measured against them
+  HEARTBEAT: 2026-09-27 14:05:37
   STEP: 0 | done | Every CW test is traced - section T names, for each requirement, the test that proves it or the word none, and every existing CW test names the requirement it proves or is marked as proving none.
   STEP: 1 | done | The metrics exist - MET-INVENTED, MET-CER-SURE, MET-COVERAGE and MET-WBE are computed over the corpus and reported per condition, so the requirements can be measured at all.
   STEP: 2 | partial | The decoder stops printing wrong letters with confidence - MET-CER-SURE driven toward HM-REQ-010's one in a hundred, from the 54 sure-but-wrong characters unit 439 measured.
@@ -439,7 +439,7 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   STEP: 9 | partial | Two decoders read the same audio - section M: fldigi's CW modem ported faithfully as the second decoder, both scored on every recording before either votes, both confidences calibrated against the keys, and the arbitration that emits one transcript, never worse than the better decoder alone.
 
   --- PHASE_OUTCOME.md ---
-  896 lines, 201786 bytes
+  926 lines, 211704 bytes
   PHASE: Hamlet meets the CW requirements
   PHASE_SET: 2026-09-25
   DESCRIPTION: CW_REQUIREMENTS.md and CW_SPEC.md at the repository root are the specification from here on. Sixty-eight requirements, sixty-five of them must-tier, and section T shows fourteen groups with no test at all. This phase traces what exists, builds the metrics the requirements are written in - invented characters, sure-character error, coverage, word-boundary error, acquisition time - and then meets the requirements group by group, highest tier first. Every unit recenters on those two documents. Judged by requirement ids and, at the end, by Tim at the radio.
@@ -1336,6 +1336,36 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   ADVANCED: no
   ATTEMPT: 7.2 | unit 7 launched 2026-09-27T14:44:23.272Z | no | executed | build TX-* sender profile keying in the test fixtures, exact key by construction, prove each profile's ratios and gaps on its own keying, over CH-AWGN at 15 dB reference, measure HM-REQ-050 via HM-REQ-013 on each must-tier profile, decoder unchanged
   REASON: 7.2 | unit 7 launched 2026-09-27T14:44:23.272Z | the unit ran to completion and the criterion did not flip from unmet to met
+  
+  ## UNIT 469 - STEP 7
+  
+  STEP: 7
+  APPROACH: build INT-ADJ INT-COCHAN INT-CARRIER INT-PILEUP interference layers mixed over the wanted TX-ITU station in the test fixtures before CH-AWGN noise, prove offset level keyed-or-steady and station count on the rendered mix watched red, measure HM-REQ-060 061 062 066 on ours with held pitch and competing report, decoder unchanged
+  MOVE: work around
+  WHY: PHASE_PLAN.md step 7 line 7.3 asks that the generator produce the INT-* profiles and that HM-REQ-060, 061, 062 and 066 be measured against them, and section T records those four as "none: needs INT-* in generator"; the launcher's step 2 has only 2.4 open, a count at 1 of 3 that no single unit can tick, and 9.4 is an ended loop with every mechanism 9.3 named refused. The loop test finds no entry for this approach.
+  STATE: partial
+  DECIDED: author's, overrulable - (1) 9.4 stays judged a loop under ARBITER.md section 4, with (A) to (E) and (W) refused by units 459, 462 and 463, and it is not re-attempted; (2) step 7 is worked although R86 (PHASE_PLAN.md section 6) reads that steps 2 to 8 are not authorable until 9.4 has a kept change. This is a mismatch reported for the owner, not a claim that R86 is overruled, since R86 waits on a line with no route while ARBITER.md section 4, the launcher and PHASE_PLAN.md section 5 direct the move; (3) 7.3 is chosen over the launcher's 2.4 because 2.4's count is 1 of 3 (unit 467's arbiter's reading, not re-argued), so one unit takes it at most to 2 of 3 and a kept change resets it, and 2.1, 2.2, 2.3 and 2.5 are met; over 3.4, 6.1 and 5.1 because 3.4's recording is absent, 6.1 needs M.1677-1 vendored and nothing is fetched, and 5.1's widening is recorded refused; (4) under R85, the INT-* profiles take section 9.3 and the verification rows as written: INT-ADJ(df, dB, WPM) is a TX-ITU station at its own text and speed; INT-CARRIER(df, dB) is a steady unkeyed tone present from the first sample; INT-COCHAN is a second TX-ITU station at 0 dB, offset inside the detector bandwidth the trace names; INT-PILEUP is three TX-ITU stations at equal level, at distinct speeds and pitches inside the passband. Every level is relative to the wanted station's key-down power, and the SNR in the 2500 Hz reference is set on the wanted station alone, on CH-AWGN at 15 dB; (5) the wanted station is TX-ITU at SyntheticCq.Text and is keyed alone for its first word, and an adjacent or second station starts at the wanted's second word and runs to the end with its own text, so "wanted" is the station present first. "Held" is every tracked pitch at a wanted word's end within 25 Hz of the wanted pitch, together with HM-REQ-010 and 011 on the wanted key. For 062, the carrier is present from cold and "keyed station selected" is every tracked pitch after the first sure character within 25 Hz of the wanted; (6) HM-REQ-066's veto margin is read as HM-REQ-065's recommended 6 dB, which that row names as HM-REQ-008's margin, and 066 is measured at 0, -2.4 (the DEV_ANALYSIS case) and -6 dB on whatever the tree reports as competing; (7) nothing under src changes, no switch or vote changes, and no new case is added to CwSwitchTable; (8) the app line's headless dispatcher-loop loss gets one rerun, and any type lost again is run alone and must pass, named in the report.
+  LICENCE: ARBITER.md sections 3, 4 and 6; the launcher's instruction on criteria whose every route is recorded no; PHASE_PLAN.md step 7 line 7.3 and its independence clause, section 5, section 6 (R86 as reported, V-04, V-14, TBD thresholds measured, the documents win, the second decoder is faithful), section R (R77, R78, R80, R85); CW_SPEC.md sections 4, 8, 9.3 and 11; CW_REQUIREMENTS.md HM-REQ-008, 010, 011, 060 to 066, the verification rows 010, 011, 060, 061, 062, 065 and 066, and section T row 060-062, 066; units 461 and 468's CwChannel, CwSender, channels.md and senders.md; R12, R61, R72, R75, R76; HM-DEC-095, HM-DEC-155, HM-DEC-165; FACT-004; CLAUDE.md 0.0, 0.2 and 12.5
+  ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
+  ADVANCES: step 7 criterion 3
+  RUN: session launched with SESSION.lock already present; the lock is the launcher's and was not taken or released by the session.
+  
+  ## UNIT 8 - STEP 7
+  
+  STEP: 7
+  APPROACH: build INT-ADJ INT-COCHAN INT-CARRIER INT-PILEUP interference layers mixed over the wanted TX-ITU station in the test fixtures before CH-AWGN noise, prove offset level keyed-or-steady and station count on the rendered mix watched red, measure HM-REQ-060 061 062 066 on ours with held pitch and competing report, decoder unchanged
+  HIT: section 4 asked nothing inside the two stops - author's, overrulable, the loop continued - The section says nothing blocks 7.3, and every item is a finding, a parameter reading or a plan note that asks the owner nothing about keying, transmit or what the product promises the operator.
+  MOVE: work around
+  WHY: PHASE_PLAN.md step 7 line 7.3 asks that the generator produce the INT-* profiles and that HM-REQ-060, 061, 062 and 066 be measured against them, and section T records those four as 'none: needs INT-* in generator'; the launcher's step 2 has only 2.4 open, a count at 1 of 3 that no single unit can tick, and 9.4 is an ended loop with every mechanism 9.3 named refused. The loop test finds no entry for this approach.
+  DECIDED: author's, overrulable - (1) 9.4 stays judged a loop under ARBITER.md section 4, with (A) to (E) and (W) refused by units 459, 462 and 463, and it is not re-attempted; (2) step 7 is worked although R86 (PHASE_PLAN.md section 6) reads that steps 2 to 8 are not authorable until 9.4 has a kept change. This is a mismatch reported for the owner, not a claim that R86 is overruled, since R86 waits on a line with no route while ARBITER.md section 4, the launcher and PHASE_PLAN.md section 5 direct the move; (3) 7.3 is chosen over the launcher's 2.4 because 2.4's count is 1 of 3 (unit 467's arbiter's reading, not re-argued), so one unit takes it at most to 2 of 3 and a kept change resets it, and 2.1, 2.2, 2.3 and 2.5 are met; over 3.4, 6.1 and 5.1 because 3.4's recording is absent, 6.1 needs M.1677-1 vendored and nothing is fetched, and 5.1's widening is recorded refused; (4) under R85, the INT-* profiles take section 9.3 and the verification rows as written: INT-ADJ(df, dB, WPM) is a TX-ITU station at its own text and speed; INT-CARRIER(df, dB) is a steady unkeyed tone present from the first sample; INT-COCHAN is a second TX-ITU station at 0 dB, offset inside the detector bandwidth the trace names; INT-PILEUP is three TX-ITU stations at equal level, at distinct speeds and pitches inside the passband. Every level is relative to the wanted station's key-down power, and the SNR in the 2500 Hz reference is set on the wanted station alone, on CH-AWGN at 15 dB; (5) the wanted station is TX-ITU at SyntheticCq.Text and is keyed alone for its first word, and an adjacent or second station starts at the wanted's second word and runs to the end with its own text, so 'wanted' is the station present first. 'Held' is every tracked pitch at a wanted word's end within 25 Hz of the wanted pitch, together with HM-REQ-010 and 011 on the wanted key. For 062, the carrier is present from cold and 'keyed station selected' is every tracked pitch after the first sure character within 25 Hz of the wanted; (6) HM-REQ-066's veto margin is read as HM-REQ-065's recommended 6 dB, which that row names as HM-REQ-008's margin, and 066 is measured at 0, -2.4 (the DEV_ANALYSIS case) and -6 dB on whatever the tree reports as competing; (7) nothing under src changes, no switch or vote changes, and no new case is added to CwSwitchTable; (8) the app line's headless dispatcher-loop loss gets one rerun, and any type lost again is run alone and must pass, named in the report.
+  LICENCE: ARBITER.md sections 3, 4 and 6; the launcher's instruction on criteria whose every route is recorded no; PHASE_PLAN.md step 7 line 7.3 and its independence clause, section 5, section 6 (R86 as reported, V-04, V-14, TBD thresholds measured, the documents win, the second decoder is faithful), section R (R77, R78, R80, R85); CW_SPEC.md sections 4, 8, 9.3 and 11; CW_REQUIREMENTS.md HM-REQ-008, 010, 011, 060 to 066, the verification rows 010, 011, 060, 061, 062, 065 and 066, and section T row 060-062, 066; units 461 and 468's CwChannel, CwSender, channels.md and senders.md; R12, R61, R72, R75, R76; HM-DEC-095, HM-DEC-155, HM-DEC-165; FACT-004; CLAUDE.md 0.0, 0.2 and 12.5
+  COST: 8.505530799999999
+  ACCOMPLISHED: Hamlet can make test signals with a second station beside the one being read, a station tuning up on a steady carrier, and a pileup, each proved to be what the specification describes, and the owner learns, case by case, whether Hamlet stays on the right station and reads it cleanly when the band is busy
+  FATE: executed
+  STATE_AFTER: partial
+  STATE_WHY: Criteria 7.1, 7.2, 7.3 and 7.5 are met, and 7.4 is still open because no real capture is reported by its named sender profile or as not stated, which the report says itself in section 4 item 6. For 7.3, the report shows all four INT profiles produced and checked on their own rendered audio, red on 20 of 20 cases against the nominal mixer and green on 21 of 21. It also shows HM-REQ 060, 061, 062 and 066 each measured case by case, with the transcripts and figures quoted. 7.3 asks for the measurement, not a pass, so the three requirements that were not met do not count against it.
+  ADVANCED: yes
+  ATTEMPT: 7.3 | unit 8 launched 2026-09-27T16:24:14.336Z | yes | executed | build INT-ADJ INT-COCHAN INT-CARRIER INT-PILEUP interference layers mixed over the wanted TX-ITU station in the test fixtures before CH-AWGN noise, prove offset level keyed-or-steady and station count on the rendered mix watched red, measure HM-REQ-060 061 062 066 on ours with held pitch and competing report, decoder unchanged
 
   --- CLAUDE.md ---
   1405 lines, 212255 bytes
@@ -1358,17 +1388,17 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   to run every unit. Run TEST_CMD yourself if the number matters.
 
   --- PROJECT_STATUS.md ---
-  19 lines, 873 bytes
+  19 lines, 924 bytes
   PROTOCOL: 2
   PROJECT: Hamlet
   STATE: COMPLETED
   TASK: 3 of 3
-  WORK_INSTRUCTION: 468 - the TX-* sender profiles generated with exact keys by construction, and HM-REQ-050 measured on each must-tier fist at 15 dB on CH-AWGN
+  WORK_INSTRUCTION: 469 - the INT-* interference profiles generated with the wanted key exact by construction, and HM-REQ-060, 061, 062 and 066 measured against them
   BALL: tim
-  NEXT_PASTE: none
+  NEXT_PASTE: output.md -> Claude Web
   RULES_AT: HM-DEC-165 (2026-09-19)
-  UPDATED: 2026-09-27T12:18:49-04:00
-  NOTE: Unit 468 done: 7.2 ticked - five TX-* fists generated and proved, two refused; HM-REQ-050 not met on any of the four must fists (tight fist reads 1 of 21); exit round as at entry; screen unchanged
+  UPDATED: 2026-09-27T14:04:16-04:00
+  NOTE: Unit 469 done: 7.3 ticked - INT-ADJ, COCHAN, CARRIER, PILEUP generated and proved; 060, 061, 062 not met (tracker walks to the neighbour or starts on a carrier), 066 met only weakly; exit round as at entry; screen unchanged
   
   ---
   

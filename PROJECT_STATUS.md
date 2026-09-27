@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-TASK: 3 of 3
-WORK_INSTRUCTION: 469 - the INT-* interference profiles generated with the wanted key exact by construction, and HM-REQ-060, 061, 062 and 066 measured against them
-BALL: tim
-NEXT_PASTE: output.md -> Claude Web
+STATE: EXECUTING
+TASK: 0 of 3
+WORK_INSTRUCTION: 470 - no letter is printed sure while the decoder is still acquiring: HM-REQ-102's gate judged under R78 as step 2's next change against HM-REQ-010
+BALL: code
+NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-27T14:04:16-04:00
-NOTE: Unit 469 done: 7.3 ticked - INT-ADJ, COCHAN, CARRIER, PILEUP generated and proved; 060, 061, 062 not met (tracker walks to the neighbour or starts on a carrier), 066 met only weakly; exit round as at entry; screen unchanged
+UPDATED: 2026-09-27T14:36:01-04:00
+NOTE: Task 0 entry figures all as at 469's exit, app line clean on the first run; committing the record and the runner's writes before the trace starts
 
 ---
 

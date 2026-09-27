@@ -40,7 +40,6 @@ THE OTHER OPEN STEPS, AND THEIR UNMET CRITERIA:
     - [ ] 6.4 HM-REQ-083, one set of word boundaries for any span between the live and settled renderings, has a test naming it.
     - [ ] 6.6 The three floor tests and both carry-forward lines are green at exit.
   step 7 - The conditions can be generated - sections E, F and G: channel, sender and interference profiles, which nothing in the tree produces today.  [partial]
-    - [ ] 7.3 The generator produces the INT-* interference profiles, and HM-REQ-060, 061, 062 and 066 are measured against them.
     - [ ] 7.4 Every generated fixture carries its exact key by construction, and the report states what each does not prove (Â§12.5, V-04); a real capture is reported by the sender profile the spec names or as `not stated`, and is never counted toward a CH-* condition.
   step 8 - The record and the tests are put right - last, not first: the decision log, the traceability table, the 43 tests that measure something other than what their requirement states, and the 63 requirements with no test.  [not started]
     - [ ] 8.1 HM-DEC-182 is recorded from work instruction 434's block, HM-DEC-166 gains its `CLAUDE.md` row, and `DecisionLogOrderTests` is green with no gap that is a missing record.
@@ -136,6 +135,7 @@ block; blocker means it cleared something and moved no criterion.
   6.3 | unit 14 launched 2026-09-26T14:10:24.546Z | yes | executed | report MET-WBE per condition and measure HM-REQ-080 and 081 against it, trace every wrong word boundary on the real and synthetic sets with gap length in units, thresholds, marks and spacing overlap, group by cause, build one boundary change against the largest movable group, kept under R78 with MET-WBE falling and V-11 holding per recording
   7.1 | unit 8 launched 2026-09-27T00:43:53.192Z | yes | executed | build a Watterson two-path Gaussian Doppler channel layer in the test fixtures for every CH-* profile CW_SPEC 9.1 gives values for, over the shaped noise band at an SNR in the 2500 Hz reference, prove spread power delay SNR and no digital silence on its own audio, write the recipe to channels.md, then one decode point per must profile for HM-REQ-040 and 041
   7.2 | unit 7 launched 2026-09-27T14:44:23.272Z | no | executed | build TX-* sender profile keying in the test fixtures, exact key by construction, prove each profile's ratios and gaps on its own keying, over CH-AWGN at 15 dB reference, measure HM-REQ-050 via HM-REQ-013 on each must-tier profile, decoder unchanged
+  7.3 | unit 8 launched 2026-09-27T16:24:14.336Z | yes | executed | build INT-ADJ INT-COCHAN INT-CARRIER INT-PILEUP interference layers mixed over the wanted TX-ITU station in the test fixtures before CH-AWGN noise, prove offset level keyed-or-steady and station count on the rendered mix watched red, measure HM-REQ-060 061 062 066 on ours with held pitch and competing report, decoder unchanged
   9.1 | unit 3 launched 2026-09-26T18:14:50.259Z | no | executed | port fldigi cw.cxx receive path to C# as FldigiCwDecoder under Cw/Second with GPL-3 notice and upstream commit, decode one exact-key synthetic case, list functions ported and left out
   9.1 | unit 4 launched 2026-09-26T19:20:27.666Z | no | executed | audit FldigiCwDecoder against upstream cw.cxx line by line on the first element's path and trace the lost first dit sample by sample to a port-defect or upstream-behaviour verdict, repair toward upstream only, then fix the synthetic case construction in a committed file from that verdict and the real recordings as control before running it once
   9.2 | unit 1 launched 2026-09-26T16:46:45.870Z | not recorded | not recorded | port fldigi's CW receive modem faithfully as the second decoder of section M with its GPL-3 attribution, drive every keyed and synthetic recording through both decoders on the same harness and metrics, table the parity per HM-REQ-123, and name from the second decoder's source what it does differently where it wins
@@ -173,155 +173,130 @@ The whole file is at the repository root if you need the rest.
 
 ## 4. What's blocking us
 
-Nothing blocks 7.2. Each item below is a plain reading, not a ruling request.
+Nothing blocks 7.3. Each item below is a plain reading, not a ruling request.
 
 1. **The R86 mismatch.** R86 bars steps 2 to 8 until 9.4 has a kept change. This unit worked
-   step 7 anyway. 9.4 has no route left, because every mechanism 9.3 named, (A) to (E) and (W),
-   was refused under R78 by units 459, 462 and 463. `ARBITER.md` section 4, the launcher's
-   instruction to choose another step when every route is recorded no, and `PHASE_PLAN.md`
-   section 5 all direct a move. If the owner holds R86, this unit's work is fixtures and a
-   measurement, and nothing the operator reads has changed.
-2. **Every profile parameter is the arbiter's reading of `CW_SPEC.md` section 10, overrulable.**
-   - TX-KEYER-W: ratio 2.5 to 3.5, and "gaps ±30 %" read as each of the three gaps at 0.7 to
-     1.3 of its nominal, drawn independently. **Carries `[verify against WinKeyer
-     documentation]`.**
-   - TX-FARNS:
-     - the case's speed is the character speed;
-     - the character gap is drawn from 3 to 7 units;
-     - "word gap longer" takes the vendored example's number, HM-DEC-115's 500 ms over a 57 ms
-       dit, 8.77 units, in every case;
-     - dah and element gap are TX-ITU nominal.
-   - TX-TIGHT: HM-DEC-101 records no figure, so this is `CwFixtureRecipe`'s defaults, the
-     generator as HM-DEC-101 fitted it to 013347: 283 / 65 / 130 / 280 ms over a 105 ms dit.
-     HM-DEC-145's own measurement of the same capture reads dah 2.73, element gap 0.73 and
-     character gap 1.49, with no word gap. It agrees on the shape, but its character gap is
-     0.25 units wider. The fit was preferred because it gives all four lengths from one source.
-   - TX-BUG: ratio 3.5 to 5; the gaps are TX-ITU nominal, marked, because "dits short and
-     fast, gaps variable" has no number.
-   - TX-STRAIGHT and TX-SLOPPY are refused.
-   - Gold 1959 (`CW_SPEC.md` 12 item 6) is unvendored, so every hand-sent range is.
-3. **HM-REQ-050 is not met, recorded as a finding for the decoder steps and not chased here:**
-   - TX-ITU at 25 WPM: a sure extra `K` at the end. TX-BUG at 25 WPM does the same.
-   - TX-KEYER-W at 12 WPM: two placeholders inside `N0CALL`. At 25 WPM: a sure `<AR>` for the
-     opening `C`.
-   - TX-FARNS: sure word boundaries inside words at 12 and 18 WPM (MET-WBE 1/7 and 5/7). This
-     is HM-REQ-054's behaviour, measured only as it fell out. At 25 WPM one `C` is lost.
-   - TX-TIGHT: almost everything placeholders at all three speeds, 4, 1 and 1 of 21 sure and
-     right.
+   step 7 anyway. 9.4 has no route left: every mechanism 9.3 named, (A) to (E) and (W), was
+   refused under R78 by units 459, 462 and 463. The launcher's 2.4 cannot flip in one unit at
+   1 of 3. `ARBITER.md` section 4, the launcher and `PHASE_PLAN.md` section 5 all direct a move.
+   If the owner holds R86, this unit's work is fixtures and a measurement, and nothing the
+   operator reads has changed.
+2. **Every parameter below is the arbiter's reading under R85, and overrulable.**
+   - **The veto margin** is 6 dB, HM-REQ-065's recommended figure, which that row names as
+     HM-REQ-008's margin. 066 is measured at 0, −2.4 and −6 dB.
+   - **The 066 station** is at +100 Hz and 25 WPM over a wanted 18 WPM.
+   - **062's wanted** is at 18 WPM.
+   - **Sides:** 060 and 061 are measured at both + and − offsets.
+   - **INT-COCHAN** is +10 Hz, read as inside the integrator's 45 Hz ENBW, so within ±22.5 Hz.
+   - **INT-PILEUP** is three stations *over* the wanted, making four keyed in the passband. They
+     sit at 525, 675 and 750 Hz and 12, 25 and 18 WPM.
+   - **Texts:** `DE N0AAA UP`, `QRZ DE N0AAA` and `5NN TU`.
+   - **Start:** every keyed interferer starts at the wanted's second word; a carrier starts at
+     the first sample.
+   - **Held** is the tracked pitch at every wanted word end within 25 Hz.
+   - **Selected** is every tracked pitch from the first sure character to the wanted's last
+     key-up within 25 Hz.
+   - **Competing** is the report naming a tone within 25 Hz of the second station at any hop
+     while both key.
+   - **HM-REQ-010 with nothing sure** is not met.
+   - **Headroom:** one scale factor on the whole case, as low as x 0.363 for a +20 dB carrier.
+   - **Station measurements** are taken on each rendered layer, with the mix proved to be their
+     sum.
+3. **HM-REQ-060 and 061 not met: a finding for step 4 (the tracker) and step 2 (sure letters).**
+   - At 12 WPM, with the adjacent station at 0 dB ±100 Hz or −6 dB +50 Hz, **the pitch is lost**
+     at the fifth word, and the adjacent station's letters are printed sure: `N0AAA UP DE N0AAA`.
+   - At 12 WPM −50 Hz and at 25 WPM ±100 Hz, **the pitch is held and the interferer's letters
+     are still printed sure** (`N0AAA UP`, `EA UP`). The 45 Hz detector lets a keyed station
+     50 to 100 Hz away through at those speeds.
+   - At 18 WPM, 061 prints one sure extra `N` (`NN0CALL`).
+   - At 25 WPM the wanted alone adds a sure `K`, 468's TX-ITU finding. No 25 WPM case can meet
+     HM-REQ-010 until that is fixed.
+   - Nothing was chased here.
+4. **HM-REQ-062 not met: a finding for step 4.** With the carrier present from cold, the tracker
+   is on the carrier at the first word's end in 8 of 12 cases, and ours prints sure letters read
+   off it (`T T  T` before `CQ`). **This is the pitch chosen by level before keying is
+   confirmed.** Unit 448's HM-REQ-091 test says so in its own "what this does not prove": it
+   passes on the last half of the message. At +50 Hz and +10 or +20 dB the carrier sits inside
+   the detector's reach, and the wanted is barely read at all (`T  E`, `T T`). The +500 Hz
+   carrier is at 1100 Hz, outside the band's passband. A real receiver's filter would weaken it
+   further, so those three "met" cases are the easiest in the table.
+5. **HM-REQ-066 is met only on a lenient reading: a finding for steps 2 and 4.** Met here means
+   the report named the second station on at least one hop while both keyed. It did so on 2 %,
+   11 % and 12 % of those hops. It never names it at its true 100 Hz, because
+   `CwCompetitor.SeparationHz` is 125 Hz; it names it only when a neighbouring 25 Hz bin puts it
+   at 125 (tracked 575 Hz, or the candidate at 725 Hz). The levels it gives are +4.3 dB for an
+   equal station, and −9.2 and −12.9 dB for −2.4 and −6 dB stations. Most of the time, then, the
+   report says nothing: this is DEV_ANALYSIS's `competing: none found` beside a station 2.4 dB
+   away. A reading that asked for the report whenever both key would make 066 not met. Nothing
+   in the competing logic was touched (parked).
+6. **What 7.4 still lacks now 7.3 is in.** Every generated fixture of steps 7.1 to 7.3 now
+   carries its exact key by construction, and `channels.md`, `senders.md` and `interference.md`
+   each state what their fixtures do not prove. What is missing is 7.4's other half: no real
+   capture is yet reported by the sender profile the spec names, or as `not stated`, and none is
+   marked as never counted toward a CH-* condition. The 23 keyed recordings carry no TX-* label
+   today.
 
-   The tight fist and the Farnsworth word boundaries bear on steps 3 and 6. The opening and
-   closing letters at 25 WPM bear on step 5.
-4. **The switch changes nothing on these signals.** The live emitted transcript equals ours on
-   all 15 cases, and the port alone is worse on every one. Nothing was switched, and no case
-   was added to `CwSwitchTable` (parked).
-5. **The draws cover the ranges thinly.** The three KEYER-W ratios fell at 3.33 to 3.37 and the
-   three FARNS character gaps at 4.51 to 4.63, with the seeds fixed before any decode and
-   nothing re-seeded (V-14). A verdict at the ranges' ends (ratio 2.5, character gap 7) is not
-   in these cases.
-6. **7.4's "states what each does not prove"** is written for the sender fixtures in
-   `senders.md` section 4. 7.4 still waits on 7.3's INT-* profiles, so it was not ticked.
-7. **HM-REQ-050's verification row names "synthetic + 013347 and HM-DEC-115 captures".** The
-   captures were not measured here. They sit in `TheRequirementsAreMeasuredTests` under
-   inferred keys and with no SNR in the 2500 Hz reference, so they are not HM-REQ-013's
-   condition.
-8. **`CwChannel.Render` now goes through `RenderKeyed`.** The operations are the same ones in
-   the same order, and the channel proof is 71 of 71 before and after. No byte comparison
-   against the pre-change render was run.
-9. **Housekeeping.** Once, `tools/status.sh` was run from the fixtures folder and wrote a
-   `PROJECT_STATUS.md` there. It was moved to `.run-unit/unit468-stray-status.tmp` at once and
-   never staged. The root file was rewritten from the root.
+The emitted output did not lose to ours on any case: it is ours in all 27. So there is no
+switch-table line to add, and nothing was switched.
 
-   R86's words, reported as a mismatch for the owner.
-   stays open. The R86 mismatch in one line: R86 bars steps 2 to 8
+   against R86's words, reported as a mismatch for the owner.
+   R86 mismatch in one line: R86 bars steps 2 to 8 until 9.4 has a
 ## 3. What you should see
 
-No visible change. This unit makes test signals and measures the decoder against them.
+**No visible change.** This unit made the test signals and measured against them. The answer to
+the question it was commissioned to ask, per requirement, on ours (synthetic, exact key, CH-AWGN
+15 dB in the 2500 Hz reference on the wanted):
 
-**HM-REQ-050, at 15 dB in the 2500 Hz reference on CH-AWGN, ours alone.** Every figure is
-synthetic, exact. The key is `CQ CQ CQ DE N0CALL N0CALL K`: 21 characters, 7 words. HM-REQ-013
-asks for MET-COVERAGE 21/21, MET-CER-SURE 0 and MET-WBE 0.
+| req | interferer | wanted WPM | ours read | control read (wanted alone) | held / selected / competing | MET-CER-SURE | MET-INVENTED | case |
+|---|---|---|---|---|---|---|---|---|
+| 060 | INT-ADJ(+100, 0, 25) | 12 | `CQ CQ CQ DEE■H N0AAA UP DE N0AAA UP DE N0AAA ET TTT` | whole | held **no** (700 Hz at word 5) | 24/38 | 24/21 | not met |
+| 060 | INT-ADJ(−100, 0, 25) | 12 | `CQ CQ CQ DEE■H N0AAA UP DE N0AAA UP DE N0AAA UP DE` | whole | held **no** (500 Hz, words 5-7) | 23/37 | 23/21 | not met |
+| 060 | INT-ADJ(+100, 0, 25) | 18 | `CQ CQ CQ DE N0CALL N0CALL K` | whole | held | 0/21 | 0/21 | met |
+| 060 | INT-ADJ(−100, 0, 25) | 18 | `CQ CQ CQ DE N0CALL N0CALL K` | whole | held | 0/21 | 0/21 | met |
+| 060 | INT-ADJ(+100, 0, 25) | 25 | `CQ CQ CQ DE N0CALL EA UP EALL KK` | `... N0CALL KK` | held | 6/24 | 6/21 | not met |
+| 060 | INT-ADJ(−100, 0, 25) | 25 | `CQ CQ CQ DE N0CALL EA UP DE L KK` | `... N0CALL KK` | held | 7/23 | 7/21 | not met |
+| 061 | INT-ADJ(+50, −6, 25) | 12 | `CQ CQ CQ DE N0EE H UP SE N0AAA UT E DE N0A E ET K` | whole | held **no** (650 Hz at word 5) | 19/33 | 19/21 | not met |
+| 061 | INT-ADJ(−50, −6, 25) | 12 | `CQ CQ CQ DE ESH N0AAA UP EI ET TT TTTE T TET TLL K` | whole | held | 22/36 | 22/21 | not met |
+| 061 | INT-ADJ(+50, −6, 25) | 18 | `CQ CQ CQ DE N0CALL NN0CALL K` | whole | held | 1/22 | 1/21 | not met |
+| 061 | INT-ADJ(−50, −6, 25) | 18 | `CQ CQ CQ DE N0CALL NN0CALL K` | whole | held | 1/22 | 1/21 | not met |
+| 061 | INT-ADJ(+50, −6, 25) | 25 | `CQ CQ CQ DE N0CALL N0CALL KK` | `... N0CALL KK` | held | 1/22 | 1/21 | not met (as control) |
+| 061 | INT-ADJ(−50, −6, 25) | 25 | `CQ CQ CQ DE N0CALL N0CALL KK` | `... N0CALL KK` | held | 1/22 | 1/21 | not met (as control) |
+| 062 | INT-CARRIER(+50, 0) | 18 | `U   Q CQ DE I T<KN> TETE ET ETEE ETEE NN0ISL K` | whole | **the carrier** | 22/29 | 22/21 | not met |
+| 062 | INT-CARRIER(+50, +10) | 18 | `T  E` | whole | **the carrier** | 1/2 | 1/21 | not met |
+| 062 | INT-CARRIER(+50, +20) | 18 | `T T` | whole | **the carrier** | 2/2 | 2/21 | not met |
+| 062 | INT-CARRIER(+100, 0) | 18 | `CT  EIQ CQ DE N0CALL N0CALL K` | whole | **the carrier** | 3/22 | 3/21 | not met |
+| 062 | INT-CARRIER(+100, +10) | 18 | `T T  T CQ DE N0CAL■ N0CALL K` | whole | **the carrier** | 3/19 | 3/21 | not met |
+| 062 | INT-CARRIER(+100, +20) | 18 | `T T E CQ DE N0CALL N0CALL K` | whole | **the carrier** | 3/20 | 3/21 | not met |
+| 062 | INT-CARRIER(+200, 0) | 18 | `CQ CQ CQ DE N0CALL N0CALL K` | whole | keyed station | 0/21 | 0/21 | met |
+| 062 | INT-CARRIER(+200, +10) | 18 | `T  T CQ DE N0CALL N0CALL K` | whole | **the carrier** | 2/19 | 2/21 | not met |
+| 062 | INT-CARRIER(+200, +20) | 18 | `T T  T CQ DE N0CALL N0CALL K` | whole | **the carrier** | 3/20 | 3/21 | not met |
+| 062 | INT-CARRIER(+500, 0) | 18 | `CQ CQ CQ DE N0CALL N0CALL K` | whole | keyed station | 0/21 | 0/21 | met |
+| 062 | INT-CARRIER(+500, +10) | 18 | `CQ CQ CQ DE N0CALL N0CALL K` | whole | keyed station | 0/21 | 0/21 | met |
+| 062 | INT-CARRIER(+500, +20) | 18 | `CQ CQ CQ DE N0CALL N0CALL K` | whole | keyed station | 0/21 | 0/21 | met |
+| 066 | INT-ADJ(+100, 0, 25) | 18 | `CQ CQ CQ DE N0CALL N0CALL K` | whole | competing on 78 of 3400 hops | 0/21 | 0/21 | met |
+| 066 | INT-ADJ(+100, −2.4, 25) | 18 | `CQ CQ CQ DE N00CALL N0CALL K` | whole | competing on 374 of 3400 hops | 1/22 | 1/21 | met |
+| 066 | INT-ADJ(+100, −6, 25) | 18 | `CQ CQ CQ DE N0CALL N0CALL K` | whole | competing on 392 of 3400 hops | 0/21 | 0/21 | met |
 
-| profile | WPM | seed | ours read | MET-COVERAGE | MET-CER-SURE | MET-WBE | HM-REQ-013 |
-|---|---|---|---|---|---|---|---|
-| TX-ITU | 12 | 468000 | `CQ CQ CQ DE N0CALL N0CALL K` | 21/21 | 0/21 | 0/7 | met |
-| TX-ITU | 18 | 468001 | `CQ CQ CQ DE N0CALL N0CALL K` | 21/21 | 0/21 | 0/7 | met |
-| TX-ITU | 25 | 468002 | `CQ CQ CQ DE N0CALL N0CALL KK` | 21/21 | 1/22 | 0/7 | **not met** |
-| TX-KEYER-W | 12 | 468100 | `CQ CQ CQ DE N■0CALL N■CALL K` | 20/21 | 0/20 | 0/7 | **not met** |
-| TX-KEYER-W | 18 | 468101 | `CQ CQ CQ DE N0CALL N0CALL K` | 21/21 | 0/21 | 0/7 | met |
-| TX-KEYER-W | 25 | 468102 | `<AR>Q CQ CQ DE N0CALL N0CALL K` | 20/21 | 1/21 | 0/7 | **not met** |
-| TX-FARNS | 12 | 468200 | `C Q CQ CQ DE N0CALL N0CALL K` | 21/21 | 0/21 | 1/7 | **not met** |
-| TX-FARNS | 18 | 468201 | `C Q CQ CQ DE N0 C A LL N 0CALL K` | 21/21 | 0/21 | 5/7 | **not met** |
-| TX-FARNS | 25 | 468202 | `CQ  Q CQ DE N0CALL N0CALL K` | 20/21 | 0/20 | 0/7 | **not met** |
-| TX-TIGHT | 12 | 468300 | `■■■B■■■■<KN>■ ■ALLK` | 4/21 | 2/6 | 7/7 | **not met** |
-| TX-TIGHT | 18 | 468301 | `■■■B■■K` | 1/21 | 1/2 | 6/7 | **not met** |
-| TX-TIGHT | 25 | 468302 | `■■■B■■K` | 1/21 | 1/2 | 6/7 | **not met** |
+"Whole" is the control reading `CQ CQ CQ DE N0CALL N0CALL K` with MET-CER-SURE 0/21. The 25 WPM
+control reads `... N0CALL KK`, MET-CER-SURE 1/22, MET-INVENTED 1/21. Every "the carrier" case
+has the tracked pitch on the carrier at the first word's end (650, 700 or 800 Hz), and 272 to
+334 hops, out of about 3650 after the first sure character, more than 25 Hz off. **Per
+requirement:**
+- HM-REQ-060: not met, 2 of 6.
+- HM-REQ-061: not met, 0 of 6.
+- HM-REQ-062: not met, 4 of 12.
+- HM-REQ-066: met, 3 of 3.
 
-**Per profile, met only if all three cases are:** TX-ITU not met (2 of 3), TX-KEYER-W not met
-(1 of 3), TX-FARNS not met (0 of 3), TX-TIGHT not met (0 of 3). The full printout, with
-MET-INVENTED, is `.run-unit/unit468-fists-t2.txt`.
+The transcript the live path emits under `CwSwitchTable.Live` is ours, character for character,
+in all 27 cases. The port alone is worse than ours, or empty, in 26 of the 27 cases. It is empty
+at the +50 Hz carrier at +20 dB and the +100 Hz carrier at +10 and +20 dB. The one case where it
+is not worse
+is INT-CARRIER(+50, +10): there the port read a single sure `E`, which is right (MET-CER-SURE
+0/1), against ours `T  E` (1/2). Task 2's commit message says "worse or empty in each", which is
+one case too strong.
 
-1. **The profile list** (`docs/phase-requirements/senders.md` section 1):
-   - Produced:
-     - TX-ITU (must): 3 : 1 : 3 : 7.
-     - TX-KEYER-W (must): ratio 2.5 to 3.5, each gap at 0.7 to 1.3 of nominal, `[verify]`.
-     - TX-FARNS (must): character gap 3 to 7 units at character speed; word gap 8.77 units,
-       the traffic net's.
-     - TX-TIGHT (must): 013347 as HM-DEC-101 fitted it, 2.695 : 0.619 : 1.238 : 2.667.
-     - TX-BUG (should): ratio 3.5 to 5, gaps nominal.
-   - Refused:
-     - TX-STRAIGHT: no number for the drift of ratio, gaps and speed.
-     - TX-SLOPPY: no number for the inconsistency, and errors change the characters sent.
-2. **The proof, red** (`.run-unit/unit468-senders-red.txt`, keyed 1:3:1:3:7 whatever the
-   profile): 12 failed, 4 passed (TX-ITU's 3 and the list fact). Each profile failed on its own
-   definition:
-   - TX-KEYER-W: its drawn ratio and all three gaps;
-   - TX-FARNS: the character gap, the word gap, the overall speed, and "character speed above
-     overall speed" (12.000 against 12.000 at 12 WPM);
-   - TX-TIGHT: every length, "element gaps shorter than the dit" (1.0000) and "character gaps
-     compressed" (3.0000);
-   - TX-BUG: ratio 3.0000 against 3.5 to 5.
-
-   **The proof, green** (`.run-unit/unit468-senders-green.txt`): 16 of 16. At 18 WPM, measured
-   against stated:
-
-   | profile | dah/dit | element gap | character gap | word gap | overall WPM |
-   |---|---|---|---|---|---|
-   | TX-ITU | 2.9974 / 3 | 0.9976 / 1 | 2.9949 / 3 | 6.9900 / 7 | 18.000 / 18.000 |
-   | TX-KEYER-W | 3.3459 / 3.3506 | 0.7083 / 0.7115 | 3.2448 / 3.2531 | 6.9297 / 6.9448 | 17.862 / 17.862 |
-   | TX-FARNS | 2.9966 / 3 | 0.9968 / 1 | 4.5578 / 4.5672 | 8.7562 / 8.7719 | 16.177 / 16.177 |
-   | TX-TIGHT | 2.6933 / 2.6952 | 0.6167 / 0.6190 | 1.2346 / 1.2381 | 2.6614 / 2.6667 | 25.212 / 25.212 |
-   | TX-BUG | 3.7741 / 3.7777 | 0.9972 / 1 | 2.9944 / 3 | 6.9886 / 7 | 16.251 / 16.251 |
-
-3. **The should-tier cases, TX-BUG under HM-REQ-052:**
-   - 12 WPM met, 21/21, 0/21, 0/7;
-   - 18 WPM met, the same;
-   - 25 WPM not met: `... KK`, MET-CER-SURE 1/22.
-
-   Not met, 2 of 3.
-
-   Beside ours, the live emitted transcript reads all 15 cases exactly as ours reads them. The
-   port alone meets none of the 15: on every case its first `CQ` is lost or cut, it splits
-   TX-FARNS into single letters (MET-WBE 13/7 and 14/7), and it reads TX-TIGHT as `QTBK`,
-   `TÅBK` and `EEK`.
-4. **Commit table, the five at each commit:**
-
-   | commit | what | build | engine line | app line | named | captures | adjudicated |
-   |---|---|---|---|---|---|---|---|
-   | `2ac33910` | task 0: record, bump, entry, trace | 0 errors | 178/178 | 278/278 | 13/13 | 51/51 | 13/13 |
-   | `da20f5f8` | task 1: CwSender, proof, senders.md | 0 errors | 178/178 | 278/278 on the one rerun (first run 277, dispatcher loop) | 13/13 | 51/51 | 13/13 |
-   | `2398b076` | task 2: the fact, senders.md, metrics.md | 0 errors | 178/178 | 278/278 first run | 13/13 | 51/51 | 13/13 |
-   | `ddb65409` | tick 7.2 (plan lines only; code as `2398b076`) | as `2398b076`, not rerun | as `2398b076` | as `2398b076` | as `2398b076` | as `2398b076` | as `2398b076` |
-   | task 3 commit | exit round, output.md | 0 errors | 178/178 | 277/278 on the rerun; `TheChipSaysTheChosenModeTests` alone 6/6 (DECIDED (7)) | 13/13 | 51/51 | 13/13 |
-
-**Every figure, entry beside exit:**
-
-| check | entry | exit |
-|---|---|---|
-| build | 0 errors | 0 errors |
-| engine line | 178 of 178 | 178 of 178 |
-| app line | 278 of 278 | 277 of 278 on the rerun, and the lost type alone 6 of 6 (DECIDED (7)) |
-| floors: named, captures, adjudicated | 13, 51, 13 | 13, 51, 13 |
-| real set, inferred | MET-CER-SURE 33/436, coverage 403/473, MET-WBE 37/113 | the same |
-| synthetic set, exact | 14/173, 159/252, 44/84 | the same |
-| `TheChannelProfilesAreWhatTheySayTests` | 71 of 71 | 71 of 71 |
-| `TheSenderProfilesAreWhatTheySayTests` | did not exist | 16 of 16 |
+1. **The profile list** (`interference.md` section 1):
+   - INT-ADJ(Δf, ΔdB, WPM) takes (±100, 0, 25) from row 060, (±50, −6, 25) from row 061, and
+     (+100, 0/−2.4/−6, 25) for 066. Each is TX-ITU sending `DE N0AAA UP` from the wanted's
+     second word.
+   - INT-COCHAN is +10 Hz, 0 dB, 25 WPM, inside the 45 Hz Hann detector's ±22.5 Hz.
