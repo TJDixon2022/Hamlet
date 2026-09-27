@@ -188,7 +188,7 @@ test today because these do not exist (section T).
 - [x] 2.2 Each change is built in its own commit and kept under R78: MET-CER-SURE falls, MET-INVENTED does not rise, MET-COVERAGE does not fall, the three adjudicated readings are unchanged or move onto their own adjudicated text, and V-11 holds - no capture is reddened to green a newer one.
 - [x] 2.3 MET-CER-SURE is reported before and after every kept change, per condition, with the key kind beside each number, and the running figure is in `docs/phase-requirements/metrics.md`.
 - [ ] 2.4 After three consecutive units with no kept change the trace goes to `PARKED.md` and the step closes partial.
-- [ ] 2.5 The three floor tests and both carry-forward lines are green at the exit of every commit of the step.
+- [x] 2.5 The three floor tests and both carry-forward lines are green at the exit of every commit of the step.
 
 **Depends on:** steps 0 and 1.
 

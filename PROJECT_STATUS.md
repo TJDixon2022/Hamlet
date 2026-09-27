@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: EXECUTING
+STATE: COMPLETED
 TASK: 4 of 4
 WORK_INSTRUCTION: 460 - the three named floors settled on the owner's answer, and step 2's commits kept green
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-26T20:18:44-04:00
-NOTE: Task 2 committed - no pair-rule mechanism separates helped from broken, task 3 not run; task 4 exit round starting with the build
+UPDATED: 2026-09-26T20:37:57-04:00
+NOTE: Unit 460 done: three named floors re-banked (17:37 38, 032113 43, 032129 42), 2.5 ticked with 3 of 3 commits green; pair-speed trace found no separating mechanism, task 3 not run; output.md written
 
 ---
 
