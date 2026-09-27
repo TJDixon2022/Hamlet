@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 0 of 4
+TASK: 1 of 4
 WORK_INSTRUCTION: 464 - a number on every letter: both decoders give each character a confidence p, calibration measured per condition on the keyed corpus
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-27T02:23:10-04:00
-NOTE: Task 0 figures all as at 463s exit; committing the record, the runner writes and the entry printouts
+UPDATED: 2026-09-27T02:54:05-04:00
+NOTE: Task 1 gate green; committing the features fact and its printout
 
 ---
 
