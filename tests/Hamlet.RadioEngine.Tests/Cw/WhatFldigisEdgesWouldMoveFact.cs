@@ -311,7 +311,10 @@ public sealed class WhatFldigisEdgesWouldMoveFact
 
         foreach (var (recording, keyWord) in RefusedD)
         {
-            var there = events.Where(e => e.Recording.Contains(recording, StringComparison.Ordinal) && e.KeyWord == keyWord).ToList();
+            // A scored stretch can open mid-word (031905's opens on `DICTED`), so a key word of three or more
+            // characters that sits inside the named one counts.
+            var there = events.Where(e => e.Recording.Contains(recording, StringComparison.Ordinal)
+                && (e.KeyWord == keyWord || (e.KeyWord.Length >= 3 && keyWord.Contains(e.KeyWord, StringComparison.Ordinal)))).ToList();
 
             Print($"refused-D | {recording} `{keyWord}` | {there.Count} event(s){(there.Count == 0 ? "" : ": " + string.Join("; ", there.Select(e => string.Create(Invariant, $"{e.Technique} {e.What} at {e.AtSeconds:0.000} s, {e.Dits:0.00} dits, {e.Effect}"))))}");
         }

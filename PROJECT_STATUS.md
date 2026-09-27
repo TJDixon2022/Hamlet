@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: EXECUTING
-TASK: 3 of 4
+STATE: COMPLETED
+TASK: 4 of 4
 WORK_INSTRUCTION: 462 - one fldigi technique earns its place in ours: the spike rule, the two-dot class edge or the word-space edge, screened under R78
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-27T00:00:37-04:00
-NOTE: Task 3 done: B refused (real worse on all four), W refused on V-11 (032113, 031838, 004550); all three refused, 9.4 open; committing evidence
+UPDATED: 2026-09-27T00:25:40-04:00
+NOTE: Unit 462 done: C, B and W all refused under R78 and reverted (W closest - every total right, 3 recordings worse); 9.4 open; exit as entry; output.md written
 
 ---
 

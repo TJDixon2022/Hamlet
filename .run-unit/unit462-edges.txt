@@ -2,10 +2,10 @@ Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Ha
 A total of 1 test files matched the specified pattern.
 C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
 [xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
-[xUnit.net 00:00:01.94]   Discovering: Hamlet.RadioEngine.Tests
-[xUnit.net 00:00:02.23]   Discovered:  Hamlet.RadioEngine.Tests
-[xUnit.net 00:00:02.23]   Starting:    Hamlet.RadioEngine.Tests
-[xUnit.net 00:02:07.95]   Finished:    Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:01.73]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:01.96]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:01.97]   Starting:    Hamlet.RadioEngine.Tests
+[xUnit.net 00:02:07.62]   Finished:    Hamlet.RadioEngine.Tests
   Passed Hamlet.RadioEngine.Tests.Cw.WhatFldigisEdgesWouldMoveFact.EveryEventOfTheThreeEdgesOverAll35 [2 m 5 s]
   Standard Output Messages:
  edges | where ours decides, file:line at HEAD | ours | fldigi, cw.cxx at 61b97f41
@@ -483,7 +483,7 @@ C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEng
  rank | B- | 48 | listed only: marks at or over half a dit that ours discards, which (B)'s form does not restore
  refused-D | 031948 `110,` | 1 event(s): W gap between letters read as a word gap (path kind letter; fldigi: character), boundary unscored at 2.680 s, 3.00 dits, neither
  refused-D | 004507 `EACH` | 2 event(s): W gap between letters read as a character gap (path kind letter; fldigi: word), boundary right, no space at 12.515 s, 4.20 dits, at risk; W gap between letters read as a character gap (path kind word; fldigi: word), boundary right, no space at 13.280 s, 5.10 dits, at risk
- refused-D | 031905 `PREDICTED` | 0 event(s)
+ refused-D | 031905 `PREDICTED` | 1 event(s): B dit kept under half a dit at 5.375 s, 0.44 dits, at risk
  form | C | where: CwProbabilisticDecoder, the span bounds of the two mark kinds, in DecodeAt (1265-1266) and in the rival lattice (1509-1510) alike | edge: 2 dits - a key-down span of at most floor(2 x unit) hops can only be a dit and a longer one only a dah (cw.cxx:846-855, element_usec <= two_dots); the length penalty is unchanged | the dit: the unit of the speed the lattice is run at, 1200 / WPM / 5 hops, the read's own speed whether measured, won on the grid or overruled by the marks
  form | B | where: CwProbabilisticDecoder, the shortest key-down span, in DecodeAt (1265) and in the rival lattice (1509) alike | edge: 0.5 dit - no key-down segment shorter than ceil(unit / 2) hops, the larger of that and today's floor, so a shorter mark falls to the key-up segment around it (cw.cxx:515, 818-822); fldigi's reset of the character in progress is not taken | the dit: the unit of the speed the lattice is run at, as for C
  form | W | where: CwProbabilisticDecoder, the span bounds of the three key-up kinds, in DecodeAt (1265-1266) and in the rival lattice (1509-1510) alike; CwProbabilisticStream's relabel (Spaced) is left as it is, since it only takes spaces out | edges: 2 and 4 dits - an element gap only under 2 dits (longest ceil(2 x unit) - 1 hops), a character gap from 2 to 4 dits (ceil(2 x unit) to floor(4 x unit) hops), a word gap only past 4 dits (from floor(4 x unit) + 1 hops) (cw.cxx:883-914); each kind's wanted length and so its penalty unchanged, held gaps included | the dit: the unit of the speed the lattice is run at, as for C, whether or not the sender's gaps are held
@@ -493,5 +493,5 @@ C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEng
 Test Run Successful.
 Total tests: 1
      Passed: 1
- Total time: 2.1377 Minutes
+ Total time: 2.1320 Minutes
 RC=0 WALL=129s
