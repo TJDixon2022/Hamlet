@@ -1,0 +1,45 @@
+== git diff 19109b51 -- src/Hamlet.RadioEngine/Cw/Second/ (empty):
+== end port
+== git diff 7e209cb4 over the eleven transmit files:
+== end transmit
+== src this unit against 1f1c915d, file by file:
+ src/Hamlet.RadioEngine/Cw/CwCharacter.cs           |  16 ++
+ .../Cw/CwCharacterProbability.cs                   |  46 ++++++
+ src/Hamlet.RadioEngine/Cw/CwProbabilisticStream.cs |   1 +
+ src/Hamlet.RadioEngine/Cw/FldigiConfidence.cs      | 171 +++++++++++++++++++++
+ 4 files changed, 234 insertions(+)
+== src this unit against 99c90b69:
+ src/Hamlet.RadioEngine/Cw/CwCharacter.cs           |  16 ++
+ .../Cw/CwCharacterProbability.cs                   |  46 ++++++
+ src/Hamlet.RadioEngine/Cw/CwProbabilisticStream.cs |   1 +
+ src/Hamlet.RadioEngine/Cw/FldigiConfidence.cs      | 171 +++++++++++++++++++++
+ 4 files changed, 234 insertions(+)
+## main...origin/main
+ M .run-unit/watched.cpu
+ M PROJECT_STATUS.md
+?? .run-unit/fldigi/
+?? .run-unit/unit464-adjudicated-exit.txt
+?? .run-unit/unit464-build-exit.txt
+?? .run-unit/unit464-captures-exit.txt
+?? .run-unit/unit464-cf-app-exit-rerun.txt
+?? .run-unit/unit464-cf-app-exit.txt
+?? .run-unit/unit464-cf-engine-exit.txt
+?? .run-unit/unit464-classes-exit.txt
+?? .run-unit/unit464-confidence-exit.txt
+?? .run-unit/unit464-exit-print.sh
+?? .run-unit/unit464-exit-print.txt
+?? .run-unit/unit464-metrics-exit.txt
+?? .run-unit/unit464-named-exit.txt
+?? .run-unit/unit464-pairs-exit.txt
+?? .run-unit/unit464-parity-exit.md
+?? .run-unit/unit464-parity-exit.txt
+?? .run-unit/unit464-port-exit.txt
+?? .run-unit/unit464-second-exit.txt
+?? .run-unit/unit464-text-exit-classes.txt
+?? .run-unit/unit464-text-exit.sorted.txt
+?? .run-unit/unit464-text-exit.txt
+?? .run-unit/unit464-v11-exit.txt
+?? SESSION.lock
+b30bef48 unit464: tick 9.5 in both copies of PHASE_PLAN.md - both decoders carry a p on every character, calibration measured held-out per condition, the conditions named, the port's derivation stated (9.5)
+efdd5d11 unit464 task 3: calibration measured held-out per condition - ours calibrated on 4, not calibrated on 2, not measurable on 6; the port calibrated on none, not calibrated on 6, not measurable on 6 (9.5)
+d3fb86fb unit464 task 2: a p on every character - CwCharacter.Probability from the rival margin, FldigiConfidence from the port's level and timing outside Cw/Second; texts, classes and metrics byte-identical (9.5)

@@ -2,226 +2,507 @@ READ IN THIS ORDER.
 
 A. Phase goal: Hamlet meets the CW requirements. Steps by the plan -
    0 done, 1 done, 2 4 of 5, 3 3 of 6, 4 5 of 7, 5 1 of 6, 6 3 of 6,
-   7 2 of 5, 8 0 of 6, 9 3 of 8; steps 2 to 8 still barred by R86.
-B. Step 9, criterion 9.4: HM-REQ-129 - fldigi's detection front end,
-   (A1) half-dit integrator at the speed in force refused on 004507,
-   coverage (and the real set's coverage 403 to 38 and MET-WBE 37 to
-   89), (A2) AGC-normalized level refused on 173723, MET-INVENTED (and
-   the real set's MET-CER-SURE 33 to 39, synthetic worse on all four);
-   nothing committed: real (inferred) MET-CER-SURE 33 of 436 to 33 of
-   436, MET-INVENTED 33 to 33, coverage 403 to 403, MET-WBE 37 to 37;
-   synthetic (exact) 14, 14, 159, 44 to 14, 14, 159, 44; adjudicated 13
-   of 13; V-11 0 of 35 worse at exit (A1 26, A2 11 of 35 while
-   screened); gate margin on 014854 0.475 to 0.475 (A1 1.266, A2 0.462
-   while screened); the port byte-identical yes; 9.4 open.
-C. The findings weighed against A and B: section 4 raises 5 items. Item
-   1 is in the way of 9.4. Every mechanism 9.3 named, (A) to (E), has
-   now been refused, and what comes next is the next arbiter's to
-   decide. Item 2 records this unit's R85 readings. Items 3 to 5 are
-   findings about the likelihood model, the parity harness and the
-   tree. None is in the way of 9.5, which R86 does not yet reach. None
-   asks anything about keying, transmit, or what the product tells the
-   operator.
+   7 2 of 5, 8 0 of 6, 9 4 of 8; steps 2 to 8 still barred by R86,
+   and 9.4 open with every mechanism 9.3 named refused.
+B. Step 9, criterion 9.5: HM-REQ-124 - ours' p from its rival margin
+   (MarginLlr, as sign(m) ln(1 + |m|)); the port's p from its level
+   margin 20 log10(sig_avg / noise_floor) (cw.cxx:610, 612-616, 635-636)
+   and its timing margin |element - two_dots| / (two_dots / 2)
+   (cw.cxx:811-812, 847, 502); held-out by recording, ten bins,
+   5 points. Ours is calibrated on real HF all, real sender-not-stated,
+   synthetic all and synthetic TX-ITU 15 dB. It is not calibrated on
+   real TX-FARNS or synthetic TX-ITU 5 dB. It is not measurable on real
+   TX-ITU, real TX-TIGHT, synthetic TX-ITU 0 dB and synthetic gap-5 at
+   0, 5 and 15 dB. The port is calibrated on none. It is not calibrated
+   on real HF all, real TX-FARNS, real sender-not-stated, synthetic all
+   and synthetic TX-ITU 15 and 5 dB. It is not measurable on the same
+   six as ours. In-sample against held-out gap: 0.49 points per
+   character for ours, 1.17 for the port. Every text and class
+   byte-identical: yes. The port byte-identical: yes. 9.5 ticked.
+C. The findings weighed against A and B: section 4 raises 5 items.
+   Item 3 bears on 9.6. Under HM-REQ-124 the port is calibrated on no
+   condition, so it is advisory everywhere, and a vote built today
+   could never let it win a disagreement. Ours' p is calibrated where
+   it is mostly because it barely moves (0.77 to 0.99). That tells 9.6
+   little about which of its letters to doubt. Neither stops 9.6 from
+   being built. Item 1 is the standing reading: R86 with 9.4's refusals
+   holds steps 2 to 8, and only the owner can change how they read. It
+   is not a stop here. Nothing touches transmit or what the operator
+   is shown.
 
-UNIT:       463 - complete at task 4 of 4, none dropped - 2026-09-27 01:50
-PHASE GOAL: Hamlet's CW decoder meets every requirement in CW_REQUIREMENTS.md at the condition each names, proved by a test that names it. For now the plan routes everything through step 9: one fldigi technique has to earn a place in ours before any other decoder work resumes.
-UNIT GOAL:  Screen the last untried fldigi mechanism, its detection front end, in two fixed forms: a half-dit integrator at the read's own speed, and fldigi's AGC dividing our level. Keep whichever R78 says makes ours read better with no recording worse, and leave the port untouched.
-ADVANCED:   no - 9.4 is not ticked. Both forms were screened, refused under R78 and reverted. A1 collapsed coverage on the real set (403 to 38). A2 added sure-wrong letters on both sets (real 33 to 39, synthetic 14 to 33).
-NUMBER:     HM-REQ-129 not met; real MET-CER-SURE 33/436 to 33/436 (inferred); synthetic 14/173 to 14/173 (exact); MET-INVENTED real 33 to 33; coverage real 403 to 403; MET-WBE real 37 to 37; the port byte-identical yes
-DRIFT:      step 2 1; step 3 0; step 4 1; step 5 1; step 6 0; step 7 0; step 9 3 (was 2)
+UNIT:       464 - complete at task 4 of 4, none dropped - 2026-09-27 03:59
+PHASE GOAL: Hamlet's CW decoding meets every requirement in CW_REQUIREMENTS.md at the condition each names, each proved by a test that names it. Until one fldigi technique is kept in ours, R86 routes the loop through step 9's own lines.
+UNIT GOAL:  Give every character either decoder prints a number, the chance it is right. Ours takes its number from how far its reading beat the nearest rival; the port's comes from fldigi's own signal-over-noise and timing, read without touching the port. Then measure, condition by condition and on recordings the fit never saw, whether "90%" means right 90% of the time. No letter or class changes.
+ADVANCED:   yes - 9.5 is ticked in both copies. Both decoders carry a p on every character (EveryCharacterCarriesAConfidenceTests; 0 of 1683 characters differ from the map), calibration is measured held-out per condition, the conditions are named, and the port's derivation is stated.
+NUMBER:     HM-REQ-124 met on 4 of 12 conditions for ours and 0 of 12 for the port (6 of 12 not measurable for each). Held-out share right against mean p: ours 0.924 against 0.918 (real, inferred), 0.919 against 0.933 (synthetic, exact); the port 0.741 against 0.769 (real, inferred), 0.798 against 0.756 (synthetic, exact). Texts byte-identical: yes.
+DRIFT:      step 2 1; step 3 0; step 4 1; step 5 1; step 6 0; step 7 0; step 9 0 (was 3)
 
 ## 1. What Claude did
 
 **Complete, at task 4 of 4, none dropped.** QUIVERFULL, Hamlet confirmed by the gate (all six
-checks held), branch `main`. The session found `SESSION.lock` already there (PID 38940, 00:32:05).
+checks held), branch `main`. The session found `SESSION.lock` already there (PID 37056, 01:57:15).
 The lock is the launcher's; the session did not take it or release it.
 
-**Tree against the instruction.** HEAD was `f40a97f9`. Both copies of `PHASE_PLAN.md` are
-identical: 9.1 to 9.3 ticked, 9.4 to 9.8 open, and R86 at line 342. The port matched `19109b51`.
-`IntegratorBandwidthHz` is 45.0, and both envelope paths take their window through
-`IntegratorWindow`. 462's three patches, their numbers and the classed texts are present.
-**Mismatch:** there is no `.run-unit\watched.rc`. Git status showed `watched.cpu` deleted, and the
-runner later rewrote it. The runner's writes were committed as they were at task 0; `watched.cpu`
-was rewritten again during the unit and is left as the runner left it. The `RULES_AT`
-disagreement and `outcome-read`'s step titles for steps 2, 3 and 8 are logged here as the
-instruction states them. They are not repaired, and `outcome-read` was not run.
+**Tree against the instruction.** HEAD was `99c90b69`. Both copies of `PHASE_PLAN.md` were
+identical, with 9.1 to 9.3 ticked, 9.4 to 9.8 open and R86 at line 342. The port matched
+`19109b51`. `CwCharacter` carried `Confidence` and `MarginLlr` and no numeric probability. Unit
+463's saves were all present. There are three mismatches:
+- **No `.run-unit\watched.rc`.** The instruction says it is now present. It is not.
+- **`watched.cpu`.** Git status showed it deleted at the start. The runner then rewrote it, and it
+  was committed at task 0 as the runner left it. Task 0's commit message still says "deleted",
+  which was out of date by the time of the commit.
+- **The port's key events cannot be ordered from `Emissions` and `KeyEvents` alone.** The
+  instruction says the adapter takes those two. The port's filter hands out 1024 samples at once,
+  so an emission and the next character's first key events can carry the same `InputSample`. On
+  the first trace this left 44 port characters with no key events found. Only the decision rows,
+  with `TraceDecisions` on, give the true order. `TraceDecisions` is public and records only.
+  `FldigiConfidence` therefore takes the decision rows as well, and refuses a run made without
+  them. No line under `Cw/Second/` changed.
 
-**Task 0.** Record `## UNIT 463 - STEP 9` in both `PHASE_OUTCOME.md` copies; `PHASE_STATUS.md` names
-463 at `CURRENT_STEP: 9` in both copies; version 1.13.149 to 1.13.150. Entry round: every figure as at
-462's exit (section 3, item 4). The app line lost two `TheCqPressWritesTheLabelTheOperatorPressed`
-cases to Avalonia's headless "dispatcher loop" on the first run, and passed 278 of 278 on the one
-rerun under DECIDED (8). Saved: ours' texts (`unit463-text-before.txt`, 126 sorted lines, identical
-to 462's), each character's class and verdict through 462's committed fact
-(`unit463-text-before-classes.txt`, byte-identical to 462's), the port's texts
-(`unit463-port-before.txt`, byte-identical to 462's), and the 35-row V-11 table
-(`unit463-v11-before.txt`, identical to 462's).
+Logged and not this unit's: the `RULES_AT` disagreement, and `outcome-read`'s step titles.
 
-**Task 1.** `WhatFldigisFrontEndWouldLiftFact` (HM-REQ-129) prints the two chains, the lift at
-group (a)'s marks under three envelopes and 014854's gate room, then fixes both forms. It asserts
-nothing and changed nothing under `src`. Its output is `.run-unit\unit463-frontend.txt`. The
-instruction's reading of fldigi's time constants is confirmed from the source: `decode_stream`
-runs once per decimated sample, at 500 a second (704-710), and `decayavg` is
-`avg + (x - avg) / weight` (`misc.h` 59-63). So attack 200 is 0.4 s and decay 1000 is 2 s, which
-is 80 and 400 of our 5 ms hops.
+**Task 0.** I recorded the unit (`## UNIT 464 - STEP 9`, `PHASE_STATUS` in both copies, 1.13.151)
+and committed the runner's writes as they were. The entry round ran, and every figure matched
+463's exit (table in section 3). Both decoders' texts and ours' classes were saved.
 
-**Task 2.** Each form was built in `CwProbabilisticDecoder` and `CwProbabilisticStream` in the
-form task 1 fixed, and judged in the working tree. The judging covered the build, the adjudicated
-readings, the metrics, the V-11 table against task 0's, the silence types, the captures floor,
-the gate room through the stream, and a parity run for decode time and the port. Each patch and
-its numbers were saved, then the tree was reverted with `git checkout -- src`, and
-`git diff -- src` printed nothing. **Both were refused** (section 3). A2 was built from the clean
-tree after A1's revert. Neither was narrowed, re-edged or re-timed after its numbers were seen.
+**Task 1: the trace, and the map fixed.** `WhatEachDecoderKnowsAboutEachCharacterFact` (HM-REQ-124)
+prints one row per emitted character, for both decoders, on all 35 recordings, with the scorer's
+verdict. Its counts equal `parity.md`'s:
+- ours: 609 scored (562 right, 36 wrong, 11 added), all sure, since ours emits no dim;
+- the port: 407 scored (311 right, 94 wrong, 2 added);
+- 9 characters are covered by two stretches and are scored once per stretch, as the metrics do.
 
-**Task 3.** Nothing was kept, so no test was written, nothing under `src` was committed and 9.4 is
-not ticked. The two patches and their numbers are committed as evidence (task 2's commit), and
-`.run-unit\unit463-refusals.txt` records each form's refusing recording and metric.
+`MarginLlr` is never NaN. It is +Infinity on 97 short letters, 38 of them scored, most of which
+have no rival reading. Both port features read on every character. The map, fixed from the
+separation print before any calibration number:
+- **both:** one logistic per decoder, pooled over both sets, fitted by Newton's method to right
+  against wrong or added;
+- **ours:** x = sign(m) ln(1 + |m|). The raw margin runs to the hundreds and to infinity; the
+  compression is monotone. A non-finite margin takes a constant fitted on those characters alone.
+- **the port:** linear in level dB and timing dits.
 
-**Task 4.** The exit round matches entry on every figure (section 3, item 4).
+**Task 2: p attached.**
+- `CwCharacter.Probability` is set by the stream at the line where `MarginLlr` is set, through
+  `CwCharacterProbability.Of`.
+- `FldigiConfidence` sits under `Cw\` and derives the port's p as above.
+- The constants are the whole pool's fit. `TheShippedConstantsAreTheWholePoolFit` checks every
+  character of both decoders against the map, and 0 of 1683 differ.
+- Every text and class, the port's texts, all 35 V-11 rows and the four metrics are byte-identical
+  to task 0.
 
-**Decisions the session made for itself:**
-1. Ours' per-character classes were taken at task 0 through 462's committed
-   `WhatFldigisEdgesWouldMoveFact`, run by name, which is how 462 took them.
-2. The A1 envelope is centred on each hop, aligned to where the 45 Hz integrator of that hop is
-   centred (offline: centred; stream: the trailing Hann's centre). fldigi's own filter runs behind
-   the audio. Centring keeps the marks on the hops that the speed measurement, gap measurements,
-   relabel and `GapsFitTheUnit` still read from the 45 Hz window. Decimated samples beyond the
-   audio held count as nought, which is how the offline envelope already treats the edges.
-3. The audio is brought to 8 kHz for A1 by averaging the mixed samples that fall in each 8 kHz
-   sample. fldigi's own input is resampled to 8 kHz upstream of `cw.cxx`.
-4. The low-pass is normalised to unity gain at DC. fldigi normalises to its peak response, which
-   is the same point for this low-pass. The likelihoods are scale-free, so the gain decides
-   nothing.
-5. Under A2 the AGC runs continuously in the stream, as fldigi's does. It starts at fldigi's
-   constructor values and is reset only on `Restart`. Offline it runs from the file's first hop.
-6. The gate room is measured two ways. Task 1 used a whole-file and windowed offline read, the way
-   `TheIntegratorBandwidthTable` measures it. Task 2 added `TheEmptyBandThroughTheStream` to the
-   fact, which drives the stream itself and takes the highest ratio any read scored. That added
-   method is test code and went into task 2's commit. The "before" was measured on the committed
-   tree after A1's revert and appended to `unit463-A1.txt` by `unit463-gatefix.sh`.
+**Task 3: measured.** `CwCalibration` is new, beside `CwMetrics`. `EachDecodersConfidenceIsMeasuredTests`
+fits on 34 recordings and measures the 35th, all 35 times. It writes
+`docs/phase-requirements/calibration.md`, and `metrics.md` now points at it. MET-CAL was not
+dropped. 9.5 was ticked in both copies in a follow-on commit, and nothing else was ticked.
+
+**Task 4: the exit round.** Every figure is as at entry (section 3).
+
+**Decisions made for myself:**
+- **The margin's compression and the +Infinity rule.** Both were forced by the separation print:
+  the instruction's option for a NaN margin, applied to +Infinity too.
+- **Task 1's commit is two commits.** My commit helper staged only `.run-unit` files, so the fact
+  itself went in `d1abc6cb` right after `12252dcc`. I did not force-push main.
+- **An overwritten save, restored.** During task 2 a wrong V-11 suffix overwrote
+  `unit464-v11-before.txt` with an empty file. I restored it exactly as task 0 had made it (a copy
+  of the entry rows); git shows it unchanged from task 0's commit.
+- **The dispatcher loop hit the app line at every gate.** It took a different test each time.
+  DECIDED (8)'s rerun was used each time; wherever the rerun lost a type too, that type passed alone.
+- **Task 3's gate.** Task 3's commit adds only a test type, which was already in the tree when
+  task 2's gate ran, and two documents no test reads. I rebuilt for it and did not rerun the five.
+  The exit round ran them all on the final tree.
+- **The hand-built case was not watched failing.** Case 2 of `EveryCharacterCarriesAConfidenceTests`
+  was written against the finished measure. Only case 1 was watched failing (section 3).
 
 ## 2. What the owner should expect
 
-Nothing changes on the screen: every recording reads exactly as it did yesterday, letter for letter,
-and the port reads exactly as it did. Neither of fldigi's two front-end ideas made our decoder read
-better. Listening to each mark over half a dit at the sender's own speed made Hamlet print almost
-nothing: 38 correct letters on the real recordings where it prints 403 today, with `VA3VRR` and
-five other checked readings gone. Levelling the signal the way fldigi's AGC does came closest. It
-kept all 13 checked readings, and printed one more letter right on each of `004507`, `032129` and
-`004427`. But it printed six more wrong letters on the real set and nineteen more on the generated
-practice set, `CQ CQ CQ DE N0CALL` at 5 dB among them. The rules do not trade a wrong letter for a
-right one. What will look wrong but is not: `TheSpeedFollowsTheSendersMarkPairsTests` still fails
-at 28 of 31, as unit 459 left it, and it is on neither carry-forward line.
+Nothing on the screen changes. Every letter either decoder reads now carries a hidden number,
+Hamlet's own estimate of the chance that the letter is right. If you could see it:
+- **Ours, on the real recordings as a whole and on the clean 15 dB synthetic signal:** "92% sure"
+  really did come out right about 92% of the time.
+- **Ours on the traffic-net sender (TX-FARNS) and the 5 dB synthetic signal:** it undersold
+  itself. It said about 90% and was right nearly every time.
+- **Ours, the catch:** its number hardly moves, between 77% and 99%. It is honest mostly because
+  it says roughly the same thing about every letter, so it does not yet single out the letters
+  you should doubt.
+- **The fldigi port:** its number was not honest on any condition. On the real recordings it said
+  about 77% and was right 74% of the time, but its "84%" letters were right only 74%. On the
+  synthetic signals it undersold its good letters and oversold its bad ones.
+
+The requirement says a decoder whose number is not honest on a condition only advises there. So
+as things stand, the port could advise but never win an argument with ours. Most of the finer
+conditions (single senders, the 0 dB and wide-gap synthetic cases) have too few letters to judge
+either way.
 
 ## 3. What you should see
 
-No visible change. This unit screened two forms and kept neither, so the decoder and every text
-it prints are as at entry.
+No visible change. This unit gives each decoder a number the next step (9.6) needs before either
+may vote.
 
-**The screen table.** Real is 23 keyed recordings with inferred keys; synthetic is 12 cases with
-exact keys. Each cell reads MET-CER-SURE / MET-INVENTED / coverage / MET-WBE.
+**The calibration table, held-out by recording (the verdict) with in-sample beside it.** "Worst" is
+the populated bin (10 or more characters) furthest from its mean p, in points, share right less
+mean p. Real keys are inferred and synthetic keys exact.
 
-| form | real before | real with it | synthetic before | synthetic with it | adjudicated | V-11 worse | gate room on 014854 | decode, ours over 690 s | verdict |
-|---|---|---|---|---|---|---|---|---|---|
-| A1 half-dit integrator at the read's speed, `cw.cxx` 352-361, 396, 428-431, 696-708 | 33/436, 33, 403/473, 37 | 13/51, 13, 38/453, 89 | 14/173, 14, 159, 44 | 1/85, 1, 84, 60 | 7 of 13 | 26 of 35 (every recording that moved, except `cq-18wpm-15db-char5` and `003758`, which improved) | 0.475 to 1.266 | 51.47 s to 72.92 s | **refused** on real coverage and MET-WBE; synthetic coverage and MET-WBE |
-| A2 AGC-normalized level, `cw.cxx` 599-632 | 33/436, 33, 403/473, 37 | 39/442, 39, 403/473, 37 | 14/173, 14, 159, 44 | 33/182, 33, 149, 46 | 13 of 13 | 11 of 35: `cq-12wpm-5db`, `cq-18wpm-15db-char5`, `cq-18wpm-5db`, `cq-18wpm-5db-char5`, `cq-25wpm-5db`, 031905, 032050, 032113, 173723, 004108, 004322 | 0.475 to 0.462 | 51.47 s to 51.64 s | **refused** on real MET-CER-SURE and MET-INVENTED; all four synthetic |
-
-Under A1, 17:37 read nothing of the key's opening, so it has no scored stretch; that is why real
-"sent" falls to 453. Silence held under both forms: `TheSilencePropertyIsLockedTests` 6 of 6,
-`NothingIsReadFromAudioWithNoKeyingTests` 4 of 4, both empty-band capture rows green, and nothing
-settled on 014854 or 014935. The captures floor, run for silence, fell to 6 of 51 under A1 and to
-31 of 51 under A2. Every row and figure is in `.run-unit\unit463-A1.txt` and `unit463-A2.txt`.
-
-**1. Task 1's two chains, and the lift.**
-
-| stage | ours, at HEAD | fldigi, `cw.cxx` at `61b97f41` |
-|---|---|---|
-| mixer | quadrature mixdown at the audio's rate (`CwProbabilisticDecoder.cs` 930-940; `CwProbabilisticStream.cs` 256-270); no low-pass but the integrator | complex mixdown at 8 kHz (688-692), then a 1024-tap Blackman sinc low-pass (`fftfilt.cxx` 128-171): 150 Hz by default, 5 x WPM / 1.2 only under `CWmfilt`, which is off by default (352-356, 395-398) |
-| integrator | Hann of 33.4 ms, 45 Hz ENBW, fixed by `IntegratorBandwidthHz` (416, 593-635, 916-974) | decimate by 16 to 500/s (704), magnitude, boxcar of symbollen / 32: half a dit, 29 Hz at 17.1 WPM, set by `CWspeed` (358-361, 428-431, 708) |
-| level | none: sigma = the quarter point / 0.7585, keyed = the 97th percentile, over 2.5 s centred, re-taken every 62 hops (1004-1154) | `decayavg` trackers: signal at decay, floor and peak at attack 0.4 s / decay 2 s (599-623); value / peak (629-632) |
-| speed vs envelope | chosen from the same 45 Hz envelope: the measured unit, else the grid, then the marks' overrule (`CwProbabilisticStream.cs` 442-449, 516-531; 768-783) | tracked after detection (524-535, 831-843); the front end follows the operator's `CWspeed`, not the tracked speed (395-396, 416, 428) |
-
-Lift on group (a)'s marks, as median and peak in each envelope's own noise sigmas against that
-envelope's keyed level. The strips are in `unit463-frontend.txt`.
-
-| departure | ours | A1 | A2 |
-|---|---|---|---|
-| 17:37 R (read E, 29.195 s), 17.1 WPM | marks 3.2-3.5 of keyed 3.7; nothing above noise where the missing dah belongs | marks 1.9-2.2 of keyed 2.2; nothing there either | ours to one decimal (keyed 3.8) |
-| 17:37 D (read I, 30.000 s) | as above, keyed 3.7 | keyed 2.2 | keyed 3.8 |
-| 032012 O (read T, 1.765 s), 22.9 WPM | three dahs at 5.8 of keyed 5.8 in the whole-file envelope | 2.1 of keyed 2.1 | 5.0-5.9 of keyed 7.1 (the peak still falling from the burst) |
-| cq-18wpm-15db-char5 L (read E), 17.8 WPM | 12.7-13.6 of keyed 14.3 | 7.1-7.7 of keyed 7.9 | 11.9-13.3 of keyed 13.8 |
-| cq-18wpm-5db-char5 0 (read U), 18.5 WPM | 4.3-5.0 of keyed 5.5 | 2.1-2.6 of keyed 2.7 | 3.9-5.2 of keyed 5.6 |
-
-**The prediction matched the screen.** Task 1 found that neither form lifts the marks 17:37 is
-missing. It also found that A1 pulls every keyed level down toward the noise in the likelihood's
-own sigma terms, and the screen found A1 printing almost nothing. A2 differed from ours only where
-the peak was moving, and the screen found A2 moving a handful of letters each way.
-
-**2. Every recording the kept change moved:** none. Nothing was kept. Each screened form's moved
-rows are in its `.txt`.
-
-**3. How the kept change's test was watched failing first:** no kept change, so no test was
-written.
-
-**4. The commit table.** Build, both carry-forward lines and the three floor tests at each commit.
-
-| commit | what | build | engine line | app line | named | captures | adjudicated |
+| condition | key | decoder | scored | mean p held-out / in-sample | share right | worst bin held-out / in-sample | verdict (held-out) |
 |---|---|---|---|---|---|---|---|
-| `41f445ef` | task 0: record, bump, entry printouts | 0 errors | 178/178 | 278/278 (rerun, DECIDED (8)) | 13/13 | 51/51 | 13/13 |
-| `06bcd261` | task 1: the fact and its printout | 0 errors | not re-run | not re-run | not re-run | not re-run | not re-run |
-| `90713038` | task 2: A1 and A2 patches and numbers | 0 errors (revert build) | not re-run | not re-run | not re-run | not re-run | not re-run |
-| `17e1ae57` | task 3: the refusal record | not re-run | not re-run | not re-run | not re-run | not re-run | not re-run |
-| (task 4) | exit printouts, output.md | 0 errors | 178/178 | 278/278 | 13/13 | 51/51 | 13/13 |
+| real HF, all | inferred | ours | 436 | 0.918 / 0.919 | 0.924 | +0.8 / +1.1 | calibrated |
+| real HF, all | inferred | port | 239 | 0.769 / 0.768 | 0.741 | +10.9 / +13.7 | not calibrated |
+| real, TX-FARNS | inferred | ours | 43 | 0.936 / 0.941 | 1.000 | +5.8 / +5.3 | not calibrated |
+| real, TX-FARNS | inferred | port | 33 | 0.731 / 0.747 | 0.909 | +11.1 / +14.7 | not calibrated |
+| real, TX-ITU | inferred | ours | 13 | 0.914 / 0.916 | 1.000 | +7.9 / +7.9 | not measurable |
+| real, TX-ITU | inferred | port | 6 | 0.719 / 0.720 | 0.833 | none / none | not measurable |
+| real, TX-TIGHT | inferred | ours | 6 | 0.858 / 0.863 | 1.000 | none / none | not measurable |
+| real, TX-TIGHT | inferred | port | 3 | 0.891 / 0.882 | 0.333 | none / none | not measurable |
+| real, sender not stated | inferred | ours | 374 | 0.918 / 0.918 | 0.912 | -1.1 / -1.7 | calibrated |
+| real, sender not stated | inferred | port | 197 | 0.775 / 0.772 | 0.716 | -12.8 / +12.0 | not calibrated |
+| synthetic, all | exact | ours | 173 | 0.933 / 0.932 | 0.919 | +3.7 / +5.3 | calibrated |
+| synthetic, all | exact | port | 168 | 0.756 / 0.758 | 0.798 | +13.0 / -21.0 | not calibrated |
+| synthetic TX-ITU 0 dB | exact | ours | 0 | - | - | none | not measurable |
+| synthetic TX-ITU 0 dB | exact | port | 27 | 0.664 / 0.631 | 0.222 | -33.4 / -45.0 | not measurable |
+| synthetic TX-ITU 15 dB | exact | ours | 64 | 0.964 / 0.966 | 0.984 | +2.0 / +1.9 | calibrated |
+| synthetic TX-ITU 15 dB | exact | port | 56 | 0.848 / 0.857 | 0.964 | +11.9 / +12.4 | not calibrated |
+| synthetic TX-ITU 5 dB | exact | ours | 63 | 0.894 / 0.899 | 0.984 | +10.4 / +9.6 | not calibrated |
+| synthetic TX-ITU 5 dB | exact | port | 47 | 0.691 / 0.701 | 0.894 | +21.9 / +21.1 | not calibrated |
+| synthetic gap 5, 0 dB | exact | ours | 0 | - | - | none | not measurable |
+| synthetic gap 5, 0 dB | exact | port | 3 | 0.653 / 0.648 | 0.333 | none / none | not measurable |
+| synthetic gap 5, 15 dB | exact | ours | 21 | 0.969 / 0.968 | 0.952 | -1.6 / -1.6 | not measurable |
+| synthetic gap 5, 15 dB | exact | port | 19 | 0.849 / 0.858 | 0.947 | +11.8 / +11.2 | not measurable |
+| synthetic gap 5, 5 dB | exact | ours | 25 | 0.919 / 0.898 | 0.560 | -31.4 / -33.5 | not measurable |
+| synthetic gap 5, 5 dB | exact | port | 16 | 0.692 / 0.695 | 0.813 | +19.0 / +18.6 | not measurable |
 
-`src` is identical at every one of these commits (`git diff f40a97f9 -- src` prints nothing).
-The only test added is the fact, which is on no carry-forward line. The "not re-run" cells were not
-measured at that commit; they rest on unchanged `src` and unchanged test lines between two green
-measurements.
+The synthetic set is ours' only row where the held-out and in-sample verdicts differ. The
+in-sample bin 8 sits at +5.3 points, just past the line.
 
-Exit figures beside entry: build 0 errors; engine 178 of 178; app 278 of 278 (first run, no
-dispatcher loss); named 13 of 13; captures 51 of 51; adjudicated 13 of 13; metrics real 33/436,
-33, 403, 37 (29 ins, 8 del) and synthetic 14/173, 14, 159, 44 (13 ins, 31 del), as at entry; both
-decoders scored alike 5 of 5; the port's tests 8 of 8; `TheSpeedFollowsTheSendersMarkPairsTests` 28
-of 31 sure wrong or added, red as expected; ours decodes 690 s in 52.45 s (51.47 at entry).
-`git diff 19109b51 -- src/Hamlet.RadioEngine/Cw/Second/` prints nothing. The port's texts are
-byte-identical to task 0's save, 74 lines. `git diff 7e209cb4` over the eleven transmit files
-prints nothing. Our texts are identical to task 0's, 126 lines. `.run-unit\fldigi\` is still
-untracked. Everything is in `.run-unit\unit463-tx-exit.txt`.
+**How much the fit learned the corpus.** A character's held-out p differs from its in-sample p by:
+- ours: 0.49 points on average, 5.49 at most;
+- the port: 1.17 points on average, 9.79 at most.
+
+**1. Task 1's separation print, and the constants.** Scored characters by quintile of the feature,
+both sets pooled (right / wrong / added, right share). The full print, per set and with NaN and
+infinite counts, is in `.run-unit/unit464-features.txt`.
+
+| decoder | feature | Q1 | Q2 | Q3 | Q4 | Q5 |
+|---|---|---|---|---|---|---|
+| ours | MarginLlr | -0.61 to 2.76: 102/16/3, 0.843 | to 7.93: 110/7/5, 0.902 | to 23.7: 115/6/1, 0.943 | to 68.2: 119/1/2, 0.975 | to +Inf: 116/6/0, 0.951 |
+| port | level dB | -8.66 to 3.81: 39/42/0, 0.481 | to 5.73: 71/9/1, 0.877 | to 7.53: 60/21/1, 0.732 | to 9.81: 62/19/0, 0.765 | to 26.7: 79/3/0, 0.963 |
+| port | timing dits | 0.02 to 0.59: 55/26/0, 0.679 | to 0.82: 69/12/0, 0.852 | to 0.92: 74/8/0, 0.902 | to 0.99: 66/15/0, 0.815 | to 1.87: 47/33/2, 0.573 |
+
+Infinite `MarginLlr`: 97 rows, 38 scored, 35 right. The patterns are `.`, `-`, `..`, `-...--` and
+`.--`, and most have no rival reading. No NaN on either decoder once the port's events were
+ordered by the decision rows.
+
+Constants, the whole pool's fit:
+- **ours:** a = 1.4046693133246466, b = 0.47470729666229566 (571 characters); non-finite
+  0.9210526315789473 (35 of 38).
+- **the port:** a = 0.37776906958829465, b (level) = 0.18544731603622516, c (timing) =
+  -0.40029810858361803 (407 characters); unreadable 0.7641277641277642, the pool's share right,
+  since none was unreadable.
+
+**2. The full held-out reliability tables per condition** (from `calibration.md` section 3):
+
+
+Ten bins of p; empty bins left out; `(under 10)` marks a bin that does not count toward the verdict.
+
+**ours, real HF, all** (inferred keys; 436 scored; held-out calibrated, in-sample calibrated)
+
+| bin | p from | held-out characters | held-out mean p | held-out share right | held-out points | in-sample characters | in-sample mean p | in-sample share right | in-sample points |
+|---|---|---|---|---|---|---|---|---|---|
+| 7 | 0.7 | 1 | 0.779 | 1.000 | +22.1 (under 10) | 0 | - | - | none populated |
+| 8 | 0.8 | 147 | 0.870 | 0.871 | +0.1 | 148 | 0.871 | 0.865 | -0.6 |
+| 9 | 0.9 | 288 | 0.944 | 0.951 | +0.8 | 288 | 0.944 | 0.955 | +1.1 |
+
+**ours, real HF, no CH-* profile, SNR_2500 not measured, sender TX-FARNS (CW_SPEC.md 6.4 and 10, HM-DEC-115's traffic net)** (inferred keys; 43 scored; held-out not calibrated, in-sample not calibrated)
+
+| bin | p from | held-out characters | held-out mean p | held-out share right | held-out points | in-sample characters | in-sample mean p | in-sample share right | in-sample points |
+|---|---|---|---|---|---|---|---|---|---|
+| 8 | 0.8 | 2 | 0.817 | 1.000 | +18.3 (under 10) | 2 | 0.819 | 1.000 | +18.1 |
+| 9 | 0.9 | 41 | 0.942 | 1.000 | +5.8 | 41 | 0.947 | 1.000 | +5.3 |
+
+**ours, real HF, no CH-* profile, SNR_2500 not measured, sender TX-ITU (CW_SPEC.md 10, the KD0UN capture)** (inferred keys; 13 scored; held-out not measurable, in-sample not measurable)
+
+| bin | p from | held-out characters | held-out mean p | held-out share right | held-out points | in-sample characters | in-sample mean p | in-sample share right | in-sample points |
+|---|---|---|---|---|---|---|---|---|---|
+| 8 | 0.8 | 3 | 0.890 | 1.000 | +11.0 (under 10) | 2 | 0.888 | 1.000 | +11.2 |
+| 9 | 0.9 | 10 | 0.921 | 1.000 | +7.9 | 11 | 0.921 | 1.000 | +7.9 |
+
+**ours, real HF, no CH-* profile, SNR_2500 not measured, sender TX-TIGHT (CW_SPEC.md 10, HM-DEC-101)** (inferred keys; 6 scored; held-out not measurable, in-sample not measurable)
+
+| bin | p from | held-out characters | held-out mean p | held-out share right | held-out points | in-sample characters | in-sample mean p | in-sample share right | in-sample points |
+|---|---|---|---|---|---|---|---|---|---|
+| 8 | 0.8 | 6 | 0.858 | 1.000 | +14.2 (under 10) | 6 | 0.863 | 1.000 | +13.7 |
+
+**ours, real HF, no CH-* profile, SNR_2500 not measured, sender not stated in CW_SPEC.md** (inferred keys; 374 scored; held-out calibrated, in-sample calibrated)
+
+| bin | p from | held-out characters | held-out mean p | held-out share right | held-out points | in-sample characters | in-sample mean p | in-sample share right | in-sample points |
+|---|---|---|---|---|---|---|---|---|---|
+| 7 | 0.7 | 1 | 0.779 | 1.000 | +22.1 (under 10) | 0 | - | - | none populated |
+| 8 | 0.8 | 136 | 0.871 | 0.860 | -1.1 | 138 | 0.872 | 0.855 | -1.7 |
+| 9 | 0.9 | 237 | 0.945 | 0.941 | -0.4 | 236 | 0.944 | 0.945 | +0.1 |
+
+**ours, synthetic, all** (exact keys; 173 scored; held-out calibrated, in-sample not calibrated)
+
+| bin | p from | held-out characters | held-out mean p | held-out share right | held-out points | in-sample characters | in-sample mean p | in-sample share right | in-sample points |
+|---|---|---|---|---|---|---|---|---|---|
+| 7 | 0.7 | 0 | - | - | none populated (under 10) | 2 | 0.766 | 0.000 | -76.6 |
+| 8 | 0.8 | 42 | 0.868 | 0.905 | +3.7 | 42 | 0.875 | 0.929 | +5.3 |
+| 9 | 0.9 | 131 | 0.953 | 0.924 | -3.0 | 129 | 0.953 | 0.930 | -2.3 |
+
+**ours, synthetic, no fading, shaped noise band (not shown to be CH-AWGN), TX-ITU (1:3:1:3:7), 0 dB in the passband (not restated in the 2500 Hz reference)** (exact keys; 0 scored; held-out not measurable, in-sample not measurable)
+
+| bin | p from | held-out characters | held-out mean p | held-out share right | held-out points | in-sample characters | in-sample mean p | in-sample share right | in-sample points |
+|---|---|---|---|---|---|---|---|---|---|
+
+**ours, synthetic, no fading, shaped noise band (not shown to be CH-AWGN), TX-ITU (1:3:1:3:7), 15 dB in the passband (not restated in the 2500 Hz reference)** (exact keys; 64 scored; held-out calibrated, in-sample calibrated)
+
+| bin | p from | held-out characters | held-out mean p | held-out share right | held-out points | in-sample characters | in-sample mean p | in-sample share right | in-sample points |
+|---|---|---|---|---|---|---|---|---|---|
+| 9 | 0.9 | 64 | 0.964 | 0.984 | +2.0 | 64 | 0.966 | 0.984 | +1.9 |
+
+**ours, synthetic, no fading, shaped noise band (not shown to be CH-AWGN), TX-ITU (1:3:1:3:7), 5 dB in the passband (not restated in the 2500 Hz reference)** (exact keys; 63 scored; held-out not calibrated, in-sample not calibrated)
+
+| bin | p from | held-out characters | held-out mean p | held-out share right | held-out points | in-sample characters | in-sample mean p | in-sample share right | in-sample points |
+|---|---|---|---|---|---|---|---|---|---|
+| 8 | 0.8 | 38 | 0.870 | 0.974 | +10.4 | 36 | 0.876 | 0.972 | +9.6 |
+| 9 | 0.9 | 25 | 0.929 | 1.000 | +7.1 | 27 | 0.930 | 1.000 | +7.0 |
+
+**ours, synthetic, no fading, shaped noise band (not shown to be CH-AWGN), character gap 5 units, inside TX-FARNS's 3 to 7, 0 dB in the passband (not restated in the 2500 Hz reference)** (exact keys; 0 scored; held-out not measurable, in-sample not measurable)
+
+| bin | p from | held-out characters | held-out mean p | held-out share right | held-out points | in-sample characters | in-sample mean p | in-sample share right | in-sample points |
+|---|---|---|---|---|---|---|---|---|---|
+
+**ours, synthetic, no fading, shaped noise band (not shown to be CH-AWGN), character gap 5 units, inside TX-FARNS's 3 to 7, 15 dB in the passband (not restated in the 2500 Hz reference)** (exact keys; 21 scored; held-out not measurable, in-sample not measurable)
+
+| bin | p from | held-out characters | held-out mean p | held-out share right | held-out points | in-sample characters | in-sample mean p | in-sample share right | in-sample points |
+|---|---|---|---|---|---|---|---|---|---|
+| 9 | 0.9 | 21 | 0.969 | 0.952 | -1.6 | 21 | 0.968 | 0.952 | -1.6 |
+
+**ours, synthetic, no fading, shaped noise band (not shown to be CH-AWGN), character gap 5 units, inside TX-FARNS's 3 to 7, 5 dB in the passband (not restated in the 2500 Hz reference)** (exact keys; 25 scored; held-out not measurable, in-sample not measurable)
+
+| bin | p from | held-out characters | held-out mean p | held-out share right | held-out points | in-sample characters | in-sample mean p | in-sample share right | in-sample points |
+|---|---|---|---|---|---|---|---|---|---|
+| 7 | 0.7 | 0 | - | - | none populated (under 10) | 2 | 0.766 | 0.000 | -76.6 |
+| 8 | 0.8 | 4 | 0.849 | 0.250 | -59.9 (under 10) | 6 | 0.871 | 0.667 | -20.4 |
+| 9 | 0.9 | 21 | 0.933 | 0.619 | -31.4 | 17 | 0.923 | 0.588 | -33.5 |
+
+**port, real HF, all** (inferred keys; 239 scored; held-out not calibrated, in-sample not calibrated)
+
+| bin | p from | held-out characters | held-out mean p | held-out share right | held-out points | in-sample characters | in-sample mean p | in-sample share right | in-sample points |
+|---|---|---|---|---|---|---|---|---|---|
+| 1 | 0.1 | 1 | 0.146 | 1.000 | +85.4 (under 10) | 0 | - | - | none populated |
+| 2 | 0.2 | 2 | 0.255 | 1.000 | +74.5 (under 10) | 3 | 0.246 | 0.667 | +42.1 |
+| 3 | 0.3 | 2 | 0.330 | 0.000 | -33.0 (under 10) | 3 | 0.357 | 0.333 | -2.4 |
+| 4 | 0.4 | 5 | 0.451 | 0.600 | +14.9 (under 10) | 4 | 0.481 | 0.500 | +1.9 |
+| 5 | 0.5 | 7 | 0.541 | 0.714 | +17.3 (under 10) | 7 | 0.553 | 0.571 | +1.8 |
+| 6 | 0.6 | 27 | 0.669 | 0.778 | +10.9 | 26 | 0.671 | 0.808 | +13.7 |
+| 7 | 0.7 | 83 | 0.764 | 0.747 | -1.7 | 85 | 0.763 | 0.729 | -3.4 |
+| 8 | 0.8 | 106 | 0.843 | 0.736 | -10.7 | 102 | 0.838 | 0.755 | -8.4 |
+| 9 | 0.9 | 6 | 0.920 | 0.833 | -8.7 (under 10) | 9 | 0.914 | 0.889 | -2.5 |
+
+**port, real HF, no CH-* profile, SNR_2500 not measured, sender TX-FARNS (CW_SPEC.md 6.4 and 10, HM-DEC-115's traffic net)** (inferred keys; 33 scored; held-out not calibrated, in-sample not calibrated)
+
+| bin | p from | held-out characters | held-out mean p | held-out share right | held-out points | in-sample characters | in-sample mean p | in-sample share right | in-sample points |
+|---|---|---|---|---|---|---|---|---|---|
+| 1 | 0.1 | 1 | 0.146 | 1.000 | +85.4 (under 10) | 0 | - | - | none populated |
+| 2 | 0.2 | 0 | - | - | none populated (under 10) | 1 | 0.207 | 1.000 | +79.3 |
+| 4 | 0.4 | 1 | 0.448 | 1.000 | +55.2 (under 10) | 0 | - | - | none populated |
+| 5 | 0.5 | 1 | 0.585 | 1.000 | +41.5 (under 10) | 1 | 0.514 | 1.000 | +48.6 |
+| 6 | 0.6 | 1 | 0.666 | 1.000 | +33.4 (under 10) | 1 | 0.638 | 1.000 | +36.2 |
+| 7 | 0.7 | 23 | 0.758 | 0.870 | +11.1 | 23 | 0.766 | 0.913 | +14.7 |
+| 8 | 0.8 | 6 | 0.806 | 1.000 | +19.4 (under 10) | 7 | 0.813 | 0.857 | +4.4 |
+
+**port, real HF, no CH-* profile, SNR_2500 not measured, sender TX-ITU (CW_SPEC.md 10, the KD0UN capture)** (inferred keys; 6 scored; held-out not measurable, in-sample not measurable)
+
+| bin | p from | held-out characters | held-out mean p | held-out share right | held-out points | in-sample characters | in-sample mean p | in-sample share right | in-sample points |
+|---|---|---|---|---|---|---|---|---|---|
+| 6 | 0.6 | 1 | 0.673 | 1.000 | +32.7 (under 10) | 1 | 0.674 | 1.000 | +32.6 |
+| 7 | 0.7 | 5 | 0.728 | 0.800 | +7.2 (under 10) | 5 | 0.729 | 0.800 | +7.1 |
+
+**port, real HF, no CH-* profile, SNR_2500 not measured, sender TX-TIGHT (CW_SPEC.md 10, HM-DEC-101)** (inferred keys; 3 scored; held-out not measurable, in-sample not measurable)
+
+| bin | p from | held-out characters | held-out mean p | held-out share right | held-out points | in-sample characters | in-sample mean p | in-sample share right | in-sample points |
+|---|---|---|---|---|---|---|---|---|---|
+| 7 | 0.7 | 1 | 0.793 | 0.000 | -79.3 (under 10) | 1 | 0.783 | 0.000 | -78.3 |
+| 8 | 0.8 | 1 | 0.883 | 1.000 | +11.7 (under 10) | 1 | 0.870 | 1.000 | +13.0 |
+| 9 | 0.9 | 1 | 0.996 | 0.000 | -99.6 (under 10) | 1 | 0.992 | 0.000 | -99.2 |
+
+**port, real HF, no CH-* profile, SNR_2500 not measured, sender not stated in CW_SPEC.md** (inferred keys; 197 scored; held-out not calibrated, in-sample not calibrated)
+
+| bin | p from | held-out characters | held-out mean p | held-out share right | held-out points | in-sample characters | in-sample mean p | in-sample share right | in-sample points |
+|---|---|---|---|---|---|---|---|---|---|
+| 2 | 0.2 | 2 | 0.255 | 1.000 | +74.5 (under 10) | 2 | 0.265 | 0.500 | +23.5 |
+| 3 | 0.3 | 2 | 0.330 | 0.000 | -33.0 (under 10) | 3 | 0.357 | 0.333 | -2.4 |
+| 4 | 0.4 | 4 | 0.451 | 0.500 | +4.9 (under 10) | 4 | 0.481 | 0.500 | +1.9 |
+| 5 | 0.5 | 6 | 0.534 | 0.667 | +13.3 (under 10) | 6 | 0.560 | 0.500 | -6.0 |
+| 6 | 0.6 | 25 | 0.669 | 0.760 | +9.1 | 24 | 0.672 | 0.792 | +12.0 |
+| 7 | 0.7 | 54 | 0.770 | 0.704 | -6.6 | 56 | 0.765 | 0.661 | -10.4 |
+| 8 | 0.8 | 99 | 0.845 | 0.717 | -12.8 | 94 | 0.840 | 0.745 | -9.5 |
+| 9 | 0.9 | 5 | 0.905 | 1.000 | +9.5 (under 10) | 8 | 0.904 | 1.000 | +9.6 |
+
+**port, synthetic, all** (exact keys; 168 scored; held-out not calibrated, in-sample not calibrated)
+
+| bin | p from | held-out characters | held-out mean p | held-out share right | held-out points | in-sample characters | in-sample mean p | in-sample share right | in-sample points |
+|---|---|---|---|---|---|---|---|---|---|
+| 2 | 0.2 | 3 | 0.262 | 0.000 | -26.2 (under 10) | 3 | 0.251 | 0.000 | -25.1 |
+| 3 | 0.3 | 2 | 0.385 | 0.000 | -38.5 (under 10) | 2 | 0.359 | 0.000 | -35.9 |
+| 4 | 0.4 | 5 | 0.467 | 0.400 | -6.7 (under 10) | 4 | 0.465 | 0.500 | +3.5 |
+| 5 | 0.5 | 5 | 0.563 | 0.400 | -16.3 (under 10) | 8 | 0.567 | 0.375 | -19.2 |
+| 6 | 0.6 | 25 | 0.648 | 0.560 | -8.8 | 27 | 0.655 | 0.444 | -21.0 |
+| 7 | 0.7 | 57 | 0.729 | 0.860 | +13.0 | 57 | 0.733 | 0.877 | +14.5 |
+| 8 | 0.8 | 58 | 0.875 | 0.931 | +5.6 | 30 | 0.880 | 1.000 | +12.0 |
+| 9 | 0.9 | 13 | 0.906 | 1.000 | +9.4 | 37 | 0.909 | 1.000 | +9.1 |
+
+**port, synthetic, no fading, shaped noise band (not shown to be CH-AWGN), TX-ITU (1:3:1:3:7), 0 dB in the passband (not restated in the 2500 Hz reference)** (exact keys; 27 scored; held-out not measurable, in-sample not measurable)
+
+| bin | p from | held-out characters | held-out mean p | held-out share right | held-out points | in-sample characters | in-sample mean p | in-sample share right | in-sample points |
+|---|---|---|---|---|---|---|---|---|---|
+| 3 | 0.3 | 1 | 0.396 | 0.000 | -39.6 (under 10) | 1 | 0.371 | 0.000 | -37.1 |
+| 4 | 0.4 | 2 | 0.481 | 0.500 | +1.9 (under 10) | 1 | 0.475 | 1.000 | +52.5 |
+| 5 | 0.5 | 2 | 0.566 | 0.000 | -56.6 (under 10) | 5 | 0.572 | 0.200 | -37.2 |
+| 6 | 0.6 | 13 | 0.642 | 0.308 | -33.4 | 15 | 0.650 | 0.200 | -45.0 |
+| 7 | 0.7 | 4 | 0.761 | 0.000 | -76.1 (under 10) | 5 | 0.715 | 0.200 | -51.5 |
+| 8 | 0.8 | 5 | 0.807 | 0.200 | -60.7 (under 10) | 0 | - | - | none populated |
+
+**port, synthetic, no fading, shaped noise band (not shown to be CH-AWGN), TX-ITU (1:3:1:3:7), 15 dB in the passband (not restated in the 2500 Hz reference)** (exact keys; 56 scored; held-out not calibrated, in-sample not calibrated)
+
+| bin | p from | held-out characters | held-out mean p | held-out share right | held-out points | in-sample characters | in-sample mean p | in-sample share right | in-sample points |
+|---|---|---|---|---|---|---|---|---|---|
+| 2 | 0.2 | 2 | 0.269 | 0.000 | -26.9 (under 10) | 2 | 0.248 | 0.000 | -24.8 |
+| 5 | 0.5 | 2 | 0.589 | 1.000 | +41.1 (under 10) | 2 | 0.586 | 1.000 | +41.4 |
+| 7 | 0.7 | 3 | 0.767 | 1.000 | +23.3 (under 10) | 2 | 0.757 | 1.000 | +24.3 |
+| 8 | 0.8 | 38 | 0.881 | 1.000 | +11.9 | 20 | 0.876 | 1.000 | +12.4 |
+| 9 | 0.9 | 11 | 0.907 | 1.000 | +9.3 | 30 | 0.909 | 1.000 | +9.1 |
+
+**port, synthetic, no fading, shaped noise band (not shown to be CH-AWGN), TX-ITU (1:3:1:3:7), 5 dB in the passband (not restated in the 2500 Hz reference)** (exact keys; 47 scored; held-out not calibrated, in-sample not calibrated)
+
+| bin | p from | held-out characters | held-out mean p | held-out share right | held-out points | in-sample characters | in-sample mean p | in-sample share right | in-sample points |
+|---|---|---|---|---|---|---|---|---|---|
+| 2 | 0.2 | 1 | 0.249 | 0.000 | -24.9 (under 10) | 1 | 0.258 | 0.000 | -25.8 |
+| 4 | 0.4 | 3 | 0.458 | 0.333 | -12.4 (under 10) | 3 | 0.462 | 0.333 | -12.9 |
+| 6 | 0.6 | 6 | 0.658 | 1.000 | +34.2 (under 10) | 5 | 0.664 | 1.000 | +33.6 |
+| 7 | 0.7 | 37 | 0.727 | 0.946 | +21.9 | 38 | 0.737 | 0.947 | +21.1 |
+
+**port, synthetic, no fading, shaped noise band (not shown to be CH-AWGN), character gap 5 units, inside TX-FARNS's 3 to 7, 0 dB in the passband (not restated in the 2500 Hz reference)** (exact keys; 3 scored; held-out not measurable, in-sample not measurable)
+
+| bin | p from | held-out characters | held-out mean p | held-out share right | held-out points | in-sample characters | in-sample mean p | in-sample share right | in-sample points |
+|---|---|---|---|---|---|---|---|---|---|
+| 6 | 0.6 | 2 | 0.628 | 0.500 | -12.8 (under 10) | 3 | 0.648 | 0.333 | -31.4 |
+| 7 | 0.7 | 1 | 0.701 | 0.000 | -70.1 (under 10) | 0 | - | - | none populated |
+
+**port, synthetic, no fading, shaped noise band (not shown to be CH-AWGN), character gap 5 units, inside TX-FARNS's 3 to 7, 15 dB in the passband (not restated in the 2500 Hz reference)** (exact keys; 19 scored; held-out not measurable, in-sample not measurable)
+
+| bin | p from | held-out characters | held-out mean p | held-out share right | held-out points | in-sample characters | in-sample mean p | in-sample share right | in-sample points |
+|---|---|---|---|---|---|---|---|---|---|
+| 3 | 0.3 | 1 | 0.374 | 0.000 | -37.4 (under 10) | 1 | 0.347 | 0.000 | -34.7 |
+| 7 | 0.7 | 1 | 0.718 | 1.000 | +28.2 (under 10) | 1 | 0.722 | 1.000 | +27.8 |
+| 8 | 0.8 | 15 | 0.882 | 1.000 | +11.8 | 10 | 0.888 | 1.000 | +11.2 |
+| 9 | 0.9 | 2 | 0.902 | 1.000 | +9.8 (under 10) | 7 | 0.909 | 1.000 | +9.1 |
+
+**port, synthetic, no fading, shaped noise band (not shown to be CH-AWGN), character gap 5 units, inside TX-FARNS's 3 to 7, 5 dB in the passband (not restated in the 2500 Hz reference)** (exact keys; 16 scored; held-out not measurable, in-sample not measurable)
+
+| bin | p from | held-out characters | held-out mean p | held-out share right | held-out points | in-sample characters | in-sample mean p | in-sample share right | in-sample points |
+|---|---|---|---|---|---|---|---|---|---|
+| 5 | 0.5 | 1 | 0.504 | 0.000 | -50.4 (under 10) | 1 | 0.506 | 0.000 | -50.6 |
+| 6 | 0.6 | 4 | 0.664 | 0.750 | +8.6 (under 10) | 4 | 0.667 | 0.750 | +8.3 |
+| 7 | 0.7 | 11 | 0.719 | 0.909 | +19.0 | 11 | 0.723 | 0.909 | +18.6 |
+
+
+**3. MET-CAL, ours** (`CW_SPEC.md` section 11): three bins, over every stretch scored.
+
+| class | set | key | in stretches | right | wrong | added | observed accuracy | stated rate |
+|---|---|---|---|---|---|---|---|---|
+| sure | real | inferred | 436 | 403 | 28 | 5 | 0.924 | asserted as sent (HM-REQ-013) |
+| sure | synthetic | exact | 173 | 159 | 8 | 6 | 0.919 | asserted as sent (HM-REQ-013) |
+| dim | real | inferred | 0 | 0 | 0 | 0 | no number: none emitted | at least 0.70 (HM-REQ-014) |
+| dim | synthetic | exact | 0 | 0 | 0 | 0 | no number: none emitted | at least 0.70 (HM-REQ-014) |
+| placeholder | real | inferred | 15 | - | - | - | unscored | unscored |
+| placeholder | synthetic | exact | 2 | - | - | - | unscored | unscored |
+
+**4. How `EveryCharacterCarriesAConfidenceTests` was watched failing first.** The test cannot compile
+at the parent commit, where neither `Probability` nor `FldigiConfidence` exists. So case 1 was
+watched red in the working tree first, with:
+- the property added and defaulting to NaN;
+- the stream not yet setting it;
+- `FldigiConfidence`'s constants NaN.
+
+It failed with "40 characters without a probability" on `cq-18wpm-15db`
+(`.run-unit/unit464-confidence-red.txt`). Then the constants were written back and the stream line
+added, and it passed 2 of 2 (`unit464-confidence-green.txt`). Case 2, the hand-built measure (100
+at 0.9: 90 right calibrated, 80 right not, 29 not measurable), was written against the finished
+`CwCalibration` and was not watched failing.
+
+**5. The commits, with the five at each** (build; engine line; app line; named, captures and
+adjudicated floors):
+
+| commit | what | build | engine | app | named | captures | adjudicated |
+|---|---|---|---|---|---|---|---|
+| `b34f4f56` | task 0: record, runner's writes, entry | 0 errors | 178/178 | 278/278 (DECIDED (8): run and rerun each lost a different test; both types pass alone) | 13/13 | 51/51 | 13/13 |
+| `12252dcc` | task 1: the printout and gate files | 0 errors | 178/178 | 278/278 (DECIDED (8): the rerun lost `BindingHealthTests`, which passes alone) | 13/13 | 51/51 | 13/13 |
+| `d1abc6cb` | task 1: the fact itself, left out of `12252dcc` | as `12252dcc`, same tree | | | | | |
+| `d3fb86fb` | task 2: the property, map, adapter, stream line, test, `CwCalibration` | 0 errors | 178/178 | 278/278 on the rerun | 13/13 | 51/51 | 13/13 |
+| `efdd5d11` | task 3: the measure, `calibration.md`, `metrics.md` | 0 errors | task 2's gate: same code, only docs added | | | | |
+| `b30bef48` | 9.5 ticked in both copies | plan text only | | | | | |
+| task 4's commit | exit round, `output.md` | 0 errors | 178/178 | 278/278 on the rerun | 13/13 | 51/51 | 13/13 |
+
+**The exit round beside the entry:**
+
+| check | entry | exit |
+|---|---|---|
+| build | 0 errors | 0 errors |
+| engine line | 178 of 178 | 178 of 178 |
+| app line | 278 of 278 (DECIDED (8)) | 278 of 278 on the rerun (`TheTestsStayOffTheNetworkTests` lost to the dispatcher on the run) |
+| floors | named 13/13, captures 51/51, adjudicated 13/13 | 13/13, 51/51, 13/13 |
+| real, 23, inferred | CER-SURE 33 of 436, INVENTED 33 / 473, coverage 403 / 473, WBE 37 / 113 | the same |
+| synthetic, 12, exact | 14 of 173, 14 / 252, 159 / 252, 44 / 84 | the same |
+| the port, per parity.md | real 62 of 239, coverage 177; synthetic 34 of 168, coverage 134 | the same |
+| `BothDecodersAreScoredAlikeTests` | 5 of 5 | 5 of 5 |
+| the port's own tests | 8 of 8 | 8 of 8 |
+| `EveryCharacterCarriesAConfidenceTests` | - | 2 of 2 |
+| `TheSpeedFollowsTheSendersMarkPairsTests` | red at 28 of 31 | red at 28 of 31, not required green |
+| decode time, ours over 690 s real | 51.93 s | 51.71 s |
+| V-11, 35 rows | saved | every row identical |
+| our texts (126 lines), classes (35), the port's texts (74) | saved | byte-identical |
+
+Exit prints (`.run-unit/unit464-exit-print.txt`):
+- `git diff 19109b51 -- src/Hamlet.RadioEngine/Cw/Second/` prints nothing.
+- `git diff 7e209cb4` over the eleven transmit files prints nothing, and all eleven are present.
+- `git status` shows `.run-unit/fldigi/` still untracked.
+- src this unit is four files, 234 lines added: `CwCharacter.cs` (+16), `CwCharacterProbability.cs`
+  (new), `CwProbabilisticStream.cs` (+1), `FldigiConfidence.cs` (new).
+- The parity runs' rewrites of `parity.md` are kept under `.run-unit/unit464-parity-*.md`, and the
+  committed file was restored each time.
 
 ## 4. What's blocking us
 
-Most-blocking first.
+1. **R86 and 9.4, as a plain reading.** 9.4 asks for "one technique 9.3 named", and the five
+   mechanisms 9.3 named are all refused under R78. That leaves 9.4 no authorable route. R86 holds
+   steps 2 to 8 behind 9.4. Step 9's 9.5 to 9.7 carry the loop meanwhile; 9.5 is now ticked, and
+   9.6 and 9.7 remain. Only the owner can change how R86 or 9.4 reads. This is logged for the
+   owner and is not a stop: it touches neither transmit nor what the product promises the
+   operator.
+2. **R85 readings, one line each, recorded and acted on:**
+   - "right" for a dim character is the scorer's alignment, key character equal to it, exactly as
+     for sure;
+   - a bin is floor(10p), the last closed at 1;
+   - a bin counts at 10 characters and a condition at 30, as DECIDED (4);
+   - fldigi's receiver can honestly be read for the level its own squelch metric reads
+     (sig_avg over noise_floor, cw.cxx:635-636) and for how far each element fell from the
+     dot/dash split it was judged by (cw.cxx:847).
+3. **For 9.6, a finding and not a question.**
+   - **The port.** Under HM-REQ-124, the port is calibrated on no condition, so it votes nowhere.
+     An arbiter built on today's maps would always take ours on a disagreement.
+   - **Ours.** Ours' p spans only 0.77 to 0.99, nearly all in bins 8 and 9. It is calibrated
+     where it is because it is close to a base rate, not because it picks out its wrong letters
+     (task 1's print: MarginLlr's quintiles run 0.84 to 0.98 right).
+   - **The port's timing margin** falls in right share at both ends. The form fixed at task 1 was
+     linear and was not bent after the print (V-14).
 
-1. **Every mechanism 9.3 named has now been refused at 9.4, and R86 still bars steps 2 to 8.** This
-   is a plain fact, and what happens next is the next arbiter's to decide. Each mechanism, with the
-   recording and metric that refused it:
-   - (A) detection: A1 on 004507, coverage (43 to 0; real coverage 403 to 38); A2 on 173723,
-     MET-INVENTED (sure added 0 to 2; real MET-CER-SURE 33 to 39). Unit 463.
-   - (B) the spike rule: every real metric worse, three recordings worse. Unit 462.
-   - (C) the two-dot class edge: 031838, MET-WBE. Unit 462.
-   - (D) pair speed tracking: 031948's adjudicated reading broken, three recordings worse. Unit 459.
-   - (E) 880-888, inside W: 032113, coverage; 031838 and 004550, MET-WBE. Unit 462.
-
-   No ruling is proposed here and no new technique.
-2. **This unit's R85 readings, recorded and carried on with.**
-   - The speed in force is the speed the read is decoded at, as 462 read it. fldigi's own front end
-     follows the operator's configured `CWspeed`, not its tracked receive speed (395-396, 416, 428),
-     and ours has no operator speed.
-   - The 5 x WPM / 1.2 Hz low-pass is fldigi's matched-filter option. Its default is a fixed 150 Hz
-     (`CWmfilt` off). A1 took the instruction's form, as DECIDED (2) fixes it.
-   - fldigi's weights of 200 and 1000 decimated samples at 500 a second become 80 and 400 hops of
-     5 ms.
-   - The AGC division sits between the envelope and `LogLikelihoods`: the lattice, grid included,
-     scores the divided window, and every timing measurement reads the raw one.
-3. **Finding: our likelihood's noise scale assumes a Rayleigh envelope.** sigma is read from the
-   quarter point by an identity that holds for one quadrature pair of noise. fldigi's half-dit
-   boxcar averages many decimated magnitudes, and that narrows the noise's spread around its mean,
-   so the same identity reads the noise as higher against the marks. Keyed levels fell from 3.7 to
-   2.2 sigma on 17:37 and from 14.3 to 7.9 on a 15 dB case. That, and not the bandwidth itself, is
-   what the task 1 print shows behind A1's collapse. This is recorded as a finding, and nothing is
-   proposed from it.
-4. **Finding: the parity harness's "port byte-identical" check can move without the port.** Under
-   A1 one port line disappeared from the save: 17:37's `CQDW SRED`. The port was untouched. The
-   harness prints the port's text over the stretch ours scored, and under A1 ours scored none on
-   17:37. A later unit judging the port by this file should know that.
-5. **The tree: no `.run-unit\watched.rc`, as unit 459 also found.** The `RULES_AT` disagreement and
-   `outcome-read`'s step titles for steps 2, 3 and 8 are logged, not repaired, and not this unit's.
+   A better port confidence would need a new form, fixed afresh before measurement. That is a
+   later unit's choice, not this one's.
+4. **The adapter's input, against the instruction's words.** `FldigiConfidence` needs the port's
+   decision rows (`TraceDecisions` on) as well as `Emissions` and `KeyEvents` (section 1). 9.6 will
+   have to run the port with the trace on. The trace records and changes nothing; the port's texts
+   were byte-identical with it on.
+5. **Port characters outside the scored stretches.** The harness locates each decoder's stretches
+   in that decoder's own text, not in ours'. 220 of the port's 651 printed non-space characters fall
+   outside every stretch located in its text (and 406 of ours' 1032 outside ours'). They carry a p
+   and are unscored. This is 463's section 4 item 4 again, parked, and noted only because task 1's
+   rows come from the same harness.

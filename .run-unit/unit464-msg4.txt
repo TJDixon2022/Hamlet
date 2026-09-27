@@ -1,0 +1,6 @@
+unit464 task 4: exit round - every figure as at entry, every text and class byte-identical, the port byte-identical; 9.5 ticked, ours calibrated on 4 conditions and the port on none; output.md written (9.5)
+
+Build 0 errors; engine 178 of 178; app 278 of 278 on the rerun under DECIDED (8); named 13, captures 51, adjudicated 13; metrics real 33 of 436, 33 / 473, 403 / 473, 37 / 113 (inferred), synthetic 14 of 173, 14 / 252, 159 / 252, 44 / 84 (exact); port 62 of 239 cov 177, 34 of 168 cov 134; BothDecodersAreScoredAlikeTests 5 of 5; the port's tests 8 of 8; EveryCharacterCarriesAConfidenceTests 2 of 2; TheSpeedFollowsTheSendersMarkPairsTests red at 28 of 31, as at entry.
+git diff 19109b51 -- Cw/Second/ empty; git diff 7e209cb4 over the eleven transmit files empty; .run-unit/fldigi/ untracked. validate-output: VALID.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

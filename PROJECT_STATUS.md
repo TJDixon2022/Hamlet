@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: EXECUTING
-TASK: 3 of 4
+STATE: COMPLETED
+TASK: 4 of 4
 WORK_INSTRUCTION: 464 - a number on every letter: both decoders give each character a confidence p, calibration measured per condition on the keyed corpus
-BALL: code
+BALL: tim
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-27T03:32:37-04:00
-NOTE: Task 3 committed at efdd5d11; ticking 9.5 in both copies of PHASE_PLAN.md
+UPDATED: 2026-09-27T03:59:27-04:00
+NOTE: Unit 464 done: 9.5 ticked - both decoders carry p; held-out, ours calibrated on 4 of 12 conditions, the port on none (advisory everywhere under HM-REQ-124); texts byte-identical; output.md written
 
 ---
 
