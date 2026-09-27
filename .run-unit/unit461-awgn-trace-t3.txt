@@ -1,0 +1,26 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:01.50]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:01.71]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:01.71]   Starting:    Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:07.68]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.TheChannelConditionsAreReadFact.TheAwgnOpeningIsTracedAgainstTheCleanSynthetics [5 s]
+  Standard Output Messages:
+ trace | channel CH-AWGN +15 dB ref, 600 Hz, band x0.5 | peak -11.6 dBFS | ours "<AR>Q CQ CQ DE N0CALL N0CALL K" | port "RQ CQ DE N0CALL N0CALL K"
+ trace | channel CH-AWGN +15 dB ref, 615 Hz, band x0.5 | peak -12.1 dBFS | ours "<AR>Q CQ CQ DE N0CALL N0CALL K" | port "NQ CQ DE N0CALL N0CALL K"
+ trace | channel CH-AWGN +6.3 dB ref (the set's 15 dB in-band at 615), 615 Hz | peak -18.8 dBFS | ours "<AR>Q CQ CQ DE N0CALL N0CALL K" | port "T CQ DE N0CALL N0CALL K"
+ trace | channel CH-AWGN +10 dB ref, 600 Hz | peak -15.5 dBFS | ours "<AR>Q CQ CQ DE N0CALL N0CALL K" | port "EK CQ DE N0CALL N0CALL K"
+ trace | channel CH-AWGN +5 dB ref, 600 Hz | peak -18.9 dBFS | ours "<AR>Q CQ CQ DE N0CALL N0CALL K" | port "T CQ DE N0CALL N0CALL K"
+ trace | generator TX-ITU same in-band SNR, 600 Hz, no drift, band x1 | peak -5.7 dBFS | ours "<AR>Q CQ CQ DE N0CALL N0CALL K" | port "RQ CQ DE N0CALL N0CALL K"
+ trace | generator TX-ITU same in-band SNR, 615 Hz +/-3 drift | peak -5.7 dBFS | ours "CQ CQ CQ DE N0CALL N0CALL K" | port "CQ CQ DE N0CALL N0CALL K"
+ trace | generator TX-ITU 15 dB in-band (the set's tier), 615 Hz +/-3 | peak -12.7 dBFS | ours "<AR>Q CQ CQ DE N0CALL N0CALL K" | port "EK CQ DE N0CALL N0CALL K"
+
+
+
+Test Run Successful.
+Total tests: 1
+     Passed: 1
+ Total time: 7.9943 Seconds
+RC=0 WALL=8s
