@@ -157,3 +157,71 @@ The two earlier runs are kept, because each found a fault in the proof, not in t
   channel layer's own limits are in `channels.md`.
 - **The characters are always `SyntheticCq.Text`'s.** A profile never changes what is sent, so
   nothing here tests a sender's errors, which is part of why TX-SLOPPY is refused.
+
+## 5. HM-REQ-050 measured (unit 468, 2026-09-27)
+
+HM-REQ-050: "On each of TX-ITU, TX-KEYER-W, TX-FARNS and TX-TIGHT, the decoder shall meet
+HM-REQ-013." HM-REQ-013 at 15 dB reference on CH-AWGN: MET-COVERAGE 1.00, MET-CER-SURE 0,
+MET-WBE 0, pass/fail and not a ratchet (V-08). A profile is met only if all three of its cases
+are.
+
+`TheMustFistsAtFifteenDecibelsFact` asserts nothing, and its printout is
+`.run-unit/unit468-fists-t2.txt`. Each case is `SyntheticCq.Text` keyed by `CwSender` at task
+1's seed, at 15 dB in the 2500 Hz reference on CH-AWGN, 600 Hz. **Ours** is `CwDecoder` from
+600 Hz hop by hop, scored whole against the whole key through
+`TheRequirementsAreMeasuredTests.Measure` and `CwMetrics`, as the synthetic set is scored.
+**Every figure is synthetic, exact.** The key for every case is `CQ CQ CQ DE N0CALL N0CALL K`:
+21 characters, 7 words. `■` is a placeholder.
+
+### Ours - the verdict
+
+| profile | WPM | seed | ours read | MET-COVERAGE | MET-CER-SURE | MET-WBE | MET-INVENTED | HM-REQ-013 |
+|---|---|---|---|---|---|---|---|---|
+| TX-ITU | 12 | 468000 | `CQ CQ CQ DE N0CALL N0CALL K` | 21/21 | 0/21 | 0/7 | 0/21 | met |
+| TX-ITU | 18 | 468001 | `CQ CQ CQ DE N0CALL N0CALL K` | 21/21 | 0/21 | 0/7 | 0/21 | met |
+| TX-ITU | 25 | 468002 | `CQ CQ CQ DE N0CALL N0CALL KK` | 21/21 | 1/22 (1 added) | 0/7 | 1/21 | **not met** |
+| TX-KEYER-W | 12 | 468100 | `CQ CQ CQ DE N■0CALL N■CALL K` | 20/21 | 0/20 | 0/7 | 0/21 | **not met** |
+| TX-KEYER-W | 18 | 468101 | `CQ CQ CQ DE N0CALL N0CALL K` | 21/21 | 0/21 | 0/7 | 0/21 | met |
+| TX-KEYER-W | 25 | 468102 | `<AR>Q CQ CQ DE N0CALL N0CALL K` | 20/21 | 1/21 (1 substituted) | 0/7 | 1/21 | **not met** |
+| TX-FARNS | 12 | 468200 | `C Q CQ CQ DE N0CALL N0CALL K` | 21/21 | 0/21 | 1/7 (1 inserted) | 0/21 | **not met** |
+| TX-FARNS | 18 | 468201 | `C Q CQ CQ DE N0 C A LL N 0CALL K` | 21/21 | 0/21 | 5/7 (5 inserted) | 0/21 | **not met** |
+| TX-FARNS | 25 | 468202 | `CQ  Q CQ DE N0CALL N0CALL K` | 20/21 | 0/20 | 0/7 | 0/21 | **not met** |
+| TX-TIGHT | 12 | 468300 | `■■■B■■■■<KN>■ ■ALLK` | 4/21 | 2/6 (2 substituted) | 7/7 (1 inserted, 6 deleted) | 2/21 | **not met** |
+| TX-TIGHT | 18 | 468301 | `■■■B■■K` | 1/21 | 1/2 (1 substituted) | 6/7 (6 deleted) | 1/21 | **not met** |
+| TX-TIGHT | 25 | 468302 | `■■■B■■K` | 1/21 | 1/2 (1 substituted) | 6/7 (6 deleted) | 1/21 | **not met** |
+
+| profile | cases met, ours | HM-REQ-050 on this profile |
+|---|---|---|
+| TX-ITU | 2 of 3 | **not met** (25 WPM) |
+| TX-KEYER-W | 1 of 3 | **not met** (12 and 25 WPM) |
+| TX-FARNS | 0 of 3 | **not met** (all three: word boundaries inserted inside words at 12 and 18, a `C` lost at 25) |
+| TX-TIGHT | 0 of 3 | **not met** (all three: the message is almost entirely placeholders) |
+
+**HM-REQ-050 is not met on any of the four.** The worst case is TX-TIGHT at 18 WPM (25 WPM
+reads the same): MET-COVERAGE 1/21, MET-CER-SURE 1/2, MET-WBE 6/7.
+
+### Beside ours, for reading only - the live emitted transcript and the port alone
+
+The emitted transcript is the live path's, `CwDecoder` with the second reader under
+`CwSwitchTable.Live` as it stands. It reads every one of the fifteen cases exactly as ours
+reads it, text and all three numbers. The port alone meets HM-REQ-013 on none of the fifteen:
+
+| profile | WPM | port alone read | MET-COVERAGE | MET-CER-SURE | MET-WBE |
+|---|---|---|---|---|---|
+| TX-ITU | 12 / 18 / 25 | `CQ CQ DE N0CALL N0CALL K` / `NQ CQ DE N0CALL N0CALL K` / `T CQ DE N0CALL N0CALL K` | 19, 18, 17 of 21 | 0/19, 1/19, 1/18 | 1/7 each |
+| TX-KEYER-W | 12 / 18 / 25 | `CQ CQ DE N0CALL N0CALL K` / `NQ CQ DE N0CALL N0CALL K` / `A CQ DE N0CALL N0CALL K` | 19, 18, 17 of 21 | 0/19, 1/19, 1/18 | 1/7 each |
+| TX-FARNS | 12 / 18 / 25 | `T C Q C Q D E N 0 C A L L N 0 C A L L K` / `C Q C Q D E N 0 C A L L N 0 C A L L K` / `T DE N0CALL N 0 C A L L K` | 19, 19, 15 of 21 | 1/20, 0/19, 1/16 | 13/7, 14/7, 7/7 |
+| TX-TIGHT | 12 / 18 / 25 | `QTBK` / `TÅBK` / `EEK` | 2, 1, 2 of 21 | 2/4, 3/4, 1/3 | 6/7 each |
+
+The port's first `CQ` is missing or cut on every case. That is its acquisition, not the fist.
+It is recorded here and nothing is switched (DECIDED (6)).
+
+### Should tier - TX-BUG under HM-REQ-052
+
+| WPM | seed | ours read | MET-COVERAGE | MET-CER-SURE | MET-WBE | HM-REQ-013 |
+|---|---|---|---|---|---|---|
+| 12 | 468400 | `CQ CQ CQ DE N0CALL N0CALL K` | 21/21 | 0/21 | 0/7 | met |
+| 18 | 468401 | `CQ CQ CQ DE N0CALL N0CALL K` | 21/21 | 0/21 | 0/7 | met |
+| 25 | 468402 | `CQ CQ CQ DE N0CALL N0CALL KK` | 21/21 | 1/22 (1 added) | 0/7 | **not met** |
+
+TX-BUG: 2 of 3 cases met, **not met**. HM-REQ-052's MET-SENS floor is not measured here.

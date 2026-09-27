@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 1 of 3
+TASK: 2 of 3
 WORK_INSTRUCTION: 468 - the TX-* sender profiles generated with exact keys by construction, and HM-REQ-050 measured on each must-tier fist at 15 dB on CH-AWGN
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-27T11:35:14-04:00
-NOTE: Task 1 done - five profiles produced, two refused, proof red then green 16 of 16, floors and both lines green; committing
+UPDATED: 2026-09-27T11:52:01-04:00
+NOTE: Task 2 done - HM-REQ-050 not met on TX-ITU, KEYER-W, FARNS, TIGHT; floors and both lines green; committing, then the 7.2 tick
 
 ---
 

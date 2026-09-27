@@ -12,6 +12,10 @@ denominator is the sure characters emitted, unit 439's reading of `CW_SPEC.md` 1
 **From unit 464, each decoder's confidence p and its calibration per condition (HM-REQ-124,
 MET-CAL) are in `calibration.md`, held-out by recording.**
 
+## Unit 468 - HM-REQ-050 measured on the four must-tier fists (7.2)
+
+2026-09-27, unit 468. HM-REQ-050 (through HM-REQ-013: MET-COVERAGE 1.00, MET-CER-SURE 0, MET-WBE 0 per case) **not met on any of the 4 must-tier profiles** at 15 dB in the 2500 Hz reference on CH-AWGN, ours alone, synthetic, exact keys: TX-ITU 2 of 3 cases met (25 WPM reads a sure extra `K`, MET-CER-SURE 1/22); TX-KEYER-W 1 of 3 (12 WPM coverage 20/21, 25 WPM a sure `<AR>` for `C`); TX-FARNS 0 of 3 (MET-WBE 1/7, 5/7 and a dropped `C` at 25 WPM); TX-TIGHT 0 of 3, worst case 18 WPM: MET-COVERAGE 1/21, MET-CER-SURE 1/2, MET-WBE 6/7. Should tier (HM-REQ-052): TX-BUG 2 of 3. `TheMustFistsAtFifteenDecibelsFact` (asserts nothing); the table and the recipe are in `senders.md`. Decoder unchanged; pass/fail, not a ratchet (V-08).
+
 ## Unit 453 - HM-REQ-084 measured on its named spans (6.5)
 
 HM-REQ-084: "On the acceptance spans named in DEV_ANALYSIS_2026-08-27 §4, the decoder shall emit

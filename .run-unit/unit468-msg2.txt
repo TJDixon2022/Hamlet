@@ -1,0 +1,10 @@
+unit468 task 2: HM-REQ-050 measured at 15 dB ref on CH-AWGN, ours - TX-ITU not met (2 of 3), TX-KEYER-W not met (1 of 3), TX-FARNS not met (0 of 3), TX-TIGHT not met (0 of 3) (7.2)
+
+TheMustFistsAtFifteenDecibelsFact asserts nothing: 12 must-tier cases and TX-BUG's 3
+(HM-REQ-052, 2 of 3), synthetic, exact, through TheRequirementsAreMeasuredTests.Measure
+and CwMetrics. Worst: TX-TIGHT 18 WPM, MET-COVERAGE 1/21, MET-CER-SURE 1/2, MET-WBE 6/7.
+The live emitted transcript reads every case as ours; the port alone meets none.
+senders.md section 5 carries the table; metrics.md the running line.
+Floors 13, 51, 13; engine 178 of 178; app 278 of 278 first run. Nothing under src changed.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
