@@ -1,53 +1,30 @@
-# Work instruction 463 - the last fldigi technique nobody has tried: its detection front end, a half-dit integrator at the speed in force and its AGC-normalized level, screened on every recording and kept under R78
+# Work instruction 464 - a number on every letter: both decoders give each character a confidence p, and whether letters printed at p are right p of the time is measured per condition on the keyed corpus
 
-**Loop unit.** Step 9, criterion 9.4 (`CW_REQUIREMENTS.md` section M, HM-REQ-129; kept under R78
-against HM-REQ-010, 011, 012 and 080).
+**Loop unit.** Step 9, criterion 9.5 (`CW_REQUIREMENTS.md` section M, HM-REQ-124; section B's
+HM-REQ-014 and `CW_SPEC.md`'s MET-CAL beside it).
 
-**Why step 9 and not the launcher's step 2.**
+**Why step 9, and why 9.5, and not the launcher's step 2.**
 - **R86, `PHASE_PLAN.md` section 6:** *"Steps 2 to 8 are not authorable until 9.4 has a kept
   change. Every unit is step 9's until a technique from the second decoder is kept in ours."* The
-  owner committed this at `6de324b1`. No later ruling has lifted it.
-- Step 2's only open line, 2.4, counts three step-2 units with no kept change. R86 bars step-2
-  units, so 2.4 cannot move. This unit is not a step-2 unit and does not count toward 2.4.
-- 9.4 is the line everything else waits behind: 9.5 to 9.7 build the vote, and R86 puts 9.4 first.
+  owner committed this at `6de324b1`, and no later ruling has lifted it. Step 2's only open line,
+  2.4, counts step-2 units with no kept change. R86 bars step-2 units, so 2.4 cannot move. This
+  unit is not a step-2 unit, and 2.4's count stays at 1 of 3.
+- **9.4 has no route left that the plan's words allow.** 9.4 asks for "one technique 9.3
+  named". 9.3 named five mechanisms, and all five are now recorded as refused under R78:
+  - (D) pair speed tracking, by unit 459;
+  - (B) the spike rule, (C) the two-dot class edge and (W)/(E) the gap edges, by unit 462;
+  - (A) detection, in both forms, by unit 463.
 
-**What was tried at 9.4, and why this is not that.** Unit 459's grouping named five fldigi
-mechanisms, (A) to (E), behind the letters ours loses and the port keeps.
-- **(D)**, pair speed tracking (`cw.cxx` 524-535, 831-843), was refused by unit 459.
-- **(B)** the half-dit spike rule, **(C)** the two-dot class edge and **(W)** the 2- and 4-dit gap
-  edges (`cw.cxx` 515 and 818-822, 846-855, 883-914, which cover (E)'s 880-888) were each refused by
-  unit 462.
-- **(A), detection, has never been screened.** That is the only mechanism 9.3 named that is left.
-
-**Why (A) now, when 462 left it aside.** Unit 459 put (A) aside because 17:37's lost dahs stand at
-noise in *our* envelope (median 1.0 sigma, peak 2.3, against a keyed level of 3.9), so "no
-detection rule on our envelope keeps them." That argument is about a threshold laid on the
-envelope ours already forms. fldigi's detection is **also how the envelope is formed**:
-- a low-pass of 5 x WPM / 1.2 Hz on the mixed baseband (`cw.cxx` 352-356, 396, 696);
-- decimation by 16 (`DEC_RATIO`, 704);
-- a moving average half a dit long, `bitfilter = symbollen / (2 * DEC_RATIO)` (358-361, 428-431,
-  708);
-- then an AGC: signal, noise floor and peak each tracked with attack and decay, and the level
-  divided by the peak (610-632), before the hysteresis detector (640-656).
-
-Ours integrates at a fixed 45 Hz Hann (`CwProbabilisticDecoder.IntegratorBandwidthHz`, about a
-33 ms window), whatever the speed. A half-dit boxcar at 17:37's speed integrates longer and
-narrower, and that could lift a mark from noise, which no threshold can. **Whether it does is what
-task 1 measures and the screen decides.** HM-DEC-112 already recorded *"bandwidth following speed
-is real and comes second, measured separately"*, and `CW_SPEC.md` section 7 ties the analysis
-bandwidth to the speed. Nobody has measured it since.
-
-This unit screens **two forms of (A)**, one at a time, each fixed before any screen:
-- **(A1) the half-dit integrator.** The envelope the lattice scores is formed through fldigi's
-  speed-matched low-pass and half-dit boxcar, at the speed the read is decoded at.
-- **(A2) the AGC-normalized level.** The envelope is divided by fldigi's attack/decay peak tracker
-  before the key-down and key-up likelihoods.
-
-Both are screened. The one R78 keeps goes into its own commit and 9.4 is ticked. If both are kept,
-only the one with the larger fall in real MET-CER-SURE is committed (DECIDED (4)). A refused form
-is reverted, with its patch and numbers saved, and never narrowed.
-
-**The port under `Cw\Second\` is not touched** (HM-REQ-122, 129).
+  A sixth attempt at 9.4 would restate one of them. The loop test forbids that, and V-14 forbids
+  re-edging a refused form.
+- **9.5 is step 9's, so R86 permits it. It is the next line section M orders.** HM-REQ-124 comes
+  before any vote. The second decoder "votes only where it is calibrated", and 9.6 and 9.7 cannot
+  be built until each decoder carries a confidence that means something. No unit has attempted
+  9.5. The loop test finds no entry for this approach.
+- **This is not unit 442's approach.** Unit 442 turned ours' rival margin into a *class* change,
+  printing close calls dim, and was refused at 2.2. **This unit changes no class and no letter.**
+  It attaches a number beside each character and measures it. Every text either decoder prints
+  stays byte-identical.
 
 Four working tasks, plus the exit round. Drop from the back.
 
@@ -89,23 +66,26 @@ If all six hold, say "Hamlet confirmed" and continue.
 **Shell limits:**
 - Apostrophes in quoted heredocs break, and doubled backslashes collapse.
 - `;` is refused, and so is `rm`.
-- Python cannot run here.
+- Python cannot run here. The fit and the measure are written in C#, in the test project.
 - A multi-line commit uses `-m` more than once.
-- Scripts go in `.run-unit\unit463-<name>.sh` and are run with `sh`.
-- To revert a refused screen, use `git checkout -- <paths>` or `git restore`. Never use `rm`.
+- Scripts go in `.run-unit\unit464-<name>.sh` and are run with `sh`.
 
 **The report:**
 - Use the four headings exactly: `## 1. What Claude did`, `## 2. What the owner should expect`,
   `## 3. What you should see`, `## 4. What's blocking us`.
 - Write the `UNIT:` line without brackets.
-- Write `ADVANCES: step 9 criterion 4`. The launcher reads the digits after "criterion", so this
-  means plan line 9.4.
+- Write `ADVANCES: step 9 criterion 5`. The launcher reads the digits after "criterion", so this
+  means plan line 9.5.
 - WHY cites the plan.
 
 **R85. A CW question is answered from the documents and fldigi's source, never raised to the
-owner.** That covers which speed is "in force" for the integrator, how fldigi's decimated-sample
-time constants map to our hops, and where in our chain the AGC division goes. Record your reading
-in one line of section 4, and carry on.
+owner.** That covers:
+- what "right" means for a dim character;
+- how a bin is drawn;
+- how few characters a bin can hold and still count;
+- what in fldigi's receiver a confidence can honestly be read from.
+
+Record your reading in one line of section 4, and carry on.
 
 ---
 
@@ -124,39 +104,50 @@ in one line of section 4, and carry on.
 | 6 | 3 of 6 (barred by R86) |
 | 7 | 2 of 5 (barred by R86) |
 | 8 | 0 of 6 |
-| 9 | 3 of 8 |
+| 9 | 3 of 8 (9.4 open with every mechanism 9.3 named refused) |
 
 ```
 PHASE GOAL: Hamlet meets the CW requirements.
-UNIT GOAL:  fldigi's detection front end - the envelope integrated over half
-            a dit at the speed in force, or its level normalized by fldigi's
-            AGC - is taken into our decoder in its own commit and kept
-            because the requirements' metrics say ours reads better with it
-            and no recording reads worse, with the port left as ported.
-ADVANCES:   step 9 criterion 4
+UNIT GOAL:  every character either decoder emits carries a confidence p
+            between 0 and 1, and over the keyed corpus, per condition, the
+            share of characters at p that are right is measured against p,
+            so the conditions where each decoder is calibrated within 5
+            points are named - with no letter and no class changed.
+ADVANCES:   step 9 criterion 5
 ```
 
 **Read these first. They win over this instruction:**
-- `CW_REQUIREMENTS.md` section M (HM-REQ-122, 123, 129), section B (HM-REQ-010 to 013) and
-  section I (HM-REQ-080 and 081), and the V-rules, V-11 and V-14 above all;
-- `CW_SPEC.md`'s definitions of MET-CER-SURE, MET-INVENTED, MET-COVERAGE and MET-WBE, and its
-  section 7 on analysis bandwidth;
-- `.run-unit\fldigi\src\cw_rtty\cw.cxx` at `61b97f41`, lines 290-440 and 593-720, and `DEC_RATIO`
-  in `src\include\cw.h`;
-- unit 459's report, `.run-unit\reports\unit-6-output-4.md`, sections 1 and 3, for group (a) and
-  the level of 17:37's missing dahs;
-- the remarks on `IntegratorBandwidthHz` in `CwProbabilisticDecoder.cs`, and
-  `ANALYSIS-cw-integrator-bandwidth-2026-08-23.md`, for what the fixed 45 Hz was chosen against;
-- HM-DEC-112 in `CLAUDE.md`.
+- `CW_REQUIREMENTS.md` section M, HM-REQ-124 above all, and HM-REQ-125 to 128 for what the
+  confidence will be used for;
+- section B, HM-REQ-013 and HM-REQ-014, and the verification table's rows for 014 and 124;
+- `CW_SPEC.md`'s MET-CAL: *"Reliability table with three bins (sure / dim / placeholder): observed
+  accuracy per bin against its stated rate."* Also its definitions of the other metrics;
+- `docs/phase-requirements/parity.md` section 1, for how the port's unclassed output was mapped,
+  and section 3, for the conditions;
+- `CwCharacter.MarginLlr` and `CwProbabilisticDecoder.RivalMargin`, for what ours already measures
+  per character;
+- `FldigiCwEmission`, `FldigiCwKeyEvent` and `FldigiCwDecisionRow` in
+  `src\Hamlet.RadioEngine\Cw\Second\FldigiCwDecoder.cs`, for what the port already exposes. It
+  exposes `agc_peak`, `noise_floor`, `sig_avg`, `two_dots`, each element's length and the
+  detector value, all without being changed;
+- `.run-unit\fldigi\src\cw_rtty\cw.cxx` at `61b97f41`, for what each of those quantities is.
 
-**The requirements this unit serves:**
-- **HM-REQ-129:** a technique from the second decoder is taken into ours as a change of its own,
-  judged under the keep rule, and the second decoder stays as ported.
-- **HM-REQ-010 (MET-CER-SURE < 1%), 011 (MET-INVENTED zero), 012 (coverage at least 90%), 080 and
-  081 (MET-WBE at most 5%):** the keep rule's metrics.
+**The requirement this unit serves, HM-REQ-124, verbatim:**
 
-**The loop test finds no entry for this approach.** The recorded refusals at 9.4 are unit 459's
-(D) and unit 462's (B), (C) and (W). None is repeated here.
+> "Each decoder shall attach a calibrated confidence to every character it emits: over the keyed
+> corpus, per condition, characters emitted at confidence p shall be right within 5 points of p. A
+> decoder whose confidence is not calibrated on a condition does not vote on that condition; its
+> output is advisory there."
+
+**9.5 is met when all of these are true:**
+1. Both decoders attach a p to every character.
+2. Calibration is measured per condition on the keyed corpus.
+3. The conditions where each decoder is calibrated are named.
+4. The report says what the port's p is derived from.
+
+**Being calibrated on every condition is not required to tick 9.5.** The criterion asks that the
+calibrated conditions be *named*. A condition where a decoder is not calibrated is a finding, and
+under HM-REQ-124 that decoder is advisory there.
 
 ---
 
@@ -166,7 +157,7 @@ ADVANCES:   step 9 criterion 4
 tree is the fact. Say so in section 1, and carry on as far as the tree allows.
 
 **Check each of these:**
-- **HEAD** is `f40a97f9` or a runner commit on top of it.
+- **HEAD** is `99c90b69` or a runner commit on top of it.
 - **`PHASE_PLAN.md`**, in both copies:
   - shows 9.1, 9.2 and 9.3 ticked, and 9.4 to 9.8 open;
   - carries R86's line in section 6.
@@ -174,44 +165,41 @@ tree is the fact. Say so in section 1, and carry on as far as the tree allows.
   If `docs/phase-requirements/PHASE_PLAN.md` differs from the root copy, report it.
 - **The port** is at `src\Hamlet.RadioEngine\Cw\Second\`, and `git diff 19109b51 --
   src/Hamlet.RadioEngine/Cw/Second/` prints nothing.
-- **`IntegratorBandwidthHz` is 45.0**, and both `CwProbabilisticDecoder.Envelope` and
-  `CwProbabilisticStream`'s constructor take their window from `IntegratorWindow` with it.
-- **Unit 462's saves** are in `.run-unit\`: the three `unit462-<B|C|W>-refused.patch` files, their
-  `.txt` numbers, and `unit462-text-before-classes.txt`.
+- **`CwCharacter`** carries `Confidence` (the `CwConfidence` class) and `MarginLlr`, and no
+  numeric probability.
+- **Unit 463's saves** are in `.run-unit\`:
+  - `unit463-A1.patch`, `unit463-A2.patch` and their `.txt` files;
+  - `unit463-text-before.txt`, `unit463-port-before.txt` and `unit463-v11-before.txt`.
 - **The runner's uncommitted writes:**
   - the modified `.run-unit` state files, `PHASE_OUTCOME.md`, `PHASE_STATUS.md` and
     `RUN_LEDGER.md`;
-  - the untracked `.run-unit\reports\unit-1-output-23.md` and `.run-unit\watched.rc`.
+  - the untracked `.run-unit\reports\unit-2-output-14.md` and `.run-unit\watched.rc`. Unit 463
+    reported `watched.rc` missing, and it is now present.
 
   Commit them as they are. **`.run-unit\fldigi\` is untracked. Do not stage it, and do not fetch.**
-- **The reload's `RULES_AT` disagreement** (HM-DEC-165 against CPS-DEC-0183) is logged. It is not
-  this unit's.
-- **`outcome-read`'s step titles** for steps 2, 3 and 8 differ from `PHASE_PLAN.md`'s. That is a
-  harness finding. Log it, and do not repair it.
+- **Logged and not this unit's:**
+  - the reload's `RULES_AT` disagreement (HM-DEC-165 against CPS-DEC-0183);
+  - `outcome-read`'s step titles for steps 2, 3 and 8, which differ from `PHASE_PLAN.md`'s.
 
-**Entry figures, 462's exit, to compare against:**
+**Entry figures, 463's exit, to compare against:**
 - **Build:** 0 errors.
 - **Engine line:** 178 of 178.
 - **App line:** 278 of 278.
 - **Floor tests:** named 13 of 13, captures 51 of 51, adjudicated 13 of 13.
-- **Real set, 23 keyed recordings, inferred key:**
-  - MET-CER-SURE 33 of 436;
-  - MET-INVENTED 33 over 473;
-  - coverage 403 over 473;
-  - MET-WBE 37 (29 inserted, 8 deleted) over 113.
-- **Synthetic set, 12 cases, exact key:**
-  - MET-CER-SURE 14 of 173;
-  - MET-INVENTED 14 over 252;
-  - coverage 159 over 252;
-  - MET-WBE 44 (13 inserted, 31 deleted) over 84.
-- **Decode time**, ours over 690 s of real audio: about 51.7 s.
+- **Real set, 23 keyed recordings, inferred key:** MET-CER-SURE 33 of 436, MET-INVENTED 33 over
+  473, coverage 403 over 473, MET-WBE 37 over 113.
+- **Synthetic set, 12 cases, exact key:** MET-CER-SURE 14 of 173, MET-INVENTED 14 over 252,
+  coverage 159 over 252, MET-WBE 44 over 84.
+- **The port, per parity.md:**
+  - real: 62 wrong of 239 sure, coverage 177;
+  - synthetic: 34 of 168, coverage 134.
+- **Decode time**, ours over 690 s of real audio: about 52 s.
 
 **Expected failures, not regressions:**
-- `TheSpeedFollowsTheSendersMarkPairsTests`, red at 28 of 31, as unit 459 left it. It is on neither
-  carry-forward line.
+- `TheSpeedFollowsTheSendersMarkPairsTests`, red at 28 of 31. It is on neither carry-forward line.
 - The app line losing a test to Avalonia's headless "dispatcher loop". Handle it under DECIDED (8).
-- The parity run rewriting the decode-time rows of `docs/phase-requirements/parity.md`. Keep a copy
-  under `.run-unit\` and restore the committed file, as unit 462 did.
+- The parity run rewriting the decode-time rows of `parity.md`. Keep a copy under `.run-unit\` and
+  restore the committed file, as units 462 and 463 did.
 
 ---
 
@@ -220,43 +208,41 @@ tree is the fact. Say so in section 1, and carry on as far as the tree allows.
 **The ordering:**
 - **R86** (`PHASE_PLAN.md` section 6): *"Steps 2 to 8 are not authorable until 9.4 has a kept
   change. Every unit is step 9's until a technique from the second decoder is kept in ours."*
+- **R84** (`PHASE_PLAN.md` section R): *"The order is fixed by the requirements: the second
+  decoder is scored beside ours on every recording before it votes (123); it votes only where its
+  confidence is calibrated against the keys (124); ..."*
 - **HM-REQ-122 and 129, and section 6:** *"The second decoder is faithful, not improved. A
   technique goes into ours, judged under R78; the second decoder stays as ported."*
+  - The port's confidence is therefore computed **outside** `Cw\Second\`, from what the port
+    already exposes.
+  - Not one line under `Cw\Second\` changes, not even to expose a field. If a quantity the
+    confidence needs is not public, the confidence goes without it, and the report says so.
 
-**R78, the keep rule.** *"A change is kept when it moves a requirement's metric the right way and
-breaks no other requirement. MET-INVENTED at zero, MET-CER-SURE below 1%, MET-COVERAGE at or above
-90%, MET-WBE at or below 5%, per condition, at the tier the requirement names. The capture floors
-stay as V-11's overfitting guard - no change may redden an earlier capture to green a newer one -
-and stop being the keep rule. A capture row's character count falling is a finding to report, not
-a rejection, when no requirement's metric got worse."* Applied exactly as units 459 and 462 were
-judged (DECIDED (3)). A screened form is **kept** only if all of these hold:
-1. **Per condition.** On the real set and on the synthetic set, none of the four metrics moves the
-   wrong way, and at least one moves the right way on at least one of them.
-2. **The adjudicated readings.** All 13 are unchanged, or move onto their own adjudicated text
-   (R66).
-3. **V-11.** On every one of the 35 keyed recordings and cases, none of the four metrics is worse.
-   One recording worse on any metric refuses the change.
-4. **Silence.** The empty-band and no-signal tests the floor and capture types carry still emit no
-   sure character (HM-REQ-011). A form that narrows the integrator changes the room under the gate
-   (the analysis note's 6.6 to 10.0 against 15 on `cw-2026-08-20-014854`). Print that margin before
-   and with each form.
+**R78, the keep rule, applies to any change that moves a letter or a class. This unit makes none.**
+The confidence is a number beside each character.
+- **Every text either decoder prints stays byte-identical** to task 0's save, class for class.
+- The four metrics stay exactly at their entry figures.
+- A confidence that moved a letter or a class would be a defect in this unit, not a result.
 
 **Standing rulings this unit leans on:**
-- **HM-DEC-112.** Bandwidth following speed is real work and is measured separately, so the gain
-  can be attributed. This unit is that measurement.
-- **R66.** An adjudicated reading may move onto its own adjudicated text.
-- **V-14.** No separation limit, confirmation rule or plausibility bound is loosened to pass a
-  fixture.
-- **R72.** No word, dictionary or callsign prior (HM-REQ-004, HM-DEC-175).
+- **R77.** A new CW test names the requirement it serves, here HM-REQ-124.
 - **R80.** No traceability, test inventory or decision-log work.
-- **R77.** A new CW test names the requirement it serves.
+- **R72.** No word, dictionary or callsign prior (HM-REQ-004, HM-DEC-175). No feature of the
+  confidence may know letters' frequencies or which letters make words.
+- **R61.** A key is inferred unless it was transcribed. The real set's calibration is stated
+  against inferred keys, every time.
+- **V-11 and V-13.** One scorer, one set of keys, and nothing fitted to the corpus is measured on
+  the characters it was fitted on (DECIDED (3)).
+- **V-14.** The features and the map's form are fixed at task 1, before any calibration number is
+  seen, and never changed after.
 - **R85.** As section 1.
 
 **Standing rules:**
 - `CLAUDE.md` §0.0: never present a guess as a decode.
 - `CLAUDE.md` §0.2: nothing that keys or transmits. **`KeyerCwSender.cs` and the eleven transmit
   files `PARKED.md` names are not touched, not called and not reused.**
-- `CLAUDE.md` §12.5.
+- `CLAUDE.md` §12.5: a fixture built from the same misunderstanding as the code proves nothing.
+  This is why calibration is measured held-out.
 - HM-DEC-155, HM-DEC-165 and FACT-004.
 
 ---
@@ -265,7 +251,8 @@ judged (DECIDED (3)). A screened form is **kept** only if all of these hold:
 
 Post one line:
 - at the start of each task, naming what it will measure or build;
-- at each screen's verdict, kept or refused, with its four real and four synthetic numbers;
+- when task 1 fixes the features and the map;
+- at each decoder's calibration verdict, per condition;
 - at each commit, with its hash;
 - if a type runs past its timeout.
 
@@ -277,9 +264,9 @@ Post nothing between those.
 
 ### Task 0 - the record and the entry numbers
 
-1. Add `## UNIT 463 - STEP 9` to `PHASE_OUTCOME.md`, from the block at the foot.
-2. Set `PHASE_STATUS.md` to name 463 with `CURRENT_STEP: 9`, in both copies.
-3. Bump the patch from 1.13.149 to 1.13.150.
+1. Add `## UNIT 464 - STEP 9` to `PHASE_OUTCOME.md`, from the block at the foot.
+2. Set `PHASE_STATUS.md` to name 464 with `CURRENT_STEP: 9`, in both copies.
+3. Bump the patch from 1.13.150 to 1.13.151.
 4. Commit the runner's writes as they are. Check `git status` before each commit.
 5. Run the entry round:
    - build;
@@ -289,111 +276,139 @@ Post nothing between those.
    - `TheRequirementsAreMeasuredTests`, real and synthetic;
    - `BothDecodersAreScoredAlikeTests`;
    - the port's own tests.
-6. Save both decoders' texts, with each of ours' characters' class and the scorer's verdict, the
-   way unit 462 did:
-   - ours to `.run-unit\unit463-text-before.txt`;
-   - the port's to `.run-unit\unit463-port-before.txt`.
-7. Save the per-recording four-metric table, all 35, to `.run-unit\unit463-v11-before.txt`. Every
-   V-11 comparison in this unit is made against this table.
+6. Save both decoders' texts, each character with its class, the way unit 463 did:
+   - ours to `.run-unit\unit464-text-before.txt`;
+   - the port's to `.run-unit\unit464-port-before.txt`.
 
-### Task 1 - the trace: fldigi's front end beside ours, and each form fixed
+   Every byte-identical check in this unit is made against these two.
+
+### Task 1 - the trace: what each decoder already knows about each character, and the map fixed
 
 This task reads and prints. **Nothing under `src` changes.** Write a fact that asserts nothing:
-`WhatFldigisFrontEndWouldLiftFact`, serving HM-REQ-129. It prints to
-`.run-unit\unit463-frontend.txt`.
+`WhatEachDecoderKnowsAboutEachCharacterFact`, serving HM-REQ-124. It prints to
+`.run-unit\unit464-features.txt`.
 
-1. **The two chains side by side, with file and line.** For ours and for `cw.cxx`, name:
-   - the mixer, and what low-pass (if any) follows it;
-   - the integrator: its shape, its length in ms, its equivalent noise bandwidth, and what sets it;
-   - how the level is normalized before a decision is made from it: noise sigmas, a peak, or a
-     floor, and each tracker's time constant in ms. fldigi's `decayavg` weights are counted in
-     decimated samples at 8000 / 16 = 500 per second, so attack 200 is about 0.4 s and decay 1000
-     is about 2 s at the defaults (`cwrx_attack` and `cwrx_decay` case 1). Confirm this from the
-     source, and correct it if it is wrong;
-   - where the speed is chosen relative to the envelope, in ours.
-2. **The lift, first order, on the marks that matter.** For every mark in unit 459's group (a) (17:37
-   R and D, 032012 O, and the synthetic ones), and for every mark of the letters on each side of
-   them, print its level in noise sigmas under three envelopes:
-   - ours as it stands;
-   - (A1), as step 3 below fixes it;
-   - (A2), as step 3 below fixes it.
+1. **One row per emitted character**, for both decoders, on all 23 real recordings and all 12
+   synthetic cases. Each row carries:
+   - the recording, its condition as `parity.md` section 3 states it, and the key's kind;
+   - what was emitted, and the class it carries: sure or dim for ours, sure for the port per
+     `parity.md` section 1;
+   - the scorer's verdict against the key: **right**, **wrong** (substituted) or **added**.
+     Placeholders are listed and marked unscored, as MET-CAL's placeholder bin is.
+   - **Ours:** `MarginLlr`, and `MarginShareForRecord` beside it.
+   - **The port**, read only from `Emissions`, `KeyEvents` and, with `TraceDecisions` on,
+     `Decisions`, for the key events that make up that character:
+     - the **level margin**, `sig_avg` over `noise_floor` in dB at the character's last up event;
+     - the **timing margin**, the smallest distance of any of its elements' lengths from the
+       `two_dots` split, in units of `two_dots / 2`, which is fldigi's own dit;
+     - the element count.
 
-   Do the same for the empty band on `cw-2026-08-20-014854`: its peak against the gate. This is a
-   prediction, printed for the record. **It does not rank the forms and it does not stop a
-   screen.** Unit 462 found that a first-order count misjudged W (its section 4 item 2), so both
-   forms are screened whatever this shows.
-3. **Before any screen, state each form once. It is fixed from here on** (DECIDED (2)).
-   - **(A1).** The envelope the **lattice** scores is formed at the speed the read is decoded at
-     (1200 / WPM ms, 462's R85 reading): fldigi's low-pass at 5 x WPM / 1.2 Hz, then a boxcar half
-     a dit long, in place of the 45 Hz Hann. **The speed is chosen exactly as today, from today's
-     45 Hz envelope.** Only the envelope the lattice scores after that choice changes, so the
-     bandwidth never feeds back into the speed that set it (the loop `IntegratorBandwidthHz`'s
-     remarks warn of). Both the offline path and `CwProbabilisticStream` take the form from one
-     place, as they take the window today. State where the second envelope is formed, what speed
-     it uses when the read has more than one, and what the offline and stream paths each do.
-   - **(A2).** fldigi's signal, noise-floor and peak trackers (`cw.cxx` 610-623), at fldigi's
-     default attack and decay converted to our hops, run over ours' existing 45 Hz envelope. The
-     envelope is divided by the peak (629-632) before the per-hop key-down and key-up
-     log-likelihoods, and nothing else in the likelihood model changes. State where the division
-     goes and what the likelihoods then take as their noise.
+     Name the `cw.cxx` line each quantity comes from at `61b97f41`. If one of them cannot be
+     read without changing the port, say so and leave it out. Do not change the port.
+2. **The separation.** For each feature, per decoder, print right against wrong-or-added:
+   - by quintile of the feature: count right, count wrong, count added;
+   - the right share per quintile.
 
-   Where our code follows `cw.cxx`, the form names the line at `61b97f41`.
+   Also count the characters whose feature is NaN, per decoder, and say why each kind is NaN.
+3. **Fix the confidence, once, before any calibration number is seen** (DECIDED (2), V-14):
+   - **The map for both decoders is a logistic** p = 1 / (1 + e^-(a + b.x)) over the features
+     named below, fitted by maximum likelihood to right = 1 and wrong-or-added = 0.
+   - **Ours takes one feature, `MarginLlr`.** A NaN margin takes the rule task 1 states from the
+     separation print, fixed here: either a constant p fitted on the NaN characters alone, or
+     another feature named here.
+   - **The port takes two features, the level margin and the timing margin**, or whichever of
+     the two is readable. If neither is readable, the port's p is one constant fitted by
+     recording held-out, and the report says so plainly.
+
+     Write down now what the port's p is derived from. 9.5 asks the report to say it.
+   - **Dim characters of ours** are scored like sure ones. p is a probability of being right, not
+     a class.
+   - **The pool the fit is taken over:** the real and synthetic sets together, one map per
+     decoder, not one per condition. Calibration is judged per condition. A map per condition
+     would fit each condition to itself.
 
 **Commit the fact and its printout.**
 
-### Task 2 - the screens (9.4's own work)
+### Task 2 - the confidence attached (9.5's first half; drop candidate: the second test case)
 
-**Build (A1) in the form task 1 fixed.** It goes into our decoder under
-`src\Hamlet.RadioEngine\Cw\`, never under `Cw\Second\`. A comment names the `cw.cxx` lines.
+1. **Ours.** Add a numeric confidence to each character our decoder emits: `CwCharacter.Probability`,
+   between 0 and 1, set by the stream where `MarginLlr` is set. Its remarks name HM-REQ-124 and
+   the map.
+   - The constants are those task 3's fit on the whole pool gives. **Build the property first,
+     with the constants task 3 writes back.** Task 2 and task 3 may be one working session, with
+     task 2's commit carrying the final constants.
+   - `CwConfidence`, `MarginLlr`, the lattice, the class rule and every threshold are untouched.
+2. **The port.** Add `FldigiConfidence` under `src\Hamlet.RadioEngine\Cw\` (**never under
+   `Second\`**).
+   - It takes the port's `Emissions` and `KeyEvents` and returns one p per emitted character,
+     by the map task 1 fixed.
+   - It is wired to nothing the operator sees (HM-REQ-121). That is 9.6's.
+   - A header comment says what it is derived from, names the `cw.cxx` lines, and says that the
+     port itself carries no confidence.
+3. **A test naming HM-REQ-124**, `EveryCharacterCarriesAConfidenceTests`, watched failing first at
+   the parent commit. Say how it was watched.
+   - **First case:** on a synthetic case of exact key, every character of ours and every
+     character of the port has a p in [0, 1], and none is NaN.
+   - **Second case, the drop candidate:** the calibration measure itself, on a hand-built list
+     whose answer is known by construction. For example, 100 characters at p 0.9 with 90 right is
+     calibrated; with 80 right it is not. Shed this case first. The first case is never shed.
+4. **Byte-identical, before committing:**
+   - both decoders' texts and classes against task 0's saves;
+   - the four real and four synthetic metrics at their entry figures;
+   - `git diff 19109b51 -- src/Hamlet.RadioEngine/Cw/Second/` printing nothing.
 
-**Judge it in the working tree, before any commit:**
-1. Build.
-2. Run the adjudicated readings.
-3. Run `TheRequirementsAreMeasuredTests`, real and synthetic.
-4. Build the per-recording four-metric table and diff it against task 0's.
-5. Run the empty-band and silence checks section 4 names, and print the gate margin.
-6. Time the decode over the real set.
+   Any difference is a defect. Find it before committing.
+5. Run the three floor tests and both carry-forward lines. Commit the property, the adapter, the
+   test and the constants in one commit.
 
-Apply R78 exactly as section 4 states. Save the diff to `.run-unit\unit463-A1.patch` with
-`git diff > file`, and its full numbers and V-11 table to `.run-unit\unit463-A1.txt`. **Then revert
-the working tree with `git checkout`, whatever the verdict,** and confirm `git diff -- src` prints
-nothing.
+### Task 3 - the calibration measured per condition (9.5's second half)
 
-**Then screen (A2) exactly the same way**, from a clean tree, saving
-`.run-unit\unit463-A2.patch` and `.run-unit\unit463-A2.txt`, and revert.
+Write the measure in the test project, as a new type beside `CwMetrics`, not as a change to it:
+`CwCalibration`. The type serves HM-REQ-124.
 
-**Choosing:**
-- **Neither kept:** 9.4 stays open. Go to task 4. Nothing under `src` is committed.
-- **One kept:** that one is committed.
-- **Both kept:** commit only the one with the larger fall in real MET-CER-SURE. On a tie, the one
-  with the larger fall in synthetic MET-CER-SURE. On a second tie, (A1). The other is not
-  combined with it and not screened on top of it (DECIDED (4)).
+1. **Held-out, by recording** (DECIDED (3)).
+   - For each of the 35 recordings and cases, fit the map on the other 34 and give the held-out
+     one's characters their p from that fit.
+   - The calibration verdict is taken on these held-out p's only.
+   - Also print the in-sample figure, from the whole-pool fit that task 2 ships, beside each
+     held-out one. The gap between the two is the report's measure of how much the fit learned
+     the corpus.
+2. **The reliability table, per decoder and per condition** (`parity.md` section 3's rows: the
+   real set whole, and by sender; the synthetic set whole, and by character gap and level).
+   - Use ten bins of p, each 0.1 wide.
+   - For each bin, print the characters in it, the mean p, the share right, and the difference
+     in points.
+3. **The verdict** (DECIDED (4)). A decoder is **calibrated on a condition** when all three hold:
+   - every bin holding at least 10 characters has its share right within 5 points of its mean
+     p;
+   - the condition's overall share right is within 5 points of its mean p;
+   - at least 30 scored characters stand on the condition.
 
-**Do not narrow, re-edge or re-scope a refused form** (DECIDED (2)). Do not change a ratio or a
-time constant away from fldigi's after seeing R78's numbers.
+   A condition with fewer than 30 is **not measurable**, named as such, and is neither calibrated
+   nor uncalibrated.
+4. **Beside it, MET-CAL as `CW_SPEC.md` defines it,** for ours only: the three-bin table of sure,
+   dim and placeholder, with the observed accuracy per bin, and HM-REQ-014's 70% for dim.
+   **This is the drop candidate of the task.** Shed it before any part of 1 to 3.
+5. **Write `docs/phase-requirements/calibration.md`:**
+   - the map and its constants for each decoder, and what the port's p is derived from;
+   - the held-out reliability tables per condition;
+   - the in-sample figure beside each held-out one;
+   - a list, per decoder, of the conditions where it is calibrated, not calibrated and not
+     measurable;
+   - "What this does not prove", in the manner of `parity.md` section 5. It must cover:
+     - the real set's keys are inferred;
+     - no condition here is a `CH-*` condition (7.4);
+     - a map fitted on 35 recordings is not proven on the 36th.
 
-### Task 3 - the kept change's commit and its test (drop candidate: the test's second case)
+   Add one line to `metrics.md` pointing at it.
+6. **Tick 9.5** in both copies of `PHASE_PLAN.md`, in a follow-on commit, when:
+   - both decoders carry a p on every character;
+   - the held-out calibration is measured per condition;
+   - the conditions are named;
+   - the port's derivation is stated.
 
-**Only if a form was kept.**
-1. Re-apply its saved patch with `git apply`.
-2. Run the three floor tests and both carry-forward lines.
-   - A named floor row that falls on its character count, where that recording's four metrics are
-     no worse, is re-banked in the same commit under R78's own sentence. Name the row, its count
-     before and after, and its four metrics before and after (DECIDED (5)).
-   - A floor row that falls where a metric got worse is not re-banked. That is a V-11 refusal: the
-     change is refused, reverted, and 9.4 stays open.
-3. Commit the change in **its own commit**. It carries only the change, any re-banked floor row,
-   and a test naming HM-REQ-129 and the metric it moved.
-   - The test is watched failing first at the parent commit, on the recording the change moved
-     most.
-   - A second case, on a synthetic case of known key, if the change moved one. **This is the drop
-     candidate.** Shed it first; the first case is never shed.
-   - Say how the test was watched.
-4. Tick **9.4** in both copies of `PHASE_PLAN.md`, in a follow-on commit.
-
-**If nothing was kept:** commit the two saved patches and their numbers under `.run-unit\` as
-evidence. Nothing under `src` is committed. The report names, for each form, the recording and
-metric that refused it.
+   A decoder being calibrated nowhere does not stop the tick. It is reported as the finding it
+   is. Do not tick anything else.
 
 ### Task 4 - the exit round
 
@@ -405,89 +420,77 @@ metric that refused it.
 - `TheRequirementsAreMeasuredTests`, real and synthetic;
 - `BothDecodersAreScoredAlikeTests`;
 - the port's own tests;
+- `EveryCharacterCarriesAConfidenceTests`;
 - `TheSpeedFollowsTheSendersMarkPairsTests`. Report its figure. It is not required green.
 
 **Also print:**
 - `git diff 19109b51 -- src/Hamlet.RadioEngine/Cw/Second/`, which prints nothing;
-- the port's texts against task 0's save, which are byte-identical;
+- both decoders' texts and classes against task 0's saves, byte-identical;
 - `git diff 7e209cb4` over the eleven transmit files `PARKED.md` names, which prints nothing;
-- our texts against task 0's save:
-  - if a form was kept, every line that moved, before and after, beside the key;
-  - if none was kept, identical;
 - `git status`, showing `.run-unit\fldigi\` still untracked;
 - a table of every commit this unit made, with its results on the five at its exit: build, both
   carry-forward lines, and the three floor tests.
 
-**Ticks:**
-- **9.4**, as task 3 says, and only then.
-- Do not tick 9.5 to 9.8, or any line of steps 2 to 8.
-- If 9.4 is ticked, **R86's bar is lifted by the plan's own wording.** Say so in section 4 as a
-  reading, not a ruling.
-- **If neither form is kept, every mechanism 9.3 named, (A) to (E), has now been refused.** Say so
-  in section 4 as a plain fact, with each one's refusing recording and metric. Do not propose a
-  new technique, and do not propose lifting R86. What happens next is the next arbiter's to
-  decide.
+**Ticks:** 9.5 only, as task 3 says. Do not tick 9.4, 9.6 to 9.8, or any line of steps 2 to 8.
 
 ---
 
 ## 7. Parked - do not touch, do not raise
 
-- **Techniques (B), (C), (D) and (W)** in any form, and 462's saved patches except as evidence.
-  Each has been refused.
-- **Unit 462's section 4 item 1**, whether V-11 is per recording or the floors alone. DECIDED (3)
-  keeps it per recording, as 459 and 462 were judged. Running W's patch against the floors is not
-  this unit's.
-- **fldigi's hysteresis detector itself** (`cw.cxx` 640-656) and its squelch (646). Ours decides
-  marks by lattice, not by threshold. Only the envelope's formation and level are taken.
-- **fldigi's SOM decoding, its seed speed and its squelch default.**
+- **9.4 and every mechanism 9.3 named, (A) to (E) and (W), in any form.** Each is refused. Their
+  saved patches are evidence only.
+- **Any change to a letter or a class of either decoder.** A confidence that says ours' sure
+  letters are often wrong is a finding for 9.6 and 9.7, and is not acted on here.
+- **The vote itself, 9.6's margin (HM-REQ-127's TBD 0.05), the sheet's per-character decoder
+  record, and wiring anything to the CW tab.** These are 9.6's.
+- **Unit 463's section 4 items 3 and 4:** our likelihood's Rayleigh noise scale, and the parity
+  harness printing the port only over the stretch ours scored. The second of these is noted
+  here because task 1's rows come from the same harness. Count the port's characters from its own
+  `Emissions`, and say whether any fall outside the stretch ours scored.
 - **The four questions `PARKED.md` records, and their `RESOLVED:` answers.**
 - **Step 2's decoder work, and 2.4's count.** The count stays 1 of 3.
 - **Steps 3 to 8,** under R86.
-- **461's section 4:** the 1.0 s lead-in first character, the fading profiles read sure and wrong,
-  and the rest. These are step 7's.
-- **459's section 4 items 3 to 5,** and 458's items 2 to 5.
-- **6.5's tick, HM-REQ-084's `ABOVE`, and unit 455's two 6.1 findings.**
-- **The two `PHASE_STATUS.md` copies differing beyond the unit's fields** (462 section 4 item 5).
+- **461's section 4, 459's section 4 items 3 to 5, 458's items 2 to 5, 6.5's tick, HM-REQ-084's
+  `ABOVE`, and unit 455's two 6.1 findings.**
+- **The two `PHASE_STATUS.md` copies differing beyond the unit's fields.**
 
 ## 8. Do not
 
-- **Do not change any line under `src\Hamlet.RadioEngine\Cw\Second\`** (HM-REQ-122, 129).
-- **Do not change `CwMetrics`, the scorer, `MorseAlphabet` or any test's key.**
+- **Do not change any line under `src\Hamlet.RadioEngine\Cw\Second\`** (HM-REQ-122, 129). This
+  includes making a field public.
+- **Do not change a letter, a class, a threshold or the lattice** in our decoder. The confidence is
+  added beside them.
+- **Do not change `CwMetrics`, the scorer, `MorseAlphabet` or any test's key.** The measure is a
+  new type.
+- **Do not measure calibration on the characters the map was fitted on** and report it as the
+  verdict. The verdict is held-out by recording.
+- **Do not change the features, the map's form, the bins, or the 5-point, 10-character and
+  30-character lines after seeing a calibration number** (V-14, DECIDED (2) and (4)).
+- **Do not fit a map per condition.**
+- Do not use any feature that knows words, callsigns or letter frequencies (R72).
 - **Do not touch, call or reuse `KeyerCwSender.cs`** or any transmit file (§0.2).
-- **Do not commit a refused change under `src`,** even to revert it. Refusals live in the working
-  tree and in `.run-unit\` patches.
-- **Do not change fldigi's ratio (5 / 1.2, one half), or its attack and decay, after seeing R78's
-  numbers** (V-14, DECIDED (2)).
-- **Do not let (A1)'s integrator feed the speed choice.** The speed is chosen from today's
-  envelope.
-- **Do not change `IntegratorBandwidthHz` as a constant**, or sweep it. (A1) is fldigi's
-  speed-matched form, not a new fixed width.
-- Do not screen both forms at once, and do not combine them into one change.
-- Do not widen the 8 to 40 WPM speed bounds. That is 5.1's.
-- Do not re-bank any floor except under DECIDED (5). Do not touch the captures or the adjudicated
-  tables.
-- Do not take anything that knows words, callsigns or letter frequencies (R72).
-- Do not edit `PARKED.md`, `CW_SPEC.md`, `CW_REQUIREMENTS.md`, or any ruling in `PHASE_PLAN.md` or
-  `CLAUDE.md`.
 - Do not add a new test to either carry-forward line.
 - Do not re-point or retire an existing test (R80).
-- **Do not install any package. That is `MOVE: stop`.**
+- Do not edit `PARKED.md`, `CW_SPEC.md`, `CW_REQUIREMENTS.md`, or any ruling in `PHASE_PLAN.md` or
+  `CLAUDE.md`.
+- **Do not install any package. That is `MOVE: stop`.** The logistic fit is a few lines of
+  Newton's method, in C#.
 - Do not stage, commit or modify `.run-unit\fldigi\`, and do not fetch.
 - **Do not run an unfiltered `dotnet test`. Never run in the background and poll. Never compose a
   timestamp.**
 
 ## 9. Committing and pushing
 
-**One commit per task, and the kept change alone in its own:**
+**One commit per task:**
 - task 0;
 - task 1's fact and printout;
-- task 2's saved patches and numbers (nothing under `src`);
-- the kept change, if any, with its test and any re-banked row;
-- the 9.4 tick;
+- task 2's property, adapter, test and constants;
+- task 3's measure, `calibration.md` and the `metrics.md` line;
+- the 9.5 tick;
 - task 4.
 
-**Messages** take the form `unit463 task N: <what> (9.4)`. The kept change's message names the
-form, the `cw.cxx` lines, and the four real and four synthetic numbers before and after.
+**Messages** take the form `unit464 task N: <what> (9.5)`. Task 3's message names, per decoder,
+the conditions calibrated, not calibrated and not measurable.
 
 **Exit state:** every commit exits with these green:
 - the build;
@@ -508,63 +511,68 @@ READ IN THIS ORDER.
 
 A. Phase goal: Hamlet meets the CW requirements. Steps by the plan -
    0 done, 1 done, 2 4 of 5, 3 3 of 6, 4 5 of 7, 5 1 of 6, 6 3 of 6,
-   7 2 of 5, 8 0 of 6, 9 <n> of 8; steps 2 to 8 <still barred | released>
-   by R86.
-B. Step 9, criterion 9.4: HM-REQ-129 - fldigi's detection front end,
-   (A1) half-dit integrator at the speed in force <kept | refused on
-   <recording, metric>>, (A2) AGC-normalized level <kept | refused on
-   <recording, metric>>; the committed one <form, cw.cxx lines>: real
-   (inferred) MET-CER-SURE 33 of 436 to <a> of <s>, MET-INVENTED 33 to
-   <b>, coverage 403 to <c>, MET-WBE 37 to <d>; synthetic (exact) 14, 14,
-   159, 44 to <...>; adjudicated <n> of 13; V-11 <0 | n> of 35 worse; gate
-   margin on 014854 <before> to <after>; the port byte-identical
-   <yes | no>; 9.4 <ticked | open>.
-C. The findings weighed against A and B: how many items section 4 raises,
-   whether any is in the way of 9.4 or of 9.5, which comes next, and -
-   if 9.4 is still open - that every mechanism 9.3 named has been refused.
+   7 2 of 5, 8 0 of 6, 9 <n> of 8; steps 2 to 8 still barred by R86,
+   and 9.4 open with every mechanism 9.3 named refused.
+B. Step 9, criterion 9.5: HM-REQ-124 - ours' p from <feature>, the
+   port's p from <features, cw.cxx lines>; held-out by recording,
+   ten bins, 5 points; ours calibrated on <conditions>, not on
+   <conditions>, not measurable on <conditions>; the port calibrated
+   on <...>, not on <...>, not measurable on <...>; in-sample against
+   held-out gap <n> points; every text and class byte-identical
+   <yes | no>; the port byte-identical <yes | no>; 9.5 <ticked | open>.
+C. The findings weighed against A and B: how many items section 4
+   raises, whether any is in the way of 9.6 - which decoder may vote
+   where, under HM-REQ-124 - and whether R86 with 9.4's refusals is
+   in the way of steps 2 to 8.
 ```
 
 ```
-UNIT:       463 - <complete|stopped> at task N of 4, <dropped or none dropped> - <date time>
+UNIT:       464 - <complete|stopped> at task N of 4, <dropped or none dropped> - <date time>
 PHASE GOAL: <in your own words>
 UNIT GOAL:  <in your own words>
 ADVANCED:   <yes|no> - <the criterion and why>
-NUMBER:     HM-REQ-129 <met | not met>; real MET-CER-SURE 33/436 to <a>/<s> (inferred); synthetic 14/173 to <x>/<y> (exact); MET-INVENTED real 33 to <b>; coverage real 403 to <c>; MET-WBE real 37 to <d>; the port byte-identical <yes|no>
+NUMBER:     HM-REQ-124 <met on n of m conditions for ours, k of m for the port>; held-out overall share right against mean p - ours <r> against <p> (real, inferred), <r> against <p> (synthetic, exact); the port <...>; texts byte-identical <yes|no>
 DRIFT:      step 2 <n>; step 3 <n>; step 4 <n>; step 5 <n>; step 6 <n>; step 7 <n>; step 9 <n>
 ```
 
-**Section 3 leads with the screen table.** One row per form, with:
-- the four real and four synthetic numbers, before and with it in;
-- adjudicated;
-- V-11's count of recordings worse, naming each one;
-- the gate margin on 014854;
-- decode time;
-- the verdict.
+**Section 3 leads with the calibration table.** One row per condition. For each decoder the row
+gives:
+- the scored characters;
+- the mean p and the share right, held-out and in-sample;
+- the worst populated bin's difference in points;
+- the verdict: calibrated, not calibrated or not measurable.
+
+The key's kind goes beside each row.
 
 Then give:
-1. task 1's two chains side by side, and the lift table for group (a)'s marks under the three
-   envelopes, with a line on whether the prediction matched the screen;
-2. every recording the kept change moved: key, ours before, ours after, and the port, as units 459
-   and 462 printed them;
-3. how the kept change's test was watched failing first;
-4. the commit table, with the five results at each commit.
+1. task 1's separation print for each feature, and the map's constants;
+2. the full held-out reliability tables per condition;
+3. MET-CAL's three-bin table for ours, if not dropped;
+4. how `EveryCharacterCarriesAConfidenceTests` was watched failing first;
+5. the commit table, with the five results at each commit.
 
-**Section 2, one paragraph.** If a form was kept, say which lines on which recordings now read
-differently, in the owner's words, as letters he would see. If none was kept, say the screen reads
-exactly as before, which form came closest, and what stood in its way.
+**Section 2, one paragraph, in the owner's words.** Nothing on the screen changes. Say what the new
+number would mean to him if he could see it, and say plainly where each decoder's "I'm 90% sure"
+turned out to be right 90% of the time and where it was not.
+
+**Section 4 must say, as a plain reading and not a ruling request:**
+- **9.4's words ("one technique 9.3 named") and 9.3's five refused mechanisms leave 9.4 no
+  authorable route, and R86 holds steps 2 to 8 behind 9.4.** Step 9's 9.5 to 9.7 carry the loop
+  meanwhile. Only the owner can change how R86 or 9.4 reads. **This is logged for him, not a
+  stop:** it touches neither transmit nor what the product promises the operator.
 
 ---
 
 ```
 ARBITER-DECISION
 STEP: 9
-APPROACH: take fldigi's detection front end into our envelope - a half-dit boxcar behind the 5 x WPM / 1.2 Hz low-pass at the speed the read is decoded at, and fldigi's attack/decay AGC peak normalization - screen each form alone on all 35 recordings and commit the one R78 keeps, speed choice unchanged, the port untouched
+APPROACH: attach a numeric confidence p to every character of both decoders - ours from its rival margin, the port from its own AGC level and element timing read outside Cw/Second - fit one logistic per decoder fixed before any number is seen, and measure calibration held-out by recording per condition in ten reliability bins against HM-REQ-124's 5 points, no letter or class changed
 MOVE: work around
-WHY: PHASE_PLAN.md section 6's R86 bars steps 2 to 8 until 9.4 has a kept change, so 9.4 is the only line that can move and step 2's 2.4 cannot; of the five mechanisms 9.3 named, (B), (C), (D) and (W) are recorded as refused and (A), detection, has never been screened, so this unit works around the refusals with it, and the loop test finds no entry for the approach.
+WHY: PHASE_PLAN.md section 6's R86 bars steps 2 to 8 until 9.4 has a kept change, so the launcher's step 2 line 2.4 cannot move, and 9.4's "one technique 9.3 named" has no route left now that all five mechanisms 9.3 named are recorded refused; step 9's own next line, 9.5 (HM-REQ-124), is permitted by R86, is what section M orders before any vote, has never been attempted, and the loop test finds no entry for this approach.
 STATE: partial
-DECIDED: author's, overrulable - (1) step 9 criterion 9.4 is worked instead of the launcher's step 2, on R86 in PHASE_PLAN.md section 6, the owner's commit 6de324b1, as unit 462's arbiter did; this is not a step-2 unit and 2.4's count stays at 1 of 3; (2) technique (A) is taken in two forms, each fixed at task 1 before any screen and never narrowed after - (A1) the envelope the lattice scores is formed through fldigi's 5 x WPM / 1.2 Hz low-pass and half-dit boxcar (cw.cxx 352-361, 396, 428-431, 696-708) at the speed the read is decoded at, with the speed still chosen from today's 45 Hz envelope so the bandwidth never feeds the speed that set it; (A2) fldigi's signal, noise and peak trackers at its default attack and decay (610-632) divide ours' existing envelope before the likelihoods; unit 459's reason for leaving (A) - no threshold on our envelope lifts a mark at noise - does not reach a change to how the envelope is formed, and HM-DEC-112 names bandwidth following speed as work to be measured separately; (3) R78 is applied as 459 and 462 were judged - per condition none of the four metrics wrong and one right, the 13 adjudicated readings held or moved onto their own text, no one of the 35 recordings worse on any metric (V-11 per recording, keeping 462's DECIDED (4) and declining its section 4 item 1's alternative), plus the silence and empty-band checks emitting no sure character with the 014854 gate margin printed; (4) both forms are screened whatever task 1 predicts, on unit 462's finding that a first-order count misjudged W; if both are kept only the larger real MET-CER-SURE fall is committed, then synthetic, then (A1), never the two combined; (5) a named floor row that falls on count alone with its recording's four metrics no worse is re-banked in the kept commit under R78's own sentence, and one that falls with a metric worse refuses the change; (6) screens are judged in the working tree and reverted with patches saved under .run-unit, the kept one re-applied and committed alone as HM-REQ-129 asks; (7) if neither is kept the report states that every mechanism 9.3 named has been refused and proposes nothing, leaving the next move to the next arbiter; (8) the app line's headless dispatcher-loop loss: one rerun, and any type lost again is run alone and must pass, named in the report.
-LICENCE: PHASE_PLAN.md step 9 lines 9.3 and 9.4, section 6 (R86, R78, the second decoder is faithful, V-14), R66, R72, R77, R80, R85; CW_REQUIREMENTS.md HM-REQ-010, 011, 012, 080, 081, 122, 123, 129, V-11, V-14; CW_SPEC.md section 7; HM-DEC-112; fldigi cw.cxx at 61b97f41 lines 290-440 and 593-720, cw.h DEC_RATIO; unit 459's report sections 1 and 3; unit 462's report sections 3 and 4; HM-DEC-155; HM-DEC-165; FACT-004; CLAUDE.md 0.0, 0.2 and 12.5
-ACCOMPLISHED: one more thing fldigi's receiver does that ours does not - listening to each mark over half a dit at the sender's own speed instead of a fixed window, or levelling the signal the way fldigi's AGC does - is in Hamlet's decoder because it made the text read better with no recording reading worse, which is what the owner's R86 asks before any other decoder work resumes
-ADVANCES: step 9 criterion 4
+DECIDED: author's, overrulable - (1) step 9 criterion 9.5 is worked instead of the launcher's step 2 on R86 (PHASE_PLAN.md section 6, the owner's commit 6de324b1), as units 462 and 463's arbiters did, and 9.4 is not re-attempted because every mechanism 9.3 named is refused and a sixth attempt would restate one; this is not a step-2 unit and 2.4's count stays at 1 of 3; (2) the confidence is a logistic over features fixed at task 1 before any calibration number - ours' MarginLlr, the port's level margin (sig_avg over noise_floor) and timing margin (distance from two_dots) read from its public Emissions and KeyEvents, never by changing Cw/Second - one map per decoder pooled over the real and synthetic sets, not per condition; (3) the calibration verdict is taken held-out by recording (fit on 34, measure the 35th) and the in-sample figure is printed beside it, because a map measured on what it was fitted to proves nothing (CLAUDE.md 12.5, V-13); (4) calibrated on a condition means every bin of width 0.1 holding at least 10 characters, and the condition overall, within 5 points of mean p, with at least 30 scored characters, else not measurable; right is the scorer's verdict, wrong and added are wrong, placeholders are unscored as MET-CAL's placeholder bin, and dim characters are scored like sure ones; (5) no letter, class or threshold of either decoder changes, texts byte-identical, so R78's keep rule is not engaged; (6) 9.5 is ticked when both decoders carry p on every character and the calibrated conditions are named, whether or not any condition is calibrated, as the criterion's own words ask; (7) R86 with 9.4's exhausted route is reported in section 4 as a reading for the owner and not a stop, since it touches neither transmit nor what the product promises; (8) the app line's headless dispatcher-loop loss: one rerun, and any type lost again is run alone and must pass, named in the report.
+LICENCE: PHASE_PLAN.md step 9 lines 9.3, 9.4 and 9.5, section R (R84, R85), section 6 (R86, the second decoder is faithful, V-14), R61, R72, R77, R80; CW_REQUIREMENTS.md HM-REQ-013, 014, 121, 122, 124, 129, V-11, V-13, V-14; CW_SPEC.md MET-CAL; docs/phase-requirements/parity.md sections 1 and 3; fldigi cw.cxx at 61b97f41; unit 463's report section 4; HM-DEC-155; HM-DEC-165; FACT-004; CLAUDE.md 0.0, 0.2 and 12.5
+ACCOMPLISHED: every letter either decoder reads now carries a number saying how likely it is to be right, and Hamlet knows, condition by condition, where each decoder's 90% really means 90% - which is what decides, in the next step, which of the two gets the vote when they disagree
+ADVANCES: step 9 criterion 5
 END-ARBITER-DECISION
 ```

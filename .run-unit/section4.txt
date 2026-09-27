@@ -1,41 +1,37 @@
 ﻿
 Most-blocking first.
 
-1. **W is held out by V-11 as DECIDED (4) reads it, and whether R78 means that is the owner's.**
-   - *What happened.* W moved all eight totals the right way and held the 13 adjudicated readings.
-     V-11 as this unit applied it refused W: one recording worse on any one metric refuses the
-     change.
-   - *Why the reading matters.* R78 itself says the capture floors "stay as V-11's overfitting
-     guard", and that no change may redden an earlier capture to green a newer one. Read that
-     narrowly, the floors are the guard, not a per-recording metric test. W's floors were not run,
-     because it was refused before them.
-   - *Proposed ruling:* keep DECIDED (4) as written. Per-recording V-11 on the four metrics is how
-     459 was judged, and moving the bar after W's numbers were seen is exactly what V-14 and
-     DECIDED (3) forbid.
-   - *What the next unit may still do.* It may run W's saved patch unchanged against the three
-     floor tests, as evidence for the owner, not as a keep.
-   - *Rejected:* keeping W here on a narrower reading of V-11, which would decide the rule by the
-     change it lets through.
-   - *Needs the owner* only if R78's guard is meant to be the floors alone.
-2. **The trace's net count misjudged W.** C ranked first at +4, and W last at -81, yet W was the
-   one that moved all eight totals right. The trace's at-risk flags were borne out where it named
-   them: B broke 031905's flagged `.`.
-   - *Why.* The trace counts first-order events: a letter's own marks and gaps set against an
-     edge. A changed edge re-chooses every span on the lattice, so what it fixes elsewhere is not
-     counted.
-   - *Proposed ruling for the next 9.4 author:* rank candidates by a screen, not by a count of
-     edge events. Every screen here took about 10 minutes.
-   - *Rejected:* re-ranking here after the numbers were seen.
-3. **The refusals were narrow.** W was refused on three recordings, each by one or two characters
-   or boundaries (`VERSIONS`, `2 TT`, `KA2GJV`/`ROBIN`). C was refused on one boundary on 031838,
-   and 031838's boundary refused W as well. Logged, not chased: no technique was narrowed (V-14,
-   DECIDED (3)).
-4. **R85 readings, one line each.**
-   - The dit in force is the unit of the speed the read was decoded at, 1200 / WPM, whether that
-     speed was measured, won on the grid or taken from the marks.
-   - A spike is dropped at the lattice's shortest key-down span. fldigi's reset of the character in
-     progress was not taken.
-   - "Ends a character" inside a lattice means the path's gap segment is the letter-gap or word-gap
-     kind. The relabel, which only takes spaces out, was left as it is.
-5. **The two `PHASE_STATUS.md` copies differ beyond the fields a unit sets** (section 1). Logged, not
-   repaired.
+1. **Every mechanism 9.3 named has now been refused at 9.4, and R86 still bars steps 2 to 8.** This
+   is a plain fact, and what happens next is the next arbiter's to decide. Each mechanism, with the
+   recording and metric that refused it:
+   - (A) detection: A1 on 004507, coverage (43 to 0; real coverage 403 to 38); A2 on 173723,
+     MET-INVENTED (sure added 0 to 2; real MET-CER-SURE 33 to 39). Unit 463.
+   - (B) the spike rule: every real metric worse, three recordings worse. Unit 462.
+   - (C) the two-dot class edge: 031838, MET-WBE. Unit 462.
+   - (D) pair speed tracking: 031948's adjudicated reading broken, three recordings worse. Unit 459.
+   - (E) 880-888, inside W: 032113, coverage; 031838 and 004550, MET-WBE. Unit 462.
+
+   No ruling is proposed here and no new technique.
+2. **This unit's R85 readings, recorded and carried on with.**
+   - The speed in force is the speed the read is decoded at, as 462 read it. fldigi's own front end
+     follows the operator's configured `CWspeed`, not its tracked receive speed (395-396, 416, 428),
+     and ours has no operator speed.
+   - The 5 x WPM / 1.2 Hz low-pass is fldigi's matched-filter option. Its default is a fixed 150 Hz
+     (`CWmfilt` off). A1 took the instruction's form, as DECIDED (2) fixes it.
+   - fldigi's weights of 200 and 1000 decimated samples at 500 a second become 80 and 400 hops of
+     5 ms.
+   - The AGC division sits between the envelope and `LogLikelihoods`: the lattice, grid included,
+     scores the divided window, and every timing measurement reads the raw one.
+3. **Finding: our likelihood's noise scale assumes a Rayleigh envelope.** sigma is read from the
+   quarter point by an identity that holds for one quadrature pair of noise. fldigi's half-dit
+   boxcar averages many decimated magnitudes, and that narrows the noise's spread around its mean,
+   so the same identity reads the noise as higher against the marks. Keyed levels fell from 3.7 to
+   2.2 sigma on 17:37 and from 14.3 to 7.9 on a 15 dB case. That, and not the bandwidth itself, is
+   what the task 1 print shows behind A1's collapse. This is recorded as a finding, and nothing is
+   proposed from it.
+4. **Finding: the parity harness's "port byte-identical" check can move without the port.** Under
+   A1 one port line disappeared from the save: 17:37's `CQDW SRED`. The port was untouched. The
+   harness prints the port's text over the stretch ours scored, and under A1 ours scored none on
+   17:37. A later unit judging the port by this file should know that.
+5. **The tree: no `.run-unit\watched.rc`, as unit 459 also found.** The `RULES_AT` disagreement and
+   `outcome-read`'s step titles for steps 2, 3 and 8 are logged, not repaired, and not this unit's.

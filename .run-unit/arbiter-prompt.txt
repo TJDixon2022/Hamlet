@@ -145,6 +145,7 @@ block; blocker means it cleared something and moved no criterion.
   9.2 | unit 1 launched 2026-09-26T16:46:45.870Z | not recorded | not recorded | port fldigi's CW receive modem faithfully as the second decoder of section M with its GPL-3 attribution, drive every keyed and synthetic recording through both decoders on the same harness and metrics, table the parity per HM-REQ-123, and name from the second decoder's source what it does differently where it wins
   9.2 | unit 5 launched 2026-09-26T20:22:18.127Z | yes | executed | score FldigiCwDecoder and our decoder on the same audio of every keyed recording and the synthetic set through the same CwMetrics calls, sameness of our row watched failing first, map the port's unclassed characters to sure and its no-match output to placeholder, and table MET-CER-SURE MET-INVENTED coverage and MET-WBE per recording and per condition in parity.md
   9.4 | unit 1 launched 2026-09-27T03:01:59.436Z | no | executed | trace ours against fldigi's untried edges - half-dit spike rule, two-dot dit/dah class edge, four-dit word-space edge - rank by fixable against at-risk events, then screen each in the working tree at fldigi's own ratio in rank order and commit the first kept under R78 as its own change, the port untouched
+  9.4 | unit 2 launched 2026-09-27T04:32:04.219Z | no | executed | take fldigi's detection front end into our envelope - a half-dit boxcar behind the 5 x WPM / 1.2 Hz low-pass at the speed the read is decoded at, and fldigi's attack/decay AGC peak normalization - screen each form alone on all 35 recordings and commit the one R78 keeps, speed choice unchanged, the port untouched
   9.4 | unit 6 launched 2026-09-26T21:33:57.611Z | no | executed | trace every sure letter ours prints wrong where the fldigi port reads it right, classify the lost element as never keyed, spiked, misclassed or cut by a gap or speed rule, then build the port mechanism behind the largest group into our decoder in its own commit, kept under R78, the port untouched
 
 If every route you can see at a criterion is recorded as no, say so in WHY
@@ -174,133 +175,114 @@ The whole file is at the repository root if you need the rest.
 
 Most-blocking first.
 
-1. **W is held out by V-11 as DECIDED (4) reads it, and whether R78 means that is the owner's.**
-   - *What happened.* W moved all eight totals the right way and held the 13 adjudicated readings.
-     V-11 as this unit applied it refused W: one recording worse on any one metric refuses the
-     change.
-   - *Why the reading matters.* R78 itself says the capture floors "stay as V-11's overfitting
-     guard", and that no change may redden an earlier capture to green a newer one. Read that
-     narrowly, the floors are the guard, not a per-recording metric test. W's floors were not run,
-     because it was refused before them.
-   - *Proposed ruling:* keep DECIDED (4) as written. Per-recording V-11 on the four metrics is how
-     459 was judged, and moving the bar after W's numbers were seen is exactly what V-14 and
-     DECIDED (3) forbid.
-   - *What the next unit may still do.* It may run W's saved patch unchanged against the three
-     floor tests, as evidence for the owner, not as a keep.
-   - *Rejected:* keeping W here on a narrower reading of V-11, which would decide the rule by the
-     change it lets through.
-   - *Needs the owner* only if R78's guard is meant to be the floors alone.
-2. **The trace's net count misjudged W.** C ranked first at +4, and W last at -81, yet W was the
-   one that moved all eight totals right. The trace's at-risk flags were borne out where it named
-   them: B broke 031905's flagged `.`.
-   - *Why.* The trace counts first-order events: a letter's own marks and gaps set against an
-     edge. A changed edge re-chooses every span on the lattice, so what it fixes elsewhere is not
-     counted.
-   - *Proposed ruling for the next 9.4 author:* rank candidates by a screen, not by a count of
-     edge events. Every screen here took about 10 minutes.
-   - *Rejected:* re-ranking here after the numbers were seen.
-3. **The refusals were narrow.** W was refused on three recordings, each by one or two characters
-   or boundaries (`VERSIONS`, `2 TT`, `KA2GJV`/`ROBIN`). C was refused on one boundary on 031838,
-   and 031838's boundary refused W as well. Logged, not chased: no technique was narrowed (V-14,
-   DECIDED (3)).
-4. **R85 readings, one line each.**
-   - The dit in force is the unit of the speed the read was decoded at, 1200 / WPM, whether that
-     speed was measured, won on the grid or taken from the marks.
-   - A spike is dropped at the lattice's shortest key-down span. fldigi's reset of the character in
-     progress was not taken.
-   - "Ends a character" inside a lattice means the path's gap segment is the letter-gap or word-gap
-     kind. The relabel, which only takes spaces out, was left as it is.
-5. **The two `PHASE_STATUS.md` copies differ beyond the fields a unit sets** (section 1). Logged, not
-   repaired.
+1. **Every mechanism 9.3 named has now been refused at 9.4, and R86 still bars steps 2 to 8.** This
+   is a plain fact, and what happens next is the next arbiter's to decide. Each mechanism, with the
+   recording and metric that refused it:
+   - (A) detection: A1 on 004507, coverage (43 to 0; real coverage 403 to 38); A2 on 173723,
+     MET-INVENTED (sure added 0 to 2; real MET-CER-SURE 33 to 39). Unit 463.
+   - (B) the spike rule: every real metric worse, three recordings worse. Unit 462.
+   - (C) the two-dot class edge: 031838, MET-WBE. Unit 462.
+   - (D) pair speed tracking: 031948's adjudicated reading broken, three recordings worse. Unit 459.
+   - (E) 880-888, inside W: 032113, coverage; 031838 and 004550, MET-WBE. Unit 462.
 
-**The tree against the instruction.** Mismatches are reported, not repaired.
-- **A mismatch in the saves.** The tree's text printer
+   No ruling is proposed here and no new technique.
+2. **This unit's R85 readings, recorded and carried on with.**
+   - The speed in force is the speed the read is decoded at, as 462 read it. fldigi's own front end
+     follows the operator's configured `CWspeed`, not its tracked receive speed (395-396, 416, 428),
+     and ours has no operator speed.
+   - The 5 x WPM / 1.2 Hz low-pass is fldigi's matched-filter option. Its default is a fixed 150 Hz
+     (`CWmfilt` off). A1 took the instruction's form, as DECIDED (2) fixes it.
+   - fldigi's weights of 200 and 1000 decimated samples at 500 a second become 80 and 400 hops of
+     5 ms.
+   - The AGC division sits between the envelope and `LogLikelihoods`: the lattice, grid included,
+     scores the divided window, and every timing measurement reads the raw one.
+3. **Finding: our likelihood's noise scale assumes a Rayleigh envelope.** sigma is read from the
+   quarter point by an identity that holds for one quadrature pair of noise. fldigi's half-dit
+   boxcar averages many decimated magnitudes, and that narrows the noise's spread around its mean,
+   so the same identity reads the noise as higher against the marks. Keyed levels fell from 3.7 to
+   2.2 sigma on 17:37 and from 14.3 to 7.9 on a 15 dB case. That, and not the bandwidth itself, is
+   what the task 1 print shows behind A1's collapse. This is recorded as a finding, and nothing is
+   proposed from it.
+4. **Finding: the parity harness's "port byte-identical" check can move without the port.** Under
+   A1 one port line disappeared from the save: 17:37's `CQDW SRED`. The port was untouched. The
+   harness prints the port's text over the stretch ours scored, and under A1 ours scored none on
+   17:37. A later unit judging the port by this file should know that.
+5. **The tree: no `.run-unit\watched.rc`, as unit 459 also found.** The `RULES_AT` disagreement and
+   `outcome-read`'s step titles for steps 2, 3 and 8 are logged, not repaired, and not this unit's.
+
+**Mismatch:** there is no `.run-unit\watched.rc`. Git status showed `watched.cpu` deleted, and the
 ## 3. What you should see
 
-**The screen table.** Each technique screened in the working tree, against task 0's figures. The
-four real (inferred key) and four synthetic (exact key) numbers are MET-CER-SURE,
-MET-INVENTED, coverage and MET-WBE.
+No visible change. This unit screened two forms and kept neither, so the decoder and every text
+it prints are as at entry.
 
-| technique | real before | real with it | synthetic before | synthetic with it | adjudicated | V-11 worse | decode, ours over 690 s | verdict |
-|---|---|---|---|---|---|---|---|---|
-| C, two-dot class edge, `cw.cxx:846-855` | 33/436, 33, 403, 37 (29 ins, 8 del) | 32/438, 32, 406, **38 (29 ins, 9 del)** | 14/173, 14, 159, 44 (13, 31) | 14/173, 14, 159, 44 (13, 31) | 13 of 13 | 1: 031838 (MET-WBE, deleted 1 to 2) | 51.22 s (entry 51.65) | **refused**, MET-WBE real the wrong way, and V-11 |
-| B, half-dit spike rule, `cw.cxx:515, 818-822` | as above | **36/437, 36, 401, 39 (30, 9)** | as above | 12/172, 12, 160, **46 (15, 31)** | 13 of 13 | 3: 031905 (sure wrong 2 to 4, coverage 30 to 28, MET-WBE 1 to 3), 032050 (sure added 1 to 2), cq-18wpm-5db-char5 (added 4 to 5, inserted 6 to 8) | 52.03 s | **refused**, every real metric the wrong way, and V-11 |
-| W, word-space edge, `cw.cxx:883-914` | as above | 31/436, 31, 405, 35 (27, 8) | as above | 5/170, 5, 165, 43 (12, 31) | 13 of 13 | 3: 032113 (coverage, sure right 21 to 19), 031838 (MET-WBE, deleted 1 to 2), 004550 (MET-WBE, inserted 1 to 2) | 49.50 s | **refused**, on V-11 alone |
+**The screen table.** Real is 23 keyed recordings with inferred keys; synthetic is 12 cases with
+exact keys. Each cell reads MET-CER-SURE / MET-INVENTED / coverage / MET-WBE.
 
-The port was byte-identical at every screen, and `BothDecodersAreScoredAlikeTests` was 5 of 5 at
-each. On V-11, W also made 004234 (sure wrong 2 to 0), 17:37 (inserted 6 to 3) and
-cq-18wpm-5db-char5 (wrong 7 to 1, added 4 to 1) better.
+| form | real before | real with it | synthetic before | synthetic with it | adjudicated | V-11 worse | gate room on 014854 | decode, ours over 690 s | verdict |
+|---|---|---|---|---|---|---|---|---|---|
+| A1 half-dit integrator at the read's speed, `cw.cxx` 352-361, 396, 428-431, 696-708 | 33/436, 33, 403/473, 37 | 13/51, 13, 38/453, 89 | 14/173, 14, 159, 44 | 1/85, 1, 84, 60 | 7 of 13 | 26 of 35 (every recording that moved, except `cq-18wpm-15db-char5` and `003758`, which improved) | 0.475 to 1.266 | 51.47 s to 72.92 s | **refused** on real coverage and MET-WBE; synthetic coverage and MET-WBE |
+| A2 AGC-normalized level, `cw.cxx` 599-632 | 33/436, 33, 403/473, 37 | 39/442, 39, 403/473, 37 | 14/173, 14, 159, 44 | 33/182, 33, 149, 46 | 13 of 13 | 11 of 35: `cq-12wpm-5db`, `cq-18wpm-15db-char5`, `cq-18wpm-5db`, `cq-18wpm-5db-char5`, `cq-25wpm-5db`, 031905, 032050, 032113, 173723, 004108, 004322 | 0.475 to 0.462 | 51.47 s to 51.64 s | **refused** on real MET-CER-SURE and MET-INVENTED; all four synthetic |
 
-**1. Task 1: ours' edges beside fldigi's, in dits, and the ranking.**
+Under A1, 17:37 read nothing of the key's opening, so it has no scored stretch; that is why real
+"sent" falls to 453. Silence held under both forms: `TheSilencePropertyIsLockedTests` 6 of 6,
+`NothingIsReadFromAudioWithNoKeyingTests` 4 of 4, both empty-band capture rows green, and nothing
+settled on 014854 or 014935. The captures floor, run for silence, fell to 6 of 51 under A1 and to
+31 of 51 under A2. Every row and figure is in `.run-unit\unit463-A1.txt` and `unit463-A2.txt`.
 
-| decision | where in ours | ours | fldigi |
+**1. Task 1's two chains, and the lift.**
+
+| stage | ours, at HEAD | fldigi, `cw.cxx` at `61b97f41` |
+|---|---|---|
+| mixer | quadrature mixdown at the audio's rate (`CwProbabilisticDecoder.cs` 930-940; `CwProbabilisticStream.cs` 256-270); no low-pass but the integrator | complex mixdown at 8 kHz (688-692), then a 1024-tap Blackman sinc low-pass (`fftfilt.cxx` 128-171): 150 Hz by default, 5 x WPM / 1.2 only under `CWmfilt`, which is off by default (352-356, 395-398) |
+| integrator | Hann of 33.4 ms, 45 Hz ENBW, fixed by `IntegratorBandwidthHz` (416, 593-635, 916-974) | decimate by 16 to 500/s (704), magnitude, boxcar of symbollen / 32: half a dit, 29 Hz at 17.1 WPM, set by `CWspeed` (358-361, 428-431, 708) |
+| level | none: sigma = the quarter point / 0.7585, keyed = the 97th percentile, over 2.5 s centred, re-taken every 62 hops (1004-1154) | `decayavg` trackers: signal at decay, floor and peak at attack 0.4 s / decay 2 s (599-623); value / peak (629-632) |
+| speed vs envelope | chosen from the same 45 Hz envelope: the measured unit, else the grid, then the marks' overrule (`CwProbabilisticStream.cs` 442-449, 516-531; 768-783) | tracked after detection (524-535, 831-843); the front end follows the operator's `CWspeed`, not the tracked speed (395-396, 416, 428) |
+
+Lift on group (a)'s marks, as median and peak in each envelope's own noise sigmas against that
+envelope's keyed level. The strips are in `unit463-frontend.txt`.
+
+| departure | ours | A1 | A2 |
 |---|---|---|---|
-| a mark is formed | `CwProbabilisticDecoder.cs` 894-1085 (per-hop key-down and key-up log-likelihoods), 1257-1304 `DecodeAt` | a key-down segment the segmental Viterbi chooses; nothing is thresholded | 610-656, the detector against its squelch |
-| a spike is discarded | 542 and 1265 (and 1509): no key-down segment under `max(1, (int)(0.45 x want))` hops; 1609-1626 `Judged` and 1644 `IsStrayElement` drop characters, never marks | **0.45**, truncated to a 5 ms hop | **0.5** (515, 818-822) |
-| dit or dah | 526-533, 1291-1293: the length penalty `ln(span/want)/0.35`, squared; spans 0.45 to 2.2 for a dit, 1.35 to 6.6 for a dah | by likelihood, crossing at **1.73** | **2** (846-855) |
-| element, character or word gap | 530-532 (1, 3, 7 units), or the held gaps (`CwProbabilisticStream.cs` 497-504); then the relabel, 713-734, which only takes spaces out | by likelihood, **1.73** and **4.58** (or the held gaps' geometric means), then the relabel | **2** and **4** (883-914) |
-| the dit in force | `CwProbabilisticStream.cs` 442-449 (the measured speed, else the grid), 516-531 (the marks' overrule) | the unit of the read's own speed, 1200 / WPM ms | the tracked `two_dots` (502-515) |
+| 17:37 R (read E, 29.195 s), 17.1 WPM | marks 3.2-3.5 of keyed 3.7; nothing above noise where the missing dah belongs | marks 1.9-2.2 of keyed 2.2; nothing there either | ours to one decimal (keyed 3.8) |
+| 17:37 D (read I, 30.000 s) | as above, keyed 3.7 | keyed 2.2 | keyed 3.8 |
+| 032012 O (read T, 1.765 s), 22.9 WPM | three dahs at 5.8 of keyed 5.8 in the whole-file envelope | 2.1 of keyed 2.1 | 5.0-5.9 of keyed 7.1 (the peak still falling from the burst) |
+| cq-18wpm-15db-char5 L (read E), 17.8 WPM | 12.7-13.6 of keyed 14.3 | 7.1-7.7 of keyed 7.9 | 11.9-13.3 of keyed 13.8 |
+| cq-18wpm-5db-char5 0 (read U), 18.5 WPM | 4.3-5.0 of keyed 5.5 | 2.1-2.6 of keyed 2.7 | 3.9-5.2 of keyed 5.6 |
 
-The ranking. Fixable events sit in wrong or added letters, or at wrong boundaries; at-risk events
-sit in right ones. Letters outside any scored stretch, and dim letters and placeholders, count as
-neither.
+**The prediction matched the screen.** Task 1 found that neither form lifts the marks 17:37 is
+missing. It also found that A1 pulls every keyed level down toward the noise in the likelihood's
+own sigma terms, and the screen found A1 printing almost nothing. A2 differed from ours only where
+the peak was moving, and the screen found A2 moving a handful of letters each way.
 
-| rank | technique | events | fixable | at risk | neither | net |
-|---|---|---|---|---|---|---|
-| 1 | C | 20 | 5 | 1 | 14 | +4 |
-| 2 | B | 110 | 6 | 23 | 81 | -17 |
-| 3 | W | 246 | 17 | 98 | 131 | -81 |
+**2. Every recording the kept change moved:** none. Nothing was kept. Each screened form's moved
+rows are in its `.txt`.
 
-- **Also listed for B, not counted:** 48 marks of half a dit or more that ours takes as key-up.
-  (B)'s form does not restore them.
-- **None had zero fixable events,** so all three were screened.
-- **The three reads that refused (D):**
-  - 031948 `110,`: one W event, an unscored boundary, neither.
-  - 004507 `EACH`: two W events, both at a right boundary (at risk).
-  - 031905 `PREDICTED`: one B event, the `I` at 5.375 s, 0.44 dits (at risk).
-  - B did break 031905, but on `10.7` (`10■T7`), where task 1 had flagged the `.`'s 0.44-dit dit
-    at risk. The fact's first printout, committed at task 1, reported 0 events on `PREDICTED`: its
-    word match missed a stretch that opens mid-word (`DICTED`). That was corrected and rerun at
-    task 4. Nothing else in the printout changed.
-- **The forms, fixed before any screen,** are the `form |` lines of the printout. The dit in each is
-  the unit of the speed the lattice is run at.
+**3. How the kept change's test was watched failing first:** no kept change, so no test was
+written.
 
-**2. Every recording a kept change moved: none, since nothing was kept.** For the record, these are
-the lines that refused W and C. Text is the scored stretch where there is one.
+**4. The commit table.** Build, both carry-forward lines and the three floor tests at each commit.
 
-```
-032113 (inferred)  key        ACKET, AND INTERNET VERSIONS
-                   ours       A KET■ A N O INTERNET ■ERSIONS
-                   with W     A KET■ A N O INTERNET ■E■IONS
-                   with C     I KET■ A N D INTERNET VERSIONS
-                   port       T TNDINE OJ
-031838 (inferred)  key        2, 2, AND 2 WITH A MEAN OF 2.9. PRE
-                   ours       2TT 2, AND ■ WIAHA MEAN OF 2 TT
-                   with W     2T 2, AND ■ WIAHA MEUN OF 2TT
-                   with C     2TT 2, AND ■ WIAHA MEAN OF 2TT
-                   port       2, 2, AN■TWV2F 2P
-004550 (inferred)  key        DE KA2GJV
-                   ours       ... A3HB DE KA2 GJV HW ROBIN?
-                   with W     ... A3HB DE KA2 G JV HW RO B IN ?
-                   port       D■2 GJV
-004234 (inferred)  key        OT COM <BT> THANK YOU
-                   ours       C O M <BT> T HANTT TK■ET
-                   with W     C O M <BT> T HANK YOU
-                   port       T T AN■U O
-```
-
-Every line each technique moved is in the texts diff inside its `.run-unit/unit462-<C|B|W>-refused.txt`.
-
-**3. The kept change's test** was not written, because no change was kept.
-
-**4. Every commit, with the five at its exit.**
-
-| commit | task | build | engine line | app line | named | captures | adjudicated |
+| commit | what | build | engine line | app line | named | captures | adjudicated |
 |---|---|---|---|---|---|---|---|
-| 258c95e6 | 0 | 0 errors | 178 of 178 | 278 of 278 | 13 of 13 | 51 of 51 | 13 of 13 |
-| d616e680 | 1 | 0 errors | not run at the commit | not run at the commit | not run at the commit | not run at the commit | not run at the commit |
-| fa5225b9 | 2 | 0 errors | not run at the commit | not run at the commit | not run at the commit | not run at the commit | not run at the commit |
-| 7fc1b56a | 3 | 0 errors | 178 of 178 | 278 of 278 | 13 of 13 | 51 of 51 | 13 of 13 |
-| task 4 (this) | 4 | 0 errors | 178 of 178 (7fc1b56a's run) | 278 of 278 (7fc1b56a's run) | 13 of 13 (7fc1b56a's run) | 51 of 51 (7fc1b56a's run) | 13 of 13 (7fc1b56a's run) |
+| `41f445ef` | task 0: record, bump, entry printouts | 0 errors | 178/178 | 278/278 (rerun, DECIDED (8)) | 13/13 | 51/51 | 13/13 |
+| `06bcd261` | task 1: the fact and its printout | 0 errors | not re-run | not re-run | not re-run | not re-run | not re-run |
+| `90713038` | task 2: A1 and A2 patches and numbers | 0 errors (revert build) | not re-run | not re-run | not re-run | not re-run | not re-run |
+| `17e1ae57` | task 3: the refusal record | not re-run | not re-run | not re-run | not re-run | not re-run | not re-run |
+| (task 4) | exit printouts, output.md | 0 errors | 178/178 | 278/278 | 13/13 | 51/51 | 13/13 |
 
-- **Where the exit round ran.** On 7fc1b56a's tree, which is why that row carries the figures.
+`src` is identical at every one of these commits (`git diff f40a97f9 -- src` prints nothing).
+The only test added is the fact, which is on no carry-forward line. The "not re-run" cells were not
+measured at that commit; they rest on unchanged `src` and unchanged test lines between two green
+measurements.
+
+Exit figures beside entry: build 0 errors; engine 178 of 178; app 278 of 278 (first run, no
+dispatcher loss); named 13 of 13; captures 51 of 51; adjudicated 13 of 13; metrics real 33/436,
+33, 403, 37 (29 ins, 8 del) and synthetic 14/173, 14, 159, 44 (13 ins, 31 del), as at entry; both
+decoders scored alike 5 of 5; the port's tests 8 of 8; `TheSpeedFollowsTheSendersMarkPairsTests` 28
+of 31 sure wrong or added, red as expected; ours decodes 690 s in 52.45 s (51.47 at entry).
+`git diff 19109b51 -- src/Hamlet.RadioEngine/Cw/Second/` prints nothing. The port's texts are
+byte-identical to task 0's save, 74 lines. `git diff 7e209cb4` over the eleven transmit files
+prints nothing. Our texts are identical to task 0's, 126 lines. `.run-unit\fldigi\` is still
+untracked. Everything is in `.run-unit\unit463-tx-exit.txt`.
+
