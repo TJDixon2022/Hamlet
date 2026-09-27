@@ -98,53 +98,196 @@ public sealed class CwDecoder
     /// </remarks>
     private const double SnrDecayDbPerHop = 0.005;
 
+    /// <summary>The fldigi port reading the same hops, or null where only ours reads.</summary>
+    private readonly CwSecondReader? _second;
+
     /// <summary>Creates a decoder.</summary>
     /// <param name="sampleRate">Samples per second.</param>
     /// <param name="expectedToneHz">
     /// The operator's CW pitch, as a place to start looking. The tracker hunts
     /// either side of it, since nobody tunes exactly.
     /// </param>
-    public CwDecoder(int sampleRate, double expectedToneHz = 600)
+    /// <param name="secondReader">
+    /// Whether the fldigi port reads the same samples beside ours and every
+    /// character passes through <see cref="CwArbiter"/> (HM-REQ-120; work
+    /// instruction 465). The application sets it; a harness that measures our
+    /// decoder alone leaves it off.
+    /// </param>
+    public CwDecoder(int sampleRate, double expectedToneHz = 600, bool secondReader = false)
     {
         SampleRate = Math.Max(1_000, sampleRate);
         _tracker = new CwToneTracker(SampleRate, expectedToneHz);
         _onReading = OnReading;
         _probabilistic = new CwProbabilisticStream(SampleRate);
+        _second = secondReader ? new CwSecondReader(SampleRate) : null;
 
+        // **EVERY SEAM THE CW TAB READS PASSES THROUGH THE ARBITER** (HM-REQ-121,
+        // work instruction 465). With the second reader on, a settled character
+        // is emitted only once the port has read the same samples, as the arbiter
+        // decides it; the leading edge is arbitrated against what the port has
+        // printed so far and stays provisional, as it always was.
         _probabilistic.CharacterSettled += c =>
         {
-            // **THE COUNTERS COUNT WHAT REACHED THE SCREEN** (HM-DEC-091). They
-            // used to be incremented on the old path's own emit, which raised
-            // nothing anybody could see, so a capture sidecar said `0 characters
-            // emitted` about an instant when the terminal was showing text.
-            if (!c.IsWordGap)
+            foreach (var emitted in Arbitrated(c))
             {
-                _charactersEmitted++;
-
-                if (c.IsUnreadable || c.Confidence != CwConfidence.High)
-                {
-                    _charactersUnsure++;
-                }
-
-                _elementsResolved += Math.Max(1, c.Pattern.Length);
+                Settle(emitted);
             }
-
-            CharacterSettled?.Invoke(c);
         };
 
         _probabilistic.LeadingEdgeChanged += e =>
         {
-            LeadingEdge?.Invoke(e);
+            _lastEdge = e;
 
-            foreach (var character in e)
+            var edge = _second is null ? e : ArbitratedEdge(e);
+
+            LeadingEdge?.Invoke(edge);
+
+            foreach (var character in edge)
             {
                 CharacterDecoded?.Invoke(character);
             }
         };
     }
 
+    /// <summary>The port's readings not yet paired with one of ours, oldest first.</summary>
+    private readonly List<CwSecondReading> _pendingSecond = new();
+
+    /// <summary>Our leading edge as the stream last handed it over, unarbitrated.</summary>
+    private IReadOnlyList<CwCharacter> _lastEdge = Array.Empty<CwCharacter>();
+
+    /// <summary>Spans only the port read, emitted or not, since the decoder was made.</summary>
+    public int SecondOnlySpans { get; private set; }
+
+    private void Settle(CwCharacter c)
+    {
+        // **THE COUNTERS COUNT WHAT REACHED THE SCREEN** (HM-DEC-091). They
+        // used to be incremented on the old path's own emit, which raised
+        // nothing anybody could see, so a capture sidecar said `0 characters
+        // emitted` about an instant when the terminal was showing text.
+        if (!c.IsWordGap)
+        {
+            _charactersEmitted++;
+
+            if (c.IsUnreadable || c.Confidence != CwConfidence.High)
+            {
+                _charactersUnsure++;
+            }
+
+            _elementsResolved += Math.Max(1, c.Pattern.Length);
+        }
+
+        CharacterSettled?.Invoke(c);
+    }
+
+    /// <summary>
+    /// One of our settled characters through the arbiter, with any span only the
+    /// port read that it has now passed.
+    /// </summary>
+    /// <remarks>
+    /// <para>**THE SPAN RULE IS <see cref="CwArbiter.SameSpan"/>, TAKEN AS IT
+    /// ARRIVES** (465 DECIDED (2)): the port reading on this character's span with
+    /// the largest overlap, unless a character still on our leading edge overlaps
+    /// that reading more, in which case it is left for that one, as the arbiter's
+    /// largest-overlap-first rule over the whole stream would leave it.</para>
+    /// <para>**A PORT READING OUR SETTLED PASS HAS GONE PAST IS ONE-SIDED.** Ours
+    /// settles in order, so a port reading that ends where this character starts
+    /// can meet none of ours; it is emitted only where the port votes.</para>
+    /// </remarks>
+    private IReadOnlyList<CwCharacter> Arbitrated(CwCharacter c)
+    {
+        if (_second is null || c.IsWordGap)
+        {
+            return new[] { c };
+        }
+
+        var emitted = new List<CwCharacter>();
+        var span = CwArbiter.SpanOf(c);
+        var from = double.IsFinite(span.Start) ? span.Start : span.End;
+
+        for (var i = 0; i < _pendingSecond.Count;)
+        {
+            var s = _pendingSecond[i];
+
+            if (!s.HasSpan || s.End <= from)
+            {
+                _pendingSecond.RemoveAt(i);
+                SecondOnlySpans++;
+
+                if (CwArbiter.DecideAlone(s, Vote).Emitted is { } alone)
+                {
+                    emitted.Add(alone);
+                }
+
+                continue;
+            }
+
+            i++;
+        }
+
+        var best = -1;
+        var bestOverlap = 0.0;
+
+        for (var i = 0; i < _pendingSecond.Count; i++)
+        {
+            var s = _pendingSecond[i];
+
+            if (CwArbiter.SameSpan(span, (s.Start, s.End)) is not { } overlap || overlap <= bestOverlap)
+            {
+                continue;
+            }
+
+            var later = _lastEdge.Any(x => !x.IsWordGap && x.At > c.At
+                && CwArbiter.SameSpan(CwArbiter.SpanOf(x), (s.Start, s.End)) is { } theirs && theirs > overlap);
+
+            if (!later)
+            {
+                best = i;
+                bestOverlap = overlap;
+            }
+        }
+
+        CwSecondReading? partner = null;
+
+        if (best >= 0)
+        {
+            partner = _pendingSecond[best];
+            _pendingSecond.RemoveAt(best);
+        }
+
+        emitted.Add(CwArbiter.Decide(c, partner, Vote));
+
+        return emitted;
+    }
+
+    /// <summary>Our leading edge through the arbiter against what the port has printed so far; nothing is taken from the pending readings.</summary>
+    private IReadOnlyList<CwCharacter> ArbitratedEdge(IReadOnlyList<CwCharacter> edge)
+        => edge.Select(x =>
+            {
+                if (x.IsWordGap)
+                {
+                    return x;
+                }
+
+                var span = CwArbiter.SpanOf(x);
+                var partner = _pendingSecond
+                    .Select(s => (s, Overlap: CwArbiter.SameSpan(span, (s.Start, s.End))))
+                    .Where(p => p.Overlap is not null)
+                    .OrderByDescending(p => p.Overlap)
+                    .Select(p => p.s)
+                    .FirstOrDefault();
+
+                return CwArbiter.Decide(x, partner, Vote);
+            })
+            .ToList();
+
     /// <summary>Samples per second.</summary>
     public int SampleRate { get; }
+
+    /// <summary>The second reader, or null where ours reads alone.</summary>
+    public CwSecondReader? SecondReader => _second;
+
+    /// <summary>Who votes on the condition in force (HM-REQ-124): <see cref="CwVoteTable.Live"/> unless a harness says otherwise.</summary>
+    public CwVote Vote { get; set; } = CwVoteTable.Live;
 
     /// <summary>
     /// Whether the held window is emptied when the tracker crosses to somebody
@@ -569,7 +712,13 @@ public sealed class CwDecoder
 
             // **BUT THE AUDIO CLOCK KEEPS RUNNING.** Dropping the samples without
             // letting time pass would stamp every character read afterwards as
-            // though the transmission had never happened.
+            // though the transmission had never happened. The port's clock runs
+            // on with it, and it starts afresh after the gap.
+            if (_second is not null)
+            {
+                _pendingSecond.AddRange(_second.Skip(chunk.Samples.Length));
+            }
+
             _probabilistic.Skip(chunk.Samples.Length);
             return;
         }
@@ -667,6 +816,15 @@ public sealed class CwDecoder
                 ? _tracker.ToneHz
                 : _lastMeasuredToneHz
             : _lockedToneHz;
+
+        // **THE PORT READS THE SAME HOP FIRST, AT THE SAME PITCH** (HM-REQ-120),
+        // so whatever ours settles out of this hop meets the port's reading of
+        // the same samples.
+        if (_second is not null)
+        {
+            _pendingSecond.AddRange(_second.Read(samples, _probabilistic.ToneHz));
+        }
+
         _probabilistic.Process(samples);
 
         // **ASKED AFTER THE DECODER HAS READ THIS AUDIO, NOT BEFORE.** The
@@ -682,7 +840,31 @@ public sealed class CwDecoder
     /// Finish: settle anything still inside the decision delay, because nothing
     /// more is coming to revise it.
     /// </summary>
-    public void Flush() => _probabilistic.Flush();
+    /// <remarks>
+    /// The port is finished first, so ours' last characters meet its last
+    /// readings; what the port read that ours never met is then one-sided.
+    /// </remarks>
+    public void Flush()
+    {
+        if (_second is not null)
+        {
+            _pendingSecond.AddRange(_second.Flush());
+        }
+
+        _probabilistic.Flush();
+
+        foreach (var s in _pendingSecond)
+        {
+            SecondOnlySpans++;
+
+            if (CwArbiter.DecideAlone(s, Vote).Emitted is { } alone)
+            {
+                Settle(alone);
+            }
+        }
+
+        _pendingSecond.Clear();
+    }
 
     /// <summary>
     /// Tell the decoder what the radio says about its own transmitter.

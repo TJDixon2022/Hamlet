@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 2 of 4
+TASK: 3 of 4
 WORK_INSTRUCTION: 465 - one transcript from two readers: both decoders read the same samples live, an arbiter emits each character by agreement, calibrated confidence and tie
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-27T05:20:31-04:00
-NOTE: Task 2 - arbiter in, 8 of 8 green after 8 of 8 red; corpus identical to ours on all 35; committing
+UPDATED: 2026-09-27T05:49:48-04:00
+NOTE: Task 3 - live wiring in; 120 and 121 green; live corpus identical to ours on all 35; decode 52 s to 65 s; committing
 
 ---
 

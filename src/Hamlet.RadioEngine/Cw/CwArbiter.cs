@@ -53,6 +53,12 @@ public sealed record CwArbitration(
 
     /// <summary>The other reader's p, or NaN.</summary>
     public double OtherP => Other == CwReader.Ours ? OursP : SecondP;
+
+    /// <summary>Where the second decoder's character starts on the audio clock, seconds; NaN where it read none.</summary>
+    public double SecondStart { get; init; } = double.NaN;
+
+    /// <summary>Where it ends, likewise.</summary>
+    public double SecondEnd { get; init; } = double.NaN;
 }
 
 /// <summary>The arbiter's output over a stream: what is emitted, and a record of every span.</summary>
@@ -258,7 +264,11 @@ public static class CwArbiter
             : Math.Abs(ours.Probability - second.P) <= TieMargin ? CwArbitrationCase.Tie
             : CwArbitrationCase.Disagree;
 
-        CwArbitration Record(CwReader emitted) => new(emitted, kase, ours.Text, ours.Probability, second.Text, second.P, vote);
+        CwArbitration Record(CwReader emitted) => new(emitted, kase, ours.Text, ours.Probability, second.Text, second.P, vote)
+        {
+            SecondStart = second.Start,
+            SecondEnd = second.End,
+        };
 
         // Only one votes, or neither: the voter's reading at its own class; with neither, ours as today (HM-REQ-124).
         if (!vote.Ours || !vote.Second)
@@ -304,12 +314,17 @@ public static class CwArbiter
     {
         ArgumentNullException.ThrowIfNull(second);
 
+        var record = new CwArbitration(vote.Second ? CwReader.Second : null, CwArbitrationCase.OneSidedSecond, null, double.NaN, second.Text, second.P, vote)
+        {
+            SecondStart = second.Start,
+            SecondEnd = second.End,
+        };
+
         if (!vote.Second)
         {
-            return (null, new CwArbitration(null, CwArbitrationCase.OneSidedSecond, null, double.NaN, second.Text, second.P, vote));
+            return (null, record);
         }
 
-        var record = new CwArbitration(CwReader.Second, CwArbitrationCase.OneSidedSecond, null, double.NaN, second.Text, second.P, vote);
         var hops = second.HasSpan ? (int)Math.Round((second.End - second.Start) * 1000.0 / CwProbabilisticDecoder.HopMilliseconds) : 0;
         var at = TimeSpan.FromSeconds(double.IsFinite(second.End) ? second.End : 0);
 

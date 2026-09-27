@@ -11208,7 +11208,11 @@ public partial class MainWindowViewModel : ObservableObject
         // 2026-08-25's, which has none, so `UseJointDecoder` is kept in the
         // settings file and read by nothing until step 4 judges the cutter on
         // numbers (Tim's ruling of 2026-08-27 made it his switch, off by default).
-        _decoder = new CwDecoder(_audioInput.SampleRate, _settings.CwPitchHz);
+        // **TWO READERS, ONE TRANSCRIPT** (HM-REQ-120, 121; work instruction 465).
+        // The fldigi port reads the same samples beside ours, and every character
+        // the tab shows has passed through the arbiter. Which one it came from is
+        // on the capture sheet, never on the tab.
+        _decoder = new CwDecoder(_audioInput.SampleRate, _settings.CwPitchHz, secondReader: true);
 
         // **A COUNT WRITTEN BESIDE A RECORDING IS READ AS BEING ABOUT THE
         // RECORDING** (HM-DEC-091). The decoder's counters run from here until
@@ -12032,6 +12036,13 @@ public partial class MainWindowViewModel : ObservableObject
             // a pass that does not compute it, which is not the same as nought.
             $"spanLlr    {SpanRatiosForTheRecord()}",
 
+            // **BOTH READINGS OF EVERY CHARACTER, WHICH THE TAB NEVER SHOWS**
+            // (HM-REQ-121, 126, 127; work instruction 465). The tab shows one
+            // transcript and names no decoder; this says which decoder each
+            // character came from, what the other read on the same span and how
+            // sure each was, and marks a tie.
+            $"arbiter    {ArbitrationForTheRecord()}",
+
             // **WHETHER SOMEBODY ELSE WAS KEYING IN THE SAME PASSBAND**, which
             // the survey has always known and no sheet has ever carried. Two
             // stations inside one filter arrive in one envelope, and amplitude is
@@ -12424,6 +12435,67 @@ public partial class MainWindowViewModel : ObservableObject
 
     private string SpanRatiosForTheRecord()
         => SpanRatioLine(Transcript.Recent(), CountsCover());
+
+    private string ArbitrationForTheRecord()
+        => ArbitrationLine(Transcript.Recent(), CountsCover());
+
+    /// <summary>The arbiter's record of each recent character, for the sheet (HM-REQ-121, 126, 127).</summary>
+    /// <param name="recent">The transcript's recent tail, word gaps included.</param>
+    /// <param name="covers">What the tail covers, in the sheet's own words.</param>
+    /// <returns>Each character with both readings, or why there are none.</returns>
+    /// <remarks>
+    /// <para>**WHAT THE TAB NEVER SAYS, THE SHEET ALWAYS DOES** (HM-REQ-121). Each
+    /// character as `K:port/disagree/ours R 0.700/port K 0.900`: the character
+    /// shown, which decoder it came from, how the two readings of its span stood
+    /// (agree, disagree, tie, or one-sided), and each decoder's character and p,
+    /// `none` where it read nothing there. A tie is written `tie` (HM-REQ-127);
+    /// a disagreement carries both characters and both p's (HM-REQ-126).</para>
+    /// <para>**A CHARACTER THAT PASSED THROUGH NO ARBITER SAYS SO**, rather than
+    /// printing a reading nobody took.</para>
+    /// </remarks>
+    public static string ArbitrationLine(IReadOnlyList<CwCharacter> recent, string covers)
+    {
+        var characters = recent.Where(character => !character.IsWordGap).ToArray();
+
+        if (characters.Length == 0)
+        {
+            return "nothing read yet";
+        }
+
+        var body = string.Join(" ", characters.Select(character =>
+        {
+            var text = CwCaseRoster.Readable(character.Text);
+
+            if (character.Arbitration is not { } a)
+            {
+                return $"{text}:unrecorded";
+            }
+
+            var emitted = a.Emitted switch
+            {
+                CwReader.Ours => "ours",
+                CwReader.Second => "port",
+                _ => "neither",
+            };
+            var kase = a.Case switch
+            {
+                CwArbitrationCase.Agree => "agree",
+                CwArbitrationCase.Disagree => "disagree",
+                CwArbitrationCase.Tie => "tie",
+                CwArbitrationCase.OneSidedOurs => "ours-only",
+                _ => "port-only",
+            };
+
+            return $"{text}:{emitted}/{kase}/ours {Reading(a.OursText, a.OursP)}/port {Reading(a.SecondText, a.SecondP)}";
+        }));
+
+        return $"{characters.Length} characters, each with both readings of its span ({covers})"
+               + Environment.NewLine
+               + "           " + body;
+
+        static string Reading(string? text, double p)
+            => text is null ? "none" : $"{CwCaseRoster.Readable(text)} {(double.IsNaN(p) ? "unmeasured" : p.ToString("0.000", CultureInfo.InvariantCulture))}";
+    }
 
     /// <summary>The span-ratio line itself, from the characters it describes.</summary>
     /// <param name="recent">The transcript's recent tail, word gaps included.</param>

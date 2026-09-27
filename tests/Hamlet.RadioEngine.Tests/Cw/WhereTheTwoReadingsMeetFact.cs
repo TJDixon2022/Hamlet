@@ -1,4 +1,5 @@
 using System.Globalization;
+using Hamlet.RadioEngine.Audio;
 using Hamlet.RadioEngine.Cw;
 using Hamlet.RadioEngine.Cw.Second;
 using Xunit;
@@ -441,6 +442,86 @@ public sealed class WhereTheTwoReadingsMeetFact
         }
 
         Assert.Equal(0, harvestDiffers);
+    }
+
+    /// <remarks>
+    /// Work instruction 465 task 3, items 1, 5 and 6: all 35 through the live
+    /// <see cref="CwDecoder"/> path, fed hop by hop from sample 0 as the metrics
+    /// feed it, once with ours alone and once with the second reader and the
+    /// arbiter. Prints the live transcript in task 0's save format, how often the
+    /// port was built or rebuilt, the live spans per case, and the decode time of
+    /// each. Asserts only that every recording was read both ways.
+    /// </remarks>
+    [Fact]
+    public void TheLivePathOverTheCorpus()
+    {
+        var recordings = WhatTheStrayLettersRestOnTests.KeyedRecordings
+            .Select(k => (k.Name, Real: true, Condition: TheRequirementsAreMeasuredTests.RealCondition(k.Name),
+                File: Path.Combine(CapturedSignalTests.Folder, k.Name + ".wav"), Hz: 600.0))
+            .Concat(Fixtures.SyntheticCq.All.Select(c => (c.Name, Real: false, Condition: TheRequirementsAreMeasuredTests.SyntheticCondition(c),
+                File: Path.Combine(Fixtures.SyntheticCq.Folder, c.Name + ".wav"), Hz: Fixtures.SyntheticCq.StartingPitchHz)))
+            .ToList();
+        var alone = new Dictionary<bool, double> { [true] = 0, [false] = 0 };
+        var both = new Dictionary<bool, double> { [true] = 0, [false] = 0 };
+        var audioSeconds = new Dictionary<bool, double> { [true] = 0, [false] = 0 };
+        var read = 0;
+
+        Print("live | recording | constructions | retunes | after skips | memory rebuilds | agree | disagree | tie | one-sided ours | one-sided port (not emitted) | ours alone s | both s");
+
+        foreach (var (name, real, _, file, hz) in recordings)
+        {
+            var audio = WavAudio.Read(file);
+            var (_, tAlone, _, _) = Live(audio.Samples, audio.SampleRate, hz, false);
+            var (live, tBoth, decoder, unemitted) = Live(audio.Samples, audio.SampleRate, hz, true);
+            var records = live.Where(c => !c.IsWordGap).Select(c => c.Arbitration!).ToList();
+            var r = decoder.SecondReader!;
+
+            alone[real] += tAlone;
+            both[real] += tBoth;
+            audioSeconds[real] += audio.Samples.Length / (double)audio.SampleRate;
+            read++;
+
+            for (var i = 0; i < live.Count; i++)
+            {
+                var c = live[i];
+
+                Print(string.Create(Invariant,
+                    $"save | ours | {name} | {i} | {Visible(c.Text)} | {ClassOf(c)} | {P(c.Probability)}"));
+            }
+
+            Print(string.Create(Invariant,
+                $"live | {name} | {r.Constructions} | {r.Retunes} | {r.AfterSkips} | {r.MemoryRebuilds} | {records.Count(a => a.Case == CwArbitrationCase.Agree)} | {records.Count(a => a.Case == CwArbitrationCase.Disagree)} | {records.Count(a => a.Case == CwArbitrationCase.Tie)} | {records.Count(a => a.Case == CwArbitrationCase.OneSidedOurs)} | {unemitted} | {tAlone:0.00} | {tBoth:0.00}"));
+        }
+
+        foreach (var real in new[] { true, false })
+        {
+            Print(string.Create(Invariant,
+                $"decode time | {(real ? "real HF, inferred keys" : "synthetic, exact keys")} | audio {audioSeconds[real]:0.0} s | ours alone {alone[real]:0.00} s | ours, the port and the arbiter {both[real]:0.00} s | ratio {both[real] / alone[real]:0.00}"));
+        }
+
+        Assert.Equal(recordings.Count, read);
+    }
+
+    // One recording through CwDecoder hop by hop, as BothDecodersAreScoredAlikeTests.DriveOurs feeds it.
+    private static (List<CwCharacter> Settled, double Seconds, CwDecoder Decoder, int Unemitted) Live(float[] samples, int rate, double hz, bool second)
+    {
+        var decoder = new CwDecoder(rate, hz, second);
+        var settled = new List<CwCharacter>();
+        var hop = decoder.Tracker.HopSamples;
+
+        decoder.CharacterSettled += settled.Add;
+
+        var watch = System.Diagnostics.Stopwatch.StartNew();
+
+        for (var at = 0L; at + hop <= samples.Length; at += hop)
+        {
+            decoder.Process(new AudioChunk(at, rate, samples.AsSpan((int)at, hop)));
+        }
+
+        decoder.Flush();
+        watch.Stop();
+
+        return (settled, watch.Elapsed.TotalSeconds, decoder, decoder.SecondOnlySpans);
     }
 
     private void ArbiterCount(string label, bool real, IReadOnlyList<(BothDecodersAreScoredAlikeTests.Row Row, CwArbitrated Result)> rows)

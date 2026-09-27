@@ -1,0 +1,53 @@
+Test run for C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:02.30]   Discovering: Hamlet.App.Tests
+[xUnit.net 00:00:02.43]   Discovered:  Hamlet.App.Tests
+[xUnit.net 00:00:02.44]   Starting:    Hamlet.App.Tests
+[xUnit.net 00:00:02.48]     Hamlet.App.Tests.ViewModels.TheOperatorSeesOneTranscriptTests.HmReq121_TheSheetMarksATieAndSaysWhereNothingWasRecorded [FAIL]
+[xUnit.net 00:00:02.48]       Assert.Contains() Failure: Sub-string not found
+[xUnit.net 00:00:02.48]       String:    ""
+[xUnit.net 00:00:02.48]       Not found: "K:port/tie"
+[xUnit.net 00:00:02.48]       Stack Trace:
+[xUnit.net 00:00:02.48]         C:\Source\HamLet\tests\Hamlet.App.Tests\ViewModels\TheOperatorSeesOneTranscriptTests.cs(106,0): at Hamlet.App.Tests.ViewModels.TheOperatorSeesOneTranscriptTests.HmReq121_TheSheetMarksATieAndSaysWhereNothingWasRecorded()
+[xUnit.net 00:00:02.48]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:02.48]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:02.48]     Hamlet.App.Tests.ViewModels.TheOperatorSeesOneTranscriptTests.HmReq121_TheSheetForTheSameReadCarriesBoth [FAIL]
+[xUnit.net 00:00:02.48]       Assert.Contains() Failure: Sub-string not found
+[xUnit.net 00:00:02.48]       String:    ""
+[xUnit.net 00:00:02.48]       Not found: "K:port/disagree"
+[xUnit.net 00:00:02.48]       Stack Trace:
+[xUnit.net 00:00:02.48]         C:\Source\HamLet\tests\Hamlet.App.Tests\ViewModels\TheOperatorSeesOneTranscriptTests.cs(93,0): at Hamlet.App.Tests.ViewModels.TheOperatorSeesOneTranscriptTests.HmReq121_TheSheetForTheSameReadCarriesBoth()
+[xUnit.net 00:00:02.48]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:02.48]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:02.48]       Output:
+[xUnit.net 00:00:02.48]         
+[xUnit.net 00:00:02.49]   Finished:    Hamlet.App.Tests
+  Failed Hamlet.App.Tests.ViewModels.TheOperatorSeesOneTranscriptTests.HmReq121_TheSheetMarksATieAndSaysWhereNothingWasRecorded [9 ms]
+  Error Message:
+   Assert.Contains() Failure: Sub-string not found
+String:    ""
+Not found: "K:port/tie"
+  Stack Trace:
+     at Hamlet.App.Tests.ViewModels.TheOperatorSeesOneTranscriptTests.HmReq121_TheSheetMarksATieAndSaysWhereNothingWasRecorded() in C:\Source\HamLet\tests\Hamlet.App.Tests\ViewModels\TheOperatorSeesOneTranscriptTests.cs:line 106
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Passed Hamlet.App.Tests.ViewModels.TheOperatorSeesOneTranscriptTests.HmReq121_TheTabShowsOneCharacterPerSpanAndNoDecoderName [7 ms]
+  Failed Hamlet.App.Tests.ViewModels.TheOperatorSeesOneTranscriptTests.HmReq121_TheSheetForTheSameReadCarriesBoth [< 1 ms]
+  Error Message:
+   Assert.Contains() Failure: Sub-string not found
+String:    ""
+Not found: "K:port/disagree"
+  Stack Trace:
+     at Hamlet.App.Tests.ViewModels.TheOperatorSeesOneTranscriptTests.HmReq121_TheSheetForTheSameReadCarriesBoth() in C:\Source\HamLet\tests\Hamlet.App.Tests\ViewModels\TheOperatorSeesOneTranscriptTests.cs:line 93
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+
+
+Test Run Failed.
+Total tests: 3
+     Passed: 1
+     Failed: 2
+ Total time: 2.7846 Seconds
+RC=1 WALL=3s
