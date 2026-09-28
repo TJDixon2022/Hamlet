@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 3 of 4
+TASK: 4 of 4
 WORK_INSTRUCTION: 480 - the radio points, the bars show, the letters ride on top
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-188 (2026-09-28)
-UPDATED: 2026-09-28T13:45:13-04:00
-NOTE: Task 2 committed (the radio's peak points the detector's bin and the tracker, 3/3 after red); tracing CwScopeControl and what timing each settled character carries
+UPDATED: 2026-09-28T13:53:41-04:00
+NOTE: Task 3 committed (training graph: bars at true length, settled letters over their spans, 4/4 after red 0/4); exit round: full build with warnings as errors, then the app carry-forward line
 
 ---
 

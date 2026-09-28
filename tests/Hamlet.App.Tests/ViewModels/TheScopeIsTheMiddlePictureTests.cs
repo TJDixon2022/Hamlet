@@ -22,11 +22,13 @@ public sealed class TheScopeIsTheMiddlePictureTests
     private const int Rate = 48_000;
 
     /// <remarks>
-    /// Proves the scope draws the trace, the bars and the two lines of words, and no floor,
-    /// threshold, margin or passband.
+    /// Proves the scope draws the bars and the two lines of words, and no trace, floor,
+    /// threshold, margin or passband. **Since work instruction 480 (R95) the trace is gone
+    /// too**; this test asserted it was drawn until then, and TheBarsCarryTheirLettersTests
+    /// asserts the canvas itself.
     /// </remarks>
     [Fact]
-    public void OnlyTheTraceTheBarsAndTwoLinesOfWordsAreDrawn()
+    public void OnlyTheBarsAndTwoLinesOfWordsAreDrawn()
     {
         var detector = Keyed(742, 500, 1.73);
         var frame = CwScopeFrame.From(detector.History(), detector.HopMs, detector.Reading, 742, null);
@@ -34,7 +36,7 @@ public sealed class TheScopeIsTheMiddlePictureTests
         var lines = CwScopeControl.Lines(frame);
 
         Assert.Equal(
-            new[] { "Bars", "Mixing", "Tone", "Trace" },
+            new[] { "Bars", "Mixing", "Tone" },
             lines.Select(l => l.Kind.ToString()).OrderBy(k => k, StringComparer.Ordinal).ToArray());
 
         foreach (var line in lines)
@@ -97,29 +99,32 @@ public sealed class TheScopeIsTheMiddlePictureTests
     }
 
     /// <remarks>
-    /// Proves the hover over a bar says what a mark is, and the hover over the trace says
-    /// what the trace is (§0.6).
+    /// Proves the hover over a bar says its length and whether it read as a dit or a dah, and
+    /// the hover off every bar and letter says what the graph is (§0.6). Until work instruction
+    /// 480 the bar's hover was the words "a mark" and the trace had its own.
     /// </remarks>
     [Fact]
-    public void TheHoverSaysWhatTheTraceAndABarAre()
+    public void TheHoverSaysWhatABarIs()
     {
-        Assert.Equal(
-            "the level of the bin the detector is reading, over the last four seconds",
-            CwHearingViewModel.ScopeTraceTip);
-        Assert.Equal("a mark - the level held flat for at least a dit", CwHearingViewModel.ScopeBarTip);
-
         var detector = Keyed(742, 500, CwKeyedSeconds);
-        var frame = CwScopeFrame.From(detector.History(), detector.HopMs, detector.Reading, 742, null);
-        const double width = 800;
-        var bar = CwScopeControl.Bars(frame, width)[0];
-        var barRow = CwScopeControl.BarRowTop + 2;
+        var now = DateTime.UtcNow;
+        var graph = new CwTrainingGraph();
+        graph.Update(detector.History(), detector.HopMs, now);
 
+        var frame = CwScopeFrame.From(detector.History(), detector.HopMs, detector.Reading, 742, null) with
+        {
+            Training = graph.Frame(now),
+        };
+
+        const double width = 800;
+        var bar = CwScopeControl.Items(frame, width).First(i => i.Kind == CwScopeItemKind.Bar);
+
+        Assert.Matches(
+            @"^(dit|dah), \d+ ms$",
+            CwScopeControl.TipAt(frame, width, new Point((bar.X + bar.X2) / 2, CwScopeControl.BarTop + 2)));
         Assert.Equal(
-            CwHearingViewModel.ScopeBarTip,
-            CwScopeControl.TipAt(frame, width, new Point((bar.X + bar.X2) / 2, barRow)));
-        Assert.Equal(
-            CwHearingViewModel.ScopeTraceTip,
-            CwScopeControl.TipAt(frame, width, new Point((bar.X + bar.X2) / 2, CwScopeControl.BarRowTop / 2)));
+            CwHearingViewModel.ScopeTip,
+            CwScopeControl.TipAt(frame, width, new Point((bar.X + bar.X2) / 2, CwScopeControl.BarTop + CwScopeControl.TrainingBarHeight + 6)));
     }
 
     /// <summary>How long the keyed pattern below runs, in seconds.</summary>

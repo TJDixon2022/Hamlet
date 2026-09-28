@@ -78,6 +78,12 @@ public sealed record CwScopeFrame(
     /// <summary>What leads the tone line while the radio's scope is quiet in CW.</summary>
     public const string ScopeQuietWords = "scope quiet, sweeping";
 
+    /// <summary>
+    /// The last eight seconds of bars and the letters settled over them: what the graph draws
+    /// (work instruction 480 task 3, R95).
+    /// </summary>
+    public CwTrainingFrame Training { get; init; } = CwTrainingFrame.Empty;
+
     /// <summary>The tracker's line when nothing is decoding.</summary>
     public const string NotMixingWords = "not mixing";
 
@@ -225,18 +231,20 @@ public sealed partial class CwHearingViewModel : ObservableObject
 
     /// <summary>What the oscilloscope shows, on hover.</summary>
     public const string ScopeTip =
-        "The last four seconds of what the radio's audio is doing, newest at the right, "
-        + "like an oscilloscope (work instructions 476 to 478)." + "\n"
-        + "Trace: the level of the one pitch the detector is reading, hop by hop. A keyed station "
-        + "is flat on top and flat underneath. Before any station is found it reads the middle of "
-        + "where Hamlet looks; after one stops it stays on that station's pitch." + "\n"
-        + "Bars along the bottom: the marks - wherever the level held flat for at least a dit, dropped, "
-        + "and held again. A dit is a short bar and a dah a long one; nothing is drawn under a gap. "
-        + "They should match the dits and dahs you hear; a steady carrier and plain noise make none." + "\n"
-        + "Top left: the pitch the detector found while it says keying, or no keying; beside it the "
-        + "pitch the decoder is mixing at, so you can see whether the two agree." + "\n"
-        + "Redrawn 20 times a second; every hop of 5 ms is drawn. This shows what Hamlet hears "
-        + "and changes nothing about how it decodes.";
+        "The last eight seconds of keying Hamlet found, newest at the right, with each letter the "
+        + "decoder settled written above the bars that made it (work instruction 480)." + "\n"
+        + "Bars: wherever the level at the pitch the radio's scope points at held flat for at least "
+        + "a dit, dropped, and held again. A dit is a short bar and a dah a long one, drawn as long "
+        + "as they were, and a gap is empty space as long as the gap was. Noise makes none, so a quiet "
+        + "band leaves the graph empty and it says listening." + "\n"
+        + "Letters: written only where the decoder settled one, over its own span. A bar with nothing "
+        + "above it is something the decoder missed, and a letter above empty space is one it read "
+        + "without bars under it. Bold is sure, faint and slanted is unsure, and the square is heard "
+        + "but unreadable." + "\n"
+        + "Top left: the pitch the detector found while it says keying, or no keying, and when the "
+        + "radio's scope has gone quiet it says so; beside it the pitch the decoder is mixing at." + "\n"
+        + "Hover a bar for its length, or a letter for how sure the decoder was. This shows what "
+        + "Hamlet hears and changes nothing about how it decodes.";
 
     /// <summary>What the trace is, on hover over it.</summary>
     public const string ScopeTraceTip =

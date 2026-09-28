@@ -765,7 +765,7 @@ public sealed class CwToneTracker
     /// <remarks>
     /// <para>**BOTH ARE CANDIDATES AND THE SCOPE WINS**: the meter's pitch is the loudest keyed
     /// bin its own sweep of the audio found, and the scope's is the radio's calibrated spectrum
-    /// centred on the dial. Where both are present the tracker mixes at the scope's, exactly as
+    /// centered on the dial. Where both are present the tracker mixes at the scope's, exactly as
     /// it mixes at the meter's from the next hop, and the survey moves nothing.</para>
     /// <para>**ONLY WHILE THE BARS THERE SAY KEYING - AUTHOR'S, OVERRULABLE.** The app hands the
     /// pitch over only while the envelope detector, watching the pointed bin, says keying. On an

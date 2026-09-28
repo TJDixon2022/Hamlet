@@ -11324,6 +11324,7 @@ public partial class MainWindowViewModel : ObservableObject
         // stacking up every version of it.
         _decoder.LeadingEdge += Transcript.OfferEdge;
         _decoder.CharacterSettled += Transcript.Settle;
+        _decoder.CharacterSettled += SettleOnTheGraph;
 
         // WHEN SOMETHING LAST CAME THROUGH, which is what the quiet offer waits
         // on (HM-DEC-084). Set here rather than polled, so an empty terminal is
@@ -11444,6 +11445,7 @@ public partial class MainWindowViewModel : ObservableObject
         {
             _decoder.LeadingEdge -= Transcript.OfferEdge;
             _decoder.CharacterSettled -= Transcript.Settle;
+            _decoder.CharacterSettled -= SettleOnTheGraph;
             _decoder.Listen(null);
             _decoder = null;
         }
@@ -12488,15 +12490,39 @@ public partial class MainWindowViewModel : ObservableObject
         var reading = envelope.Reading;
         _decoder?.Tracker.FollowScope(reading is { Pointed: true, Keying: true } ? pointed?.PitchHz : null);
 
+        // **BARS, AND THE LETTERS OVER THEM** (work instruction 480 task 3, R95): the detector's
+        // last four seconds go into the graph's eight, on the wall's clock.
+        var now = DateTime.UtcNow;
+        var history = envelope.History();
+        _trainingGraph.Update(history, envelope.HopMs, now);
+
         // The tracker's pitch goes beside the detector's, so the owner sees whether they agree
         // (work instruction 478); the last frame is handed back so the pitch holds across a gap.
         CwHearing.ObserveScope(CwScopeFrame.From(
-            envelope.History(),
+            history,
             envelope.HopMs,
             reading,
             IsDecoding ? DecodeReport.ToneHz : double.NaN,
             CwHearing.Scope,
-            scopeQuiet: cw && pointed is null));
+            scopeQuiet: cw && pointed is null) with
+        {
+            Training = _trainingGraph.Frame(now),
+        });
+    }
+
+    /// <summary>The training graph's eight seconds of bars and settled letters (work instruction 480).</summary>
+    private readonly CwTrainingGraph _trainingGraph = new();
+
+    /// <summary>
+    /// Put a settled character on the training graph, over the span the decoder gave it
+    /// (work instruction 480 task 3). Called on the audio thread; the graph locks.
+    /// </summary>
+    private void SettleOnTheGraph(CwCharacter character)
+    {
+        if (_decoder is { } decoder)
+        {
+            _trainingGraph.Settle(character, decoder.Heard, DateTime.UtcNow);
+        }
     }
 
     /// <summary>One of the radio's scope frames, on its read thread (work instruction 480).</summary>

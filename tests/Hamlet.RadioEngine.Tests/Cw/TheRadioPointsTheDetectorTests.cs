@@ -16,7 +16,7 @@ namespace Hamlet.RadioEngine.Tests.Cw;
 /// own sweep had settled on the loudest noise. The rows are why the radio's scope points; they
 /// chose nothing here.</para>
 /// <para>**NO RECORDING** (R88). The frame is built by hand the way the radio sends one - a span
-/// centred on the dial and a run of levels - and the audio is seeded synthetic noise.</para>
+/// centered on the dial and a run of levels - and the audio is seeded synthetic noise.</para>
 /// </remarks>
 public sealed class TheRadioPointsTheDetectorTests
 {
@@ -33,7 +33,7 @@ public sealed class TheRadioPointsTheDetectorTests
     public TheRadioPointsTheDetectorTests(ITestOutputHelper output) => _output = output;
 
     /// <remarks>
-    /// Proves the instruction's case: a peak 250 Hz above the centre with the CW pitch at 600 is a
+    /// Proves the instruction's case: a peak 250 Hz above the center with the CW pitch at 600 is a
     /// beat note at 850, and the detector watches the 850 Hz bin and nothing else, where its own
     /// sweep had left it in the middle of the passband.
     /// </remarks>

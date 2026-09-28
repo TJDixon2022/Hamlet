@@ -750,10 +750,25 @@ public sealed class CwDecoder
         }
     }
 
+    private long _samplesHeard;
+
+    /// <summary>How much audio has been handed to the decoder, on the clock <see cref="CwCharacter.At"/> uses.</summary>
+    /// <remarks>
+    /// **SO A SETTLED CHARACTER CAN BE PUT OVER THE BARS THAT MADE IT** (work instruction 480
+    /// task 3): the training graph reads this when a character settles, and the character's
+    /// end is that far behind now.
+    /// </remarks>
+    public TimeSpan Heard => TimeSpan.FromSeconds(Interlocked.Read(ref _samplesHeard) / (double)SampleRate);
+
     /// <summary>Feed samples directly, without a source.</summary>
     /// <param name="chunk">The samples.</param>
     public void Process(in AudioChunk chunk)
     {
+        // **THE AUDIO CLOCK A SETTLED CHARACTER'S `At` IS READ ON** (work instruction 480
+        // task 3): every sample handed here, suspended or not, since the stream's own clock runs
+        // through a suspension too.
+        Interlocked.Add(ref _samplesHeard, chunk.Samples.Length);
+
         // **THE TAP STILL TAKES IT.** A capture is the raw evidence of what
         // arrived at the sound card, and audio the operator made himself is part
         // of that: a recording that quietly omitted his own sending would be

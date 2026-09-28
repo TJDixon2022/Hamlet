@@ -29,6 +29,35 @@ public enum CwScopeLineKind
 /// <param name="Label">The words it carries.</param>
 public sealed record CwScopeLine(CwScopeLineKind Kind, string Label);
 
+/// <summary>What one thing on the training graph's canvas is.</summary>
+public enum CwScopeItemKind
+{
+    /// <summary>The level trace: drawn by 478's scope, never by the training graph.</summary>
+    Trace,
+
+    /// <summary>A bar the detector found, its true length.</summary>
+    Bar,
+
+    /// <summary>A character the decoder settled, over its own span.</summary>
+    Letter,
+
+    /// <summary>The small words that fill the empty graph: "listening".</summary>
+    Listening,
+
+    /// <summary>The detector's pitch line, as words in the corner.</summary>
+    Tone,
+
+    /// <summary>The tracker's pitch line, as words beside it.</summary>
+    Mixing,
+}
+
+/// <summary>One thing on the canvas, where it is, and its words.</summary>
+/// <param name="Kind">What it is.</param>
+/// <param name="X">Its left edge, or its center for a letter.</param>
+/// <param name="X2">Its right edge; the same as <paramref name="X"/> for words.</param>
+/// <param name="Text">What it says, or its hover for a bar.</param>
+public sealed record CwScopeItem(CwScopeItemKind Kind, double X, double X2, string Text);
+
 /// <summary>One mark, as a bar along the bottom.</summary>
 /// <param name="X">Where it starts, in pixels from the left.</param>
 /// <param name="X2">Where it ends.</param>
@@ -55,6 +84,10 @@ public sealed record CwScopeBar(double X, double X2, string Label);
 /// named at the right-hand end, every bar carries its length where it fits, the pitch is
 /// text, and the hover says what the trace is or what a bar is under the pointer.</para>
 /// <para>**IT SHOWS AND CHANGES NOTHING.**</para>
+/// <para>**SINCE WORK INSTRUCTION 480 IT IS THE TRAINING GRAPH** (R95, HM-DEC-188): the trace
+/// above is gone. It draws <see cref="Items"/> and nothing else - the bars at their true length
+/// over eight seconds, each settled character over its own span, "listening" while there is
+/// neither - and the four-second helpers below stay for the frame's own hop arithmetic.</para>
 /// </remarks>
 public sealed class CwScopeControl : Control
 {
@@ -70,20 +103,29 @@ public sealed class CwScopeControl : Control
     /// <summary>The room at the right for the words naming the trace and the bars.</summary>
     public const double LabelRoom = 60;
 
+    /// <summary>Where the row of letters starts on the training graph, from the top.</summary>
+    public const double LetterTop = 16;
+
+    /// <summary>How tall the row of letters is: big enough to read from a chair across the room.</summary>
+    public const double LetterHeight = 34;
+
+    /// <summary>Where the training graph's bars start, from the top.</summary>
+    public const double BarTop = LetterTop + LetterHeight + 4;
+
+    /// <summary>How tall a bar is on the training graph; its length is its time.</summary>
+    public const double TrainingBarHeight = 22;
+
     /// <summary>What to draw.</summary>
     public static readonly StyledProperty<CwScopeFrame?> FrameProperty =
         AvaloniaProperty.Register<CwScopeControl, CwScopeFrame?>(nameof(Frame));
 
-    private const double BarHeight = 10;
     private const double BarLabelHeight = 12;
     private const double Gap = 3;
-    private const double DbSpanAtLeast = 30;
 
     private static readonly IBrush Plot = new SolidColorBrush(Color.Parse("#F6F8F9"));
     private static readonly IBrush Ink = new SolidColorBrush(Color.Parse("#44505A"));
     private static readonly IBrush Muted = new SolidColorBrush(Color.Parse("#7A8590"));
     private static readonly IBrush MarkInk = new SolidColorBrush(Color.Parse("#3B6D11"));
-    private static readonly Pen TracePen = new(Ink, 1);
 
     static CwScopeControl()
     {
@@ -156,20 +198,103 @@ public sealed class CwScopeControl : Control
         return bars;
     }
 
-    /// <summary>Everything the scope draws, with its words: nothing else is drawn.</summary>
+    /// <summary>The kinds of thing the graph draws, with their words; no trace since R95.</summary>
     /// <param name="frame">The frame.</param>
-    /// <returns>The trace, the bars, the detector's pitch and the tracker's.</returns>
+    /// <returns>The bars, the detector's pitch and the tracker's.</returns>
     public static IReadOnlyList<CwScopeLine> Lines(CwScopeFrame frame)
     {
         ArgumentNullException.ThrowIfNull(frame);
 
         return new[]
         {
-            new CwScopeLine(CwScopeLineKind.Trace, "level"),
             new CwScopeLine(CwScopeLineKind.Bars, "marks"),
             new CwScopeLine(CwScopeLineKind.Tone, frame.ToneLine),
             new CwScopeLine(CwScopeLineKind.Mixing, frame.MixingLine),
         };
+    }
+
+    /// <summary>Everything on the canvas, as items: nothing is drawn that is not here.</summary>
+    /// <param name="frame">The frame.</param>
+    /// <param name="width">The control's width.</param>
+    /// <returns>The items.</returns>
+    /// <remarks>
+    /// <para>**NO TRACE, NO FLOOR, NO THRESHOLD, NO NOISE** (R95). While nothing is found the
+    /// canvas holds the small word "listening" and the two lines of words in the corner; when
+    /// bars are found they are drawn at their true length over the last eight seconds, newest
+    /// at the right, and a gap is empty space as long as the gap was.</para>
+    /// <para>**A LETTER ONLY WHERE THE DECODER SETTLED IT, CENTERED OVER ITS OWN SPAN** (§0.0),
+    /// whether or not bars lie under it, so a letter over empty space is an invention the owner
+    /// can see and a bar with nothing over it is a miss.</para>
+    /// </remarks>
+    public static IReadOnlyList<CwScopeItem> Items(CwScopeFrame frame, double width)
+    {
+        ArgumentNullException.ThrowIfNull(frame);
+
+        var training = frame.Training;
+        var items = new List<CwScopeItem>
+        {
+            new(CwScopeItemKind.Tone, Pad, Pad, frame.ToneLine),
+            new(CwScopeItemKind.Mixing, Pad, Pad, frame.MixingLine),
+        };
+
+        if (training.Listening)
+        {
+            items.Add(new CwScopeItem(CwScopeItemKind.Listening, width / 2, width / 2, ListeningWords));
+            return items;
+        }
+
+        foreach (var bar in training.Bars)
+        {
+            items.Add(new CwScopeItem(
+                CwScopeItemKind.Bar,
+                XOfTime(bar.StartUtc, training.NowUtc, width),
+                XOfTime(bar.EndUtc, training.NowUtc, width),
+                string.Create(CultureInfo.InvariantCulture, $"{(bar.Dah ? "dah" : "dit")}, {bar.LengthMs:0} ms")));
+        }
+
+        foreach (var letter in training.Letters)
+        {
+            var center = CenterOf(letter, training.NowUtc, width);
+            var text = letter.Confidence == CwConfidence.Unreadable ? MorseAlphabet.Unreadable : letter.Text;
+
+            items.Add(new CwScopeItem(CwScopeItemKind.Letter, center, center, text));
+        }
+
+        return items;
+    }
+
+    /// <summary>The small word on an empty graph.</summary>
+    public const string ListeningWords = "listening";
+
+    /// <summary>Where a moment lands on the eight-second axis; now is the right edge.</summary>
+    /// <param name="atUtc">The moment.</param>
+    /// <param name="nowUtc">Now.</param>
+    /// <param name="width">The control's width.</param>
+    /// <returns>Pixels from the left, held inside the pads.</returns>
+    public static double XOfTime(DateTime atUtc, DateTime nowUtc, double width)
+    {
+        var fraction = 1 - ((nowUtc - atUtc).TotalSeconds / CwTrainingGraph.WindowSeconds);
+
+        return Pad + (Math.Clamp(fraction, 0, 1) * Math.Max(0, width - (2 * Pad)));
+    }
+
+    /// <summary>What a letter's hover says: the letter, its class and its confidence.</summary>
+    private static string LetterTip(CwGraphLetter letter)
+    {
+        var word = letter.Confidence switch
+        {
+            CwConfidence.High => "sure",
+            CwConfidence.Low => "unsure",
+            _ => "unreadable",
+        };
+
+        var shown = letter.Confidence == CwConfidence.Unreadable ? MorseAlphabet.Unreadable : letter.Text;
+        var confidence = double.IsFinite(letter.Probability)
+            ? string.Create(CultureInfo.InvariantCulture, $", {letter.Probability * 100:0}% likely right")
+            : "";
+        var span = letter.HasSpan ? "" : ", drawn where it settled: the decoder gave no span";
+
+        return shown + ", " + word + confidence + span;
     }
 
     /// <summary>What the hover says at a point: a bar's words over a bar, the trace's over the plot.</summary>
@@ -181,16 +306,28 @@ public sealed class CwScopeControl : Control
     {
         ArgumentNullException.ThrowIfNull(frame);
 
-        if (point.Y < PlotHeight && point.X <= width - Pad)
+        var training = frame.Training;
+
+        if (point.Y >= BarTop && point.Y < BarTop + TrainingBarHeight)
         {
-            return CwHearingViewModel.ScopeTraceTip;
+            foreach (var item in Items(frame, width).Where(i => i.Kind == CwScopeItemKind.Bar))
+            {
+                if (point.X >= item.X && point.X <= Math.Max(item.X2, item.X + 1))
+                {
+                    return item.Text;
+                }
+            }
         }
 
-        if (point.Y >= BarRowTop
-            && point.Y < BarRowTop + BarHeight + BarLabelHeight
-            && Bars(frame, width).Any(b => point.X >= b.X && point.X <= Math.Max(b.X2, b.X + 1)))
+        if (point.Y >= LetterTop && point.Y < LetterTop + LetterHeight)
         {
-            return CwHearingViewModel.ScopeBarTip;
+            foreach (var letter in training.Letters)
+            {
+                if (Math.Abs(point.X - CenterOf(letter, training.NowUtc, width)) <= LetterHeight / 2)
+                {
+                    return LetterTip(letter);
+                }
+            }
         }
 
         return CwHearingViewModel.ScopeTip;
@@ -200,7 +337,7 @@ public sealed class CwScopeControl : Control
     protected override Size MeasureOverride(Size availableSize)
         => new(
             double.IsInfinity(availableSize.Width) ? 400 : availableSize.Width,
-            BarRowTop + BarHeight + BarLabelHeight);
+            BarTop + TrainingBarHeight + BarLabelHeight);
 
     /// <inheritdoc/>
     protected override void OnPointerMoved(PointerEventArgs e)
@@ -209,7 +346,7 @@ public sealed class CwScopeControl : Control
 
         if (Frame is { } frame)
         {
-            ToolTip.SetTip(this, TipAt(frame, PlotWidth(Bounds.Width), e.GetPosition(this)));
+            ToolTip.SetTip(this, TipAt(frame, Bounds.Width, e.GetPosition(this)));
         }
     }
 
@@ -223,107 +360,77 @@ public sealed class CwScopeControl : Control
     /// <inheritdoc/>
     public override void Render(DrawingContext context)
     {
-        if (Frame is not { } frame || Bounds.Width <= (2 * Pad) + LabelRoom)
+        if (Frame is not { } frame || Bounds.Width <= 2 * Pad)
         {
             return;
         }
 
-        var across = PlotWidth(Bounds.Width);
-        var plotRight = across - Pad;
-        var lines = Lines(frame);
+        var width = Bounds.Width;
+        var training = frame.Training;
 
-        context.FillRectangle(Plot, new Rect(Pad, 0, plotRight - Pad, PlotHeight));
+        context.FillRectangle(Plot, new Rect(Pad, 0, width - (2 * Pad), BarTop + TrainingBarHeight + BarLabelHeight));
 
-        if (frame.Hops.Count > 1)
+        foreach (var item in Items(frame, width))
         {
-            DrawTrace(context, frame, across);
-        }
-
-        Text(context, "─ " + Label(lines, CwScopeLineKind.Trace), plotRight + 4, 0, Ink, 10);
-
-        // The detector's pitch and the tracker's, in the corner, as words.
-        var tone = new FormattedText(
-            Label(lines, CwScopeLineKind.Tone), CultureInfo.InvariantCulture, FlowDirection.LeftToRight,
-            Typeface.Default, 11, double.IsNaN(frame.ToneHz) ? Muted : MarkInk);
-
-        context.DrawText(tone, new Point(Pad + 4, 2));
-        Text(context, "· " + Label(lines, CwScopeLineKind.Mixing), Pad + 4 + tone.Width + 6, 3, Muted, 10);
-
-        // The marks, along the bottom, each labelled where it is wide enough to carry it.
-        foreach (var bar in Bars(frame, across))
-        {
-            var w = Math.Max(1, bar.X2 - bar.X);
-            context.FillRectangle(MarkInk, new Rect(bar.X, BarRowTop, w, BarHeight));
-
-            var label = new FormattedText(
-                bar.Label.Replace("mark ", "", StringComparison.Ordinal), CultureInfo.InvariantCulture,
-                FlowDirection.LeftToRight, Typeface.Default, 9, MarkInk);
-
-            if (label.Width <= w + 4)
+            switch (item.Kind)
             {
-                context.DrawText(label, new Point(bar.X, BarRowTop + BarHeight));
-            }
-        }
+                case CwScopeItemKind.Tone:
+                    Text(context, item.Text, Pad + 4, 1, double.IsNaN(frame.ToneHz) ? Muted : MarkInk, 11);
+                    break;
 
-        Text(context, "▬ " + Label(lines, CwScopeLineKind.Bars), plotRight + 4, BarRowTop - 1, MarkInk, 10);
-    }
+                case CwScopeItemKind.Mixing:
+                    Text(context, "· " + item.Text, width / 2, 2, Muted, 10);
+                    break;
 
-    /// <summary>The width the four seconds are laid across: the control less the words at the right.</summary>
-    private static double PlotWidth(double controlWidth) => controlWidth - LabelRoom + Pad;
+                case CwScopeItemKind.Listening:
+                    Text(context, item.Text, item.X - 20, BarTop, Muted, 10);
+                    break;
 
-    private static string Label(IReadOnlyList<CwScopeLine> lines, CwScopeLineKind kind)
-        => lines.Single(l => l.Kind == kind).Label;
-
-    private static void DrawTrace(DrawingContext context, CwScopeFrame frame, double across)
-    {
-        var low = double.PositiveInfinity;
-        var high = double.NegativeInfinity;
-
-        foreach (var hop in frame.Hops)
-        {
-            if (double.IsFinite(hop.EnvelopeDb))
-            {
-                low = Math.Min(low, hop.EnvelopeDb);
-                high = Math.Max(high, hop.EnvelopeDb);
-            }
-        }
-
-        if (!double.IsFinite(low))
-        {
-            return;
-        }
-
-        // Room above for the words in the corner, and a span wide enough that noise alone
-        // does not fill the plot.
-        low -= 3;
-        high = Math.Max(high + 8, low + DbSpanAtLeast);
-
-        double Y(double db) => PlotHeight - ((Math.Clamp(db, low, high) - low) / (high - low) * PlotHeight);
-
-        var geometry = new StreamGeometry();
-
-        using (var g = geometry.Open())
-        {
-            for (var i = 0; i < frame.Hops.Count; i++)
-            {
-                var db = frame.Hops[i].EnvelopeDb;
-                var point = new Point(XOfHop(i, frame, across), Y(double.IsFinite(db) ? db : low));
-
-                if (i == 0)
+                case CwScopeItemKind.Bar:
                 {
-                    g.BeginFigure(point, false);
-                }
-                else
-                {
-                    g.LineTo(point);
+                    // The bar at its true length; its milliseconds under it where they fit.
+                    var w = Math.Max(1, item.X2 - item.X);
+                    context.FillRectangle(MarkInk, new Rect(item.X, BarTop, w, TrainingBarHeight));
+
+                    var label = new FormattedText(
+                        item.Text[(item.Text.IndexOf(", ", StringComparison.Ordinal) + 2)..], CultureInfo.InvariantCulture,
+                        FlowDirection.LeftToRight, Typeface.Default, 9, MarkInk);
+
+                    if (label.Width <= w + 4)
+                    {
+                        context.DrawText(label, new Point(item.X, BarTop + TrainingBarHeight));
+                    }
+
+                    break;
                 }
             }
-
-            g.EndFigure(false);
         }
 
-        context.DrawGeometry(null, TracePen, geometry);
+        // The letters, over their own spans, in the terminal's three ways of saying how sure:
+        // sure is bold ink, unsure is plain italic and muted, unreadable is the placeholder
+        // glyph in its own color. Weight, slant and glyph carry it as well as color (§0.6).
+        foreach (var letter in training.Letters)
+        {
+            var center = CenterOf(letter, training.NowUtc, width);
+            var (text, face, brush) = letter.Confidence switch
+            {
+                CwConfidence.High => (letter.Text, new Typeface(FontFamily.Default, FontStyle.Normal, FontWeight.Bold), Ink),
+                CwConfidence.Low => (letter.Text, new Typeface(FontFamily.Default, FontStyle.Italic, FontWeight.Normal), Muted),
+                _ => (MorseAlphabet.Unreadable, Typeface.Default, UnreadableInk),
+            };
+
+            var glyph = new FormattedText(
+                text, CultureInfo.InvariantCulture, FlowDirection.LeftToRight, face, 26, brush);
+
+            context.DrawText(glyph, new Point(center - (glyph.Width / 2), LetterTop));
+        }
     }
+
+    /// <summary>Where a letter's span is centered on the eight-second axis.</summary>
+    private static double CenterOf(CwGraphLetter letter, DateTime nowUtc, double width)
+        => (XOfTime(letter.StartUtc, nowUtc, width) + XOfTime(letter.EndUtc, nowUtc, width)) / 2;
+
+    private static readonly IBrush UnreadableInk = InstrumentPalette.UnreadableBrush;
 
     private void Text(DrawingContext context, string words, double x, double top, IBrush brush, double size)
     {

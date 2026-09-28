@@ -94,17 +94,20 @@ public sealed class TheScopeShowsTheMarksTests
     /// no longer names a dashed or a solid line (work instruction 478).
     /// </remarks>
     [Fact]
-    public void TheHoverSaysWhatTheTraceAndTheBarsAre()
+    public void TheHoverSaysWhatTheBarsAndTheLettersAre()
     {
+        // Since work instruction 480 (R95) the graph has no trace and its hover says so by
+        // naming only what is drawn: the bars, the letters over them, and the two lines.
         var tip = CwHearingViewModel.ScopeTip;
 
-        Assert.Contains("Trace", tip, StringComparison.Ordinal);
+        Assert.DoesNotContain("Trace", tip, StringComparison.Ordinal);
         Assert.Contains("Bars", tip, StringComparison.Ordinal);
-        Assert.Contains("nothing is drawn under a gap", tip, StringComparison.Ordinal);
+        Assert.Contains("Letters", tip, StringComparison.Ordinal);
+        Assert.Contains("a gap is empty space as long as the gap was", tip, StringComparison.Ordinal);
         Assert.Contains("mixing at", tip, StringComparison.Ordinal);
+        Assert.Contains("eight seconds", tip, StringComparison.Ordinal);
         Assert.DoesNotContain("Dashed line", tip, StringComparison.Ordinal);
         Assert.DoesNotContain("Solid line", tip, StringComparison.Ordinal);
-        Assert.Contains("20 times a second", tip, StringComparison.Ordinal);
     }
 
     /// <remarks>
