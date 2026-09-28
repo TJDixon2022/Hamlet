@@ -1794,6 +1794,23 @@
                         </Border>
                     </Grid>
 
+                    <!-- WHERE IT IS LOOKING (work instruction 474 task 2). Drawn
+                         200 to 1200 Hz, wider than the 300 to 900 the tracker
+                         searches, so a station outside the searched band shows as
+                         outside it. It shows and changes nothing. Every mark has
+                         words and a shape; the admitted bins are named on the line
+                         under it. -->
+                    <StackPanel x:Name="CwPitchStripRow" Spacing="1">
+                        <ctl:CwPitchStripControl x:Name="CwPitchStrip"
+                                                 Strip="{Binding CwHearing.Strip}"
+                                                 ToolTip.Tip="{Binding CwHearing.StripTip}"
+                                                 ToolTip.ShowDelay="300" />
+                        <TextBlock Text="{Binding CwHearing.Strip.AdmittedLabel}"
+                                   FontSize="11"
+                                   TextTrimming="CharacterEllipsis"
+                                   Foreground="{StaticResource HmTextMutedBrush}" />
+                    </StackPanel>
+
                     <!-- ONE ADVISORY REGION, AND IT NEVER CHANGES HEIGHT.
                          Below the transcript sat a stack of boxes that each
                          appeared and vanished on their own, and every one of

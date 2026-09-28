@@ -1,0 +1,3 @@
+unit474 task 2: the pitch strip - drawn 200 to 1200 Hz under the light, the tracker's 300 to 900 searched band shaded and labelled with its numbers, every admitted survey bin a tick named on the line below, the mixing pitch a solid line with its number (and "not measured" where it fell back), the meter's pitch a dashed line with its number; hover names each mark and carries the meter's score, median ms, swing dB and verdict; watched red 6 of 6 on stubs, green 7 of 7 with the window paint; build 0 errors, light 5/5, binding health 1/1, every-control 3/3; changes nothing about where the detector looks; no recording read (11.2)
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

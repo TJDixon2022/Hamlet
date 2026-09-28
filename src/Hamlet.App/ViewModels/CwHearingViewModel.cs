@@ -1,3 +1,4 @@
+using System.Globalization;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Hamlet.RadioEngine.Cw;
 
@@ -19,6 +20,25 @@ public sealed record CwHearingState(
     /// <summary>Nothing is listening.</summary>
     public static CwHearingState None { get; } = new(
         KeyingReading.None, double.NaN, false, false, Array.Empty<KeyingCandidate>());
+}
+
+/// <summary>What the pitch strip draws.</summary>
+public sealed record CwPitchStrip(
+    double LowHz,
+    double HighHz,
+    double SearchLowHz,
+    double SearchHighHz,
+    string SearchLabel,
+    IReadOnlyList<double> AdmittedHz,
+    string AdmittedLabel,
+    double TrackerHz,
+    string TrackerLabel,
+    double MeterHz,
+    string MeterLabel)
+{
+    /// <summary>Nothing.</summary>
+    public static CwPitchStrip Empty { get; } = new(
+        0, 0, 0, 0, "", Array.Empty<double>(), "", double.NaN, "", double.NaN, "");
 }
 
 /// <summary>
@@ -58,6 +78,11 @@ public sealed partial class CwHearingViewModel : ObservableObject
     {
         _clock = clock ?? (() => DateTime.UtcNow);
         _lightChangedUtc = _clock();
+
+        // The range and the searched band are drawn before anything listens, so the
+        // edges are on the screen from the start.
+        _strip = StripFor(CwHearingState.None);
+        _stripTip = TipFor(_strip, KeyingReading.None);
     }
 
     /// <summary>What the detector said at the last look.</summary>
@@ -70,6 +95,14 @@ public sealed partial class CwHearingViewModel : ObservableObject
     /// <summary>What the light says.</summary>
     [ObservableProperty]
     private string _lightWords = DarkWords;
+
+    /// <summary>What the strip draws.</summary>
+    [ObservableProperty]
+    private CwPitchStrip _strip = CwPitchStrip.Empty;
+
+    /// <summary>What the strip says on hover.</summary>
+    [ObservableProperty]
+    private string _stripTip = "";
 
     /// <summary>When the light last changed, or when it was made where it never has.</summary>
     public DateTime LightChangedUtc => _lightChangedUtc;
@@ -91,5 +124,89 @@ public sealed partial class CwHearingViewModel : ObservableObject
 
         IsLit = lit;
         LightWords = lit ? LitWords : DarkWords;
+
+        Strip = StripFor(state);
+        StripTip = TipFor(Strip, state.Meter);
     }
+
+    /// <summary>
+    /// The low end the strip is drawn from, below anything the tracker searches.
+    /// </summary>
+    /// <remarks>
+    /// **DRAWN WIDER THAN THE DETECTOR LOOKS, ON PURPOSE** (work instruction 474). The
+    /// tracker searches 300 to 900 Hz, the IC-7300's sidetone setting range from its
+    /// manual (page 4-14) and not where a received station lands, so a station beating
+    /// at 1000 Hz is invisible by design. The strip shows the edges so the owner can see
+    /// a station sitting outside them. Author's, overrulable.
+    /// </remarks>
+    public const double StripLowHz = 200;
+
+    /// <summary>The high end the strip is drawn to.</summary>
+    public const double StripHighHz = 1200;
+
+    private static CwPitchStrip StripFor(CwHearingState state)
+    {
+        var admitted = state.Survey.Select(c => c.ToneHz).ToList();
+        var meter = state.Meter;
+
+        return new CwPitchStrip(
+            StripLowHz,
+            StripHighHz,
+            CwToneTracker.MinimumToneHz,
+            CwToneTracker.MaximumToneHz,
+            string.Create(
+                CultureInfo.InvariantCulture,
+                $"searched {CwToneTracker.MinimumToneHz:0} to {CwToneTracker.MaximumToneHz:0} Hz"),
+            admitted,
+            admitted.Count == 0
+                ? "survey admitted nothing"
+                : "survey admitted "
+                  + string.Join(", ", admitted.Select(hz => hz.ToString("0", CultureInfo.InvariantCulture)))
+                  + " Hz",
+            state.TrackerHz,
+            double.IsNaN(state.TrackerHz)
+                ? "not listening"
+                : string.Create(CultureInfo.InvariantCulture, $"mixing {state.TrackerHz:0} Hz")
+                  + (state.TrackerHasPitch ? "" : ", not measured"),
+            meter.ToneHz > 0 ? meter.ToneHz : double.NaN,
+            meter.ToneHz > 0
+                ? string.Create(CultureInfo.InvariantCulture, $"meter {meter.ToneHz:0} Hz")
+                : "meter has no pitch");
+    }
+
+    private static string TipFor(CwPitchStrip strip, KeyingReading meter)
+    {
+        var tracker = double.IsNaN(strip.TrackerHz)
+            ? "Solid line: the pitch the decoder is mixing at. Nothing is listening, so there is none."
+            : "Solid line: the pitch the decoder is mixing at now, "
+              + strip.TrackerLabel.Replace("mixing ", "", StringComparison.Ordinal)
+              + ". Where nothing is measured it falls back to the last pitch, the bank's centre or your CW pitch.";
+
+        var meterLine = double.IsNaN(strip.MeterHz)
+            ? "Dashed line: the keying meter's best pitch. It has not measured one yet."
+            : string.Create(
+                CultureInfo.InvariantCulture,
+                $"Dashed line: the keying meter's best pitch, {strip.MeterHz:0} Hz - score {meter.Score:0.00}, "
+                + $"median {meter.MedianMs:0} ms, swing {meter.SwingDb:0} dB, verdict {VerdictWord(meter.Verdict)}.");
+
+        return string.Join(
+            Environment.NewLine,
+            string.Create(
+                CultureInfo.InvariantCulture,
+                $"The whole range the detector could sweep, {strip.LowHz:0} to {strip.HighHz:0} Hz."),
+            "Shaded: the band the tracker searches today, "
+                + strip.SearchLabel.Replace("searched ", "", StringComparison.Ordinal) + ".",
+            "Short ticks: pitches the survey has admitted as keying - "
+                + strip.AdmittedLabel.Replace("survey admitted ", "", StringComparison.Ordinal) + ".",
+            tracker,
+            meterLine,
+            "This shows where Hamlet looks and changes nothing about it.");
+    }
+
+    private static string VerdictWord(KeyingVerdict verdict) => verdict switch
+    {
+        KeyingVerdict.Keying => "keying",
+        KeyingVerdict.NoKeying => "no keying",
+        _ => "listening",
+    };
 }
