@@ -11,7 +11,8 @@ namespace Hamlet.RadioEngine.Tests.Rig;
 /// </summary>
 /// <remarks>
 /// <para>**WHAT TIM SAW.** He set the preamp off by hand and Hamlet turned it back
-/// on. Task 1's table printed how: a preamp Hamlet had to write was remembered, so
+/// on. Since R98 (work instruction 486, HM-DEC-191) the CW row wants it off, so the
+/// preamp cases here have his hand on instead; the rule is the same. Task 1's table printed how: a preamp Hamlet had to write was remembered, so
 /// his change stood, but a preamp the first tune-in found already right was not,
 /// because the memory held only writes. With nothing remembered there was nothing
 /// for his change to disagree with, and the next tune-in wrote it back.</para>
@@ -30,14 +31,21 @@ public sealed class TheOperatorsHandStandsTests
     public TheOperatorsHandStandsTests(ITestOutputHelper output) => _output = output;
 
     /// <summary>
-    /// The preamp found already at 1, then set off by hand: the next CW tune-in
-    /// leaves it off.
+    /// The preamp found already off or written off, then switched on by hand: the next
+    /// CW tune-in leaves it on.
     /// </summary>
     /// <param name="startedAt">Where the preamp was before the first tune-in.</param>
+    /// <remarks>
+    /// **R98 (WORK INSTRUCTION 486, HM-DEC-191) TURNED THE CASE ROUND.** The CW row
+    /// used to want preamp 1 (HM-DEC-177), so his hand was off; the owner has ruled
+    /// it off for Morse, so his hand is now on. The rule under test is unchanged
+    /// (HM-DEC-056): a preamp the first tune-in found at off is remembered as well
+    /// as one it wrote to off, and his change stands either way.
+    /// </remarks>
     [Theory]
     [InlineData(1)]
     [InlineData(0)]
-    public async Task ThePreampHeSetOffStaysOff(byte startedAt)
+    public async Task ThePreampHeSetOnStaysOn(byte startedAt)
     {
         var radio = ModeEntryBench.AsLeft(14_050_000, data: false);
         radio.Switches[ModeEntryBench.Preamp] = startedAt;
@@ -46,18 +54,20 @@ public sealed class TheOperatorsHandStandsTests
         var cw = ReceiverConditions.ForMode("CW");
         var (_, memory) = await ReceiverSetup.ApplyAsync(rig, cw, ReceiverSetupMemory.Empty);
 
-        radio.OperatorTurnsASwitch(ModeEntryBench.Preamp, 0);
+        Assert.Equal(0, radio.Switches[ModeEntryBench.Preamp]);
+
+        radio.OperatorTurnsASwitch(ModeEntryBench.Preamp, 1);
         ModeEntryBench.ClearWrites(radio);
 
         var (second, _) = await ReceiverSetup.ApplyAsync(rig, cw, memory);
         var preamp = second.Single(r => r.Condition.Field == RigField.Preamp);
 
         _output.WriteLine(
-            $"preamp {startedAt} at first; off by hand; second tune-in {preamp.Outcome}, "
+            $"preamp {startedAt} at first; on by hand; second tune-in {preamp.Outcome}, "
             + $"radio now {radio.Switches[ModeEntryBench.Preamp]}");
 
         Assert.Equal(ConditionOutcome.LeftToTheOperator, preamp.Outcome);
-        Assert.Equal(0, radio.Switches[ModeEntryBench.Preamp]);
+        Assert.Equal(1, radio.Switches[ModeEntryBench.Preamp]);
         Assert.DoesNotContain(ModeEntryBench.Writes(radio), w => w.Field == RigField.Preamp);
     }
 
@@ -90,6 +100,10 @@ public sealed class TheOperatorsHandStandsTests
     /// **HOW LONG IT HOLDS.** A band change re-arms the memory, and the next tune-in
     /// sets the mode's value again.
     /// </summary>
+    /// <remarks>
+    /// Since R98 (work instruction 486, HM-DEC-191) the CW row's preamp is off, so
+    /// his hand is on and the re-armed tune-in writes it back to off.
+    /// </remarks>
     [Fact]
     public async Task ABandChangeReArmsIt()
     {
@@ -100,13 +114,13 @@ public sealed class TheOperatorsHandStandsTests
         var cw = ReceiverConditions.ForMode("CW");
         var (_, memory) = await ReceiverSetup.ApplyAsync(rig, cw, ReceiverSetupMemory.Empty);
 
-        radio.OperatorTurnsASwitch(ModeEntryBench.Preamp, 0);
+        radio.OperatorTurnsASwitch(ModeEntryBench.Preamp, 1);
 
         var (second, _) = await ReceiverSetup.ApplyAsync(rig, cw, memory.Rearmed());
 
         Assert.Equal(
             ConditionOutcome.Changed,
             second.Single(r => r.Condition.Field == RigField.Preamp).Outcome);
-        Assert.Equal(1, radio.Switches[ModeEntryBench.Preamp]);
+        Assert.Equal(0, radio.Switches[ModeEntryBench.Preamp]);
     }
 }

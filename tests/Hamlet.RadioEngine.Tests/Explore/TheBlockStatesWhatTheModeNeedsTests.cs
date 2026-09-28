@@ -144,11 +144,16 @@ public sealed class TheBlockStatesWhatTheModeNeedsTests
     /// keying rather than pumping across it, and the preamp follows the band
     /// rather than being left alone. The caution was right while the values were
     /// unruled and it is not a reason to keep them unruled.</para>
-    /// <para>**AND TWO OF THE ROW ARE NOW RULES RATHER THAN CONSTANTS**, which
+    /// <para>**AND TWO OF THE ROW WERE RULES RATHER THAN CONSTANTS**, which
     /// is the thing unit 043 could not express: the attenuator follows the front
-    /// end's overflow flag and the preamp follows the frequency. A constant is
+    /// end's overflow flag and the preamp followed the frequency. A constant is
     /// wrong half the time by construction, and on one evening it was wrong in
     /// both directions.</para>
+    /// <para>**THE PREAMP IS A CONSTANT AGAIN, BY RULING** (R98, HM-DEC-191, work
+    /// instruction 486). The owner ruled it off for Morse, so every Morse block now
+    /// states preamp off with no band rule and no overload clause, and this test
+    /// asserts that for each of them, `CW DX` and `QRP` included. The attenuator is
+    /// still a rule.</para>
     /// </remarks>
     [Fact]
     public void TheMorseBlocksStateWhatMorseNeeds()
@@ -199,11 +204,20 @@ public sealed class TheBlockStatesWhatTheModeNeedsTests
             // **AGC IS FAST FOR CW**, which reverses unit 043's unruled guess.
             Assert.Equal(1, conditions.Single(c => c.Field == RigField.Agc).Wanted);
 
-            // **AND THE TWO RULES ARE RULES.**
+            // **THE ATTENUATOR IS STILL A RULE.**
             Assert.True(
                 conditions.Single(c => c.Field == RigField.Attenuator).IsConditional);
-            Assert.True(
-                conditions.Single(c => c.Field == RigField.Preamp).IsConditional);
+
+            // **AND THE PREAMP IS OFF, IN EVERY MORSE BLOCK** (R98, HM-DEC-191, work
+            // instruction 486). A constant, confirmed, with no bands and no overload
+            // clause, so nothing follows the overload flag in any Morse block.
+            var preamp = conditions.Single(c => c.Field == RigField.Preamp);
+
+            Assert.False(preamp.IsConditional);
+            Assert.Equal(0, preamp.Wanted);
+            Assert.True(preamp.CanBeWritten);
+            Assert.Empty(preamp.Bands);
+            Assert.Null(preamp.WhenOverloading);
 
             AssertEveryConditionCarriesItsReason(hood, conditions);
         }

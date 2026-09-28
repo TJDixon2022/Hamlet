@@ -76,14 +76,15 @@ public sealed class EveryMorseBlockSetsWhatCwSetsTests
     }
 
     /// <summary>
-    /// **AT 7.030 THE PREAMP ENDS WHERE THE CW ROW'S OWN TEXT PUTS IT**, which since
-    /// HM-DEC-177 is preamp 1: the radio's manual, page 4-3, from 1.8 to 29.999 MHz.
+    /// **AT 7.030 THE PREAMP ENDS WHERE THE CW ROW PUTS IT**, which since R98 (work
+    /// instruction 486, HM-DEC-191) is off: the owner has ruled it off for Morse.
     /// </summary>
     /// <remarks>
     /// Work instruction 420 pinned off here, the old row's *off at 40 m and below*.
-    /// Work instruction 424 replaced the row from the manual, and the fact now pins the
-    /// row's value at 7.030 rather than a number typed here, so it still fails if the
-    /// QRP block stops stating the CW row.
+    /// Work instruction 424 replaced the row from the manual with preamp 1 across HF
+    /// (HM-DEC-177), and R98 made it a plain off on every band. The fact pins the row's
+    /// own value rather than only a number typed here, so it still fails if the QRP
+    /// block stops stating the CW row; the radio starts at preamp 1, so off is a write.
     /// </remarks>
     [Fact]
     public async Task At7030ThePreampEndsAtTheRowsValue()
@@ -97,9 +98,37 @@ public sealed class EveryMorseBlockSetsWhatCwSetsTests
             + $"preamp now {radio.Switches[ModeEntryBench.Preamp]}");
 
         Assert.Contains(results, r => r.Condition.Field == RigField.Preamp);
-        Assert.Equal(
-            row.Bands.First(b => b.Contains(7_030_000)).Wanted,
-            radio.Switches[ModeEntryBench.Preamp]);
+        Assert.Equal(0, row.Wanted);
+        Assert.Equal(row.Wanted, radio.Switches[ModeEntryBench.Preamp]);
+    }
+
+    /// <summary>
+    /// **NO MORSE BLOCK CARRIES A PREAMP OVERLOAD RULE** since R98 (work instruction
+    /// 486, HM-DEC-191), so nothing follows the overload flag in CW, CW DX or QRP.
+    /// </summary>
+    /// <remarks>
+    /// From HM-DEC-177 until R98 the CW row's preamp was a `band` condition with an
+    /// overload value, and <see cref="ReceiverSetup.FollowOverloadAsync"/> followed it.
+    /// The owner ruled the preamp off for Morse, a constant, so each of the three rows
+    /// states off with no condition, no stretches of the dial and no overload value.
+    /// </remarks>
+    [Fact]
+    public void NoMorseBlockCarriesAPreampOverloadRule()
+    {
+        foreach (var mode in new[] { "CW", "CW DX", "QRP" })
+        {
+            var preamp = ReceiverConditions.ForMode(mode).Single(c => c.Field == RigField.Preamp);
+
+            _output.WriteLine(
+                $"{mode,-6} preamp wanted {preamp.Wanted}, condition '{preamp.Condition}', "
+                + $"stretches {preamp.Bands.Count}, when overloading {preamp.WhenOverloading?.ToString() ?? "-"}");
+
+            Assert.Equal(0, preamp.Wanted);
+            Assert.True(preamp.Confirmed);
+            Assert.False(preamp.IsConditional);
+            Assert.Empty(preamp.Bands);
+            Assert.Null(preamp.WhenOverloading);
+        }
     }
 
     /// <summary>

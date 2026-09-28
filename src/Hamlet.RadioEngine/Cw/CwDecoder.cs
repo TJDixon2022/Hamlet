@@ -778,44 +778,38 @@ public sealed class CwDecoder
     /// <remarks>
     /// <para>**NO DETECTION, NO LETTERS** (work instruction 485, R97, HM-DEC-190). The decoder and
     /// <see cref="CwEnvelopeDetector"/> were never wired together, so the decoder went on spelling
-    /// letters out of noise while the detector said nobody was there. With a gate set, a character
-    /// reaches the transcript, the leading edge and the scope only if the audio it was read from lies
-    /// inside a stretch the detector called keying.</para>
-    /// <para>**JUDGED BY WHEN THE AUDIO WAS HEARD, NOT BY WHEN IT SETTLES.** The settled pass runs
-    /// seconds behind, so the last letters of an over settle after the detector has let go, and
-    /// letters from the noise before a call can settle after it found the call. Each stretch starts
-    /// <see cref="CwEnvelopeDetector.KeyingSeconds"/> before the moment the gate opened, because that
-    /// is the window in which the detector saw the bars that made it open. Nothing about how the
-    /// decoder reads is changed - only whether what it read is let out.</para>
+    /// letters out of noise while the detector said nobody was there.</para>
+    /// <para>**JUDGED BY THE SCREEN AT THAT MOMENT** (work instruction 486). A character reaches the
+    /// transcript, the leading edge or the scope only while the detector says keying, and only if
+    /// its audio was heard in the stretch that is keying now - from
+    /// <see cref="CwEnvelopeDetector.KeyingSeconds"/> before the gate opened, the window in which the
+    /// detector saw the bars that opened it. Work instruction 485 judged by when the audio was heard,
+    /// so the last letters of an over kept landing for seconds under a panel saying no keying; the
+    /// owner saw exactly that. **What this costs**: the tail of an over, whose last letters settle
+    /// after the detector lets go, is dropped rather than flushed, and so is anything held from
+    /// before a silence. When the gate closes, the leading edge is cleared in the same moment.
+    /// Nothing about how the decoder reads is changed - only whether what it read is let out.</para>
     /// </remarks>
     public Func<bool>? KeyingGate { get; set; }
 
-    // The stretches of the audio clock the gate was open for, in seconds, oldest first; the last
-    // one's end is infinity while it is open.
-    private readonly List<(double From, double To)> _keyed = new();
+    /// <summary>The pitch the detector hears a station at while it says keying, NaN otherwise; null for none.</summary>
+    /// <remarks>
+    /// **THE DECODER LISTENS WHERE THE DETECTOR HEARS** (work instruction 486; unit 477's task 2,
+    /// never built until now). While this answers a pitch, the decoder mixes there from the next
+    /// hop, ahead of the tracker's own survey and behind only the operator's lock. The detector
+    /// holds the pitch through a station's gaps, so this holds with it; when it answers NaN the
+    /// tracker steers as it always has. The tracker's own choices are untouched.
+    /// </remarks>
+    public Func<double>? DetectorPitch { get; set; }
+
+    // Where on the audio clock the stretch that is keying now began, in seconds.
+    private double _openFrom = double.PositiveInfinity;
 
     private bool _gateOpen;
 
-    /// <summary>Whether a character's audio lies inside a stretch the detector called keying.</summary>
+    /// <summary>Whether a character may reach a surface now: keying now, and heard in this stretch.</summary>
     private bool Admitted(CwCharacter c)
-    {
-        if (KeyingGate is null)
-        {
-            return true;
-        }
-
-        var at = c.At.TotalSeconds;
-
-        foreach (var (from, to) in _keyed)
-        {
-            if (at >= from && at <= to)
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
+        => KeyingGate is null || (_gateOpen && c.At.TotalSeconds >= _openFrom);
 
     /// <summary>Reads the gate once per chunk, on the clock the characters are stamped on.</summary>
     private void ReadTheGate()
@@ -825,22 +819,22 @@ public sealed class CwDecoder
             return;
         }
 
-        var now = Heard.TotalSeconds;
         var open = gate();
 
         if (open && !_gateOpen)
         {
-            _keyed.Add((now - CwEnvelopeDetector.KeyingSeconds, double.PositiveInfinity));
+            _openFrom = Heard.TotalSeconds - CwEnvelopeDetector.KeyingSeconds;
         }
-        else if (!open && _gateOpen && _keyed.Count > 0)
-        {
-            _keyed[^1] = (_keyed[^1].From, now);
-        }
+
+        var closing = !open && _gateOpen;
 
         _gateOpen = open;
 
-        // A minute is far longer than the settled pass ever runs behind.
-        _keyed.RemoveAll(s => s.To < now - 60);
+        // The terminal's provisional tip goes in the same moment the panel says no keying.
+        if (closing)
+        {
+            LeadingEdge?.Invoke(Array.Empty<CwCharacter>());
+        }
     }
 
     /// <summary>Feed samples directly, without a source.</summary>
@@ -982,11 +976,17 @@ public sealed class CwDecoder
         // it changes is only what happens when nothing is admitted at all, which
         // is task 3's scope: the answer is the last thing actually measured
         // rather than the middle of a bank.
-        _probabilistic.ToneHz = double.IsNaN(_lockedToneHz)
-            ? double.IsNaN(_lastMeasuredToneHz)
-                ? _tracker.ToneHz
-                : _lastMeasuredToneHz
-            : _lockedToneHz;
+        // **THEN THE DETECTOR'S PITCH, WHILE IT SAYS KEYING** (work instruction 486): the decoder
+        // listens where the detector hears, from this hop, behind only the operator's lock.
+        var heard = DetectorPitch?.Invoke() ?? double.NaN;
+
+        _probabilistic.ToneHz = !double.IsNaN(_lockedToneHz)
+            ? _lockedToneHz
+            : double.IsFinite(heard) && heard > 0
+                ? heard
+                : double.IsNaN(_lastMeasuredToneHz)
+                    ? _tracker.ToneHz
+                    : _lastMeasuredToneHz;
 
         // **THE PORT READS THE SAME HOP FIRST, AT THE SAME PITCH** (HM-REQ-120),
         // so whatever ours settles out of this hop meets the port's reading of

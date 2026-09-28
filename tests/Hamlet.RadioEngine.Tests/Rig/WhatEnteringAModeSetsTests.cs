@@ -19,8 +19,11 @@ namespace Hamlet.RadioEngine.Tests.Rig;
 /// was sent, what the result was filed as, which components mention the field,
 /// and whether any of them would ask the operator to change it after the setup
 /// has set it. Printed before task 2 changes anything and again after.</para>
-/// <para>**14.050 IS ABOVE 40 M AND 7.030 IS AT IT**, so both halves of the
-/// preamp's band rule appear.</para>
+/// <para>**14.050 IS ABOVE 40 M AND 7.030 IS AT IT**, which showed both halves of
+/// the preamp's old band rule. Since R98 (HM-DEC-191, work instruction 486) the CW
+/// row asks for the preamp off on every band and has no overload clause, so both
+/// frequencies now show the same preamp answer, and the overloading case shows that
+/// nothing follows the flag in CW.</para>
 /// <para>**WORK INSTRUCTION 420 ADDS THE THREE BLOCKS OF THE CW FAMILY** (R70,
 /// criterion 7.7): `QRP` at 7.030, `CW DX` at 14.010 and `CW` at 14.050, each driven
 /// exactly as the app drives it, with the radio at preamp 1, and the count of Morse
@@ -93,10 +96,20 @@ public sealed class WhatEnteringAModeSetsTests
         await AlreadyRightAsync(14_050_000);
         await AlreadyRightAsync(7_030_000);
 
-        await TheHandAsync(14_050_000, preampAlreadyOn: false);
-        await TheHandAsync(14_050_000, preampAlreadyOn: true);
+        await TheHandAsync(14_050_000, preampOnBefore: false);
+        await TheHandAsync(14_050_000, preampOnBefore: true);
 
         await TheThreeBlocksAsync();
+
+        // R98 (HM-DEC-191, work instruction 486): the CW row carries no overload rule,
+        // so ReceiverSetup.FollowOverloadAsync has nothing to follow in CW.
+        var cwPreamp = ReceiverConditions.ForMode("CW").Single(c => c.Field == RigField.Preamp);
+        _output.WriteLine("");
+        _output.WriteLine(
+            $"=== CW preamp row: asks {cwPreamp.WantedText} [{cwPreamp.Wanted}], "
+            + $"condition {(cwPreamp.IsConditional ? cwPreamp.Condition : "none")}, "
+            + $"{cwPreamp.Bands.Count} band stretches, overload clause "
+            + $"{(cwPreamp.WhenOverloading is { } w ? w.ToString() : "none")}");
     }
 
     /// <summary>
@@ -317,9 +330,19 @@ public sealed class WhatEnteringAModeSetsTests
 
     // The already-right count: a radio at every value the CW row asks for, one
     // tune-in, and how many fields were written anyway. This is the unit's number.
+    //
+    // R98 (HM-DEC-191, work instruction 486): the radio is built here rather than by
+    // ModeEntryBench.AlreadyRightForCw, which reads the preamp from the row's band
+    // stretches and the CW row has none now. The preamp is the row's own constant,
+    // off, and everything else is as that helper sets it.
     private async Task AlreadyRightAsync(long hz)
     {
-        var radio = ModeEntryBench.AlreadyRightForCw(hz);
+        var radio = ModeEntryBench.AsLeft(hz, data: false);
+        radio.Switches[ModeEntryBench.Agc] = 1;
+        radio.Switches[ModeEntryBench.NoiseBlanker] = 0;
+        radio.Switches[ModeEntryBench.Preamp] = (byte)ReceiverConditions.ForMode("CW")
+            .Single(c => c.Field == RigField.Preamp).Wanted!.Value;
+
         using var rig = await ModeEntryBench.ConnectAsync(radio);
 
         var (results, _) = await ReceiverSetup.ApplyAsync(
@@ -339,18 +362,20 @@ public sealed class WhatEnteringAModeSetsTests
         }
     }
 
-    // The operator's hand: a tune-in, then he sets the preamp off himself, then
-    // a second tune-in of the same mode on the same band.
-    private async Task TheHandAsync(long hz, bool preampAlreadyOn)
+    // The operator's hand: a tune-in, then he sets the preamp himself, then a second
+    // tune-in of the same mode on the same band. Since R98 (HM-DEC-191, work
+    // instruction 486) the CW row asks for the preamp off, so his hand turns it ON,
+    // the opposite of what the setup wanted, and HM-DEC-056 still leaves it his.
+    private async Task TheHandAsync(long hz, bool preampOnBefore)
     {
         var radio = ModeEntryBench.AsLeft(hz, data: false);
-        radio.Switches[ModeEntryBench.Preamp] = (byte)(preampAlreadyOn ? 1 : 0);
+        radio.Switches[ModeEntryBench.Preamp] = (byte)(preampOnBefore ? 1 : 0);
         using var rig = await ModeEntryBench.ConnectAsync(radio);
 
         var cw = ReceiverConditions.ForMode("CW");
         var (first, memory) = await ReceiverSetup.ApplyAsync(rig, cw, ReceiverSetupMemory.Empty);
 
-        radio.OperatorTurnsASwitch(ModeEntryBench.Preamp, 0);
+        radio.OperatorTurnsASwitch(ModeEntryBench.Preamp, 1);
         ModeEntryBench.ClearWrites(radio);
 
         var (second, _) = await ReceiverSetup.ApplyAsync(rig, cw, memory);
@@ -358,13 +383,13 @@ public sealed class WhatEnteringAModeSetsTests
 
         _output.WriteLine("");
         _output.WriteLine(
-            $"=== the hand at {hz / 1e6:0.000} MHz, preamp {(preampAlreadyOn ? "already 1" : "off")} "
+            $"=== the hand at {hz / 1e6:0.000} MHz, preamp {(preampOnBefore ? "1" : "already off")} "
             + "before the first tune-in");
         _output.WriteLine(
             $"  first tune-in filed the preamp {first.First(r => r.Condition.Field == RigField.Preamp).Outcome}; "
             + $"memory holds preamp: {(memory.LastSet.TryGetValue(RigField.Preamp, out var p) ? p.ToString() : "nothing")}");
         _output.WriteLine(
-            $"  he sets it off by hand; second tune-in filed {second.First(r => r.Condition.Field == RigField.Preamp).Outcome}, "
+            $"  he sets it to preamp 1 by hand; second tune-in filed {second.First(r => r.Condition.Field == RigField.Preamp).Outcome}, "
             + $"wrote preamp {(wrote.Count > 0 ? string.Join(",", wrote.Select(w => w.Value)) : "nothing")}, "
             + $"radio now preamp {radio.Switches[ModeEntryBench.Preamp]}");
     }

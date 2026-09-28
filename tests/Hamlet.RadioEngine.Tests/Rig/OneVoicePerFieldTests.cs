@@ -68,16 +68,17 @@ public sealed class OneVoicePerFieldTests
         Assert.DoesNotContain(said, s => s.Contains("attenuator", StringComparison.Ordinal));
     }
 
-    /// <summary>With no tune-in behind it, the advice still asks for the preamp on.</summary>
+    /// <summary>With no tune-in behind it, the advice still speaks: here, the noise blanker on.
+    /// Since R98 (work instruction 486) it no longer asks for the preamp on.</summary>
     [Fact]
     public void WithNoTuneInTheAdviceStillSpeaks()
     {
-        var off = RigState.Empty.With(RigValue.Known(
-            RigField.Preamp, 0, "off", DateTime.UtcNow, "test"));
+        var on = RigState.Empty.With(RigValue.Known(
+            RigField.NoiseBlanker, 1, "on", DateTime.UtcNow, "test"));
 
         Assert.Contains(
-            ReceiveAdvice.For(off),
-            a => a.Write.Field == RigField.Preamp && a.WouldChange);
+            ReceiveAdvice.For(on),
+            a => a.Write.Field == RigField.NoiseBlanker && a.WouldChange);
     }
 
     /// <summary>With no tune-in behind it, the observation still speaks.</summary>

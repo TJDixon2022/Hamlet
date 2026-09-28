@@ -1,0 +1,75 @@
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  Ft8Sharp -> C:\Source\HamLet\src\Ft8Sharp\bin\Debug\net8.0\Ft8Sharp.dll
+  Ft8Sharp.Deep -> C:\Source\HamLet\src\Ft8Sharp.Deep\bin\Debug\net8.0\Ft8Sharp.Deep.dll
+  Hamlet.RadioEngine -> C:\Source\HamLet\src\Hamlet.RadioEngine\bin\Debug\net8.0\Hamlet.RadioEngine.dll
+  Hamlet.RadioEngine.Tests -> C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:02.53]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:02.79]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:02.80]   Starting:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.NoDetectionNoLettersTests.NothingIsEmittedFromTheSilences [6 s]
+  Standard Output Messages:
+ settled ` <AR>Q CQ DE N,CALL KK`; in the silences 0: 
+
+
+[xUnit.net 00:00:09.83]     Hamlet.RadioEngine.Tests.Cw.NoDetectionNoLettersTests.TheDecoderMixesWhereTheDetectorHears [FAIL]
+[xUnit.net 00:00:09.83]       Assert.Equal() Failure: Values are not within 3 decimal places
+[xUnit.net 00:00:09.83]       Expected: 675 (rounded from 675)
+[xUnit.net 00:00:09.83]       Actual:   536 (rounded from 536)
+[xUnit.net 00:00:09.83]       Stack Trace:
+[xUnit.net 00:00:09.83]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\NoDetectionNoLettersTests.cs(135,0): at Hamlet.RadioEngine.Tests.Cw.NoDetectionNoLettersTests.TheDecoderMixesWhereTheDetectorHears()
+[xUnit.net 00:00:09.83]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:09.83]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:09.83]       Output:
+[xUnit.net 00:00:09.83]         mixing 536.0 Hz after one hop
+  Failed Hamlet.RadioEngine.Tests.Cw.NoDetectionNoLettersTests.TheDecoderMixesWhereTheDetectorHears [3 ms]
+  Error Message:
+   Assert.Equal() Failure: Values are not within 3 decimal places
+Expected: 675 (rounded from 675)
+Actual:   536 (rounded from 536)
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Cw.NoDetectionNoLettersTests.TheDecoderMixesWhereTheDetectorHears() in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\NoDetectionNoLettersTests.cs:line 135
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Standard Output Messages:
+ mixing 536.0 Hz after one hop
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.NoDetectionNoLettersTests.TheDetectorHoldsTheStationThroughItsGaps [5 s]
+  Standard Output Messages:
+ found 4.560 s, tone ends 27.333 s, last keying 28.330 s, hops dropped while the call was still sending 0
+
+
+[xUnit.net 00:00:21.51]     Hamlet.RadioEngine.Tests.Cw.NoDetectionNoLettersTests.NothingReachesTheScreenWhileTheDetectorSaysNoKeying [FAIL]
+[xUnit.net 00:00:21.51]       Assert.Empty() Failure: Collection was not empty
+[xUnit.net 00:00:21.52]       Collection: [Tuple (CwCharacter { Text = K, Confidence = High, Score = 607.4289805667205, Pattern = -.-, SignalToNoiseDb = NaN, WordsPerMinute = 9, At = 00:00:27.3450000, Stage = Provisional, IsWordGap = False, IsUnreadable = False, IsUnstable = False, SpanLogLikelihoodRatio = 359179.0647116713, SpanHops = 239, SpanMarginForRecord = 1502.8412749442314, MarginLlr = 13552.534420293174, Probability = 0.9973252623781196, Arbitration = , RivalReading = -. -, MarginShareForRecord = 0.03773197202117663 }, False), Tuple (CwCharacter { Text = K, Confidence = High, Score = 643.250613569557, Pattern = -.-, SignalToNoiseDb = NaN, WordsPerMinute = 9, At = 00:00:27.3650000, Stage = Provisional, IsWordGap = False, IsUnreadable = False, IsUnstable = False, SpanLogLikelihoodRatio = 365814.640759876, SpanHops = 243, SpanMarginForRecord = 1505.4100442793251, MarginLlr = 14270.301539864024, Probability = 0.9973898190075199, Arbitration = , RivalReading = - .-, MarginShareForRecord = 0.03900965119991241 }, False)]
+[xUnit.net 00:00:21.52]       Stack Trace:
+[xUnit.net 00:00:21.52]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\NoDetectionNoLettersTests.cs(117,0): at Hamlet.RadioEngine.Tests.Cw.NoDetectionNoLettersTests.NothingReachesTheScreenWhileTheDetectorSaysNoKeying()
+[xUnit.net 00:00:21.52]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:21.52]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:21.52]       Output:
+[xUnit.net 00:00:21.52]         arrived 73, while the detector said no keying 2: `K` heard at 27.345 s `K` heard at 27.365 s
+[xUnit.net 00:00:21.52]   Finished:    Hamlet.RadioEngine.Tests
+  Failed Hamlet.RadioEngine.Tests.Cw.NoDetectionNoLettersTests.NothingReachesTheScreenWhileTheDetectorSaysNoKeying [6 s]
+  Error Message:
+   Assert.Empty() Failure: Collection was not empty
+Collection: [Tuple (CwCharacter { Text = K, Confidence = High, Score = 607.4289805667205, Pattern = -.-, SignalToNoiseDb = NaN, WordsPerMinute = 9, At = 00:00:27.3450000, Stage = Provisional, IsWordGap = False, IsUnreadable = False, IsUnstable = False, SpanLogLikelihoodRatio = 359179.0647116713, SpanHops = 239, SpanMarginForRecord = 1502.8412749442314, MarginLlr = 13552.534420293174, Probability = 0.9973252623781196, Arbitration = , RivalReading = -. -, MarginShareForRecord = 0.03773197202117663 }, False), Tuple (CwCharacter { Text = K, Confidence = High, Score = 643.250613569557, Pattern = -.-, SignalToNoiseDb = NaN, WordsPerMinute = 9, At = 00:00:27.3650000, Stage = Provisional, IsWordGap = False, IsUnreadable = False, IsUnstable = False, SpanLogLikelihoodRatio = 365814.640759876, SpanHops = 243, SpanMarginForRecord = 1505.4100442793251, MarginLlr = 14270.301539864024, Probability = 0.9973898190075199, Arbitration = , RivalReading = - .-, MarginShareForRecord = 0.03900965119991241 }, False)]
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Cw.NoDetectionNoLettersTests.NothingReachesTheScreenWhileTheDetectorSaysNoKeying() in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\NoDetectionNoLettersTests.cs:line 117
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Standard Output Messages:
+ arrived 73, while the detector said no keying 2: `K` heard at 27.345 s `K` heard at 27.365 s
+
+
+
+Test Run Failed.
+Total tests: 4
+     Passed: 2
+     Failed: 2
+ Total time: 21.8842 Seconds
+RC=1 WALL=30s

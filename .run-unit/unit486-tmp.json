@@ -114,7 +114,7 @@
         },
         {
           "control": "preamp",
-          "says": "the owner has ruled it off for Morse",
+          "says": "the owner wants it off for Morse, and off is what he hears best by",
           "field": "preamp",
           "wanted": 0,
           "wantedText": "off",

@@ -1,0 +1,865 @@
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  Ft8Sharp -> C:\Source\HamLet\src\Ft8Sharp\bin\Debug\net8.0\Ft8Sharp.dll
+  Ft8Sharp.Deep -> C:\Source\HamLet\src\Ft8Sharp.Deep\bin\Debug\net8.0\Ft8Sharp.Deep.dll
+  Hamlet.RadioEngine -> C:\Source\HamLet\src\Hamlet.RadioEngine\bin\Debug\net8.0\Hamlet.RadioEngine.dll
+  Hamlet.RadioEngine.Tests -> C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:01.70]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:01.94]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:01.97]   Starting:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Rig.WhatIsInTheWayOnTheReceiveSideTests.TheNoiseReductionIsNamedWithTheButtonThatTurnsItOff [8 ms]
+  Standard Output Messages:
+ noise reduction: The noise reduction is on. It smooths the audio, and what it smooths away are the sharp starts and stops that tell a dit from a dah. NR on the front of the radio turns it off.
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.OneVoicePerFieldTests.WithNoTuneInTheObservationStillSpeaks [8 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.RigObservationTests.TheNoiseControlsSayWhatTheyDoToADecode [8 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.RigWriteTests.ALevelIsWrittenAsBcd(level: 42, high: 0, low: 66) [9 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.RigWriteTests.ALevelIsWrittenAsBcd(level: 255, high: 2, low: 85) [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.RigWriteTests.ALevelIsWrittenAsBcd(level: 128, high: 1, low: 40) [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.RigWriteTests.ALevelIsWrittenAsBcd(level: 0, high: 0, low: 0) [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.WhatIsInTheWayOnTheReceiveSideTests.AReceivePathAlreadyRightSaysNothingAtAll [< 1 ms]
+  Standard Output Messages:
+ (nothing in the way)
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.RigObservationTests.NoObservationEverTellsTheOperatorWhatToChange(situation: "IF instead of audio") [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.WhatIsInTheWayOnTheReceiveSideTests.AFilterAlreadyNarrowIsNotMentionedEvenWithSomebodyElseInThere [< 1 ms]
+  Standard Output Messages:
+ (nothing in the way)
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.WhatIsInTheWayOnTheReceiveSideTests.AWideFilterWithSomebodyElseInItIsNamed [< 1 ms]
+  Standard Output Messages:
+ filter width: Somebody else is keying inside the passband and the filter is wide enough to let them in. Everything inside it arrives in the same audio the decoder measures. Turning FILTER down toward five hundred hertz will shut them out, and the TWIN PBT controls will slide what is left off them.
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.WhatIsInTheWayOnTheReceiveSideTests.AWideFilterWithNobodyElseInItIsNotInTheWay [< 1 ms]
+  Standard Output Messages:
+ (nothing in the way)
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.RigObservationTests.NoObservationEverTellsTheOperatorWhatToChange(situation: "everything at once") [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.RigObservationTests.NoObservationEverTellsTheOperatorWhatToChange(situation: "wide filter in CW") [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.RigObservationTests.NoObservationEverTellsTheOperatorWhatToChange(situation: "noise reduction on") [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.RigObservationTests.NoObservationEverTellsTheOperatorWhatToChange(situation: "auto notch in CW") [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.RigObservationTests.NoObservationEverTellsTheOperatorWhatToChange(situation: "all three noise controls on") [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.RigObservationTests.NoObservationEverTellsTheOperatorWhatToChange(situation: "attenuator and preamp") [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.RigObservationTests.NoObservationEverTellsTheOperatorWhatToChange(situation: "squelch shut") [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.RigObservationTests.NoObservationEverTellsTheOperatorWhatToChange(situation: "noise blanker on") [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.RigObservationTests.AWideFilterInMorseIsWorthSayingOutLoud [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.RigObservationTests.TheSweepIsActuallyReadingObservations [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.RigObservationTests.SeveralObservationsCanStandTogether [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.RigObservationTests.NothingIsSaidAboutSettingsNobodyHasRead [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.RigObservationTests.AWideFilterInAVoiceModeIsJustAVoiceFilter [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.RigObservationTests.TheObservationsAreWrittenInTheProjectVoice [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.RigObservationTests.ANarrowFilterInMorseIsNotWorthMentioning [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.RigObservationTests.NothingIsSaidAboutNoiseControlsNobodyRead [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.RigWriteTests.NoReceiveSideWriteCanKeyTheTransmitter [3 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.RigWriteTests.WhatCouldNotBeReadIsSaidAndNotActedOn [1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.RigWriteTests.AConfirmedWriteSaysWhatItWasAndWhatItIs [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.WhatIsInTheWayOnTheReceiveSideTests.NothingHereCanWriteToTheRadio [5 ms]
+  Standard Output Messages:
+ Setting, Says
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.RigWriteTests.AnUndoWithNoPriorValueSaysSoRatherThanGuessing [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.WhatIsInTheWayOnTheReceiveSideTests.ASettingThatCouldNotBeReadSaysSoRatherThanNothing [< 1 ms]
+  Standard Output Messages:
+ noise blanker: Hamlet could not read the noise blanker, so it cannot say whether it is in the way.
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.WhatIsInTheWayOnTheReceiveSideTests.TheNoiseBlankerIsNamedWithTheButtonThatTurnsItOff [< 1 ms]
+  Standard Output Messages:
+ noise blanker: The noise blanker is on. It works by cutting out the loudest short spikes, and the start of every Morse mark is a short spike, so it can take bites out of the very edges the decoder measures. NB on the front of the radio turns it off.
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.RigWriteTests.TheWriteOnlySettingIsNotInTheTable [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.RigWriteTests.AnUnconfirmedWriteSaysSo [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.RigWriteTests.TheAgcWriteCanSayOff [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.RigWriteTests.APartlyReadRadioStillListsEverything [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.RigWriteTests.WhatOthersHearIsItsOwnTier [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.RigWriteTests.TheListComesFromLiveState [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.RigWriteTests.TheAdviceNeverScoldsOrDiagnoses [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.RigWriteTests.EveryWriteCarriesARealPage [1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.RigWriteTests.WhatIsAlreadyRightStaysVisibleAndSaysSo [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Explore.EveryModeAnswersForEverySettingTests.EveryStatedRowCarriesItsReason [63 ms]
+  Passed Hamlet.RadioEngine.Tests.Explore.TheBlockStatesWhatTheModeNeedsTests.ABlockWithNothingToSayProducesNoClaim [63 ms]
+  Standard Output Messages:
+ 
+   73 blocks state nothing at all
+
+
+  Passed Hamlet.RadioEngine.Tests.Explore.EveryModeAnswersForEverySettingTests.EveryOwnedSettingCarriesItsCitation [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Explore.TheBlockStatesWhatTheModeNeedsTests.EveryWritableConditionHasACitedCommandAndTheRestAreSpokenOnly [1 ms]
+  Standard Output Messages:
+   noise blanker   wanted=off          writable=True  cited=p. 19-3
+   noise reduction wanted=off          writable=True  cited=p. 19-3
+   auto notch      wanted=off          writable=True  cited=p. 19-3
+   AGC             wanted=slow         writable=False cited=p. 19-3
+   scope span      wanted=2 kHz across writable=False cited=no command
+
+
+  Passed Hamlet.RadioEngine.Tests.Explore.EveryModeAnswersForEverySettingTests.MorseStatesWhatMorseNeeds [< 1 ms]
+  Standard Output Messages:
+ auto notch=off, manual notch=off, noise blanker=off, noise reduction=off, AGC=fast, RF gain=100%, squelch=open, attenuator=off unless the front end is overloading, preamp=off, scope output=on
+
+
+  Passed Hamlet.RadioEngine.Tests.Explore.TheBlockStatesWhatTheModeNeedsTests.TheDigitalBlocksStateWhatTheirModeNeeds [< 1 ms]
+  Standard Output Messages:
+   band  | block        | width | conditions
+   ------|--------------|-------|-----------
+   80 m  | FT8 city     |  1999 | noise blanker=off, noise reduction=off, auto notch=off, AGC=slow, scope span=2 kHz across
+   80 m  | FT4 sprint   |  2999 | noise blanker=off, noise reduction=off, auto notch=off, AGC=slow, scope span=3 kHz across
+   40 m  | FT4 sprint   |  2999 | noise blanker=off, noise reduction=off, auto notch=off, AGC=slow, scope span=3 kHz across
+   40 m  | FT8 city     |  2999 | noise blanker=off, noise reduction=off, auto notch=off, AGC=slow, scope span=3 kHz across
+   30 m  | FT8 city     |  1999 | noise blanker=off, noise reduction=off, auto notch=off, AGC=slow, scope span=2 kHz across
+   20 m  | FT8 city     |  2999 | noise blanker=off, noise reduction=off, auto notch=off, AGC=slow, scope span=3 kHz across
+   20 m  | FT4 sprint   |  2999 | noise blanker=off, noise reduction=off, auto notch=off, AGC=slow, scope span=3 kHz across
+   17 m  | FT8 city     |  1999 | noise blanker=off, noise reduction=off, auto notch=off, AGC=slow, scope span=2 kHz across
+   15 m  | FT8 city     |  1999 | noise blanker=off, noise reduction=off, auto notch=off, AGC=slow, scope span=2 kHz across
+   15 m  | FT4 sprint   |  2999 | noise blanker=off, noise reduction=off, auto notch=off, AGC=slow, scope span=3 kHz across
+   10 m  | FT8 city     |  2999 | noise blanker=off, noise reduction=off, auto notch=off, AGC=slow, scope span=3 kHz across
+   10 m  | FT4 sprint   |  2999 | noise blanker=off, noise reduction=off, auto notch=off, AGC=slow, scope span=3 kHz across
+ 
+   32 blocks state conditions
+
+
+  Passed Hamlet.RadioEngine.Tests.Explore.EveryModeAnswersForEverySettingTests.WhatIsNotOwnedStaysOffTheList [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Explore.EveryModeAnswersForEverySettingTests.TheAttenuatorIsARuleAndThePreampIsOffByRuling [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Explore.TheBlockStatesWhatTheModeNeedsTests.TheMorseBlocksStateWhatMorseNeeds [< 1 ms]
+  Standard Output Messages:
+   80 m  | CW fast lane   | auto notch=off, manual notch=off, noise blanker=off, noise reduction=off, AGC=fast, RF gain=100%, squelch=open, attenuator=off unless the front end is overloading, preamp=off, scope output=on
+   80 m  | CW main street | auto notch=off, manual notch=off, noise blanker=off, noise reduction=off, AGC=fast, RF gain=100%, squelch=open, attenuator=off unless the front end is overloading, preamp=off, scope output=on
+   80 m  | QRP watering hole | auto notch=off, manual notch=off, noise blanker=off, noise reduction=off, AGC=fast, RF gain=100%, squelch=open, attenuator=off unless the front end is overloading, preamp=off, scope output=on
+   40 m  | CW fast lane   | auto notch=off, manual notch=off, noise blanker=off, noise reduction=off, AGC=fast, RF gain=100%, squelch=open, attenuator=off unless the front end is overloading, preamp=off, scope output=on
+   40 m  | CW main street | auto notch=off, manual notch=off, noise blanker=off, noise reduction=off, AGC=fast, RF gain=100%, squelch=open, attenuator=off unless the front end is overloading, preamp=off, scope output=on
+   40 m  | QRP watering hole | auto notch=off, manual notch=off, noise blanker=off, noise reduction=off, AGC=fast, RF gain=100%, squelch=open, attenuator=off unless the front end is overloading, preamp=off, scope output=on
+   40 m  | CW main street | auto notch=off, manual notch=off, noise blanker=off, noise reduction=off, AGC=fast, RF gain=100%, squelch=open, attenuator=off unless the front end is overloading, preamp=off, scope output=on
+   30 m  | CW main street | auto notch=off, manual notch=off, noise blanker=off, noise reduction=off, AGC=fast, RF gain=100%, squelch=open, attenuator=off unless the front end is overloading, preamp=off, scope output=on
+   30 m  | QRP watering hole | auto notch=off, manual notch=off, noise blanker=off, noise reduction=off, AGC=fast, RF gain=100%, squelch=open, attenuator=off unless the front end is overloading, preamp=off, scope output=on
+   30 m  | CW main street | auto notch=off, manual notch=off, noise blanker=off, noise reduction=off, AGC=fast, RF gain=100%, squelch=open, attenuator=off unless the front end is overloading, preamp=off, scope output=on
+   20 m  | CW fast lane   | auto notch=off, manual notch=off, noise blanker=off, noise reduction=off, AGC=fast, RF gain=100%, squelch=open, attenuator=off unless the front end is overloading, preamp=off, scope output=on
+   20 m  | CW main street | auto notch=off, manual notch=off, noise blanker=off, noise reduction=off, AGC=fast, RF gain=100%, squelch=open, attenuator=off unless the front end is overloading, preamp=off, scope output=on
+   20 m  | QRP watering hole | auto notch=off, manual notch=off, noise blanker=off, noise reduction=off, AGC=fast, RF gain=100%, squelch=open, attenuator=off unless the front end is overloading, preamp=off, scope output=on
+   17 m  | CW main street | auto notch=off, manual notch=off, noise blanker=off, noise reduction=off, AGC=fast, RF gain=100%, squelch=open, attenuator=off unless the front end is overloading, preamp=off, scope output=on
+   17 m  | QRP watering hole | auto notch=off, manual notch=off, noise blanker=off, noise reduction=off, AGC=fast, RF gain=100%, squelch=open, attenuator=off unless the front end is overloading, preamp=off, scope output=on
+   15 m  | CW fast lane   | auto notch=off, manual notch=off, noise blanker=off, noise reduction=off, AGC=fast, RF gain=100%, squelch=open, attenuator=off unless the front end is overloading, preamp=off, scope output=on
+   15 m  | CW main street | auto notch=off, manual notch=off, noise blanker=off, noise reduction=off, AGC=fast, RF gain=100%, squelch=open, attenuator=off unless the front end is overloading, preamp=off, scope output=on
+   15 m  | QRP watering hole | auto notch=off, manual notch=off, noise blanker=off, noise reduction=off, AGC=fast, RF gain=100%, squelch=open, attenuator=off unless the front end is overloading, preamp=off, scope output=on
+   10 m  | CW main street | auto notch=off, manual notch=off, noise blanker=off, noise reduction=off, AGC=fast, RF gain=100%, squelch=open, attenuator=off unless the front end is overloading, preamp=off, scope output=on
+   10 m  | QRP watering hole | auto notch=off, manual notch=off, noise blanker=off, noise reduction=off, AGC=fast, RF gain=100%, squelch=open, attenuator=off unless the front end is overloading, preamp=off, scope output=on
+
+
+  Passed Hamlet.RadioEngine.Tests.Explore.EveryModeAnswersForEverySettingTests.TheCoverageTableIsReported [1 ms]
+  Standard Output Messages:
+   block            | stated | deferred | absent
+   -----------------|--------|----------|-------
+   CW DX            |     10 |        0 |      3
+       absent: mode and data flag
+       absent: filter slot
+       absent: filter width
+   CW               |     10 |        0 |      3
+       absent: mode and data flag
+       absent: filter slot
+       absent: filter width
+   QRP              |     10 |        0 |      3
+       absent: mode and data flag
+       absent: filter slot
+       absent: filter width
+   FT8              |      3 |        1 |      9
+       absent: mode and data flag
+       absent: filter slot
+       absent: filter width
+       absent: manual notch
+       absent: preamp
+       absent: attenuator
+       absent: RF gain
+       absent: squelch
+       absent: scope output
+   FT4              |      3 |        1 |      9
+       absent: mode and data flag
+       absent: filter slot
+       absent: filter width
+       absent: manual notch
+       absent: preamp
+       absent: attenuator
+       absent: RF gain
+       absent: squelch
+       absent: scope output
+
+
+  Passed Hamlet.RadioEngine.Tests.Explore.TheBlockStatesWhatTheModeNeedsTests.EveryModeStatingConditionsIsAModeSomeBlockIsWorkedIn [1 ms]
+  Standard Output Messages:
+   CW is worked somewhere: True
+   FT8 is worked somewhere: True
+   FT4 is worked somewhere: True
+   CW DX is worked somewhere: True
+   QRP is worked somewhere: True
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.HamletSaysWhatItChangedTests.WhatHisOwnHandIsHoldingIsSaidToBeHis [< 1 ms]
+  Standard Output Messages:
+   Your noise blanker is on and I have left it there, because you moved it after I last set it.
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.HamletSaysWhatItChangedTests.WhatCouldNotBeDoneIsSaidRatherThanLeftOut [< 1 ms]
+  Standard Output Messages:
+   I asked for the noise blanker to be off and the radio did not confirm it, so I do not know where it is now. I could not read the noise reduction, so I have not touched it. The AGC usually wants to be slow here, because dozens of stations transmit together here and the gain would ride up and down under the loudest of them, and that is not settled well enough for me to change it on your radio. Your scope span wants to be 3 kHz across, because a scope showing a couple of hundred kilohertz draws the whole block about seven pixels wide, and that is one I cannot set from here.
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.HamletSaysWhatItChangedTests.OnlyWhatChangedIsMentionedAndTheReasonComesWithIt [< 1 ms]
+  Standard Output Messages:
+   I turned the noise blanker off because it chops up the steady tones this mode sends, and turned the auto notch off because it hunts steady carriers and everything in this block is one.
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.HamletSaysWhatItChangedTests.NothingToSayIsARealAnswer [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.HamletSaysWhatItChangedTests.TheComposedSentenceKeepsTheVoiceRule [< 1 ms]
+  Standard Output Messages:
+   I turned the noise blanker off because it chops up the steady tones this mode sends, turned the noise reduction off because it is built for a human voice and it mangles the faint carriers a decoder is listening for, turned the auto notch off because it hunts steady carriers and everything in this block is one, set the AGC to slow because dozens of stations transmit together here and the gain would ride up and down under the loudest of them, and set the scope span to 3 kHz across because a scope showing a couple of hundred kilohertz draws the whole block about seven pixels wide. Your noise blanker is on and I have left it there, because you moved it after I last set it. Your noise reduction is on and I have left it there, because you moved it after I last set it. Your auto notch is on and I have left it there, because you moved it after I last set it. Your AGC is on and I have left it there, because you moved it after I last set it. Your scope span is on and I have left it there, because you moved it after I last set it. The noise blanker usually wants to be off here, because it chops up the steady tones this mode sends, and that is not settled well enough for me to change it on your radio. The noise reduction usually wants to be off here, because it is built for a human voice and it mangles the faint carriers a decoder is listening for, and that is not settled well enough for me to change it on your radio. The auto notch usually wants to be off here, because it hunts steady carriers and everything in this block is one, and that is not settled well enough for me to change it on your radio. The AGC usually wants to be slow here, because dozens of stations transmit together here and the gain would ride up and down under the loudest of them, and that is not settled well enough for me to change it on your radio. Your scope span wants to be 3 kHz across, because a scope showing a couple of hundred kilohertz draws the whole block about seven pixels wide, and that is one I cannot set from here.
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.TheReceiveGainIsReadOnItsOwnScaleTests.AGainTurnedDownIsSaidAsThePercentTheRadioReads [77 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.RigReadTests.EachSettingParsesToTheManualsOwnWords(field: SquelchStatus, command: 21, subCommand: 5, value: 1, expected: "open") [76 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.AReadIsAnsweredOnlyByItsAnswerTests.AWriteIsTheThingThatTakesAnAcknowledgement [76 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.TheBannerSaysWhatTheRadioReadBackTests.AHeldReadBackIsStatedWithItsTime(rawAtStart: 200) [62 ms]
+  Standard Output Messages:
+ banner: I asked for the RF gain to be 100%, and the radio read it back as 98% at 18:25:33.
+ hover:  I asked for the RF gain to be 100%, and the radio read it back as 98% at 18:25:33.
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.RigReadTests.EachSettingParsesToTheManualsOwnWords(field: ManualNotch, command: 22, subCommand: 72, value: 0, expected: "off") [1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.TheScopeOutputIsACwConditionTests.AnFt8TuneInLeavesTheScopeOutputAlone [81 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.RigReadTests.EachSettingParsesToTheManualsOwnWords(field: TransmitStatus, command: 28, subCommand: 0, value: 0, expected: "receiving") [1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.EveryMorseBlockSetsWhatCwSetsTests.At7030ThePreampEndsAtTheRowsValue [82 ms]
+  Standard Output Messages:
+ QRP watering hole (QRP) states 10 conditions; preamp now 0
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.TheBannerSaysWhatTheRadioReadBackTests.AHeldReadBackIsStatedWithItsTime(rawAtStart: 108) [1 ms]
+  Standard Output Messages:
+ banner: I asked for the RF gain to be 100%, and the radio read it back as 98% at 18:25:33.
+ hover:  I asked for the RF gain to be 100%, and the radio read it back as 98% at 18:25:33.
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.ThePreampIsWhatTheManualSaysTests.OverloadingItIsOff(hz: 14050000, start: 1) [62 ms]
+  Standard Output Messages:
+ 14.050 MHz (CW), preamp 1 before, overflow overloading: wrote [0], filed Changed, radio now preamp 0
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.TheBannerSaysWhatTheRadioReadBackTests.WithNoReadBackTheOldSentenceStandsUnchanged [< 1 ms]
+  Standard Output Messages:
+ banner: I asked for the RF gain to be 100% and the radio did not confirm it, so I do not know where it is now.
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.RigReadTests.EachSettingParsesToTheManualsOwnWords(field: Attenuator, command: 17, subCommand: 255, value: 32, expected: "20 dB") [1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.TheOperatorsHandStandsTests.ThePreampHeSetOnStaysOn(startedAt: 0) [84 ms]
+  Standard Output Messages:
+ preamp 0 at first; on by hand; second tune-in LeftToTheOperator, radio now 1
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.TheOperatorsHandCrossesTheMorseBlocksTests.ABandChangeStillReArmsIt [84 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.AValueAlreadyRightIsNotWrittenTests.ACwTuneInOnARadioAlreadyRightWritesNothing(hz: 50050000) [84 ms]
+  Standard Output Messages:
+   auto notch       AlreadyRight   was=off
+   manual notch     AlreadyRight   was=off
+   noise blanker    AlreadyRight   was=off
+   noise reduction  AlreadyRight   was=off
+   AGC              AlreadyRight   was=FAST
+   RF gain          AlreadyRight   was=100%
+   squelch          AlreadyRight   was=0%
+   attenuator       AlreadyRight   was=off
+   preamp           AlreadyRight   was=off
+   scope output     AlreadyRight   was=on
+ fields written: 0
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.ThePreampFollowsItsOwnTextTests.At7030ThePreampIsWrittenOffOrLeftOff(start: 2, expected: [0]) [84 ms]
+  Standard Output Messages:
+ 7.030 MHz, preamp 2 before: wrote [0], radio now preamp 0
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.OneVoicePerFieldTests.TheAdviceLeavesTheModesFieldsAlone(hz: 14074000, mode: "FT8") [75 ms]
+  Standard Output Messages:
+   AutoNotch        would change False The automatic notch is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions.
+   NoiseReduction   would change False The noise reduction is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions.
+   NoiseBlanker     would change False The noise blanker is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions.
+   Agc              would change False The gain control is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions.
+   FilterBandwidth  would change False This is not Morse, so Hamlet is leaving the filter alone.
+   Preamp           would change False The preamp is off, which is how you run it.
+   RfGain           would change False The receive gain is already open all the way, so there is nothing to do there.
+   AccUsbAfLevel    would change False Hamlet could not read the level the radio sends down the USB cable, so it is leaving it alone.
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.RigReadTests.EachSettingParsesToTheManualsOwnWords(field: NoiseReduction, command: 22, subCommand: 64, value: 0, expected: "off") [2 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.ThePreampIsWhatTheManualSaysTests.OverloadingItIsOff(hz: 14050000, start: 2) [2 ms]
+  Standard Output Messages:
+ 14.050 MHz (CW), preamp 2 before, overflow overloading: wrote [0], filed Changed, radio now preamp 0
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.TheScopeOutputIsACwConditionTests.TheOperatorsOffStandsAtTheNextTuneIn [5 ms]
+  Standard Output Messages:
+ second tune-in: LeftToTheOperator, writes 0
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.AValueAlreadyRightIsNotWrittenTests.ACwTuneInOnARadioAlreadyRightWritesNothing(hz: 7030000) [2 ms]
+  Standard Output Messages:
+   auto notch       AlreadyRight   was=off
+   manual notch     AlreadyRight   was=off
+   noise blanker    AlreadyRight   was=off
+   noise reduction  AlreadyRight   was=off
+   AGC              AlreadyRight   was=FAST
+   RF gain          AlreadyRight   was=100%
+   squelch          AlreadyRight   was=0%
+   attenuator       AlreadyRight   was=off
+   preamp           AlreadyRight   was=off
+   scope output     AlreadyRight   was=on
+ fields written: 0
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.ThePreampFollowsTheOverloadTests.TheRealMorseBlockFollowsNothing [88 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.RigReadTests.EachSettingParsesToTheManualsOwnWords(field: Split, command: 15, subCommand: 255, value: 1, expected: "on") [1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.TheOperatorsHandStandsTests.ThePreampHeSetOnStaysOn(startedAt: 1) [4 ms]
+  Standard Output Messages:
+ preamp 1 at first; on by hand; second tune-in LeftToTheOperator, radio now 1
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.ThePreampFollowsItsOwnTextTests.At7030ThePreampIsWrittenOffOrLeftOff(start: 0, expected: []) [4 ms]
+  Standard Output Messages:
+ 7.030 MHz, preamp 0 before: wrote [], radio now preamp 0
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.TheTuneInSetsOnlyWhatIsInTheWayTests.WhatIsInTheWayIsChangedAndWhatIsAlreadyRightIsNot [74 ms]
+  Standard Output Messages:
+   noise blanker   Changed            was=on now=off
+   noise reduction AlreadyRight       was=off now=off
+   auto notch      Changed            was=on now=off
+   AGC             SpokenOnly         was=- now=-
+   scope span      SpokenOnly         was=- now=-
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.ThePreampIsWhatTheManualSaysTests.OverloadingItIsOff(hz: 28050000, start: 1) [3 ms]
+  Standard Output Messages:
+ 28.050 MHz (CW), preamp 1 before, overflow overloading: wrote [0], filed Changed, radio now preamp 0
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.TheReceiveGainIsReadOnItsOwnScaleTests.AGainAtFullIsAlreadyOpenOnceHeHasMovedOn [12 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.EveryMorseBlockSetsWhatCwSetsTests.EnteringMorseHereSetsWhatTheCwBlockSets(hz: 7030000) [8 ms]
+  Standard Output Messages:
+ 7.030 MHz is QRP watering hole (QRP); beside CW main street (CW) at the same dial
+   auto notch       here AlreadyRight       now off        | CW block AlreadyRight       now off
+   manual notch     here AlreadyRight       now off        | CW block AlreadyRight       now off
+   noise blanker    here Changed            now off        | CW block Changed            now off
+   noise reduction  here AlreadyRight       now off        | CW block AlreadyRight       now off
+   AGC              here Changed            now FAST       | CW block Changed            now FAST
+   RF gain          here AlreadyRight       now 100%       | CW block AlreadyRight       now 100%
+   squelch          here AlreadyRight       now 0%         | CW block AlreadyRight       now 0%
+   attenuator       here AlreadyRight       now off        | CW block AlreadyRight       now off
+   preamp           here Changed            now off        | CW block Changed            now off
+   scope output     here AlreadyRight       now on         | CW block AlreadyRight       now on
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.OneVoicePerFieldTests.TheAdviceLeavesTheModesFieldsAlone(hz: 14050000, mode: "CW") [4 ms]
+  Standard Output Messages:
+   AutoNotch        would change False The automatic notch is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions.
+   NoiseReduction   would change False The noise reduction is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions.
+   NoiseBlanker     would change False The noise blanker is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions.
+   Agc              would change False The gain control is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions.
+   FilterBandwidth  would change False Hamlet could not read the filter width, so it is leaving it alone.
+   Preamp           would change False The preamp is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions.
+   RfGain           would change False The receive gain is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions.
+   AccUsbAfLevel    would change False Hamlet could not read the level the radio sends down the USB cable, so it is leaving it alone.
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.AValueAlreadyRightIsNotWrittenTests.ACwTuneInOnARadioAlreadyRightWritesNothing(hz: 14050000) [3 ms]
+  Standard Output Messages:
+   auto notch       AlreadyRight   was=off
+   manual notch     AlreadyRight   was=off
+   noise blanker    AlreadyRight   was=off
+   noise reduction  AlreadyRight   was=off
+   AGC              AlreadyRight   was=FAST
+   RF gain          AlreadyRight   was=100%
+   squelch          AlreadyRight   was=0%
+   attenuator       AlreadyRight   was=off
+   preamp           AlreadyRight   was=off
+   scope output     AlreadyRight   was=on
+ fields written: 0
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.TheBannerSaysWhatTheRadioReadBackTests.TraceWhatTheBannerCanSee(rawAtStart: 108) [7 ms]
+  Standard Output Messages:
+ radio's RF gain at start, raw 108
+ condition: control=RF gain wanted=255 wantedText=100%
+ read before: number=42 text=42% at=22:25:34.001 source=CI-V 14 02
+ writes to 14 02: 255
+ read-back now: number=100 text=100% at=22:25:34.004 source=CI-V 14 02
+ result: outcome=Changed was=42% now=100% nowAt=
+ banner: 
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.RigReadTests.EachSettingParsesToTheManualsOwnWords(field: AutoNotch, command: 22, subCommand: 65, value: 1, expected: "on") [2 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.TheOperatorsHandCrossesTheMorseBlocksTests.HisPreampStandsFromTheCwBlockIntoTheQrpBlock(fromHz: 14050000, toHz: 14060000, byHand: 1) [15 ms]
+  Standard Output Messages:
+ CW main street at 14.050: preamp Changed, now off; he sets it to 1; QRP watering hole at 14.060: preamp LeftToTheOperator, radio now 1, writes 
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.TheTuneInSetsOnlyWhatIsInTheWayTests.ArrivingAgainWithNothingChangedSendsNothing [9 ms]
+  Standard Output Messages:
+   noise blanker   AlreadyRight       was=off now=off
+   noise reduction AlreadyRight       was=off now=off
+   auto notch      AlreadyRight       was=off now=off
+   AGC             SpokenOnly         was=- now=-
+   scope span      SpokenOnly         was=- now=-
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.ThePreampFollowsItsOwnTextTests.At7030ThePreampIsWrittenOffOrLeftOff(start: 1, expected: [0]) [9 ms]
+  Standard Output Messages:
+ 7.030 MHz, preamp 1 before: wrote [0], radio now preamp 0
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.TheScopeOutputIsACwConditionTests.ACwTuneInTurnsTheScopeOutputOnAndTheStreamListens [13 ms]
+  Standard Output Messages:
+ scope output: Changed, was off, now on; writes 1; radio holds 1; stream running True
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.TheOperatorsHandStandsTests.TheGainHeBackedOffStaysBackedOff [11 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.ThePreampIsWhatTheManualSaysTests.OverloadingItIsOff(hz: 7030000, start: 1) [9 ms]
+  Standard Output Messages:
+ 7.030 MHz (QRP), preamp 1 before, overflow overloading: wrote [0], filed Changed, radio now preamp 0
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.TheBannerSaysWhatTheRadioReadBackTests.TraceWhatTheBannerCanSee(rawAtStart: 255) [7 ms]
+  Standard Output Messages:
+ radio's RF gain at start, raw 255
+ condition: control=RF gain wanted=255 wantedText=100%
+ read before: number=100 text=100% at=22:25:34.015 source=CI-V 14 02
+ writes to 14 02: 
+ read-back now: number=100 text=100% at=22:25:34.016 source=CI-V 14 02
+ result: outcome=AlreadyRight was=100% now=100% nowAt=
+ banner: 
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.OneVoicePerFieldTests.TheAdviceLeavesTheModesFieldsAlone(hz: 7030000, mode: "CW") [9 ms]
+  Standard Output Messages:
+   AutoNotch        would change False The automatic notch is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions.
+   NoiseReduction   would change False The noise reduction is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions.
+   NoiseBlanker     would change False The noise blanker is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions.
+   Agc              would change False The gain control is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions.
+   FilterBandwidth  would change False Hamlet could not read the filter width, so it is leaving it alone.
+   Preamp           would change False The preamp is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions.
+   RfGain           would change False The receive gain is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions.
+   AccUsbAfLevel    would change False Hamlet could not read the level the radio sends down the USB cable, so it is leaving it alone.
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.RigReadTests.EachSettingParsesToTheManualsOwnWords(field: BreakIn, command: 22, subCommand: 71, value: 2, expected: "full") [2 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.OneVoicePerFieldTests.WithNoTuneInTheAdviceStillSpeaks [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.EveryMorseBlockSetsWhatCwSetsTests.EnteringMorseHereSetsWhatTheCwBlockSets(hz: 14010000) [10 ms]
+  Standard Output Messages:
+ 14.010 MHz is CW fast lane (CW DX); beside CW main street (CW) at the same dial
+   auto notch       here AlreadyRight       now off        | CW block AlreadyRight       now off
+   manual notch     here AlreadyRight       now off        | CW block AlreadyRight       now off
+   noise blanker    here Changed            now off        | CW block Changed            now off
+   noise reduction  here AlreadyRight       now off        | CW block AlreadyRight       now off
+   AGC              here Changed            now FAST       | CW block Changed            now FAST
+   RF gain          here AlreadyRight       now 100%       | CW block AlreadyRight       now 100%
+   squelch          here AlreadyRight       now 0%         | CW block AlreadyRight       now 0%
+   attenuator       here AlreadyRight       now off        | CW block AlreadyRight       now off
+   preamp           here Changed            now off        | CW block Changed            now off
+   scope output     here AlreadyRight       now on         | CW block AlreadyRight       now on
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.TheTuneInSetsOnlyWhatIsInTheWayTests.ABlockThatStatesNothingProducesNoWriteAtAll [2 ms]
+  Standard Output Messages:
+   the dial is in PSK31 ribbons (PSK31, Digital)
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.OneVoicePerFieldTests.TheObservationsDoNotObjectToWhatTheSetupOwns [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.TheOperatorsHandCrossesTheMorseBlocksTests.HisPreampStandsFromTheCwBlockIntoTheQrpBlock(fromHz: 7025000, toHz: 7030000, byHand: 1) [2 ms]
+  Standard Output Messages:
+ CW main street at 7.025: preamp Changed, now off; he sets it to 1; QRP watering hole at 7.030: preamp LeftToTheOperator, radio now 1, writes 
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.AValueAlreadyRightIsNotWrittenTests.TheRfGainBelowFullIsWrittenAndConfirmed [10 ms]
+  Standard Output Messages:
+ radio at raw 108: wrote [255], filed Changed, was 42%, now 100%
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.ThePreampFollowsItsOwnTextTests.At14050ThePreampIsWrittenOff(start: 2) [3 ms]
+  Standard Output Messages:
+ 14.050 MHz, preamp 2 before: wrote [0], radio now preamp 0
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.ThePreampIsWhatTheManualSaysTests.OnEveryHfBandItIsOff(hz: 21050000, start: 1) [1 ms]
+  Standard Output Messages:
+ 21.050 MHz (CW), preamp 1 before, overflow not overloading: wrote [0], filed Changed, radio now preamp 0
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.TheOperatorsHandStandsTests.ABandChangeReArmsIt [2 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.RigReadTests.EachSettingParsesToTheManualsOwnWords(field: NoiseBlanker, command: 22, subCommand: 34, value: 1, expected: "on") [1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.EveryMorseBlockSetsWhatCwSetsTests.EnteringMorseHereSetsWhatTheCwBlockSets(hz: 14050000) [2 ms]
+  Standard Output Messages:
+ 14.050 MHz is CW main street (CW); beside CW main street (CW) at the same dial
+   auto notch       here AlreadyRight       now off        | CW block AlreadyRight       now off
+   manual notch     here AlreadyRight       now off        | CW block AlreadyRight       now off
+   noise blanker    here Changed            now off        | CW block Changed            now off
+   noise reduction  here AlreadyRight       now off        | CW block AlreadyRight       now off
+   AGC              here Changed            now FAST       | CW block Changed            now FAST
+   RF gain          here AlreadyRight       now 100%       | CW block AlreadyRight       now 100%
+   squelch          here AlreadyRight       now 0%         | CW block AlreadyRight       now 0%
+   attenuator       here AlreadyRight       now off        | CW block AlreadyRight       now off
+   preamp           here Changed            now off        | CW block Changed            now off
+   scope output     here AlreadyRight       now on         | CW block AlreadyRight       now on
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.AValueAlreadyRightIsNotWrittenTests.TheRfGainAtFullIsNotWritten [1 ms]
+  Standard Output Messages:
+ radio at raw 255: wrote [], filed AlreadyRight, was 100%, now 100%
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.ThePreampFollowsItsOwnTextTests.At14050ThePreampIsWrittenOff(start: 1) [1 ms]
+  Standard Output Messages:
+ 14.050 MHz, preamp 1 before: wrote [0], radio now preamp 0
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.RigReadTests.EachSettingParsesToTheManualsOwnWords(field: Preamp, command: 22, subCommand: 2, value: 2, expected: "preamp 2") [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.ThePreampIsWhatTheManualSaysTests.OnEveryHfBandItIsOff(hz: 14050000, start: 2) [1 ms]
+  Standard Output Messages:
+ 14.050 MHz (CW), preamp 2 before, overflow not overloading: wrote [0], filed Changed, radio now preamp 0
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.ThePreampIsWhatTheManualSaysTests.OnEveryHfBandItIsOff(hz: 28050000, start: 1) [< 1 ms]
+  Standard Output Messages:
+ 28.050 MHz (CW), preamp 1 before, overflow not overloading: wrote [0], filed Changed, radio now preamp 0
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.AValueAlreadyRightIsNotWrittenTests.TheRigConfirmsALevelOnTheScaleItReads [1 ms]
+  Standard Output Messages:
+ outcome Confirmed, read back -
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.RigReadTests.TheSMeterParsesAgainstTheManualsAnchors(high: 2, low: 65, expected: "S9+60") [1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.ThePreampIsWhatTheManualSaysTests.OnEveryHfBandItIsOff(hz: 10110000, start: 1) [< 1 ms]
+  Standard Output Messages:
+ 10.110 MHz (QRP), preamp 1 before, overflow not overloading: wrote [0], filed Changed, radio now preamp 0
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.RigReadTests.TheSMeterParsesAgainstTheManualsAnchors(high: 0, low: 0, expected: "S0") [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.ThePreampIsWhatTheManualSaysTests.OnEveryHfBandItIsOff(hz: 3530000, start: 1) [< 1 ms]
+  Standard Output Messages:
+ 3.530 MHz (CW), preamp 1 before, overflow not overloading: wrote [0], filed Changed, radio now preamp 0
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.WhatEnteringAModeSetsTests.PrintTheTable [111 ms]
+  Standard Output Messages:
+ modes the conditions file speaks for: CW, CW DX, FT4, FT8, QRP
+   FT4 AGC: confirmed false, stated and not written (asks slow, confirm tim)
+   FT8 AGC: confirmed false, stated and not written (asks slow, confirm tim)
+ 
+ === CW at 14.050 MHz
+ the app's block here: CW main street (CW, 14025000-14059999), which states 10 conditions
+   control         asks                                        radio said  write sent  filed as           now       mentioned by                            asks him to change it after
+   auto notch      off [0]                                     off         none        AlreadyRight       off       setup+advice+observations               no
+   manual notch    off [0]                                     off         none        AlreadyRight       off       setup                                   no
+   noise blanker   off [0]                                     on          0           Changed            off       setup+advice+observations+obstructions  no
+   noise reduction off [0]                                     off         none        AlreadyRight       off       setup+advice+observations+obstructions  no
+   AGC             fast [1]                                    MID         1           Changed            FAST      setup+advice                            no
+   RF gain         100% [255]                                  100%        none        AlreadyRight       100%      setup+advice                            no
+   squelch         open [0]                                    0%          none        AlreadyRight       0%        setup+observations                      no
+   attenuator      off unless the front end is overloading...  off         none        AlreadyRight       off       setup+observations+panel                no
+   preamp          off [0]                                     off         none        AlreadyRight       off       setup+advice+observations+panel         no
+   scope output    on [1]                                      unknown     none        AlreadyRight       unknown   setup                                   no
+   panel (MainWindowViewModel.OverflowAdviceFor): speaks on preamp and attenuator only while the overflow reads overloading; overflow now not overloading, so it says nothing
+ 
+ === CW at 7.030 MHz
+ the app's block here: QRP watering hole (QRP, 7030000-7039999), which states 10 conditions
+   control         asks                                        radio said  write sent  filed as           now       mentioned by                            asks him to change it after
+   auto notch      off [0]                                     off         none        AlreadyRight       off       setup+advice+observations               no
+   manual notch    off [0]                                     off         none        AlreadyRight       off       setup                                   no
+   noise blanker   off [0]                                     on          0           Changed            off       setup+advice+observations+obstructions  no
+   noise reduction off [0]                                     off         none        AlreadyRight       off       setup+advice+observations+obstructions  no
+   AGC             fast [1]                                    MID         1           Changed            FAST      setup+advice                            no
+   RF gain         100% [255]                                  100%        none        AlreadyRight       100%      setup+advice                            no
+   squelch         open [0]                                    0%          none        AlreadyRight       0%        setup+observations                      no
+   attenuator      off unless the front end is overloading...  off         none        AlreadyRight       off       setup+observations+panel                no
+   preamp          off [0]                                     off         none        AlreadyRight       off       setup+advice+observations+panel         no
+   scope output    on [1]                                      unknown     none        AlreadyRight       unknown   setup                                   no
+   panel (MainWindowViewModel.OverflowAdviceFor): speaks on preamp and attenuator only while the overflow reads overloading; overflow now not overloading, so it says nothing
+ 
+ === CW at 14.050 MHz, the front end reading overloading
+ the app's block here: CW main street (CW, 14025000-14059999), which states 10 conditions
+   control         asks                                        radio said  write sent  filed as           now       mentioned by                            asks him to change it after
+   auto notch      off [0]                                     off         none        AlreadyRight       off       setup+advice+observations               no
+   manual notch    off [0]                                     off         none        AlreadyRight       off       setup                                   no
+   noise blanker   off [0]                                     on          0           Changed            off       setup+advice+observations+obstructions  no
+   noise reduction off [0]                                     off         none        AlreadyRight       off       setup+advice+observations+obstructions  no
+   AGC             fast [1]                                    MID         1           Changed            FAST      setup+advice                            no
+   RF gain         100% [255]                                  100%        none        AlreadyRight       100%      setup+advice                            no
+   squelch         open [0]                                    0%          none        AlreadyRight       0%        setup+observations                      no
+   attenuator      off unless the front end is overloading...  off         none        NotConfirmed       off       setup+observations+panel                no
+   preamp          off [0]                                     off         none        AlreadyRight       off       setup+advice+observations+panel         no
+   scope output    on [1]                                      unknown     none        AlreadyRight       unknown   setup                                   no
+   panel (MainWindowViewModel.OverflowAdviceFor): speaks on preamp and attenuator only while the overflow reads overloading; overflow now overloading, the mode owns the preamp and the attenuator, so it states the overload and names no knob
+ 
+ === FT8 at 14.074 MHz
+ the app's block here: FT8 city (FT8, 14074000-14076999), which states 5 conditions
+   control         asks                                        radio said  write sent  filed as           now       mentioned by                            asks him to change it after
+   noise blanker   off [0]                                     on          0           Changed            off       setup+advice+observations+obstructions  no
+   noise reduction off [0]                                     off         none        AlreadyRight       off       setup+advice+observations+obstructions  no
+   auto notch      off [0]                                     off         none        AlreadyRight       off       setup+advice+observations               no
+   AGC             slow [3, unconfirmed]                       MID         none        SpokenOnly         MID       setup+advice                            no
+   scope span      3 kHz across [-]                            -           none        SpokenOnly         -         setup                                   no
+   panel (MainWindowViewModel.OverflowAdviceFor): speaks on preamp and attenuator only while the overflow reads overloading; overflow now not overloading, so it says nothing
+ 
+ === FT4 at 14.080 MHz
+ the app's block here: FT4 sprint (FT4, 14080000-14082999), which states 5 conditions
+   control         asks                                        radio said  write sent  filed as           now       mentioned by                            asks him to change it after
+   noise blanker   off [0]                                     on          0           Changed            off       setup+advice+observations+obstructions  no
+   noise reduction off [0]                                     off         none        AlreadyRight       off       setup+advice+observations+obstructions  no
+   auto notch      off [0]                                     off         none        AlreadyRight       off       setup+advice+observations               no
+   AGC             slow [3, unconfirmed]                       MID         none        SpokenOnly         MID       setup+advice                            no
+   scope span      3 kHz across [-]                            -           none        SpokenOnly         -         setup                                   no
+   panel (MainWindowViewModel.OverflowAdviceFor): speaks on preamp and attenuator only while the overflow reads overloading; overflow now not overloading, so it says nothing
+ 
+ === already right, CW row at 14.050 MHz: fields written when the radio was already right: 0
+ 
+ === already right, CW row at 7.030 MHz: fields written when the radio was already right: 0
+ 
+ === the hand at 14.050 MHz, preamp already off before the first tune-in
+   first tune-in filed the preamp AlreadyRight; memory holds preamp: 0
+   he sets it to preamp 1 by hand; second tune-in filed LeftToTheOperator, wrote preamp nothing, radio now preamp 1
+ 
+ === the hand at 14.050 MHz, preamp 1 before the first tune-in
+   first tune-in filed the preamp Changed; memory holds preamp: 0
+   he sets it to preamp 1 by hand; second tune-in filed LeftToTheOperator, wrote preamp nothing, radio now preamp 1
+ 
+ === work instruction 420: entering Morse in each CW-family block, the radio at preamp 1, AGC mid, noise blanker on, RF gain at full
+ 
+ --- 7.030 MHz, 40 m
+   the app's block here: QRP watering hole (QRP, 7030000-7039999), which states 10 conditions
+   control         this block asks                             radio said  written   filed as           now       owner
+   auto notch      off [0]                                     off         none      AlreadyRight       off       setup
+   manual notch    off [0]                                     off         none      AlreadyRight       off       setup
+   noise blanker   off [0]                                     on          0         Changed            off       setup
+   noise reduction off [0]                                     off         none      AlreadyRight       off       setup
+   AGC             fast [1]                                    MID         1         Changed            FAST      setup
+   RF gain         100% [255]                                  100%        none      AlreadyRight       100%      setup
+   squelch         open [0]                                    0%          none      AlreadyRight       0%        setup
+   attenuator      off unless the front end is overloading...  off         none      AlreadyRight       off       setup
+   preamp          off [0]                                     preamp 1    0         Changed            off       setup
+   scope output    on [1]                                      unknown     none      AlreadyRight       unknown   setup
+ 
+ --- 14.010 MHz, 20 m
+   the app's block here: CW fast lane (CW DX, 14000000-14024999), which states 10 conditions
+   control         this block asks                             radio said  written   filed as           now       owner
+   auto notch      off [0]                                     off         none      AlreadyRight       off       setup
+   manual notch    off [0]                                     off         none      AlreadyRight       off       setup
+   noise blanker   off [0]                                     on          0         Changed            off       setup
+   noise reduction off [0]                                     off         none      AlreadyRight       off       setup
+   AGC             fast [1]                                    MID         1         Changed            FAST      setup
+   RF gain         100% [255]                                  100%        none      AlreadyRight       100%      setup
+   squelch         open [0]                                    0%          none      AlreadyRight       0%        setup
+   attenuator      off unless the front end is overloading...  off         none      AlreadyRight       off       setup
+   preamp          off [0]                                     preamp 1    0         Changed            off       setup
+   scope output    on [1]                                      unknown     none      AlreadyRight       unknown   setup
+ 
+ --- 14.050 MHz, 20 m
+   the app's block here: CW main street (CW, 14025000-14059999), which states 10 conditions
+   control         this block asks                             radio said  written   filed as           now       owner
+   auto notch      off [0]                                     off         none      AlreadyRight       off       setup
+   manual notch    off [0]                                     off         none      AlreadyRight       off       setup
+   noise blanker   off [0]                                     on          0         Changed            off       setup
+   noise reduction off [0]                                     off         none      AlreadyRight       off       setup
+   AGC             fast [1]                                    MID         1         Changed            FAST      setup
+   RF gain         100% [255]                                  100%        none      AlreadyRight       100%      setup
+   squelch         open [0]                                    0%          none      AlreadyRight       0%        setup
+   attenuator      off unless the front end is overloading...  off         none      AlreadyRight       off       setup
+   preamp          off [0]                                     preamp 1    0         Changed            off       setup
+   scope output    on [1]                                      unknown     none      AlreadyRight       unknown   setup
+ 
+ === CW-family blocks that state receiver conditions: 20 of 20
+   CW DX  4 of 4
+   CW     9 of 9
+   QRP    7 of 7
+ 
+ === CW preamp row: asks off [0], condition none, 0 band stretches, overload clause none
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.RigReadTests.TheSMeterParsesAgainstTheManualsAnchors(high: 1, low: 32, expected: "S9") [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.EveryMorseBlockSetsWhatCwSetsTests.AnUnconfirmedConditionIsStillNotWritten [4 ms]
+  Standard Output Messages:
+ 7.030 QRP    states 10, unconfirmed 0: ; fields written NoiseBlanker,Agc,Preamp
+ 14.010 CW DX  states 10, unconfirmed 0: ; fields written NoiseBlanker,Agc,Preamp
+ 14.050 CW     states 10, unconfirmed 0: ; fields written NoiseBlanker,Agc,Preamp
+ 14.074 FT8    states 5, unconfirmed 1: AGC SpokenOnly; fields written NoiseBlanker
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.ThePreampIsWhatTheManualSaysTests.OnEveryHfBandItIsOff(hz: 1810000, start: 1) [< 1 ms]
+  Standard Output Messages:
+ 1.810 MHz (no block, CW row), preamp 1 before, overflow not overloading: wrote [0], filed Changed, radio now preamp 0
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.EveryMorseBlockSetsWhatCwSetsTests.NoMorseBlockCarriesAPreampOverloadRule [< 1 ms]
+  Standard Output Messages:
+ CW     preamp wanted 0, condition '', stretches 0, when overloading -
+ CW DX  preamp wanted 0, condition '', stretches 0, when overloading -
+ QRP    preamp wanted 0, condition '', stretches 0, when overloading -
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.RigReadTests.TheSMeterParsesAgainstTheManualsAnchors(high: 0, low: 103, expected: "S5") [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.ThePreampIsWhatTheManualSaysTests.OnEveryHfBandItIsOff(hz: 14050000, start: 1) [< 1 ms]
+  Standard Output Messages:
+ 14.050 MHz (CW), preamp 1 before, overflow not overloading: wrote [0], filed Changed, radio now preamp 0
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.ThePreampIsWhatTheManualSaysTests.OnEveryHfBandItIsOff(hz: 18080000, start: 1) [< 1 ms]
+  Standard Output Messages:
+ 18.080 MHz (CW), preamp 1 before, overflow not overloading: wrote [0], filed Changed, radio now preamp 0
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.EveryMorseBlockSetsWhatCwSetsTests.EveryMorseBlockStatesTheCwRow [2 ms]
+  Standard Output Messages:
+ CW-family blocks stating the CW row: 20 of 20
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.ThePreampIsWhatTheManualSaysTests.OnEveryHfBandItIsOff(hz: 7030000, start: 2) [< 1 ms]
+  Standard Output Messages:
+ 7.030 MHz (QRP), preamp 2 before, overflow not overloading: wrote [0], filed Changed, radio now preamp 0
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.ThePreampIsWhatTheManualSaysTests.ARadioAlreadyOffIsLeftAlone(hz: 7030000) [< 1 ms]
+  Standard Output Messages:
+ 7.030 MHz (QRP), preamp 0 before, overflow not overloading: wrote [], filed AlreadyRight, radio now preamp 0
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.ThePreampIsWhatTheManualSaysTests.ARadioAlreadyOffIsLeftAlone(hz: 50100000) [< 1 ms]
+  Standard Output Messages:
+ 50.100 MHz (no block, CW row), preamp 0 before, overflow not overloading: wrote [], filed AlreadyRight, radio now preamp 0
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.ThePreampIsWhatTheManualSaysTests.ARadioAlreadyOffIsLeftAlone(hz: 14050000) [< 1 ms]
+  Standard Output Messages:
+ 14.050 MHz (CW), preamp 0 before, overflow not overloading: wrote [], filed AlreadyRight, radio now preamp 0
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.ThePreampIsWhatTheManualSaysTests.At7030ARadioAtPreamp1IsWrittenOff [1 ms]
+  Standard Output Messages:
+ 7.030 MHz (QRP), preamp 1 before, overflow not overloading: wrote [0], filed Changed, radio now preamp 0
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.ThePreampFollowsTheOverloadTests.AnOverloadThatComesBackOnceThePreampIsOnAgainLeavesItOff [29 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.ThePreampIsWhatTheManualSaysTests.At50MhzItIsOffToo [1 ms]
+  Standard Output Messages:
+ 50.100 MHz (no block, CW row), preamp 2 before, overflow not overloading: wrote [0], filed Changed, radio now preamp 0
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.ThePreampIsWhatTheManualSaysTests.WithTheOverloadUnreadItIsStillWrittenOff [< 1 ms]
+  Standard Output Messages:
+ 14.050 MHz (CW), preamp 1 before, overflow unread: wrote [0], filed Changed, radio now preamp 0
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.ThePreampIsWhatTheManualSaysTests.NoMorseRowCarriesAnOverloadRule(mode: "CW") [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.ThePreampIsWhatTheManualSaysTests.NoMorseRowCarriesAnOverloadRule(mode: "CW DX") [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.ThePreampFollowsTheOverloadTests.ABlockThatDoesNotStateThePreampIsNotFollowed [2 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.ThePreampIsWhatTheManualSaysTests.NoMorseRowCarriesAnOverloadRule(mode: "QRP") [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.ThePreampIsWhatTheManualSaysTests.TheConditionIsTheOwnersRulingAndKeepsTheManualPage [< 1 ms]
+  Standard Output Messages:
+ off
+ The preamp is off for Morse because the owner ruled it so on 2026-09-28 (R98, HM-DEC-191): "I still hate the preamp crap." Off costs a little gain on a faint signal and keeps a loud band from crowding the front end, and he would rather have the second. The radio's manual gives the other side, and it is kept here as history rather than acted on: IC-7300_ENG_FM_12b, page 4-3, calls P.AMP1 the wide dynamic range preamplifier and most effective for the HF low bands, and Icom's published receive sensitivity is quoted with Preamp 1 on from 1.8 to 29.999 MHz, which is why this row asked for preamp 1 from 2026-09-24 (HM-DEC-177) until the owner overrode it for Morse. The data modes do not state the preamp, and what he sets by hand holds until he changes it.
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.ThePreampFollowsTheOverloadTests.AShortBurstWritesNothingAndOneThatHoldsWritesOnce [2 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.ThePreampFollowsTheOverloadTests.NothingIsWrittenWhileTheRadioTransmits [6 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.AReadIsAnsweredOnlyByItsAnswerTests.AReplyToAnotherCommandDoesNotCompleteThisOne [54 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.ThePreampFollowsTheOverloadTests.AtFourteenFiftyHisHandWhileItOverloadsStopsTheFollowing [7 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.ThePreampFollowsTheOverloadTests.AtSevenThirtyAnOverloadThatHoldsTurnsThePreampOffOnce [2 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.AReadIsAnsweredOnlyByItsAnswerTests.ARefusalDoesNotCompleteAFrequencyRead [63 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.AReadIsAnsweredOnlyByItsAnswerTests.AnAcknowledgementDoesNotCompleteAFrequencyRead [62 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.TheTuneInSetsOnlyWhatIsInTheWayTests.AControlTheRadioWillNotReportIsNotWritten [756 ms]
+  Standard Output Messages:
+   noise blanker   NotRead            was=- now=-
+   noise reduction AlreadyRight       was=off now=off
+   auto notch      AlreadyRight       was=off now=off
+   AGC             SpokenOnly         was=- now=-
+   scope span      SpokenOnly         was=- now=-
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.TheTuneInSetsOnlyWhatIsInTheWayTests.AControlTheOperatorMovedHimselfIsLeftAlone [1 ms]
+  Standard Output Messages:
+   noise blanker   LeftToTheOperator  was=on now=on
+   noise reduction AlreadyRight       was=off now=off
+   auto notch      LeftToTheOperator  was=on now=on
+   AGC             SpokenOnly         was=- now=-
+   scope span      SpokenOnly         was=- now=-
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.RigReadTests.AReadThatTimesOutMarksTheValueUnknownWithoutThrowing [765 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.RigReadTests.TheFilterWidthIsRefusedWhenTheModeIsUnknown [1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.RigReadTests.ReadingTheModeAlsoAnswersTheFilter(modeByte: 1, filterByte: 2, mode: "USB", filter: "FIL2") [1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.RigReadTests.ReadingTheModeAlsoAnswersTheFilter(modeByte: 0, filterByte: 1, mode: "LSB", filter: "FIL1") [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.RigReadTests.ReadingTheModeAlsoAnswersTheFilter(modeByte: 5, filterByte: 1, mode: "FM", filter: "FIL1") [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.RigReadTests.ReadingTheModeAlsoAnswersTheFilter(modeByte: 3, filterByte: 3, mode: "CW", filter: "FIL3") [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.RigReadTests.AModeChangeOnTheRadioArrivesWithoutBeingAskedFor [1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.RigReadTests.TheFilterWidthComesBackInHertz [1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.RigReadTests.TheLevelScalesLandOnTheManualsFigures(field: CwPitch, subCommand: 9, high: 0, low: 0, expected: 300) [1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.RigReadTests.TheLevelScalesLandOnTheManualsFigures(field: CwPitch, subCommand: 9, high: 2, low: 85, expected: 900) [1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.RigReadTests.TheLevelScalesLandOnTheManualsFigures(field: KeyerSpeed, subCommand: 12, high: 2, low: 85, expected: 48) [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.RigReadTests.TheLevelScalesLandOnTheManualsFigures(field: KeyerSpeed, subCommand: 12, high: 0, low: 0, expected: 6) [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.RigReadTests.TheLevelScalesLandOnTheManualsFigures(field: CwPitch, subCommand: 9, high: 1, low: 40, expected: 600) [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.RigReadTests.TheTrainingRadioReportsUnsupportedRatherThanInventingValues [1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.RigReadTests.AnUndocumentedFieldSendsNothingAndSaysSo [1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.RigReadTests.AnUndocumentedReplyProducesUnknownRatherThanAGuess [1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.RigReadTests.AReplyToADifferentSubCommandDoesNotAnswerThisRequest [1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.TheRoundTripLandsInTheSamePlaceTests.AutoNotchLeftOnIsCorrectedOnEnteringMorse [3 s]
+  Standard Output Messages:
+   auto notch       Changed            was=on now=off
+   manual notch     NotRead            was=- now=-
+   noise blanker    AlreadyRight       was=off now=off
+   noise reduction  AlreadyRight       was=off now=off
+   AGC              Changed            was=SLOW now=FAST
+   RF gain          NotRead            was=- now=-
+   squelch          NotRead            was=- now=-
+   attenuator       NotRead            was=- now=-
+   preamp           NotRead            was=- now=-
+   scope output     AlreadyRight       was=on now=on
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.NoDetectionNoLettersTests.NothingIsEmittedFromTheSilences [7 s]
+  Standard Output Messages:
+ settled ` <AR>Q CQ DE N,CALL `; in the silences 0: 
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.NoDetectionNoLettersTests.TheDecoderMixesWhereTheDetectorHears [< 1 ms]
+  Standard Output Messages:
+ mixing 675.0 Hz after one hop
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.ThePreampFollowsTheOverloadTests.AnUnreadTransmitFlagWritesNothing [9 s]
+  Passed Hamlet.RadioEngine.Tests.Cw.NoDetectionNoLettersTests.TheDetectorHoldsTheStationThroughItsGaps [4 s]
+  Standard Output Messages:
+ found 4.560 s, tone ends 27.333 s, last keying 28.330 s, hops dropped while the call was still sending 0
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.NoDetectionNoLettersTests.NothingReachesTheScreenWhileTheDetectorSaysNoKeying [6 s]
+  Standard Output Messages:
+ arrived 71, while the detector said no keying 0: 
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.TheRoundTripLandsInTheSamePlaceTests.TenRoundTripsDoNotDrift [41 s]
+  Standard Output Messages:
+ after the first CW tune-in: notch=0 blanker=0 reduction=0 agc=1
+ after ten round trips:      notch=0 blanker=0 reduction=0 agc=1
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.TheRoundTripLandsInTheSamePlaceTests.ASettingNoRowStatesIsLeftAlone [3 s]
+[xUnit.net 00:00:55.15]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Rig.TheRoundTripLandsInTheSamePlaceTests.ComingBackToMorseRestoresWhatMorseNeeds [3 s]
+
+Test Run Successful.
+Total tests: 180
+     Passed: 180
+ Total time: 55.4525 Seconds
+RC=0 WALL=60s

@@ -11381,10 +11381,6 @@ public partial class MainWindowViewModel : ObservableObject
         var detector = _envelope;
         _decoder.KeyingGate = () => detector.Reading.Keying;
 
-        // **AND IT LISTENS WHERE THE DETECTOR HEARS** (work instruction 486): while the detector
-        // says keying, the decoder mixes at the pitch it watches, so tone and mixing agree.
-        _decoder.DetectorPitch = () => detector.Reading.Keying ? detector.WatchedHz : double.NaN;
-
         _audioInput.Start();
 
         AudioInputName = _audioInput.DeviceName;

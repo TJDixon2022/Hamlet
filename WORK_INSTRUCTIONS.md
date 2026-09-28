@@ -1,8 +1,8 @@
-# Work instruction 485 - no detection, no letters
+# Work instruction 486 - the screen tells the truth, and the preamp stops fighting
 
-**Hand run. One unit.** Three changes the owner asked for at the radio. **No test against a
-recording, a fixture, a floor or copied telemetry** (R96). Build, run the app carry-forward line,
-and stop. The owner's report at the radio is the test.
+**Hand run. One unit.** Three things the owner reported at the radio with build 1.13.172.
+**No test against a recording, a fixture, a floor or copied telemetry** (R96). Build, run the
+app carry-forward line, and stop. The owner's report at the radio is the test.
 
 ---
 
@@ -31,126 +31,127 @@ If all five hold, say "Hamlet confirmed" and continue.
 
 ## 1. Rules
 
-- **R96: no test against recorded audio, no fixture, no floor, no copied telemetry.** Verify by
-  building `Hamlet.sln` with warnings as errors and running the app carry-forward line so nothing
-  that worked breaks. A headless test driving synthetic hops written in the test itself is
-  allowed where this instruction asks for one; nothing read from disk.
+- **R96: no test against recorded audio, no fixture, no floor, no copied telemetry.** A headless
+  test driving synthetic hops written in the test itself is allowed; nothing read from disk.
+  Verify by building `Hamlet.sln` with warnings as errors and running the app carry-forward line.
 - Take `SESSION.lock` through `tools\arbiter\lock.bat take`, release it at the end. Write nothing
   to `RUN_LEDGER.md`. Touch nothing under `tools\arbiter\`. Tick nothing in `PHASE_PLAN.md`.
 - One `dotnet test` invocation per line, filtered, with a `timeout`. Never background and poll.
   The app line loses names to the dispatcher loop; re-run once, count neither way.
 - Apostrophes in quoted heredocs break; `;`, `rm` and `git rm` are refused; Python cannot run
-  here; `-m` more than once for a multi-line commit. Scripts go in `.run-unit\unit485-<name>.sh`.
-- Nothing that keys or transmits. Nothing written to the radio.
+  here; `-m` more than once for a multi-line commit. Scripts go in `.run-unit\unit486-<name>.sh`.
+- **Nothing that keys or transmits.** Change three of §4 writes a receive setting to the radio,
+  which §0.2 allows and §12.4 governs: no value is chosen by guess, and the report names every
+  byte that changes.
 - `output.md` at the root, four headings exactly: `## 1. What Claude did`, `## 2. What the owner
   should expect`, `## 3. What you should see`, `## 4. What's blocking us`.
 
 ---
 
-## 2. What the owner reported, 2026-09-28
+## 2. What the owner saw, 2026-09-28, on build 1.13.172
 
-Watching the CW tab on a live band, he sees three different pictures in sequence: **wavy lines**
-while nothing is keying, then **bars for a short time** when something is found, then **floating
-letters with nothing under them.** And in the terminal, a continuous stream - `I EE IEE EE E`,
-`EIES I E F HIH` - on a band where he hears nothing.
+Two screenshots of the CW tab, both with the scope's blocks drawing correctly - flat tops, a
+short block and a long one labelled `242 ms`, which is unit 485's work landing.
 
-**Why, from the tree.** The decoder and the detector are two things that do not talk to each
-other. `CwProbabilisticDecoder` has run continuously since long before the detector existed:
-it mixes at whatever pitch the tracker holds and emits whatever spells a letter, whether or not
-anything is there. `CwEnvelopeDetector` was added to watch, and **has never been wired to gate
-it** - that is criterion 12.4, never built. So the scope's bars stop when the detector loses the
-signal, and the letters keep coming from noise. **Floating letters with no bars beneath them are
-the decoder inventing characters while the detector says nothing is there.**
+1. **The panel says `no keying · mixing 531 Hz`, and the terminal below reads
+   `DE ES E EEE5 SEEEE E`.** Letters arriving while the panel says nothing is there.
+2. **The panel says `tone 675 Hz · mixing 536 Hz`,** and a letter `E` floats with no block under
+   it, while the terminal reads a wall of `E`s, `T`s and fragments.
 
-**His ruling, R97:** *"If it has no detector why are there letters."* No detection, no letters.
+**Why, from unit 485's own report.** The gate it built judges a character by **when its audio was
+heard**, not by what the screen says now: *"It is judged by when the audio was heard, not by when
+it settles, because the settled pass runs seconds behind."* So characters from a stretch when the
+gate was open keep landing in the terminal for seconds after the detector has let go, under a
+panel that already says no keying. **The gate is working as built and not as the owner meant.**
 
----
-
-## 3. The three changes
-
-### One - the scope draws bars only
-
-`CwScopeControl` draws **no level trace, ever.** It draws:
-
-- **a filled block for every mark the detector calls**, on a time axis, its width the mark's
-  duration - a short block for a dit, a long one for a dah, with flat tops;
-- **nothing between marks**;
-- **the letter above the group of blocks it came from**, as unit 480 built it - **and a letter
-  draws only if there are blocks beneath it**;
-- the *tone · mixing* words, unchanged;
-- **when the detector says no keying: an empty panel.** No line, no noise, no letters.
-
-Remove the trace from the frame and from the drawing. Keep the hover texts, reworded for what is
-now drawn.
-
-### Two - the detector holds a station through the gaps
-
-The detector drops keying between characters, which is why the picture flickers between three
-states. Once it has found bars at a pitch, it **stays on that pitch and keeps reporting keying
-through the gaps** until the tone is genuinely gone.
-
-- **Holding:** after keying is found at a pitch, keying stays true while marks keep arriving at
-  that pitch, and through gaps between them.
-- **Releasing:** keying goes false when no mark has arrived at that pitch for a stated hold time.
-  **One second, as a named constant**, with a remark saying it is the longest gap in ordinary
-  sending - a word gap at slow speed - and that it is not fitted to any recording. The author may
-  choose a different figure and must say why in the same terms.
-- While holding, the pitch does not wander: it stays where the marks are.
-
-**Watch it fail first** with synthetic hops written in the test: a keyed tone with ordinary
-character and word gaps. Red when keying drops during a gap; green when it holds across the gaps
-and releases after the tone stops.
-
-### Three - no detection, no letters
-
-**The decoder emits nothing while the detector says no keying.** Wire the detector's keying
-verdict to the decode path:
-
-- while keying is false, the decoder emits no character - no letter, no placeholder, nothing
-  reaches the transcript or the scope;
-- while keying is true, the decoder runs as it does today, mixed where the tracker has it;
-- when keying goes from false to true, the decoder starts fresh: the transcript continues, but
-  nothing held from before the silence is settled into it.
-
-**The decoder's own decisions are not changed** - not the lattice, not the unit estimator, not
-the emission gate. Only whether it is allowed to emit at all.
-
-**Watch it fail first** with synthetic hops in the test: silence, then a keyed tone, then
-silence. Red when characters are emitted during the silences; green when none are.
-
-### And - the top of the window
-
-The owner's layout is **screen 1: the neighborhood panel on the left, the map on the right.**
-That arrangement holds on every path - a frequency chosen in the app, a frequency the radio
-announces, and any order of frequency and mode. **Make the top row's columns depend on the window
-width alone**, never on the mode, the frequency, or how much text the neighborhood panel carries;
-make the panel's text fit its space rather than grow it. Unit 389's sun-map rule stays as it is.
-The sentence *"Your General license covers Morse here"* must not appear on a data-block
-frequency, on any path.
+**And the pitch.** `tone 675 · mixing 536` is the detector finding a station at 675 Hz while the
+decoder reads 139 Hz away. Unit 477's task 2 was to make the tracker take the detector's pitch
+within a hop; **it was never built.** That is why the terminal fills with single-element noise:
+the decoder is reading an empty bin beside the station.
 
 ---
 
-## 4. Record
+## 3. Change one - the screen tells the truth
 
-- `PHASE_OUTCOME.md`, both copies: `## UNIT 485 - STEP 12`, one paragraph.
-- `PHASE_STATUS.md`, both copies: names 485.
+**Nothing reaches the terminal, the leading edge or the scope while the panel says no keying.**
+The test is the screen at that moment, not the audio clock.
+
+- When the detector's keying is false, the decoder emits nothing to any surface. **Characters
+  still in flight from before are dropped, not flushed.**
+- When keying goes true, emission resumes. Nothing held from before the silence is let out.
+- The panel's words and what the terminal shows change together, in the same update.
+
+**Watch it fail first**, headless, with synthetic hops written in the test: a keyed call, then
+silence. Red while any character reaches a surface after keying goes false; green when none does.
+
+**Say in the report what is lost:** the tail of an over, whose last letters settle after the
+detector lets go. That is the cost of the owner's rule and he has ruled it.
+
+## 4. Change two - the decoder listens where the detector hears
+
+**The tracker mixes at the detector's pitch, within a hop of the detector finding it.** This is
+unit 477's task 2, never built.
+
+- When `CwEnvelopeDetector` reports keying at a pitch, `CwToneTracker` mixes at that pitch on the
+  next hop. It does not wait for the survey or the meter.
+- While the detector holds a station through its gaps (unit 485's hold), the pitch holds with it.
+- When the detector lets go, the tracker behaves as it does today.
+
+**Watch it fail first**, headless: a driven detector reporting keying at 675 Hz while the tracker
+holds 536. Red while the tracker stays at 536; green when it moves within a hop.
+
+**The decoder's own decisions are not changed** - not the lattice, not the unit estimator, not the
+emission gate. Only where it is pointed.
+
+## 5. Change three - the preamp stops fighting
+
+The owner: *"The system puts preamp into mode 1 for data - fine - but does not restore it in CW to
+off and worse, keeps putting it at 1 when I manually set it off."*
+
+**Three faults, and the third is his ruling, given here:**
+
+1. **Coming back to CW does not restore what CW wants.** Find what the CW and the data receive
+   conditions in `data\bands\mode-receiver-conditions.json` ask for on 20 m, and why the preamp
+   stays at 1 after data has set it. Name it in the report.
+2. **His hand does not win.** Unit 419 built HM-DEC-056's rule - a value the operator sets himself
+   is not overwritten by a later tune-in of the same mode. It is not holding for the preamp. Find
+   why and fix it, so that once he sets the preamp off by hand it stays off until he changes it or
+   the radio is power-cycled.
+3. **His ruling, R98:** *"I still hate the preamp crap."* **The CW receive condition asks for the
+   preamp off.** This overrides the manual-derived value of HM-DEC-176 for CW only: the manual
+   quotes Icom's sensitivity figures with preamp 1 across HF, and the owner prefers it off. The
+   condition's text says so, cites his ruling, and keeps the manual's reasoning as history.
+   **The data-mode conditions are not changed** - they may still ask for preamp 1 - so returning
+   to CW must actually set it off, which is fault 1's job.
+
+**No value is guessed** (§12.4). The report tables, for CW and for each data mode the conditions
+file speaks for: what is asked, what is written, and whether the operator's own change survives a
+later tune-in.
+
+---
+
+## 6. Record
+
+- `PHASE_OUTCOME.md`, both copies: `## UNIT 486 - STEP 12`, one paragraph.
+- `PHASE_STATUS.md`, both copies: names 486.
 - Patch-bump `Directory.Build.props`.
-- **Append R97 to the rulings section of both `PHASE_PLAN.md` copies** - *no detection, no
-  letters*, in the owner's words. **Touch no checkbox.**
-- `DECISIONS.md`, newest first, HM-DEC-190, headline *The decoder emits nothing while the detector
-  says no keying*, quoting him, and naming that the two have never been wired together.
+- **Append R98 to the rulings section of both `PHASE_PLAN.md` copies** - the preamp off in CW, in
+  the owner's words. **Touch no checkbox.**
+- `DECISIONS.md`, newest first, HM-DEC-191, headline *The preamp is off in CW, and the operator's
+  hand holds*, quoting him, naming that it overrides HM-DEC-176 for CW only.
 
 ---
 
-## 5. Report
+## 7. Report
 
 Section 2, for the owner, in plain words:
 
 - rebuild;
-- on the CW tab with nobody keying: an empty panel and an empty terminal;
-- when somebody keys: blocks appear at the mark durations, letters above them, and the terminal
-  fills only then;
-- the top of the window does not move when you turn the dial into the data block.
+- quiet band: empty panel, empty terminal, and they stay empty;
+- a station keying: blocks, letters over them, and the terminal filling at the same time - and
+  when it stops, both stop together;
+- the *tone* and *mixing* numbers should now be the same number;
+- tune into CW: the preamp goes off; set it off yourself in data or CW and it stays off.
 
 Section 1: what changed, file by file, and that the build and the app line are green.
 Section 4: anything left, a line each.

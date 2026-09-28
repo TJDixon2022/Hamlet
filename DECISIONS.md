@@ -4,6 +4,28 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-191
+date: 2026-09-28
+supersedes: HM-DEC-177 (for CW only)
+refs: docs/phase-requirements/PHASE_PLAN.md R98, data/bands/mode-receiver-conditions.json, src/Hamlet.RadioEngine/Rig/ReceiverSetup.cs, src/Hamlet.RadioEngine/Rig/ReceiveAdvice.cs, HM-DEC-056, work instruction 486
+---
+
+**The preamp is off in CW, and the operator's hand holds.** Tim, 2026-09-28: *"The system puts
+preamp into mode 1 for data - fine - but does not restore it in CW to off and worse, keeps putting
+it at 1 when I manually set it off."* And: *"I still hate the preamp crap."*
+
+**What is ruled.** The CW receive condition asks for the preamp off, on every band. This overrides
+HM-DEC-177's manual-derived preamp 1 across HF and preamp 2 at 50 MHz, for CW only; the manual's
+reasoning (IC-7300_ENG_FM_12b, page 4-3) is kept in the condition's text as history. The data-mode
+conditions are not changed. What he sets by hand holds until he changes it, and no surface of
+Hamlet asks him to turn the preamp back on.
+
+**Numbering.** Work instruction 486 named the overridden ruling HM-DEC-176; in this file
+HM-DEC-176 is the floors' span bar and the preamp ruling is HM-DEC-177.
+
+**Whose words are whose.** The ruling is Tim's; the wording is work instruction 486's record of it.
+
+---
 id: HM-DEC-190
 date: 2026-09-28
 refs: docs/phase-requirements/PHASE_PLAN.md R97, criterion 12.4, work instruction 485

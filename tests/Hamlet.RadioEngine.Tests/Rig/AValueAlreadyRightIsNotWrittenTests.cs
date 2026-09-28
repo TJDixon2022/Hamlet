@@ -56,12 +56,21 @@ public sealed class AValueAlreadyRightIsNotWrittenTests
     /// a tune-in writes nothing.
     /// </summary>
     /// <param name="hz">Where the dial is.</param>
+    /// <remarks>
+    /// **THE PREAMP ALREADY RIGHT IS OFF, ON EVERY BAND** since R98 (work instruction
+    /// 486, HM-DEC-191): the owner has ruled it off for Morse. The radio is built here
+    /// rather than by <c>ModeEntryBench.AlreadyRightForCw</c>, which still reads the
+    /// preamp from the row's stretches of the dial (HM-DEC-177) and the row no longer
+    /// has any; the preamp is taken from the row's own wanted value instead, and 50 MHz
+    /// joins the two HF dials because off now holds there too.
+    /// </remarks>
     [Theory]
     [InlineData(14_050_000)]
     [InlineData(7_030_000)]
+    [InlineData(50_050_000)]
     public async Task ACwTuneInOnARadioAlreadyRightWritesNothing(long hz)
     {
-        var radio = ModeEntryBench.AlreadyRightForCw(hz);
+        var radio = AlreadyRightForCw(hz);
         using var rig = await ModeEntryBench.ConnectAsync(radio);
 
         var (results, _) = await ReceiverSetup.ApplyAsync(
@@ -93,6 +102,22 @@ public sealed class AValueAlreadyRightIsNotWrittenTests
         _output.WriteLine($"outcome {result.Outcome}, read back {result.ReadBack?.Text ?? "-"}");
 
         Assert.True(result.Worked);
+    }
+
+    // A radio already at every value the CW row asks for: AGC fast, the noise blanker
+    // off, and the preamp at the row's own value, which is off since R98.
+    private static ScriptedRadio AlreadyRightForCw(long hz)
+    {
+        var radio = ModeEntryBench.AsLeft(hz, data: false);
+        var preamp = ReceiverConditions.ForMode("CW").Single(c => c.Field == RigField.Preamp);
+
+        Assert.Equal(0, preamp.Wanted);
+
+        radio.Switches[ModeEntryBench.Agc] = 1;
+        radio.Switches[ModeEntryBench.NoiseBlanker] = 0;
+        radio.Switches[ModeEntryBench.Preamp] = (byte)preamp.Wanted!.Value;
+
+        return radio;
     }
 
     private async Task<(int[] Writes, ConditionOutcome Outcome)> RfGainTuneInAsync(int raw)

@@ -42,13 +42,15 @@ public sealed class TheOperatorsHandCrossesTheMorseBlocksTests
     /// <param name="toHz">The `QRP` block's dial, the same band.</param>
     /// <param name="byHand">What he sets the preamp to after the first tune-in.</param>
     /// <remarks>
-    /// On both bands the CW row's preamp is 1 since HM-DEC-177 (the manual, page 4-3),
-    /// so his hand is off, which is the instruction's case. Work instruction 420 had
-    /// his hand at preamp 1 on 40 m, where the old row said off.
+    /// On both bands the CW row's preamp is off since R98 (work instruction 486,
+    /// HM-DEC-191), the owner's ruling for Morse, so the first tune-in writes the
+    /// radio's preamp 1 to off and his hand puts it back on. From HM-DEC-177 until R98
+    /// the row wanted preamp 1 and his hand was off; work instruction 420 had his hand
+    /// at preamp 1 on 40 m, where the row before that said off.
     /// </remarks>
     [Theory]
-    [InlineData(7_025_000L, 7_030_000L, (byte)0)]
-    [InlineData(14_050_000L, 14_060_000L, (byte)0)]
+    [InlineData(7_025_000L, 7_030_000L, (byte)1)]
+    [InlineData(14_050_000L, 14_060_000L, (byte)1)]
     public async Task HisPreampStandsFromTheCwBlockIntoTheQrpBlock(
         long fromHz, long toHz, byte byHand)
     {
@@ -99,8 +101,9 @@ public sealed class TheOperatorsHandCrossesTheMorseBlocksTests
         var (_, memory) = await ReceiverSetup.ApplyAsync(
             rig, ReceiverConditions.ForBlock(ModeEntryBench.BlockAt(7_025_000)), ReceiverSetupMemory.Empty);
 
-        // His hand is off, against the row's preamp 1 on 40 m since HM-DEC-177.
-        radio.OperatorTurnsASwitch(ModeEntryBench.Preamp, 0);
+        // His hand is on, against the row's off since R98 (work instruction 486,
+        // HM-DEC-191), so the re-armed tune-in writes it back to off.
+        radio.OperatorTurnsASwitch(ModeEntryBench.Preamp, 1);
         radio.FrequencyHz = 7_030_000;
 
         var (second, _) = await ReceiverSetup.ApplyAsync(
@@ -109,6 +112,6 @@ public sealed class TheOperatorsHandCrossesTheMorseBlocksTests
         Assert.Equal(
             ConditionOutcome.Changed,
             second.Single(r => r.Condition.Field == RigField.Preamp).Outcome);
-        Assert.Equal(1, radio.Switches[ModeEntryBench.Preamp]);
+        Assert.Equal(0, radio.Switches[ModeEntryBench.Preamp]);
     }
 }

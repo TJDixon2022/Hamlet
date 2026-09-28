@@ -1,0 +1,209 @@
+  Failed Hamlet.RadioEngine.Tests.Rig.AValueAlreadyRightIsNotWrittenTests.ACwTuneInOnARadioAlreadyRightWritesNothing(hz: 7030000) [38 ms]
+  Error Message:
+   System.InvalidOperationException : Sequence contains no matching element
+  Stack Trace:
+  Failed Hamlet.RadioEngine.Tests.Rig.AValueAlreadyRightIsNotWrittenTests.ACwTuneInOnARadioAlreadyRightWritesNothing(hz: 14050000) [< 1 ms]
+  Error Message:
+   System.InvalidOperationException : Sequence contains no matching element
+  Stack Trace:
+  Failed Hamlet.RadioEngine.Tests.Explore.EveryModeAnswersForEverySettingTests.TheAttenuatorAndThePreampAreRulesNotConstants [59 ms]
+  Error Message:
+   Assert.True() Failure
+Expected: True
+Actual:   False
+  Stack Trace:
+  Failed Hamlet.RadioEngine.Tests.Explore.TheBlockStatesWhatTheModeNeedsTests.TheMorseBlocksStateWhatMorseNeeds [< 1 ms]
+  Error Message:
+   Assert.True() Failure
+Expected: True
+Actual:   False
+  Stack Trace:
+  Failed Hamlet.RadioEngine.Tests.Rig.EveryMorseBlockSetsWhatCwSetsTests.At7030ThePreampEndsAtTheRowsValue [92 ms]
+  Error Message:
+   System.InvalidOperationException : Sequence contains no matching element
+  Stack Trace:
+  Failed Hamlet.RadioEngine.Tests.Rig.ThePreampFollowsItsOwnTextTests.At7030ThePreampIsWrittenTo1OrLeftAt1(start: 2, expected: [1]) [96 ms]
+  Error Message:
+   Assert.Equal() Failure: Collections differ
+           ↓ (pos 0)
+Expected: [1]
+Actual:   [0]
+           ↑ (pos 0)
+  Stack Trace:
+  Failed Hamlet.RadioEngine.Tests.Rig.TheOperatorsHandCrossesTheMorseBlocksTests.ABandChangeStillReArmsIt [95 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: Changed
+Actual:   AlreadyRight
+  Stack Trace:
+  Failed Hamlet.RadioEngine.Tests.Rig.ThePreampFollowsItsOwnTextTests.At7030ThePreampIsWrittenTo1OrLeftAt1(start: 1, expected: []) [3 ms]
+  Error Message:
+   Assert.Equal() Failure: Collections differ
+Expected: []
+Actual:   [0]
+           ↑ (pos 0)
+  Stack Trace:
+  Failed Hamlet.RadioEngine.Tests.Rig.TheOperatorsHandStandsTests.ThePreampHeSetOffStaysOff(startedAt: 1) [3 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: LeftToTheOperator
+Actual:   AlreadyRight
+  Stack Trace:
+  Failed Hamlet.RadioEngine.Tests.Rig.WhatEnteringAModeSetsTests.PrintTheTable [103 ms]
+  Error Message:
+   System.InvalidOperationException : Sequence contains no matching element
+  Stack Trace:
+  Failed Hamlet.RadioEngine.Tests.Rig.TheOperatorsHandCrossesTheMorseBlocksTests.HisPreampStandsFromTheCwBlockIntoTheQrpBlock(fromHz: 14050000, toHz: 14060000, byHand: 0) [7 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: LeftToTheOperator
+Actual:   AlreadyRight
+  Stack Trace:
+  Failed Hamlet.RadioEngine.Tests.Rig.ThePreampFollowsItsOwnTextTests.At7030ThePreampIsWrittenTo1OrLeftAt1(start: 0, expected: [1]) [3 ms]
+  Error Message:
+   Assert.Equal() Failure: Collections differ
+           ↓ (pos 0)
+Expected: [1]
+Actual:   []
+  Stack Trace:
+  Failed Hamlet.RadioEngine.Tests.Rig.TheOperatorsHandStandsTests.ThePreampHeSetOffStaysOff(startedAt: 0) [4 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: LeftToTheOperator
+Actual:   AlreadyRight
+  Stack Trace:
+  Failed Hamlet.RadioEngine.Tests.Rig.ThePreampFollowsTheOverloadTests.AnOverloadThatComesBackOnceThePreampIsOnAgainLeavesItOff [108 ms]
+  Error Message:
+   Assert.Equal() Failure: Collections differ
+                     ↓ (pos 0)
+Expected: int[]     [0, 1]
+Actual:   List<int> []
+  Stack Trace:
+  Failed Hamlet.RadioEngine.Tests.Rig.TheOperatorsHandCrossesTheMorseBlocksTests.HisPreampStandsFromTheCwBlockIntoTheQrpBlock(fromHz: 7025000, toHz: 7030000, byHand: 0) [4 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: LeftToTheOperator
+Actual:   AlreadyRight
+  Stack Trace:
+  Failed Hamlet.RadioEngine.Tests.Rig.ThePreampFollowsItsOwnTextTests.At14050ThePreampIsWrittenTo1(start: 0) [3 ms]
+  Error Message:
+   Assert.Equal() Failure: Collections differ
+           ↓ (pos 0)
+Expected: [1]
+Actual:   []
+  Stack Trace:
+  Failed Hamlet.RadioEngine.Tests.Rig.TheOperatorsHandStandsTests.ABandChangeReArmsIt [7 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: Changed
+Actual:   AlreadyRight
+  Stack Trace:
+  Failed Hamlet.RadioEngine.Tests.Rig.ThePreampFollowsItsOwnTextTests.At14050ThePreampIsWrittenTo1(start: 2) [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Collections differ
+           ↓ (pos 0)
+Expected: [1]
+Actual:   [0]
+           ↑ (pos 0)
+  Stack Trace:
+  Failed Hamlet.RadioEngine.Tests.Rig.ThePreampIsWhatTheManualSaysTests.At7030ARadioAtOffIsWrittenToPreamp1 [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Collections differ
+           ↓ (pos 0)
+Expected: [1]
+Actual:   []
+  Stack Trace:
+  Failed Hamlet.RadioEngine.Tests.Rig.ThePreampIsWhatTheManualSaysTests.At50MhzItIsPreamp2 [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Collections differ
+           ↓ (pos 0)
+Expected: [2]
+Actual:   []
+  Stack Trace:
+  Failed Hamlet.RadioEngine.Tests.Rig.ThePreampIsWhatTheManualSaysTests.OnEveryHfBandItIsPreamp1(hz: 14050000, start: 0) [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: 1
+Actual:   0
+  Stack Trace:
+  Failed Hamlet.RadioEngine.Tests.Rig.ThePreampFollowsTheOverloadTests.AShortBurstWritesNothingAndOneThatHoldsWritesOnce [2 ms]
+  Error Message:
+   Assert.Equal() Failure: Collections differ
+                     ↓ (pos 0)
+Expected: int[]     [0]
+Actual:   List<int> []
+  Stack Trace:
+  Failed Hamlet.RadioEngine.Tests.Rig.ThePreampIsWhatTheManualSaysTests.OnEveryHfBandItIsPreamp1(hz: 7030000, start: 2) [< 1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: 1
+Actual:   0
+  Stack Trace:
+  Failed Hamlet.RadioEngine.Tests.Rig.ThePreampIsWhatTheManualSaysTests.OnEveryHfBandItIsPreamp1(hz: 21050000, start: 0) [< 1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: 1
+Actual:   0
+  Stack Trace:
+  Failed Hamlet.RadioEngine.Tests.Rig.ThePreampIsWhatTheManualSaysTests.OnEveryHfBandItIsPreamp1(hz: 28050000, start: 0) [< 1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: 1
+Actual:   0
+  Stack Trace:
+  Failed Hamlet.RadioEngine.Tests.Rig.ThePreampFollowsTheOverloadTests.NothingIsWrittenWhileTheRadioTransmits [2 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: 1
+Actual:   0
+  Stack Trace:
+  Failed Hamlet.RadioEngine.Tests.Rig.ThePreampIsWhatTheManualSaysTests.OnEveryHfBandItIsPreamp1(hz: 1810000, start: 0) [< 1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: 1
+Actual:   0
+  Stack Trace:
+  Failed Hamlet.RadioEngine.Tests.Rig.ThePreampIsWhatTheManualSaysTests.OnEveryHfBandItIsPreamp1(hz: 18080000, start: 0) [< 1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: 1
+Actual:   0
+  Stack Trace:
+  Failed Hamlet.RadioEngine.Tests.Rig.ThePreampIsWhatTheManualSaysTests.OnEveryHfBandItIsPreamp1(hz: 3530000, start: 0) [< 1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: 1
+Actual:   0
+  Stack Trace:
+  Failed Hamlet.RadioEngine.Tests.Rig.ThePreampFollowsTheOverloadTests.AtFourteenFiftyHisHandWhileItOverloadsStopsTheFollowing [2 ms]
+  Error Message:
+   Assert.Equal() Failure: Collections differ
+                     ↓ (pos 0)
+Expected: int[]     [0]
+Actual:   List<int> []
+  Stack Trace:
+  Failed Hamlet.RadioEngine.Tests.Rig.ThePreampIsWhatTheManualSaysTests.OnEveryHfBandItIsPreamp1(hz: 14050000, start: 2) [< 1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: 1
+Actual:   0
+  Stack Trace:
+  Failed Hamlet.RadioEngine.Tests.Rig.ThePreampIsWhatTheManualSaysTests.OnEveryHfBandItIsPreamp1(hz: 10110000, start: 0) [< 1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: 1
+Actual:   0
+  Stack Trace:
+  Failed Hamlet.RadioEngine.Tests.Rig.ThePreampFollowsTheOverloadTests.AtSevenThirtyAnOverloadThatHoldsTurnsThePreampOffOnce [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Collections differ
+                     ↓ (pos 0)
+Expected: int[]     [1]
+Actual:   List<int> []
+  Stack Trace:
+  Failed Hamlet.RadioEngine.Tests.Rig.ThePreampIsWhatTheManualSaysTests.TheConditionCitesTheManualPage [< 1 ms]
+  Error Message:
+   Assert.Contains() Failure: Sub-string not found
+String:    "off"
+Not found: "IC-7300"
+  Stack Trace:

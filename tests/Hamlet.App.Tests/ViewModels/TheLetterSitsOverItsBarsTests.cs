@@ -32,11 +32,13 @@ public sealed class TheLetterSitsOverItsBarsTests
     public TheLetterSitsOverItsBarsTests(ITestOutputHelper output) => _output = output;
 
     /// <remarks>
-    /// Proves the picture: C over its four bars and Q over its four, each over the span the
-    /// decoder settled it with, and nothing over the gap between them.
+    /// Proves the picture: C over its four bars, over the span the decoder settled it with, and
+    /// nothing over the gap after them. **The Q is not drawn, and that is the ruled cost**
+    /// (work instruction 486, R97): it is the last letter of each short call, it settles after
+    /// the detector has let go, and nothing reaches the screen while the panel says no keying.
     /// </remarks>
     [Fact]
-    public void COverFourBarsQOverFourAndNothingOverTheGap()
+    public void COverFourBarsAndNothingOverTheGap()
     {
         var run = TheScopeDrawsLiveTests.Listen(seconds: 12);
         var items = CwScopeControl.Items(run.Keyed, Width);
@@ -46,45 +48,39 @@ public sealed class TheLetterSitsOverItsBarsTests
         var bars = items.Where(i => i.Kind == CwScopeItemKind.Bar).ToList();
         var letters = items.Where(i => i.Kind == CwScopeItemKind.Letter).ToList();
 
-        // The newest C with a Q after it.
-        var c = letters.LastOrDefault(l => l.Text == "C" && letters.Any(q => q.Text == "Q" && q.X > l.X2));
-        Assert.True(c is not null, "no C with a Q after it is drawn over the scope");
-        var q = letters.First(l => l.Text == "Q" && l.X > c!.X2);
+        // The newest C.
+        var c = letters.LastOrDefault(l => l.Text == "C");
+        Assert.True(c is not null, "no C is drawn over the scope");
 
         List<CwScopeItem> Under(CwScopeItem letter)
             => bars.Where(b => (b.X + b.X2) / 2 >= letter.X - 1 && (b.X + b.X2) / 2 <= letter.X2 + 1).ToList();
 
         var underC = Under(c!);
-        var underQ = Under(q);
 
-        _output.WriteLine($"C {c!.X:0.0}-{c.X2:0.0} over {underC.Count} bars; Q {q.X:0.0}-{q.X2:0.0} over {underQ.Count} bars");
+        _output.WriteLine($"C {c!.X:0.0}-{c.X2:0.0} over {underC.Count} bars");
 
         Assert.Equal(new[] { "dah", "dit", "dah", "dit" }, underC.Select(b => b.Text[..3]).ToArray());
-        Assert.Equal(new[] { "dah", "dah", "dit", "dah" }, underQ.Select(b => b.Text[..3]).ToArray());
 
-        // The gap between C's last bar and Q's first holds no letter.
+        // The gap after C's last bar, up to the next bar, holds no letter.
         var gapFrom = underC[^1].X2;
-        var gapTo = underQ[0].X;
+        var gapTo = bars.Where(b => b.X > gapFrom).Select(b => b.X).DefaultIfEmpty(gapFrom).Min();
 
-        Assert.True(gapTo > gapFrom, "C's bars and Q's bars overlap");
-        Assert.DoesNotContain(letters, l => l.X < gapTo - 1 && l.X2 > gapFrom + 1);
+        Assert.DoesNotContain(letters, l => gapTo > gapFrom && l.X < gapTo - 1 && l.X2 > gapFrom + 1);
 
-        // Where the decoder settled them: the span it gave, on its own clock.
+        // Where the decoder settled it: the span it gave, on its own clock.
         var now = run.Keyed.Training.NowUtc;
-        foreach (var (item, text) in new[] { (c, "C"), (q, "Q") })
-        {
-            var settled = run.Settled
-                .Select(s => s.Character)
-                .Where(ch => ch.Text == text)
-                .Select(ch => (End: run.Start + ch.At, Start: run.Start + ch.At - TimeSpan.FromMilliseconds(ch.SpanHops * CwProbabilisticDecoder.HopMilliseconds)))
-                .Select(s => (Left: CwScopeControl.XOfTime(s.Start, now, Width), Right: CwScopeControl.XOfTime(s.End, now, Width)))
-                .ToList();
+        var settled = run.Settled
+            .Select(s => s.Character)
+            .Where(ch => ch.Text == "C")
+            .Select(ch => (End: run.Start + ch.At, Start: run.Start + ch.At - TimeSpan.FromMilliseconds(ch.SpanHops * CwProbabilisticDecoder.HopMilliseconds)))
+            .Select(s => (Left: CwScopeControl.XOfTime(s.Start, now, Width), Right: CwScopeControl.XOfTime(s.End, now, Width)))
+            .ToList();
 
-            Assert.Contains(settled, s => Math.Abs(s.Left - item.X) < 0.01 && Math.Abs(s.Right - item.X2) < 0.01);
-        }
+        Assert.Contains(settled, s => Math.Abs(s.Left - c.X) < 0.01 && Math.Abs(s.Right - c.X2) < 0.01);
 
-        // A word gap draws nothing: every letter drawn is a settled character with text.
+        // Every letter drawn stands over blocks, and a word gap draws nothing.
         Assert.All(letters, l => Assert.False(string.IsNullOrWhiteSpace(l.Text)));
+        Assert.All(letters, l => Assert.NotEmpty(Under(l)));
     }
 
     /// <remarks>

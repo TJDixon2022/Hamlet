@@ -197,15 +197,6 @@ public partial class MainWindowViewModel : ObservableObject
     private TrainingSpectrumSource? _trainingSpectrum;
     private readonly DispatcherTimer _decodeTimer;
 
-    /// <summary>Redraws the oscilloscope, twenty times a second while listening (work instruction 476).</summary>
-    private readonly DispatcherTimer _scopeTimer;
-
-    /// <summary>
-    /// The envelope detector the oscilloscope draws, listening beside the decoder and
-    /// read by nothing else (work instruction 476, HM-DEC-185).
-    /// </summary>
-    private CwEnvelopeDetector? _envelope;
-
     /// <summary>Asks the time servers how far the machine's clock is out.</summary>
     /// <remarks>
     /// **EVERY TEN MINUTES, AND THE INTERVAL IS REASONED.** A PC clock the
@@ -345,17 +336,6 @@ public partial class MainWindowViewModel : ObservableObject
     private bool _spotsEverLoaded;
     private IReadOnlyList<StoredSpot> _bandHistory = Array.Empty<StoredSpot>();
     private RigSpectrumSource? _rigSpectrum;
-
-    /// <summary>
-    /// Where the radio's scope points, frame by frame (work instruction 480 task 2, HM-DEC-188).
-    /// </summary>
-    private readonly CwScopePointer _scopePointer = new();
-
-    // The dial, CW pitch and filter width the scope tick last read in CW, for the frame handler
-    // on the radio's thread; NaN where any is unread or the radio is not in CW.
-    private double _pointDialHz = double.NaN;
-    private double _pointPitchHz = double.NaN;
-    private double _pointWidthHz = double.NaN;
     private int _lastNewSpotCount;
 
     /// <summary>
@@ -528,25 +508,6 @@ public partial class MainWindowViewModel : ObservableObject
         "Digital" => TransmitMode.Data,
         "Voice" => TransmitMode.Phone,
         _ => TransmitMode.Cw,
-    };
-
-    /// <summary>Which mode the licence card answers for at this frequency.</summary>
-    /// <param name="here">The block the frequency is in, or null.</param>
-    /// <returns>The block's own mode where it has one; the tab's where it does not.</returns>
-    /// <remarks>
-    /// **THE BLOCK THE FREQUENCY IS IN, SINCE WORK INSTRUCTION 484** (Tim at the radio: the card
-    /// said *Your General license covers Morse here* on a data-block frequency). The card is a
-    /// sentence about this frequency, so where the band plan's block names one family - Morse,
-    /// data or voice - it answers for that family, on every path that reaches it: a tab pressed,
-    /// the dial turned, or the dial arriving before the radio's mode does. Only open or unclaimed
-    /// ground falls back to the tab. Display only: no send path reads this card.
-    /// </remarks>
-    private TransmitMode LicenceModeHere(Neighborhood? here) => here?.Family switch
-    {
-        ModeFamily.Cw => TransmitMode.Cw,
-        ModeFamily.Digital => TransmitMode.Data,
-        ModeFamily.Phone => TransmitMode.Phone,
-        _ => LicenceModeForTheTab,
     };
 
     partial void OnOperatingModeChanged(string value)
@@ -1077,12 +1038,6 @@ public partial class MainWindowViewModel : ObservableObject
     [NotifyPropertyChangedFor(nameof(TerminalSpeedText))]
     [NotifyPropertyChangedFor(nameof(HasDetectedSpeed))]
     private int _detectedWpm;
-
-    /// <summary>Whether that speed is proved, a hypothesis, or none (HM-REQ-034).</summary>
-    [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(TerminalSummary))]
-    [NotifyPropertyChangedFor(nameof(TerminalSpeedText))]
-    private CwSpeedProof _detectedSpeedProof;
 
     /// <summary>Whether the decoder is listening to anything.</summary>
     [ObservableProperty]
@@ -8955,50 +8910,6 @@ public partial class MainWindowViewModel : ObservableObject
     public CwTranscript Transcript { get; } = new();
 
     /// <summary>
-    /// The light that says whether Hamlet thinks it hears CW (work instruction 474).
-    /// </summary>
-    /// <remarks>
-    /// **IT READS THE DETECTOR AND IS NEVER READ BY IT** (HM-DEC-184): the meter's
-    /// reading this class already holds, the decoder's report, and the survey's
-    /// admitted bins, once a second on the decode tick.
-    /// </remarks>
-    public CwHearingViewModel CwHearing => _cwHearing ??= new CwHearingViewModel(_telemetry, HearingRig);
-
-    private CwHearingViewModel? _cwHearing;
-
-    /// <summary>
-    /// What the rig and the input say at the moment the owner presses a verdict.
-    /// </summary>
-    /// <remarks>
-    /// Read at the press rather than kept, so the row carries the radio as it was when he
-    /// judged. A field the radio has not answered is null, and the input is null while
-    /// nothing is listening, rather than the silence floor a level bar starts from.
-    /// </remarks>
-    private CwHearingRig HearingRig()
-    {
-        var state = RigState;
-        var level = DecodeReport.Level;
-
-        return new CwHearingRig(
-            state[RigField.Frequency] is { IsKnown: true, Number: { } hz } ? (long)hz : null,
-            state.ModeWithVariant,
-            state[RigField.Agc] is { IsKnown: true } agc ? agc.Text : null,
-            state[RigField.Preamp] is { IsKnown: true } preamp ? preamp.Text : null,
-            IsDecoding ? level.PeakDb : double.NaN,
-            IsDecoding ? level.FloorDb : double.NaN)
-        {
-            // Where the radio's scope pointed at the press, and how many frames it sent in the
-            // last four seconds; null with no radio's scope attached (work instruction 480).
-            ScopePeakHz = _scopePointer.Pointing(DateTime.UtcNow)?.PitchHz ?? double.NaN,
-            ScopePeakLevel = _scopePointer.Pointing(DateTime.UtcNow)?.Level,
-            ScopeFramesLast4s = _rigSpectrum is null ? null : _scopePointer.FramesLast4s(DateTime.UtcNow),
-        };
-    }
-
-    /// <summary>When the light last read the detector.</summary>
-    private DateTime _hearingLastUtc = DateTime.MinValue;
-
-    /// <summary>
     /// The receiver's front end, in one chip beside the filter width.
     /// </summary>
     /// <remarks>
@@ -9302,18 +9213,8 @@ public partial class MainWindowViewModel : ObservableObject
     public bool HasDetectedSpeed => DetectedWpm > 0;
 
     /// <summary>The live speed readout on the terminal's header.</summary>
-    /// <remarks>
-    /// **A NUMBER THE DECODER HAS NOT PROVED SAYS SO BESIDE IT** (HM-REQ-034, work
-    /// instruction 451). The number is the one HEAD showed, and no more of them:
-    /// what changes is that a speed held in a window whose sender has stopped, or
-    /// one won on the grid, is no longer shown as though it were measured now.
-    /// </remarks>
     public string TerminalSpeedText
-        => DetectedWpm > 0 ? $"{DetectedWpm} WPM{SpeedNotProvedMark}" : "";
-
-    /// <summary>What follows a speed that is shown and not proved, or "".</summary>
-    private string SpeedNotProvedMark
-        => DetectedSpeedProof == CwSpeedProof.Proved ? "" : ", not proved";
+        => DetectedWpm > 0 ? $"{DetectedWpm} WPM" : "";
 
     /// <summary>
     /// Why the speed field is empty, or empty itself (HM-OPEN-022).
@@ -9326,7 +9227,7 @@ public partial class MainWindowViewModel : ObservableObject
     /// this is the sentence that makes it read as Hamlet working.</para>
     /// </remarks>
     public string SpeedReacquiringText
-        => SpeedIsReacquiring ? "working out the speed, nothing proved yet" : "";
+        => SpeedIsReacquiring ? "working out the speed" : "";
 
     /// <summary>True while no speed has been proved.</summary>
     [ObservableProperty]
@@ -9397,7 +9298,7 @@ public partial class MainWindowViewModel : ObservableObject
                 return "listening";
             }
 
-            var speed = DetectedWpm > 0 ? $"{DetectedWpm} WPM{SpeedNotProvedMark} · " : "";
+            var speed = DetectedWpm > 0 ? $"{DetectedWpm} WPM · " : "";
             var tail = Transcript.Tail(28);
 
             return $"{speed}{tail}";
@@ -9447,10 +9348,6 @@ public partial class MainWindowViewModel : ObservableObject
         _licenses = licenseLookup;
         _settings = settings;
         _telemetry = telemetry;
-
-        // The terminal names BT and AR by the operator's setting, read as each
-        // character is drawn so the settings screen takes effect at once (HM-REQ-072).
-        Transcript.Naming = () => _settings.CwProsignNaming;
 
         // **THE DRIVE CONTROL UNDER THE WATERFALL OPENS ON THE LEVEL IN FORCE**
         // (work instruction 269, task 2), read the same way
@@ -9691,13 +9588,6 @@ public partial class MainWindowViewModel : ObservableObject
         // than anything it would be worth interrupting the UI for.
         _decodeTimer = new DispatcherTimer(
             TimeSpan.FromMilliseconds(250), DispatcherPriority.Background, OnDecodeTick);
-
-        // **THE OWNER HAS TO SEE DITS** (work instruction 476). The detector works at the
-        // decoder's 5 ms hop and every hop is drawn; this is only how often the picture is
-        // redrawn, and twenty a second keeps a 60 ms dit visibly lighting as it is heard
-        // without redrawing the tab two hundred times a second.
-        _scopeTimer = new DispatcherTimer(
-            TimeSpan.FromMilliseconds(50), DispatcherPriority.Background, OnScopeTick);
 
         _clockTimer = new DispatcherTimer(
             TimeSpan.FromMinutes(10), DispatcherPriority.Background, OnClockTick);
@@ -10766,8 +10656,6 @@ public partial class MainWindowViewModel : ObservableObject
         }
 
         _rigSpectrum = new RigSpectrumSource(radio);
-        _rigSpectrum.FrameReady += OnRadioScopeFrame;
-        _scopePointer.Reset();
         _rigSpectrum.Start();
 
         SpectrumSource = _rigSpectrum;
@@ -10790,10 +10678,6 @@ public partial class MainWindowViewModel : ObservableObject
         //
         // Reading `27 10` and `27 11` to say what is on stays. That is the read
         // HM-DEC-062 allows, and it is what the panel needs to explain itself.
-        //
-        // **SINCE HM-DEC-188 THE CW TUNE-IN TURNS IT ON**, as a receive condition
-        // in `ReceiverSetup`, once per tune-in and read back, with the operator's
-        // hand winning. Still nothing here, at connect, writes it.
     }
 
     /// <summary>
@@ -11304,11 +11188,7 @@ public partial class MainWindowViewModel : ObservableObject
         // 2026-08-25's, which has none, so `UseJointDecoder` is kept in the
         // settings file and read by nothing until step 4 judges the cutter on
         // numbers (Tim's ruling of 2026-08-27 made it his switch, off by default).
-        // **TWO READERS, ONE TRANSCRIPT** (HM-REQ-120, 121; work instruction 465).
-        // The fldigi port reads the same samples beside ours, and every character
-        // the tab shows has passed through the arbiter. Which one it came from is
-        // on the capture sheet, never on the tab.
-        _decoder = new CwDecoder(_audioInput.SampleRate, _settings.CwPitchHz, secondReader: true);
+        _decoder = new CwDecoder(_audioInput.SampleRate, _settings.CwPitchHz);
 
         // **A COUNT WRITTEN BESIDE A RECORDING IS READ AS BEING ABOUT THE
         // RECORDING** (HM-DEC-091). The decoder's counters run from here until
@@ -11343,7 +11223,6 @@ public partial class MainWindowViewModel : ObservableObject
         // stacking up every version of it.
         _decoder.LeadingEdge += Transcript.OfferEdge;
         _decoder.CharacterSettled += Transcript.Settle;
-        _decoder.CharacterSettled += SettleOnTheGraph;
 
         // WHEN SOMETHING LAST CAME THROUGH, which is what the quiet offer waits
         // on (HM-DEC-084). Set here rather than polled, so an empty terminal is
@@ -11370,27 +11249,11 @@ public partial class MainWindowViewModel : ObservableObject
         DigitalSpectrum.Listen(_audioInput);
         DigitalSpectrum.Start();
 
-        // **THE OSCILLOSCOPE RIDES ALONG TOO** (work instruction 476, HM-DEC-185). The same
-        // samples the decoder gets, walked at the same hop; it drives nothing.
-        _envelope = new CwEnvelopeDetector(_audioInput.SampleRate);
-        _envelope.Listen(_audioInput);
-
-        // **NO DETECTION, NO LETTERS** (work instruction 485, R97, HM-DEC-190). The decoder lets
-        // out only what it read while the detector said somebody was keying; until now the two ran
-        // side by side and never spoke, and the terminal filled with letters read from noise.
-        var detector = _envelope;
-        _decoder.KeyingGate = () => detector.Reading.Keying;
-
-        // **AND IT LISTENS WHERE THE DETECTOR HEARS** (work instruction 486): while the detector
-        // says keying, the decoder mixes at the pitch it watches, so tone and mixing agree.
-        _decoder.DetectorPitch = () => detector.Reading.Keying ? detector.WatchedHz : double.NaN;
-
         _audioInput.Start();
 
         AudioInputName = _audioInput.DeviceName;
         IsDecoding = true;
         _decodeTimer.Start();
-        _scopeTimer.Start();
 
         AppEvents.DecoderStarted(
             _telemetry,
@@ -11464,17 +11327,11 @@ public partial class MainWindowViewModel : ObservableObject
     private void StopDecoding()
     {
         _decodeTimer.Stop();
-        _scopeTimer.Stop();
-
-        _envelope?.Listen(null);
-        _envelope = null;
-        CwHearing.ObserveScope(CwScopeFrame.Empty);
 
         if (_decoder is not null)
         {
             _decoder.LeadingEdge -= Transcript.OfferEdge;
             _decoder.CharacterSettled -= Transcript.Settle;
-            _decoder.CharacterSettled -= SettleOnTheGraph;
             _decoder.Listen(null);
             _decoder = null;
         }
@@ -11487,7 +11344,6 @@ public partial class MainWindowViewModel : ObservableObject
         _keyingMeter = null;
         _meterWork = null;
         PublishKeying(KeyingReading.None);
-        CwHearing.Observe(CwHearingState.None);
 
         DigitalSpectrum?.Stop();
         DigitalSpectrum?.Dispose();
@@ -11499,7 +11355,6 @@ public partial class MainWindowViewModel : ObservableObject
 
         IsDecoding = false;
         DetectedWpm = 0;
-        DetectedSpeedProof = CwSpeedProof.None;
         AudioInputName = "";
         Transcript.Clear();
         OnPropertyChanged(nameof(TerminalSummary));
@@ -11518,7 +11373,6 @@ public partial class MainWindowViewModel : ObservableObject
         // ONE GUARDED ANSWER (HM-DEC-090). Zero means nothing has earned the
         // right to name a speed, and every surface that shows one reads this.
         DetectedWpm = _decoder.WordsPerMinute ?? 0;
-        DetectedSpeedProof = _decoder.SpeedProof;
 
         // **THE RADIO SAYS WHETHER IT IS TRANSMITTING, AND THE DECODER IS TOLD**
         // (HM-DEC-091). Hamlet has read `1C 00` for months, the diagnostics
@@ -11568,7 +11422,6 @@ public partial class MainWindowViewModel : ObservableObject
             : "";
 
         RunKeyingMeter();
-        ObserveHearing(_decoder);
 
         // Sampled here, on the same tick as the readouts, so the two ends of any
         // window a capture asks about are each accurate to one tick.
@@ -11612,7 +11465,6 @@ public partial class MainWindowViewModel : ObservableObject
         // NO DECODE MEANS NO STATION, SO THE LINE IS ABSENT (HM-DEC-090). It
         // read "they are sending at about 62 words a minute" with nobody
         // sending, which is the phantom speed reaching a third surface.
-        Transmit.HeardSpeedProof = _decoder.SpeedProof;
         Transmit.HeardWpm = _decoder.WordsPerMinute;
 
         // **AND THE FT8 SLOT WATCH RIDES THE SAME TICK** (unit 225). Four looks a
@@ -12157,13 +12009,6 @@ public partial class MainWindowViewModel : ObservableObject
             // a pass that does not compute it, which is not the same as nought.
             $"spanLlr    {SpanRatiosForTheRecord()}",
 
-            // **BOTH READINGS OF EVERY CHARACTER, WHICH THE TAB NEVER SHOWS**
-            // (HM-REQ-121, 126, 127; work instruction 465). The tab shows one
-            // transcript and names no decoder; this says which decoder each
-            // character came from, what the other read on the same span and how
-            // sure each was, and marks a tie.
-            $"arbiter    {ArbitrationForTheRecord()}",
-
             // **WHETHER SOMEBODY ELSE WAS KEYING IN THE SAME PASSBAND**, which
             // the survey has always known and no sheet has ever carried. Two
             // stations inside one filter arrive in one envelope, and amplitude is
@@ -12443,134 +12288,6 @@ public partial class MainWindowViewModel : ObservableObject
         _meterWork = Task.Run(() => meter.Update(tap));
     }
 
-    /// <summary>
-    /// Hand the light what the detector says, once a second (work instruction 474).
-    /// </summary>
-    /// <param name="decoder">The decoder listening now.</param>
-    /// <remarks>
-    /// <para>**NOTHING HERE DECIDES ANYTHING.** The meter's verdict is the one
-    /// <see cref="PublishKeying"/> last put on the screen, the tracker's pitch and
-    /// keying are the report this tick already read, and the admitted bins are
-    /// <see cref="CwToneTracker.CoarseCandidates"/>, the seam that has handed them out
-    /// for diagnosis since unit 448 and that <see cref="CwDecoder.Report"/> already
-    /// calls from this thread through the competitor.</para>
-    /// <para>**ONCE A SECOND, ON THE METER'S CADENCE**, because the survey's
-    /// examination is not free and the light cannot usefully change faster than the
-    /// meter beside it.</para>
-    /// </remarks>
-    private void ObserveHearing(CwDecoder decoder)
-    {
-        if (DateTime.UtcNow - _hearingLastUtc < KeyingMeterEvery)
-        {
-            return;
-        }
-
-        _hearingLastUtc = DateTime.UtcNow;
-
-        var report = DecodeReport;
-
-        CwHearing.Observe(new CwHearingState(
-            _keyingReading,
-            report.ToneHz,
-            report.PitchWasMeasured,
-            report.HasKeying,
-            decoder.Tracker.CoarseCandidates()));
-    }
-
-    /// <summary>
-    /// Hand the oscilloscope the envelope detector's last four seconds (work instruction 476).
-    /// </summary>
-    /// <remarks>
-    /// <para>**THE PASSBAND IS THE RADIO'S, READ HERE, OR THE WHOLE BAND.** In CW or CW-R the
-    /// radio centres its filter on its CW pitch, so the envelope is summed over the pitch
-    /// plus and minus half the filter width it reports. In any other mode, or where either
-    /// figure is unread, the detector sums the whole audio band and the scope says so rather
-    /// than guessing a pitch (§0.0).</para>
-    /// <para>**NOTHING HERE DECIDES ANYTHING**; it copies what the detector holds to the
-    /// screen.</para>
-    /// </remarks>
-    private void OnScopeTick(object? sender, EventArgs e)
-    {
-        if (_envelope is not { } envelope)
-        {
-            return;
-        }
-
-        var state = RigState;
-        var cw = state[RigField.Mode] is { IsKnown: true, Number: { } mode }
-                 && CivValues.IsCw((CivMode)(int)mode);
-        var pitch = cw && state[RigField.CwPitch] is { IsKnown: true, Number: { } hz } ? hz : (double?)null;
-        var width = cw ? state.FilterBandwidthHz : null;
-
-        envelope.SetPassband(pitch, width);
-
-        // **THE RADIO POINTS** (work instruction 480 task 2, R94, HM-DEC-188). The frame handler
-        // reads the dial, pitch and filter the tick last saw in CW; the detector watches the
-        // pointed bin while the scope sends frames and sweeps when it has been quiet three
-        // seconds; the tracker takes the scope's pitch only while the bars there say keying.
-        //
-        // **PLAIN CW ONLY.** A peak above the dial beats at the pitch plus its offset on CW's
-        // sideband, which is the instruction's rule; on CW-R the sideband is reversed and so is
-        // the sign, which nothing here has been checked against, so CW-R sweeps as it did.
-        var plainCw = cw && state[RigField.Mode] is { Number: { } m } && (CivMode)(int)m == CivMode.Cw;
-        var dial = plainCw && state[RigField.Frequency] is { IsKnown: true, Number: { } f } ? f : double.NaN;
-        Volatile.Write(ref _pointDialHz, dial);
-        Volatile.Write(ref _pointPitchHz, pitch ?? double.NaN);
-        Volatile.Write(ref _pointWidthHz, width is { } w ? w : double.NaN);
-
-        var pointed = plainCw ? _scopePointer.Pointing(DateTime.UtcNow) : null;
-        envelope.PointAt(pointed?.PitchHz);
-
-        var reading = envelope.Reading;
-        _decoder?.Tracker.FollowScope(reading is { Pointed: true, Keying: true } ? pointed?.PitchHz : null);
-
-        // **BARS, AND THE LETTERS OVER THEM** (work instruction 480): the detector's last four
-        // seconds go into the graph's eight, on the wall's clock. The tracker's pitch goes beside
-        // the detector's, so the owner sees whether they agree (work instruction 478); the last
-        // frame is handed back so the pitch holds across a gap.
-        CwHearing.ObserveScope(_scopeFeed.Tick(
-            envelope,
-            reading,
-            IsDecoding ? DecodeReport.ToneHz : double.NaN,
-            CwHearing.Scope,
-            scopeQuiet: plainCw && pointed is null,
-            DateTime.UtcNow));
-    }
-
-    /// <summary>What the scope is handed: the detector's hops and the settled letters (work instruction 480).</summary>
-    private readonly CwScopeFeed _scopeFeed = new();
-
-    /// <summary>
-    /// Put a settled character on the scope, over the span the decoder gave it
-    /// (work instruction 480). Called on the audio thread; the graph locks.
-    /// </summary>
-    private void SettleOnTheGraph(CwCharacter character)
-    {
-        if (_decoder is { } decoder)
-        {
-            _scopeFeed.Settle(character, decoder.Heard, DateTime.UtcNow);
-        }
-    }
-
-    /// <summary>One of the radio's scope frames, on its read thread (work instruction 480).</summary>
-    /// <remarks>
-    /// Only in CW, with the dial, the CW pitch and the filter all read; any other frame is
-    /// counted by the source and passed by here, so a data mode's waterfall is untouched.
-    /// </remarks>
-    private void OnRadioScopeFrame(in SpectrumFrame frame)
-    {
-        var dial = Volatile.Read(ref _pointDialHz);
-        var pitch = Volatile.Read(ref _pointPitchHz);
-        var width = Volatile.Read(ref _pointWidthHz);
-
-        if (double.IsNaN(dial) || double.IsNaN(pitch) || double.IsNaN(width))
-        {
-            return;
-        }
-
-        _scopePointer.Observe(frame, dial, pitch, width, DateTime.UtcNow);
-    }
-
     /// <summary>Put a reading on the screen.</summary>
     /// <param name="reading">What the meter said.</param>
     /// <remarks>
@@ -12581,11 +12298,6 @@ public partial class MainWindowViewModel : ObservableObject
     private void PublishKeying(KeyingReading reading)
     {
         _keyingReading = reading;
-
-        // **THE TRACKER OBEYS THE METER** (work instruction 477, HM-DEC-186): the same reading
-        // the light shows goes to the decoder's tracker, which mixes at the meter's pitch from
-        // its next hop and tells the decoder a station is there while the meter says keying.
-        _decoder?.Tracker.FollowMeter(reading);
 
         KeyingWord = reading.Verdict switch
         {
@@ -12689,75 +12401,6 @@ public partial class MainWindowViewModel : ObservableObject
 
     private string SpanRatiosForTheRecord()
         => SpanRatioLine(Transcript.Recent(), CountsCover());
-
-    private string ArbitrationForTheRecord()
-        => ArbitrationLine(Transcript.Recent(), CountsCover());
-
-    /// <summary>The arbiter's record of each recent character, for the sheet (HM-REQ-121, 126, 127).</summary>
-    /// <param name="recent">The transcript's recent tail, word gaps included.</param>
-    /// <param name="covers">What the tail covers, in the sheet's own words.</param>
-    /// <returns>Each character with both readings, or why there are none.</returns>
-    /// <remarks>
-    /// <para>**WHAT THE TAB NEVER SAYS, THE SHEET ALWAYS DOES** (HM-REQ-121). Each
-    /// character as `K:port/disagree/ours R 0.700/port K 0.900`: the character
-    /// shown, which decoder it came from, how the two readings of its span stood
-    /// (agree, disagree, tie, or one-sided), and each decoder's character and p,
-    /// `none` where it read nothing there. A tie is written `tie` (HM-REQ-127);
-    /// a disagreement carries both characters and both p's (HM-REQ-126).</para>
-    /// <para>**A CHARACTER THAT PASSED THROUGH NO ARBITER SAYS SO**, rather than
-    /// printing a reading nobody took.</para>
-    /// </remarks>
-    public static string ArbitrationLine(IReadOnlyList<CwCharacter> recent, string covers)
-    {
-        var characters = recent.Where(character => !character.IsWordGap).ToArray();
-
-        if (characters.Length == 0)
-        {
-            return "nothing read yet";
-        }
-
-        var body = string.Join(" ", characters.Select(character =>
-        {
-            var text = CwCaseRoster.Readable(character.Text);
-
-            if (character.Arbitration is not { } a)
-            {
-                return $"{text}:unrecorded";
-            }
-
-            var emitted = a.Emitted switch
-            {
-                CwReader.Ours => "ours",
-                CwReader.Second => "port",
-                _ => "neither",
-            };
-            var kase = a.Case switch
-            {
-                CwArbitrationCase.Agree => "agree",
-                CwArbitrationCase.Disagree => "disagree",
-                CwArbitrationCase.Tie => "tie",
-                CwArbitrationCase.OneSidedOurs => "ours-only",
-                _ => "port-only",
-            };
-
-            // HM-REQ-128: where the arbitration is switched off on the condition, the sheet says which decoder alone was used.
-            var switched = a.Switch switch
-            {
-                CwArbitrationSwitch.OursAlone => "/switch ours-alone",
-                CwArbitrationSwitch.PortAlone => "/switch port-alone",
-                _ => string.Empty,
-            };
-
-            return $"{text}:{emitted}/{kase}/ours {Reading(a.OursText, a.OursP)}/port {Reading(a.SecondText, a.SecondP)}{switched}";
-        }));
-
-        return $"{characters.Length} characters, each with both readings of its span ({covers})"
-               + Environment.NewLine
-               + "           " + body;
-
-        static string Reading(string? text, double p)
-            => text is null ? "none" : $"{CwCaseRoster.Readable(text)} {(double.IsNaN(p) ? "unmeasured" : p.ToString("0.000", CultureInfo.InvariantCulture))}";
-    }
 
     /// <summary>The span-ratio line itself, from the characters it describes.</summary>
     /// <param name="recent">The transcript's recent tail, word gaps included.</param>
@@ -13072,25 +12715,11 @@ public partial class MainWindowViewModel : ObservableObject
         // admits keying at `_binHz[bin]` (CwToneSurvey.cs) and the tracker reports
         // that number unchanged; 17:37 reads 600.000 and 013347 625.000, both on
         // the five hertz grid.
-        // **PROVED OR A HYPOTHESIS, AND THE SHEET SAYS WHICH** (HM-REQ-093, work
-        // instruction 450). This line used to print every held pitch as measured
-        // from keying, and a held pitch outlives its keying: the station stops, the
-        // survey finds nothing, and the number stays. The operator was reading more
-        // certainty than the decoder had.
-        if (report.PitchProof == CwPitchProof.Proved)
+        if (report.PitchWasMeasured)
         {
-            return $"{report.ToneHz:0.0} Hz  (proved: the survey's latest verdict "
-                + "confirms keying at this pitch. Measured from that keying: the "
-                + "centre of the survey bin it was admitted in, not interpolated "
-                + "between bins)";
-        }
-
-        if (report.PitchProof == CwPitchProof.Hypothesis)
-        {
-            return $"{report.ToneHz:0.0} Hz  (HYPOTHESIS, NOT PROVED NOW: keying "
-                + "was found at this pitch earlier, the centre of the survey bin it "
-                + "was admitted in, and the survey's latest verdict does not confirm "
-                + "it. The number is held, not measured from keying now)";
+            return $"{report.ToneHz:0.0} Hz  (measured from the keying the "
+                + "survey admitted: the centre of the survey bin it was admitted in, "
+                + "not interpolated between bins)";
         }
 
         // **"THE MIDDLE OF THE BANK" STOPPED BEING TRUE ON 2026-08-27** and this
@@ -13167,16 +12796,10 @@ public partial class MainWindowViewModel : ObservableObject
     /// The speed at the moment of the press, or why there is not one.
     /// </summary>
     /// <remarks>
-    /// <para>The guard on <see cref="CwDecoder.WordsPerMinute"/> withholds a number
-    /// until the window has read a character, the clock is not being re-acquired,
-    /// and the speed is within the plausible range; the lines below also say
-    /// whether a tone was located. All the failures used to print the same three
-    /// words (HM-DEC-091).</para>
-    /// <para>**AND A NUMBER IT NAMES SAYS WHETHER IT WAS PROVED** (HM-REQ-034, work
-    /// instruction 451). Every line opens with the state, proved, hypothesis or
-    /// none. A named number that is a hypothesis says so in capitals and why, and
-    /// the grid's winner over a window that read nothing is no longer called the
-    /// decoder's hypothesis: there is no reading for it to be a hypothesis of.</para>
+    /// The guard on <see cref="CwDecoder.WordsPerMinute"/> withholds a number
+    /// until a tone has been located, a character has resolved, the clock is not
+    /// being re-acquired, and the settled pass has proved a dit. All four
+    /// failures used to print the same three words (HM-DEC-091).
     /// </remarks>
     private string SpeedForTheRecord()
     {
@@ -13185,49 +12808,30 @@ public partial class MainWindowViewModel : ObservableObject
             return "not tracking (nothing is listening)";
         }
 
-        var proof = decoder.SpeedProof;
-
         if (decoder.WordsPerMinute is { } wpm)
         {
-            if (proof == CwSpeedProof.Proved)
-            {
-                return $"{wpm}  (proved: the dit was measured on keying still arriving "
-                    + "at the pitch being read)";
-            }
-
-            var why = decoder.Stream.UnitWasMeasured
-                ? "no keying has been found at the pitch being read for six surveys, "
-                  + "so it is held from a window whose sender has stopped"
-                : $"it won the search across {CwProbabilisticDecoder.SlowestWpm:0} to "
-                  + $"{CwProbabilisticDecoder.FastestWpm:0} and no dit was measured from "
-                  + "the keying";
-
-            return $"{wpm}  HYPOTHESIS, NOT PROVED NOW ({why})";
+            return $"{wpm}";
         }
 
         var report = decoder.Report;
-        var rolling = decoder.Reading.WordsPerMinute <= 0
-            ? "the decoder had no hypothesis worth naming"
-            : proof == CwSpeedProof.Hypothesis
-                ? $"the decoder's own best hypothesis was "
-                  + $"{decoder.Reading.WordsPerMinute:0} WPM"
-                : $"the search's winner over a window that read nothing was "
-                  + $"{decoder.Reading.WordsPerMinute:0} WPM, which describes nobody";
-        var state = proof == CwSpeedProof.Hypothesis ? "hypothesis" : "none";
+        var rolling = decoder.Reading.WordsPerMinute > 0
+            ? $"the decoder's own best hypothesis was "
+              + $"{decoder.Reading.WordsPerMinute:0} WPM"
+            : "the decoder had no hypothesis worth naming";
 
         if (!report.HasTone)
         {
-            return $"{state}, not tracking (no tone was located; {rolling})";
+            return $"not tracking (no tone was located; {rolling})";
         }
 
         if (report.CharactersEmitted == 0)
         {
-            return $"{state}, not proved (a tone but no resolved character; {rolling})";
+            return $"not proved (a tone but no resolved character; {rolling})";
         }
 
         return decoder.SpeedIsReacquiring
-            ? $"{state}, withdrawn (the clock is being re-acquired; {rolling})"
-            : $"{state}, not proved (the window read nothing; {rolling})";
+            ? $"withdrawn (the clock is being re-acquired; {rolling})"
+            : $"not proved (the settled pass has no clock; {rolling})";
     }
 
     /// <summary>What the clock fit looked like, as one line.</summary>
@@ -13285,19 +12889,10 @@ public partial class MainWindowViewModel : ObservableObject
         // reading is taken here, when the sheet is composed, which since unit 417
         // is after the press has waited for the tone measurement while the
         // decoder reads its window again every half second.
-        // **THE WINNER IS NOT A PROOF, AND THE LINE SAYS WHICH IT IS** (HM-REQ-034,
-        // work instruction 451): the same state the decoderWpm line opens with.
-        var proof = decoder.SpeedProof switch
-        {
-            CwSpeedProof.Proved => "; the speed is proved",
-            CwSpeedProof.Hypothesis => "; the speed is a HYPOTHESIS, NOT PROVED NOW",
-            _ => "; the speed is none: the window read nothing",
-        };
-
         return string.Format(
             CultureInfo.InvariantCulture,
             "{0:0} WPM won out of {1} to {2}, {3:0.00} better than silence per "
-            + "hop against a gate of {4:0.00}{5}{7}  (this is the last {6:0} second "
+            + "hop against a gate of {4:0.00}{5}  (this is the last {6:0} second "
             + "window alone, as it stood when this sheet was written just after the "
             + "recording was saved, and not the whole recording)",
             reading.WordsPerMinute,
@@ -13306,8 +12901,7 @@ public partial class MainWindowViewModel : ObservableObject
             reading.LikelihoodRatio,
             CwProbabilisticDecoder.Gate,
             atEdge,
-            CwProbabilisticStream.WindowSeconds,
-            proof);
+            CwProbabilisticStream.WindowSeconds);
     }
 
     /// <summary>What the meter said, as one line for a record.</summary>
@@ -13609,11 +13203,9 @@ public partial class MainWindowViewModel : ObservableObject
             return;
         }
 
-        _rigSpectrum.FrameReady -= OnRadioScopeFrame;
         _rigSpectrum.Stop();
         _rigSpectrum.Dispose();
         _rigSpectrum = null;
-        _scopePointer.Reset();
 
         if (SpectrumSource is RigSpectrumSource)
         {
@@ -14455,12 +14047,6 @@ public partial class MainWindowViewModel : ObservableObject
             _receiverMemory = memory;
             LastReceiverSetup = results;
             _preampFollow = PreampFollow.Fresh;
-
-            // **THE STREAM LISTENS ONCE THE READ-BACK SAYS ON** (HM-DEC-188, work
-            // instruction 480 task 1). It is normally already listening from connect;
-            // this starts it where it was not, and never stops it, because the data
-            // modes' waterfall reads the same listener.
-            _rigSpectrum?.FollowTheSetup(results);
 
             // **HE IS TOLD WHAT CHANGED AND WHY** (work instruction 042 task 4),
             // **AND SINCE 2026-09-08 HE IS TOLD ON HOVER** (work instruction 282
@@ -21365,10 +20951,7 @@ public partial class MainWindowViewModel : ObservableObject
                 // And what the fit behind the speed looked like, so a row with no
                 // speed on it can be told from a row whose speed came out of a
                 // fit that was not a fist.
-                FitLine(),
-
-                // Whether the speed column's number was proved (HM-REQ-034).
-                _decoder?.SpeedProof));
+                FitLine()));
     }
 
     /// <summary>
@@ -22267,10 +21850,9 @@ public partial class MainWindowViewModel : ObservableObject
         PrivilegeSpans = _privileges.SpansFor(SelectedBand.Band, cls);
         // The card answers two questions at once: what the license allows, and
         // what is actually going on where the dial is pointing (HM-DEC-054).
-        var here = Neighborhoods.FirstOrDefault(n => n.Contains(FrequencyHz));
-
         PrivilegeStatus = PrivilegeStatusLine.Build(
-            _privileges, cls, FrequencyHz, LicenceModeHere(here), here);
+            _privileges, cls, FrequencyHz, LicenceModeForTheTab,
+            Neighborhoods.FirstOrDefault(n => n.Contains(FrequencyHz)));
 
         // A pending mismatch is a question about a class the operator has
         // since changed. Answering it by other means makes it moot, and a

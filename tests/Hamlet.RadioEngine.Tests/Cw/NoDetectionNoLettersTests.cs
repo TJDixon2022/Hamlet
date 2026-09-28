@@ -82,6 +82,60 @@ public sealed class NoDetectionNoLettersTests
     }
 
     /// <remarks>
+    /// Proves work instruction 486's change one: nothing reaches a surface - the settled
+    /// transcript or the leading edge - at any moment the detector says no keying, the tail of
+    /// the over included. Each character is judged by the screen at the moment it arrives.
+    /// </remarks>
+    [Fact]
+    public void NothingReachesTheScreenWhileTheDetectorSaysNoKeying()
+    {
+        var audio = Call();
+        var detector = new CwEnvelopeDetector(Rate);
+        var decoder = new CwDecoder(Rate, 600) { KeyingGate = () => detector.Reading.Keying };
+        var arrived = new List<(CwCharacter Character, bool Keying)>();
+
+        decoder.CharacterSettled += c => arrived.Add((c, detector.Reading.Keying));
+        decoder.CharacterDecoded += c => arrived.Add((c, detector.Reading.Keying));
+
+        var chunk = 80;
+
+        for (var at = 0; at + chunk <= audio.Samples.Length; at += chunk)
+        {
+            decoder.Process(new AudioChunk(at, Rate, audio.Samples.AsSpan(at, chunk)));
+            detector.Process(audio.Samples.AsSpan(at, chunk));
+        }
+
+        decoder.Flush();
+
+        var late = arrived.Where(a => !a.Character.IsWordGap && !a.Keying).ToList();
+
+        _output.WriteLine(
+            $"arrived {arrived.Count(a => !a.Character.IsWordGap)}, while the detector said no keying {late.Count}: "
+            + string.Join(" ", late.Select(a => $"`{a.Character.Text}` heard at {a.Character.At.TotalSeconds:0.000} s")));
+
+        Assert.Contains(arrived, a => a.Keying && !a.Character.IsWordGap);
+        Assert.Empty(late);
+    }
+
+    /// <remarks>
+    /// Proves work instruction 486's change two: with the detector reporting keying at 675 Hz and
+    /// the decoder started at 536 Hz, the decoder mixes at 675 Hz after its first hop.
+    /// </remarks>
+    [Fact]
+    public void TheDecoderMixesWhereTheDetectorHears()
+    {
+        var decoder = new CwDecoder(Rate, 536) { DetectorPitch = () => 675 };
+        var noise = CwSignal.Generate(new CwSignalRequest(
+            " ", SampleRate: Rate, Amplitude: 0, NoiseAmplitude: 0.05, LeadInSeconds: 0.1, TailSeconds: 0.1, Seed: 486));
+
+        decoder.Process(new AudioChunk(0, Rate, noise.Samples.AsSpan(0, decoder.Tracker.HopSamples)));
+
+        _output.WriteLine($"mixing {decoder.Stream.ToneHz:0.0} Hz after one hop");
+
+        Assert.Equal(675, decoder.Stream.ToneHz, 3);
+    }
+
+    /// <remarks>
     /// Proves change three: with the decoder gated by the detector, no character is emitted from
     /// the noise before the call or after it, on the settled pass or the leading edge.
     /// </remarks>

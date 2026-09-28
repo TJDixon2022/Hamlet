@@ -114,7 +114,9 @@ internal static class ModeEntryBench
 
         radio.Switches[Agc] = 1;
         radio.Switches[NoiseBlanker] = 0;
-        radio.Switches[Preamp] = (byte)preamp.Bands.First(b => b.Contains(hz)).Wanted;
+        // The row's own value at this dial: its band stretch where it has one, and its constant
+        // where it has none, as the CW row has since R98 (work instruction 486).
+        radio.Switches[Preamp] = (byte)(preamp.Bands.FirstOrDefault(b => b.Contains(hz))?.Wanted ?? preamp.Wanted!.Value);
 
         return radio;
     }

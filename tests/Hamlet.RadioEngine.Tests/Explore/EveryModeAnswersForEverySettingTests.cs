@@ -152,16 +152,25 @@ public sealed class EveryModeAnswersForEverySettingTests
         }
     }
 
-    /// <summary>The two rules are rules and not constants.</summary>
+    /// <summary>
+    /// The attenuator is a rule and not a constant, and the preamp is a constant,
+    /// off, by the owner's ruling.
+    /// </summary>
     /// <remarks>
-    /// **BOTH WERE WRONG IN OPPOSITE DIRECTIONS ON ONE EVENING** while Hamlet
+    /// <para>**BOTH WERE WRONG IN OPPOSITE DIRECTIONS ON ONE EVENING** while Hamlet
     /// held the reading that decides them: 20 dB of attenuator while a station
     /// faded S4 to S1 to nothing, and no attenuator while the front end read
     /// overloading at S9 plus 10. A constant is wrong half the time by
-    /// construction.
+    /// construction, and the attenuator is still a rule for that reason.</para>
+    /// <para>**THE PREAMP STOPPED BEING A RULE BY RULING** (R98, HM-DEC-191, work
+    /// instruction 486). It was a band rule with an overload clause under HM-DEC-177;
+    /// the owner ruled it off for Morse (*"I still hate the preamp crap."*), so the
+    /// row is now a plain constant with no bands and no overload clause, and nothing
+    /// follows the overload flag in CW. This test was named
+    /// `TheAttenuatorAndThePreampAreRulesNotConstants` until then.</para>
     /// </remarks>
     [Fact]
-    public void TheAttenuatorAndThePreampAreRulesNotConstants()
+    public void TheAttenuatorIsARuleAndThePreampIsOffByRuling()
     {
         var cw = NeighborhoodPlan.ForBand(HfBands.Bands.First(b => b.Name == "40 m"))
             .First(n => n.ShortName == "CW");
@@ -174,8 +183,20 @@ public sealed class EveryModeAnswersForEverySettingTests
         Assert.True(attenuator.IsConditional);
         Assert.Equal("overflow", attenuator.Condition);
 
-        Assert.True(preamp.IsConditional);
-        Assert.Equal("band", preamp.Condition);
+        // R98: off, confirmed, a constant, and no overload rule for anything to follow.
+        Assert.False(preamp.IsConditional);
+        Assert.Equal(0, preamp.Wanted);
+        Assert.Equal("off", preamp.WantedText);
+        Assert.True(preamp.Confirmed);
+        Assert.True(preamp.CanBeWritten);
+        Assert.Empty(preamp.Bands);
+        Assert.Null(preamp.WhenOverloading);
+
+        // The value comes from the owner's ruling, and the manual page is kept as history.
+        Assert.Contains("R98", preamp.Because, StringComparison.Ordinal);
+        Assert.Contains("HM-DEC-191", preamp.Because, StringComparison.Ordinal);
+        Assert.Contains("IC-7300_ENG_FM_12b", preamp.Because, StringComparison.Ordinal);
+        Assert.Contains("page 4-3", preamp.Because, StringComparison.Ordinal);
     }
 
     /// <summary>Every stated row carries a reason long enough to say aloud.</summary>

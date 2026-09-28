@@ -385,11 +385,13 @@ public static class ReceiveAdvice
                 + "which is when the radio's manual has it off.");
         }
 
-        return new ReceiveSuggestion(
-            CivWrites.Preamp, 1,
-            "Switch the preamp on. It is more gain at the front end, which is "
-            + "what a faint signal needs.",
-            AlreadyRight: false, Unreadable: false);
+        // **OFF IS NOT A FAULT TO FIX** (work instruction 486, R98, HM-DEC-191). The owner runs
+        // with the preamp off - *"I still hate the preamp crap"* - and a Morse tune-in sets it
+        // off. This list proposing it back on was one more voice asking him to undo what Hamlet
+        // set, so it says where the preamp is and leaves it with him.
+        return Fine(
+            CivWrites.Preamp,
+            "The preamp is off, which is how you run it.");
     }
 
     /// <summary>

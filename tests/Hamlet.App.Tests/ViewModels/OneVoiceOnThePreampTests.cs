@@ -27,6 +27,9 @@ namespace Hamlet.App.Tests.ViewModels;
 /// attenuator already in. The manual turns the preamp off with strong signals (page
 /// 4-3), so the advice was wrong, and the panel was asking for a change already made.
 /// Neither is silenced: each now says what is true.</para>
+/// <para>**SINCE R98 THE PREAMP IS OFF FOR MORSE** (work instruction 486, HM-DEC-191), and the
+/// advice no longer proposes switching it on in a block that does not state it: that was
+/// one more voice asking him to undo what Hamlet set.</para>
 /// <para>Every result is an indication against <see cref="ScriptedRadio"/> (FACT-006).</para>
 /// </remarks>
 public sealed class OneVoiceOnThePreampTests
@@ -56,8 +59,8 @@ public sealed class OneVoiceOnThePreampTests
     }
 
     /// <summary>
-    /// **The red one.** At 14.050 the setup's own sentence about the preamp names the
-    /// value it left and no other.
+    /// At 14.050 the setup leaves the preamp off, as R98 has it for Morse (work instruction
+    /// 486), and its own sentence names no other value. It was preamp 1 under HM-DEC-177.
     /// </summary>
     [Fact]
     public async Task At14050TheSetupSaysTheValueItSetAndNoOther()
@@ -68,9 +71,8 @@ public sealed class OneVoiceOnThePreampTests
 
         _output.WriteLine(said);
 
-        Assert.Equal("preamp 1", state[RigField.Preamp].Text);
-        Assert.Contains("preamp 1", said, StringComparison.Ordinal);
-        Assert.Empty(OtherValuesNamed(said, "preamp 1"));
+        Assert.Equal("off", state[RigField.Preamp].Text);
+        Assert.Empty(OtherValuesNamed(said, "off"));
     }
 
     /// <summary>

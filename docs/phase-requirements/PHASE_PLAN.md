@@ -200,6 +200,12 @@ placeholder, nothing on the transcript or the scope. The two ran side by side an
 wired together, so the decoder spelled letters out of noise while the detector heard nobody.
 The scope draws blocks for the marks and the letters over them, and no level trace.
 
+**R98 - Tim, 2026-09-28: the preamp is off in CW, and his hand holds.** *"I still hate the
+preamp crap."* The CW receive condition asks for the preamp off, overriding for CW only the
+manual-derived preamp 1 of HM-DEC-177 (the work instruction named it HM-DEC-176); the data
+rows are unchanged. What the operator sets by hand holds until he changes it, and nothing
+Hamlet shows asks him to turn it back on.
+
 ## §3 What is different from the phases before it
 
 1. **A criterion is a requirement id.** A report states the requirement, the condition, the
