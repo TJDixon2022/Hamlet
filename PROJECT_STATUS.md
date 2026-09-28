@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: BLOCKED
-TASK: 1 of 3
-WORK_INSTRUCTION: 483 - the owner's rows name the gate
+STATE: COMPLETED
+TASK: TASK 3 of 3
+WORK_INSTRUCTION: 484 - the bar stays put, and silence is empty (run by hand)
 BALL: tim
 NEXT_PASTE: output.md -> Claude Web
-RULES_AT: HM-DEC-188 (2026-09-28)
-UPDATED: 2026-09-28T16:07:35-04:00
-NOTE: Unit 483 stopped at task 1: the telemetry folder is outside the session's allowed directories, 0 rows read, nothing moved, 11.4 unticked; the owner's copy of his owner_verdict rows into the repo unblocks it
+RULES_AT: HM-DEC-165 (2026-09-19)
+UPDATED: 2026-09-28T16:59:01-04:00
+NOTE: Unit 484 by hand complete: scope empty without keying, top row decided by width alone, licence line follows the block; build 0/0, app 278 of 278; the owner verifies at the radio
 
 ---
 
