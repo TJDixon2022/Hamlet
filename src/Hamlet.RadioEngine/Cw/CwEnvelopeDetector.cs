@@ -69,7 +69,8 @@ public sealed record CwEnvelopeReading(
 /// <para>**WHAT IT DOES.** Every <see cref="BinSpacingHz"/> across the passband - the radio's
 /// CW pitch plus and minus half its filter, or the whole audio band when either is unknown -
 /// each hop's level is read over a ten millisecond window. Consecutive hops whose levels stay
-/// within <see cref="FlatToleranceDb"/> of their own mean are one **run**. A run at least
+/// within <see cref="ToleranceDb"/> of their own mean - the wobble a tone at the bin's measured
+/// contrast has, never less than <see cref="FlatToleranceDb"/> (R93) - are one **run**. A run at least
 /// <see cref="ShortestBarMs"/> long that stands above the runs either side is a **bar**. The
 /// hops between two bars, every one of them below both, are a **gap**. **A bin is keying when
 /// it made two bars at one level with a gap between them in the last second** - a dit, a
@@ -86,28 +87,62 @@ public sealed record CwEnvelopeReading(
 public sealed class CwEnvelopeDetector
 {
     /// <summary>
-    /// How far a hop may sit from its run's mean and still be the same level, in dB either way.
+    /// The least a hop may sit from its run's mean and still be the same level, in dB either
+    /// way: the floor under <see cref="ToleranceDb"/>, which is what a run is actually held to.
     /// </summary>
     /// <remarks>
-    /// <para>**HOW MUCH A KEYED TONE WOBBLES ACROSS A MARK, AND NOTHING ELSE.** A tone read in a
-    /// bin where the noise sits S decibels under it moves by at most 20·log10(1 + 10^(-S/20))
-    /// from hop to hop, as the noise adds to it or takes from it: 0.8 dB at 20, 1.4 at 15,
-    /// 2.4 at 10. One and a half either way holds a tone as a bar from about fifteen decibels
-    /// over the noise in its bin - ten over the noise in a 500 Hz filter, since a bin hears
-    /// about a third of it; the radio's own keying shape and AGC act over milliseconds at the
-    /// edges, not across the flat of a mark.</para>
-    /// <para>**WHY NOT TWO, MEASURED ON SYNTHETIC AUDIO ONLY.** Two was written first, from
-    /// twelve decibels. With every other rule here in place, thirty seconds of seeded loud
-    /// noise over the whole audio band read as keying in 11 of 1500 twenty-millisecond reads
-    /// at two, and in none at one and a half: the per-hop level of noise in a bin scatters
-    /// about 5.6 dB, and the narrower the band a run must stay in, the rarer noise holds it.
-    /// **WHAT IT COSTS, NAMED**: a tone keyed 15 dB over the noise in a 500 Hz filter
-    /// (about 16 dB over its bin's gaps) wobbles past one and a half across a long dah often
-    /// enough that 51 of its 208 key-down hops are not marked, against 35 at two - the bar
-    /// splits. Unit 476's test of that case is red on this and is left red.</para>
-    /// <para>**NO RECORDING AND NO VERDICT ROW CHOSE IT.** Author's, overrulable.</para>
+    /// <para>**THE FLOOR, FOR LOUD SIGNALS; THE TOLERANCE FOLLOWS THE SIGNAL** (work instruction
+    /// 479, R93, HM-DEC-187). A tone read in a bin where the noise sits S decibels under it
+    /// moves by 20·log10(1 + 10^(-S/20)) from hop to hop, as the noise adds to it or takes from
+    /// it: 0.8 dB at 20, 1.4 at 15, 2.4 at 10. A run is held to that wobble at its bin's measured
+    /// contrast, and never to less than this - so a loud bar may wobble little and a weak bar
+    /// wobbles more, and one number for both is not a gate against the weak ones. There is no
+    /// ceiling.</para>
+    /// <para>**WHY ONE AND A HALF IS THE FLOOR, MEASURED ON SYNTHETIC AUDIO ONLY** (unit 477).
+    /// Two was written first. Thirty seconds of seeded loud noise over the whole audio band read
+    /// as keying in 11 of 1500 twenty-millisecond reads at two, and in none at one and a half:
+    /// the per-hop level of noise in a bin scatters about 5.6 dB, and the narrower the band a
+    /// run must stay in, the rarer noise holds it. Noise earns no more than the floor, because
+    /// it has no contrast over itself to earn it.</para>
+    /// <para>**WHY IT STOPPED BEING THE WHOLE RULE.** Held fixed, it admitted only signals
+    /// wobbling less than one and a half - by the formula, signals more than about fourteen
+    /// decibels over their gaps - and 477 named the cost: a tone 15 dB over the noise split its
+    /// bars. On 2026-09-28 at 15:38 to 15:39 UTC the owner pressed *You're an idiot* on four
+    /// stations he heard, 10 to 15 dB weaker than the morning's, and the bars found none of
+    /// them. Those rows are the reason the formula is applied; they did not choose it.</para>
+    /// <para>**WHAT S IS HERE - AUTHOR'S, OVERRULABLE.** A keying bin's bars' mean level over the
+    /// loudest hop of its paired gaps in the last second, clear of the key edges: the formula's
+    /// noise is the noise that adds to or takes from the tone at one hop, and a run has to hold
+    /// through the loudest it meets. Over the gaps' power mean, the 15 dB tone reads about 16 dB,
+    /// the formula gives 1.28 and the floor holds - that case did not move at all. Before a bin
+    /// has a contrast of its own, S is the run's level over the loudest such gap any bin has, or
+    /// where none has one, over the bin's own lowest level in the last second; a run at or under
+    /// that has no contrast and holds the floor. When a bin's contrast is first measured, its
+    /// stored history is read again at it, so the first dah is judged as the later ones are.</para>
+    /// <para>**WHAT IT DID, SYNTHETIC AUDIO ONLY.** The 15 dB tone's unmarked key-down hops went
+    /// from 51 of 208 to 40, every element from the second on unbroken; seeded loud noise still
+    /// read keying in 0 of 1500. **A tone 10 dB over the noise still makes no bars**: at the
+    /// floor it never makes a first pair, so its contrast is never measured, and the bin's own
+    /// lowest level - a trough about twenty decibels under the noise - reads its contrast as
+    /// thirty. Its test is red and is left red.</para>
+    /// <para>**NO RECORDING AND NO VERDICT ROW CHOSE EITHER NUMBER.** The floor is 477's
+    /// measurement on seeded noise; the formula is the physics of a tone plus noise.</para>
     /// </remarks>
     public const double FlatToleranceDb = 1.5;
+
+    /// <summary>
+    /// How far a hop may sit from its run's mean and still be the same level, for a bar S dB
+    /// over its gap: max(<see cref="FlatToleranceDb"/>, 20·log10(1 + 10^(-S/20))).
+    /// </summary>
+    /// <param name="contrastDb">The run's level over its gap, S, in dB; NaN when not known.</param>
+    /// <returns>
+    /// The tolerance in dB either way; the floor when the contrast is not known, or is none - a
+    /// run at or under the gap is the noise, and noise has no contrast over itself to earn more.
+    /// </returns>
+    public static double ToleranceDb(double contrastDb)
+        => double.IsNaN(contrastDb) || contrastDb <= 0
+            ? FlatToleranceDb
+            : Math.Max(FlatToleranceDb, 20 * Math.Log10(1 + Math.Pow(10, -contrastDb / 20)));
 
     /// <summary>The shortest run that can be a bar, in ms: the shortest dit anyone sends.</summary>
     /// <remarks>
@@ -161,6 +196,7 @@ public sealed class CwEnvelopeDetector
     private double _lowHz = double.NaN;
     private double _highHz = double.NaN;
     private bool _fromRig;
+    private double _loudestGapDb = double.NaN;
     private CwEnvelopeReading _reading = CwEnvelopeReading.None;
 
     private IAudioSource? _attached;
@@ -271,10 +307,11 @@ public sealed class CwEnvelopeDetector
             }
 
             _bins = Enumerable.Range(first, last - first + 1)
-                .Select(k => new Bin(k * BinSpacingHz, SampleRate, HistoryHops + (2 * _keyingHops)))
+                .Select(k => new Bin(k * BinSpacingHz, SampleRate, HistoryHops + (2 * _keyingHops), _keyingHops))
                 .ToArray();
             _watched = _bins.Length / 2;
             _hop = 0;
+            _loudestGapDb = double.NaN;
             _reading = CwEnvelopeReading.None with
             {
                 PassbandLowHz = _lowHz,
@@ -405,9 +442,20 @@ public sealed class CwEnvelopeDetector
 
         var hop = _hop++;
 
+        // **THE TOLERANCE FOLLOWS THE SIGNAL** (R93): each hop joins its run or starts a new one
+        // under the wobble a tone at the bar's contrast has. Where the bin is keying, that is
+        // its bars' level over its gaps' loudest hop, measured at the last hop. Where it is not
+        // yet - a station's first bar, before any gap of its own - it is the run's level, with
+        // this hop in it, over the loudest gap any bin measured in the last second, or where no
+        // bin has one, over this bin's own lowest level in the last second. The run's level and
+        // not the hop's: a hop fallen to the noise is judged at the bar's contrast, so it cannot
+        // widen the bar's tolerance and join it; and a run at or under the gap holds the floor.
         foreach (var bin in _bins)
         {
-            bin.Add(hop, Level(bin));
+            var db = Level(bin);
+            var under = !double.IsNaN(_loudestGapDb) ? _loudestGapDb : bin.LowestLastSecond(hop, db);
+
+            bin.Add(hop, db, bin.ContrastDb, under);
             bin.Prune(hop - HistoryHops - _keyingHops);
         }
 
@@ -420,11 +468,39 @@ public sealed class CwEnvelopeDetector
         // where it was, so the trace goes on showing where the last station was.
         var evals = new Evaluation[_bins.Length];
         var keying = false;
+        _loudestGapDb = double.NaN;
 
         for (var i = 0; i < _bins.Length; i++)
         {
-            evals[i] = Evaluate(_bins[i]);
-            keying |= evals[i].Keying;
+            var e = evals[i] = Evaluate(_bins[i]);
+            keying |= e.Keying;
+
+            // The gap a run is measured over is the loudest hop of the gaps: the formula's noise
+            // is the noise that adds to or takes from the tone at one hop, and a run has to hold
+            // through the loudest it meets, not the average one.
+            var gap = !double.IsNaN(e.LoudestGapDb) ? e.LoudestGapDb : e.GapDb;
+
+            var contrast = e.Keying && !double.IsNaN(e.BarDb) && !double.IsNaN(gap)
+                ? e.BarDb - gap
+                : double.NaN;
+
+            // A station's first bars were read before its contrast was known, at whatever
+            // tolerance the estimate gave; once it is measured, the bin's history is read again
+            // at the tolerance it has earned, so its first dah is judged as its later ones are.
+            if (double.IsNaN(_bins[i].ContrastDb) && !double.IsNaN(contrast))
+            {
+                _bins[i].ContrastDb = contrast;
+                _bins[i].Reread(Math.Max(0, hop - HistoryHops - _keyingHops), hop);
+                evals[i] = e = Evaluate(_bins[i]);
+                keying |= e.Keying;
+            }
+
+            _bins[i].ContrastDb = contrast;
+
+            if (!double.IsNaN(gap) && !(gap <= _loudestGapDb))
+            {
+                _loudestGapDb = gap;
+            }
         }
 
         // How far a tone reaches across bins: the Hann window's main lobe, two bins of its
@@ -566,6 +642,8 @@ public sealed class CwEnvelopeDetector
         var barCount = 0;
         var gapPower = 0.0;
         var gapHops = 0;
+        var loudestGap = double.NaN;
+        var edge = EnvelopeWindowSamples / HopSamples;
         var lastMarked = -1;
 
         for (var k = 1; k < bars.Count; k++)
@@ -630,6 +708,18 @@ public sealed class CwEnvelopeDetector
                     gapPower += runs[i].PowerSum;
                     gapHops += runs[i].Count;
                 }
+
+                // The loudest hop of the gap, clear of the two key edges, where the window
+                // straddles them: the loudest noise a bar at this bin has to hold through.
+                for (var hop = a.End + 1 + edge; hop < b.Start - edge; hop++)
+                {
+                    var db = bin.Level(hop);
+
+                    if (!(db <= loudestGap))
+                    {
+                        loudestGap = db;
+                    }
+                }
             }
         }
 
@@ -655,7 +745,8 @@ public sealed class CwEnvelopeDetector
             !keying ? double.NaN
                 : double.IsFinite(waves.Level) ? waves.Level
                 : gapHops > 0 ? 10 * Math.Log10(gapPower / gapHops) : double.NaN,
-            bars.Where(i => runs[i].End > recent).Select(i => runs[i].Mean).DefaultIfEmpty(double.NegativeInfinity).Max());
+            bars.Where(i => runs[i].End > recent).Select(i => runs[i].Mean).DefaultIfEmpty(double.NegativeInfinity).Max(),
+            loudestGap);
     }
 
     /// <summary>
@@ -706,8 +797,9 @@ public sealed class CwEnvelopeDetector
 
     private readonly record struct Span(long Start, long End, double MeanDb);
 
+    // LoudestGapDb: the loudest gap hop the bars were held against, while keying; NaN otherwise.
     private readonly record struct Evaluation(
-        List<Span> Marked, int Bars, int Gaps, int BarsLastSecond, bool Keying, double BarDb, double GapDb, double LoudestBarDb);
+        List<Span> Marked, int Bars, int Gaps, int BarsLastSecond, bool Keying, double BarDb, double GapDb, double LoudestBarDb, double LoudestGapDb);
 
     /// <summary>A stretch of hops held at one level.</summary>
     private sealed class Run
@@ -724,13 +816,17 @@ public sealed class CwEnvelopeDetector
         public double Mean => Sum / Count;
 
         /// <summary>Take a hop if the run still holds one level with it; say whether it did.</summary>
-        public bool TryAdd(double db)
+        /// <param name="db">The hop's level.</param>
+        /// <param name="contrastDb">The bin's bars' measured contrast, or NaN before it has one.</param>
+        /// <param name="underDb">Before it has one, the level the run's own contrast is read over.</param>
+        public bool TryAdd(double db, double contrastDb, double underDb)
         {
             if (Count > 0)
             {
                 var mean = (Sum + db) / (Count + 1);
+                var toleranceDb = ToleranceDb(!double.IsNaN(contrastDb) ? contrastDb : mean - underDb);
 
-                if (Math.Max(Max, db) - mean > FlatToleranceDb || mean - Math.Min(Min, db) > FlatToleranceDb)
+                if (Math.Max(Max, db) - mean > toleranceDb || mean - Math.Min(Min, db) > toleranceDb)
                 {
                     return false;
                 }
@@ -751,16 +847,30 @@ public sealed class CwEnvelopeDetector
     {
         private readonly double[] _levels;
 
-        public Bin(double hz, int sampleRate, int historyHops)
+        // The lowest level over the last second, kept as a queue of hops each lower than every
+        // one before it, oldest first, so reading it costs nothing per hop.
+        private readonly int _secondHops;
+        private readonly long[] _lowHop;
+        private readonly double[] _lowDb;
+        private int _lowHead;
+        private int _lowCount;
+
+        public Bin(double hz, int sampleRate, int historyHops, int secondHops)
         {
             Hz = hz;
             Coefficient = 2 * Math.Cos(2 * Math.PI * hz / sampleRate);
             _levels = new double[historyHops];
+            _secondHops = Math.Max(1, secondHops);
+            _lowHop = new long[_secondHops + 1];
+            _lowDb = new double[_secondHops + 1];
         }
 
         public double Hz { get; }
 
         public double Coefficient { get; }
+
+        /// <summary>Its bars' level over the loudest hop of its gaps, while it is keying; NaN otherwise.</summary>
+        public double ContrastDb { get; set; } = double.NaN;
 
         /// <summary>The runs, oldest first; the last is still open.</summary>
         public List<Run> Runs { get; } = new();
@@ -769,15 +879,65 @@ public sealed class CwEnvelopeDetector
 
         public double Level(long hop) => _levels[(int)(hop % _levels.Length)];
 
-        public void Add(long hop, double db)
+        /// <summary>The lowest level over the last second, counting a hop about to be added.</summary>
+        public double LowestLastSecond(long hop, double db)
+        {
+            for (var i = 0; i < _lowCount; i++)
+            {
+                var k = (_lowHead + i) % _lowHop.Length;
+
+                if (_lowHop[k] > hop - _secondHops)
+                {
+                    return Math.Min(_lowDb[k], db);
+                }
+            }
+
+            return db;
+        }
+
+        public void Add(long hop, double db, double contrastDb, double underDb)
         {
             _levels[(int)(hop % _levels.Length)] = db;
 
-            if (Open is not { } open || !open.TryAdd(db))
+            while (_lowCount > 0 && _lowDb[(_lowHead + _lowCount - 1) % _lowHop.Length] >= db)
+            {
+                _lowCount--;
+            }
+
+            while (_lowCount > 0 && _lowHop[_lowHead] <= hop - _secondHops)
+            {
+                _lowHead = (_lowHead + 1) % _lowHop.Length;
+                _lowCount--;
+            }
+
+            var tail = (_lowHead + _lowCount) % _lowHop.Length;
+            _lowHop[tail] = hop;
+            _lowDb[tail] = db;
+            _lowCount++;
+
+            if (Open is not { } open || !open.TryAdd(db, contrastDb, underDb))
             {
                 var run = new Run { Start = hop };
-                run.TryAdd(db);
+                run.TryAdd(db, contrastDb, underDb);
                 Runs.Add(run);
+            }
+        }
+
+        /// <summary>Build the runs again from the stored levels, at the bin's measured contrast.</summary>
+        public void Reread(long from, long to)
+        {
+            Runs.Clear();
+
+            for (var hop = from; hop <= to; hop++)
+            {
+                var db = Level(hop);
+
+                if (Open is not { } open || !open.TryAdd(db, ContrastDb, double.NaN))
+                {
+                    var run = new Run { Start = hop };
+                    run.TryAdd(db, ContrastDb, double.NaN);
+                    Runs.Add(run);
+                }
             }
         }
 

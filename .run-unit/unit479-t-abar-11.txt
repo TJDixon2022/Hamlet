@@ -1,0 +1,36 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.07]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.28]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.28]   Starting:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.ABarIsALevelThatHoldsTests.LoudNoiseAloneIsNeverKeying [5 s]
+  Standard Output Messages:
+ chunks read keying: 0 of 1500
+ noise: bins 117, bars in the last second 0, keying seen False, marked hops 0
+
+
+[xUnit.net 00:00:06.34]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.ABarIsALevelThatHoldsTests.AKeyedToneOverWanderingNoiseMakesBarsOnTheMarks [81 ms]
+  Standard Output Messages:
+ first keying at 1.040 s: 775 Hz bars 3 gaps 1 bar -23.4 gap -50.1
+ chunks read keying: 94 of 146
+ keyed: key down hops 208, missed 0; key up hops 359, marked 0
+ keyed: bars in the found bin in the last second 3, marks in 4 s 8, keying seen True
+ keyed: pitch 650 to 650 Hz, bar -13.5 dB, gap -50.2 dB, contrast 35.9 dB
+ keyed: bins 450:1/0/NaN 475:0/0/NaN 500:0/0/NaN 525:0/0/NaN 550:5/1/-19.7 575:4/3/-16.8 600:4/3/-14.9 625:5/3/-13.8 650:5/3/-13.5 675:3/3/-13.8 700:3/3/-14.9 725:3/3/-16.7 750:1/0/NaN 775:3/3/-23.3 800:0/0/NaN 825:0/0/NaN 850:0/0/NaN 875:3/0/NaN 900:3/0/NaN 925:1/0/NaN 950:0/0/NaN
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.ABarIsALevelThatHoldsTests.ASteadyCarrierIsOneBarWithNoGapAndNotKeying [90 ms]
+  Standard Output Messages:
+ chunks read keying: 0 of 200
+ carrier: bars 1, gaps 0, keying False, keying seen False, marked hops 0
+
+
+
+Test Run Successful.
+Total tests: 3
+     Passed: 3
+ Total time: 6.6061 Seconds
+RC=0 WALL=8s

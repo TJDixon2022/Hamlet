@@ -93,6 +93,28 @@ public sealed class AMarkIsTheEnvelopeOverAThresholdTests
     }
 
     /// <remarks>
+    /// Proves a station ten decibels over the noise in the filter - the weak end of the four
+    /// the owner heard on 2026-09-28 at 15:38 - is keyed where it was keyed, its long dahs
+    /// unbroken bars, under the wobble a tone at its measured contrast has (work instruction
+    /// 479, R93). **Red at unit 479 and left red**: at the 1.5 dB floor it never makes a first
+    /// pair, so its contrast is never measured and the formula never widens its tolerance.
+    /// </remarks>
+    [Fact]
+    public void AToneTenDecibelsOverTheNoiseStillKeys()
+    {
+        var detector = new CwEnvelopeDetector(Rate);
+        detector.SetPassband(600, 500);
+
+        // 0.069 was 15 dB over the noise in the filter; five decibels under it is 0.0388.
+        var result = Drive(detector, 600, toneAmplitude: 0.069 * Math.Pow(10, -5 / 20.0), noiseRms: 0.06, seed: 610);
+
+        _output.WriteLine($"tone over floor at mid-dah: {result.MidDahOverFloorDb:0.0} dB");
+
+        AssertMarksAndGaps(result);
+        AssertPitch(result, 600);
+    }
+
+    /// <remarks>
     /// Proves noise alone raises no mark over four seconds, so the count of marks the row
     /// carries is a count of keying and not of noise.
     /// </remarks>
@@ -179,7 +201,8 @@ public sealed class AMarkIsTheEnvelopeOverAThresholdTests
         IReadOnlyList<bool?> Truth,
         IReadOnlyList<CwEnvelopeReading> MarkReadings,
         double LongestMarkRunMs,
-        double MidDahOverFloorDb);
+        double MidDahOverFloorDb,
+        IReadOnlyList<CwBarBin> Bins);
 
     private static DriveResult Drive(
         CwEnvelopeDetector detector, double toneHz, double toneAmplitude, double noiseRms, int seed)
@@ -249,7 +272,7 @@ public sealed class AMarkIsTheEnvelopeOverAThresholdTests
         var midDah = (int)((800 + 90) * Rate / 1000.0 / detector.HopSamples) - first;
         var over = history[midDah].EnvelopeDb - history[midDah].FloorDb;
 
-        return new DriveResult(history, truth, markReadings, longest, over);
+        return new DriveResult(history, truth, markReadings, longest, over, detector.Bins());
     }
 
     private void AssertMarksAndGaps(DriveResult result)
@@ -276,6 +299,16 @@ public sealed class AMarkIsTheEnvelopeOverAThresholdTests
         }
 
         _output.WriteLine($"key down hops {onHops}, missed {missed}; key up hops {offHops}, marked {marked}");
+        _output.WriteLine("bins " + string.Join(" ", result.Bins.Where(b => b.Bars > 0).Select(b => $"{b.Hz:0}:{b.Bars}/{b.Gaps}/{b.BarDb:0.0}/{b.GapDb:0.0}")));
+
+        // Hop by hop: '#' key down and marked, 'o' key down and missed, '!' key up and marked,
+        // '.' key up and not, ' ' straddling an edge and not judged.
+        _output.WriteLine("hops: " + string.Concat(result.History.Select((h, i) => result.Truth[i] switch
+        {
+            true => h.Mark ? '#' : 'o',
+            false => h.Mark ? '!' : '.',
+            _ => ' ',
+        })).TrimStart('.', ' '));
 
         Assert.True(onHops > 100, "the signal was keyed for too few judged hops to prove anything");
         Assert.True(offHops > 100, "the signal was silent for too few judged hops to prove anything");
