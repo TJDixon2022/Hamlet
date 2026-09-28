@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: EXECUTING
-TASK: 2 of 3
+STATE: COMPLETED
+TASK: 3 of 3
 WORK_INSTRUCTION: 480 - the letter sits over the bars that made it
-BALL: code
-NEXT_PASTE: none
+BALL: tim
+NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-188 (2026-09-28)
-UPDATED: 2026-09-28T15:02:42-04:00
-NOTE: Task 2 done - C over its four bars and Q over its four on the live path; committing
+UPDATED: 2026-09-28T15:08:17-04:00
+NOTE: Unit 480 (letter over the bars) done: the scope draws the trace and bars live again and each settled letter over its own span; 12.2 waits on the owner's eye; no recording read
 
 ---
 
