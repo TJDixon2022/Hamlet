@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 0 of 4
+TASK: 1 of 4
 WORK_INSTRUCTION: 477 - bars, not waves
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-186 (2026-09-28)
-UPDATED: 2026-09-28T09:48:23-04:00
-NOTE: Task 0 entry round: app carry-forward re-run once - the first lost one name to the dispatcher loop, 277/278
+UPDATED: 2026-09-28T10:09:40-04:00
+NOTE: Task 1: the scope's tests with the mid-dah frame on Q's first dah
 
 ---
 

@@ -1,0 +1,169 @@
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  Ft8Sharp -> C:\Source\HamLet\src\Ft8Sharp\bin\Debug\net8.0\Ft8Sharp.dll
+  Ft8Sharp.Deep -> C:\Source\HamLet\src\Ft8Sharp.Deep\bin\Debug\net8.0\Ft8Sharp.Deep.dll
+  Hamlet.RadioEngine -> C:\Source\HamLet\src\Hamlet.RadioEngine\bin\Debug\net8.0\Hamlet.RadioEngine.dll
+  Hamlet.RadioEngine.Tests -> C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:01.87]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:02.10]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:02.11]   Starting:    Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:02.70]     Hamlet.RadioEngine.Tests.Cw.ABarIsALevelThatHoldsTests.LoudNoiseAloneIsNeverKeying [FAIL]
+[xUnit.net 00:00:02.70]       Assert.False() Failure
+[xUnit.net 00:00:02.70]       Expected: False
+[xUnit.net 00:00:02.70]       Actual:   True
+[xUnit.net 00:00:02.70]       Stack Trace:
+[xUnit.net 00:00:02.70]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\ABarIsALevelThatHoldsTests.cs(109,0): at Hamlet.RadioEngine.Tests.Cw.ABarIsALevelThatHoldsTests.LoudNoiseAloneIsNeverKeying()
+[xUnit.net 00:00:02.70]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:02.70]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:02.70]       Output:
+[xUnit.net 00:00:02.70]         noise: bins 117, bars in the last second 9, keying seen True, marked hops 12
+[xUnit.net 00:00:02.78]     Hamlet.RadioEngine.Tests.Cw.ABarIsALevelThatHoldsTests.AKeyedToneOverWanderingNoiseMakesBarsOnTheMarks [FAIL]
+[xUnit.net 00:00:02.78]       Assert.All() Failure: 10 out of 47 items in the collection did not pass.
+[xUnit.net 00:00:02.78]       [1]:  Item:  875
+[xUnit.net 00:00:02.78]             Error: Assert.InRange() Failure: Value not in range
+[xUnit.net 00:00:02.78]                    Range:  (625 - 675)
+[xUnit.net 00:00:02.78]                    Actual: 875
+[xUnit.net 00:00:02.78]       [2]:  Item:  550
+[xUnit.net 00:00:02.78]             Error: Assert.InRange() Failure: Value not in range
+[xUnit.net 00:00:02.78]                    Range:  (625 - 675)
+[xUnit.net 00:00:02.78]                    Actual: 550
+[xUnit.net 00:00:02.78]       [5]:  Item:  550
+[xUnit.net 00:00:02.78]             Error: Assert.InRange() Failure: Value not in range
+[xUnit.net 00:00:02.78]                    Range:  (625 - 675)
+[xUnit.net 00:00:02.78]                    Actual: 550
+[xUnit.net 00:00:02.78]       [14]: Item:  550
+[xUnit.net 00:00:02.78]             Error: Assert.InRange() Failure: Value not in range
+[xUnit.net 00:00:02.78]                    Range:  (625 - 675)
+[xUnit.net 00:00:02.78]                    Actual: 550
+[xUnit.net 00:00:02.78]       [17]: Item:  525
+[xUnit.net 00:00:02.78]             Error: Assert.InRange() Failure: Value not in range
+[xUnit.net 00:00:02.78]                    Range:  (625 - 675)
+[xUnit.net 00:00:02.78]                    Actual: 525
+[xUnit.net 00:00:02.78]       [26]: Item:  550
+[xUnit.net 00:00:02.78]             Error: Assert.InRange() Failure: Value not in range
+[xUnit.net 00:00:02.78]                    Range:  (625 - 675)
+[xUnit.net 00:00:02.78]                    Actual: 550
+[xUnit.net 00:00:02.78]       [30]: Item:  550
+[xUnit.net 00:00:02.78]             Error: Assert.InRange() Failure: Value not in range
+[xUnit.net 00:00:02.78]                    Range:  (625 - 675)
+[xUnit.net 00:00:02.78]                    Actual: 550
+[xUnit.net 00:00:02.78]       [35]: Item:  550
+[xUnit.net 00:00:02.78]             Error: Assert.InRange() Failure: Value not in range
+[xUnit.net 00:00:02.78]                    Range:  (625 - 675)
+[xUnit.net 00:00:02.78]                    Actual: 550
+[xUnit.net 00:00:02.78]       [38]: Item:  550
+[xUnit.net 00:00:02.78]             Error: Assert.InRange() Failure: Value not in range
+[xUnit.net 00:00:02.78]                    Range:  (625 - 675)
+[xUnit.net 00:00:02.78]                    Actual: 550
+[xUnit.net 00:00:02.78]       [42]: Item:  550
+[xUnit.net 00:00:02.78]             Error: Assert.InRange() Failure: Value not in range
+[xUnit.net 00:00:02.78]                    Range:  (625 - 675)
+[xUnit.net 00:00:02.78]                    Actual: 550
+[xUnit.net 00:00:02.78]       Stack Trace:
+[xUnit.net 00:00:02.78]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\ABarIsALevelThatHoldsTests.cs(59,0): at Hamlet.RadioEngine.Tests.Cw.ABarIsALevelThatHoldsTests.AKeyedToneOverWanderingNoiseMakesBarsOnTheMarks()
+[xUnit.net 00:00:02.78]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:02.78]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:02.78]       Output:
+[xUnit.net 00:00:02.78]         keyed: key down hops 208, missed 0; key up hops 359, marked 0
+[xUnit.net 00:00:02.78]         keyed: bars in the found bin in the last second 3, marks in 4 s 8, keying seen True
+[xUnit.net 00:00:02.78]         keyed: pitch 525 to 875 Hz, bar -13.5 dB, gap -27.6 dB, contrast 15.5 dB
+[xUnit.net 00:00:02.85]     Hamlet.RadioEngine.Tests.Cw.ABarIsALevelThatHoldsTests.ASteadyCarrierIsOneBarWithNoGapAndNotKeying [FAIL]
+[xUnit.net 00:00:02.85]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:02.85]       Expected: 1
+[xUnit.net 00:00:02.85]       Actual:   2
+[xUnit.net 00:00:02.85]       Stack Trace:
+[xUnit.net 00:00:02.85]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\ABarIsALevelThatHoldsTests.cs(82,0): at Hamlet.RadioEngine.Tests.Cw.ABarIsALevelThatHoldsTests.ASteadyCarrierIsOneBarWithNoGapAndNotKeying()
+[xUnit.net 00:00:02.85]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:02.85]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:02.85]       Output:
+[xUnit.net 00:00:02.85]         carrier: bars 2, gaps 0, keying False, keying seen True, marked hops 25
+[xUnit.net 00:00:02.85]   Finished:    Hamlet.RadioEngine.Tests
+  Failed Hamlet.RadioEngine.Tests.Cw.ABarIsALevelThatHoldsTests.LoudNoiseAloneIsNeverKeying [554 ms]
+  Error Message:
+   Assert.False() Failure
+Expected: False
+Actual:   True
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Cw.ABarIsALevelThatHoldsTests.LoudNoiseAloneIsNeverKeying() in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\ABarIsALevelThatHoldsTests.cs:line 109
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Standard Output Messages:
+ noise: bins 117, bars in the last second 9, keying seen True, marked hops 12
+
+
+  Failed Hamlet.RadioEngine.Tests.Cw.ABarIsALevelThatHoldsTests.AKeyedToneOverWanderingNoiseMakesBarsOnTheMarks [82 ms]
+  Error Message:
+   Assert.All() Failure: 10 out of 47 items in the collection did not pass.
+[1]:  Item:  875
+      Error: Assert.InRange() Failure: Value not in range
+             Range:  (625 - 675)
+             Actual: 875
+[2]:  Item:  550
+      Error: Assert.InRange() Failure: Value not in range
+             Range:  (625 - 675)
+             Actual: 550
+[5]:  Item:  550
+      Error: Assert.InRange() Failure: Value not in range
+             Range:  (625 - 675)
+             Actual: 550
+[14]: Item:  550
+      Error: Assert.InRange() Failure: Value not in range
+             Range:  (625 - 675)
+             Actual: 550
+[17]: Item:  525
+      Error: Assert.InRange() Failure: Value not in range
+             Range:  (625 - 675)
+             Actual: 525
+[26]: Item:  550
+      Error: Assert.InRange() Failure: Value not in range
+             Range:  (625 - 675)
+             Actual: 550
+[30]: Item:  550
+      Error: Assert.InRange() Failure: Value not in range
+             Range:  (625 - 675)
+             Actual: 550
+[35]: Item:  550
+      Error: Assert.InRange() Failure: Value not in range
+             Range:  (625 - 675)
+             Actual: 550
+[38]: Item:  550
+      Error: Assert.InRange() Failure: Value not in range
+             Range:  (625 - 675)
+             Actual: 550
+[42]: Item:  550
+      Error: Assert.InRange() Failure: Value not in range
+             Range:  (625 - 675)
+             Actual: 550
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Cw.ABarIsALevelThatHoldsTests.AKeyedToneOverWanderingNoiseMakesBarsOnTheMarks() in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\ABarIsALevelThatHoldsTests.cs:line 59
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Standard Output Messages:
+ keyed: key down hops 208, missed 0; key up hops 359, marked 0
+ keyed: bars in the found bin in the last second 3, marks in 4 s 8, keying seen True
+ keyed: pitch 525 to 875 Hz, bar -13.5 dB, gap -27.6 dB, contrast 15.5 dB
+
+
+  Failed Hamlet.RadioEngine.Tests.Cw.ABarIsALevelThatHoldsTests.ASteadyCarrierIsOneBarWithNoGapAndNotKeying [69 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: 1
+Actual:   2
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Cw.ABarIsALevelThatHoldsTests.ASteadyCarrierIsOneBarWithNoGapAndNotKeying() in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\ABarIsALevelThatHoldsTests.cs:line 82
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Standard Output Messages:
+ carrier: bars 2, gaps 0, keying False, keying seen True, marked hops 25
+
+
+
+Test Run Failed.
+Total tests: 3
+     Failed: 3
+ Total time: 3.2164 Seconds
+RC=1 WALL=7s

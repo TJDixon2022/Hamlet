@@ -142,18 +142,26 @@ public sealed class AMarkIsTheEnvelopeOverAThresholdTests
         Assert.Equal(Keying.Count(k => k.On), detector.Reading.MarksLast4s);
     }
 
-    /// <remarks>Proves the threshold is the floor plus the named margin, on every hop.</remarks>
+    /// <remarks>
+    /// Proves the two lines are measured and decide nothing (work instruction 477, R91): the
+    /// dashed line is the found bin's gap level, the solid line sits midway between it and the
+    /// bar level, every mark stands over both, and no margin constant is left to set them.
+    /// </remarks>
     [Fact]
-    public void TheThresholdIsTheFloorPlusTheMargin()
+    public void TheLinesAreTheGapLevelAndTheMidpointMeasured()
     {
         var detector = new CwEnvelopeDetector(Rate);
         detector.SetPassband(742, 500);
 
         Drive(detector, 742, toneAmplitude: 0.3, noiseRms: 0.06, seed: 9);
 
-        Assert.Equal(9, CwEnvelopeDetector.ThresholdMarginDb);
-        Assert.All(detector.History(), h => Assert.Equal(h.FloorDb + 9, h.ThresholdDb, 9));
-        Assert.All(detector.History(), h => Assert.Equal(h.EnvelopeDb > h.ThresholdDb, h.Mark));
+        var bin = detector.Bins().Where(b => b.Keying || b.BarsLastSecond > 0).MaxBy(b => b.BarDb)!;
+        var marks = detector.History().Where(h => h.Mark).ToList();
+
+        _output.WriteLine($"bin {bin.Hz:0} Hz: bar {bin.BarDb:0.0} dB, gap {bin.GapDb:0.0} dB");
+        Assert.Null(typeof(CwEnvelopeDetector).GetField("ThresholdMarginDb"));
+        Assert.NotEmpty(marks);
+        Assert.All(marks, h => Assert.True(h.EnvelopeDb > h.ThresholdDb && h.ThresholdDb > h.FloorDb));
     }
 
     /// <summary>C, Q at 20 words a minute: 60 ms dit, 180 ms dah, after 0.8 s of noise.</summary>

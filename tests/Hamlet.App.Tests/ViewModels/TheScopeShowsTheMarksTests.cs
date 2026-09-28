@@ -72,8 +72,10 @@ public sealed class TheScopeShowsTheMarksTests
     {
         var hearing = new CwHearingViewModel();
 
-        // 0.8 s of noise then the first dah, stopped 90 ms into it.
-        var mid = Keyed(742, 500, 0.89);
+        // Stopped 90 ms into Q's first dah. **Not C's first dah any more** (work instruction
+        // 477, R91): the first element of a transmission is a bar with no partner yet, and is
+        // marked when the next element pairs with it across the gap.
+        var mid = Keyed(742, 500, 1.73);
         hearing.ObserveScope(CwScopeFrame.From(mid.History(), mid.HopMs, mid.Reading));
 
         Assert.True(hearing.Scope.Reading.Mark);
@@ -87,7 +89,7 @@ public sealed class TheScopeShowsTheMarksTests
     }
 
     /// <remarks>
-    /// Proves the threshold is labelled with its margin, and the passband with the radio's
+    /// Proves the two lines are labelled as measured (work instruction 477), and the passband with the radio's
     /// filter width and pitch - or says the rig's filter is unknown and the whole band is used.
     /// </remarks>
     [Fact]
@@ -98,7 +100,7 @@ public sealed class TheScopeShowsTheMarksTests
 
         hearing.ObserveScope(CwScopeFrame.From(detector.History(), detector.HopMs, detector.Reading));
 
-        Assert.Equal("threshold: floor + 9 dB", hearing.Scope.ThresholdLabel);
+        Assert.Equal("midway: gap to bar, measured", hearing.Scope.ThresholdLabel);
         Assert.Equal("filter 500 Hz at pitch 742 Hz: 492 to 992 Hz", hearing.Scope.PassbandLabel);
 
         var unknown = Keyed(null, null, 1.0);
@@ -109,15 +111,15 @@ public sealed class TheScopeShowsTheMarksTests
         var lines = CwScopeControl.Lines(hearing.Scope);
 
         Assert.Contains(lines, l => l.Kind == CwScopeLineKind.Envelope && l.Label == "envelope");
-        Assert.Contains(lines, l => l.Kind == CwScopeLineKind.Floor && l.Label == "floor");
-        Assert.Contains(lines, l => l.Kind == CwScopeLineKind.Threshold && l.Label == "threshold: floor + 9 dB");
+        Assert.Contains(lines, l => l.Kind == CwScopeLineKind.Floor && l.Label == "gap level, measured");
+        Assert.Contains(lines, l => l.Kind == CwScopeLineKind.Threshold && l.Label == "midway: gap to bar, measured");
         Assert.Contains(lines, l => l.Kind == CwScopeLineKind.Passband && l.Label == hearing.Scope.PassbandLabel);
         Assert.All(lines, l => Assert.False(string.IsNullOrWhiteSpace(l.Label)));
     }
 
     /// <remarks>
-    /// Proves the hover says what each line is, that the threshold is the one number that
-    /// decides a mark, and how often the scope is fed.
+    /// Proves the hover says what each line is, that bars decide a mark and the solid line
+    /// does not (work instruction 477), and how often the scope is fed.
     /// </remarks>
     [Fact]
     public void TheHoverSaysWhatEachLineIsAndWhatDecidesAMark()
@@ -128,7 +130,7 @@ public sealed class TheScopeShowsTheMarksTests
         Assert.Contains("Dashed line", tip, StringComparison.Ordinal);
         Assert.Contains("Solid line", tip, StringComparison.Ordinal);
         Assert.Contains("Bars", tip, StringComparison.Ordinal);
-        Assert.Contains("the one number that decides a mark", tip, StringComparison.Ordinal);
+        Assert.Contains("It decides nothing. Bars decide", tip, StringComparison.Ordinal);
         Assert.Contains("20 times a second", tip, StringComparison.Ordinal);
     }
 
@@ -143,7 +145,8 @@ public sealed class TheScopeShowsTheMarksTests
 
         try
         {
-            var detector = Keyed(742, 500, 0.89);
+            // Mid-way through Q's first dah, where a mark is up (work instruction 477).
+            var detector = Keyed(742, 500, 1.73);
 
             panel.CwHearing.ObserveScope(CwScopeFrame.From(detector.History(), detector.HopMs, detector.Reading));
             TheControlsTimCanPress.Settle(window);

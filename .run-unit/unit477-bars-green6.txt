@@ -1,0 +1,64 @@
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  Ft8Sharp -> C:\Source\HamLet\src\Ft8Sharp\bin\Debug\net8.0\Ft8Sharp.dll
+  Ft8Sharp.Deep -> C:\Source\HamLet\src\Ft8Sharp.Deep\bin\Debug\net8.0\Ft8Sharp.Deep.dll
+  Hamlet.RadioEngine -> C:\Source\HamLet\src\Hamlet.RadioEngine\bin\Debug\net8.0\Hamlet.RadioEngine.dll
+  Hamlet.RadioEngine.Tests -> C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:01.75]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:01.98]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:01.98]   Starting:    Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:05.99]     Hamlet.RadioEngine.Tests.Cw.ABarIsALevelThatHoldsTests.LoudNoiseAloneIsNeverKeying [FAIL]
+[xUnit.net 00:00:05.99]       Assert.False() Failure
+[xUnit.net 00:00:05.99]       Expected: False
+[xUnit.net 00:00:05.99]       Actual:   True
+[xUnit.net 00:00:05.99]       Stack Trace:
+[xUnit.net 00:00:05.99]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\ABarIsALevelThatHoldsTests.cs(110,0): at Hamlet.RadioEngine.Tests.Cw.ABarIsALevelThatHoldsTests.LoudNoiseAloneIsNeverKeying()
+[xUnit.net 00:00:05.99]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:05.99]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:05.99]       Output:
+[xUnit.net 00:00:05.99]         first keying at 4.340 s: 2675 Hz bars 4 gaps 1 bar -32.3 gap -36.2
+[xUnit.net 00:00:05.99]         chunks read keying: 200 of 1500
+[xUnit.net 00:00:05.99]         noise: bins 117, bars in the last second 0, keying seen True, marked hops 8
+  Failed Hamlet.RadioEngine.Tests.Cw.ABarIsALevelThatHoldsTests.LoudNoiseAloneIsNeverKeying [3 s]
+  Error Message:
+   Assert.False() Failure
+Expected: False
+Actual:   True
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Cw.ABarIsALevelThatHoldsTests.LoudNoiseAloneIsNeverKeying() in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\ABarIsALevelThatHoldsTests.cs:line 110
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Standard Output Messages:
+ first keying at 4.340 s: 2675 Hz bars 4 gaps 1 bar -32.3 gap -36.2
+ chunks read keying: 200 of 1500
+ noise: bins 117, bars in the last second 0, keying seen True, marked hops 8
+
+
+[xUnit.net 00:00:06.13]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.ABarIsALevelThatHoldsTests.AKeyedToneOverWanderingNoiseMakesBarsOnTheMarks [65 ms]
+  Standard Output Messages:
+ first keying at 1.040 s: 775 Hz bars 3 gaps 1 bar -23.4 gap -51.4
+ chunks read keying: 94 of 146
+ keyed: key down hops 208, missed 0; key up hops 359, marked 0
+ keyed: bars in the found bin in the last second 3, marks in 4 s 8, keying seen True
+ keyed: pitch 650 to 650 Hz, bar -13.5 dB, gap -27.6 dB, contrast 15.5 dB
+ keyed: bins 450:1/0/NaN 475:0/0/NaN 500:0/0/NaN 525:0/0/NaN 550:5/1/-19.7 575:4/3/-16.8 600:4/3/-14.9 625:5/3/-13.8 650:5/3/-13.5 675:3/3/-13.8 700:3/3/-14.9 725:3/3/-16.7 750:1/0/NaN 775:3/3/-23.3 800:0/0/NaN 825:1/0/NaN 850:0/0/NaN 875:3/0/NaN 900:3/0/NaN 925:1/0/NaN 950:0/0/NaN
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.ABarIsALevelThatHoldsTests.ASteadyCarrierIsOneBarWithNoGapAndNotKeying [79 ms]
+  Standard Output Messages:
+ chunks read keying: 0 of 200
+ carrier: bars 1, gaps 0, keying False, keying seen False, marked hops 0
+
+
+
+Test Run Failed.
+Total tests: 3
+     Passed: 2
+     Failed: 1
+ Total time: 6.4574 Seconds
+RC=1 WALL=10s

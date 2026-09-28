@@ -71,7 +71,7 @@ public sealed record CwPitchStrip(
 /// <param name="Reading">The detector at its last hop.</param>
 /// <param name="ToneLine">"tone 742 Hz, 24 dB over the band" while a mark is up, "no tone" when not.</param>
 /// <param name="PassbandLabel">The radio's filter width and pitch, or that they are unknown.</param>
-/// <param name="ThresholdLabel">The threshold, as what it is: the floor plus the margin.</param>
+/// <param name="ThresholdLabel">The solid line, as what it is: midway between gap and bar, measured.</param>
 public sealed record CwScopeFrame(
     IReadOnlyList<CwScopeHop> Hops,
     double HopMs,
@@ -80,9 +80,11 @@ public sealed record CwScopeFrame(
     string PassbandLabel,
     string ThresholdLabel)
 {
-    /// <summary>The threshold's label, from the one constant that sets it.</summary>
-    public static string ThresholdWords { get; } = string.Create(
-        CultureInfo.InvariantCulture, $"threshold: floor + {CwEnvelopeDetector.ThresholdMarginDb:0} dB");
+    /// <summary>The solid line's label: what it is, and that it is measured (work instruction 477).</summary>
+    public static string ThresholdWords { get; } = "midway: gap to bar, measured";
+
+    /// <summary>The dashed line's label (work instruction 477).</summary>
+    public const string FloorWords = "gap level, measured";
 
     /// <summary>Nothing is listening.</summary>
     public static CwScopeFrame Empty { get; } = new(
@@ -302,16 +304,17 @@ public sealed partial class CwHearingViewModel : ObservableObject
     /// <summary>What the oscilloscope shows, on hover.</summary>
     public const string ScopeTip =
         "The last four seconds of what the radio's audio is doing, newest at the right, "
-        + "like an oscilloscope (work instruction 476)." + "\n"
-        + "Trace: the envelope - the energy across the radio's filter, hop by hop." + "\n"
-        + "Dashed line: the floor - the noise's average level between marks." + "\n"
-        + "Solid line: the threshold - the floor plus 9 dB. It is the one number that decides a mark: "
-        + "the trace over it is a mark, under it is a gap." + "\n"
+        + "like an oscilloscope (work instructions 476 and 477)." + "\n"
+        + "Trace: the envelope - the level in the one pitch where Hamlet found the most bars, hop by hop." + "\n"
+        + "Dashed line: the gap level - measured from the gaps between that pitch's bars." + "\n"
+        + "Solid line: midway between the gap level and the bar level, measured. It decides nothing. "
+        + "Bars decide: a level that holds flat for a dit or longer, drops, and holds again at the same level "
+        + "(bars, not waves - no floor, no margin, no swing)." + "\n"
         + "Bars along the bottom: the marks, each labelled with how long it lasted. "
-        + "Dits and dahs should light up as you hear them." + "\n"
-        + "Shaded band at the top: where the energy is summed - the radio's filter around its CW pitch, "
+        + "Dits and dahs should light up as you hear them; a steady carrier and plain noise light none." + "\n"
+        + "Shaded band at the top: where Hamlet looks - every 25 Hz across the radio's filter around its CW pitch, "
         + "or the whole audio band where the radio has not said." + "\n"
-        + "The tone line reads the pitch from the spectrum only while a mark is up." + "\n"
+        + "The tone line names that pitch only while a mark is up." + "\n"
         + "Redrawn 20 times a second; every hop of 5 ms is drawn. This shows what Hamlet hears "
         + "and changes nothing about how it decodes.";
 

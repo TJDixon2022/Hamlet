@@ -10,13 +10,13 @@ namespace Hamlet.App.Controls;
 /// <summary>What one labelled line on the scope is.</summary>
 public enum CwScopeLineKind
 {
-    /// <summary>The energy across the passband, hop by hop: a thin trace.</summary>
+    /// <summary>The level in the pitch with the most bars, hop by hop: a thin trace.</summary>
     Envelope,
 
-    /// <summary>The tracked noise floor: a dashed line.</summary>
+    /// <summary>That pitch's gap level, measured: a dashed line (work instruction 477).</summary>
     Floor,
 
-    /// <summary>The floor plus the margin: a solid, heavier line.</summary>
+    /// <summary>Midway between its gap and bar levels, measured, deciding nothing: a solid, heavier line.</summary>
     Threshold,
 
     /// <summary>Where the energy is summed: a shaded band on the rail at the top.</summary>
@@ -40,9 +40,11 @@ public sealed record CwScopeBar(double X, double X2, string Label);
 /// </summary>
 /// <remarks>
 /// <para>**TIM, 2026-09-28**: *"Think you're an oscilloscope."* The envelope is drawn as a
-/// trace, the floor as a dashed line under it, the threshold as a solid line above the floor
-/// labelled with its margin, and the marks as bars along the bottom, so the owner sees dits
-/// and dahs light up as he hears them.</para>
+/// trace, the gap level as a dashed line under it, the midpoint between gap and bar as a solid
+/// line, both measured and neither deciding anything, and the marks as bars along the bottom,
+/// so the owner sees dits and dahs light up as he hears them. **Since work instruction 477 a
+/// mark is a bar** - a level that held, dropped and held again (R91) - not the trace over a
+/// line.</para>
 /// <para>**EVERY HOP IS DRAWN; THE SCREEN IS REDRAWN TWENTY TIMES A SECOND.** The detector
 /// works at 5 ms, two hundred hops a second, and a frame carries all of them, so a dit is
 /// its true width; only how often the picture is refreshed is 20 a second.</para>
@@ -163,7 +165,7 @@ public sealed class CwScopeControl : Control
         return new[]
         {
             new CwScopeLine(CwScopeLineKind.Envelope, "envelope"),
-            new CwScopeLine(CwScopeLineKind.Floor, "floor"),
+            new CwScopeLine(CwScopeLineKind.Floor, CwScopeFrame.FloorWords),
             new CwScopeLine(CwScopeLineKind.Threshold, frame.ThresholdLabel),
             new CwScopeLine(
                 CwScopeLineKind.Passband,
@@ -261,10 +263,24 @@ public sealed class CwScopeControl : Control
         var low = double.PositiveInfinity;
         var high = double.NegativeInfinity;
 
+        // **THE LINES ARE MEASURED, SO THEY MAY BE ABSENT** (work instruction 477): with no
+        // bars there is no gap level and no midpoint, and nothing is drawn for them rather
+        // than a number nobody measured.
         foreach (var hop in frame.Hops)
         {
-            low = Math.Min(low, hop.FloorDb);
-            high = Math.Max(high, Math.Max(hop.EnvelopeDb, hop.ThresholdDb));
+            foreach (var db in new[] { hop.EnvelopeDb, hop.FloorDb, hop.ThresholdDb })
+            {
+                if (double.IsFinite(db))
+                {
+                    low = Math.Min(low, db);
+                    high = Math.Max(high, db);
+                }
+            }
+        }
+
+        if (!double.IsFinite(low))
+        {
+            return;
         }
 
         low -= 6;
@@ -273,20 +289,19 @@ public sealed class CwScopeControl : Control
         double Y(double db) => plotBottom - ((Math.Clamp(db, low, high) - low) / (high - low) * (plotBottom - plotTop));
 
         var envelope = Polyline(frame, plotRight, h => h.EnvelopeDb, Y);
-        var floor = Polyline(frame, plotRight, h => h.FloorDb, Y);
-        var threshold = Polyline(frame, plotRight, h => h.ThresholdDb, Y);
-
-        context.DrawGeometry(null, FloorPen, floor);
-        context.DrawGeometry(null, ThresholdPen, threshold);
         context.DrawGeometry(null, EnvelopePen, envelope);
 
         // Each line named at its right-hand end, beside where it stands now.
         var last = frame.Hops[^1];
-        var floorY = Y(last.FloorDb);
-        var thresholdY = Y(last.ThresholdDb);
 
-        Text(context, "- - " + lines.Single(l => l.Kind == CwScopeLineKind.Floor).Label, plotRight + 4, floorY - 6, Muted, 10, left: true);
-        Text(context, "━ " + lines.Single(l => l.Kind == CwScopeLineKind.Threshold).Label, plotRight + 4, thresholdY - 6, ThresholdInk, 10, left: true);
+        if (double.IsFinite(last.FloorDb) && double.IsFinite(last.ThresholdDb))
+        {
+            context.DrawGeometry(null, FloorPen, Polyline(frame, plotRight, h => h.FloorDb, Y));
+            context.DrawGeometry(null, ThresholdPen, Polyline(frame, plotRight, h => h.ThresholdDb, Y));
+
+            Text(context, "- - " + lines.Single(l => l.Kind == CwScopeLineKind.Floor).Label, plotRight + 4, Y(last.FloorDb) - 6, Muted, 10, left: true);
+            Text(context, "━ " + lines.Single(l => l.Kind == CwScopeLineKind.Threshold).Label, plotRight + 4, Y(last.ThresholdDb) - 6, ThresholdInk, 10, left: true);
+        }
         Text(context, "─ " + lines.Single(l => l.Kind == CwScopeLineKind.Envelope).Label, plotRight + 4, plotTop, Ink, 10, left: true);
         Text(context, frame.ToneLine, Pad + 4, plotTop + 2, frame.Reading.Mark ? MarkInk : Muted, 11, left: true);
     }
