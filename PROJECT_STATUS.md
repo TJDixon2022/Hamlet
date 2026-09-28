@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 1 of 4
+TASK: 2 of 4
 WORK_INSTRUCTION: 477 - bars, not waves
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-186 (2026-09-28)
-UPDATED: 2026-09-28T10:09:40-04:00
-NOTE: Task 1: the scope's tests with the mid-dah frame on Q's first dah
+UPDATED: 2026-09-28T10:12:15-04:00
+NOTE: Task 2: tracker obeys the meter green 3/3; building Hamlet.sln with warnings as errors before the commit
 
 ---
 

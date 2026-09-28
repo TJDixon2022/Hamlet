@@ -319,6 +319,7 @@ public sealed class CwToneTracker
 
     /// <summary>A move that is waiting for the character in progress to end.</summary>
     private double _heldSwitchHz = double.NaN;
+    private double _meterHz = double.NaN;
 
     /// <summary>
     /// How many more surveys the last keying finding may go on protecting its
@@ -693,11 +694,16 @@ public sealed class CwToneTracker
     /// True when something on the band is actually being keyed (HM-DEC-095).
     /// </summary>
     /// <remarks>
-    /// Distinct from there being energy at the tracked pitch. A carrier, a
+    /// <para>Distinct from there being energy at the tracked pitch. A carrier, a
     /// switching supply and an empty band all put energy somewhere; only a person
-    /// sending puts it there in two lengths.
+    /// sending puts it there in two lengths.</para>
+    /// <para>**TRUE WHILE THE KEYING METER SAYS KEYING** (work instruction 477,
+    /// HM-DEC-186), whatever the swing, as well as when the survey admits keying. On
+    /// 14.0321 the tracker was mixed at the station's 375 Hz and this read false on
+    /// four rows of six while the meter said keying: the decoder was told nobody was
+    /// there.</para>
     /// </remarks>
-    public bool HasKeying => Verdict.Keyed is not null;
+    public bool HasKeying => MeterKeying || Verdict.Keyed is not null;
 
     /// <summary>
     /// True when keying was found within the last few seconds (HM-DEC-096).
@@ -718,6 +724,57 @@ public sealed class CwToneTracker
     /// keying a speed was measured on is still arriving at the pitch being read.
     /// </remarks>
     public double LastKeyedHz => _lastKeyedHz;
+
+    /// <summary>
+    /// **THE TRACKER OBEYS THE METER** (work instruction 477 task 2, HM-DEC-186): hand it the
+    /// keying meter's newest reading, from any thread.
+    /// </summary>
+    /// <param name="reading">The meter's reading.</param>
+    /// <remarks>
+    /// <para>**WHILE THE METER SAYS KEYING AT A PITCH, THE TRACKER MIXES THERE FROM THE NEXT
+    /// HOP**, as a measured pitch the decoder takes, and <see cref="HasKeying"/> is true. It
+    /// does not wait for the survey, and a bin the survey admits elsewhere does not move it
+    /// while the meter still says keying. On the owner's rows the meter found each station in
+    /// a second while the survey took twenty-two, or admitted the station and still left the
+    /// flag false.</para>
+    /// <para>**NOT HELD FOR A CHARACTER IN PROGRESS** (HM-DEC-096's rule is for the survey's
+    /// moves): the ruling is *at once*, and a tracker waiting on the survey is most often
+    /// mixing an empty bin, where there is no character to protect.</para>
+    /// <para>**WHEN THE METER STOPS SAYING KEYING** the survey owns every move again, exactly
+    /// as before, from where the meter left the filter.</para>
+    /// </remarks>
+    public void FollowMeter(KeyingReading reading)
+    {
+        var hz = reading.Verdict == KeyingVerdict.Keying && reading.ToneHz > 0
+            ? Math.Clamp(reading.ToneHz, MinimumToneHz, MaximumToneHz)
+            : double.NaN;
+
+        Interlocked.Exchange(ref _meterHz, hz);
+    }
+
+    /// <summary>Whether the meter says keying now, and so owns the pitch and the flag.</summary>
+    public bool MeterKeying => !double.IsNaN(Volatile.Read(ref _meterHz));
+
+    /// <summary>Take the meter's pitch, if it has one the filter is not already on.</summary>
+    private void ApplyMeter()
+    {
+        var hz = Volatile.Read(ref _meterHz);
+
+        if (double.IsNaN(hz) || hz == _reportedHz)
+        {
+            return;
+        }
+
+        if (Math.Abs(hz - _fineHz[_fineHz.Length / 2]) > FineReachHz)
+        {
+            Switch(hz);
+            return;
+        }
+
+        _tracked = NearestFine(hz);
+        _reportedHz = hz;
+        KeyingFoundAt(hz);
+    }
 
     /// <summary>
     /// Follow the sending speed, which decides how finely the tracker listens.
@@ -835,6 +892,9 @@ public sealed class CwToneTracker
         {
             BuildHann();
         }
+
+        // The meter's pitch, if it says keying, before anything is measured this hop.
+        ApplyMeter();
 
         var window = WindowSamples;
         var sumSquares = Taper(_scratch, _hann, window);
@@ -987,6 +1047,21 @@ public sealed class CwToneTracker
     private void ReadSurvey()
     {
         var coarse = _survey.Analyze();
+
+        // **WHILE THE METER SAYS KEYING, THE SURVEY MOVES NOTHING** (work instruction 477,
+        // HM-DEC-186). It goes on observing, so it is ready when the meter lets go; its keying
+        // verdict is not the tracker's while the meter's stands, and a hold waiting on it
+        // is dropped, because the meter's pitch wins.
+        if (MeterKeying)
+        {
+            _previousKeyedHz = coarse.Keyed?.ToneHz ?? double.NaN;
+            _heldSwitchHz = double.NaN;
+            KeyingFoundAt(Volatile.Read(ref _meterHz));
+            Verdict = new ToneVerdict(
+                null, Filtered(coarse.Interference ?? coarse.Strongest), coarse.Strongest);
+
+            return;
+        }
 
         // A move that was waiting for a character to finish goes now, **unless
         // the survey it is going on finds the keying back where the tracker

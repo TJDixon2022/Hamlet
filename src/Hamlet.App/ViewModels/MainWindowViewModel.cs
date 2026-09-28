@@ -12463,6 +12463,11 @@ public partial class MainWindowViewModel : ObservableObject
     {
         _keyingReading = reading;
 
+        // **THE TRACKER OBEYS THE METER** (work instruction 477, HM-DEC-186): the same reading
+        // the light shows goes to the decoder's tracker, which mixes at the meter's pitch from
+        // its next hop and tells the decoder a station is there while the meter says keying.
+        _decoder?.Tracker.FollowMeter(reading);
+
         KeyingWord = reading.Verdict switch
         {
             KeyingVerdict.Keying => "somebody is keying",

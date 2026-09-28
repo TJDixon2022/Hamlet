@@ -142,6 +142,13 @@ public static class CwKeyingThresholds
     /// recordings holding a station swing 21.8 to 91.5 decibels, and the two that
     /// hold no keying at any pitch swing 14.1 and 17.7. Twenty sits in the gap on
     /// both sets of evidence.</para>
+    /// <para>**NOT CONSULTED FOR THE TRACKER'S KEYING FLAG** (work instruction 477,
+    /// HM-DEC-186). <see cref="CwToneTracker.HasKeying"/> is true while this meter's
+    /// verdict is keying, at any swing, because on 14.0321 the station swung 18 and the
+    /// decoder was mixed at its pitch and told nobody was there. That flag never read this
+    /// constant - it rested on the survey's admission - and it is written here so nobody
+    /// looks for it here. The constant stays, and still gates the meter's own verdict
+    /// until the bar test replaces it.</para>
     /// <para>**IT IS NOT A SECOND OPINION ABOUT WHETHER TO DECODE.** Nothing in
     /// the decoder reads it and it can silence nothing: all it decides is which
     /// of two speed estimates the decoder starts from, and the decoder's own
