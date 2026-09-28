@@ -12479,12 +12479,17 @@ public partial class MainWindowViewModel : ObservableObject
         // reads the dial, pitch and filter the tick last saw in CW; the detector watches the
         // pointed bin while the scope sends frames and sweeps when it has been quiet three
         // seconds; the tracker takes the scope's pitch only while the bars there say keying.
-        var dial = cw && state[RigField.Frequency] is { IsKnown: true, Number: { } f } ? f : double.NaN;
+        //
+        // **PLAIN CW ONLY.** A peak above the dial beats at the pitch plus its offset on CW's
+        // sideband, which is the instruction's rule; on CW-R the sideband is reversed and so is
+        // the sign, which nothing here has been checked against, so CW-R sweeps as it did.
+        var plainCw = cw && state[RigField.Mode] is { Number: { } m } && (CivMode)(int)m == CivMode.Cw;
+        var dial = plainCw && state[RigField.Frequency] is { IsKnown: true, Number: { } f } ? f : double.NaN;
         Volatile.Write(ref _pointDialHz, dial);
         Volatile.Write(ref _pointPitchHz, pitch ?? double.NaN);
         Volatile.Write(ref _pointWidthHz, width is { } w ? w : double.NaN);
 
-        var pointed = cw ? _scopePointer.Pointing(DateTime.UtcNow) : null;
+        var pointed = plainCw ? _scopePointer.Pointing(DateTime.UtcNow) : null;
         envelope.PointAt(pointed?.PitchHz);
 
         var reading = envelope.Reading;
@@ -12504,7 +12509,7 @@ public partial class MainWindowViewModel : ObservableObject
             reading,
             IsDecoding ? DecodeReport.ToneHz : double.NaN,
             CwHearing.Scope,
-            scopeQuiet: cw && pointed is null) with
+            scopeQuiet: plainCw && pointed is null) with
         {
             Training = _trainingGraph.Frame(now),
         });

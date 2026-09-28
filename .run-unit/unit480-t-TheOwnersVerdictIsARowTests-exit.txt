@@ -1,0 +1,21 @@
+Test run for C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.06]   Discovering: Hamlet.App.Tests
+[xUnit.net 00:00:00.18]   Discovered:  Hamlet.App.Tests
+[xUnit.net 00:00:00.19]   Starting:    Hamlet.App.Tests
+[xUnit.net 00:00:00.96]   Finished:    Hamlet.App.Tests
+  Passed Hamlet.App.Tests.ViewModels.TheOwnersVerdictIsARowTests.TheLightFieldIsTheBarsVerdictInWords [10 ms]
+  Passed Hamlet.App.Tests.ViewModels.TheOwnersVerdictIsARowTests.IdiotWritesOneRowWithItsOwnVerdict [4 ms]
+  Passed Hamlet.App.Tests.ViewModels.TheOwnersVerdictIsARowTests.EachButtonSaysWhatItRecords [< 1 ms]
+  Passed Hamlet.App.Tests.ViewModels.TheOwnersVerdictIsARowTests.TheRowIsOneLineOfTheExistingWriterUnderCw [18 ms]
+  Passed Hamlet.App.Tests.ViewModels.TheOwnersVerdictIsARowTests.AnUnmeasuredFigureIsNullNeverNaN [< 1 ms]
+  Passed Hamlet.App.Tests.ViewModels.TheOwnersVerdictIsARowTests.BothButtonsAreOnTheCwTab [635 ms]
+  Passed Hamlet.App.Tests.ViewModels.TheOwnersVerdictIsARowTests.AgreeWritesOneRowCarryingEveryField [4 ms]
+
+Test Run Successful.
+Total tests: 7
+     Passed: 7
+ Total time: 1.2455 Seconds
+RC=0 WALL=2s

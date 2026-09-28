@@ -1,0 +1,59 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.07]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.28]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.29]   Starting:    Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.40]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Rig.AValueAlreadyRightIsNotWrittenTests.ACwTuneInOnARadioAlreadyRightWritesNothing(hz: 7030000) [73 ms]
+  Standard Output Messages:
+   auto notch       AlreadyRight   was=off
+   manual notch     AlreadyRight   was=off
+   noise blanker    AlreadyRight   was=off
+   noise reduction  AlreadyRight   was=off
+   AGC              AlreadyRight   was=FAST
+   RF gain          AlreadyRight   was=100%
+   squelch          AlreadyRight   was=0%
+   attenuator       AlreadyRight   was=off
+   preamp           AlreadyRight   was=preamp 1
+   scope output     AlreadyRight   was=on
+ fields written: 0
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.AValueAlreadyRightIsNotWrittenTests.ACwTuneInOnARadioAlreadyRightWritesNothing(hz: 14050000) [1 ms]
+  Standard Output Messages:
+   auto notch       AlreadyRight   was=off
+   manual notch     AlreadyRight   was=off
+   noise blanker    AlreadyRight   was=off
+   noise reduction  AlreadyRight   was=off
+   AGC              AlreadyRight   was=FAST
+   RF gain          AlreadyRight   was=100%
+   squelch          AlreadyRight   was=0%
+   attenuator       AlreadyRight   was=off
+   preamp           AlreadyRight   was=preamp 1
+   scope output     AlreadyRight   was=on
+ fields written: 0
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.AValueAlreadyRightIsNotWrittenTests.TheRfGainBelowFullIsWrittenAndConfirmed [7 ms]
+  Standard Output Messages:
+ radio at raw 108: wrote [255], filed Changed, was 42%, now 100%
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.AValueAlreadyRightIsNotWrittenTests.TheRfGainAtFullIsNotWritten [1 ms]
+  Standard Output Messages:
+ radio at raw 255: wrote [], filed AlreadyRight, was 100%, now 100%
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.AValueAlreadyRightIsNotWrittenTests.TheRigConfirmsALevelOnTheScaleItReads [2 ms]
+  Standard Output Messages:
+ outcome Confirmed, read back -
+
+
+
+Test Run Successful.
+Total tests: 5
+     Passed: 5
+ Total time: 0.6831 Seconds
+RC=0 WALL=1s
