@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: COMPLETED
-TASK: TASK 3 of 3
-WORK_INSTRUCTION: 484 - the bar stays put, and silence is empty (run by hand)
+TASK: TASK 4 of 4
+WORK_INSTRUCTION: 485 - no detection, no letters (run by hand)
 BALL: tim
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-28T16:59:01-04:00
-NOTE: Unit 484 by hand complete: scope empty without keying, top row decided by width alone, licence line follows the block; build 0/0, app 278 of 278; the owner verifies at the radio
+UPDATED: 2026-09-28T17:34:05-04:00
+NOTE: Unit 485 by hand complete: decoder gated by the detector, detector holds through gaps, scope draws blocks only; build 0/0, app 278 of 278; the owner verifies at the radio
 
 ---
 

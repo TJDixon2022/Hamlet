@@ -8,93 +8,105 @@ section 0's checks hold. Hamlet confirmed. Nothing in this report is evidence ab
 - `SESSION.lock` was taken through `tools\arbiter\lock.bat take` and released the same way.
 - Nothing was written to `RUN_LEDGER.md`, and nothing under `tools\arbiter\` was touched.
 - No box in `PHASE_PLAN.md` was ticked; its checkbox count is 42 before and after.
-- No recording and no telemetry was read, and no test was written (R96).
+- No recording, fixture, floor or telemetry was read.
 
-**The changes, file by file** (all in `c269ba8e`):
-- **`src/Hamlet.App/Controls/CwScopeControl.cs` - silence is empty.** `Items`, the one list
-  everything drawn and every hover comes from, adds the level trace and the bars only while
-  `frame.Reading.Keying` is true. With nobody keying the plot is empty. The tone and mixing words
-  and the letters are drawn as before, and the detector is not touched.
-- **`src/Hamlet.App/Controls/BandGovernsTheMapPanel.cs` - the top row holds still.** See below.
-- **`src/Hamlet.App/ViewModels/MainWindowViewModel.cs` - the licence sentence follows the
-  block.** A new `LicenceModeHere` gives the card the mode of the band-plan block the frequency
-  is in: Morse, data or voice. It uses the tab only on open or unclaimed ground.
-  `UpdatePrivileges` is the one call site of `PrivilegeStatusLine.Build`, and it runs on every
-  frequency change and every tab change. So *"Your General license covers Morse here"* is not
-  written on a data-block frequency, whether the dial or the app put him there. This is display
-  only: the card and the green zone read it, and no send path does.
-- **Records.**
-  - `DECISIONS.md` has HM-DEC-189.
-  - R96 is appended in the owner's words to both copies of `PHASE_PLAN.md`.
-  - Both copies of `PHASE_STATUS.md` name 484.
-  - Both copies of `PHASE_OUTCOME.md` have `## UNIT 484 - STEP 11`.
-  - The version went from 1.13.170 to 1.13.171.
+**The changes, file by file** (all in `ada6b884`):
+- **`src/Hamlet.RadioEngine/Cw/CwDecoder.cs` - no detection, no letters.** A new `KeyingGate`
+  takes the detector's keying verdict.
+  - The decoder keeps the stretches of its own audio clock during which the gate was open. Each
+    stretch starts `CwEnvelopeDetector.KeyingSeconds` early, because that is the window in which
+    the detector saw the bars that opened it.
+  - A character reaches the transcript, the leading edge and the scope only if its audio lies in
+    one of those stretches. It is judged by when the audio was heard, not by when it settles,
+    because the settled pass runs seconds behind: the last letters of an over settle after the
+    detector lets go.
+  - The lattice, the unit estimator and the emission gate are not changed.
+- **`src/Hamlet.App/ViewModels/MainWindowViewModel.cs`** sets the gate to the detector's
+  `Reading.Keying` when listening starts. That is the wiring criterion 12.4 named and nobody had
+  built.
+- **`src/Hamlet.RadioEngine/Cw/CwEnvelopeDetector.cs` - the station is held through its gaps.**
+  - A new `HoldSeconds` of one second has a remark saying it is a word gap at the slow end of
+    ordinary sending, not fitted to any recording.
+  - While any bin is keying, the detector's own choice of pitch stands and the hold follows it.
+  - In a gap, keying and the watched pitch are held. They are let go only when no mark has
+    arrived at that pitch for `HoldSeconds`, counted from the last mark itself.
+  - The hold clears on a new passband.
+- **`CwScopeControl.cs`, `CwTrainingGraph.cs` and `CwHearingViewModel.cs` - blocks only.**
+  - The level trace is removed from the frame, the graph and the drawing, and from the lines and
+    item kinds.
+  - A letter is drawn only with a block beneath it; the hover and the render read the same list.
+  - With no keying the panel is empty apart from the tone and mixing words.
+  - The hover text is rewritten for blocks, letters and the empty panel.
+- **Tests.**
+  - `NoDetectionNoLettersTests` is new. It writes its own audio: a nine words a minute call
+    between four seconds of noise, with nothing read from disk.
+  - Five existing scope tests asserted the trace or a letter over no block. They were rewritten
+    to R97.
+- **Records.** R97 is in both copies of `PHASE_PLAN.md`, `DECISIONS.md` has HM-DEC-190, both
+  status and outcome copies name 485, and the version went from 1.13.171 to 1.13.172.
 
-**What could move the layout before, and why it cannot now.** `BandGovernsTheMapPanel` asked two
-fit questions. Both measured the neighborhood card's current height:
-- `AtTheLeftEdge` put the map at the band's left edge only if the card, at that width, was no
-  taller than the row.
-- `CardFits` chose the map's height by halving until the card's words fitted.
+**Watched failing first.** Before the change, the same audio at 9 WPM behaved like this:
+- The detector dropped keying for 49 hops mid-call.
+- The ungated decoder printed an `E` at 29.0 s, after the call had ended at 27.3 s.
 
-So the card's word count decided where the map stood. The radio sends the new frequency before
-its mode, and in that moment the card carried more lines than it fitted. The check failed, and
-the map jumped from the left edge to beside the card: that is the swap. A frequency chosen from
-the app arrives with its mode in one pass, so the card was measured once and nothing moved.
+After the change:
+- Keying held from 4.56 s to 28.33 s with no drop.
+- The call read `<AR>Q CQ DE N,CALL KK`, with the decoder's own misreads at that speed unchanged,
+  and nothing was emitted in either silence.
 
-Now:
-- **Both questions ask only widths**: the card's 400 px floor and the pills' row.
-- **The strayed-frequency line is checked by name.** That is unit 389's rule, kept as it was.
-- **The row's height is the rig face's plus the outside-privileges lines' (R62).** Every other
-  word of the card wraps and scrolls inside the card's existing `ScrollViewer`.
-- **What the arrangement depends on** is the width, the rig face, the pills and the strayed line.
-  It no longer depends on the mode, or on how much the card says.
+At 10 WPM with light noise both faults were absent. That speed was measured first and could not
+fail, so the test moved to 9 WPM.
 
-**Verification, as R96 asks.**
+**The top of the window** was already built by unit 484: placement by width alone, and the
+licence line following the block. Nothing here changes it.
+
+**Verification.**
 - The build of `Hamlet.sln` with warnings as errors: 0 warnings, 0 errors.
-- The app carry-forward line: 278 of 278 on the first run, with no dispatcher-loop loss this
-  time.
-
-**Pushed** to `origin/main`: `e63032be..99e51314`, and this report's own commit after it. The
-first closing commit carried unit 483's stale `output.md`, because the write failed on a changed
-file. This commit replaces it.
+- The app carry-forward line: 278 of 278.
+- The seven app scope and verdict types: 29 of 29.
+- The four engine detector and gate types: 13 of 15. The two reds are
+  `AMarkIsTheEnvelopeOverAThresholdTests`' ten and fifteen decibel cases. They fail identically on
+  HEAD's detector (40 and 208), so they were not caused by this unit.
 
 ## 2. What the owner should expect
 
 1. Rebuild.
-2. On the CW tab with nobody keying, the scope should be empty: no trace and no noise line, just
-   the tone and mixing words at the top. When someone keys, the trace and the bars appear, with
-   the letters over them.
-3. Sit on a CW frequency and turn the radio's dial into the data block. The top of the window
-   should not move: the map, the neighborhood card and the radio face stay where they are.
-4. On that data-block frequency, the card should talk about data, not say that your licence
-   covers Morse there.
+2. On the CW tab with nobody keying: an empty panel and an empty terminal, with only the tone
+   and mixing words at the top.
+3. When somebody keys: blocks appear, short for a dit and long for a dah, with the letters over
+   them, and the terminal fills only then. Between words the picture stays put rather than
+   flickering, because the detector now holds the station through its gaps.
+4. When the station stops, the blocks and letters leave about a second later.
+5. Turning the dial into the data block should leave the top of the window where it is.
 
-If the neighborhood card has more to say than fits beside the radio face, it now scrolls inside
-its own space instead of pushing the window around.
+One thing to watch for. A station too weak or too broken for the detector to find will now print
+nothing at all, even where the decoder alone would have read something. In one noisy synthetic
+case the decoder read the call and the detector never found it. That is the ruling working as
+written.
 
 ## 3. What you should see
 
-- **The scope in a quiet band:** empty. The letters the decoder settled in the last eight
-  seconds can still show for a moment after the keying stops, because the order kept the
-  letters.
-- **The top row:** the same arrangement before and after the dial crosses into the data block,
-  at any window width. The one move left is unit 389's rule: the map leaves the band's left edge
-  while the strayed-frequency line is showing.
-- **The card at 14.074 on the CW tab:** it answers for data, the block's mode. On open ground it
-  answers for the tab you are on.
+- **Quiet band:** no line, no blocks, no letters, no terminal text.
+- **A station keying:** flat-topped blocks at the mark lengths, a letter over each group, and the
+  terminal filling at the same time.
+- **Slow sending, around 9 to 10 WPM:** no flicker between words. At 5 to 8 WPM a word gap can
+  run past one second, and the panel may blink once between words.
 
 ## 4. What's blocking us
 
 Nothing blocks. What is left, a line each:
-- **The strayed-frequency line can still move the map for a moment.** It is kept as instructed,
-  and it depends on the dial and the sub-mode. If the owner sees a brief jump while the mode
-  catches up, that line is the cause, and the next change is to hold the arrangement across it.
-- **Card text now scrolls where it used to grow the row.** At the narrowest window, lines below
-  the rig face's height need a scroll to read.
-- **A letter can stay over empty space for up to eight seconds after the keying stops.** The
-  order kept the letters; hiding them too is one line, on the owner's word.
-- **Unit 251's rule that the card follows the tab is reversed by this order.** It is reversed
-  only where a block names one family, and HM-DEC-189 does not record that reversal.
+- **The layout the owner calls screen 1 is not what wide windows get.** Neighborhood on the left
+  and map on the right is what narrow windows get. At wide windows, unit 389's rule, which this
+  order keeps, puts the map at the band's left edge. Both are decided by width alone now, so
+  neither moves, but which one he wants at wide windows is his ruling.
+- **The strayed-frequency line can still move the map for a moment** while the mode catches up.
+  The choice is put to the owner in the last conversation, options A to C; A is recommended.
+- **A one-second hold does not bridge a word gap below about 8 WPM.** If slow senders blink, the
+  figure is the owner's to change.
+- **The decoder is not reset when keying starts.** Characters from before the silence are simply
+  not let out, so the decoder's own reading is untouched, as section 3 asks.
+- **`AMarkIsTheEnvelopeOverAThresholdTests` has two cases red at HEAD, 40 and 208 misjudged
+  hops.** They are not on any carry-forward line.
 
 ### Asks still outstanding
 
@@ -102,6 +114,5 @@ Nothing blocks. What is left, a line each:
   the owner; no change sits in the tree.
 - **Unit 440's item 2:** R72 is cited as HM-DEC-175. Raised 2026-09-25 and scheduled as step 8
   record work under R80.
-
-Units 441 to 483 ran through the loop, and their reports were overwritten before this unit. Any
-asks they left open are in their outcome entries and are not reconstructed here.
+- **Unit 484's strayed-line question** (options A to C), 2026-09-28, waiting on the owner; no
+  change sits in the tree.
