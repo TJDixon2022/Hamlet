@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 1 of 3
+TASK: 2 of 3
 WORK_INSTRUCTION: 475 - the swing bar the owner's ear says is wrong
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-184 (2026-09-27)
-UPDATED: 2026-09-27T22:12:06-04:00
-NOTE: Task 1 - 20 moved to 17, fact red at 20 and green at 17, build clean; committing and pushing
+UPDATED: 2026-09-27T22:12:46-04:00
+NOTE: Task 2 - hysteresis paragraph written from the source (6 dB cluster span, likelier gates are the mark-duration tests); committing
 
 ---
 

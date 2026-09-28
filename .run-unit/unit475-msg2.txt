@@ -1,0 +1,3 @@
+unit475 task 2: the survey's hysteresis (11.4, second half) - described, not moved; CwToneSurvey.HysteresisDb 3.0 gates the per-bin mark mask at the two-means midpoint plus or minus 3 dB, so it asks for cluster means more than about 6 dB apart, not a 3 dB swing; from the source the hysteresis alone is an unlikely refusal beside a 17 to 22 dB meter swing, and the mark-duration gates after it (8 marks, 25 to 200 ms dits, separation 4.0, ratio 2.5 to 3.8) are the likelier ones, none of them recorded in the verdict row; paragraph in .run-unit/unit475-survey.md for the report; nothing under src changed
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
