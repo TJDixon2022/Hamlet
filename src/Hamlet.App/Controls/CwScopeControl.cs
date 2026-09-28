@@ -221,11 +221,12 @@ public sealed class CwScopeControl : Control
     /// <param name="width">The control's width.</param>
     /// <returns>The items.</returns>
     /// <remarks>
-    /// <para>**BLOCKS AND LETTERS, AND ONLY WHILE THE DETECTOR SAYS KEYING** (work instruction
-    /// 485, R97). A filled block for every mark the detector calls, as long as the mark lasted,
-    /// newest at the right, with empty space between; no level trace at all, because the owner
-    /// read a noise line as a signal. With nobody keying the panel is empty apart from the tone
-    /// and mixing words. "listening" only before anything has been heard at all.</para>
+    /// <para>**BLOCKS AND LETTERS, AND WHAT IS DRAWN STAYS UNTIL IT SCROLLS OFF** (work
+    /// instructions 485 and 487, R97, R100). A filled block for every mark the detector calls, as
+    /// long as the mark lasted, newest at the right, with empty space between; no level trace at
+    /// all, because the owner read a noise line as a signal. Nothing new is drawn while nobody is
+    /// keying, and nothing drawn blinks out when the detector lets go: it scrolls off the left with
+    /// time. "listening" only before anything has been heard at all.</para>
     /// <para>**THE LETTER OVER THE BLOCKS THAT MADE IT, AND ONLY WHERE THERE ARE BLOCKS BENEATH
     /// IT** (R94, R97, §0.0). Each character the decoder settled spans the time it was made from -
     /// its end on the decoder's own audio clock and its span in the decoder's hops - and scrolls
@@ -247,11 +248,6 @@ public sealed class CwScopeControl : Control
         if (training.Listening)
         {
             items.Add(new CwScopeItem(CwScopeItemKind.Listening, width / 2, width / 2, ListeningWords));
-            return items;
-        }
-
-        if (!frame.Reading.Keying)
-        {
             return items;
         }
 
@@ -285,7 +281,7 @@ public sealed class CwScopeControl : Control
 
         var training = frame.Training;
 
-        if (training.Listening || !frame.Reading.Keying)
+        if (training.Listening)
         {
             return Array.Empty<CwGraphLetter>();
         }

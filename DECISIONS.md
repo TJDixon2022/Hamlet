@@ -4,6 +4,31 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-192
+date: 2026-09-28
+supersedes: work instruction 389's width rule (section 6 ruling 2)
+refs: docs/phase-requirements/PHASE_PLAN.md R99 R100 R101, src/Hamlet.RadioEngine/Cw/CwDecoder.cs, src/Hamlet.RadioEngine/Cw/CwEnvelopeDetector.cs, src/Hamlet.App/Controls/BandGovernsTheMapPanel.cs, work instruction 487
+---
+
+**A letter needs blocks, printed stays printed, and there is one layout.** Tim, 2026-09-28.
+
+**R99.** *"We should get no letters unless we have a flat-topped signal with a duration that matches
+CW. This new way of identifying things should eliminate bad characters."* A character is emitted
+only if the detector called one block for each of its elements.
+
+**R100.** *"If you put a character on the screen, don't make it disappear. It seems like the system
+is going in and out of detection, and when it goes out, it erases the scroll. If you put something
+up, leave it."* When keying goes false, what was shown stays and what was not shown is dropped.
+
+**R101.** *"Here's the rule. There's only one layout. The layout that we use for CW is the layout we
+use everywhere. It doesn't change. That's a rule."* One arrangement at every frequency, mode, block
+and width. **R101 supersedes unit 389's width rule**, which moved the sun map to the band's left
+edge above a width and back below it.
+
+**Whose words are whose.** The rulings are Tim's; the wording is work instruction 487's record of
+them.
+
+---
 id: HM-DEC-191
 date: 2026-09-28
 supersedes: HM-DEC-177 (for CW only)

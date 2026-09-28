@@ -206,6 +206,23 @@ manual-derived preamp 1 of HM-DEC-177 (the work instruction named it HM-DEC-176)
 rows are unchanged. What the operator sets by hand holds until he changes it, and nothing
 Hamlet shows asks him to turn it back on.
 
+**R99 - Tim, 2026-09-28: a letter needs blocks.** *"We should get no letters unless we have a
+flat-topped signal with a duration that matches CW. This new way of identifying things should
+eliminate bad characters."* A character reaches the transcript, the leading edge or the scope only
+if the detector called one block for each of its elements; none, and it is not emitted at all.
+
+**R100 - Tim, 2026-09-28: printed stays printed.** *"If you put a character on the screen, don't
+make it disappear. It seems like the system is going in and out of detection, and when it goes out,
+it erases the scroll. If you put something up, leave it."* When keying goes false, what was not yet
+shown is dropped and what was shown stays; the scope's blocks and letters scroll off with time and
+never blink out. A Clear the owner presses still clears everything.
+
+**R101 - Tim, 2026-09-28: one layout everywhere.** *"Here's the rule. There's only one layout.
+The layout that we use for CW is the layout we use everywhere. It doesn't change. That's a rule."*
+The band row across the top, the neighborhood panel on the left, the map beside it at one size, the
+rig display on the right, at every frequency, mode, block and window width. It supersedes unit 389's
+width rule, which moved the sun map to the band's left edge above a width and back below it.
+
 ## §3 What is different from the phases before it
 
 1. **A criterion is a requirement id.** A report states the requirement, the condition, the

@@ -91,7 +91,7 @@ public sealed class TheScopeShowsTheMarksTests
 
     /// <remarks>
     /// Proves the hover says what the blocks and the letters are and what is in the corner, that
-    /// the panel is empty with nobody keying, and names no trace, dashed or solid line (work
+    /// nothing new is drawn with nobody keying and what is drawn stays, and names no trace, dashed or solid line (work
     /// instruction 485).
     /// </remarks>
     [Fact]
@@ -103,7 +103,7 @@ public sealed class TheScopeShowsTheMarksTests
 
         Assert.DoesNotContain("Trace", tip, StringComparison.Ordinal);
         Assert.Contains("Blocks", tip, StringComparison.Ordinal);
-        Assert.Contains("the panel is empty", tip, StringComparison.Ordinal);
+        Assert.Contains("nothing new is drawn", tip, StringComparison.Ordinal);
         Assert.Contains("flat tops", tip, StringComparison.Ordinal);
         Assert.Contains("Letters", tip, StringComparison.Ordinal);
         Assert.Contains("a gap is empty space as long as the gap was", tip, StringComparison.Ordinal);

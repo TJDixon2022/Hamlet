@@ -577,11 +577,12 @@ public sealed class Unit376TheTopBandTests
                                 + Px(rigAt.Left) + ", first pill at " + Px(pills.Min(p => p.Left)) + ".");
                         }
 
-                        if (width >= 1400 && band.WithoutPills - map.Bounds.Height > 0.5)
+                        // Since R101 the map keeps one size, the mockup's, at every width (work instruction 487).
+                        if (Math.Abs(map.Bounds.Height - SunMapHeight) > 0.5)
                         {
                             misses.Add(
-                                where + ": in stage A the map is " + Px(map.Bounds.Height) + " in a row of "
-                                + Px(band.WithoutPills) + ".");
+                                where + ": the map is " + Px(map.Bounds.Height) + " tall where its one size is "
+                                + Px(SunMapHeight) + ".");
                         }
                     }
 
@@ -732,11 +733,12 @@ public sealed class Unit376TheTopBandTests
     /// says *PSK31 lives at 14.070; you are at 14.074* and is too tall beside the map at 1400. With
     /// the dial where PSK31 lives, 1400 holds on PSK31 too. 1100 x 780 is the fallback on all three.
     /// </remarks>
+    // **R101 (work instruction 487): one layout.** Every case stands beside the card; unit 389's left edge is superseded.
     public static readonly (double Width, double Height, string Mode, long DialHz, bool AtTheLeftEdge)[] SunMapCases =
     {
-        (1920, 1040, "FT8", 0, true), (1920, 1040, "PSK31", 0, true), (1920, 1040, "Olivia", 0, true),
-        (1400, 1040, "FT8", 0, true), (1400, 1040, "PSK31", 0, false), (1400, 1040, "PSK31", 14_070_000, true),
-        (1400, 1040, "Olivia", 0, true),
+        (1920, 1040, "FT8", 0, false), (1920, 1040, "PSK31", 0, false), (1920, 1040, "Olivia", 0, false),
+        (1400, 1040, "FT8", 0, false), (1400, 1040, "PSK31", 0, false), (1400, 1040, "PSK31", 14_070_000, false),
+        (1400, 1040, "Olivia", 0, false),
         (1100, 780, "FT8", 0, false), (1100, 780, "PSK31", 0, false), (1100, 780, "Olivia", 0, false),
     };
 

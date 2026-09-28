@@ -1,8 +1,10 @@
-# Work instruction 486 - the screen tells the truth, and the preamp stops fighting
+# Work instruction 487 - a letter needs blocks, printed stays printed, one layout
 
-**Hand run. One unit.** Three things the owner reported at the radio with build 1.13.172.
-**No test against a recording, a fixture, a floor or copied telemetry** (R96). Build, run the
-app carry-forward line, and stop. The owner's report at the radio is the test.
+**Hand run. One unit.** Three things the owner reported at the radio on build 1.13.173.
+**No test against a recording, a fixture, a floor or copied telemetry** (R96). A headless test
+driving synthetic hops written in the test itself is allowed; nothing read from disk. Verify by
+building `Hamlet.sln` with warnings as errors and running the app carry-forward line. **The
+owner's report at the radio is the test.**
 
 ---
 
@@ -31,114 +33,125 @@ If all five hold, say "Hamlet confirmed" and continue.
 
 ## 1. Rules
 
-- **R96: no test against recorded audio, no fixture, no floor, no copied telemetry.** A headless
-  test driving synthetic hops written in the test itself is allowed; nothing read from disk.
-  Verify by building `Hamlet.sln` with warnings as errors and running the app carry-forward line.
 - Take `SESSION.lock` through `tools\arbiter\lock.bat take`, release it at the end. Write nothing
   to `RUN_LEDGER.md`. Touch nothing under `tools\arbiter\`. Tick nothing in `PHASE_PLAN.md`.
 - One `dotnet test` invocation per line, filtered, with a `timeout`. Never background and poll.
   The app line loses names to the dispatcher loop; re-run once, count neither way.
 - Apostrophes in quoted heredocs break; `;`, `rm` and `git rm` are refused; Python cannot run
-  here; `-m` more than once for a multi-line commit. Scripts go in `.run-unit\unit486-<name>.sh`.
-- **Nothing that keys or transmits.** Change three of §4 writes a receive setting to the radio,
-  which §0.2 allows and §12.4 governs: no value is chosen by guess, and the report names every
-  byte that changes.
+  here; `-m` more than once for a multi-line commit. Scripts go in `.run-unit\unit487-<name>.sh`.
+  **Do not commit scratch logs or copies of source files under `.run-unit\`** - unit 486 did.
+- Nothing that keys or transmits. Nothing written to the radio.
 - `output.md` at the root, four headings exactly: `## 1. What Claude did`, `## 2. What the owner
   should expect`, `## 3. What you should see`, `## 4. What's blocking us`.
 
 ---
 
-## 2. What the owner saw, 2026-09-28, on build 1.13.172
+## 2. What the owner reported
 
-Two screenshots of the CW tab, both with the scope's blocks drawing correctly - flat tops, a
-short block and a long one labelled `242 ms`, which is unit 485's work landing.
+**One: junk letters, still, in quantity.** *"We should get no letters unless we have a
+flat-topped signal with a duration that matches CW. This new way of identifying things should
+eliminate bad characters."*
 
-1. **The panel says `no keying · mixing 531 Hz`, and the terminal below reads
-   `DE ES E EEE5 SEEEE E`.** Letters arriving while the panel says nothing is there.
-2. **The panel says `tone 675 Hz · mixing 536 Hz`,** and a letter `E` floats with no block under
-   it, while the terminal reads a wall of `E`s, `T`s and fragments.
+**Why, from unit 486's own report.** Its gate asks two questions: is the detector keying **now**,
+and was this character heard in the stretch that is keying now. **It never asks whether the
+character's own elements were blocks the detector called.** So the decoder still reads a
+continuous mix and emits whatever spells a letter; anything falling inside an open window gets
+through, including letters built from noise between the real marks. The scope already refuses to
+draw a letter with no block beneath it (unit 485). **The same rule has never been applied to
+emitting.**
 
-**Why, from unit 485's own report.** The gate it built judges a character by **when its audio was
-heard**, not by what the screen says now: *"It is judged by when the audio was heard, not by when
-it settles, because the settled pass runs seconds behind."* So characters from a stretch when the
-gate was open keep landing in the terminal for seconds after the detector has let go, under a
-panel that already says no keying. **The gate is working as built and not as the owner meant.**
+**Two: printed text disappears.** *"If you put a character on the screen, don't make it
+disappear. It seems like the system is going in and out of detection, and when it goes out, it
+erases the scroll. If you put something up, leave it."*
 
-**And the pitch.** `tone 675 · mixing 536` is the detector finding a station at 675 Hz while the
-decoder reads 139 Hz away. Unit 477's task 2 was to make the tracker take the detector's pitch
-within a hop; **it was never built.** That is why the terminal fills with single-element noise:
-the decoder is reading an empty bin beside the station.
+**Why.** Unit 486 was told to drop characters in flight when keying goes false, and implemented
+it as *"the terminal's provisional tip is cleared in the same moment."* Clearing the tip takes
+text that was already on the screen back off it.
+
+**Three: one layout.** *"Here's the rule. There's only one layout. The layout that we use for CW
+is the layout we use everywhere. It doesn't change. That's a rule."*
 
 ---
 
-## 3. Change one - the screen tells the truth
+## 3. Change one - a letter needs blocks
 
-**Nothing reaches the terminal, the leading edge or the scope while the panel says no keying.**
-The test is the screen at that moment, not the audio clock.
+**A character reaches the transcript, the leading edge or the scope only if the detector called
+blocks for the elements it was made of.** No blocks, no letter. This is the scope's drawing rule
+from unit 485, applied to emitting.
 
-- When the detector's keying is false, the decoder emits nothing to any surface. **Characters
-  still in flight from before are dropped, not flushed.**
-- When keying goes true, emission resumes. Nothing held from before the silence is let out.
-- The panel's words and what the terminal shows change together, in the same update.
+- Each element of a character is matched to a block the detector called at the pitch the decoder
+  was mixing at, within the element's own span.
+- **If any element of a character has no block, the character is not emitted at all** - not as a
+  letter, not as a placeholder.
+- The existing gate stays: keying must be true now, and the character heard in the open stretch.
+  This is a third condition, not a replacement.
+- **How an element is matched to a block** - the tolerance in milliseconds between an element's
+  span and a block's - is the author's, stated in the report with its reason, and derived from
+  the hop length, not from any recording.
 
-**Watch it fail first**, headless, with synthetic hops written in the test: a keyed call, then
-silence. Red while any character reaches a surface after keying goes false; green when none does.
+**The decoder's own decisions are not changed** - not the lattice, not the unit estimator, not
+the emission gate. Only whether what it decided is let out.
 
-**Say in the report what is lost:** the tail of an over, whose last letters settle after the
-detector lets go. That is the cost of the owner's rule and he has ruled it.
+**Watch it fail first**, headless, with synthetic hops written in the test: a keyed call with a
+stretch of noise inside the open window, loud enough that the ungated decoder reads letters from
+it. Red while letters from the noise stretch reach a surface; green when only the letters whose
+elements have blocks do.
 
-## 4. Change two - the decoder listens where the detector hears
+**Say in the report** how many characters the test's call produced before and after, so the owner
+knows what the rule costs on a clean signal.
 
-**The tracker mixes at the detector's pitch, within a hop of the detector finding it.** This is
-unit 477's task 2, never built.
+## 4. Change two - printed stays printed
 
-- When `CwEnvelopeDetector` reports keying at a pitch, `CwToneTracker` mixes at that pitch on the
-  next hop. It does not wait for the survey or the meter.
-- While the detector holds a station through its gaps (unit 485's hold), the pitch holds with it.
-- When the detector lets go, the tracker behaves as it does today.
+**Once a character is on the screen it stays there.** The transcript only ever grows.
 
-**Watch it fail first**, headless: a driven detector reporting keying at 675 Hz while the tracker
-holds 536. Red while the tracker stays at 536; green when it moves within a hop.
+- When keying goes false, characters **not yet shown** are dropped. Characters already shown are
+  never removed, re-rendered away, or cleared with the tip.
+- Whatever unit 486 clears on the falling edge must distinguish the two: the provisional tip that
+  has not been seen, and text that has. **Only the unseen part is cleared.**
+- The same holds for the scope: blocks and letters scroll off the left with time, never blink out
+  because the detector let go.
+- A `Clear` press by the owner still clears everything. That is his action, not the detector's.
 
-**The decoder's own decisions are not changed** - not the lattice, not the unit estimator, not the
-emission gate. Only where it is pointed.
+**Watch it fail first**, headless: a call, then silence, and assert the transcript's text after
+the silence contains every character it held during the call. Red while anything is removed.
 
-## 5. Change three - the preamp stops fighting
+## 5. Change three - one layout, everywhere
 
-The owner: *"The system puts preamp into mode 1 for data - fine - but does not restore it in CW to
-off and worse, keeps putting it at 1 when I manually set it off."*
+**The CW layout is the layout, at every frequency, in every mode, at every window width.** The
+band row across the top, the neighborhood panel on the left, the map to its right, the rig
+display on the right - the arrangement of the owner's screenshot at 14.069.2 in CW.
 
-**Three faults, and the third is his ruling, given here:**
+- **Nothing about the arrangement depends on the mode, the frequency, the block the frequency
+  falls in, how much text the neighborhood panel carries, or the window width.** The panel's text
+  fits the space it has - wrap, clip or scroll - and never resizes its column.
+- **At 14.070.0 exactly**, the first hertz of the PSK31 block, the layout is identical to
+  14.069.2 and 14.076.0. The owner's three screenshots show 14.070.0 alone rearranging.
+- **A strayed frequency, a licence warning or any extra line does not move a column.** It appears
+  inside the panel's own space.
+- **Unit 389's width rule is superseded** - the rule that moved the sun map to the band's left
+  edge above 1400 px, and dropped it back below. The map keeps one place. Say in the report which
+  of 389's tests had to change, and change no assertion that is not about placement.
 
-1. **Coming back to CW does not restore what CW wants.** Find what the CW and the data receive
-   conditions in `data\bands\mode-receiver-conditions.json` ask for on 20 m, and why the preamp
-   stays at 1 after data has set it. Name it in the report.
-2. **His hand does not win.** Unit 419 built HM-DEC-056's rule - a value the operator sets himself
-   is not overwritten by a later tune-in of the same mode. It is not holding for the preamp. Find
-   why and fix it, so that once he sets the preamp off by hand it stays off until he changes it or
-   the radio is power-cycled.
-3. **His ruling, R98:** *"I still hate the preamp crap."* **The CW receive condition asks for the
-   preamp off.** This overrides the manual-derived value of HM-DEC-176 for CW only: the manual
-   quotes Icom's sensitivity figures with preamp 1 across HF, and the owner prefers it off. The
-   condition's text says so, cites his ruling, and keeps the manual's reasoning as history.
-   **The data-mode conditions are not changed** - they may still ask for preamp 1 - so returning
-   to CW must actually set it off, which is fault 1's job.
-
-**No value is guessed** (§12.4). The report tables, for CW and for each data mode the conditions
-file speaks for: what is asked, what is written, and whether the operator's own change survives a
-later tune-in.
+**Watch it fail first**, headless: build the window at two widths and at three frequencies -
+14.069.2 CW, 14.070.0 USB-D, 14.076.0 USB-D - and assert every panel's position and size are
+identical across all six. Red at HEAD, with the report naming what differs.
 
 ---
 
 ## 6. Record
 
-- `PHASE_OUTCOME.md`, both copies: `## UNIT 486 - STEP 12`, one paragraph.
-- `PHASE_STATUS.md`, both copies: names 486.
+- `PHASE_OUTCOME.md`, both copies: `## UNIT 487 - STEP 12`, one paragraph.
+- `PHASE_STATUS.md`, both copies: names 487.
 - Patch-bump `Directory.Build.props`.
-- **Append R98 to the rulings section of both `PHASE_PLAN.md` copies** - the preamp off in CW, in
-  the owner's words. **Touch no checkbox.**
-- `DECISIONS.md`, newest first, HM-DEC-191, headline *The preamp is off in CW, and the operator's
-  hand holds*, quoting him, naming that it overrides HM-DEC-176 for CW only.
+- **Append to the rulings section of both `PHASE_PLAN.md` copies**, as paragraphs, no checkbox
+  touched:
+  - **R99** - a letter needs blocks, in the owner's words above;
+  - **R100** - printed stays printed, in his words;
+  - **R101** - one layout everywhere, in his words, naming that it supersedes unit 389's width
+    rule.
+- `DECISIONS.md`, newest first, **HM-DEC-192**, headline *A letter needs blocks, printed stays
+  printed, and there is one layout*, quoting him on each, and naming that R101 supersedes 389's
+  width rule.
 
 ---
 
@@ -147,11 +160,11 @@ later tune-in.
 Section 2, for the owner, in plain words:
 
 - rebuild;
-- quiet band: empty panel, empty terminal, and they stay empty;
-- a station keying: blocks, letters over them, and the terminal filling at the same time - and
-  when it stops, both stop together;
-- the *tone* and *mixing* numbers should now be the same number;
-- tune into CW: the preamp goes off; set it off yourself in data or CW and it stays off.
+- on a band with no CW: nothing on the scope and nothing in the terminal;
+- on a station: blocks, letters over them, and **no letters that do not sit over blocks**;
+- text once printed never vanishes, whatever the detector does;
+- the window looks the same at 14.069, at 14.070, at 14.076, in CW and in data, narrow and wide.
 
-Section 1: what changed, file by file, and that the build and the app line are green.
-Section 4: anything left, a line each.
+Section 1: what changed, file by file, the element-to-block tolerance and its reason, and that
+the build and the app line are green. Section 3: the before-and-after character counts from
+change one's test. Section 4: anything left, a line each.

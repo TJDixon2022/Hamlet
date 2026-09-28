@@ -34,17 +34,18 @@ public sealed class TheSunMapStandsWhereItWasLeftTests
     /// <param name="output">Where every size is printed.</param>
     public TheSunMapStandsWhereItWasLeftTests(ITestOutputHelper output) => _output = output;
 
-    /// <summary>393 x 214 at the left edge; 327 x 178 beside the card; the band 214.</summary>
+    /// <summary>Beside the card at the mockup's 246 x 134 at every width and mode, never at the band's left edge; the band 214.
+    /// Since R101 (work instruction 487) there is one layout: unit 389's 393 x 214 at the left edge and 327 x 178 are superseded.</summary>
     [AvaloniaFact]
-    public void ItIs393By214AtTheLeftEdgeAnd327By178BesideTheCard()
+    public void ItIs246By134BesideTheCardAtEveryWidth()
     {
         var cases = new (double Width, double Height, string Mode, bool LeftEdge)[]
         {
-            (1920, TheTopRowTests.WindowHeight, "FT8", true),
-            (1920, TheTopRowTests.WindowHeight, "PSK31", true),
-            (1920, TheTopRowTests.WindowHeight, "Olivia", true),
-            (1400, TheTopRowTests.WindowHeight, "FT8", true),
-            (1400, TheTopRowTests.WindowHeight, "Olivia", true),
+            (1920, TheTopRowTests.WindowHeight, "FT8", false),
+            (1920, TheTopRowTests.WindowHeight, "PSK31", false),
+            (1920, TheTopRowTests.WindowHeight, "Olivia", false),
+            (1400, TheTopRowTests.WindowHeight, "FT8", false),
+            (1400, TheTopRowTests.WindowHeight, "Olivia", false),
             (1400, TheTopRowTests.WindowHeight, "PSK31", false),
         };
 
@@ -63,7 +64,7 @@ public sealed class TheSunMapStandsWhereItWasLeftTests
                 var map = TheTopRowTests.RectIn(TheTopRowTests.Named<GrayLineMapControl>(window, "GreenZoneGrayLine"), window);
                 var row = TheTopRowTests.Named<BandGovernsTheMapPanel>(window, "BandRow");
                 var band = Unit376TheTopBandTests.Band(window);
-                var (w, h) = leftEdge ? (393.0, 214.0) : (327.0, 178.0);
+                var (w, h) = (246.0, 134.0);
                 var at = Px(width) + " x " + Px(height) + " on " + mode;
 
                 _output.WriteLine(
@@ -77,7 +78,7 @@ public sealed class TheSunMapStandsWhereItWasLeftTests
 
                 if (Math.Abs(map.Width - w) > 1 || Math.Abs(map.Height - h) > 1)
                 {
-                    misses.Add(at + ": the map is " + Px(map.Width) + " x " + Px(map.Height) + " where 10.3 states " + Px(w) + " x " + Px(h));
+                    misses.Add(at + ": the map is " + Px(map.Width) + " x " + Px(map.Height) + " where R101 states " + Px(w) + " x " + Px(h));
                 }
 
                 if (width >= 1400 && Math.Abs(band.WithPills - Unit376TheTopBandTests.BandReachedWithThePills) > 0.5)

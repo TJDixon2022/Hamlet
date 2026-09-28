@@ -205,6 +205,13 @@ public sealed class CwEnvelopeDetector
     private int _ringFill;
     private int _hopFill;
     private long _hop;
+
+    // Every sample handed in since the detector was made: the audio clock the decoder stamps
+    // its characters on, which a new passband does not reset (work instruction 487).
+    private long _samplesSeen;
+
+    // The blocks called at the watched pitch, on that clock, in seconds, by where each began.
+    private readonly SortedDictionary<long, (double From, double To)> _called = new();
     private double _lowHz = double.NaN;
     private double _highHz = double.NaN;
     private bool _fromRig;
@@ -363,7 +370,25 @@ public sealed class CwEnvelopeDetector
         }
     }
 
-    /// <summary>The pitch of the bin being watched, pointed or swept.</summary>
+    /// <summary>How long the called blocks are kept, in seconds: far longer than the settled pass runs behind.</summary>
+    public const double CalledSeconds = 60;
+
+    /// <summary>
+    /// How many blocks this detector called whose middle lies between two moments, on the audio
+    /// clock of every sample it was handed (work instruction 487, R99).
+    /// </summary>
+    /// <param name="fromSeconds">The earlier moment.</param>
+    /// <param name="toSeconds">The later moment.</param>
+    /// <returns>The count.</returns>
+    public int BlocksBetween(double fromSeconds, double toSeconds)
+    {
+        lock (_gate)
+        {
+            return _called.Values.Count(b => (b.From + b.To) / 2 >= fromSeconds && (b.From + b.To) / 2 <= toSeconds);
+        }
+    }
+
+    /// <summary>The pitch of the bin the detector is watching.</summary>
     public double WatchedHz
     {
         get
@@ -419,6 +444,7 @@ public sealed class CwEnvelopeDetector
             {
                 _ring[_ringWrite] = s;
                 _ringWrite = (_ringWrite + 1) % _ring.Length;
+                _samplesSeen++;
                 _ringFill = Math.Min(_ringFill + 1, _ring.Length);
 
                 if (++_hopFill == HopSamples)
@@ -688,6 +714,27 @@ public sealed class CwEnvelopeDetector
         var eval = evals[_watched];
         var open = watched.Open!;
         var up = eval.Marked.Count > 0 && eval.Marked[^1].End == hop;
+
+        // **THE BLOCKS THIS DETECTOR CALLED, KEPT ON THE DECODER'S CLOCK** (work instruction 487,
+        // R99): a hop's time is the end of the audio it read, so a span's hops are placed back
+        // from now. A span read again at a later hop replaces the first reading of it.
+        var nowSeconds = _samplesSeen / (double)SampleRate;
+
+        foreach (var m in eval.Marked)
+        {
+            var from = nowSeconds - ((hop - m.Start + 1) * HopMs / 1000);
+            var to = nowSeconds - ((hop - m.End) * HopMs / 1000);
+            var key = (long)Math.Round(from * 1000 / HopMs);
+
+            _called.Remove(key - 1);
+            _called.Remove(key + 1);
+            _called[key] = (from, to);
+        }
+
+        foreach (var old in _called.Where(b => b.Value.To < nowSeconds - CalledSeconds).Select(b => b.Key).ToList())
+        {
+            _called.Remove(old);
+        }
 
         var gapDb = eval.GapDb;
         var barDb = eval.BarDb;

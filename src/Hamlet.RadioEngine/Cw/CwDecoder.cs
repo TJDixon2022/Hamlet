@@ -140,10 +140,18 @@ public sealed class CwDecoder
 
             var edge = _second is null ? e : ArbitratedEdge(e);
 
-            // No detection, no letters (R97): see KeyingGate.
+            // No detection, no letters (R97), and a letter needs blocks (R99): see KeyingGate.
+            // **PRINTED STAYS PRINTED** (R100): while keying is false nothing is offered, not even
+            // an empty edge, because an empty offer takes the tip already on the screen away.
             if (KeyingGate is not null)
             {
+                if (!_gateOpen)
+                {
+                    return;
+                }
+
                 edge = edge.Where(Admitted).ToList();
+                _shownEdge = edge;
             }
 
             LeadingEdge?.Invoke(edge);
@@ -185,10 +193,22 @@ public sealed class CwDecoder
 
     private void Settle(CwCharacter c)
     {
-        // No detection, no letters (R97): see KeyingGate.
-        if (!Admitted(c))
+        // No detection, no letters (R97); a letter needs blocks (R99); and nothing already
+        // promoted from the screen is settled a second time (R100): see KeyingGate.
+        if (!Admitted(c) || (KeyingGate is not null && c.At.TotalSeconds <= _promotedThrough))
         {
             return;
+        }
+
+        Emit(c);
+    }
+
+    // What the settled pass lets out, counted as it reaches the screen.
+    private void Emit(CwCharacter c)
+    {
+        if (!c.IsWordGap)
+        {
+            _lastEmittedAt = Math.Max(_lastEmittedAt, c.At.TotalSeconds);
         }
 
         // **THE COUNTERS COUNT WHAT REACHED THE SCREEN** (HM-DEC-091). They
@@ -802,14 +822,58 @@ public sealed class CwDecoder
     /// </remarks>
     public Func<double>? DetectorPitch { get; set; }
 
+    /// <summary>
+    /// How many blocks the detector called whose middle lies between two moments on the audio
+    /// clock, in seconds; null to let a character out without asking.
+    /// </summary>
+    /// <remarks>
+    /// <para>**A LETTER NEEDS BLOCKS** (work instruction 487, R99, HM-DEC-192). The owner: *"We
+    /// should get no letters unless we have a flat-topped signal with a duration that matches CW."*
+    /// With this set, a character reaches a surface only if the blocks the detector called under
+    /// its span are exactly as many as its elements - one block for each dit and dah. None, fewer
+    /// or more and it is not let out at all, not as a letter and not as a placeholder. The scope's
+    /// drawing rule since work instruction 485, applied to emitting.</para>
+    /// <para>**THE TOLERANCE IS ONE ENVELOPE WINDOW, TWO HOPS, TEN MILLISECONDS.** The detector
+    /// reads each hop through a window two hops long, so it can place a block's edge up to one
+    /// window from where the decoder places the same element; the character's span is widened by
+    /// that much at each end and a block counts where its middle falls inside. Derived from the
+    /// hop, not from any recording.</para>
+    /// </remarks>
+    public Func<double, double, int>? DetectorBlocks { get; set; }
+
+    /// <summary>How far a character's span is widened at each end when its blocks are counted, in seconds.</summary>
+    public const double BlockToleranceSeconds = 2 * CwProbabilisticDecoder.HopMilliseconds / 1000;
+
     // Where on the audio clock the stretch that is keying now began, in seconds.
     private double _openFrom = double.PositiveInfinity;
 
     private bool _gateOpen;
 
-    /// <summary>Whether a character may reach a surface now: keying now, and heard in this stretch.</summary>
+    // The leading edge as last offered to the screen, and the last moment promoted from it.
+    private IReadOnlyList<CwCharacter> _shownEdge = Array.Empty<CwCharacter>();
+
+    private double _promotedThrough = double.NegativeInfinity;
+
+    private double _lastEmittedAt = double.NegativeInfinity;
+
+    /// <summary>Whether a character may reach a surface now: keying now, heard in this stretch, and standing on blocks.</summary>
     private bool Admitted(CwCharacter c)
-        => KeyingGate is null || (_gateOpen && c.At.TotalSeconds >= _openFrom);
+        => KeyingGate is null || (_gateOpen && c.At.TotalSeconds >= _openFrom && StandsOnBlocks(c));
+
+    /// <summary>Whether the detector called one block for each of the character's elements.</summary>
+    private bool StandsOnBlocks(CwCharacter c)
+    {
+        if (DetectorBlocks is not { } blocks || c.IsWordGap || c.Pattern.Length == 0)
+        {
+            return true;
+        }
+
+        var to = c.At.TotalSeconds;
+        var from = to - (c.SpanHops * CwProbabilisticDecoder.HopMilliseconds / 1000);
+
+        return c.SpanHops > 0
+            && blocks(from - BlockToleranceSeconds, to + BlockToleranceSeconds) == c.Pattern.Length;
+    }
 
     /// <summary>Reads the gate once per chunk, on the clock the characters are stamped on.</summary>
     private void ReadTheGate()
@@ -830,10 +894,19 @@ public sealed class CwDecoder
 
         _gateOpen = open;
 
-        // The terminal's provisional tip goes in the same moment the panel says no keying.
+        // **PRINTED STAYS PRINTED** (work instruction 487, R100). What the tip was showing when
+        // keying went false has been seen, so it is settled into the transcript rather than taken
+        // off the screen; what the decoder held and had not yet shown is dropped. Nothing promoted
+        // is settled a second time when the settled pass reaches it.
         if (closing)
         {
-            LeadingEdge?.Invoke(Array.Empty<CwCharacter>());
+            foreach (var shown in _shownEdge.Where(s => !s.IsWordGap && s.At.TotalSeconds > Math.Max(_promotedThrough, _lastEmittedAt)).ToList())
+            {
+                Emit(shown);
+                _promotedThrough = shown.At.TotalSeconds;
+            }
+
+            _shownEdge = Array.Empty<CwCharacter>();
         }
     }
 

@@ -32,7 +32,7 @@ namespace Hamlet.App.Controls;
 /// <see cref="MapFloor"/>, the
 /// 246 x 134 map units 337 and 376 kept, and never below it - and where even that is not enough the
 /// card governs exactly as it did before this unit. **The map never takes width from the rig face.**</para>
-/// <para>**AND WHERE THE WINDOW ALLOWS IT, THE MAP STANDS AT THE BAND'S LEFT EDGE** (PHASE_PLAN.md
+/// <para>**SUPERSEDED BY R101 (work instruction 487): the map no longer moves to the band's left edge; what follows is kept as history.** AND WHERE THE WINDOW ALLOWS IT, THE MAP STANDS AT THE BAND'S LEFT EDGE (PHASE_PLAN.md
 /// 10.3; work instruction 389 section 6 ruling 2, author's and overrulable). The band is the pills
 /// row and this row together, 214 px at 1920 and at 1400, and the map beside the card alone could
 /// only ever be this row's 178 of it. So where a map as tall as the whole band still leaves the
@@ -113,12 +113,6 @@ public sealed class BandGovernsTheMapPanel : Panel
 
     private bool _atTheLeftEdge;
 
-    private bool _decided;
-
-    private object? _decidedUnder;
-
-    private (double Width, double Row, double Rig, double Need, double Reach) _decidedFor;
-
     /// <summary>The value the arrangement is held across; see <see cref="HeldAcrossProperty"/>.</summary>
     /// <remarks>
     /// **IT DOES NOT ASK FOR A MEASURE OF ITS OWN** (unit 423 task 3, measured). Registered as
@@ -169,6 +163,16 @@ public sealed class BandGovernsTheMapPanel : Panel
     public static void SetOutsideTheFit(Control control, bool value) => control.SetValue(OutsideTheFitProperty, value);
 
     /// <inheritdoc/>
+    /// <remarks>
+    /// **ONE LAYOUT, EVERYWHERE** (work instruction 487, R101, HM-DEC-192). Tim: *"There's only one
+    /// layout. The layout that we use for CW is the layout we use everywhere. It doesn't change."*
+    /// The card on the left, the map at the mockup's one size beside it, the rig face at the right,
+    /// the band row across the top above them, at every width, dial, mode and block. Nothing the card
+    /// says moves a column: every line of it, the strayed-frequency line and the licence lines
+    /// included, wraps and scrolls inside the card's own space, which is as tall as the rig face.
+    /// **Unit 389's width rule is superseded**: the map no longer moves to the band's left edge above
+    /// a width and back below it.
+    /// </remarks>
     protected override Size MeasureOverride(Size availableSize)
     {
         if (Children.Count != 3)
@@ -185,191 +189,27 @@ public sealed class BandGovernsTheMapPanel : Panel
         var rowHeight = rig.DesiredSize.Height;
         var width = availableSize.Width;
 
-        // The privilege panel's outside-privileges lines, which grow the row by their own height.
-        var outside = card.GetVisualDescendants().OfType<Control>().Where(GetOutsideTheFit).ToList();
-
-        // Unit 389's rule: the map leaves the band's left edge while the strayed-frequency line shows.
-        var strayed = card.GetVisualDescendants().OfType<Control>()
-            .Any(c => c.Name == StrayedLineName && c.IsVisible);
-
-        // **THE CARD AS IT IS NOW, NOT AS IT WAS LAST MEASURED** (unit 423 task 3, measured). The rig
-        // face's new digits can have this panel measured before the card's changed lines are, and a
-        // card measured again at the width it last had answers from its cache: tuned from 14.010 back
-        // to 14.050 MHz at 1400 x 1040 it answered with the outside-privileges height, the map left
-        // the band's left edge on a card that fitted, and nothing asked again. So every line waiting
-        // to be measured marks the way up to the card as waiting too.
-        foreach (var waiting in card.GetVisualDescendants().OfType<Layoutable>().Where(l => !l.IsMeasureValid).ToList())
-        {
-            for (var up = waiting.GetVisualParent(); up is Layoutable above && !ReferenceEquals(above, this); up = up.GetVisualParent())
-            {
-                above.InvalidateMeasure();
-            }
-        }
-
-        var room = Room(width, rig, rowHeight);
-
-        if (!double.IsInfinity(width) && _decided && !Equals(HeldAcross, _decidedUnder) && room == _decidedFor)
-        {
-            return Held(width, card, map, rig, rowHeight, outside);
-        }
-
-        if (!double.IsInfinity(width) && Pills is { } pills && AtTheLeftEdge(pills))
-        {
-            Decided(room);
-
-            // The row is the rig face's height and the outside-privileges lines' own (R62); every
-            // other word of the card wraps and scrolls inside it (work instruction 484).
-            return new Size(width, rowHeight + Outside(outside));
-        }
-
         PlacePills(0);
         _atTheLeftEdge = false;
+        _pillsReach = 0;
+        // **ONE SIZE, THE MOCKUP'S** (units 337 and 376): 246 x 134 at every width. As tall as the
+        // rig face it would squeeze the card below its floor at the size the window opens at.
+        _mapHeight = MapFloor;
+
+        map.Measure(new Size(double.PositiveInfinity, _mapHeight));
 
         if (double.IsInfinity(width))
         {
-            // Nothing to trade against: the map at the rig's height, the card at its natural width.
-            _mapHeight = Math.Max(MapFloor, rowHeight);
-            map.Measure(new Size(double.PositiveInfinity, _mapHeight));
             card.Measure(availableSize);
 
             return new Size(
                 card.DesiredSize.Width + map.DesiredSize.Width + rig.DesiredSize.Width,
-                Math.Max(rowHeight, Math.Max(card.DesiredSize.Height, map.DesiredSize.Height)));
+                Math.Max(rowHeight, map.DesiredSize.Height));
         }
 
-        // **AS TALL AS THE ROW, IF THE CARD KEEPS ITS FLOOR.** Otherwise the largest height, down
-        // to the floor, at which it does - found by halving, because a shorter map is narrower.
-        // Asked of widths alone since work instruction 484: the card's words never decide it.
-        var high = Math.Max(MapFloor, rowHeight);
-
-        if (!CardFits(high))
-        {
-            var low = MapFloor;
-
-            if (CardFits(low))
-            {
-                for (var i = 0; i < 12 && high - low > 0.5; i++)
-                {
-                    var mid = (low + high) / 2;
-
-                    if (CardFits(mid))
-                    {
-                        low = mid;
-                    }
-                    else
-                    {
-                        high = mid;
-                    }
-                }
-            }
-
-            high = Math.Floor(low);
-        }
-
-        _mapHeight = high;
-        Decided(room);
-
-        // The last measure of each child is the one it is arranged at.
-        map.Measure(new Size(double.PositiveInfinity, _mapHeight));
         card.Measure(new Size(CardWidth(width, map, rig), double.PositiveInfinity));
 
-        return new Size(width, Math.Max(rowHeight + Outside(outside), map.DesiredSize.Height));
-
-        bool CardFits(double mapHeight)
-        {
-            map.Measure(new Size(double.PositiveInfinity, mapHeight));
-
-            var slot = CardWidth(width, map, rig);
-
-            return mapHeight <= MapFloor || slot - card.Margin.Left - card.Margin.Right >= CardFloor;
-        }
-
-        // **THE MAP AT THE BAND'S LEFT EDGE, IF BOTH NEIGHBOURS STILL FIT** (work instruction 389
-        // ruling 2 items 1 to 3). The pills are asked for their one row with nothing beside them;
-        // the map is made as tall as this row and the pills' reach together, which is the band;
-        // then the pills must fit to its right and the card between it and the rig must keep its
-        // floor and this row's height. Either failing is the stage A shape below, unchanged.
-        bool AtTheLeftEdge(Control pills)
-        {
-            pills.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
-
-            var need = pills.DesiredSize.Width - pills.Margin.Left - pills.Margin.Right;
-            var reach = pills.DesiredSize.Height - pills.Margin.Top;
-            var tall = rowHeight + reach;
-
-            map.Measure(new Size(double.PositiveInfinity, tall));
-
-            var mapWidth = map.DesiredSize.Width;
-            var slot = width - mapWidth - rig.DesiredSize.Width;
-
-            if (reach <= 0
-                || strayed
-                || width - mapWidth < need
-                || slot - card.Margin.Left - card.Margin.Right < CardFloor)
-            {
-                return false;
-            }
-
-            card.Measure(new Size(slot, double.PositiveInfinity));
-
-            _pillsReach = reach;
-            _mapHeight = tall;
-            _atTheLeftEdge = true;
-            PlacePills(mapWidth);
-
-            return true;
-        }
-    }
-
-    /// <summary>
-    /// What the arrangement is decided for: the width, the rig face and the pills row, each to a
-    /// tenth of a pixel. The card is not in it, because the card is what is being placed.
-    /// </summary>
-    private (double Width, double Row, double Rig, double Need, double Reach) Room(double width, Control rig, double rowHeight)
-    {
-        var need = 0.0;
-        var reach = 0.0;
-
-        if (Pills is { } pills)
-        {
-            pills.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
-            need = pills.DesiredSize.Width - pills.Margin.Left - pills.Margin.Right;
-            reach = pills.DesiredSize.Height - pills.Margin.Top;
-        }
-
-        return (Tenth(width), Tenth(rowHeight), Tenth(rig.DesiredSize.Width), Tenth(need), Tenth(reach));
-
-        static double Tenth(double value) => double.IsInfinity(value) ? value : Math.Round(value, 1);
-    }
-
-    /// <summary>Records that the arrangement was decided afresh, for what room and under what value.</summary>
-    private void Decided((double Width, double Row, double Rig, double Need, double Reach) room)
-    {
-        _decided = true;
-        _decidedUnder = HeldAcross;
-        _decidedFor = room;
-    }
-
-    /// <summary>
-    /// **THE ARRANGEMENT DECIDED A MOMENT BEFORE**, measured again as it stood: the map at the height
-    /// it was given, the card in the slot that leaves, the pills where they were.
-    /// </summary>
-    private Size Held(double width, Control card, Control map, Control rig, double rowHeight, IReadOnlyList<Control> outside)
-    {
-        map.Measure(new Size(double.PositiveInfinity, _mapHeight));
-
-        if (_atTheLeftEdge)
-        {
-            card.Measure(new Size(Math.Max(0, width - map.DesiredSize.Width - rig.DesiredSize.Width), double.PositiveInfinity));
-            PlacePills(map.DesiredSize.Width);
-
-            return new Size(width, rowHeight + Outside(outside));
-        }
-
-        PlacePills(0);
-        card.Measure(new Size(CardWidth(width, map, rig), double.PositiveInfinity));
-
-        return new Size(width, Math.Max(rowHeight + Outside(outside), map.DesiredSize.Height));
+        return new Size(width, Math.Max(rowHeight, map.DesiredSize.Height));
     }
 
     /// <summary>Moves the pills row's left edge, and nothing else about it.</summary>
@@ -417,34 +257,6 @@ public sealed class BandGovernsTheMapPanel : Panel
         rig.Arrange(new Rect(cardWidth + mapWidth, 0, rigWidth, finalSize.Height));
 
         return finalSize;
-    }
-
-    /// <summary>The strayed-frequency line's name in the card, which unit 389's rule keys on.</summary>
-    public const string StrayedLineName = "GreenZoneStrayedLine";
-
-    /// <summary>
-    /// **HOW MUCH THE ROW GROWS: THE OUTSIDE-PRIVILEGES LINES AND NOTHING ELSE** (R62; work
-    /// instruction 484). Each drawn line marked <see cref="OutsideTheFitProperty"/> and the spacing
-    /// its stack gives it. Every other word of the card wraps and scrolls inside the row, so the
-    /// row's height and the map's place never follow how much the card has to say.
-    /// </summary>
-    private static double Outside(IReadOnlyList<Control> outside)
-    {
-        var height = 0.0;
-
-        foreach (var line in outside)
-        {
-            if (!line.IsEffectivelyVisible)
-            {
-                continue;
-            }
-
-            var spacing = line.GetVisualParent() is StackPanel stack ? stack.Spacing : 0;
-
-            height += line.DesiredSize.Height + spacing;
-        }
-
-        return height;
     }
 
     private static double CardWidth(double width, Control map, Control rig)

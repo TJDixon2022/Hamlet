@@ -11385,6 +11385,10 @@ public partial class MainWindowViewModel : ObservableObject
         // says keying, the decoder mixes at the pitch it watches, so tone and mixing agree.
         _decoder.DetectorPitch = () => detector.Reading.Keying ? detector.WatchedHz : double.NaN;
 
+        // **AND A LETTER NEEDS BLOCKS** (work instruction 487, R99): one block the detector called
+        // under each dit and dah, or the letter does not reach the screen.
+        _decoder.DetectorBlocks = detector.BlocksBetween;
+
         _audioInput.Start();
 
         AudioInputName = _audioInput.DeviceName;

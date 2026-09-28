@@ -84,7 +84,7 @@ public sealed class NoDetectionNoLettersTests
     /// <remarks>
     /// Proves work instruction 486's change one: nothing reaches a surface - the settled
     /// transcript or the leading edge - at any moment the detector says no keying, the tail of
-    /// the over included. Each character is judged by the screen at the moment it arrives.
+    /// the over included, except what the leading edge already showed while keying, which stays on the screen (work instruction 487, R100). Each character is judged by the screen at the moment it arrives.
     /// </remarks>
     [Fact]
     public void NothingReachesTheScreenWhileTheDetectorSaysNoKeying()
@@ -94,8 +94,19 @@ public sealed class NoDetectionNoLettersTests
         var decoder = new CwDecoder(Rate, 600) { KeyingGate = () => detector.Reading.Keying };
         var arrived = new List<(CwCharacter Character, bool Keying)>();
 
-        decoder.CharacterSettled += c => arrived.Add((c, detector.Reading.Keying));
-        decoder.CharacterDecoded += c => arrived.Add((c, detector.Reading.Keying));
+        // What the leading edge showed while keying: kept on the screen when keying drops (R100).
+        var shown = new HashSet<(string, TimeSpan)>();
+
+        decoder.CharacterSettled += c => arrived.Add((c, detector.Reading.Keying || shown.Contains((c.Text, c.At))));
+        decoder.CharacterDecoded += c =>
+        {
+            if (detector.Reading.Keying)
+            {
+                shown.Add((c.Text, c.At));
+            }
+
+            arrived.Add((c, detector.Reading.Keying));
+        };
 
         var chunk = 80;
 
@@ -115,6 +126,106 @@ public sealed class NoDetectionNoLettersTests
 
         Assert.Contains(arrived, a => a.Keying && !a.Character.IsWordGap);
         Assert.Empty(late);
+    }
+
+    /// <summary>
+    /// A keyed call with a burst of loud noise in its middle, inside the detector's open window:
+    /// the call's first words, a burst of noise with no tone, then the rest. Returns the audio and
+    /// where the burst lies, in seconds.
+    /// </summary>
+    internal static (MonoAudio Audio, double BurstFrom, double BurstTo) CallWithABurst(double burstAmplitude)
+    {
+        var first = CwSignal.Generate(new CwSignalRequest(
+            "CQ CQ", WordsPerMinute: 9, ToneHz: 600, SampleRate: Rate, Amplitude: 0.5,
+            NoiseAmplitude: 0.05, LeadInSeconds: LeadSeconds, TailSeconds: 0.15, Seed: 487));
+        var second = CwSignal.Generate(new CwSignalRequest(
+            "DE N0CALL K", WordsPerMinute: 9, ToneHz: 600, SampleRate: Rate, Amplitude: 0.5,
+            NoiseAmplitude: 0.05, LeadInSeconds: 0.15, TailSeconds: TailSeconds, Seed: 488));
+        // Blips at the station's pitch, of uneven length and level, over the same noise: what a
+        // decoder spells letters out of and what the detector will not call bars, because no two
+        // neighbours stand within its flat tolerance of each other, nor of the station: their
+        // levels alternate 4 and 8 dB below it. A blip at the station's own level right after its
+        // last mark is a bar the detector calls, and then the rule lets it through by design.
+        var random = new Random(489);
+        var blips = new List<float>();
+
+        for (var n = 0; n < 12; n++)
+        {
+            var on = 20 + random.Next(120);
+            var off = 15 + random.Next(60);
+            var level = burstAmplitude * Math.Pow(10, -(4 + ((n % 2) * 4)) / 20.0);
+
+            for (var i = 0; i < (on + off) * Rate / 1000; i++)
+            {
+                var tone = i < on * Rate / 1000 ? level * Math.Sin(2 * Math.PI * 600 * blips.Count / Rate) : 0;
+                blips.Add((float)(tone + (0.05 * ((random.NextDouble() * 2) - 1))));
+            }
+        }
+
+        var burst = new MonoAudio(Rate, blips.ToArray());
+
+        var samples = first.Samples.Concat(burst.Samples).Concat(second.Samples).ToArray();
+        var from = first.Samples.Length / (double)Rate;
+
+        return (new MonoAudio(Rate, samples), from, from + (burst.Samples.Length / (double)Rate));
+    }
+
+    private static (List<CwCharacter> Reached, List<CwCharacter> Settled) Decode(MonoAudio audio, bool blocks)
+    {
+        var detector = new CwEnvelopeDetector(Rate);
+        var decoder = new CwDecoder(Rate, 600)
+        {
+            KeyingGate = () => detector.Reading.Keying,
+            DetectorPitch = () => detector.Reading.Keying ? detector.WatchedHz : double.NaN,
+            DetectorBlocks = blocks ? detector.BlocksBetween : null,
+        };
+        var reached = new List<CwCharacter>();
+        var settled = new List<CwCharacter>();
+
+        decoder.CharacterSettled += reached.Add;
+        decoder.CharacterSettled += settled.Add;
+        decoder.CharacterDecoded += reached.Add;
+
+        for (var at = 0; at + 80 <= audio.Samples.Length; at += 80)
+        {
+            decoder.Process(new AudioChunk(at, Rate, audio.Samples.AsSpan(at, 80)));
+            detector.Process(audio.Samples.AsSpan(at, 80));
+        }
+
+        decoder.Flush();
+
+        return (reached, settled);
+    }
+
+    /// <remarks>
+    /// Proves work instruction 487's change one (R99): with a burst of loud noise inside the open
+    /// window, no character read from the burst reaches a surface once a letter needs blocks.
+    /// Watched failing first with the blocks unasked, which is work instruction 486's gate.
+    /// </remarks>
+    /// <param name="blocks">Whether the decoder asks the detector for blocks.</param>
+    [Theory]
+    [InlineData(true)]
+    public void ALetterReadFromNoiseDoesNotReachTheScreen(bool blocks)
+    {
+        var (audio, burstFrom, burstTo) = CallWithABurst(0.5);
+        var (reached, settled) = Decode(audio, blocks);
+        var (_, alone) = Decode(audio, blocks: false);
+
+        bool InBurst(CwCharacter c) => !c.IsWordGap && c.At.TotalSeconds > burstFrom && c.At.TotalSeconds < burstTo;
+
+        // What the rule costs on the clean call, with no burst in it.
+        var (_, cleanAlone) = Decode(Call(), blocks: false);
+        var (_, cleanBlocks) = Decode(Call(), blocks: true);
+
+        _output.WriteLine(
+            $"clean call: settled with the gate alone {cleanAlone.Count(c => !c.IsWordGap)} `{string.Concat(cleanAlone.Select(c => c.Text))}`; "
+            + $"with blocks asked {cleanBlocks.Count(c => !c.IsWordGap)} `{string.Concat(cleanBlocks.Select(c => c.Text))}`");
+        _output.WriteLine(
+            $"burst {burstFrom:0.000} to {burstTo:0.000} s; settled with the gate alone {alone.Count(c => !c.IsWordGap)} `{string.Concat(alone.Select(c => c.Text))}`; "
+            + $"settled {(blocks ? "with blocks asked" : "again with the gate alone")} {settled.Count(c => !c.IsWordGap)} `{string.Concat(settled.Select(c => c.Text))}`; in the burst: "
+            + string.Join(" ", reached.Where(InBurst).Select(c => $"`{c.Text}` {c.Pattern} span {c.SpanHops} hops at {c.At.TotalSeconds:0.000} s")));
+
+        Assert.DoesNotContain(reached, InBurst);
     }
 
     /// <remarks>

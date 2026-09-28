@@ -354,7 +354,8 @@ public sealed class TheTopRowTests
                 // and at 1400 that line leaves the card too tall beside a left-edge map - Unit389
                 // measured the switch on PSK31 at 1451 here, and at 1399 on FT8.
                 var rigAt = RectIn(RigPanel(window), window);
-                var atTheLeftEdge = !(width == 1400.0 && mode == "PSK31");
+                // **R101 (work instruction 487): one layout, the clock beside the card at every width.**
+                var atTheLeftEdge = false;
                 var row = Named<BandGovernsTheMapPanel>(window, "BandRow");
 
                 Assert.False(clock.GetVisualAncestors().Contains(card), "at " + Px(width) + " the world clock is still inside the card's chrome");
@@ -389,7 +390,7 @@ public sealed class TheTopRowTests
                     Assert.True(
                         clockAt.Left - cardAt.Right <= 40,
                         "at " + Px(width) + " the clock starts " + Px(clockAt.Left - cardAt.Right) + " px past the card's right edge");
-                    Assert.InRange(clockAt.Height, cardAt.Height - 0.5, cardAt.Height + 0.5);
+                    Assert.InRange(clockAt.Height, BandGovernsTheMapPanel.MapFloor - 0.5, BandGovernsTheMapPanel.MapFloor + 0.5);
                 }
 
                 Assert.True(clockAt.Height >= ClockHeight - 0.5, "at " + Px(width) + " the clock is smaller than the mockup's " + Px(ClockHeight));
