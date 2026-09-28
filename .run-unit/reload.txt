@@ -1,5 +1,5 @@
 ﻿RELOAD - PHASE_CONTROL.md section 3
-measured 2026-09-27T18:14:11-04:00  root C:\Source\HamLet
+measured 2026-09-27T20:29:11-04:00  root C:\Source\HamLet
 Every line below was read from the tree at that moment. Nothing is remembered.
 
 ==============================================================
@@ -9,7 +9,6 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   RULES_AT         PROJECT_STATUS.md says HM-DEC-165 (2026-09-19); CLAUDE.md section 1 holds CPS-DEC-0183.
   UNCOMMITTED      PHASE_OUTCOME.md is modified and uncommitted.
   UNCOMMITTED      PHASE_STATUS.md is modified and uncommitted.
-  UNCOMMITTED      RUN_LEDGER.md is modified and uncommitted.
 
   Checked: RULES_AT against CLAUDE.md section 1; the working tree
   against HEAD at the root; CLAUDE_CODE.md tree against HEAD;
@@ -21,11 +20,10 @@ Every line below was read from the tree at that moment. Nothing is remembered.
 ==============================================================
 
   branch : main
-  HEAD   : 80df7cd5
-  uncommitted at the root : 3
+  HEAD   : f8fc3921
+  uncommitted at the root : 2
       M PHASE_OUTCOME.md
       M PHASE_STATUS.md
-      M RUN_LEDGER.md
 
 ==============================================================
  THE RULINGS IN FORCE
@@ -39,7 +37,7 @@ Every line below was read from the tree at that moment. Nothing is remembered.
 ==============================================================
 
   --- PHASE_PLAN.md ---
-  378 lines, 29532 bytes
+  380 lines, 29960 bytes
   PHASE: Hamlet meets the CW requirements
   PHASE_SET: 2026-09-25
   DESCRIPTION: CW_REQUIREMENTS.md and CW_SPEC.md at the repository root are the specification from here on. Sixty-eight requirements, sixty-five of them must-tier, and section T shows fourteen groups with no test at all. This phase traces what exists, builds the metrics the requirements are written in - invented characters, sure-character error, coverage, word-boundary error, acquisition time - and then meets the requirements group by group, highest tier first. Every unit recenters on those two documents. Judged by requirement ids and, at the end, by Tim at the radio.
@@ -53,6 +51,7 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   STEP: 7 | The conditions can be generated - sections E, F and G: channel, sender and interference profiles, which nothing in the tree produces today.
   STEP: 8 | The record and the tests are put right - last, not first: the decision log, the traceability table, the 43 tests that measure something other than what their requirement states, and the 63 requirements with no test.
   STEP: 9 | Two decoders read the same audio - section M: fldigi's CW modem ported faithfully as the second decoder, both scored on every recording before either votes, both confidences calibrated against the keys, and the arbitration that emits one transcript, never worse than the better decoder alone.
+  STEP: 11 | The owner's ear teaches the detector where the entry is - a light saying whether Hamlet thinks it hears CW, a strip showing the whole pitch range and where it looks, two buttons that write his verdict beside the detector's state; no decode, no corpus.
   
   ---
   
@@ -247,7 +246,7 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   - [x] 3.3 MET-INVENTED is reported before and after every kept change, per condition, with the key kind beside each number, and the running figure is in `metrics.md`.
   - [ ] 3.4 The 7.052 traffic net's `EETTTEETTTTTTTTETTETETKTETEE` between `GRAY KC` and `LIVER VIA` is printed before and after, so the owner reads the difference rather than the number.
   - [ ] 3.5 After three consecutive units with no kept change the trace goes to `PARKED.md` and the step closes partial.
-  - [ ] 3.6 The three floor tests and both carry-forward lines are green at the exit of every commit of the step.
+  - [x] 3.6 The three floor tests and both carry-forward lines are green at the exit of every commit of the step.
   
   **Depends on:** steps 0 and 1. Independent of step 2: when one blocks the arbiter works the other.
   
@@ -389,6 +388,7 @@ Every line below was read from the tree at that moment. Nothing is remembered.
     is switched off on any condition where it loses to a single decoder (HM-REQ-128).
   - **No unit is authored for the record or for the tests** (R80) while a criterion of steps 2 to
     7 is open and authorable. A unit records a ruling only when its own instruction carries one.
+  - **The corpus is banned** (R88): no unit reads, runs, or keeps a change on a recording; the floor tests are not run. Steps 2 to 10 are closed and not authorable.
   - **Anything would change what keys or transmits.** `MOVE: stop`.
   - **A package is needed.** `MOVE: stop`.
   - **A CW test costing more than 300 s** never goes on a carry-forward line.
@@ -420,13 +420,12 @@ Every line below was read from the tree at that moment. Nothing is remembered.
     metrics after six units were rejected on counts that no requirement states.
 
   --- PHASE_STATUS.md ---
-  16 lines, 2664 bytes
+  16 lines, 2900 bytes
   PHASE: Hamlet meets the CW requirements
   PHASE_SET: 2026-09-25
   DESCRIPTION: CW_REQUIREMENTS.md and CW_SPEC.md at the repository root are the specification from here on. Sixty-eight requirements, sixty-five of them must-tier, and section T shows fourteen groups with no test at all. This phase traces what exists, builds the metrics the requirements are written in - invented characters, sure-character error, coverage, word-boundary error, acquisition time - and then meets the requirements group by group, highest tier first. Every unit recenters on those two documents. Judged by requirement ids and, at the end, by Tim at the radio.
   CURRENT_STEP: 3
-  WORK_INSTRUCTION: 471 - the letters read while acquiring are read again at the pitch and speed once proved, before they settle: step 2's third attempt at HM-REQ-010
-  HEARTBEAT: 2026-09-27 18:14:09
+  WORK_INSTRUCTION: 472 - where the invented letters sit against what was sent: step 3's first attempt at HM-REQ-011 since unit 445, with every commit green
   STEP: 0 | done | Every CW test is traced - section T names, for each requirement, the test that proves it or the word none, and every existing CW test names the requirement it proves or is marked as proving none.
   STEP: 1 | done | The metrics exist - MET-INVENTED, MET-CER-SURE, MET-COVERAGE and MET-WBE are computed over the corpus and reported per condition, so the requirements can be measured at all.
   STEP: 2 | done | The decoder stops printing wrong letters with confidence - MET-CER-SURE driven toward HM-REQ-010's one in a hundred, from the 54 sure-but-wrong characters unit 439 measured.
@@ -437,9 +436,10 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   STEP: 7 | partial | The conditions can be generated - sections E, F and G: channel, sender and interference profiles, which nothing in the tree produces today.
   STEP: 8 | not started | The record and the tests are put right - last, not first: the decision log, the traceability table, the 43 tests that measure something other than what their requirement states, and the 63 requirements with no test.
   STEP: 9 | partial | Two decoders read the same audio - section M: fldigi's CW modem ported faithfully as the second decoder, both scored on every recording before either votes, both confidences calibrated against the keys, and the arbitration that emits one transcript, never worse than the better decoder alone.
+  STEP: 11 | not started | The owner's ear teaches the detector where the entry is - a light saying whether Hamlet thinks it hears CW, a strip showing the whole pitch range and where it looks, two buttons that write his verdict beside the detector's state; no decode, no corpus.
 
   --- PHASE_OUTCOME.md ---
-  986 lines, 230350 bytes
+  1018 lines, 239890 bytes
   PHASE: Hamlet meets the CW requirements
   PHASE_SET: 2026-09-25
   DESCRIPTION: CW_REQUIREMENTS.md and CW_SPEC.md at the repository root are the specification from here on. Sixty-eight requirements, sixty-five of them must-tier, and section T shows fourteen groups with no test at all. This phase traces what exists, builds the metrics the requirements are written in - invented characters, sure-character error, coverage, word-boundary error, acquisition time - and then meets the requirements group by group, highest tier first. Every unit recenters on those two documents. Judged by requirement ids and, at the end, by Tim at the radio.
@@ -453,6 +453,7 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   STEP: 7 | partial | The conditions can be generated - sections E, F and G: channel, sender and interference profiles, which nothing in the tree produces today.
   STEP: 8 | not started | Tim at the radio - CW on 20 m or 40 m, text on the CW tab that reads as what was sent, and he says it read.
   STEP: 9 | partial | Two decoders read the same audio - section M: fldigi's CW modem ported faithfully as the second decoder, both scored on every recording before either votes, both confidences calibrated against the keys, and the arbitration that emits one transcript, never worse than the better decoder alone.
+  STEP: 11 | not started | The owner's ear teaches the detector where the entry is - a light saying whether Hamlet thinks it hears CW, a strip showing the whole pitch range and where it looks, two buttons that write his verdict beside the detector's state; no decode, no corpus.
   
   ## UNIT 439 - STEP 0
   
@@ -1426,6 +1427,37 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   STATE_WHY: All five exit criteria are met, since the report shows 460, 470 and 471 each kept no change, quotes the PARKED.md line and the closing section in metrics.md, and shows 2.4 ticked in both plans, but the step closes partial in substance because HM-REQ-010 is still unmet at 33 of 436 real and 14 of 173 synthetic against one in a hundred.
   ADVANCED: yes
   ATTEMPT: 2.4 | unit 10 launched 2026-09-27T20:16:26.673Z | yes | executed | re-decode the letters emitted while acquiring and still unsettled in the stream's existing decision window at the pitch and speed first proved, before they settle, nothing settled retracted and no constant added, traced first for wrong-to-right and right-to-wrong, test watched red on a generated exact-key case, judged under R78 against HM-REQ-010, committed if kept, else the step-2 trace appended to PARKED.md and 2.4 ticked
+  
+  ## UNIT 472 - STEP 3
+  
+  STEP: 3
+  APPROACH: place every sure invented letter, added or substituted, against the sent text through CwMetrics' own alignment - in a word gap, in a character gap, a split of one sent character, a merge of two, or a stand-in - on the real and exact-key synthetic sets, print the sure right letters in the same position class, build one change against the largest group no earlier route acted on at an edge from CW_SPEC timing or one no right letter crosses, judged under R78 against HM-REQ-011, every commit green on the five for 3.6
+  MOVE: work around
+  WHY: PHASE_PLAN.md step 3's open lines are 3.4, whose 7.052 recording is absent from the tree, 3.5, a closing rule at 0 of 3, and 3.6, which a unit meets as unit 460 met 2.5 by every commit exiting green; so the unit names 3.6 and spends its work on HM-REQ-011's MET-INVENTED, 33 over 473 real and 14 over 252 synthetic, with a trace no unit has made - where each invented letter sits against what was sent - and the loop test finds no entry for it.
+  STATE: partial
+  DECIDED: author's, overrulable - (1) step 3 is worked as the launcher named it although R86 (PHASE_PLAN.md section 6) reads that steps 2 to 8 are not authorable until 9.4 has a kept change; this is carried to the owner as a mismatch, as units 468 to 471 did, and not a claim that R86 is overruled, 9.4 staying judged a loop under ARBITER.md section 4 with (A) to (E) and (W) refused; (2) 3.6 is judged on this unit's commits from task 0 on, every one green on the five, as 442 DECIDED (2) judged 2.5 and unit 460 ticked it, and 443's and 445's red exits on 17:37's since re-banked floor are not held against it; (3) 3.4 is not worked because the 7.052 traffic-net recording is not in the tree (unit 443's search, the arbiter's today), it is searched once and printed only if present, and never reconstructed or fetched; (4) a letter's position is read through CwMetrics' own alignment: added in a sent word gap or in a sent character gap by where its span falls against the key's timing, a split where two or more emitted letters cover one sent character, a merge where one emitted letter covers two or more, and a stand-in where one emitted letter replaces one sent character; (5) the keep rule is 3.2 as written, per condition, real and synthetic, with TheArbitrationEarnsItsPlaceTests green as a further gate, one form only, and the edge from CW_SPEC timing or one no sure right letter crosses on both sets (V-14); (6) the unit counts as one with no kept change if its change is refused under R78 or the trace finds no group outside the excluded routes (449 DECIDED (2)), taking 3.5's count to 1 of 3, and 3.5 is not ticked and PARKED.md is not written; (7) the app line's headless dispatcher-loop loss gets one rerun, and any type lost again is run alone and must pass, named in the report; (8) 471's section 4 is logged, not chased: step 2 is closed by its checkboxes and not reopened, its PARKED.md line's fields are logged, and its V-14 note on a longer window is not tried
+  LICENCE: PHASE_PLAN.md step 3 lines 3.2, 3.3, 3.4, 3.5 and 3.6 and its dependency line, section 5, section 6 (R86 as reported, V-14, the documents win, the second decoder is faithful), section R (R77, R78, R80, R81, R85); the owner's ruling of 2026-09-23 that a step's state is its checkboxes; ARBITER.md sections 3, 4 and 6; arbiter rulings 442 DECIDED (2), 449 DECIDED (2); units 443, 445, 460, 470 and 471; CW_REQUIREMENTS.md HM-REQ-010, 011, 012, 014; CW_SPEC.md sections 4, 10 and 11; R12, R61, R66, R72; V-04, V-08, V-11, V-13, V-14; HM-DEC-095, HM-DEC-155, HM-DEC-165; FACT-004; CLAUDE.md 0.0, 0.2 and 12.5
+  ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
+  ADVANCES: step 3 criterion 6
+  RUN: session launched with SESSION.lock already present; the lock is the launcher's and was not taken or released by the session.
+  
+  ## UNIT 11 - STEP 3
+  
+  STEP: 3
+  APPROACH: place every sure invented letter, added or substituted, against the sent text through CwMetrics' own alignment - in a word gap, in a character gap, a split of one sent character, a merge of two, or a stand-in - on the real and exact-key synthetic sets, print the sure right letters in the same position class, build one change against the largest group no earlier route acted on at an edge from CW_SPEC timing or one no right letter crosses, judged under R78 against HM-REQ-011, every commit green on the five for 3.6
+  HIT: section 4 asked nothing inside the two stops - author's, overrulable, the loop continued - Every item is a note, a mismatch reported for the record, or a reading the unit already acted on, and none asks the owner to decide anything about keying or transmit or about what the product promises the operator.
+  MOVE: work around
+  WHY: PHASE_PLAN.md step 3's open lines are 3.4, whose 7.052 recording is absent from the tree, 3.5, a closing rule at 0 of 3, and 3.6, which a unit meets as unit 460 met 2.5 by every commit exiting green; so the unit names 3.6 and spends its work on HM-REQ-011's MET-INVENTED, 33 over 473 real and 14 over 252 synthetic, with a trace no unit has made - where each invented letter sits against what was sent - and the loop test finds no entry for it.
+  DECIDED: author's, overrulable - (1) step 3 is worked as the launcher named it although R86 (PHASE_PLAN.md section 6) reads that steps 2 to 8 are not authorable until 9.4 has a kept change; this is carried to the owner as a mismatch, as units 468 to 471 did, and not a claim that R86 is overruled, 9.4 staying judged a loop under ARBITER.md section 4 with (A) to (E) and (W) refused; (2) 3.6 is judged on this unit's commits from task 0 on, every one green on the five, as 442 DECIDED (2) judged 2.5 and unit 460 ticked it, and 443's and 445's red exits on 17:37's since re-banked floor are not held against it; (3) 3.4 is not worked because the 7.052 traffic-net recording is not in the tree (unit 443's search, the arbiter's today), it is searched once and printed only if present, and never reconstructed or fetched; (4) a letter's position is read through CwMetrics' own alignment: added in a sent word gap or in a sent character gap by where its span falls against the key's timing, a split where two or more emitted letters cover one sent character, a merge where one emitted letter covers two or more, and a stand-in where one emitted letter replaces one sent character; (5) the keep rule is 3.2 as written, per condition, real and synthetic, with TheArbitrationEarnsItsPlaceTests green as a further gate, one form only, and the edge from CW_SPEC timing or one no sure right letter crosses on both sets (V-14); (6) the unit counts as one with no kept change if its change is refused under R78 or the trace finds no group outside the excluded routes (449 DECIDED (2)), taking 3.5's count to 1 of 3, and 3.5 is not ticked and PARKED.md is not written; (7) the app line's headless dispatcher-loop loss gets one rerun, and any type lost again is run alone and must pass, named in the report; (8) 471's section 4 is logged, not chased: step 2 is closed by its checkboxes and not reopened, its PARKED.md line's fields are logged, and its V-14 note on a longer window is not tried
+  LICENCE: PHASE_PLAN.md step 3 lines 3.2, 3.3, 3.4, 3.5 and 3.6 and its dependency line, section 5, section 6 (R86 as reported, V-14, the documents win, the second decoder is faithful), section R (R77, R78, R80, R81, R85); the owner's ruling of 2026-09-23 that a step's state is its checkboxes; ARBITER.md sections 3, 4 and 6; arbiter rulings 442 DECIDED (2), 449 DECIDED (2); units 443, 445, 460, 470 and 471; CW_REQUIREMENTS.md HM-REQ-010, 011, 012, 014; CW_SPEC.md sections 4, 10 and 11; R12, R61, R66, R72; V-04, V-08, V-11, V-13, V-14; HM-DEC-095, HM-DEC-155, HM-DEC-165; FACT-004; CLAUDE.md 0.0, 0.2 and 12.5
+  COST: 8.148045199999999
+  ACCOMPLISHED: the junk letters Hamlet prints with confidence are each placed against what was actually sent - in the silence between words, between letters, or by cutting or joining real letters - and one change removes the largest kind no earlier attempt touched, or is refused with the reason written down; either way every commit leaves the floor tests green, which closes step 3's green-at-every-commit line
+  FATE: executed
+  STATE_AFTER: partial
+  STATE_WHY: Step 3 has 3.1 to 3.3 and now 3.6 ticked, 3.4 is still open because the 7.052 recording is absent, and 3.5 is still open with its count at 0 of 3, so some exit criteria are met and not all.
+  ADVANCED: no
+  ATTEMPT: 3.6 | unit 11 launched 2026-09-27T22:18:17.361Z | no | executed | place every sure invented letter, added or substituted, against the sent text through CwMetrics' own alignment - in a word gap, in a character gap, a split of one sent character, a merge of two, or a stand-in - on the real and exact-key synthetic sets, print the sure right letters in the same position class, build one change against the largest group no earlier route acted on at an edge from CW_SPEC timing or one no right letter crosses, judged under R78 against HM-REQ-011, every commit green on the five for 3.6
+  REASON: 3.6 | unit 11 launched 2026-09-27T22:18:17.361Z | the unit ran to completion and the criterion did not flip from unmet to met
 
   --- CLAUDE.md ---
   1405 lines, 212255 bytes
@@ -1448,17 +1480,17 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   to run every unit. Run TEST_CMD yourself if the number matters.
 
   --- PROJECT_STATUS.md ---
-  19 lines, 900 bytes
+  19 lines, 874 bytes
   PROTOCOL: 2
   PROJECT: Hamlet
   STATE: COMPLETED
   TASK: 4 of 4
-  WORK_INSTRUCTION: 471 - the letters read while acquiring are read again at the pitch and speed once proved, before they settle: step 2's third attempt at HM-REQ-010
+  WORK_INSTRUCTION: 472 - where the invented letters sit against what was sent: step 3's first attempt at HM-REQ-011 since unit 445, with every commit green
   BALL: tim
   NEXT_PASTE: output.md -> Claude Web
   RULES_AT: HM-DEC-165 (2026-09-19)
-  UPDATED: 2026-09-27T18:12:34-04:00
-  NOTE: Unit 471 done: the re-read at the proved pitch and speed refused - every letter it could reach was already right; step 2 closed partial, 2.4 ticked, MET-CER-SURE 33/436 real against one in a hundred
+  UPDATED: 2026-09-27T20:10:27-04:00
+  NOTE: Unit 472 done: split letters from a dit lost in the noise now print dim; MET-INVENTED real 33 to 25, synthetic 14 to 7, coverage held; 3.6 ticked; an owner's STOP file is at the root
   
   ---
   

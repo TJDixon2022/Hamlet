@@ -11,6 +11,7 @@ STEP: 6 | partial | The text is right - sections H and I, the character table, t
 STEP: 7 | partial | The conditions can be generated - sections E, F and G: channel, sender and interference profiles, which nothing in the tree produces today.
 STEP: 8 | not started | Tim at the radio - CW on 20 m or 40 m, text on the CW tab that reads as what was sent, and he says it read.
 STEP: 9 | partial | Two decoders read the same audio - section M: fldigi's CW modem ported faithfully as the second decoder, both scored on every recording before either votes, both confidences calibrated against the keys, and the arbitration that emits one transcript, never worse than the better decoder alone.
+STEP: 11 | not started | The owner's ear teaches the detector where the entry is - a light saying whether Hamlet thinks it hears CW, a strip showing the whole pitch range and where it looks, two buttons that write his verdict beside the detector's state; no decode, no corpus.
 
 ## UNIT 439 - STEP 0
 
@@ -1015,3 +1016,16 @@ STATE_WHY: Step 3 has 3.1 to 3.3 and now 3.6 ticked, 3.4 is still open because t
 ADVANCED: no
 ATTEMPT: 3.6 | unit 11 launched 2026-09-27T22:18:17.361Z | no | executed | place every sure invented letter, added or substituted, against the sent text through CwMetrics' own alignment - in a word gap, in a character gap, a split of one sent character, a merge of two, or a stand-in - on the real and exact-key synthetic sets, print the sure right letters in the same position class, build one change against the largest group no earlier route acted on at an edge from CW_SPEC timing or one no right letter crosses, judged under R78 against HM-REQ-011, every commit green on the five for 3.6
 REASON: 3.6 | unit 11 launched 2026-09-27T22:18:17.361Z | the unit ran to completion and the criterion did not flip from unmet to met
+
+## UNIT 474 - STEP 11
+
+STEP: 11
+APPROACH: put a light on the CW tab that says whether Hamlet thinks it hears CW, a strip showing the whole pitch range and where the detector is looking, and two buttons whose press writes the owner's verdict beside the detector's state to telemetry - reading no recording and changing no detector
+MOVE: continue
+WHY: PHASE_PLAN.md step 11 criterion 11.1 asks for one indicator on the CW tab that says whether Hamlet thinks it hears CW, in words as well as color, driven by the existing detector and translating nothing
+STATE: not started
+DECIDED: the exact wording of the light and the hover texts, the strip's drawn range beyond what the detector sweeps, and which seams are exposed for reading are the author's, overrulable
+LICENCE: PHASE_PLAN.md R85, R88, section 6, step 11; HM-DEC-184; CLAUDE.md 0.0, 0.2 and 0.6; HM-DEC-155; FACT-006
+ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
+ADVANCES: step 11 criterion 1
+RUN: session launched with SESSION.lock already present; the lock is the launcher's and was not taken or released by the session.

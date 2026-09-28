@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-TASK: 4 of 4
-WORK_INSTRUCTION: 472 - where the invented letters sit against what was sent: step 3's first attempt at HM-REQ-011 since unit 445, with every commit green
-BALL: tim
-NEXT_PASTE: output.md -> Claude Web
-RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-27T20:10:27-04:00
-NOTE: Unit 472 done: split letters from a dit lost in the noise now print dim; MET-INVENTED real 33 to 25, synthetic 14 to 7, coverage held; 3.6 ticked; an owner's STOP file is at the root
+STATE: EXECUTING
+TASK: 0 of 4
+WORK_INSTRUCTION: 474 - a light that says I think I hear CW, a pitch strip, and two buttons that write the owner verdict to telemetry
+BALL: code
+NEXT_PASTE: none
+RULES_AT: HM-DEC-184 (2026-09-27)
+UPDATED: 2026-09-27T20:34:45-04:00
+NOTE: Task 0 - entry round green, build 0 errors and app line 278/278; committing the record and pushing
 
 ---
 

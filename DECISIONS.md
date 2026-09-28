@@ -4,6 +4,32 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-184
+date: 2026-09-27
+refs: PHASE_PLAN.md R88 and step 11, CwToneTracker.cs MinimumToneHz MaximumToneHz, CwKeyingThresholds.ConfidentSwingDb, work instruction 474
+---
+
+**The corpus is banned until the owner lifts the ban, and the owner's ear is the yardstick
+for whether Hamlet hears CW.** Tim, 2026-09-27.
+
+**What happened.** With the current build the owner tuned twenty strong CW stations at
+pitches from very high to very low and received no characters. Every threshold between a
+tone and a signal - the 300 to 900 Hz range, the survey's 3 dB hysteresis, the meter's 20 dB
+swing - was fitted to recordings and never checked against the air. Twenty-three units after
+unit 449 kept one change, all measured on recordings with inferred keys.
+
+**What is ruled.** No unit reads, runs, tunes against, or keeps a change on any recording
+under the fixtures until the ban is lifted. Hamlet shows a light saying whether it thinks it
+hears CW, a strip showing the whole pitch range it sweeps and where it is looking, and two
+buttons - *I agree with you* and *You're an idiot* - each writing a telemetry row carrying
+the owner's verdict beside the detector's state at that moment. The next unit reads those
+rows. The owner's words: *"We're trying to teach you how to find the entry, how to know when
+to start evaluating. Right now, you have no clue."*
+
+**Whose words are whose.** The ruling is Tim's; the wording is work instruction 474's record
+of it.
+
+---
 id: HM-DEC-183
 date: 2026-09-25
 refs: CW_REQUIREMENTS.md, CW_SPEC.md, docs/phase-requirements/PHASE_PLAN.md R77 R78 R79, docs/phase-correctness-run/, PROJECT_CARD.md, work instruction 439, HM-DEC-181
