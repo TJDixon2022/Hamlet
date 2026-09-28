@@ -53,8 +53,8 @@ public enum CwScopeItemKind
 
 /// <summary>One thing on the canvas, where it is, and its words.</summary>
 /// <param name="Kind">What it is.</param>
-/// <param name="X">Its left edge, or its center for a letter.</param>
-/// <param name="X2">Its right edge; the same as <paramref name="X"/> for words.</param>
+/// <param name="X">Its left edge; for a letter, the left of the span it was made from.</param>
+/// <param name="X2">Its right edge; the same as <paramref name="X"/> for words. A letter is centered between the two.</param>
 /// <param name="Text">What it says, or its hover for a bar.</param>
 public sealed record CwScopeItem(CwScopeItemKind Kind, double X, double X2, string Text);
 
@@ -101,8 +101,17 @@ public sealed class CwScopeControl : Control
     /// <summary>The height of the plot: the words at its top, then the trace.</summary>
     public const double PlotHeight = 110;
 
-    /// <summary>Where the trace's band starts, from the top: under the words in the corner.</summary>
-    public const double TraceTop = 38;
+    /// <summary>Where the letters' band starts, from the top: under the words in the corner.</summary>
+    public const double LetterTop = 14;
+
+    /// <summary>How tall the letters' band is, inside the plot.</summary>
+    public const double LetterHeight = 24;
+
+    /// <summary>How big a letter is drawn: read at a glance, and small enough to sit over its own bars.</summary>
+    public const double LetterSize = 18;
+
+    /// <summary>Where the trace's band starts, from the top: under the letters.</summary>
+    public const double TraceTop = LetterTop + LetterHeight;
 
     /// <summary>Where the row of bars starts, from the top: under the plot.</summary>
     public const double BarRowTop = PlotHeight + Gap;
@@ -128,6 +137,8 @@ public sealed class CwScopeControl : Control
     private static readonly IBrush Muted = new SolidColorBrush(Color.Parse("#7A8590"));
     private static readonly IBrush MarkInk = new SolidColorBrush(Color.Parse("#3B6D11"));
     private static readonly Pen TracePen = new(Ink, 1);
+    private static readonly Pen SpanPen = new(Muted, 1);
+    private static readonly IBrush UnreadableInk = InstrumentPalette.UnreadableBrush;
 
     static CwScopeControl()
     {
@@ -227,6 +238,12 @@ public sealed class CwScopeControl : Control
     /// Bars are drawn at their true length under it, newest at the right, and a gap is empty
     /// space as long as the gap was. No floor, no threshold. "listening" only before anything
     /// has been heard at all.</para>
+    /// <para>**THE LETTER OVER THE BARS THAT MADE IT** (R94, §0.0). Each character the decoder
+    /// settled is one item spanning the time it was made from - its end on the decoder's own
+    /// audio clock and its span in the decoder's hops - so it lands over those bars and scrolls
+    /// left with them. It is never moved to sit better: a letter over bars that are not its own,
+    /// or over none, is what the decoder did, and the owner sees it. A word gap draws nothing; a
+    /// prosign is its bracketed name; an unreadable character is the placeholder glyph.</para>
     /// </remarks>
     public static IReadOnlyList<CwScopeItem> Items(CwScopeFrame frame, double width)
     {
@@ -263,7 +280,43 @@ public sealed class CwScopeControl : Control
                 string.Create(CultureInfo.InvariantCulture, $"{(bar.Dah ? "dah" : "dit")}, {bar.LengthMs:0} ms")));
         }
 
+        foreach (var letter in training.Letters)
+        {
+            items.Add(new CwScopeItem(
+                CwScopeItemKind.Letter,
+                XOfTime(letter.StartUtc, training.NowUtc, width),
+                XOfTime(letter.EndUtc, training.NowUtc, width),
+                Shown(letter)));
+        }
+
         return items;
+    }
+
+    /// <summary>What a letter's hover says, first of all.</summary>
+    public const string LetterTipWords = "the decoder made this letter from the bars beneath it";
+
+    /// <summary>What a settled character is drawn as: the placeholder glyph where it was unreadable.</summary>
+    private static string Shown(CwGraphLetter letter)
+        => letter.Confidence == CwConfidence.Unreadable ? MorseAlphabet.Unreadable : letter.Text;
+
+    /// <summary>What a letter's hover says: where it came from, its class and its confidence.</summary>
+    private static string LetterTip(CwGraphLetter letter)
+    {
+        var word = letter.Confidence switch
+        {
+            CwConfidence.High => "sure",
+            CwConfidence.Low => "unsure",
+            _ => "heard but unreadable",
+        };
+
+        var confidence = double.IsFinite(letter.Probability)
+            ? string.Create(CultureInfo.InvariantCulture, $", {letter.Probability * 100:0}% likely right")
+            : "";
+
+        return letter.HasSpan
+            ? Shown(letter) + ": " + LetterTipWords + "; " + word + confidence
+            : Shown(letter) + ": drawn where the decoder finished it, because it gave no span, so the bars it "
+              + "came from are not known; " + word + confidence;
     }
 
     /// <summary>The trace as points: one per hop, its level scaled into the trace's band.</summary>
@@ -323,6 +376,22 @@ public sealed class CwScopeControl : Control
 
         var items = Items(frame, width);
 
+        if (point.Y >= LetterTop && point.Y < LetterTop + LetterHeight)
+        {
+            var letters = items.Where(i => i.Kind == CwScopeItemKind.Letter).ToList();
+
+            for (var i = 0; i < letters.Count; i++)
+            {
+                var item = letters[i];
+                var center = (item.X + item.X2) / 2;
+
+                if ((point.X >= item.X && point.X <= item.X2) || Math.Abs(point.X - center) <= LetterSize / 2)
+                {
+                    return LetterTip(frame.Training.Letters[i]);
+                }
+            }
+        }
+
         if (point.Y >= BarTop && point.Y < BarTop + TrainingBarHeight)
         {
             foreach (var item in items.Where(i => i.Kind == CwScopeItemKind.Bar))
@@ -377,6 +446,8 @@ public sealed class CwScopeControl : Control
 
         var width = Bounds.Width;
         var toneRight = Pad + 4;
+        var letters = frame.Training.Letters;
+        var letter = 0;
 
         context.FillRectangle(Plot, new Rect(Pad, 0, width - (2 * Pad), BarTop + TrainingBarHeight + BarLabelHeight));
 
@@ -414,6 +485,33 @@ public sealed class CwScopeControl : Control
                     }
 
                     context.DrawGeometry(null, TracePen, geometry);
+                    break;
+                }
+
+                case CwScopeItemKind.Letter:
+                {
+                    // The letter centered over the span it was made from, with a hairline under
+                    // it as long as that span, in the terminal's three ways of saying how sure:
+                    // sure is bold ink, unsure italic and muted, unreadable the placeholder glyph
+                    // in its own color. Weight, slant and glyph carry it as well as color (§0.6).
+                    var (face, brush) = item.Text == MorseAlphabet.Unreadable
+                        ? (Typeface.Default, UnreadableInk)
+                        : letters[letter].Confidence == CwConfidence.High
+                            ? (new Typeface(FontFamily.Default, FontStyle.Normal, FontWeight.Bold), Ink)
+                            : (new Typeface(FontFamily.Default, FontStyle.Italic, FontWeight.Normal), Muted);
+
+                    var glyph = new FormattedText(
+                        item.Text, CultureInfo.InvariantCulture, FlowDirection.LeftToRight, face, LetterSize, brush);
+                    var center = (item.X + item.X2) / 2;
+
+                    context.DrawText(glyph, new Point(center - (glyph.Width / 2), LetterTop));
+
+                    if (item.X2 - item.X >= 2)
+                    {
+                        context.DrawLine(SpanPen, new Point(item.X, TraceTop - 1), new Point(item.X2, TraceTop - 1));
+                    }
+
+                    letter++;
                     break;
                 }
 

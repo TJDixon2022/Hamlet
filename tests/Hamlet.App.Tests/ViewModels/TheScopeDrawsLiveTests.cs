@@ -55,7 +55,12 @@ public sealed class TheScopeDrawsLiveTests
     /// <param name="Last">The last frame the scope was handed.</param>
     /// <param name="FramesWithHopsInTheLastSecond">Ticks in the last second of audio whose frame carried hops.</param>
     /// <param name="Settled">Every character the decoder settled, with when on the audio clock.</param>
-    internal sealed record Run(CwScopeFrame Last, int FramesWithHopsInTheLastSecond, IReadOnlyList<(CwCharacter Character, TimeSpan Heard)> Settled);
+    /// <param name="Start">The wall time the audio clock's zero stands for.</param>
+    internal sealed record Run(
+        CwScopeFrame Last,
+        int FramesWithHopsInTheLastSecond,
+        IReadOnlyList<(CwCharacter Character, TimeSpan Heard)> Settled,
+        DateTime Start);
 
     /// <summary>The tab's listen and its scope timer, on the audio's clock.</summary>
     /// <param name="seconds">How much audio to hear.</param>
@@ -102,10 +107,10 @@ public sealed class TheScopeDrawsLiveTests
         decoder.Listen(null);
         envelope.Listen(null);
 
-        return new Run(frame, recent, settled);
+        return new Run(frame, recent, settled, start);
     }
 
-    private void Print(Run run, IReadOnlyList<CwScopeItem> items)
+    internal void Print(Run run, IReadOnlyList<CwScopeItem> items)
     {
         _output.WriteLine($"hops {run.Last.Hops.Count} at {run.Last.HopMs} ms; frames with hops in the last second {run.FramesWithHopsInTheLastSecond}");
         _output.WriteLine($"marked hops {run.Last.Hops.Count(h => h.Mark)}; {run.Last.ToneLine} · {run.Last.MixingLine}");

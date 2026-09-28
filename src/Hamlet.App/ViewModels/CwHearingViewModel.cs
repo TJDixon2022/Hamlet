@@ -238,9 +238,15 @@ public sealed partial class CwHearingViewModel : ObservableObject
         + "Bars: wherever that level held flat for at least a dit, dropped, and held again. A dit is "
         + "a short bar and a dah a long one, drawn as long as they were, and a gap is empty space as "
         + "long as the gap was." + "\n"
+        + "Letters: each character the decoder settled, written over the stretch of audio it made it "
+        + "from, with a thin line as long as that stretch, and scrolling left with its bars. A bar with "
+        + "nothing over it is something the decoder missed, and a letter over no bars, or over bars "
+        + "that do not look like Morse, is one to question. Bold is sure, faint and slanted is unsure, "
+        + "and the square is heard but unreadable; a prosign is its bracketed name." + "\n"
         + "Top left: the pitch the detector found while it says keying, or no keying, and when the "
         + "radio's scope has gone quiet it says so; beside it the pitch the decoder is mixing at." + "\n"
-        + "Hover the trace for what it is and a bar for its length. This shows what Hamlet hears and "
+        + "Hover the trace for what it is, a bar for its length, or a letter for how sure the decoder "
+        + "was. This shows what Hamlet hears and "
         + "changes nothing about how it decodes.";
 
     /// <summary>What the trace is, on hover over it.</summary>
