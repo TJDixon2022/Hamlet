@@ -4,6 +4,28 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-190
+date: 2026-09-28
+refs: docs/phase-requirements/PHASE_PLAN.md R97, criterion 12.4, work instruction 485
+---
+
+**The decoder emits nothing while the detector says no keying.** Tim, 2026-09-28: *"If it has no
+detector why are there letters."*
+
+**What was wrong.** `CwProbabilisticDecoder` has run continuously since long before
+`CwEnvelopeDetector` existed, and **the two have never been wired together**: the detector was
+added to watch, and nothing let its verdict reach the decode path (criterion 12.4, never built).
+So the scope's bars stopped when the detector lost the signal while the decoder kept spelling
+letters out of noise, and the owner saw floating letters with nothing under them and a terminal
+full of `I EE IEE EE E` on a band where he heard nothing.
+
+**What is ruled.** No detection, no letters: no letter, no placeholder, nothing on the transcript
+or the scope, while the detector says nobody is keying. The decoder's own decisions are not
+changed; only whether what it read is let out.
+
+**Whose words are whose.** The ruling is Tim's; the wording is work instruction 485's record of it.
+
+---
 id: HM-DEC-189
 date: 2026-09-28
 refs: docs/phase-requirements/PHASE_PLAN.md R96, work instruction 484

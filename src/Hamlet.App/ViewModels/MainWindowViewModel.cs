@@ -11375,6 +11375,12 @@ public partial class MainWindowViewModel : ObservableObject
         _envelope = new CwEnvelopeDetector(_audioInput.SampleRate);
         _envelope.Listen(_audioInput);
 
+        // **NO DETECTION, NO LETTERS** (work instruction 485, R97, HM-DEC-190). The decoder lets
+        // out only what it read while the detector said somebody was keying; until now the two ran
+        // side by side and never spoke, and the terminal filled with letters read from noise.
+        var detector = _envelope;
+        _decoder.KeyingGate = () => detector.Reading.Keying;
+
         _audioInput.Start();
 
         AudioInputName = _audioInput.DeviceName;

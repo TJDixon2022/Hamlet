@@ -140,6 +140,12 @@ public sealed class CwDecoder
 
             var edge = _second is null ? e : ArbitratedEdge(e);
 
+            // No detection, no letters (R97): see KeyingGate.
+            if (KeyingGate is not null)
+            {
+                edge = edge.Where(Admitted).ToList();
+            }
+
             LeadingEdge?.Invoke(edge);
 
             foreach (var character in edge)
@@ -179,6 +185,12 @@ public sealed class CwDecoder
 
     private void Settle(CwCharacter c)
     {
+        // No detection, no letters (R97): see KeyingGate.
+        if (!Admitted(c))
+        {
+            return;
+        }
+
         // **THE COUNTERS COUNT WHAT REACHED THE SCREEN** (HM-DEC-091). They
         // used to be incremented on the old path's own emit, which raised
         // nothing anybody could see, so a capture sidecar said `0 characters
@@ -760,10 +772,83 @@ public sealed class CwDecoder
     /// </remarks>
     public TimeSpan Heard => TimeSpan.FromSeconds(Interlocked.Read(ref _samplesHeard) / (double)SampleRate);
 
+    /// <summary>
+    /// Whether the detector says somebody is keying, or null to emit as the decoder always has.
+    /// </summary>
+    /// <remarks>
+    /// <para>**NO DETECTION, NO LETTERS** (work instruction 485, R97, HM-DEC-190). The decoder and
+    /// <see cref="CwEnvelopeDetector"/> were never wired together, so the decoder went on spelling
+    /// letters out of noise while the detector said nobody was there. With a gate set, a character
+    /// reaches the transcript, the leading edge and the scope only if the audio it was read from lies
+    /// inside a stretch the detector called keying.</para>
+    /// <para>**JUDGED BY WHEN THE AUDIO WAS HEARD, NOT BY WHEN IT SETTLES.** The settled pass runs
+    /// seconds behind, so the last letters of an over settle after the detector has let go, and
+    /// letters from the noise before a call can settle after it found the call. Each stretch starts
+    /// <see cref="CwEnvelopeDetector.KeyingSeconds"/> before the moment the gate opened, because that
+    /// is the window in which the detector saw the bars that made it open. Nothing about how the
+    /// decoder reads is changed - only whether what it read is let out.</para>
+    /// </remarks>
+    public Func<bool>? KeyingGate { get; set; }
+
+    // The stretches of the audio clock the gate was open for, in seconds, oldest first; the last
+    // one's end is infinity while it is open.
+    private readonly List<(double From, double To)> _keyed = new();
+
+    private bool _gateOpen;
+
+    /// <summary>Whether a character's audio lies inside a stretch the detector called keying.</summary>
+    private bool Admitted(CwCharacter c)
+    {
+        if (KeyingGate is null)
+        {
+            return true;
+        }
+
+        var at = c.At.TotalSeconds;
+
+        foreach (var (from, to) in _keyed)
+        {
+            if (at >= from && at <= to)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /// <summary>Reads the gate once per chunk, on the clock the characters are stamped on.</summary>
+    private void ReadTheGate()
+    {
+        if (KeyingGate is not { } gate)
+        {
+            return;
+        }
+
+        var now = Heard.TotalSeconds;
+        var open = gate();
+
+        if (open && !_gateOpen)
+        {
+            _keyed.Add((now - CwEnvelopeDetector.KeyingSeconds, double.PositiveInfinity));
+        }
+        else if (!open && _gateOpen && _keyed.Count > 0)
+        {
+            _keyed[^1] = (_keyed[^1].From, now);
+        }
+
+        _gateOpen = open;
+
+        // A minute is far longer than the settled pass ever runs behind.
+        _keyed.RemoveAll(s => s.To < now - 60);
+    }
+
     /// <summary>Feed samples directly, without a source.</summary>
     /// <param name="chunk">The samples.</param>
     public void Process(in AudioChunk chunk)
     {
+        ReadTheGate();
+
         // **THE AUDIO CLOCK A SETTLED CHARACTER'S `At` IS READ ON** (work instruction 480
         // task 3): every sample handed here, suspended or not, since the stream's own clock runs
         // through a suspension too.

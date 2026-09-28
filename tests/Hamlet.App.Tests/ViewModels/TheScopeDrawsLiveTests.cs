@@ -34,30 +34,34 @@ public sealed class TheScopeDrawsLiveTests
     public TheScopeDrawsLiveTests(ITestOutputHelper output) => _output = output;
 
     /// <remarks>
-    /// Proves the tab's picture: every tick's frame carries the detector's hops, and the canvas
-    /// draws them as a trace with a bar under each mark, not as letters over an empty plot.
+    /// Proves the tab's picture (work instruction 485, R97): every tick's frame carries the detector's
+    /// hops, and the canvas draws blocks for the marks, with every letter over a block, and no line.
     /// </remarks>
     [Fact]
-    public void OnTheLiveTabTheTraceAndTheBarsDraw()
+    public void OnTheLiveTabTheBlocksAndTheirLettersDraw()
     {
         var run = Listen(seconds: 12);
-        var items = CwScopeControl.Items(run.Last, Width);
+        var items = CwScopeControl.Items(run.Keyed, Width);
 
         Print(run, items);
 
         Assert.Equal(20, run.FramesWithHopsInTheLastSecond);
         Assert.NotEmpty(run.Last.Hops);
         Assert.Contains(items, i => i.Kind == CwScopeItemKind.Bar);
-        Assert.Contains(items, i => i.Kind == CwScopeItemKind.Trace);
+        Assert.All(
+            items.Where(i => i.Kind == CwScopeItemKind.Letter),
+            l => Assert.Contains(items, b => b.Kind == CwScopeItemKind.Bar && b.X <= l.X2 && b.X2 >= l.X));
     }
 
     /// <summary>What one run of the live path left.</summary>
     /// <param name="Last">The last frame the scope was handed.</param>
+    /// <param name="Keyed">The last frame handed while the detector said keying; the last frame where none was.</param>
     /// <param name="FramesWithHopsInTheLastSecond">Ticks in the last second of audio whose frame carried hops.</param>
     /// <param name="Settled">Every character the decoder settled, with when on the audio clock.</param>
     /// <param name="Start">The wall time the audio clock's zero stands for.</param>
     internal sealed record Run(
         CwScopeFrame Last,
+        CwScopeFrame Keyed,
         int FramesWithHopsInTheLastSecond,
         IReadOnlyList<(CwCharacter Character, TimeSpan Heard)> Settled,
         DateTime Start);
@@ -70,6 +74,9 @@ public sealed class TheScopeDrawsLiveTests
         using var source = new TrainingAudioSource("CQ", wordsPerMinute: 20, toneHz: 600, noiseAmplitude: 0.02);
         var decoder = new CwDecoder(source.SampleRate, 600, secondReader: true);
         var envelope = new CwEnvelopeDetector(source.SampleRate);
+
+        // Gated as the tab gates it: no detection, no letters (R97).
+        decoder.KeyingGate = () => envelope.Reading.Keying;
         var feed = new CwScopeFeed();
         var start = new DateTime(2026, 9, 28, 18, 30, 0, DateTimeKind.Utc);
         var settled = new List<(CwCharacter, TimeSpan)>();
@@ -91,12 +98,18 @@ public sealed class TheScopeDrawsLiveTests
         var perTick = (int)(source.SampleRate * TickMs / 1000);
         var ticks = (int)(seconds * 1000 / TickMs);
         var frame = CwScopeFrame.Empty;
+        var keyed = CwScopeFrame.Empty;
         var recent = 0;
 
         for (var t = 0; t < ticks; t++)
         {
             source.PumpOnce(perTick);
             frame = feed.Tick(envelope, envelope.Reading, 600, frame, scopeQuiet: false, Now());
+
+            if (frame.Reading.Keying)
+            {
+                keyed = frame;
+            }
 
             if (t >= ticks - (1000 / TickMs) && frame.Hops.Count > 0)
             {
@@ -107,7 +120,7 @@ public sealed class TheScopeDrawsLiveTests
         decoder.Listen(null);
         envelope.Listen(null);
 
-        return new Run(frame, recent, settled, start);
+        return new Run(frame, keyed.Hops.Count > 0 ? keyed : frame, recent, settled, start);
     }
 
     internal void Print(Run run, IReadOnlyList<CwScopeItem> items)

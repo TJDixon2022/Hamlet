@@ -194,6 +194,12 @@ library. These are useless and pointless. I will report back. That's the only te
 for the most part."* A unit verifies by building with warnings as errors and running the app
 carry-forward line; no test against recorded audio, no copied telemetry, no fixture, no floor.
 
+**R97 - Tim, 2026-09-28: no detection, no letters.** *"If it has no detector why are there
+letters."* The decoder emits nothing while the envelope detector says no keying: no letter, no
+placeholder, nothing on the transcript or the scope. The two ran side by side and were never
+wired together, so the decoder spelled letters out of noise while the detector heard nobody.
+The scope draws blocks for the marks and the letters over them, and no level trace.
+
 ## §3 What is different from the phases before it
 
 1. **A criterion is a requirement id.** A report states the requirement, the condition, the

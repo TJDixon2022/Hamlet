@@ -1,0 +1,94 @@
+    /// <summary>The kinds of thing the graph draws, with their words; no level trace since R97.</summary>
+    /// <param name="frame">The frame.</param>
+    /// <returns>The bars, the detector's pitch and the tracker's.</returns>
+    public static IReadOnlyList<CwScopeLine> Lines(CwScopeFrame frame)
+    {
+        ArgumentNullException.ThrowIfNull(frame);
+
+        return new[]
+        {
+            new CwScopeLine(CwScopeLineKind.Bars, "marks"),
+            new CwScopeLine(CwScopeLineKind.Tone, frame.ToneLine),
+            new CwScopeLine(CwScopeLineKind.Mixing, frame.MixingLine),
+        };
+    }
+
+    /// <summary>Everything on the canvas, as items: nothing is drawn that is not here.</summary>
+    /// <param name="frame">The frame.</param>
+    /// <param name="width">The control's width.</param>
+    /// <returns>The items.</returns>
+    /// <remarks>
+    /// <para>**BLOCKS AND LETTERS, AND ONLY WHILE THE DETECTOR SAYS KEYING** (work instruction
+    /// 485, R97). A filled block for every mark the detector calls, as long as the mark lasted,
+    /// newest at the right, with empty space between; no level trace at all, because the owner
+    /// read a noise line as a signal. With nobody keying the panel is empty apart from the tone
+    /// and mixing words. "listening" only before anything has been heard at all.</para>
+    /// <para>**THE LETTER OVER THE BLOCKS THAT MADE IT, AND ONLY WHERE THERE ARE BLOCKS BENEATH
+    /// IT** (R94, R97, §0.0). Each character the decoder settled spans the time it was made from -
+    /// its end on the decoder's own audio clock and its span in the decoder's hops - and scrolls
+    /// left with its blocks. It is never moved to sit better. A letter with no block anywhere under
+    /// it is not drawn: nothing the detector heard stands under it. A word gap draws nothing; a
+    /// prosign is its bracketed name; an unreadable character is the placeholder glyph.</para>
+    /// </remarks>
+    public static IReadOnlyList<CwScopeItem> Items(CwScopeFrame frame, double width)
+    {
+        ArgumentNullException.ThrowIfNull(frame);
+
+        var training = frame.Training;
+        var items = new List<CwScopeItem>
+        {
+            new(CwScopeItemKind.Tone, Pad, Pad, frame.ToneLine),
+            new(CwScopeItemKind.Mixing, Pad, Pad, frame.MixingLine),
+        };
+
+        if (training.Listening)
+        {
+            items.Add(new CwScopeItem(CwScopeItemKind.Listening, width / 2, width / 2, ListeningWords));
+            return items;
+        }
+
+        if (!frame.Reading.Keying)
+        {
+            return items;
+        }
+
+        foreach (var bar in training.Bars)
+        {
+            items.Add(new CwScopeItem(
+                CwScopeItemKind.Bar,
+                XOfTime(bar.StartUtc, training.NowUtc, width),
+                XOfTime(bar.EndUtc, training.NowUtc, width),
+                string.Create(CultureInfo.InvariantCulture, $"{(bar.Dah ? "dah" : "dit")}, {bar.LengthMs:0} ms")));
+        }
+
+        foreach (var letter in DrawnLetters(frame))
+        {
+            items.Add(new CwScopeItem(
+                CwScopeItemKind.Letter,
+                XOfTime(letter.StartUtc, training.NowUtc, width),
+                XOfTime(letter.EndUtc, training.NowUtc, width),
+                Shown(letter)));
+        }
+
+        return items;
+    }
+
+    /// <summary>The settled characters the scope draws, oldest first: those with a block beneath them, while keying.</summary>
+    /// <param name="frame">The frame.</param>
+    /// <returns>The letters, in the order their items appear.</returns>
+    public static IReadOnlyList<CwGraphLetter> DrawnLetters(CwScopeFrame frame)
+    {
+        ArgumentNullException.ThrowIfNull(frame);
+
+        var training = frame.Training;
+
+        if (training.Listening || !frame.Reading.Keying)
+        {
+            return Array.Empty<CwGraphLetter>();
+        }
+
+        return training.Letters
+            .Where(l => training.Bars.Any(b => b.StartUtc <= l.EndUtc && b.EndUtc >= l.StartUtc))
+            .ToList();
+    }
+

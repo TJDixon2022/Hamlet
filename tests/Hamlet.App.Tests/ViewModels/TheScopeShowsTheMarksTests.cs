@@ -90,19 +90,22 @@ public sealed class TheScopeShowsTheMarksTests
     }
 
     /// <remarks>
-    /// Proves the hover says what the trace and the bars are and what is in the corner, and
-    /// no longer names a dashed or a solid line (work instruction 478).
+    /// Proves the hover says what the blocks and the letters are and what is in the corner, that
+    /// the panel is empty with nobody keying, and names no trace, dashed or solid line (work
+    /// instruction 485).
     /// </remarks>
     [Fact]
-    public void TheHoverSaysWhatTheTraceAndTheBarsAre()
+    public void TheHoverSaysWhatTheBlocksAndTheLettersAre()
     {
-        // Since the second instruction numbered 480 (R94) the trace is drawn again, and the
-        // hover names what is drawn: the trace, the bars under it, and the two lines.
+        // Since work instruction 485 (R97) there is no trace; the hover names what is drawn: the
+        // blocks, the letters over them, the empty panel, and the two lines.
         var tip = CwHearingViewModel.ScopeTip;
 
-        Assert.Contains("Trace", tip, StringComparison.Ordinal);
+        Assert.DoesNotContain("Trace", tip, StringComparison.Ordinal);
+        Assert.Contains("Blocks", tip, StringComparison.Ordinal);
+        Assert.Contains("the panel is empty", tip, StringComparison.Ordinal);
         Assert.Contains("flat tops", tip, StringComparison.Ordinal);
-        Assert.Contains("Bars", tip, StringComparison.Ordinal);
+        Assert.Contains("Letters", tip, StringComparison.Ordinal);
         Assert.Contains("a gap is empty space as long as the gap was", tip, StringComparison.Ordinal);
         Assert.Contains("mixing at", tip, StringComparison.Ordinal);
         Assert.Contains("eight seconds", tip, StringComparison.Ordinal);

@@ -662,12 +662,8 @@ public sealed class CwEnvelopeDetector
         // follows it; only in a gap, when nothing is keying, does the hold keep keying and the pitch.
         if (keying)
         {
-            // Held from the last mark itself, not from the hop the detector still calls keying,
-            // so the hold does not stack on the detector's own one-second window.
-            var lastMark = evals[_watched].Marked.Count > 0 ? evals[_watched].Marked.Max(m => m.End) : hop;
-
-            _holdLastMarkHop = _holdBin == _watched ? Math.Max(_holdLastMarkHop, lastMark) : lastMark;
             _holdBin = _watched;
+            _holdLastMarkHop = hop;
 
             if (!double.IsNaN(evals[_watched].BarDb))
             {

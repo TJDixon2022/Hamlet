@@ -231,27 +231,20 @@ public sealed partial class CwHearingViewModel : ObservableObject
 
     /// <summary>What the oscilloscope shows, on hover.</summary>
     public const string ScopeTip =
-        "The last eight seconds of what Hamlet hears, newest at the right (work instruction 480)." + "\n"
-        + "Trace: the level at the pitch the detector is reading, drawn whether or not anything is "
-        + "keyed. A keyed station is flat tops where the key is down and flat bottoms between; noise "
-        + "is a ragged line." + "\n"
-        + "Bars: wherever that level held flat for at least a dit, dropped, and held again. A dit is "
-        + "a short bar and a dah a long one, drawn as long as they were, and a gap is empty space as "
-        + "long as the gap was." + "\n"
-        + "Letters: each character the decoder settled, written over the stretch of audio it made it "
-        + "from, with a thin line as long as that stretch, and scrolling left with its bars. A bar with "
-        + "nothing over it is something the decoder missed, and a letter over no bars, or over bars "
-        + "that do not look like Morse, is one to question. Bold is sure, faint and slanted is unsure, "
-        + "and the square is heard but unreadable; a prosign is its bracketed name." + "\n"
+        "The last eight seconds of what Hamlet hears, newest at the right (work instruction 485)." + "\n"
+        + "Blocks: every mark the detector found, drawn as long as it lasted. A dit is a short block "
+        + "and a dah a long one, with flat tops, and a gap is empty space as long as the gap was." + "\n"
+        + "Letters: each character the decoder settled, written over the blocks it made it from, "
+        + "with a thin line as long as that stretch, and scrolling left with them. A letter is drawn "
+        + "only where there are blocks beneath it. Bold is sure, faint and slanted is unsure, and the "
+        + "square is heard but unreadable; a prosign is its bracketed name." + "\n"
+        + "While nobody is keying the panel is empty: no blocks, no letters, and nothing in the "
+        + "terminal either, because the decoder lets out only what it read while the detector heard "
+        + "somebody sending." + "\n"
         + "Top left: the pitch the detector found while it says keying, or no keying, and when the "
         + "radio's scope has gone quiet it says so; beside it the pitch the decoder is mixing at." + "\n"
-        + "Hover the trace for what it is, a bar for its length, or a letter for how sure the decoder "
-        + "was. This shows what Hamlet hears and "
-        + "changes nothing about how it decodes.";
-
-    /// <summary>What the trace is, on hover over it.</summary>
-    public const string ScopeTraceTip =
-        "the level of the bin the detector is reading, over the last eight seconds";
+        + "Hover a block for its length, or a letter for how sure the decoder was. This shows what "
+        + "Hamlet hears and changes nothing about how it decodes.";
 
     /// <summary>What a bar is, on hover over one.</summary>
     public const string ScopeBarTip = "a mark - the level held flat for at least a dit";

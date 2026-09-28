@@ -1,0 +1,55 @@
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  Ft8Sharp -> C:\Source\HamLet\src\Ft8Sharp\bin\Debug\net8.0\Ft8Sharp.dll
+  Ft8Sharp.Deep -> C:\Source\HamLet\src\Ft8Sharp.Deep\bin\Debug\net8.0\Ft8Sharp.Deep.dll
+  Hamlet.RadioEngine -> C:\Source\HamLet\src\Hamlet.RadioEngine\bin\Debug\net8.0\Hamlet.RadioEngine.dll
+  Hamlet.RadioEngine.Tests -> C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:02.03]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:02.29]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:02.29]   Starting:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.NoDetectionNoLettersTests.Probe(wpm: 18, noise: 0.80000000000000004) [3 s]
+  Standard Output Messages:
+ probe | 18 wpm | noise 0.8 | found NaN | drop hops 0 | silent chars 0 `` | read `  CQ CQ DE N■CCALL KK `
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.NoDetectionNoLettersTests.Probe(wpm: 10, noise: 0.20000000000000001) [5 s]
+  Standard Output Messages:
+ probe | 10 wpm | noise 0.2 | found 11.54 | drop hops 1052 | silent chars 0 `` | read `     CQ CQ DE N0CALL K    `
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.NoDetectionNoLettersTests.Probe(wpm: 18, noise: 0.40000000000000002) [3 s]
+  Standard Output Messages:
+ probe | 18 wpm | noise 0.4 | found 9.72 | drop hops 584 | silent chars 0 `` | read `    CQ CQDE N0CALL K     `
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.NoDetectionNoLettersTests.Probe(wpm: 8, noise: 0.050000000000000003) [7 s]
+  Standard Output Messages:
+ probe | 8 wpm | noise 0.05 | found 4.63 | drop hops 272 | silent chars 0 `` | read `       TTTT TQ C TQ DE NG0CALL K   `
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.NoDetectionNoLettersTests.Probe(wpm: 10, noise: 0.40000000000000002) [6 s]
+  Standard Output Messages:
+ probe | 10 wpm | noise 0.4 | found NaN | drop hops 0 | silent chars 0 `` | read `      CQ CQ DE N0CALL K    `
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.NoDetectionNoLettersTests.Probe(wpm: 6, noise: 0.050000000000000003) [15 s]
+  Standard Output Messages:
+ probe | 6 wpm | noise 0.05 | found 4.83 | drop hops 492 | silent chars 0 `` | read `     O T MC ■ TTCQ DE NMNACALL K  `
+
+
+[xUnit.net 00:00:50.91]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.NoDetectionNoLettersTests.Probe(wpm: 9, noise: 0.050000000000000003) [6 s]
+  Standard Output Messages:
+ probe | 9 wpm | noise 0.05 | found 4.56 | drop hops 49 | silent chars 1 `E` | read `     <AR>Q CQ DE N,CALL KK E  `
+
+
+
+Test Run Successful.
+Total tests: 7
+     Passed: 7
+ Total time: 53.0164 Seconds
+RC=0 WALL=61s

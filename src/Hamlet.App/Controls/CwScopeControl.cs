@@ -11,9 +11,6 @@ namespace Hamlet.App.Controls;
 /// <summary>What one thing the scope draws is.</summary>
 public enum CwScopeLineKind
 {
-    /// <summary>The level of the bin the detector reads, hop by hop: one line.</summary>
-    Trace,
-
     /// <summary>The marks: a filled block along the bottom under every marked hop.</summary>
     Bars,
 
@@ -32,9 +29,6 @@ public sealed record CwScopeLine(CwScopeLineKind Kind, string Label);
 /// <summary>What one thing on the training graph's canvas is.</summary>
 public enum CwScopeItemKind
 {
-    /// <summary>The level trace of the watched bin, across the window (R94).</summary>
-    Trace,
-
     /// <summary>A bar the detector found, its true length.</summary>
     Bar,
 
@@ -122,9 +116,6 @@ public sealed class CwScopeControl : Control
     /// <summary>How tall a bar is on the training graph; its length is its time.</summary>
     public const double TrainingBarHeight = 14;
 
-    /// <summary>A span wide enough that noise alone does not fill the trace's band, in dB.</summary>
-    public const double DbSpanAtLeast = 30;
-
     /// <summary>What to draw.</summary>
     public static readonly StyledProperty<CwScopeFrame?> FrameProperty =
         AvaloniaProperty.Register<CwScopeControl, CwScopeFrame?>(nameof(Frame));
@@ -136,7 +127,6 @@ public sealed class CwScopeControl : Control
     private static readonly IBrush Ink = new SolidColorBrush(Color.Parse("#44505A"));
     private static readonly IBrush Muted = new SolidColorBrush(Color.Parse("#7A8590"));
     private static readonly IBrush MarkInk = new SolidColorBrush(Color.Parse("#3B6D11"));
-    private static readonly Pen TracePen = new(Ink, 1);
     private static readonly Pen SpanPen = new(Muted, 1);
     private static readonly IBrush UnreadableInk = InstrumentPalette.UnreadableBrush;
 
@@ -211,16 +201,15 @@ public sealed class CwScopeControl : Control
         return bars;
     }
 
-    /// <summary>The kinds of thing the graph draws, with their words; the trace again since R94.</summary>
+    /// <summary>The kinds of thing the graph draws, with their words; no level trace since R97.</summary>
     /// <param name="frame">The frame.</param>
-    /// <returns>The trace, the bars, the detector's pitch and the tracker's.</returns>
+    /// <returns>The bars, the detector's pitch and the tracker's.</returns>
     public static IReadOnlyList<CwScopeLine> Lines(CwScopeFrame frame)
     {
         ArgumentNullException.ThrowIfNull(frame);
 
         return new[]
         {
-            new CwScopeLine(CwScopeLineKind.Trace, "level"),
             new CwScopeLine(CwScopeLineKind.Bars, "marks"),
             new CwScopeLine(CwScopeLineKind.Tone, frame.ToneLine),
             new CwScopeLine(CwScopeLineKind.Mixing, frame.MixingLine),
@@ -232,18 +221,16 @@ public sealed class CwScopeControl : Control
     /// <param name="width">The control's width.</param>
     /// <returns>The items.</returns>
     /// <remarks>
-    /// <para>**THE TRACE, AND A BAR UNDER EVERY MARK** (R94), **ONLY WHILE THE DETECTOR SAYS
-    /// KEYING** (work instruction 484). The level of the watched bin is drawn across the eight
-    /// seconds while someone is keying, so a keyed station shows flat tops; with nobody keying
-    /// the plot is empty, because the owner reads a noise line as a signal.
-    /// Bars are drawn at their true length under it, newest at the right, and a gap is empty
-    /// space as long as the gap was. No floor, no threshold. "listening" only before anything
-    /// has been heard at all.</para>
-    /// <para>**THE LETTER OVER THE BARS THAT MADE IT** (R94, §0.0). Each character the decoder
-    /// settled is one item spanning the time it was made from - its end on the decoder's own
-    /// audio clock and its span in the decoder's hops - so it lands over those bars and scrolls
-    /// left with them. It is never moved to sit better: a letter over bars that are not its own,
-    /// or over none, is what the decoder did, and the owner sees it. A word gap draws nothing; a
+    /// <para>**BLOCKS AND LETTERS, AND ONLY WHILE THE DETECTOR SAYS KEYING** (work instruction
+    /// 485, R97). A filled block for every mark the detector calls, as long as the mark lasted,
+    /// newest at the right, with empty space between; no level trace at all, because the owner
+    /// read a noise line as a signal. With nobody keying the panel is empty apart from the tone
+    /// and mixing words. "listening" only before anything has been heard at all.</para>
+    /// <para>**THE LETTER OVER THE BLOCKS THAT MADE IT, AND ONLY WHERE THERE ARE BLOCKS BENEATH
+    /// IT** (R94, R97, §0.0). Each character the decoder settled spans the time it was made from -
+    /// its end on the decoder's own audio clock and its span in the decoder's hops - and scrolls
+    /// left with its blocks. It is never moved to sit better. A letter with no block anywhere under
+    /// it is not drawn: nothing the detector heard stands under it. A word gap draws nothing; a
     /// prosign is its bracketed name; an unreadable character is the placeholder glyph.</para>
     /// </remarks>
     public static IReadOnlyList<CwScopeItem> Items(CwScopeFrame frame, double width)
@@ -263,30 +250,21 @@ public sealed class CwScopeControl : Control
             return items;
         }
 
-        // **SILENCE IS EMPTY** (work instruction 484). The trace and the bars are drawn only
-        // while the detector says keying; with nobody keying the plot holds no noise line.
-        if (frame.Reading.Keying)
+        if (!frame.Reading.Keying)
         {
-            if (training.Trace.Count > 1)
-            {
-                items.Add(new CwScopeItem(
-                    CwScopeItemKind.Trace,
-                    XOfTime(training.Trace[0].StartUtc, training.NowUtc, width),
-                    XOfTime(training.NowUtc, training.NowUtc, width),
-                    CwHearingViewModel.ScopeTraceTip));
-            }
-
-            foreach (var bar in training.Bars)
-            {
-                items.Add(new CwScopeItem(
-                    CwScopeItemKind.Bar,
-                    XOfTime(bar.StartUtc, training.NowUtc, width),
-                    XOfTime(bar.EndUtc, training.NowUtc, width),
-                    string.Create(CultureInfo.InvariantCulture, $"{(bar.Dah ? "dah" : "dit")}, {bar.LengthMs:0} ms")));
-            }
+            return items;
         }
 
-        foreach (var letter in training.Letters)
+        foreach (var bar in training.Bars)
+        {
+            items.Add(new CwScopeItem(
+                CwScopeItemKind.Bar,
+                XOfTime(bar.StartUtc, training.NowUtc, width),
+                XOfTime(bar.EndUtc, training.NowUtc, width),
+                string.Create(CultureInfo.InvariantCulture, $"{(bar.Dah ? "dah" : "dit")}, {bar.LengthMs:0} ms")));
+        }
+
+        foreach (var letter in DrawnLetters(frame))
         {
             items.Add(new CwScopeItem(
                 CwScopeItemKind.Letter,
@@ -296,6 +274,25 @@ public sealed class CwScopeControl : Control
         }
 
         return items;
+    }
+
+    /// <summary>The settled characters the scope draws, oldest first: those with a block beneath them, while keying.</summary>
+    /// <param name="frame">The frame.</param>
+    /// <returns>The letters, in the order their items appear.</returns>
+    public static IReadOnlyList<CwGraphLetter> DrawnLetters(CwScopeFrame frame)
+    {
+        ArgumentNullException.ThrowIfNull(frame);
+
+        var training = frame.Training;
+
+        if (training.Listening || !frame.Reading.Keying)
+        {
+            return Array.Empty<CwGraphLetter>();
+        }
+
+        return training.Letters
+            .Where(l => training.Bars.Any(b => b.StartUtc <= l.EndUtc && b.EndUtc >= l.StartUtc))
+            .ToList();
     }
 
     /// <summary>What a letter's hover says, first of all.</summary>
@@ -325,37 +322,6 @@ public sealed class CwScopeControl : Control
               + "came from are not known; " + word + confidence;
     }
 
-    /// <summary>The trace as points: one per hop, its level scaled into the trace's band.</summary>
-    /// <param name="frame">The frame.</param>
-    /// <param name="width">The control's width.</param>
-    /// <returns>The points, oldest first; empty where fewer than two hops were heard.</returns>
-    /// <remarks>
-    /// The band spans the window's own lowest level less three dB to at least thirty dB above
-    /// it, as unit 478's trace did, so noise alone never fills it and a keyed tone's flat top sits
-    /// high. A hop with no level is drawn at the bottom.
-    /// </remarks>
-    public static IReadOnlyList<Point> TracePoints(CwScopeFrame frame, double width)
-    {
-        ArgumentNullException.ThrowIfNull(frame);
-
-        var trace = frame.Training.Trace;
-        var finite = trace.Where(p => double.IsFinite(p.EnvelopeDb)).Select(p => p.EnvelopeDb).ToList();
-
-        if (trace.Count < 2 || finite.Count == 0)
-        {
-            return Array.Empty<Point>();
-        }
-
-        var low = finite.Min() - 3;
-        var high = Math.Max(finite.Max() + 8, low + DbSpanAtLeast);
-        var now = frame.Training.NowUtc;
-
-        double Y(double db) => PlotHeight
-            - ((Math.Clamp(double.IsFinite(db) ? db : low, low, high) - low) / (high - low) * (PlotHeight - TraceTop));
-
-        return trace.Select(p => new Point(XOfTime(p.StartUtc, now, width), Y(p.EnvelopeDb))).ToList();
-    }
-
     /// <summary>The small word on an empty graph.</summary>
     public const string ListeningWords = "listening";
 
@@ -371,7 +337,7 @@ public sealed class CwScopeControl : Control
         return Pad + (Math.Clamp(fraction, 0, 1) * Math.Max(0, width - (2 * Pad)));
     }
 
-    /// <summary>What the hover says at a point: a bar's words over a bar, the trace's over the plot.</summary>
+    /// <summary>What the hover says at a point: a block's words over a block, a letter's over a letter.</summary>
     /// <param name="frame">The frame.</param>
     /// <param name="width">The control's width.</param>
     /// <param name="point">The pointer, in the control's pixels.</param>
@@ -393,7 +359,7 @@ public sealed class CwScopeControl : Control
 
                 if ((point.X >= item.X && point.X <= item.X2) || Math.Abs(point.X - center) <= LetterSize / 2)
                 {
-                    return LetterTip(frame.Training.Letters[i]);
+                    return LetterTip(DrawnLetters(frame)[i]);
                 }
             }
         }
@@ -407,12 +373,6 @@ public sealed class CwScopeControl : Control
                     return item.Text;
                 }
             }
-        }
-
-        if (point.Y >= TraceTop && point.Y < PlotHeight
-            && items.Any(i => i.Kind == CwScopeItemKind.Trace && point.X >= i.X && point.X <= i.X2))
-        {
-            return CwHearingViewModel.ScopeTraceTip;
         }
 
         return CwHearingViewModel.ScopeTip;
@@ -452,7 +412,7 @@ public sealed class CwScopeControl : Control
 
         var width = Bounds.Width;
         var toneRight = Pad + 4;
-        var letters = frame.Training.Letters;
+        var letters = DrawnLetters(frame);
         var letter = 0;
 
         context.FillRectangle(Plot, new Rect(Pad, 0, width - (2 * Pad), BarTop + TrainingBarHeight + BarLabelHeight));
@@ -472,27 +432,6 @@ public sealed class CwScopeControl : Control
                 case CwScopeItemKind.Listening:
                     Text(context, item.Text, item.X - 20, BarTop, Muted, 10);
                     break;
-
-                case CwScopeItemKind.Trace:
-                {
-                    var points = TracePoints(frame, width);
-                    var geometry = new StreamGeometry();
-
-                    using (var g = geometry.Open())
-                    {
-                        g.BeginFigure(points[0], false);
-
-                        for (var i = 1; i < points.Count; i++)
-                        {
-                            g.LineTo(points[i]);
-                        }
-
-                        g.EndFigure(false);
-                    }
-
-                    context.DrawGeometry(null, TracePen, geometry);
-                    break;
-                }
 
                 case CwScopeItemKind.Letter:
                 {
