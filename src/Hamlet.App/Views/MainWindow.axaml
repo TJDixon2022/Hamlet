@@ -1792,6 +1792,27 @@
                                 <Run Text="{Binding CwHearing.LightWords}" />
                             </TextBlock>
                         </Border>
+
+                        <!-- HIS EAR IS THE YARDSTICK (HM-DEC-184). Each press
+                             writes one telemetry row, category cw, event
+                             owner_verdict: his verdict beside what the light said
+                             and the detector's state. No audio, no sidecar. The
+                             next unit reads the rows. -->
+                        <StackPanel Grid.Column="1" Orientation="Horizontal"
+                                    HorizontalAlignment="Right" Spacing="6">
+                            <Button Content="I agree with you"
+                                    FontSize="11" Padding="10,4"
+                                    VerticalAlignment="Center"
+                                    IsEnabled="{Binding IsDecoding}"
+                                    ToolTip.Tip="{x:Static vm:CwHearingViewModel.AgreeTip}"
+                                    Command="{Binding CwHearing.AgreeCommand}" />
+                            <Button Content="You're an idiot"
+                                    FontSize="11" Padding="10,4"
+                                    VerticalAlignment="Center"
+                                    IsEnabled="{Binding IsDecoding}"
+                                    ToolTip.Tip="{x:Static vm:CwHearingViewModel.IdiotTip}"
+                                    Command="{Binding CwHearing.IdiotCommand}" />
+                        </StackPanel>
                     </Grid>
 
                     <!-- WHERE IT IS LOOKING (work instruction 474 task 2). Drawn

@@ -1,6 +1,8 @@
 using System.Globalization;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using Hamlet.RadioEngine.Cw;
+using Hamlet.RadioEngine.Telemetry;
 
 namespace Hamlet.App.ViewModels;
 
@@ -20,6 +22,25 @@ public sealed record CwHearingState(
     /// <summary>Nothing is listening.</summary>
     public static CwHearingState None { get; } = new(
         KeyingReading.None, double.NaN, false, false, Array.Empty<KeyingCandidate>());
+}
+
+/// <summary>What the rig and the input say at a press, for the owner's verdict row.</summary>
+/// <param name="FrequencyHz">The dial, or null where it has not been read.</param>
+/// <param name="Mode">The mode with its variant, or null.</param>
+/// <param name="Agc">The AGC setting in the radio's words, or null.</param>
+/// <param name="Preamp">The preamp setting in the radio's words, or null.</param>
+/// <param name="InputPeakDb">The loudest the decoder's input has been in the last moment.</param>
+/// <param name="InputFloorDb">The quietest it has been recently.</param>
+public sealed record CwHearingRig(
+    long? FrequencyHz,
+    string? Mode,
+    string? Agc,
+    string? Preamp,
+    double InputPeakDb,
+    double InputFloorDb)
+{
+    /// <summary>Nothing read.</summary>
+    public static CwHearingRig Unknown { get; } = new(null, null, null, null, double.NaN, double.NaN);
 }
 
 /// <summary>What the pitch strip draws.</summary>
@@ -68,14 +89,37 @@ public sealed partial class CwHearingViewModel : ObservableObject
         "lit when the keying meter calls it keying or the survey admits a pitch; "
         + "this is Hamlet's guess, not a fact.";
 
+    /// <summary>What "I agree with you" records, on hover.</summary>
+    public const string AgreeTip =
+        "Tells Hamlet the light is right about what you hear now. It writes one row to "
+        + "Hamlet's telemetry: your verdict, what the light said, the pitches and figures "
+        + "the detector is using, and the radio's frequency, mode, AGC and preamp. No audio "
+        + "is kept and nothing on the radio changes.";
+
+    /// <summary>What "You're an idiot" records, on hover.</summary>
+    public const string IdiotTip =
+        "Tells Hamlet the light is wrong about what you hear now. It writes one row to "
+        + "Hamlet's telemetry: your verdict, what the light said, the pitches and figures "
+        + "the detector is using, and the radio's frequency, mode, AGC and preamp. No audio "
+        + "is kept and nothing on the radio changes.";
+
+    private readonly ITelemetry? _telemetry;
+    private readonly Func<CwHearingRig> _rig;
     private readonly Func<DateTime> _clock;
 
     private DateTime _lightChangedUtc;
 
     /// <summary>Creates the light, dark.</summary>
+    /// <param name="telemetry">Where a verdict row goes, or null.</param>
+    /// <param name="rig">What the rig and the input say at a press, or null for nothing read.</param>
     /// <param name="clock">The clock, or null for the system's.</param>
-    public CwHearingViewModel(Func<DateTime>? clock = null)
+    public CwHearingViewModel(
+        ITelemetry? telemetry = null,
+        Func<CwHearingRig>? rig = null,
+        Func<DateTime>? clock = null)
     {
+        _telemetry = telemetry;
+        _rig = rig ?? (() => CwHearingRig.Unknown);
         _clock = clock ?? (() => DateTime.UtcNow);
         _lightChangedUtc = _clock();
 
@@ -202,6 +246,68 @@ public sealed partial class CwHearingViewModel : ObservableObject
             meterLine,
             "This shows where Hamlet looks and changes nothing about it.");
     }
+
+    /// <summary>The owner says Hamlet was right.</summary>
+    [RelayCommand]
+    private void Agree() => _telemetry?.Write(TelemetryCategory.Cw, VerdictEvent, VerdictRow("agree"));
+
+    /// <summary>The owner says Hamlet was wrong.</summary>
+    [RelayCommand]
+    private void Idiot() => _telemetry?.Write(TelemetryCategory.Cw, VerdictEvent, VerdictRow("idiot"));
+
+    /// <summary>The event a press writes.</summary>
+    public const string VerdictEvent = "owner_verdict";
+
+    /// <summary>
+    /// **THE ROW: THE OWNER'S EAR BESIDE THE DETECTOR'S STATE, AND NOTHING ELSE** (work
+    /// instruction 474 task 3).
+    /// </summary>
+    /// <param name="verdict">`agree` or `idiot`.</param>
+    /// <returns>The row's fields, by the names the instruction gives them.</returns>
+    /// <remarks>
+    /// <para>**NO AUDIO IS CAPTURED AND NO SIDECAR IS WRITTEN.** The corpus is banned
+    /// (R88), and the next unit needs the owner's verdict and the state it was about,
+    /// which is all this carries.</para>
+    /// <para>**A FIGURE NOT MEASURED IS NULL, NEVER NaN**: the writer's serializer
+    /// refuses NaN, and a row that fails to serialize is a press that left nothing.</para>
+    /// </remarks>
+    public IReadOnlyDictionary<string, object?> VerdictRow(string verdict)
+    {
+        var state = State;
+        var meter = state.Meter;
+        var rig = _rig();
+
+        return new Dictionary<string, object?>
+        {
+            ["verdict"] = verdict,
+            ["light"] = LightWords,
+            ["trackerHz"] = Measured(state.TrackerHz),
+            ["trackerHasPitch"] = state.TrackerHasPitch,
+            ["trackerHasKeying"] = state.TrackerHasKeying,
+            ["meterVerdict"] = VerdictWord(meter.Verdict),
+            ["meterHz"] = meter.ToneHz > 0 ? meter.ToneHz : null,
+            ["meterScore"] = Measured(meter.Score),
+            ["meterMedianMs"] = Measured(meter.MedianMs),
+            ["meterSwingDb"] = Measured(meter.SwingDb),
+            ["survey"] = state.Survey
+                .Select(c => (IReadOnlyDictionary<string, object?>)new Dictionary<string, object?>
+                {
+                    ["hz"] = Measured(c.ToneHz),
+                    ["levelDb"] = Measured(c.KeyedDb),
+                })
+                .ToList(),
+            ["frequency"] = rig.FrequencyHz,
+            ["mode"] = rig.Mode,
+            ["agc"] = rig.Agc,
+            ["preamp"] = rig.Preamp,
+            ["inputPeakDb"] = Measured(rig.InputPeakDb),
+            ["inputFloorDb"] = Measured(rig.InputFloorDb),
+            ["sinceVerdictMs"] = (long)Math.Round((_clock() - _lightChangedUtc).TotalMilliseconds),
+        };
+    }
+
+    private static double? Measured(double value)
+        => double.IsNaN(value) || double.IsInfinity(value) ? null : value;
 
     private static string VerdictWord(KeyingVerdict verdict) => verdict switch
     {

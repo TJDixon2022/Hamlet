@@ -63,6 +63,20 @@ public enum TelemetryCategory
     /// JSON rather than trusting each call site to remember.</para>
     /// </remarks>
     Psk31,
+
+    /// <summary>
+    /// The CW receive path as the owner judges it: his verdict on whether Hamlet heard
+    /// CW, beside the detector's state at that moment.
+    /// </summary>
+    /// <remarks>
+    /// **ADDED DELIBERATELY** (work instruction 474 task 3, HM-DEC-184), which this
+    /// enum's own comment requires of any addition. The instruction names the category
+    /// `cw` and the event `owner_verdict`; the next unit reads these rows to find where
+    /// the entry is. On by default and switchable as the others are. **No audio, no
+    /// callsign, no decoded text** (HM-DEC-018): pitches, levels, verdicts and the rig's
+    /// settings only.
+    /// </remarks>
+    Cw,
 }
 
 /// <summary>Severity of a telemetry event.</summary>

@@ -41,6 +41,8 @@ public sealed class EveryControlSaysWhatItDoesTests
         "header of CW terminal",
         "\"Clear\" (ClearTerminalCommand)",
         "mark ? \"what the radio is hearing, as it arrives\"",
+        "\"I agree with you\"",
+        "\"You're an idiot\"",
         "mark ⊣ \"Press this whenever you can hear a stati…\"",
         "\"I hear a station\"",
         "ReceiveHelpOfferButton",

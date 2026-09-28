@@ -8923,9 +8923,31 @@ public partial class MainWindowViewModel : ObservableObject
     /// reading this class already holds, the decoder's report, and the survey's
     /// admitted bins, once a second on the decode tick.
     /// </remarks>
-    public CwHearingViewModel CwHearing => _cwHearing ??= new CwHearingViewModel();
+    public CwHearingViewModel CwHearing => _cwHearing ??= new CwHearingViewModel(_telemetry, HearingRig);
 
     private CwHearingViewModel? _cwHearing;
+
+    /// <summary>
+    /// What the rig and the input say at the moment the owner presses a verdict.
+    /// </summary>
+    /// <remarks>
+    /// Read at the press rather than kept, so the row carries the radio as it was when he
+    /// judged. A field the radio has not answered is null, and the input is null while
+    /// nothing is listening, rather than the silence floor a level bar starts from.
+    /// </remarks>
+    private CwHearingRig HearingRig()
+    {
+        var state = RigState;
+        var level = DecodeReport.Level;
+
+        return new CwHearingRig(
+            state[RigField.Frequency] is { IsKnown: true, Number: { } hz } ? (long)hz : null,
+            state.ModeWithVariant,
+            state[RigField.Agc] is { IsKnown: true } agc ? agc.Text : null,
+            state[RigField.Preamp] is { IsKnown: true } preamp ? preamp.Text : null,
+            IsDecoding ? level.PeakDb : double.NaN,
+            IsDecoding ? level.FloorDb : double.NaN);
+    }
 
     /// <summary>When the light last read the detector.</summary>
     private DateTime _hearingLastUtc = DateTime.MinValue;

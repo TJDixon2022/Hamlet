@@ -444,6 +444,8 @@ public sealed class WhatEveryControlSaysOnHoverTests
     {
         ["\"Clear\" (ClearTerminalCommand)"] = "true, kept",
         ["\"I hear a station\""] = "true, kept",
+        ["\"I agree with you\""] = "true (unit 474): writes one owner_verdict row, keeps no audio",
+        ["\"You're an idiot\""] = "true (unit 474): writes one owner_verdict row, keeps no audio",
         ["ReceiveHelpOfferButton"] = "true, kept: it says the button cannot do anything, and it cannot (6.5's)",
         ["GreenZoneBestBet"] = "true, kept",
         ["rig face, the frequency digits"] = "true of the digits, kept",

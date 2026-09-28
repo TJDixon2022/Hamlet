@@ -1,0 +1,38 @@
+Test run for C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.06]   Discovering: Hamlet.App.Tests
+[xUnit.net 00:00:00.18]   Discovered:  Hamlet.App.Tests
+[xUnit.net 00:00:00.19]   Starting:    Hamlet.App.Tests
+[xUnit.net 00:00:00.23]   Finished:    Hamlet.App.Tests
+  Passed Hamlet.App.Tests.Telemetry.Unit303ClockRecordTests.NothingPersonalIsWritten [3 ms]
+  Standard Output Messages:
+ Diagnostics/clock_query_started  server=pool.ntp.org Diagnostics/clock_query_finished  server=pool.ntp.org  outcome=measured  reason=measured  detail=the server answered in 38 ms  offsetSeconds=1.66  roundTripMs=38
+
+
+  Passed Hamlet.App.Tests.Telemetry.Unit303ClockRecordTests.ThreeOutcomesWriteThreeDifferentRecords [7 ms]
+  Standard Output Messages:
+ Diagnostics/clock_query_started  server=pool.ntp.org
+ Diagnostics/clock_query_finished  server=pool.ntp.org  outcome=measured  reason=measured  detail=the server answered in 38 ms  offsetSeconds=1.66  roundTripMs=38
+ Diagnostics/clock_query_finished  server=pool.ntp.org  outcome=failed  reason=timeout  detail=nothing came back within 3000 ms
+ Diagnostics/clock_query_finished  server=pool.ntp.org  outcome=failed  reason=threw_InvalidOperationException  detail=the socket was already in use
+
+
+  Passed Hamlet.App.Tests.Telemetry.Unit303ClockRecordTests.AFailureIsAWarningAndAMeasurementIsNot [1 ms]
+  Standard Output Messages:
+ Info  measured
+ Warn  socket_HostNotFound
+
+
+  Passed Hamlet.App.Tests.Telemetry.Unit303ClockRecordTests.TheClockEventsAreInACategory [5 ms]
+  Standard Output Messages:
+ categories used: Diagnostics
+
+
+
+Test Run Successful.
+Total tests: 4
+     Passed: 4
+ Total time: 0.5235 Seconds
+RC=0 WALL=1s
