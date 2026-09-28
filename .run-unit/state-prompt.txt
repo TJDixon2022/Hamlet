@@ -86,9 +86,9 @@ FOLLOWS: report   it drifted to the output - the criterion was chosen because
 and where it is report, one more line saying what it cited instead:
 FOLLOWED: one sentence, plain text
 
-The instruction it produced named  step 11 criterion 4  and gave this WHY:
+The instruction it produced named  step 12 criterion 1  and gave this WHY:
 
-PHASE_PLAN.md step 11 criterion 11.4 asks that the owner's verdict rows be read and that the detector's gate which disagreed with his ear be named from them; his row at 01:16:22 names the swing bar - score 0.27, median 48 ms, swing 18.6 against 20
+PHASE_PLAN.md step 12 criterion 12.1 asks for a detector that finds a keyed signal as the audio envelope standing over a threshold above the tracked noise floor at any pitch the filter passes, reading the pitch from the spectrum after, and changing nothing about the decoder
 
 Answer with the lines asked for above and nothing else, beginning with:
 
@@ -97,228 +97,382 @@ WHY: one sentence, plain text, no punctuation beyond commas and full stops
 
 --- the step from the phase plan follows ---
 
-﻿STEP: 11 | The owner's ear teaches the detector where the entry is - a light saying whether Hamlet thinks it hears CW, a strip showing the whole pitch range and where it looks, two buttons that write his verdict beside the detector's state; no decode, no corpus.
+﻿STEP: 12 | The oscilloscope - a keyed signal is found as the audio envelope over a threshold above the tracked noise floor, at any pitch the filter passes, its frequency read from the spectrum after; shown on the CW tab first, then driving the decoder.
+## Step 12 - The oscilloscope
+
+**Delivers:** R90. The front half of a signal detector the decoder does not have.
+
+**Entry:** nothing.
+
+**Exit:**
+- [x] 12.1 `CwEnvelopeDetector` computes per hop the passband envelope, a tracked noise floor, a threshold of floor plus a margin from the owner's verdict rows, mark or gap, the run length, and while a mark is up the pitch and its contrast read from the whole passband; it changes nothing about the decoder; proved on synthetic hops in a test, no recording.
+- [ ] 12.2 The CW tab draws the last four seconds as an oscilloscope - trace, floor, threshold, marks as bars along the bottom, the tone line as text, the passband edges shaded - fed fast enough that the owner sees dits, with words on every mark.
+- [x] 12.3 The owner's verdict row carries the detector's state at the press, including the count of marks in the last four seconds, with its key set asserted closed.
+- [ ] 12.4 After the owner has judged the scope by ear and said so, the detector drives the decoder: nothing is decoded until a mark is found, the decoder is mixed at the detector's pitch and started with the detector's dit, and it stops when the tone stops; judged by the owner's ear and his verdict rows, not by a recording.
+- [ ] 12.5 The app carry-forward line is green at exit, no recording was read, and the report says so.
+
+**Depends on:** nothing. Authorable beside step 11 while R88 stands.
+
+## Â§5 Dependencies
+
+Steps 0 and 1 are met by the hand-run unit 439 and are ticked at the next unit's task 0 from
+its report. **Steps 2, 3, 4, 5, 6 and 7 each depend only on those two**, so there are six
+independent places to route and the loop need never stall for want of work. **Step 9 is preferred until 9.2 is met** (R84). **Step 8 is last
+and no unit is authored against it while any criterion of steps 2 to 7 or 9 is open** (R80).
+
+## Â§6 Branching
+
+- **Three stops only**: keying, transmit or the radio's safety; money past the budget; a fact
+  the product states to the operator about a signal, a station or a send. A threshold, a
+  window, a test's shape, a filter, a timeout: decide, mark author's, continue.
+- **The later ruling wins. A done step is closed. Every remaining step Tim's: halt.**
+- **A stop 3 is legitimate only when a criterion of the step being worked cannot be met without
+  the ruling** (R65). A carried ask, a section 4 question, a parked item or a finding noticed
+  in passing **never halts the loop**.
+- **Where this plan and the two documents differ, the documents win**, and the difference is a
+  finding in the report.
+- **R78 is the keep rule.** A change is kept on a requirement's metric, not on a character
+  count. **A capture row's count falling is reported, not rejected**, when no requirement's
+  metric got worse. **V-11 still stands**: no change may redden an earlier capture to green a
+  newer one, and that is judged on the requirements' metrics.
+- **A requirement with a TBD threshold** (HM-REQ-032, 065, 092) is measured and the measurement
+  reported; the threshold is the owner's and its absence never halts a unit.
+- **A test that proves no requirement is never deleted in this phase.** It is listed, and its
+  fate is a later ruling (HM-DEC-103).
+- **No fixture is admitted by lowering a gate** (V-04), and **no separation limit, confirmation
+  rule or plausibility bound is loosened to pass a fixture** (V-14).
+- **A run lost before any assertion** counts neither way and is re-run once.
+- **Steps 2 to 8 are not authorable until 9.4 has a kept change** (R86). Every unit is step 9's until a technique from the second decoder is kept in ours.
+- **A CW question is answered from the documents, never raised to the owner** (R85).
+- **The second decoder is faithful, not improved** (HM-REQ-122, 129). A technique goes into
+  ours, judged under R78; the second decoder stays as ported.
+- **The second decoder votes only where it is calibrated** (HM-REQ-124), and the arbitration
+  is switched off on any condition where it loses to a single decoder (HM-REQ-128).
+- **No unit is authored for the record or for the tests** (R80) while a criterion of steps 2 to
+  7 is open and authorable. A unit records a ruling only when its own instruction carries one.
+- **Steps 11 and 12 are the only authorable steps while R88 stands.** 12.4 is not authored
+  until the owner has judged 12.2 by ear and said so.
+- **The corpus is banned** (R88): no unit reads, runs, or keeps a change on a recording; the
+  floor tests and the engine line are not run. Steps 2 to 10 are closed and not authorable.
+- **A report's line C names how many items section 4 raises.** The validator refuses one that
+  does not; unit 474's was refused for it.
+- **Anything would change what keys or transmits.** `MOVE: stop`.
+- **A package is needed.** `MOVE: stop`.
+- **A CW test costing more than 300 s** never goes on a carry-forward line.
+
+## Â§7 Carried
+
+The correctness phase's 5.1, Tim's, at `docs/phase-correctness-run/`; its 3.6, 6.5, 7.1, 7.2,
+7.4, 7.6 and 7.8, each reappearing here as a requirement id; every item of its `PARKED.md`;
+unit 427's six findings, including the PSK31 CQ with a grid reading as no station, and the
+three UI items that differ from what the owner asked; **the window reflowing when the radio
+announces a frequency change into the data range, and the stale sentence saying the operator's
+license covers Morse on an FT8 frequency** - both banked 2026-09-25 and not in this phase's
+scope; the seven rulings of section R, of which the first is answered by R72; the attenuator
+sentence outside an owned block.
+
+## Â§8 Revision record
+
+- **2026-09-28.** R90 and step 12, the oscilloscope; the STEP: 11 header line restored, having
+  been lost in the encoding repair.
+
+- **2026-09-28.** The plan's encoding repaired after an in-place edit double-encoded every Â§;
+  step 11's criteria written as a file; R88 and R89 recorded.
+
+- **2026-09-26.** R84 two decoders read the same audio, ordered by section M of
+  `CW_REQUIREMENTS.md` v1.1; step 9 with eight criteria, preferred until the parity table
+  exists. R85 a CW question is answered from the documents and never raised to the owner.
+
+- **2026-09-25, after unit 439's hand run.** R80 the record and the tests come last, as step 8;
+  R81 MET-CER-SURE and MET-INVENTED come first, as steps 2 and 3, on unit 439's measurement of
+  67 invented - 13 added and 54 sure-but-wrong - where the tree had been counting 17. Steps 2
+  to 8 rewritten; steps 0 and 1 met by the hand run.
+
+- **2026-09-25.** Written from the interview: R77 to R79; nine steps; the criteria named
+  against requirement ids; the keep rule moved from character counts to the requirements' own
+  metrics after six units were rejected on counts that no requirement states.
+
+--- what the script saw ---
+criteria-count.bat saw step 12 criterion 1 flip from unmet to met in
+PHASE_PLAN.md during this unit. THE COUNT IS THE SCRIPT'S; you do not count.
+Answer one more line after WHY:
+HONEST: yes   if the report shows that criterion honestly met
+HONEST: no    if the marker was turned without the criterion being met
 
 --- the unit's report follows ---
 
 READ IN THIS ORDER.
 
-A. Phase goal: Hamlet's CW receive meets CW_REQUIREMENTS.md, and under R88 the owner's ear at
-   the radio judges it, not the corpus. The one number that moved: `ConfidentSwingDb`, from 20
-   to 17. The row that moved it is 01:16:22: the owner heard code, and the meter refused it on
-   swing alone at 18.6 dB (score 0.27, plain median 48 ms).
-B. Step 11, criterion 11.4: read the owner's rows and name the gate that disagreed with his
-   ear. The rows name the keying meter's swing bar. It is moved to 17 and its remark says why.
-   A synthetic window with the refused row's figures was red at 20 and is green at 17. The
-   survey's hysteresis is described and not moved. Neither copy of `PHASE_PLAN.md` has any
-   step 11 criterion lines, so nothing could be ticked: not 11.1 to 11.3 from unit 474, and
-   not 11.4.
-C. The rest. Section 4 raises 7 items, none blocking. Two bear on A and B. First, 17 is BELOW
-   the tree's 17.7 dB empty recording, not above it as the instruction says, so the light may
-   now light on an empty band. Second, the verdict row records the plain median, not the
-   element median the gate tests. No recording was read.
+A. What the owner will see: under the pitch strip on the CW tab there is now a four-second
+   oscilloscope, with the newest audio at the right. A thin trace is the energy across the
+   radio's filter. A dashed line under it is the floor, the noise's average level between marks.
+   A heavier solid line above that is the threshold, labelled "threshold: floor + 9 dB". Wherever
+   the trace stands over the threshold, a bar lights along the bottom, labelled with its length
+   ("mark 180 ms"). While a bar is up, the tone line reads the pitch from the spectrum
+   ("tone 750 Hz, 39 dB over the band"); when nothing is up it says "no tone". A shaded band at
+   the top shows where the energy is summed ("filter 500 Hz at pitch 742 Hz: 492 to 992 Hz").
+   If the radio hasn't reported its pitch and filter, it says "rig filter unknown: whole band
+   100 to 3000 Hz".
+B. Step 12. 12.1, the detector: built, watched red then green, ticked. 12.2, the scope: built,
+   watched red then green, and NOT ticked, because "the owner sees dits" is his eye's call
+   (section 4). 12.3, the row: eight scope fields on every verdict press, the key set closed,
+   ticked. 12.4 is not authored (R90).
+C. The rest. Section 4 raises 6 items, none blocking. Two bear on B: 12.2 is left for the
+   owner's eye, and the floor is tracked differently from the instruction's sketch, because the
+   sketch marked 127 of 800 hops of pure noise. No recording was read.
 
-UNIT:       475 - complete at task 3 of 3, none dropped - 2026-09-27 22:17
-PHASE GOAL: Hamlet's CW receive meets CW_REQUIREMENTS.md. With the corpus banned, the owner's verdicts at the radio are what the detector is now tuned against.
-UNIT GOAL:  Make the "I hear CW" light agree with the owner's ear more often by moving the one detector gate his verdict rows showed refusing a real station, and nothing else.
-ADVANCED:   yes - step 11 criterion 4: the gate his rows named is moved, with a watched red-then-green fact. Whether it helped on the air is his next set of presses.
-ADVANCES:   step 11 criterion 4
-NUMBER:     ConfidentSwingDb 20 -> 17; owner rows refused at the old bar and accepted at the new: 1 of 7; recordings read: 0
+UNIT:       476 - complete at task 4 of 4, none dropped - 2026-09-28 09:09
+PHASE GOAL: Hamlet's CW receive meets CW_REQUIREMENTS.md. With the corpus banned, the owner's ear at the radio is the judge of whether it hears CW.
+UNIT GOAL:  Give Hamlet a detector that finds a keyed signal the way an oscilloscope would: the envelope over a threshold above the noise, at any pitch. Put it on screen and on the verdict row so his ear can judge it before it drives anything.
+ADVANCED:   yes - step 12 criterion 1: CwEnvelopeDetector exists, drives nothing, and a synthetic test was watched red 6/6 on a stub and is green 6/6.
+ADVANCES:   step 12 criterion 1
+NUMBER:     threshold margin: 9 dB from seven owner rows; pitch search: whole passband; recordings read: 0
 DRIFT:      0 consecutive units without advance - was 0
 
 ## 1. What Claude did
 
-**Complete: tasks 0 to 3 all done, none dropped.** Claude Code on QUIVERFULL, project Hamlet
+**Complete: tasks 0 to 4 all done, none dropped.** Claude Code on QUIVERFULL, project Hamlet
 (gate confirmed: SHACK_FACTS.md, CwProbabilisticDecoder.cs and CW_REQUIREMENTS.md present, no
 CoreHMI.sln or MURC.sln), branch `main`. Each task was committed and pushed before the next one
-started: 34262754 (task 0), 57f50c02 (task 1), 25b96e70 (task 2), and the task 3 commit that
-carries this report.
+started: 1f2737fe (task 0), ff956b24 (task 1), 1d398861 (task 2), a0e8b464 (task 3), and the
+task 4 commit that carries this report.
 
 **Task 0, the record and the entry round.**
-- `## UNIT 475 - STEP 11` was appended to both copies of `PHASE_OUTCOME.md`, from the
+- `## UNIT 476 - STEP 12` was appended to both copies of `PHASE_OUTCOME.md`, from the
   instruction's block.
-- Both copies of `PHASE_STATUS.md` now name 475 and `CURRENT_STEP: 11`.
-- Version 1.13.160 to 1.13.161.
-- **11.1, 11.2 and 11.3 were not ticked.** Neither copy of `PHASE_PLAN.md` has a step 11
-  section or any `11.k` line. The seed commit 62e272e6 is titled "step 11 criteria", but its
-  plan diff only changes the R88 bullet and adds the line-C bullet. Unit 474's evidence is
-  named in the outcome entry instead: light 5/5, strip 7/7, buttons 6/6, each count checked in
-  474's saved exit outputs. No criteria were invented. See section 4.
-- Entry round: build 0 errors. App carry-forward line: 274/278 on the first run. The four
-  losses took 1 ms each, and the output mentions "dispatcher loop" 8 times. On the one re-run
-  it was 278/278.
+- Both copies of `PHASE_STATUS.md` now name 476 and `CURRENT_STEP: 12`.
+- Version 1.13.161 to 1.13.162.
+- HM-DEC-185 is the newest entry in `DECISIONS.md`, and its row is at the top of `CLAUDE.md`
+  section 1, dated 2026-09-28, with the instruction's headline.
+- Build: 0 errors.
+- App carry-forward line: 275 of 278, then 278 of 278 on the one allowed re-run. The first pass
+  lost three names to the dispatcher loop, at 1 ms each.
 
-**Task 1, the swing bar.**
-- `CwKeyingThresholds.ConfidentSwingDb` changed from 20 to 17 (`src/Hamlet.RadioEngine/Cw/CwKeyingMeter.cs`).
-- The remark now leads with what 17 rests on:
-  - the seven owner verdicts of 2026-09-28, all under AGC FAST;
-  - 01:16:22 refused for 1.4 dB;
-  - swing 17.5 to 21.8 across all seven rows;
-  - what 17 gives up, named: it sits below the tree's 17.7 empty recording and inside the
-    14.7 to 17.7 range of the eleven empty windows, which already cleared the score and the
-    element range.
-- Everything the old remark said about the 2026-08-20 evening and the tree's recordings is
-  kept, under "HISTORY, KEPT".
-- **Watched it fail first.** `TheOwnersRefusedStationIsKeyingTests`, a new file with no
-  recording, builds a 600 Hz tone keyed in 48 ms dits at duty 0.27. Between dits it drops to
-  18.6 dB below itself.
-  - First red, at 20: my own guard failed, not the verdict. The window measured 19.6 dB, and I
-    had set the guard to 17.5 to 19.5.
-  - I set the guard to the band that matters, 17 up to just under 20, and ran it again. Red at
-    20: `Listening at 675 Hz, score 0.31, element median 54 ms, swing 19.6 dB against 20.0`.
-  - Green at 17: `Keying ... against 17.0, held False`.
-- Build 0 errors.
-- **Tests that pin the bar:**
-  - No app test pins 20. The app's no-keying line reads the constant, and no test asserts on
-    its text.
-  - `TheSwingIsTheFigureThatHoldsTests` and `TheTwoPitchesTableTests` use it and read
-    recordings, so neither was run. See section 4.
+**Task 1, the detector (12.1).** The new file is
+`src/Hamlet.RadioEngine/Cw/CwEnvelopeDetector.cs`. It takes audio in any chunk size and walks
+it at the decoder's own 5 ms hop (`SampleRate / 200`). For each hop it computes:
+- **Envelope:** the energy summed over the passband, in dB below full scale (a full-scale sine
+  reads -3 dB). It comes from a Hann FFT of about 10 ms (512 samples at 48 kHz). The passband
+  is the radio's `CwPitch` plus and minus half its `FilterBandwidth`. Where either is unknown,
+  it is 100 to 3000 Hz.
+- **Floor:** in one sentence, the floor is the power average of every hop that is not a mark,
+  with a 0.25 s time constant, so no mark ever enters it. While a mark is up it may climb at
+  most 3 dB/s, and the first 0.25 s only builds it and judges nothing. Neither constant was
+  chosen from a recording, and each remark says what it rests on:
+  - 0.25 s settles well inside a word space at 5 wpm (1.68 s).
+  - 3 dB/s lifts the floor only 2.2 dB over a 5 wpm dah.
+- **Threshold:** the floor plus `ThresholdMarginDb = 9`. Its remark says 9 is half the smallest
+  swing on the owner's seven rows, and that nothing else chose it.
+- **Mark or gap, and the run:** how long the current mark or gap has lasted, in ms.
+- **Pitch and contrast, while a mark is up:** the pitch is the strongest bin of a longer FFT of
+  about 43 ms (23.4 Hz bins at 48 kHz), searched across the whole passband, not 300 to 900 Hz.
+  The contrast is that bin over the passband's median bin, with the peak's own main lobe left
+  out.
+- **History:** the last four seconds, and a count of the marks in them.
 
-**Task 2, the survey's hysteresis: described, not moved.** Printed in section 4, item 4. The
-full paragraph is at `.run-unit/unit475-survey.md`.
+It drives nothing, and no decoder, tracker, survey or meter file was touched.
 
-**Task 3, the exit round.**
-- Build 0 errors, warnings as errors.
-- App carry-forward line 278/278 on the first run.
-- `TheOwnersRefusedStationIsKeyingTests` 1/1. It is the one touched type that reads no
-  recording. Every other test type that drives `CwKeyingMeter` reads recordings, so none was
-  run: `CwKeyingMeterTests`, `TheMeterRunsOnLiveAudioTests`,
-  `TheKeyingWitnessSaysNothingImpossibleTests`, `TheCwBaselineTable`.
-- `git diff 7e209cb4` over the eleven transmit files prints nothing.
-- `git diff 62e272e6 -- src/Hamlet.RadioEngine/Cw`: one file, 20 insertions and 1 deletion.
-  The only line changed that is not a doc comment is `ConfidentSwingDb = 20` to `17`.
-- No file under `tests/fixtures` changed.
+`AMarkIsTheEnvelopeOverAThresholdTests` feeds a CQ keyed at 20 wpm over seeded Gaussian noise,
+in the app's 960-sample chunks. It was red 6/6 on a stub, then green 6/6:
 
-**No recording was read.** No floor was run, and no engine line, metric or keyed set.
+| case | key-down hops missed | key-up hops marked | pitch read |
+|---|---|---|---|
+| 742 Hz, 500 Hz filter, 28 dB over noise | 0 of 200 | 0 of 292 | 750 |
+| 1250 Hz, rig filter unknown (whole band) | 0 of 200 | 0 of 292 | 1242 |
+| 600 Hz, 15 dB over noise | 0 of 200 | 0 of 292 | 609 |
+| noise alone, 4 s | - | 0 of 800 | "no tone" |
 
-**Decisions I made myself, all overrulable:**
-1. **I used 17 exactly as the instruction ordered**, even though its reason for 17 is wrong
-   about the 17.7 recording (section 4, item 1). The owner ruled R89 "write it", and choosing a
-   different number was not mine to do.
-2. **I did not edit the comment inside `Update`**, which still says the bar "is already
-   twenty". The instruction limits the Cw diff to the constant and its remark. It is now stale
-   (section 4, item 2).
-3. **The test's window was built at 18.6 dB and measures 19.6 dB**, at 675 Hz rather than the
-   600 Hz it was built at. That still lies between 17 and 20, which is the one thing the fact
-   depends on. I did not tune the construction to measure exactly 18.6.
-4. **The status file was written by `.run-unit/unit475-status.sh`**, because Python cannot run
-   here.
+- The longest run measured 185 ms for a 180 ms dah.
+- The mark count was 8 for 8 keyed marks.
+- The threshold is the floor plus 9 dB on every hop, and a mark is exactly envelope over
+  threshold.
 
-**Mismatches, reported for the record:**
-- **The owner's telemetry file was not read.** This session's file tools and search are
-  confined to `C:\Source\HamLet`, and both refused
-  `%AppData%\Hamlet\telemetry\2026-09-28.jsonl`. I did not try to get around that. The
-  figures used are the instruction's table, **not checked against the file**.
-- **An owner's empty `STOP` file is at the root**, as it was for unit 474. `run-phase.bat`
-  reads it between units. This single seeded unit was finished and nothing was started after
-  it. The file was left in place, unstaged.
-- **`SESSION.lock`** was already held by the launcher (watched PID 56780), and this session did
-  not take or release it.
+**A decision I made myself, reproduced in full:** the floor rule. The instruction sketches it
+as "falling quickly when the envelope drops, rising slowly" and leaves the rule to the author.
+- I built that literally first: the floor dropped at once to any quieter hop and rose 3 dB/s.
+  It then sat on the deepest dips of a 10 ms envelope in a 500 Hz filter, and ordinary noise
+  stood 9 dB over it. **127 of 800 hops of noise alone were marks.**
+- I replaced it before keeping anything with the mean-of-the-gaps rule above. That rule marks
+  0 of 800 on the same noise.
+- It still falls quickly, within about half a second, and it still cannot be dragged up by a
+  mark.
+- The first-quarter-second build exists because a floor seeded from one hop sat in whatever
+  trough that hop fell into. The next noise peak then made a false mark, which the test caught.
+
+Both points are in the constants' remarks and in section 4.
+
+**Task 2, the oscilloscope (12.2).** New file: `src/Hamlet.App/Controls/CwScopeControl.cs`,
+under 474's strip on the CW tab (`CwScopeRow` in `MainWindow.axaml`). What it draws is in A
+above.
+- **Words on every mark (§0.6):**
+  - the three lines differ in shape (thin, dashed, heavy), and each is named at its right-hand
+    end;
+  - every bar carries its length where it fits;
+  - the tone line is on the plot and repeated on the text line beneath it;
+  - the passband rail is labelled with its numbers.
+- **Hover:** the tip says what each line is, that the threshold is "the one number that decides
+  a mark", and that the picture is redrawn 20 times a second.
+- **View model:** `CwHearingViewModel` gains `CwScopeFrame`, `Scope`, `ObserveScope` and
+  `ScopeTip`. Nothing of 474's was removed or changed there.
+- **Feed:** `MainWindowViewModel` makes a `CwEnvelopeDetector` on the same audio source the
+  decoder listens to, stops it with the decoder, and runs a 50 ms timer. On each tick the timer:
+  - hands the detector the rig's CW pitch and filter width, but only in CW or CW-R; in other
+    modes it hands nothing, so the whole band is used;
+  - puts the detector's history on screen.
+- **Fed at 20 per second, as the instruction allowed:** every 5 ms hop is in every frame and
+  drawn at its true width. Only the redraw runs at 20 per second, not 200.
+
+`TheScopeShowsTheMarksTests` drives a real detector with synthetic keying. It was red 6/6 on
+stubs, then green 6/6:
+- 8 bars for 8 keyed marks, the dah about 3 times the dit;
+- 4.0 s across the width, newest at the right;
+- the tone line reads "tone 7xx Hz, n dB over the band" mid-dah and "no tone" in the gap;
+- the threshold and passband labels are right, with and without the rig;
+- the hover is as described;
+- headless, the scope is on the CW tab, below the strip, and paints without throwing.
+
+Run alone beside it, all green: BindingHealthTests 1/1, EveryControlSaysWhatItDoesTests 3/3,
+WhatEveryControlSaysOnHoverTests 1/1, TheStripShowsWhereTheDetectorLooksTests 7/7, and
+TheLightSaysWhatHamletThinksItHearsTests 5/5.
+
+**Task 3, the verdict row (12.3).** Each press of *I agree with you* or *You're an idiot* now
+also writes these fields from the scope's reading at the press, which is at most one 50 ms
+redraw old: `scopeEnvelopeDb`, `scopeFloorDb`, `scopeThresholdDb`, `scopeMark`, `scopeRunMs`,
+`scopePitchHz`, `scopeContrastDb` and `scopeMarksLast4s`. A figure that wasn't measured is
+written as null, never NaN.
+
+`TheVerdictCarriesTheScopeTests` was red 3/3 (18 keys where 26 were wanted), then green 3/3:
+- **Pressed 90 ms into Q's first dah:** mark true, run 70 to 110 ms, pitch within a bin of
+  742, envelope over the threshold, 5 marks.
+- **Nothing listening:** null, false and 0.
+- **In the gap after C:** no pitch, 4 marks.
+- The row still serializes as one line of 26 fields.
+
+The closed key list in 474's `TheOwnersVerdictIsARowTests` gains the same eight names, and it
+passes 6/6. That is the only change to anything 474 built (section 4).
+
+**Task 4, the exit round.**
+- **Build:** a full `--no-incremental` build of `Hamlet.sln` with warnings as errors gave
+  0 warnings and 0 errors.
+- **App carry-forward line:** 278 of 278 on the first run.
+- **Touched types, each run alone, all green (37 tests):**
+  - AMarkIsTheEnvelopeOverAThresholdTests 6/6
+  - TheScopeShowsTheMarksTests 6/6
+  - TheVerdictCarriesTheScopeTests 3/3
+  - TheOwnersVerdictIsARowTests 6/6
+  - TheStripShowsWhereTheDetectorLooksTests 7/7
+  - TheLightSaysWhatHamletThinksItHearsTests 5/5
+  - BindingHealthTests 1/1
+  - EveryControlSaysWhatItDoesTests 3/3
+  - WhatEveryControlSaysOnHoverTests 1/1
+- **None of the touched types reads a recording.**
+- **`src/Hamlet.RadioEngine/Cw` diff against entry ba7ef00a:** one new file,
+  `CwEnvelopeDetector.cs`, and nothing changed. Besides it, `src` has the new
+  `CwScopeControl.cs` and additions to `CwHearingViewModel.cs`, `MainWindowViewModel.cs` and
+  `MainWindow.axaml`.
+- **The eleven transmit files print nothing against 7e209cb4.**
+- **Nothing under `tests/fixtures` was touched, and no recording was read.**
+- **Plan:** 12.1 and 12.3 are ticked in both copies of `PHASE_PLAN.md`. 12.2 and 12.4 are not.
+
+**Left as found.**
+- The session started with `SESSION.lock` and an empty `STOP` already at the root. The
+  instruction says "seed it and drop STOP", so both are the launcher's and the owner's; neither
+  was taken, released or removed.
+- `RUN_LEDGER.md` and `tools/arbiter/` were not touched.
+- The launcher's own edits under `.run-unit/` (reload, step-states, watched.*) were left
+  uncommitted, as prior units left them.
 
 ## 2. What the owner should expect
 
-**Rebuild, tune the same stations on 7.020 and 7.054 with the same AGC FAST and preamp 1, and
-press again.** Only one gate changed: the keying meter now accepts a swing of 17 dB where it
-wanted 20. A station like the 01:16:22 one should now light it. That station's figures were
-score 0.27, a steady fist and a swing in the high teens. In the owner's words, it should now
-read "I think I hear CW" where it said it didn't.
+**Rebuild, tune a station, and watch the scope under the pitch strip.** As you hear dits and
+dahs, bars should light along the bottom under the trace, and the tone line should read a
+pitch. Press the two buttons as before. Every press now also records what the scope saw at
+that moment.
+
+**What to look for:**
+- **Bars where you hear keying.** Each bar should be about as long as the element you hear, and
+  dahs should be about three times the width of dits.
+- **No bars on silence or plain band noise.** The trace should wander just above the dashed
+  floor, well under the solid threshold.
+- **The tone line where your ear puts the pitch,** to within about 23 Hz. That is the width of
+  one spectrum bin at 48 kHz, so a 742 Hz tone may read 750.
+- **At any pitch the filter passes,** including well above 900 Hz, where the old tracker never
+  looked.
 
 **What will look wrong but is not:**
-- **The light may now come on with nothing there.** The tree's own empty-band windows swing up
-  to 17.7 dB, and they already cleared the score and the element-length tests. If the light
-  lights on a dead stretch, press "You're an idiot". That row shows whether the score gate is
-  the next thing to move, or whether 17 was too low. Either answer comes from his rows.
-- **The strip will look the same.** The survey still admits nothing where it admitted nothing
-  before. Its gate was described and not moved, so "survey admitted nothing" and "mixing ...
-  not measured" will keep appearing.
-- **Rows that were already lit stay lit.** The 01:16:01 and 01:17:37 rows swung 18.4 and 17.5
-  dB and were lit only because the meter was holding an earlier yes. Windows like those now pass
-  the swing test on their own, so the light will hold less often and say keying directly more
-  often. The screen looks no different.
-- **Nothing about decoding changed.** The constant decides only what the meter says. The
-  decoder does not read it.
+- **A steady carrier lights a bar that then goes out.** The floor climbs 3 dB a second while a
+  mark is up, so a carrier stops being a mark after about three seconds. That is on purpose: a
+  carrier is not keying.
+- **Nothing lights for the first quarter second after listening starts.** The floor is being
+  built.
+- **The scope lights while you transmit.** The decoder is suspended during your own sending, but
+  the scope shows whatever audio arrives, including your sidetone (section 4).
+- **The transcript, the light and the strip behave exactly as before.** The scope drives
+  nothing yet. Wiring it into the decoder is 12.4, after your ear has judged it.
+- **In USB or any mode other than CW, the rail says "rig filter unknown: whole band 100 to
+  3000 Hz".** The scope only takes the radio's CW pitch and filter width while the radio is in
+  CW or CW-R.
 
 ## 3. What you should see
 
-**The answer: `ConfidentSwingDb` is 17. The window built to the refused row's figures is called
-keying at 17, and was not at 20.**
+**The answer to what this unit was commissioned to ask: yes.** Hamlet now has a detector that
+finds a keyed signal as the envelope over a threshold, at any pitch. On synthetic keying at
+742, 1250 and 600 Hz (the last only 15 dB over the noise), it lit a mark on every key-down hop
+and on no key-up hop, and it read the pitch to within one bin. Four seconds of noise alone lit
+nothing.
 
-- `.run-unit/unit475-swing-red2.txt`: `Listening at 675 Hz, score 0.31, element median 54 ms,
-  swing 19.6 dB against 20.0`, then `Assert.Equal() Failure ... Expected: Keying`.
-- `.run-unit/unit475-swing-green.txt` and `-exit-TheOwnersRefusedStationIsKeyingTests.txt`:
-  `Keying at 675 Hz ... against 17.0, held False`, 1/1.
-- Owner rows refused at 20 and accepted at 17: **1 of 7**, the 01:16:22 row. The 01:14:56 row
-  is still refused on its score of 0.02. The other five were already lit.
-- Build: 0 errors, warnings as errors, at entry, after task 1 and at exit.
-- App carry-forward line: 274 then 278/278 at entry (one re-run, dispatcher loop), 278/278 at
-  exit.
-- Diffs: the transmit files print nothing. `Cw` shows one constant and its remark.
-- `PHASE_OUTCOME.md` (both copies) ends with `## UNIT 475 - STEP 11`. `PHASE_STATUS.md` (both
-  copies) reads `CURRENT_STEP: 11` and `WORK_INSTRUCTION: 475 ...`. `Directory.Build.props`
-  reads 1.13.161.
+On the CW tab, under the pitch strip, there is now a small oscilloscope. It has:
+- the trace;
+- a dashed floor;
+- a solid threshold labelled "floor + 9 dB";
+- green bars along the bottom for every mark, each labelled with its length;
+- a line under it saying "tone 742 Hz, 24 dB over the band" or "no tone".
+
+Nothing about what gets decoded has changed. Whether the bars land where you hear keying on
+the air is the question this unit hands to you.
 
 ## 4. What's blocking us
 
-Nothing here halts the unit. Seven items, the most consequential first.
+None of these halts the unit. Most-blocking first.
 
-1. **17 is below the 17.7 dB empty recording, not above it.** The instruction says 17 "stays
-   above the two empty recordings ... and only just above the 17.7 one". 17 is 0.7 dB below
-   17.7. It is also inside the 14.7 to 17.7 range of the eleven empty six-second windows from
-   `cw-2026-08-20-014854` and `-014935`. The comment in `CwKeyingMeter.Update` records that
-   those windows already clear the score and the element range. Any of them at 17 or more is
-   now called keying. **Ruling wanted: keep 17 or use 18.** 18 still accepts the 01:16:22 row
-   at 18.6 and stays above 17.7. It gives up the 17.5 row, which was only lit by the hold.
-   18 was rejected in `Update`'s own comment as "fitting a constant to a fixture". That
-   objection was about recordings, and R89 now sets the bar from the air. I kept 17 because
-   the instruction names it and the owner ruled "write it".
-2. **Two recording-reading tests now disagree with the bar. Neither was run, under R88.**
-   `TheSwingIsTheFigureThatHoldsTests` asserts that the empty recordings' maximum, 17.7, is
-   below `ConfidentSwingDb`. At 17 it will be red. `TheTwoPitchesTableTests` computes a
-   verdict with the constant and prints it, so its table will shift. The comment inside
-   `CwKeyingMeter.Update` still says the bar "is already twenty". It was left alone because the
-   instruction limits the diff to the constant and its remark. **Ruling wanted:** when the
-   corpus ban lifts, re-point the first test at the new basis or retire it (HM-DEC-103: list,
-   never delete), and correct that comment.
-3. **The verdict row records the plain median, not the element median the gate tests.**
-   `CwHearingViewModel.cs:290` writes `meterMedianMs = meter.MedianMs`, the middle of every
-   threshold crossing. The meter decides on `ElementMedianMs`, which only counts runs of 20 to
-   500 ms. Two consequences:
-   - **01:16:22 "failed only the swing" is an inference.** The row has no element median. A
-     plain median of 48 makes an element median inside 25 to 250 ms likely, but not certain.
-   - **The instruction asks section 4 to say that four agreed rows had medians of 4 to 9 ms,
-     "which are not dits, so the meter's score gate lets noise through".** The rows do show
-     plain medians of 4, 6, 8 and 9 ms (01:17:19, 01:17:37, 01:16:01, 01:16:28). But the source
-     says a plain median that low is normal on a real station: `KeyingEnvelope.cs:292-296`
-     measured the adjudicated `VA3VRR` at plain 4 ms with an element median of 88, and `N4L`
-     at plain 3 with 55. **Those four rows are not evidence that the score gate lets noise
-     through.**
+1. **12.2 is built and tested, and left unticked for your eye.** Ruling asked: tick 12.2 once
+   you have watched dits light up on the air, or tick it now on the headless test.
+   Reasoning: every clause of 12.2 has a test, but "fed fast enough that the owner sees dits" is
+   a claim about your eye, and R90 puts the scope on screen so your ear and eye can judge it.
+   Every 5 ms hop is drawn, the picture is redrawn 20 times a second, and a 60 ms dit is
+   12 hops. Rejected: ticking it on the session's own word, because that is the thing R90
+   reserves for you.
 
-   **Ruling wanted:** add `meterElementMedianMs` to the `owner_verdict` row so the next rows
-   carry the figure the gate uses. Rejected: judging the score gate from the plain median,
-   because the code says that number is not a key-down length.
-4. **The survey's hysteresis admitted nothing on all seven rows. It is a gate on the same kind
-   of level evidence, one stage earlier than the meter's swing.** From the source
-   (`CwToneSurvey.cs:195, 564-565, 609 on`): `HysteresisDb = 3.0` sets a mark mask that turns
-   on above, and off below, the two-means midpoint of each bin's own dB history, ±3 dB. So it
-   asks for the bin's quiet and loud cluster means to sit **more than about 6 dB apart**. It is
-   not a 3 dB swing requirement. The meter's 17 dB is a 10th-to-90th percentile spread of a
-   1 ms linear envelope, so the two figures are not directly comparable. Even so, a station
-   swinging 17 to 22 dB on the meter would have to lose two thirds of that contrast to fail a
-   6 dB span. **Reading the source, the likelier refusals are the mark-duration gates after
-   the mask:** 8 marks, dits of 25 to 200 ms, a separation of 4.0 and a ratio of 2.5 to 3.8.
-   None of their figures is in the verdict row. If the owner presses "You're an idiot" while
-   the meter says keying and the survey admits nothing, the next unit should first record which
-   survey test refused, then move that one.
-5. **`PHASE_PLAN.md` has no step 11 criteria.** Neither copy has a step 11 or step 10 section.
-   Step 11 exists only as a `PHASE_STATUS.md` line marked "not started", even though 474
-   delivered the light, the strip and the buttons. The seed commit's message says "step 11
-   criteria", but its diff adds none. **Ruling wanted:** write step 11's criteria 11.1 to 11.4
-   into the plan, so that 474's work (5/5, 7/7, 6/6) and this unit's 11.4 can be ticked and the
-   step's state is not read as not started.
-6. **The owner's rows were not read from the file.** This session is confined to the
-   repository, and it refused `%AppData%\Hamlet\telemetry\2026-09-28.jsonl`. The table in the
-   instruction was used as written. **Ruling wanted:** copy the day's `owner_verdict` rows into
-   the tree for the next unit, or let the session read that folder.
-7. **An owner's empty `STOP` file is at the root.** It was left in place, as unit 474 left it.
-   The runner will end the next launch at the door and delete it, unless it is removed by hand
-   first.
+2. **The floor is the mean of the gaps, not "down at once, up slowly".** Ruling asked: keep the
+   mean-of-the-gaps rule. Reasoning: the literal rule was built first. It sat on the noise's
+   deepest troughs, and 127 of 800 hops of synthetic noise alone were marks. The mean-of-the-gaps
+   rule gives 0 of 800, still falls within about half a second, and still cannot be dragged up
+   by a mark. It uses two constants, 0.25 s and 3 dB/s, and neither was fitted to a recording.
+   Rejected: keeping the literal rule and raising the margin to hide the false marks, because
+   that would move the one number the instruction takes from your rows.
+
+3. **One change to what unit 474 built: eight names added to the closed key list in
+   `TheOwnersVerdictIsARowTests`.** Ruling asked: accept it. Reasoning: task 3 extends the row,
+   and that test asserts the row's key set is closed, so it would have gone red. Nothing was
+   removed, and its 18 original fields are asserted exactly as before. Rejected: leaving that
+   test red, or loosening it to "contains", which would stop it catching an extra field.
+
+4. **The scope keeps listening while you transmit.** Ruling asked: blank the scope while the
+   radio is transmitting, or leave it showing. Reasoning: the decoder suspends itself during
+   your own sending (HM-DEC-147). The scope shows whatever audio arrives, so your sidetone will
+   light bars, and `scopeMarksLast4s` on a press right after you send will count them. It is
+   left showing, because an oscilloscope showing the wire is true, and the instruction said to
+   observe the same audio. Rejected: suspending it in this unit without a ruling, because that
+   would make the scope decide something.
+
+5. **The pitch is the centre of the strongest bin, 23.4 Hz wide at 48 kHz, with no
+   interpolation.** Ruling asked: is one bin fine enough for 12.4? Reasoning: 742 reads 750,
+   1250 reads 1242, and 600 reads 609. The decoder's own bandwidth is wider than that, but if
+   12.4 is to mix at the scope's pitch, interpolating between bins would roughly halve the
+   error. Rejected for now: adding interpolation that no criterion asked for.
+
+6. **The fallback band, 100 to 3000 Hz, and "CW or CW-R only" are the author's, not radio
+   facts.** Ruling asked: confirm, or name the band you want used when the radio hasn't said.
+   Reasoning: the instruction leaves the drawn passband to the author when the rig state is
+   unknown. Outside CW, the radio's CW pitch does not centre the filter, so using it there would
+   be a guess. Rejected: taking the radio's pitch and filter in every mode.

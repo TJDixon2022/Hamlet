@@ -12,7 +12,7 @@ STEP: 7 | partial | The conditions can be generated - sections E, F and G: chann
 STEP: 8 | not started | Tim at the radio - CW on 20 m or 40 m, text on the CW tab that reads as what was sent, and he says it read.
 STEP: 9 | partial | Two decoders read the same audio - section M: fldigi's CW modem ported faithfully as the second decoder, both scored on every recording before either votes, both confidences calibrated against the keys, and the arbitration that emits one transcript, never worse than the better decoder alone.
 STEP: 11 | not started | The owner's ear teaches the detector where the entry is - a light saying whether Hamlet thinks it hears CW, a strip showing the whole pitch range and where it looks, two buttons that write his verdict beside the detector's state; no decode, no corpus.
-STEP: 12 | not started | The oscilloscope - a keyed signal is found as the audio envelope over a threshold above the tracked noise floor, at any pitch the filter passes, its frequency read from the spectrum after; shown on the CW tab first, then driving the decoder.
+STEP: 12 | partial | The oscilloscope - a keyed signal is found as the audio envelope over a threshold above the tracked noise floor, at any pitch the filter passes, its frequency read from the spectrum after; shown on the CW tab first, then driving the decoder.
 
 ## UNIT 439 - STEP 0
 
@@ -1092,3 +1092,20 @@ LICENCE: PHASE_PLAN.md R88, R90, section 6, step 12; HM-DEC-185; CLAUDE.md 0.0, 
 ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
 ADVANCES: step 12 criterion 1
 RUN: session launched with SESSION.lock already present and an empty STOP at the root, both the launcher's; neither taken, released nor removed by the session.
+
+## UNIT 1 - STEP 12
+
+STEP: 12
+APPROACH: build an envelope detector over the whole passband - envelope, tracked floor, a 9 dB threshold from the owner's rows, marks and gaps, the pitch read from the spectrum while a mark is up - draw it as an oscilloscope on the CW tab, and carry its state on the owner's verdict row, driving nothing yet
+HIT: section 4 asked nothing inside the two stops - author's, overrulable, the loop continued - All six items are about plan ticks, detector mechanism, a test key list, scope display during transmit, pitch resolution and a fallback band, none of them changes what goes out of the machine or what the product states about a contact or a send, and the unit has already acted on each one.
+MOVE: continue
+WHY: PHASE_PLAN.md step 12 criterion 12.1 asks for a detector that finds a keyed signal as the audio envelope standing over a threshold above the tracked noise floor at any pitch the filter passes, reading the pitch from the spectrum after, and changing nothing about the decoder
+DECIDED: the floor-tracking rule, the scope's frame rate, and the drawn passband when the rig state is unknown are the author's, overrulable
+LICENCE: PHASE_PLAN.md R88, R90, section 6, step 12; HM-DEC-185; CLAUDE.md 0.0, 0.2 and 0.6; HM-DEC-155; FACT-006
+COST: 6.614748000000001
+ACCOMPLISHED: the owner can watch Hamlet find a keyed signal in the noise at any pitch, the way he hears it, before it is trusted to drive the decoder
+FATE: executed
+STATE_AFTER: partial
+STATE_WHY: The report backs 12.1 with a detector test that went red 6/6 on a stub and then green 6/6 on synthetic keying, with 0 of 200 key-down hops missed, 0 of 292 key-up hops marked and 0 of 800 noise-alone hops marked, and a diff showing the Cw folder gained one new file and changed nothing, and 12.3 with a verdict row test at 3/3 and the closed key set at 6/6, but 12.2 is left unticked for the owner to judge by eye, 12.4 is not authored, and 12.5 is not ticked even though the report says the carry-forward line was 278 of 278 and no recording was read.
+ADVANCED: yes
+ATTEMPT: 12.1 | unit 1 launched 2026-09-28T12:42:00.491Z | yes | executed | build an envelope detector over the whole passband - envelope, tracked floor, a 9 dB threshold from the owner's rows, marks and gaps, the pitch read from the spectrum while a mark is up - draw it as an oscilloscope on the CW tab, and carry its state on the owner's verdict row, driving nothing yet

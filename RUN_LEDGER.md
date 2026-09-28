@@ -387,3 +387,5 @@ the owner reads instead of watching.
 | 1 | 2026-09-27T21:59 | 2026-09-27T22:18 | complete | 3.352951799999999 | ran unattended, 120 turns, 16 denied call(s) worked around, report valid |
 | 1 | 2026-09-27T22:19 | 2026-09-27T22:19 | note | none - not a run | no advance - step 11 criterion 4 was absent and is absent |
 | phase | 2026-09-27T22:19 | 2026-09-27T22:19 | ending | 3.3530 | ENDED - the owner stopped the run. ended: the owner stopped the run - after iteration 1 - his reason: no reason written - the file was empty - the STOP file was deleted |
+| 1 | 2026-09-28T08:42 | 2026-09-28T09:10 | complete | 6.614748000000001 | ran unattended, 152 turns, 13 denied call(s) worked around, report valid |
+| phase | 2026-09-28T09:12 | 2026-09-28T09:12 | ending | 6.6147 | ENDED - the owner stopped the run. ended: the owner stopped the run - after iteration 1 - his reason: no reason written - the file was empty - the STOP file was deleted |

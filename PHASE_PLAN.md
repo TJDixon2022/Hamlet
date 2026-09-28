@@ -154,6 +154,17 @@ threshold above the tracked floor, at any pitch, with frequency read after. **Th
 percentile is one strong station in the filter, and that is what this serves.** Shown first,
 wired to the decoder after the owner's ear has judged it.
 
+**R91 - Tim, 2026-09-28: bars, not waves.** *"This is all about signal in noise. I want as
+wide as possible without garbage sneaking in. We can tune out garbage by seeing if the signal
+stays at an amplitude for a period. Real signals will be bars, not waves."* Unit 476's detector
+tracked its floor to the middle of a keyed signal's swing and saw zero bars on four stations
+including one that translated; the owner's rows showed the meter finding each station's pitch
+within a second while the tracker waited on the survey or held its keying flag false on an 18
+dB swing. **A bin is keying when its level makes flat-topped runs of dit length or longer
+separated by gaps, at any level, at any pitch the filter passes.** No floor, no margin, no
+swing gate. The tracker takes the meter's pitch and verdict within a hop. Nothing is fitted to
+the owner's rows or to a recording.
+
 ## §3 What is different from the phases before it
 
 1. **A criterion is a requirement id.** A report states the requirement, the condition, the
@@ -355,9 +366,9 @@ because every later change to ours is better aimed with the comparison in hand.
 **Entry:** nothing.
 
 **Exit:**
-- [x] 12.1 `CwEnvelopeDetector` computes per hop the passband envelope, a tracked noise floor, a threshold of floor plus a margin from the owner's verdict rows, mark or gap, the run length, and while a mark is up the pitch and its contrast read from the whole passband; it changes nothing about the decoder; proved on synthetic hops in a test, no recording.
+- [ ] 12.1 `CwEnvelopeDetector` computes per hop the passband envelope, a tracked noise floor, a threshold of floor plus a margin from the owner's verdict rows, mark or gap, the run length, and while a mark is up the pitch and its contrast read from the whole passband; it changes nothing about the decoder; proved on synthetic hops in a test, no recording.
 - [ ] 12.2 The CW tab draws the last four seconds as an oscilloscope - trace, floor, threshold, marks as bars along the bottom, the tone line as text, the passband edges shaded - fed fast enough that the owner sees dits, with words on every mark.
-- [x] 12.3 The owner's verdict row carries the detector's state at the press, including the count of marks in the last four seconds, with its key set asserted closed.
+- [ ] 12.3 The owner's verdict row carries the detector's state at the press, including the count of marks in the last four seconds, with its key set asserted closed.
 - [ ] 12.4 After the owner has judged the scope by ear and said so, the detector drives the decoder: nothing is decoded until a mark is found, the decoder is mixed at the detector's pitch and started with the detector's dit, and it stops when the tone stops; judged by the owner's ear and his verdict rows, not by a recording.
 - [ ] 12.5 The app carry-forward line is green at exit, no recording was read, and the report says so.
 
@@ -400,6 +411,8 @@ and no unit is authored against it while any criterion of steps 2 to 7 or 9 is o
   is switched off on any condition where it loses to a single decoder (HM-REQ-128).
 - **No unit is authored for the record or for the tests** (R80) while a criterion of steps 2 to
   7 is open and authorable. A unit records a ruling only when its own instruction carries one.
+- **Keying is decided by bars** (R91): flat runs separated by gaps. A floor, a margin or a
+  swing threshold may not be the thing that decides it.
 - **Steps 11 and 12 are the only authorable steps while R88 stands.** 12.4 is not authored
   until the owner has judged 12.2 by ear and said so.
 - **The corpus is banned** (R88): no unit reads, runs, or keeps a change on a recording; the
@@ -422,6 +435,9 @@ scope; the seven rulings of section R, of which the first is answered by R72; th
 sentence outside an owned block.
 
 ## §8 Revision record
+
+- **2026-09-28, evening.** R91 bars not waves: the detector's floor and margin replaced by run
+  detection; the tracker obeys the meter. 12.1 rewritten in place, 12.4 authored.
 
 - **2026-09-28.** R90 and step 12, the oscilloscope; the STEP: 11 header line restored, having
   been lost in the encoding repair.

@@ -1,12 +1,13 @@
-# Work instruction 476 - the oscilloscope: a mark is the envelope over a threshold, at any pitch
+# Work instruction 477 - bars, not waves
 
-**One unit. Seed it and drop STOP, or run it by hand.** It builds the front half of a signal
-detector the decoder does not have, and puts it on screen so the owner's ear can judge it. It
-drives nothing yet. Four tasks.
+**One unit. Seed it and drop STOP, or run it by hand.** It replaces the envelope detector's
+floor-and-margin with the rule the owner gave - a keyed tone is a flat-topped run, noise never
+holds a level - and it wires the meter's verdict to the tracker and the decoder so a station
+found is a station read. Four tasks.
 
-**The owner's words, 2026-09-28, R90:** *"Think you're an oscilloscope. Once we hit a certain
-amplitude, regardless of frequency, that's probably a character. Everything else is noise."*
-And: *"Really, it's a signal that we're finding in the noise and we're decoding."*
+**The owner's rule, 2026-09-28, R91:** *"This is all about signal in noise. I want as wide as
+possible without garbage sneaking in. We can tune out garbage by seeing if the signal stays at
+an amplitude for a period. Real signals will be bars, not waves."*
 
 ---
 
@@ -37,7 +38,7 @@ If all five hold, say "Hamlet confirmed" and continue.
 
 **R88 - the corpus is banned.** No task reads a recording, runs a floor, the engine
 carry-forward line, a metric or the keyed set. Entry and exit: the app carry-forward line and
-the types this unit touches. A touched type that reads a recording is not run, and is named.
+the types this unit touches; a touched type that reads a recording is not run and is named.
 
 **HM-DEC-155.** No suite. Named types only, one per invocation, own `timeout`. Never
 background and poll. The app line loses names to the dispatcher loop; re-run once, count
@@ -45,14 +46,14 @@ neither way.
 
 Apostrophes in quoted heredocs break; doubled backslashes collapse; `;` is refused; `rm` is
 refused; Python cannot run here; `-m` more than once for a multi-line commit. Scripts go in
-`.run-unit\unit476-<name>.sh`, run with `sh`.
+`.run-unit\unit477-<name>.sh`, run with `sh`.
 
 **By hand:** take `SESSION.lock` through `tools\arbiter\lock.bat take`, release it at the end,
 write nothing to `RUN_LEDGER.md`, touch nothing under `tools\arbiter\`.
 
 **The four report headings, exactly:** `## 1. What Claude did`, `## 2. What the owner should
 expect`, `## 3. What you should see`, `## 4. What's blocking us`. `UNIT:` line without brackets.
-`ADVANCES: step 12 criterion 1`. **Line C of the ordering block names how many items section 4
+`ADVANCES: step 12 criterion 4`. **Line C of the ordering block names how many items section 4
 raises.** Nothing in section 4 halts this unit.
 
 ---
@@ -61,88 +62,95 @@ raises.** Nothing in section 4 halts this unit.
 
 ```
 PHASE GOAL: Hamlet meets the CW requirements.
-UNIT GOAL:  The owner can watch Hamlet find a keyed signal in the noise,
-            at any pitch, the way an oscilloscope would show it.
-ADVANCES:   step 12 criterion 1
+UNIT GOAL:  A keyed station at any pitch is found by its bars and read at
+            its pitch within a second of being found.
+ADVANCES:   step 12 criterion 4
 ```
 
-**What the owner heard.** Twenty strong stations, high pitch to low, zero characters. Then
-seven verdict rows: a station keying at score 0.27 with a 48 ms dit, refused because its swing
-was 18.6 dB in a bin where the code wanted 20. The survey admitted nothing on any row. The
-decoder mixed at 600 Hz *assumed* on six of seven.
+**What the owner's rows say, 2026-09-28, 13:22 to 13:29 UTC, four stations on 20 m.** Read
+them from `%AppData%\Hamlet\telemetry\2026-09-28.jsonl`, event `owner_verdict`; the figures
+below are from that file.
 
-**What the code does, read from the source, and why it cannot see a strong station.** There
-is no start decision. The decoder is always decoding at a guessed pitch. Alongside it,
-`CwToneSurvey` looks only at bins from 300 to 900 Hz, waits 3 seconds and 8 marks, and admits
-a bin only if its *level over time* swings 6 dB across a midpoint - a measurement AGC FAST,
-which the app itself sets on every CW tune-in, flattens by design. `CwKeyingMeter` then wants
-20 dB of the same swing over 6 seconds. So a strong station at 750 Hz under AGC dies at the
-first gate with the noise, and nothing downstream ever sees its durations. Three thresholds
-that only agree on one kind of signal near 600 Hz. That is the pitch blindness the owner hears.
+1. **The scope built by 476 saw zero marks on every station, including the one that
+   translated.** On the sweet spot - 14.0326, meter keying at 20 to 25 dB swing, median 44
+   ms, translated well - the scope's envelope moved between -17 and -28 dB, its floor sat at
+   -20, and its threshold at -11. **The floor tracked the middle of the swing, and the
+   threshold landed above every mark.** A floor that averages a keyed signal is at the marks.
+2. **The meter finds the station in one second, every time.** 600 Hz at the first press on
+   14.0327; 375 Hz at the second press on 14.0321; the sweet spot's 500. Swing 18 to 30 dB,
+   median 44 to 52 ms on the good rows. **The meter is the detector the owner asked for, and
+   it is already in the tree.**
+3. **The tracker does not obey it.** On 14.0327 the meter said 600 Hz on the first row; the
+   tracker mixed at 500, then 500, then 575, and reached 600 on the fourth row, twenty-two
+   seconds later, only when the survey admitted 600. The decoder read an empty bin the whole
+   time. On 14.0321 the tracker did reach 375 Hz, but `trackerHasKeying` was false on four of
+   six rows while the meter said keying with score 0.26 to 0.29 - the tracker's own keying
+   flag rests on the 20 dB swing gate, and the station swung 18. **The decoder was mixed at
+   the right pitch and told nobody was there.**
 
-**What signal-in-noise actually is, and what this unit builds.** The oldest CW detector: the
-envelope of the audio over time, a noise floor tracked under it, a threshold above the floor,
-and **above the threshold is a mark, below is a gap**. Marks and gaps are durations. Durations
-at three to one are dits and dahs. **Frequency is not needed to decide that a station is
-keying** - it comes for free afterward, from where the energy sits in the spectrum while the
-envelope is up. The owner's rows show swings of 17.5 to 21.8 dB on every station under AGC; a
-threshold at half of that catches all of them, at any pitch the radio's filter passes.
-
-**This unit builds the detector and puts it on screen. It changes nothing about how the decoder
-is driven.** That is the next unit, after the owner's ear has judged this one.
+**The rule, in the owner's words, made operational.** A keyed tone holds a level: it goes up,
+sits flat within a small tolerance for tens of milliseconds, drops, sits flat again. Noise
+wanders. QSB is a slow wave. A carrier is a bar that never drops. **So a bin is keying when its
+level makes flat runs of dit length or longer, separated by flat gaps; a bin whose level never
+holds flat is noise at any loudness.** No floor, no margin, no swing threshold. The tolerance
+for *flat* and the shortest run worth calling a bar come from what a dit is and how little a
+keyed tone wobbles - not from a recording and not from the owner's rows.
 
 ---
 
 ## 3. Verify against the tree
 
-- Where the CW tab gets its audio: the hop the decoder receives (`CwDecoder.Process` or
-  `Listen`), its sample rate and hop size. The oscilloscope reads the same hops.
-- `CwHearingViewModel` and `CwPitchStripControl` from unit 474: how a control under the
-  transcript is drawn and fed once a second. **The oscilloscope is drawn beside them; nothing
-  of 474's is removed.**
-- The rig state's `FilterBandwidth` and `CwPitch`, so the passband edges can be shown.
-- How `JsonlTelemetry` writes a `cw` row, so the owner's verdict row of 474 can carry the
-  oscilloscope's state as well (task 3).
-- **Read only, change nothing:** `CwToneSurvey`, `CwKeyingMeter`, `CwToneTracker`. This unit
-  adds a detector; it does not touch the old one.
+- `CwEnvelopeDetector` from unit 476: its floor rule, its 9 dB margin, its per-hop outputs,
+  and where `CwScopeControl` reads them. **The floor and the margin go; the rest stays.**
+- `CwKeyingMeter`: its per-bin sweep, its four-part verdict, `ConfidentSwingDb` at 20, and the
+  hop-level series each bin's verdict rests on - **that series is where the runs are.**
+- `CwToneTracker`: how it takes a candidate from the survey, what sets `HasKeying`, and where
+  the decoder reads the mix pitch. `CwToneSurvey`: what admits a bin and how the tracker
+  consumes it.
+- `CwDecoder`: the seam where the tracker's pitch and `HasKeying` reach the decode path and the
+  emission gate.
+- The rig state's `FilterBandwidth` and `CwPitch`, for the sweep's edges.
 
 ## 4. Rulings in force
 
-`PHASE_PLAN.md` R77 to R90 and §6. **R88** the corpus is banned; step 12 is authorable beside
-step 11 and nothing else is. **R90** the detector is the envelope over a threshold, regardless
-of frequency; frequency is read after. **§0.0** every number on screen is measured, and the
-threshold is shown as what it is. **§0.6** color is never the sole carrier. **§0.2** nothing
-that keys or transmits. **HM-DEC-155, HM-DEC-165, FACT-006.**
+`PHASE_PLAN.md` R77 to R91 and §6. **R88** the corpus is banned; steps 11 and 12 only.
+**R90** the oscilloscope. **R91** bars, not waves. **§0.0** every threshold's remark says what
+it rests on, and none rests on a recording. **§0.2** nothing that keys or transmits. **§0.6**
+color never the sole carrier. **HM-DEC-155, HM-DEC-165, FACT-006.**
 
 **Record this in `DECISIONS.md`, newest first, and one row at the top of `CLAUDE.md` §1's
-table dated 2026-09-28, headline **Signal detection is an envelope over a threshold at any
-pitch; frequency is read after**, ref HM-DEC-185:**
+table dated 2026-09-28, headline **A keyed signal is a run of bars; the tracker obeys the
+meter**, ref HM-DEC-186:**
 
 ```
 ---
-id: HM-DEC-185
+id: HM-DEC-186
 date: 2026-09-28
-refs: PHASE_PLAN.md R90 and step 12, CwToneSurvey.cs HysteresisDb, CwKeyingMeter.cs ConfidentSwingDb, CwToneTracker.cs MinimumToneHz MaximumToneHz, the owner's verdict rows of 2026-09-28, work instruction 476
+refs: PHASE_PLAN.md R91 and criterion 12.4, the owner's verdict rows of 2026-09-28, CwEnvelopeDetector.cs, CwKeyingMeter.cs, CwToneTracker.cs, work instruction 477
 ---
 
-**A CW signal is detected as the audio envelope standing over a threshold above the tracked
-noise floor, at any pitch the radio's filter passes; its frequency is read from the spectrum
-after it is detected, and the decoder does not start until it has been.** Tim, 2026-09-28.
+**A keyed CW signal is detected as a run of flat-topped bars in a bin - level held within a
+small tolerance for at least a dit, dropped, held again - at any pitch the filter passes and
+at any loudness; noise is what never holds a level. When the meter finds keying at a pitch,
+the tracker mixes there at once and the decoder is told a station is present.** Tim,
+2026-09-28.
 
-**What the code did.** The decoder was always decoding at a guessed pitch. The survey and the
-meter tried to correct the guess afterward, each by measuring a bin's level swing over time -
-6 dB and 20 dB - which the AGC FAST the app itself sets flattens, and only in bins from 300 to
-900 Hz, which is the radio's sidetone setting and not where a received station lands. Twenty
-strong stations gave no characters, and the owner's verdict rows showed a keyed station
-refused for 1.4 dB of swing while the survey admitted nothing at any pitch.
+**What the rows showed.** Unit 476's detector tracked its floor to the middle of a keyed
+signal's swing and put its threshold above every mark, seeing zero bars on four stations
+including one that translated. The meter found each station's pitch within a second. The
+tracker waited on the survey - twenty-two seconds on one station - and on another reached the
+pitch but held its keying flag false on an 18 dB swing against a 20 dB gate, so the decoder
+was mixed correctly and told nobody was there.
 
-**What is ruled.** In the owner's words: think like an oscilloscope; once the amplitude is
-over a threshold, regardless of frequency, that is probably a character, and everything else
-is noise. The detector is built as that, shown on the CW tab first so the owner's ear can
-judge it, and wired to drive the decoder in the unit after. The 300 to 900 window, the survey's
-swing gate and the meter's swing gate are not repaired; they are superseded.
+**What is ruled.** The detector's floor and margin are removed and replaced by run detection:
+a bin is keying when its level makes flat runs of dit length or longer separated by flat
+gaps. The tolerance and the shortest run derive from what a dit is and how little a keyed tone
+wobbles, and are fitted to no recording. The tracker takes the meter's pitch the moment the
+meter says keying, without waiting for the survey. The tracker's keying flag follows the
+meter's verdict, and the 20 dB swing gate no longer decides it. The owner's words: "Real
+signals will be bars, not waves."
 
-**Whose words are whose.** The ruling is Tim's; the wording is work instruction 476's record
+**Whose words are whose.** The ruling is Tim's; the wording is work instruction 477's record
 of it.
 ```
 
@@ -152,80 +160,90 @@ of it.
 
 ### Task 0 - the record and the entry round
 
-`PHASE_OUTCOME.md` gets `## UNIT 476 - STEP 12` from the block at the foot. `PHASE_STATUS.md`
-names 476 and `CURRENT_STEP: 12`. Patch-bump. `DECISIONS.md` HM-DEC-185 and the `CLAUDE.md`
-row. Entry round: the app carry-forward line.
+`PHASE_OUTCOME.md` gets `## UNIT 477 - STEP 12` from the block at the foot. `PHASE_STATUS.md`
+names 477 and `CURRENT_STEP: 12`. Patch-bump. `DECISIONS.md` HM-DEC-186 and the `CLAUDE.md`
+row. **Tick 12.1, 12.2 and 12.3 from unit 476's work if the report's refusal left them
+unticked** - the detector, the scope and the row are in the tree. Entry round: the app
+carry-forward line.
 
-### Task 1 - the detector (12.1)
+### Task 1 - bars, not waves (12.1 rewritten)
 
-A new type in `src\Hamlet.RadioEngine\Cw\`, `CwEnvelopeDetector`, fed the same hops the decoder
-gets, computing per hop:
+Replace `CwEnvelopeDetector`'s floor-and-margin with run detection, **per bin across the whole
+passband** - `CwPitch` plus and minus half `FilterBandwidth`, or the whole audio band when the
+rig state is unknown - at the meter's bin spacing:
 
-- **the envelope**: the energy across the passband the radio's filter passes - `CwPitch` plus
-  and minus half `FilterBandwidth` from the rig state, or the whole audio band if those are
-  unknown - as one number per hop, in dB;
-- **the floor**: the envelope's level when nobody is keying, tracked - falling quickly when the
-  envelope drops, rising slowly, so a station's marks do not drag it up. **How it is tracked
-  is the author's; the report says how, in one sentence, and it is a rule with no fitted
-  constant from any recording.**
-- **the threshold**: floor plus a margin in dB. **Start at 9 dB** - half the smallest swing on
-  the owner's rows - and make it a single named constant with a remark saying it came from
-  those seven rows and nothing else.
-- **mark or gap**: the envelope over the threshold, or not, this hop;
-- **the run**: how long the current mark or gap has lasted, in milliseconds;
-- **the pitch, while a mark is up**: the bin of the spectrum carrying the most energy, across
-  the whole passband - not 300 to 900 - and its contrast over the bins beside it in dB.
+- **A run**: consecutive hops whose level stays within a tolerance of the run's own mean. The
+  tolerance is the author's, stated in the report with its reason, and it comes from how much
+  a keyed tone's level wobbles across a mark - a few dB - not from a recording.
+- **A bar**: a run at least as long as the shortest dit anyone sends - **25 ms**, from
+  `CwToneSurvey.ShortestDitMs`, which the radio's own keyer bounds - that stands above the
+  runs either side of it.
+- **A gap**: a run below the bars either side.
+- **Keying in a bin**: at least two bars separated by a gap within the last second. **Not
+  eight marks and three seconds** - two bars is a dit and a dit, and the owner hears that.
+- **The pitch**: the bin with the most bars in the last second. **Contrast**: that bin's bar
+  level over its gap level, in dB - the swing, measured, never gated.
+- **Per hop, still**: mark or gap in the found bin, run length, marks in the last four seconds,
+  so `CwScopeControl` and the verdict row keep their fields. **The scope's floor line becomes
+  the found bin's gap level and its threshold line the midpoint between gap and bar; both are
+  measured, and the labels say so.**
 
-**It changes nothing about the decoder.** It observes the same audio and reports.
+**No floor tracker. No margin constant. No swing gate.** If any number in this task is chosen
+by looking at the owner's rows or a recording, the report says so and it is wrong.
 
-**Watch it fail first**, with synthetic hops made in the test - a tone keyed on and off at a
-known pitch over a known noise floor. Red on a stub; green when marks land where the tone was
-on, gaps where it was off, and the pitch reads the tone. **No recording.**
+**Watch it fail first** on synthetic hops in the test - a keyed tone at a known pitch and
+speed over noise that wanders - red on a stub, green when bars land on the marks, gaps on the
+gaps, and the pitch reads the tone. **Then a second synthetic: a steady carrier.** It must
+read as *not keying* - one bar with no gap. **Then a third: noise alone, loud.** Not keying.
 
-### Task 2 - the oscilloscope on screen (12.2)
+### Task 2 - the tracker obeys the meter (12.4, first half)
 
-A control under 474's strip, `CwScopeControl`, drawing the last **four seconds**:
+Two wiring changes and nothing else:
 
-- the envelope as a trace;
-- the floor as a line under it;
-- the threshold as a line above the floor, labelled with its margin;
-- **marks as bars along the bottom** while the trace is over the threshold, so the owner sees
-  dits and dahs light up as he hears them;
-- the current pitch and contrast as text while a mark is up: *"tone 742 Hz, 24 dB over the
-  band"*; when no mark is up: *"no tone"*;
-- the passband edges shaded, labelled with the radio's filter width and pitch.
+1. **The pitch.** When `CwKeyingMeter`'s verdict is *keying* at a pitch, `CwToneTracker` mixes
+   at that pitch on the next hop. It does not wait for the survey. If the survey later admits a
+   different bin, the meter's pitch still wins while the meter says keying there. **Watch it
+   fail first**: a driven meter reading of keying at 600 Hz while the tracker holds 500; red
+   when the tracker stays at 500, green when it moves.
+2. **The keying flag.** `CwToneTracker.HasKeying` is true when the meter's verdict is keying.
+   `ConfidentSwingDb` no longer decides it - **the constant stays, its remark says it is no
+   longer consulted for this flag and why.** Watch it fail first: a meter reading of keying at
+   18 dB swing; red when `HasKeying` is false, green when true.
 
-Words on every mark, never color alone. Hover text says what each line is and that the
-threshold is the one number that decides a mark. Fed at the decode hop rate, not once a
-second - **the owner has to see dits.** If that costs the UI, fed at 20 per second and say so.
+**The decoder is not changed.** It reads the tracker's pitch and flag as it always did; what
+changes is that they now arrive within a hop of the meter's verdict rather than twenty-two
+seconds later or never.
 
-**Watch it fail first**, headless, with a driven detector.
+### Task 3 - the run detector reaches the meter (12.4, second half)
 
-### Task 3 - the owner's verdict carries the scope (12.3)
+**Only if task 1 and task 2 are green.** The meter's own four-part verdict keeps its score and
+its element-duration tests. **Its swing test is replaced by task 1's bar test**: a bin passes
+when it makes bars, at any swing. Watch it fail first: the 18.6 dB station's profile from the
+owner's row at 01:16:22 - score 0.27, median 48 ms, swing 18.6 - read as keying. Red at the
+swing gate, green with the bar test.
 
-Extend 474's `owner_verdict` row with the detector's state at the press: `scopeEnvelopeDb`,
-`scopeFloorDb`, `scopeThresholdDb`, `scopeMark` (true or false), `scopeRunMs`, `scopePitchHz`,
-`scopeContrastDb`, and **`scopeMarksLast4s`** - the count of marks in the last four seconds -
-so the next unit can read whether the scope saw keying where the owner heard it. The row's
-key set is asserted closed, as 474's test does.
+**Drop candidate:** whole task. If dropped, the meter still gates on 20 dB and task 2's wiring
+still lands; the report says so.
 
 ### Task 4 - the exit round
 
-`Hamlet.sln` builds with warnings as errors. The app carry-forward line. Every type touched.
-**`src\Hamlet.RadioEngine\Cw` diff against entry is one new file and nothing changed** - name
-it - plus whatever the view model and control needed. Transmit files print nothing against
+`Hamlet.sln` builds with warnings as errors. The app carry-forward line. Every type touched
+that reads no recording. `src\Hamlet.RadioEngine\Cw` diff against entry names every file, and
+the report says in one line what each change does. Transmit files print nothing against
 `7e209cb4`. **No recording was read.**
 
 ---
 
 ## 6. Do not
 
-- Do not wire the detector to the decoder, the tracker, the survey or the meter. It observes.
-- Do not fit any constant to a recording. The margin comes from the owner's rows; the floor
-  tracker is a rule.
-- Do not limit the pitch search to 300 to 900 Hz. The whole passband.
+- Do not keep a floor tracker, a margin, or a swing threshold as the thing that decides
+  keying. The bars decide.
+- Do not fit any number to the owner's rows or a recording. The rows are evidence the old
+  gates failed; they are not a calibration set.
+- Do not limit the sweep to 300 to 900 Hz.
+- Do not change the decoder's decode path. Change what the tracker tells it, and when.
+- Do not remove or change the light, the strip, the buttons or the verdict row.
 - Do not read, run or measure against any recording.
-- Do not remove or change anything unit 474 built.
 - Do not touch what keys or transmits.
 - **No unfiltered `dotnet test`. Never background and poll. Never compose a timestamp.**
 
@@ -236,35 +254,39 @@ it - plus whatever the view model and control needed. Transmit files print nothi
 ```
 READ IN THIS ORDER.
 
-A. What the owner will see: the trace, the floor, the threshold, the marks,
-   and the tone line - in one paragraph.
-B. Step 12: 12.1 the detector, 12.2 the scope, 12.3 the row.
+A. What decides keying now, in one sentence, and what the tracker does the
+   moment the meter finds a station.
+B. Step 12: 12.1 the detector rewritten, 12.4 the wiring, task 3 kept or dropped.
 C. The rest. Section 4 raises <n> items, none blocking. No recording was read.
 ```
 
 ```
-UNIT:       476 - <complete|stopped> at task N of 4, <dropped or none dropped> - <date time>
+UNIT:       477 - <complete|stopped> at task N of 4, <dropped or none dropped> - <date time>
 PHASE GOAL: <in your own words>
 UNIT GOAL:  <in your own words>
-NUMBER:     threshold margin: 9 dB from seven owner rows; pitch search: whole passband; recordings read: 0
+NUMBER:     gates removed: floor, margin, swing; tracker follows the meter within 1 hop; recordings read: 0
 ```
 
-**Section 2 tells the owner:** rebuild, tune a station, watch the bars light up under the trace
-as you hear dits and dahs, press the buttons as before. And what to look for: bars where you
-hear keying, no bars on silence, the tone line where your ear puts the pitch.
+**Section 2 tells the owner:** rebuild, tune a station at any pitch, and look at three things:
+bars under the trace as you hear keying, the mixing line jumping to where the meter's line is
+within a second, and characters. Then press. And what a carrier and plain noise now look
+like on the scope - no bars.
+
+**Section 3 gives the three synthetic tests' outputs:** the keyed tone with its bars, the
+carrier with one bar and no gap, the loud noise with none.
 
 ---
 
 ```
 ARBITER-DECISION
 STEP: 12
-APPROACH: build an envelope detector over the whole passband - envelope, tracked floor, a 9 dB threshold from the owner's rows, marks and gaps, the pitch read from the spectrum while a mark is up - draw it as an oscilloscope on the CW tab, and carry its state on the owner's verdict row, driving nothing yet
+APPROACH: replace the envelope detector's floor and margin with run detection per bin across the passband - a bin is keying when it makes flat-topped bars of dit length separated by gaps - wire the tracker to take the meter's pitch and keying verdict within a hop, and replace the meter's swing gate with the bar test
 MOVE: continue
-WHY: PHASE_PLAN.md step 12 criterion 12.1 asks for a detector that finds a keyed signal as the audio envelope standing over a threshold above the tracked noise floor at any pitch the filter passes, reading the pitch from the spectrum after, and changing nothing about the decoder
-STATE: not started
-DECIDED: the floor-tracking rule, the scope's frame rate, and the drawn passband when the rig state is unknown are the author's, overrulable
-LICENCE: PHASE_PLAN.md R88, R90, section 6, step 12; HM-DEC-185; CLAUDE.md 0.0, 0.2 and 0.6; HM-DEC-155; FACT-006
-ACCOMPLISHED: the owner can watch Hamlet find a keyed signal in the noise at any pitch, the way he hears it, before it is trusted to drive the decoder
-ADVANCES: step 12 criterion 1
+WHY: PHASE_PLAN.md step 12 criterion 12.4 asks that the detector drive the decoder - nothing decoded until a mark is found, the decoder mixed at the detector's pitch and started when the tone is present - judged by the owner's ear and his verdict rows, and those rows show the meter finding each station within a second while the tracker waited on the survey or held its keying flag false on an 18 dB swing
+STATE: partial
+DECIDED: the flatness tolerance, the bar-count that makes keying, and whether task 3 is reached are the author's, overrulable; every number's remark names its reason and none rests on a recording
+LICENCE: PHASE_PLAN.md R88, R90, R91, section 6, step 12; HM-DEC-186; CLAUDE.md 0.0, 0.2 and 0.6; HM-DEC-155; FACT-006
+ACCOMPLISHED: a keyed station at any pitch in the filter is found by its bars and read at its pitch within a second, which is what the owner's ear has been doing all week and Hamlet has not
+ADVANCES: step 12 criterion 4
 END-ARBITER-DECISION
 ```

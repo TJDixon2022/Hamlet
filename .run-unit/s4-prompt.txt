@@ -59,66 +59,46 @@ WHY: one sentence, plain text, no punctuation beyond commas and full stops
 --- the section 4 text follows ---
 
 ﻿
-Nothing here halts the unit. Seven items, the most consequential first.
+None of these halts the unit. Most-blocking first.
 
-1. **17 is below the 17.7 dB empty recording, not above it.** The instruction says 17 "stays
-   above the two empty recordings ... and only just above the 17.7 one". 17 is 0.7 dB below
-   17.7. It is also inside the 14.7 to 17.7 range of the eleven empty six-second windows from
-   `cw-2026-08-20-014854` and `-014935`. The comment in `CwKeyingMeter.Update` records that
-   those windows already clear the score and the element range. Any of them at 17 or more is
-   now called keying. **Ruling wanted: keep 17 or use 18.** 18 still accepts the 01:16:22 row
-   at 18.6 and stays above 17.7. It gives up the 17.5 row, which was only lit by the hold.
-   18 was rejected in `Update`'s own comment as "fitting a constant to a fixture". That
-   objection was about recordings, and R89 now sets the bar from the air. I kept 17 because
-   the instruction names it and the owner ruled "write it".
-2. **Two recording-reading tests now disagree with the bar. Neither was run, under R88.**
-   `TheSwingIsTheFigureThatHoldsTests` asserts that the empty recordings' maximum, 17.7, is
-   below `ConfidentSwingDb`. At 17 it will be red. `TheTwoPitchesTableTests` computes a
-   verdict with the constant and prints it, so its table will shift. The comment inside
-   `CwKeyingMeter.Update` still says the bar "is already twenty". It was left alone because the
-   instruction limits the diff to the constant and its remark. **Ruling wanted:** when the
-   corpus ban lifts, re-point the first test at the new basis or retire it (HM-DEC-103: list,
-   never delete), and correct that comment.
-3. **The verdict row records the plain median, not the element median the gate tests.**
-   `CwHearingViewModel.cs:290` writes `meterMedianMs = meter.MedianMs`, the middle of every
-   threshold crossing. The meter decides on `ElementMedianMs`, which only counts runs of 20 to
-   500 ms. Two consequences:
-   - **01:16:22 "failed only the swing" is an inference.** The row has no element median. A
-     plain median of 48 makes an element median inside 25 to 250 ms likely, but not certain.
-   - **The instruction asks section 4 to say that four agreed rows had medians of 4 to 9 ms,
-     "which are not dits, so the meter's score gate lets noise through".** The rows do show
-     plain medians of 4, 6, 8 and 9 ms (01:17:19, 01:17:37, 01:16:01, 01:16:28). But the source
-     says a plain median that low is normal on a real station: `KeyingEnvelope.cs:292-296`
-     measured the adjudicated `VA3VRR` at plain 4 ms with an element median of 88, and `N4L`
-     at plain 3 with 55. **Those four rows are not evidence that the score gate lets noise
-     through.**
+1. **12.2 is built and tested, and left unticked for your eye.** Ruling asked: tick 12.2 once
+   you have watched dits light up on the air, or tick it now on the headless test.
+   Reasoning: every clause of 12.2 has a test, but "fed fast enough that the owner sees dits" is
+   a claim about your eye, and R90 puts the scope on screen so your ear and eye can judge it.
+   Every 5 ms hop is drawn, the picture is redrawn 20 times a second, and a 60 ms dit is
+   12 hops. Rejected: ticking it on the session's own word, because that is the thing R90
+   reserves for you.
 
-   **Ruling wanted:** add `meterElementMedianMs` to the `owner_verdict` row so the next rows
-   carry the figure the gate uses. Rejected: judging the score gate from the plain median,
-   because the code says that number is not a key-down length.
-4. **The survey's hysteresis admitted nothing on all seven rows. It is a gate on the same kind
-   of level evidence, one stage earlier than the meter's swing.** From the source
-   (`CwToneSurvey.cs:195, 564-565, 609 on`): `HysteresisDb = 3.0` sets a mark mask that turns
-   on above, and off below, the two-means midpoint of each bin's own dB history, Â±3 dB. So it
-   asks for the bin's quiet and loud cluster means to sit **more than about 6 dB apart**. It is
-   not a 3 dB swing requirement. The meter's 17 dB is a 10th-to-90th percentile spread of a
-   1 ms linear envelope, so the two figures are not directly comparable. Even so, a station
-   swinging 17 to 22 dB on the meter would have to lose two thirds of that contrast to fail a
-   6 dB span. **Reading the source, the likelier refusals are the mark-duration gates after
-   the mask:** 8 marks, dits of 25 to 200 ms, a separation of 4.0 and a ratio of 2.5 to 3.8.
-   None of their figures is in the verdict row. If the owner presses "You're an idiot" while
-   the meter says keying and the survey admits nothing, the next unit should first record which
-   survey test refused, then move that one.
-5. **`PHASE_PLAN.md` has no step 11 criteria.** Neither copy has a step 11 or step 10 section.
-   Step 11 exists only as a `PHASE_STATUS.md` line marked "not started", even though 474
-   delivered the light, the strip and the buttons. The seed commit's message says "step 11
-   criteria", but its diff adds none. **Ruling wanted:** write step 11's criteria 11.1 to 11.4
-   into the plan, so that 474's work (5/5, 7/7, 6/6) and this unit's 11.4 can be ticked and the
-   step's state is not read as not started.
-6. **The owner's rows were not read from the file.** This session is confined to the
-   repository, and it refused `%AppData%\Hamlet\telemetry\2026-09-28.jsonl`. The table in the
-   instruction was used as written. **Ruling wanted:** copy the day's `owner_verdict` rows into
-   the tree for the next unit, or let the session read that folder.
-7. **An owner's empty `STOP` file is at the root.** It was left in place, as unit 474 left it.
-   The runner will end the next launch at the door and delete it, unless it is removed by hand
-   first.
+2. **The floor is the mean of the gaps, not "down at once, up slowly".** Ruling asked: keep the
+   mean-of-the-gaps rule. Reasoning: the literal rule was built first. It sat on the noise's
+   deepest troughs, and 127 of 800 hops of synthetic noise alone were marks. The mean-of-the-gaps
+   rule gives 0 of 800, still falls within about half a second, and still cannot be dragged up
+   by a mark. It uses two constants, 0.25 s and 3 dB/s, and neither was fitted to a recording.
+   Rejected: keeping the literal rule and raising the margin to hide the false marks, because
+   that would move the one number the instruction takes from your rows.
+
+3. **One change to what unit 474 built: eight names added to the closed key list in
+   `TheOwnersVerdictIsARowTests`.** Ruling asked: accept it. Reasoning: task 3 extends the row,
+   and that test asserts the row's key set is closed, so it would have gone red. Nothing was
+   removed, and its 18 original fields are asserted exactly as before. Rejected: leaving that
+   test red, or loosening it to "contains", which would stop it catching an extra field.
+
+4. **The scope keeps listening while you transmit.** Ruling asked: blank the scope while the
+   radio is transmitting, or leave it showing. Reasoning: the decoder suspends itself during
+   your own sending (HM-DEC-147). The scope shows whatever audio arrives, so your sidetone will
+   light bars, and `scopeMarksLast4s` on a press right after you send will count them. It is
+   left showing, because an oscilloscope showing the wire is true, and the instruction said to
+   observe the same audio. Rejected: suspending it in this unit without a ruling, because that
+   would make the scope decide something.
+
+5. **The pitch is the centre of the strongest bin, 23.4 Hz wide at 48 kHz, with no
+   interpolation.** Ruling asked: is one bin fine enough for 12.4? Reasoning: 742 reads 750,
+   1250 reads 1242, and 600 reads 609. The decoder's own bandwidth is wider than that, but if
+   12.4 is to mix at the scope's pitch, interpolating between bins would roughly halve the
+   error. Rejected for now: adding interpolation that no criterion asked for.
+
+6. **The fallback band, 100 to 3000 Hz, and "CW or CW-R only" are the author's, not radio
+   facts.** Ruling asked: confirm, or name the band you want used when the radio hasn't said.
+   Reasoning: the instruction leaves the drawn passband to the author when the rig state is
+   unknown. Outside CW, the radio's CW pitch does not centre the filter, so using it there would
+   be a guess. Rejected: taking the radio's pitch and filter in every mode.
