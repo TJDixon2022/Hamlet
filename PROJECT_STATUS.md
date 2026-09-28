@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 1 of 4
+TASK: 2 of 4
 WORK_INSTRUCTION: 480 - the radio points, the bars show, the letters ride on top
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-188 (2026-09-28)
-UPDATED: 2026-09-28T13:30:54-04:00
-NOTE: Task 0 committed (HM-DEC-188, 1.13.166, entry app line 276 then 274 of 278, all dispatcher loop); tracing RigSpectrumSource, ScopeFlow, Ic7300Rig 0x27 and the CW receive conditions
+UPDATED: 2026-09-28T13:37:49-04:00
+NOTE: Task 1 committed (CW asks for scope output on, read back, stream follows; 3/3 green after red); tracing how SpectrumFrames could reach CwEnvelopeDetector and the tracker
 
 ---
 

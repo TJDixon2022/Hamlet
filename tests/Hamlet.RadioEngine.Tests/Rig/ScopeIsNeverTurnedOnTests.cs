@@ -6,10 +6,15 @@ using Xunit;
 namespace Hamlet.RadioEngine.Tests.Rig;
 
 /// <summary>
-/// Hamlet does not turn the radio's spectrum output on, which HM-DEC-062 ruled
-/// and 8c2abf3 broke.
+/// Hamlet does not turn the radio's spectrum output on from the app, which HM-DEC-062
+/// ruled and 8c2abf3 broke; since HM-DEC-188 the one path that does is the CW receive
+/// condition, written by <see cref="ReceiverSetup"/> and read back like the preamp.
 /// </summary>
 /// <remarks>
+/// <para>**HM-DEC-188 SUPERSEDES HM-DEC-062 FOR THE MORSE FAMILY ONLY** (work
+/// instruction 480 task 1). The class keeps its name so its history reads straight;
+/// what it guards now is that no app code writes `27 11` directly, and that no row but
+/// the Morse family's asks for it.</para>
 /// <para>**IT SHIPPED TWICE WITH NOTHING NOTICING.** That ruling says in terms
 /// that nothing here turns the scope on, that it is a write, and that the path is
 /// reads only. Version 1.8.0 put `_ = AskForTheSpectrumAsync(radio)` in the
@@ -68,6 +73,33 @@ public sealed class ScopeIsNeverTurnedOnTests
             writes.Count == 0,
             "HM-DEC-062 says nothing here turns the scope on, and something does: "
             + "that ruling was broken by 8c2abf3 in 1.8.0 and shipped twice");
+    }
+
+    /// <remarks>
+    /// Proves HM-DEC-188's reach: the CW row and the two Morse blocks that state it
+    /// ask for the scope output on, and no other mode's row mentions it, so data modes
+    /// keep whatever they did with the scope before.
+    /// </remarks>
+    [Fact]
+    public void OnlyTheMorseFamilyAsksForTheScopeOutput()
+    {
+        foreach (var mode in Hamlet.RadioEngine.Explore.ReceiverConditions.Modes)
+        {
+            var row = Hamlet.RadioEngine.Explore.ReceiverConditions.ForMode(mode)
+                .Where(c => c.Field == RigField.ScopeOutput)
+                .ToList();
+
+            if (mode is "CW" or "CW DX" or "QRP")
+            {
+                Assert.Single(row);
+                Assert.Equal(1, row[0].Wanted);
+                Assert.True(row[0].CanBeWritten);
+            }
+            else
+            {
+                Assert.Empty(row);
+            }
+        }
     }
 
     /// <remarks>

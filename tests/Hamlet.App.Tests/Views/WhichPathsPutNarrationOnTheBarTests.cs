@@ -54,7 +54,8 @@ public sealed class WhichPathsPutNarrationOnTheBarTests
                 + line.Length.ToString().PadLeft(5) + " characters");
         }
 
-        Assert.Equal(9, ReceiverConditions.ForMode("CW").Count);
+        // Nine until HM-DEC-188 added the scope output (work instruction 480 task 1).
+        Assert.Equal(10, ReceiverConditions.ForMode("CW").Count);
 
         var ft8 = ReceiverSetupVoice.Say(AllChanged("FT8")).Length;
 

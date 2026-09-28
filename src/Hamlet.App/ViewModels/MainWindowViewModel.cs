@@ -10751,6 +10751,10 @@ public partial class MainWindowViewModel : ObservableObject
         //
         // Reading `27 10` and `27 11` to say what is on stays. That is the read
         // HM-DEC-062 allows, and it is what the panel needs to explain itself.
+        //
+        // **SINCE HM-DEC-188 THE CW TUNE-IN TURNS IT ON**, as a receive condition
+        // in `ReceiverSetup`, once per tune-in and read back, with the operator's
+        // hand winning. Still nothing here, at connect, writes it.
     }
 
     /// <summary>
@@ -14341,6 +14345,12 @@ public partial class MainWindowViewModel : ObservableObject
             _receiverMemory = memory;
             LastReceiverSetup = results;
             _preampFollow = PreampFollow.Fresh;
+
+            // **THE STREAM LISTENS ONCE THE READ-BACK SAYS ON** (HM-DEC-188, work
+            // instruction 480 task 1). It is normally already listening from connect;
+            // this starts it where it was not, and never stops it, because the data
+            // modes' waterfall reads the same listener.
+            _rigSpectrum?.FollowTheSetup(results);
 
             // **HE IS TOLD WHAT CHANGED AND WHY** (work instruction 042 task 4),
             // **AND SINCE 2026-09-08 HE IS TOLD ON HOVER** (work instruction 282

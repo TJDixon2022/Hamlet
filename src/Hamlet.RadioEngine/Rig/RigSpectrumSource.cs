@@ -19,9 +19,11 @@ namespace Hamlet.RadioEngine.Rig;
 /// arrive unlabeled. There is no flag to forget.</para>
 /// <para>NOTHING HERE WRITES TO THE RADIO. Turning the scope output on is a
 /// write, and this class does not make one: it reads whether the two settings
-/// are on and says what is missing (<see cref="ScopeReadiness"/>). That is not
-/// only discipline, it is also the honest shape, because the stream needs two
-/// radio menu settings Hamlet has no command for at all.</para>
+/// are on and says what is missing (<see cref="ScopeReadiness"/>). Since
+/// HM-DEC-188 the write is the CW receive condition's, made by
+/// <see cref="ReceiverSetup"/> like the preamp and read back the same way, and
+/// <see cref="FollowTheSetup"/> is how that read-back reaches this listener. The
+/// stream still needs two radio menu settings Hamlet has no command for.</para>
 /// <para>READING COSTS NO POLLING. The radio pushes these frames once its own
 /// output is on, so the stream adds no commands to the bus and cannot starve the
 /// poll loop by asking for anything (HM-DEC-050). It is a listener.</para>
@@ -134,6 +136,38 @@ public sealed class RigSpectrumSource : ISpectrumSource, IDisposable
             IsRunning = false;
             Reset();
         }
+    }
+
+    /// <summary>
+    /// Start listening where a tune-in's read-back says the radio's scope output is on
+    /// (HM-DEC-188).
+    /// </summary>
+    /// <param name="results">What the tune-in did to each condition.</param>
+    /// <returns>True where the read-back said on and the stream is running.</returns>
+    /// <remarks>
+    /// <para>**THE READ-BACK DECIDES, NOT THE WRITE.** Only an `AlreadyRight` or a
+    /// `Changed` scope output counts, since those are the two outcomes the radio's own
+    /// answer confirmed; an unconfirmed or unread one starts nothing.</para>
+    /// <para>**IT NEVER STOPS THE STREAM.** The app starts this listener at connect in
+    /// every mode and the waterfall of a data mode draws from it, so a tune-in that
+    /// leaves the Morse family leaves it exactly as it was (work instruction 480: data
+    /// modes keep what they do with the scope today).</para>
+    /// </remarks>
+    public bool FollowTheSetup(IEnumerable<ConditionResult> results)
+    {
+        ArgumentNullException.ThrowIfNull(results);
+
+        var on = results.Any(r =>
+            r.Condition.Field == RigField.ScopeOutput
+            && r.Outcome is ConditionOutcome.AlreadyRight or ConditionOutcome.Changed
+            && string.Equals(r.NowText, "on", StringComparison.Ordinal));
+
+        if (on)
+        {
+            Start();
+        }
+
+        return on && IsRunning;
     }
 
     /// <inheritdoc/>

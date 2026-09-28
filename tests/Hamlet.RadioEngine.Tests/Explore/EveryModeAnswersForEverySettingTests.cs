@@ -83,7 +83,8 @@ public sealed class EveryModeAnswersForEverySettingTests
     [Fact]
     public void EveryOwnedSettingCarriesItsCitation()
     {
-        Assert.Equal(12, OwnedSettings.All.Count);
+        // Twelve until HM-DEC-188 added the scope output (work instruction 480).
+        Assert.Equal(13, OwnedSettings.All.Count);
 
         foreach (var owned in OwnedSettings.All)
         {

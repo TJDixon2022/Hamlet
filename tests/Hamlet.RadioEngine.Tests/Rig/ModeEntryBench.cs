@@ -159,6 +159,11 @@ internal static class ModeEntryBench
             writes.Add((RigField.Attenuator, db));
         }
 
+        foreach (var output in radio.ScopeOutputWrites)
+        {
+            writes.Add((RigField.ScopeOutput, output));
+        }
+
         return writes;
     }
 
@@ -169,6 +174,7 @@ internal static class ModeEntryBench
         radio.SwitchWrites.Clear();
         radio.LevelWrites.Clear();
         radio.AttenuatorWrites.Clear();
+        radio.ScopeOutputWrites.Clear();
     }
 
     /// <summary>What the radio holds now, read through Hamlet's own reads.</summary>

@@ -136,6 +136,15 @@
           ],
           "whenOverloading": 0,
           "because": "The radio's manual, IC-7300_ENG_FM_12b, Receiving and Transmitting, page 4-3, says which preamp belongs where. P.AMP1 is the wide dynamic range preamplifier and it is most effective for the HF low bands; P.AMP2 is the high-gain preamplifier and it is most effective for the 50 MHz bands; and when the preamp is used while receiving strong signals the signal may be distorted, and in that case the preamp is turned off. Icom's own published receive sensitivity is quoted with Preamp 1 on from 1.8 to 29.999 MHz and with Preamp 2 on at 50 MHz. So Hamlet puts preamp 1 on every HF band, preamp 2 on 6 m, and the preamp off when the radio says its front end is overloading, which is the strong-signal case the manual names. The radio remembers the setting for each band on its own."
+        },
+        {
+          "control": "scope output",
+          "says": "the Morse detector reads the radio's own spectrum to find where the station is",
+          "field": "scopeOutput",
+          "wanted": 1,
+          "wantedText": "on",
+          "confirmed": true,
+          "because": "The radio already draws its spectrum scope on its own screen, calibrated by Icom and centred on the dial, and it sends the same picture down the cable once its scope output is on. Hamlet reads that picture to find where the station sits inside the filter, so the Morse detector listens at the pitch the radio points at instead of sweeping the audio and settling on the loudest patch of noise. It changes only what the radio sends over the cable, never what goes out of the antenna (HM-DEC-188, IC-7300 CI-V command 27 11, page 19-7)."
         }
       ]
     },

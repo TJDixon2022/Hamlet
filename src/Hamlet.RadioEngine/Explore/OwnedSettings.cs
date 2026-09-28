@@ -64,7 +64,7 @@ public readonly record struct OwnedSetting(
 /// </remarks>
 public static class OwnedSettings
 {
-    /// <summary>The twelve, each with the §4 citation for the byte that writes it.</summary>
+    /// <summary>The thirteen, each with the §4 citation for the byte that writes it.</summary>
     /// <remarks>
     /// **NO BYTE IS WRITTEN THAT IS NOT CITED** (HM-DEC-084). The citation
     /// travels with the setting rather than sitting in a comment beside the
@@ -84,6 +84,11 @@ public static class OwnedSettings
         new("attenuator", RigField.Attenuator, "19-3"),
         new("RF gain", RigField.RfGain, "19-3"),
         new("squelch", RigField.Squelch, "19-3"),
+
+        // **THE THIRTEENTH, SINCE HM-DEC-188**: the CW row asks for the radio's scope
+        // output on so the detector can read the radio's own spectrum. A row that says
+        // nothing about it, every data mode's, leaves it exactly as it was.
+        new("scope output", RigField.ScopeOutput, "19-7"),
     ];
 
     /// <summary>

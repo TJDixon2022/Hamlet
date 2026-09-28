@@ -137,6 +137,20 @@ internal sealed class ScriptedRadio : ISerialPort
     public bool? Transmitting { get; set; }
 
     /// <summary>
+    /// The scope output, `27 11`: 1 on, 0 off, or null where this radio does not speak it.
+    /// </summary>
+    /// <remarks>
+    /// **ON UNLESS A TEST SAYS OTHERWISE** (work instruction 480 task 1). Since
+    /// HM-DEC-188 every CW tune-in asks for it on, and a radio already there is neither
+    /// written nor narrated, so a test written before this radio spoke `27 11` still
+    /// sees the writes and the sentences it was written against.
+    /// </remarks>
+    public byte? ScopeOutput { get; set; } = 1;
+
+    /// <summary>Every `27 11` write the radio has taken, in order.</summary>
+    public List<byte> ScopeOutputWrites { get; } = new();
+
+    /// <summary>
     /// Whether the radio answers the receive meters the live poll asks for: the S-meter
     /// `15 02`, the squelch status `15 05`, power out `15 11` and SWR `15 12`.
     /// </summary>
@@ -403,6 +417,25 @@ internal sealed class ScriptedRadio : ISerialPort
 
             case 0x1C when data.Length == 1 && data[0] == 0x00 && Transmitting is { } keyed:
                 Reply(0x1C, new[] { (byte)0x00, (byte)(keyed ? 1 : 0) });
+                break;
+
+            // Read: 27 11. Write: 27 11 <00 or 01> (§4, p. 19-7).
+            case 0x27 when data.Length == 1 && data[0] == 0x11 && ScopeOutput is { } output:
+                Reply(0x27, new[] { (byte)0x11, output });
+                break;
+
+            case 0x27 when data.Length >= 2 && data[0] == 0x11 && ScopeOutput is not null:
+                if (data[1] is 0 or 1)
+                {
+                    ScopeOutput = data[1];
+                    ScopeOutputWrites.Add(data[1]);
+                    Reply(CivConstants.ResultOk, Array.Empty<byte>());
+                }
+                else
+                {
+                    Reply(CivConstants.ResultNg, Array.Empty<byte>());
+                }
+
                 break;
 
             case 0x1A when data.Length >= 1 && data[0] == 0x03:
