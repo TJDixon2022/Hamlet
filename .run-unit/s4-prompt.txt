@@ -59,46 +59,34 @@ WHY: one sentence, plain text, no punctuation beyond commas and full stops
 --- the section 4 text follows ---
 
 ﻿
-None of these halts the unit. Most-blocking first.
+Nothing here blocks the unit. Six rulings are wanted, most consequential first.
 
-1. **12.2 is built and tested, and left unticked for your eye.** Ruling asked: tick 12.2 once
-   you have watched dits light up on the air, or tick it now on the headless test.
-   Reasoning: every clause of 12.2 has a test, but "fed fast enough that the owner sees dits" is
-   a claim about your eye, and R90 puts the scope on screen so your ear and eye can judge it.
-   Every 5 ms hop is drawn, the picture is redrawn 20 times a second, and a 60 ms dit is
-   12 hops. Rejected: ticking it on the session's own word, because that is the thing R90
-   reserves for you.
+1. **12.1 is ticked, but its text describes the detector this unit removed.**
+   - **Ruling wanted:** rewrite 12.1's criterion text to the bar rule (runs, bars, pairs, measured lines, no floor or margin), or untick it until it is rewritten.
+   - **Reasoning:** the instruction told task 0 to tick 12.1 to 12.3 from unit 476's work. Task 1 then replaced that work, so the tick now stands on text that is false of the tree.
+   - **Rejected:** editing PHASE_PLAN.md's criterion text myself. The plan is the owner's and the web session's, and the instruction said to tick, not to rewrite.
 
-2. **The floor is the mean of the gaps, not "down at once, up slowly".** Ruling asked: keep the
-   mean-of-the-gaps rule. Reasoning: the literal rule was built first. It sat on the noise's
-   deepest troughs, and 127 of 800 hops of synthetic noise alone were marks. The mean-of-the-gaps
-   rule gives 0 of 800, still falls within about half a second, and still cannot be dragged up
-   by a mark. It uses two constants, 0.25 s and 3 dB/s, and neither was fitted to a recording.
-   Rejected: keeping the literal rule and raising the margin to hide the false marks, because
-   that would move the one number the instruction takes from your rows.
+2. **The flat tolerance, 1.5 dB, and the weak station it costs.**
+   - **Ruling wanted:** accept 1.5, and rewrite or retire unit 476's 15 dB test to say what the bar rule does with a station that weak. Or go to 2 dB and accept noise reading as keying about once in 136 reads of 20 ms over the whole band.
+   - **Reasoning:** at 2 dB, 30 s of loud noise read as keying in 11 of 1500 reads; at 1.5 dB, in none. A station 15 dB over the noise in a 500 Hz filter loses 51 of 208 key-down hops at 1.5 dB and 35 at 2 dB. Â§0.0 favours silence over a false station.
+   - **Rejected:** fitting the tolerance to the owner's rows or a recording (R91, HM-DEC-186), and joining short same-level runs back into one bar. That joins noise too.
 
-3. **One change to what unit 474 built: eight names added to the closed key list in
-   `TheOwnersVerdictIsARowTests`.** Ruling asked: accept it. Reasoning: task 3 extends the row,
-   and that test asserts the row's key set is closed, so it would have gone red. Nothing was
-   removed, and its 18 original fields are asserted exactly as before. Rejected: leaving that
-   test red, or loosening it to "contains", which would stop it catching an extra field.
+3. **The meter still gates on a 17 dB swing (task 3 dropped).**
+   - **Ruling wanted:** whether the next unit replaces the meter's swing test with the bar test, now that the meter drives the tracker.
+   - **Reasoning:** the instruction's red case (the 18.6 dB profile) already passes at 17. A station swinging under 17 is refused by the meter, so it now also does not move the tracker. The meter's own tests read a recording and cannot run under R88, so the change could not be checked against them here.
+   - **Rejected:** doing it anyway on synthetic evidence alone, in a unit whose precondition for it was not met.
 
-4. **The scope keeps listening while you transmit.** Ruling asked: blank the scope while the
-   radio is transmitting, or leave it showing. Reasoning: the decoder suspends itself during
-   your own sending (HM-DEC-147). The scope shows whatever audio arrives, so your sidetone will
-   light bars, and `scopeMarksLast4s` on a press right after you send will count them. It is
-   left showing, because an oscilloscope showing the wire is true, and the instruction said to
-   observe the same audio. Rejected: suspending it in this unit without a ruling, because that
-   would make the scope decide something.
+4. **"The bars clear the gaps' measured wander" is the rule nearest to a margin.**
+   - **Ruling wanted:** whether it stands under "no floor, no margin, no swing threshold".
+   - **Reasoning:** without it, noise's chance flat runs paired into keying in every form I tried. It has no constant; the number is each bin's own gap wander over the last second. For noise that is about 5.6 dB, and for a station it is whatever its gaps measure.
+   - **Rejected:** a fixed decibel figure for how far bars must stand over gaps. That is the margin HM-DEC-186 removed.
 
-5. **The pitch is the centre of the strongest bin, 23.4 Hz wide at 48 kHz, with no
-   interpolation.** Ruling asked: is one bin fine enough for 12.4? Reasoning: 742 reads 750,
-   1250 reads 1242, and 600 reads 609. The decoder's own bandwidth is wider than that, but if
-   12.4 is to mix at the scope's pitch, interpolating between bins would roughly halve the
-   error. Rejected for now: adding interpolation that no criterion asked for.
+5. **The tracker moves to the meter's pitch even mid-character.**
+   - **Ruling wanted:** whether HM-DEC-186's "at once" overrides HM-DEC-096's never-switch-mid-character for meter moves.
+   - **Reasoning:** the ruling says "at once". A tracker waiting on the survey is usually mixing an empty bin, where there is no character to protect. HM-DEC-096 still governs every survey move.
+   - **Rejected:** holding the meter's move until the character ends. The decoder's `InsideCharacter` on an empty bin could hold the move for as long as noise looks like a character.
 
-6. **The fallback band, 100 to 3000 Hz, and "CW or CW-R only" are the author's, not radio
-   facts.** Ruling asked: confirm, or name the band you want used when the radio hasn't said.
-   Reasoning: the instruction leaves the drawn passband to the author when the rig state is
-   unknown. Outside CW, the radio's CW pitch does not centre the filter, so using it there would
-   be a guess. Rejected: taking the radio's pitch and filter in every mode.
+6. **While the meter owns the pitch, `PitchProof` reads Hypothesis.**
+   - **Ruling wanted:** whether a pitch set by the meter's verdict should read Proved.
+   - **Reasoning:** Proved is defined as the survey's keyed verdict matching the reported pitch. While the meter holds the pitch, the survey's verdict is cleared, so the pitch the decoder uses is labelled a hypothesis. That is the less confident claim, and harmless under Â§0.0, but it undersells the meter.
+   - **Rejected:** redefining Proved in this unit. The instruction said to change only two things.

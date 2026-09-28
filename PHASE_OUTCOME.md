@@ -12,7 +12,7 @@ STEP: 7 | partial | The conditions can be generated - sections E, F and G: chann
 STEP: 8 | not started | Tim at the radio - CW on 20 m or 40 m, text on the CW tab that reads as what was sent, and he says it read.
 STEP: 9 | partial | Two decoders read the same audio - section M: fldigi's CW modem ported faithfully as the second decoder, both scored on every recording before either votes, both confidences calibrated against the keys, and the arbitration that emits one transcript, never worse than the better decoder alone.
 STEP: 11 | not started | The owner's ear teaches the detector where the entry is - a light saying whether Hamlet thinks it hears CW, a strip showing the whole pitch range and where it looks, two buttons that write his verdict beside the detector's state; no decode, no corpus.
-STEP: 12 | not started | The oscilloscope - a keyed signal is found as the audio envelope over a threshold above the tracked noise floor, at any pitch the filter passes, its frequency read from the spectrum after; shown on the CW tab first, then driving the decoder.
+STEP: 12 | partial | The oscilloscope - a keyed signal is found as the audio envelope over a threshold above the tracked noise floor, at any pitch the filter passes, its frequency read from the spectrum after; shown on the CW tab first, then driving the decoder.
 
 ## UNIT 439 - STEP 0
 
@@ -1122,3 +1122,21 @@ LICENCE: PHASE_PLAN.md R88, R90, R91, section 6, step 12; HM-DEC-186; CLAUDE.md 
 ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
 ADVANCES: step 12 criterion 4
 RUN: session launched with SESSION.lock already present and an empty STOP at the root, both the launcher's; neither taken, released nor removed by the session.
+
+## UNIT 1 - STEP 12
+
+STEP: 12
+APPROACH: replace the envelope detector's floor and margin with run detection per bin across the passband - a bin is keying when it makes flat-topped bars of dit length separated by gaps - wire the tracker to take the meter's pitch and keying verdict within a hop, and replace the meter's swing gate with the bar test
+HIT: section 4 wants a ruling: yes - Item 6 asks the owner whether a pitch set by the meter should be reported as Proved instead of Hypothesis, which changes what the product tells the operator about what was heard.
+MOVE: continue
+WHY: PHASE_PLAN.md step 12 criterion 12.4 asks that the detector drive the decoder - nothing decoded until a mark is found, the decoder mixed at the detector's pitch and started when the tone is present - judged by the owner's ear and his verdict rows, and those rows show the meter finding each station within a second while the tracker waited on the survey or held its keying flag false on an 18 dB swing
+DECIDED: the flatness tolerance, the bar-count that makes keying, and whether task 3 is reached are the author's, overrulable; every number's remark names its reason and none rests on a recording
+LICENCE: PHASE_PLAN.md R88, R90, R91, section 6, step 12; HM-DEC-186; CLAUDE.md 0.0, 0.2 and 0.6; HM-DEC-155; FACT-006
+COST: 9.157203400000004
+ACCOMPLISHED: a keyed station at any pitch in the filter is found by its bars and read at its pitch within a second, which is what the owner's ear has been doing all week and Hamlet has not
+FATE: executed
+STATE_AFTER: partial
+STATE_WHY: 12.1, 12.2 and 12.3 are ticked, though 12.1's text still describes the floor and margin this unit removed, 12.4 has only its first half wired, the tracker following the meter, shown on synthetic tests with no owner's ear verdict and no detector started decoder, and 12.5 is not met because the app line was lost to the dispatcher loop on both runs.
+ADVANCED: no
+ATTEMPT: 12.4 | unit 1 launched 2026-09-28T13:43:22.675Z | no | executed | replace the envelope detector's floor and margin with run detection per bin across the passband - a bin is keying when it makes flat-topped bars of dit length separated by gaps - wire the tracker to take the meter's pitch and keying verdict within a hop, and replace the meter's swing gate with the bar test
+REASON: 12.4 | unit 1 launched 2026-09-28T13:43:22.675Z | the unit ran to completion and the criterion did not flip from unmet to met

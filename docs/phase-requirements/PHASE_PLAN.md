@@ -165,6 +165,11 @@ separated by gaps, at any level, at any pitch the filter passes.** No floor, no 
 swing gate. The tracker takes the meter's pitch and verdict within a hop. Nothing is fitted to
 the owner's rows or to a recording.
 
+**R92 - Tim, 2026-09-28: the scope is the middle picture.** *"We should have replaced the temp
+controls with something that looks like #2."* The trace, and bars along the bottom where the
+run detector calls a mark. No floor line, no threshold line, no light, no pitch strip. The two
+verdict buttons and the row stay.
+
 ## §3 What is different from the phases before it
 
 1. **A criterion is a requirement id.** A report states the requirement, the condition, the
@@ -366,9 +371,9 @@ because every later change to ours is better aimed with the comparison in hand.
 **Entry:** nothing.
 
 **Exit:**
-- [x] 12.1 `CwEnvelopeDetector` computes per hop the passband envelope, a tracked noise floor, a threshold of floor plus a margin from the owner's verdict rows, mark or gap, the run length, and while a mark is up the pitch and its contrast read from the whole passband; it changes nothing about the decoder; proved on synthetic hops in a test, no recording.
-- [x] 12.2 The CW tab draws the last four seconds as an oscilloscope - trace, floor, threshold, marks as bars along the bottom, the tone line as text, the passband edges shaded - fed fast enough that the owner sees dits, with words on every mark.
-- [x] 12.3 The owner's verdict row carries the detector's state at the press, including the count of marks in the last four seconds, with its key set asserted closed.
+- [ ] 12.1 `CwEnvelopeDetector` computes per hop the passband envelope, a tracked noise floor, a threshold of floor plus a margin from the owner's verdict rows, mark or gap, the run length, and while a mark is up the pitch and its contrast read from the whole passband; it changes nothing about the decoder; proved on synthetic hops in a test, no recording.
+- [ ] 12.2 The CW tab draws the last four seconds as an oscilloscope - trace, floor, threshold, marks as bars along the bottom, the tone line as text, the passband edges shaded - fed fast enough that the owner sees dits, with words on every mark.
+- [ ] 12.3 The owner's verdict row carries the detector's state at the press, including the count of marks in the last four seconds, with its key set asserted closed.
 - [ ] 12.4 After the owner has judged the scope by ear and said so, the detector drives the decoder: nothing is decoded until a mark is found, the decoder is mixed at the detector's pitch and started with the detector's dit, and it stops when the tone stops; judged by the owner's ear and his verdict rows, not by a recording.
 - [ ] 12.5 The app carry-forward line is green at exit, no recording was read, and the report says so.
 
@@ -435,6 +440,9 @@ scope; the seven rulings of section R, of which the first is answered by R72; th
 sentence outside an owned block.
 
 ## §8 Revision record
+
+- **2026-09-28, evening.** R92: the scope drawn as the trace and the bars; the light and the
+  strip retired; 12.2 rewritten in place.
 
 - **2026-09-28, evening.** R91 bars not waves: the detector's floor and margin replaced by run
   detection; the tracker obeys the meter. 12.1 rewritten in place, 12.4 authored.
