@@ -1,0 +1,32 @@
+Test run for C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.06]   Discovering: Hamlet.App.Tests
+[xUnit.net 00:00:00.18]   Discovered:  Hamlet.App.Tests
+[xUnit.net 00:00:00.19]   Starting:    Hamlet.App.Tests
+[xUnit.net 00:00:00.27]   Finished:    Hamlet.App.Tests
+  Passed Hamlet.App.Tests.ViewModels.TheBarsCarryTheirLettersTests.TheHoverSaysABarsLengthAndWhatTheTraceIs [36 ms]
+  Standard Output Messages:
+ bar: dah, 175 ms; trace: the level of the bin the detector is reading, over the last eight seconds
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheBarsCarryTheirLettersTests.FourBarsForCSitUnderTheTrace [21 ms]
+  Standard Output Messages:
+ Tone          6.0     6.0  no keying
+ Mixing        6.0     6.0  not mixing
+ Trace       650.7   794.0  the level of the bin the detector is reading, over the last eight seconds
+ Bar         699.9   717.2  dah, 175 ms
+ Bar         723.6   729.0  dit, 55 ms
+ Bar         735.4   752.6  dah, 175 ms
+ Bar         759.0   764.5  dit, 55 ms
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheBarsCarryTheirLettersTests.ALetterWithNoBarsHasNoRowOfItsOwn [< 1 ms]
+  Passed Hamlet.App.Tests.ViewModels.TheBarsCarryTheirLettersTests.NoBarsDrawNothingButListening [< 1 ms]
+
+Test Run Successful.
+Total tests: 4
+     Passed: 4
+ Total time: 0.5677 Seconds
+RC=0 WALL=1s

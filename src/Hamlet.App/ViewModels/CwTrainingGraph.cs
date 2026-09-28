@@ -19,6 +19,11 @@ public sealed record CwGraphBar(DateTime StartUtc, DateTime EndUtc, double Lengt
 public sealed record CwGraphLetter(
     DateTime StartUtc, DateTime EndUtc, string Text, CwConfidence Confidence, double Probability, bool HasSpan);
 
+/// <summary>One hop of the level trace.</summary>
+/// <param name="StartUtc">When the hop started.</param>
+/// <param name="EnvelopeDb">The level of the bin the detector watched that hop.</param>
+public readonly record struct CwGraphLevel(DateTime StartUtc, double EnvelopeDb);
+
 /// <summary>What the training graph draws: the last <see cref="CwTrainingGraph.WindowSeconds"/>.</summary>
 /// <param name="NowUtc">The right-hand edge.</param>
 /// <param name="Bars">Every bar in the window, oldest first.</param>
@@ -29,8 +34,14 @@ public sealed record CwTrainingFrame(DateTime NowUtc, IReadOnlyList<CwGraphBar> 
     public static CwTrainingFrame Empty { get; } =
         new(DateTime.MinValue, Array.Empty<CwGraphBar>(), Array.Empty<CwGraphLetter>());
 
-    /// <summary>True while there is nothing to draw: no bars and no letters.</summary>
-    public bool Listening => Bars.Count == 0 && Letters.Count == 0;
+    /// <summary>
+    /// The level of the watched bin, hop by hop, oldest first (work instruction 480, R94): the
+    /// trace the bars sit under.
+    /// </summary>
+    public IReadOnlyList<CwGraphLevel> Trace { get; init; } = Array.Empty<CwGraphLevel>();
+
+    /// <summary>True while there is nothing to draw: no level heard, no bars and no letters.</summary>
+    public bool Listening => Trace.Count == 0 && Bars.Count == 0 && Letters.Count == 0;
 }
 
 /// <summary>
@@ -53,6 +64,14 @@ public sealed record CwTrainingFrame(DateTime NowUtc, IReadOnlyList<CwGraphBar> 
 /// twice the shortest bar in the window reads as a dah, the rest as dits. It decides nothing.</para>
 /// <para>**THREAD**: characters settle on the audio thread and the frame is read on the UI's, so
 /// both go under one lock.</para>
+/// <para>**THE TRACE CAME BACK** (work instruction 480, the letter over the bars, R94): *"I want
+/// to see the flat oscilloscope shapes with the letter over top."* R95's bars-only graph drew
+/// nothing where the detector marked nothing, which on the owner's tab was the whole panel. The
+/// level of every hop is kept beside the bars, on the same clock and the same eight seconds, the
+/// newest four replaced each update as the bars are.</para>
+/// <para>**EIGHT SECONDS, NOT FOUR, AND THE AUTHOR'S - OVERRULABLE**: a character settles about a
+/// second after its last element and its span reaches back two thirds of a second more at twenty
+/// words a minute, so in four seconds a letter would be on screen for two.</para>
 /// </remarks>
 public sealed class CwTrainingGraph
 {
@@ -61,6 +80,7 @@ public sealed class CwTrainingGraph
 
     private readonly object _gate = new();
     private readonly List<(DateTime Start, DateTime End)> _bars = new();
+    private readonly List<CwGraphLevel> _trace = new();
     private readonly List<CwGraphLetter> _letters = new();
 
     /// <summary>How many settled characters carried no span and were drawn at their end.</summary>
@@ -87,6 +107,12 @@ public sealed class CwTrainingGraph
         {
             // What the detector still holds it may still revise; what is older is kept.
             _bars.RemoveAll(b => b.Start >= windowStart || b.End < nowUtc.AddSeconds(-WindowSeconds));
+            _trace.RemoveAll(p => p.StartUtc >= windowStart || p.StartUtc < nowUtc.AddSeconds(-WindowSeconds));
+
+            for (var i = 0; i < hops.Count; i++)
+            {
+                _trace.Add(new CwGraphLevel(At(i), hops[i].EnvelopeDb));
+            }
 
             var start = -1;
 
@@ -162,6 +188,7 @@ public sealed class CwTrainingGraph
         lock (_gate)
         {
             _bars.Clear();
+            _trace.Clear();
             _letters.Clear();
         }
     }
@@ -184,7 +211,10 @@ public sealed class CwTrainingGraph
                     var ms = (b.End - b.Start).TotalMilliseconds;
                     return new CwGraphBar(b.Start, b.End, ms, ms > 2 * shortest);
                 }).ToList(),
-                _letters.Where(l => l.EndUtc >= from).OrderBy(l => l.StartUtc).ToList());
+                _letters.Where(l => l.EndUtc >= from).OrderBy(l => l.StartUtc).ToList())
+            {
+                Trace = _trace.Where(p => p.StartUtc >= from).ToList(),
+            };
         }
     }
 }

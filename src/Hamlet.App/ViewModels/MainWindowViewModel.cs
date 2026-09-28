@@ -12495,38 +12495,31 @@ public partial class MainWindowViewModel : ObservableObject
         var reading = envelope.Reading;
         _decoder?.Tracker.FollowScope(reading is { Pointed: true, Keying: true } ? pointed?.PitchHz : null);
 
-        // **BARS, AND THE LETTERS OVER THEM** (work instruction 480 task 3, R95): the detector's
-        // last four seconds go into the graph's eight, on the wall's clock.
-        var now = DateTime.UtcNow;
-        var history = envelope.History();
-        _trainingGraph.Update(history, envelope.HopMs, now);
-
-        // The tracker's pitch goes beside the detector's, so the owner sees whether they agree
-        // (work instruction 478); the last frame is handed back so the pitch holds across a gap.
-        CwHearing.ObserveScope(CwScopeFrame.From(
-            history,
-            envelope.HopMs,
+        // **BARS, AND THE LETTERS OVER THEM** (work instruction 480): the detector's last four
+        // seconds go into the graph's eight, on the wall's clock. The tracker's pitch goes beside
+        // the detector's, so the owner sees whether they agree (work instruction 478); the last
+        // frame is handed back so the pitch holds across a gap.
+        CwHearing.ObserveScope(_scopeFeed.Tick(
+            envelope,
             reading,
             IsDecoding ? DecodeReport.ToneHz : double.NaN,
             CwHearing.Scope,
-            scopeQuiet: plainCw && pointed is null) with
-        {
-            Training = _trainingGraph.Frame(now),
-        });
+            scopeQuiet: plainCw && pointed is null,
+            DateTime.UtcNow));
     }
 
-    /// <summary>The training graph's eight seconds of bars and settled letters (work instruction 480).</summary>
-    private readonly CwTrainingGraph _trainingGraph = new();
+    /// <summary>What the scope is handed: the detector's hops and the settled letters (work instruction 480).</summary>
+    private readonly CwScopeFeed _scopeFeed = new();
 
     /// <summary>
-    /// Put a settled character on the training graph, over the span the decoder gave it
-    /// (work instruction 480 task 3). Called on the audio thread; the graph locks.
+    /// Put a settled character on the scope, over the span the decoder gave it
+    /// (work instruction 480). Called on the audio thread; the graph locks.
     /// </summary>
     private void SettleOnTheGraph(CwCharacter character)
     {
         if (_decoder is { } decoder)
         {
-            _trainingGraph.Settle(character, decoder.Heard, DateTime.UtcNow);
+            _scopeFeed.Settle(character, decoder.Heard, DateTime.UtcNow);
         }
     }
 

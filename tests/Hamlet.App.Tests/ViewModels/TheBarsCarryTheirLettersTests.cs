@@ -18,6 +18,8 @@ namespace Hamlet.App.Tests.ViewModels;
 /// in seeded noise, dah dit dah dit at twenty words a minute, and a settled C handed over with
 /// the span that audio gave it. Headless: the items are what the control draws, and nothing
 /// is drawn that is not an item.</para>
+/// <para>**SINCE THE SECOND INSTRUCTION NUMBERED 480 (R94)** the trace is drawn again and the
+/// letter row is gone; the tests below were rewritten to say so.</para>
 /// </remarks>
 public sealed class TheBarsCarryTheirLettersTests
 {
@@ -31,11 +33,12 @@ public sealed class TheBarsCarryTheirLettersTests
     public TheBarsCarryTheirLettersTests(ITestOutputHelper output) => _output = output;
 
     /// <remarks>
-    /// Proves the picture: four bars for C, the letter C centered over them, no trace, and
-    /// nothing else on the canvas but the two lines of words in the corner.
+    /// Proves the picture since R94 (work instruction 480, the letter over the bars, task 1):
+    /// the trace across the window, four bars for C under it, and the two lines of words; the
+    /// 26 point letter row R95 drew is gone.
     /// </remarks>
     [Fact]
-    public void FourBarsForCHaveCAboveThemAndNothingElse()
+    public void FourBarsForCSitUnderTheTrace()
     {
         var (frame, items) = KeyedC(settle: true);
 
@@ -45,21 +48,20 @@ public sealed class TheBarsCarryTheirLettersTests
         }
 
         var bars = items.Where(i => i.Kind == CwScopeItemKind.Bar).ToList();
-        var letter = Assert.Single(items, i => i.Kind == CwScopeItemKind.Letter);
+        var trace = Assert.Single(items, i => i.Kind == CwScopeItemKind.Trace);
 
-        Assert.DoesNotContain(items, i => i.Kind == CwScopeItemKind.Trace);
         Assert.DoesNotContain(items, i => i.Kind == CwScopeItemKind.Listening);
+        Assert.DoesNotContain(items, i => i.Kind == CwScopeItemKind.Letter);
         Assert.Equal(4, bars.Count);
-        Assert.Equal("C", letter.Text);
-        Assert.InRange(letter.X, bars[0].X, bars[^1].X2);
+        Assert.True(trace.X <= bars[0].X && trace.X2 >= bars[^1].X2, "the trace does not span the bars");
         Assert.All(
             items,
-            i => Assert.Contains(i.Kind, new[] { CwScopeItemKind.Bar, CwScopeItemKind.Letter, CwScopeItemKind.Tone, CwScopeItemKind.Mixing }));
+            i => Assert.Contains(i.Kind, new[] { CwScopeItemKind.Trace, CwScopeItemKind.Bar, CwScopeItemKind.Tone, CwScopeItemKind.Mixing }));
         Assert.Equal(4, frame.Training.Bars.Count);
     }
 
     /// <remarks>
-    /// Proves silence draws nothing: no trace, no bar, no letter, and the small word
+    /// Proves nothing heard draws nothing: no trace, no bar, no letter, and the small word
     /// "listening".
     /// </remarks>
     [Fact]
@@ -73,11 +75,11 @@ public sealed class TheBarsCarryTheirLettersTests
     }
 
     /// <remarks>
-    /// Proves an invention is visible: a letter the decoder settled where the detector found no
-    /// bar is still written, above empty space.
+    /// Proves the large letters are gone (work instruction 480, the letter over the bars, task
+    /// 1): a letter settled where the detector found no bar is not written in a row of its own.
     /// </remarks>
     [Fact]
-    public void ALetterWithNoBarsIsStillWritten()
+    public void ALetterWithNoBarsHasNoRowOfItsOwn()
     {
         var graph = new CwTrainingGraph();
         var now = new DateTime(2026, 9, 28, 17, 15, 0, DateTimeKind.Utc);
@@ -88,29 +90,26 @@ public sealed class TheBarsCarryTheirLettersTests
         var items = CwScopeControl.Items(frame, Width);
 
         Assert.Empty(frame.Training.Bars);
-        Assert.Contains(items, i => i.Kind == CwScopeItemKind.Letter && i.Text == "E");
-        Assert.DoesNotContain(items, i => i.Kind == CwScopeItemKind.Listening);
+        Assert.DoesNotContain(items, i => i.Kind == CwScopeItemKind.Letter);
     }
 
     /// <remarks>
-    /// Proves the hovers: over a bar its length and dit or dah, over a letter its class and
-    /// confidence.
+    /// Proves the hovers: over a bar its length and dit or dah, over the trace what it is.
     /// </remarks>
     [Fact]
-    public void TheHoverSaysABarsLengthAndALettersConfidence()
+    public void TheHoverSaysABarsLengthAndWhatTheTraceIs()
     {
         var (frame, items) = KeyedC(settle: true);
         var dah = items.First(i => i.Kind == CwScopeItemKind.Bar);
-        var letter = items.Single(i => i.Kind == CwScopeItemKind.Letter);
 
         var barTip = CwScopeControl.TipAt(frame, Width, new Avalonia.Point((dah.X + dah.X2) / 2, CwScopeControl.BarTop + 2));
-        var letterTip = CwScopeControl.TipAt(frame, Width, new Avalonia.Point(letter.X, CwScopeControl.LetterTop + 4));
+        var traceTip = CwScopeControl.TipAt(frame, Width, new Avalonia.Point((dah.X + dah.X2) / 2, CwScopeControl.TraceTop + 10));
 
-        _output.WriteLine($"bar: {barTip}; letter: {letterTip}");
+        _output.WriteLine($"bar: {barTip}; trace: {traceTip}");
 
         Assert.StartsWith("dah, ", barTip, StringComparison.Ordinal);
         Assert.EndsWith(" ms", barTip, StringComparison.Ordinal);
-        Assert.Contains("C, sure", letterTip, StringComparison.Ordinal);
+        Assert.Equal(CwHearingViewModel.ScopeTraceTip, traceTip);
     }
 
     private static (CwScopeFrame Frame, IReadOnlyList<CwScopeItem> Items) KeyedC(bool settle)

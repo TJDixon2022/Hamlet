@@ -231,24 +231,21 @@ public sealed partial class CwHearingViewModel : ObservableObject
 
     /// <summary>What the oscilloscope shows, on hover.</summary>
     public const string ScopeTip =
-        "The last eight seconds of keying Hamlet found, newest at the right, with each letter the "
-        + "decoder settled written above the bars that made it (work instruction 480)." + "\n"
-        + "Bars: wherever the level at the pitch the radio's scope points at held flat for at least "
-        + "a dit, dropped, and held again. A dit is a short bar and a dah a long one, drawn as long "
-        + "as they were, and a gap is empty space as long as the gap was. Noise makes none, so a quiet "
-        + "band leaves the graph empty and it says listening." + "\n"
-        + "Letters: written only where the decoder settled one, over its own span. A bar with nothing "
-        + "above it is something the decoder missed, and a letter above empty space is one it read "
-        + "without bars under it. Bold is sure, faint and slanted is unsure, and the square is heard "
-        + "but unreadable." + "\n"
+        "The last eight seconds of what Hamlet hears, newest at the right (work instruction 480)." + "\n"
+        + "Trace: the level at the pitch the detector is reading, drawn whether or not anything is "
+        + "keyed. A keyed station is flat tops where the key is down and flat bottoms between; noise "
+        + "is a ragged line." + "\n"
+        + "Bars: wherever that level held flat for at least a dit, dropped, and held again. A dit is "
+        + "a short bar and a dah a long one, drawn as long as they were, and a gap is empty space as "
+        + "long as the gap was." + "\n"
         + "Top left: the pitch the detector found while it says keying, or no keying, and when the "
         + "radio's scope has gone quiet it says so; beside it the pitch the decoder is mixing at." + "\n"
-        + "Hover a bar for its length, or a letter for how sure the decoder was. This shows what "
-        + "Hamlet hears and changes nothing about how it decodes.";
+        + "Hover the trace for what it is and a bar for its length. This shows what Hamlet hears and "
+        + "changes nothing about how it decodes.";
 
     /// <summary>What the trace is, on hover over it.</summary>
     public const string ScopeTraceTip =
-        "the level of the bin the detector is reading, over the last four seconds";
+        "the level of the bin the detector is reading, over the last eight seconds";
 
     /// <summary>What a bar is, on hover over one.</summary>
     public const string ScopeBarTip = "a mark - the level held flat for at least a dit";

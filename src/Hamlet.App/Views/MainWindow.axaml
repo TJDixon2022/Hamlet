@@ -1754,7 +1754,7 @@
                     </Border>
 
                     <!-- THE OSCILLOSCOPE, THE MIDDLE PICTURE (work instructions 476
-                         to 478, R92). The last four seconds: the level of the one
+                         to 480, R92, R94). The last eight seconds: the level of the one
                          pitch the detector reads as a trace, and a bar along the
                          bottom under every mark - flat for at least a dit, dropped,
                          and flat again - with nothing under a gap. Top left, in

@@ -22,13 +22,13 @@ public sealed class TheScopeIsTheMiddlePictureTests
     private const int Rate = 48_000;
 
     /// <remarks>
-    /// Proves the scope draws the bars and the two lines of words, and no trace, floor,
-    /// threshold, margin or passband. **Since work instruction 480 (R95) the trace is gone
-    /// too**; this test asserted it was drawn until then, and TheBarsCarryTheirLettersTests
-    /// asserts the canvas itself.
+    /// Proves the scope draws the trace, the bars and the two lines of words, and no floor,
+    /// threshold, margin or passband. The first instruction numbered 480 (R95) took the trace
+    /// off; the second (R94) put it back, and TheScopeDrawsLiveTests asserts the canvas on the
+    /// live path.
     /// </remarks>
     [Fact]
-    public void OnlyTheBarsAndTwoLinesOfWordsAreDrawn()
+    public void TheTraceTheBarsAndTwoLinesOfWordsAreDrawn()
     {
         var detector = Keyed(742, 500, 1.73);
         var frame = CwScopeFrame.From(detector.History(), detector.HopMs, detector.Reading, 742, null);
@@ -36,7 +36,7 @@ public sealed class TheScopeIsTheMiddlePictureTests
         var lines = CwScopeControl.Lines(frame);
 
         Assert.Equal(
-            new[] { "Bars", "Mixing", "Tone" },
+            new[] { "Bars", "Mixing", "Tone", "Trace" },
             lines.Select(l => l.Kind.ToString()).OrderBy(k => k, StringComparer.Ordinal).ToArray());
 
         foreach (var line in lines)
