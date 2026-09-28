@@ -1753,6 +1753,47 @@
                         </ScrollViewer>
                     </Border>
 
+                    <!-- DOES HAMLET THINK IT HEARS CW (work instruction 474,
+                         HM-DEC-184). Twenty strong stations gave no characters and
+                         nothing on the screen said whether Hamlet had noticed any
+                         of them. This is the existing detector's opinion, not a new
+                         one: lit when the keying meter calls it keying or the
+                         survey admits a pitch. It says "I think", never "there
+                         is" (0.0), and the words carry it; the dot and the tint
+                         only agree (0.6). Always present, so it changing moves
+                         nothing. -->
+                    <Grid x:Name="CwHearingRow" ColumnDefinitions="Auto,*"
+                          Margin="0,2,0,0">
+                        <Border Grid.Column="0" x:Name="CwHearingLight"
+                                BorderThickness="1" CornerRadius="6"
+                                Padding="8,3"
+                                ToolTip.Tip="{x:Static vm:CwHearingViewModel.LightTip}"
+                                ToolTip.ShowDelay="300"
+                                Background="{StaticResource HmGreenTintBrush}"
+                                BorderBrush="{StaticResource HmGreenEdgeBrush}"
+                                IsVisible="{Binding CwHearing.IsLit}">
+                            <TextBlock FontSize="12" FontWeight="SemiBold"
+                                       Foreground="{StaticResource HmGreenBrush}">
+                                <Run Text="●" />
+                                <Run Text="{Binding CwHearing.LightWords}" />
+                            </TextBlock>
+                        </Border>
+                        <Border Grid.Column="0" x:Name="CwHearingDark"
+                                BorderThickness="1" CornerRadius="6"
+                                Padding="8,3"
+                                ToolTip.Tip="{x:Static vm:CwHearingViewModel.LightTip}"
+                                ToolTip.ShowDelay="300"
+                                Background="{StaticResource HmSlateTintBrush}"
+                                BorderBrush="{StaticResource HmSlateEdgeBrush}"
+                                IsVisible="{Binding !CwHearing.IsLit}">
+                            <TextBlock FontSize="12"
+                                       Foreground="{StaticResource HmTextMutedBrush}">
+                                <Run Text="○" />
+                                <Run Text="{Binding CwHearing.LightWords}" />
+                            </TextBlock>
+                        </Border>
+                    </Grid>
+
                     <!-- ONE ADVISORY REGION, AND IT NEVER CHANGES HEIGHT.
                          Below the transcript sat a stack of boxes that each
                          appeared and vanished on their own, and every one of

@@ -8916,6 +8916,21 @@ public partial class MainWindowViewModel : ObservableObject
     public CwTranscript Transcript { get; } = new();
 
     /// <summary>
+    /// The light that says whether Hamlet thinks it hears CW (work instruction 474).
+    /// </summary>
+    /// <remarks>
+    /// **IT READS THE DETECTOR AND IS NEVER READ BY IT** (HM-DEC-184): the meter's
+    /// reading this class already holds, the decoder's report, and the survey's
+    /// admitted bins, once a second on the decode tick.
+    /// </remarks>
+    public CwHearingViewModel CwHearing => _cwHearing ??= new CwHearingViewModel();
+
+    private CwHearingViewModel? _cwHearing;
+
+    /// <summary>When the light last read the detector.</summary>
+    private DateTime _hearingLastUtc = DateTime.MinValue;
+
+    /// <summary>
     /// The receiver's front end, in one chip beside the filter width.
     /// </summary>
     /// <remarks>
@@ -11368,6 +11383,7 @@ public partial class MainWindowViewModel : ObservableObject
         _keyingMeter = null;
         _meterWork = null;
         PublishKeying(KeyingReading.None);
+        CwHearing.Observe(CwHearingState.None);
 
         DigitalSpectrum?.Stop();
         DigitalSpectrum?.Dispose();
@@ -11448,6 +11464,7 @@ public partial class MainWindowViewModel : ObservableObject
             : "";
 
         RunKeyingMeter();
+        ObserveHearing(_decoder);
 
         // Sampled here, on the same tick as the readouts, so the two ends of any
         // window a capture asks about are each accurate to one tick.
@@ -12320,6 +12337,40 @@ public partial class MainWindowViewModel : ObservableObject
         // SAFE.** The guard above returns while `_meterWork` is not null, so a
         // second read cannot start while the first is still reading.
         _meterWork = Task.Run(() => meter.Update(tap));
+    }
+
+    /// <summary>
+    /// Hand the light what the detector says, once a second (work instruction 474).
+    /// </summary>
+    /// <param name="decoder">The decoder listening now.</param>
+    /// <remarks>
+    /// <para>**NOTHING HERE DECIDES ANYTHING.** The meter's verdict is the one
+    /// <see cref="PublishKeying"/> last put on the screen, the tracker's pitch and
+    /// keying are the report this tick already read, and the admitted bins are
+    /// <see cref="CwToneTracker.CoarseCandidates"/>, the seam that has handed them out
+    /// for diagnosis since unit 448 and that <see cref="CwDecoder.Report"/> already
+    /// calls from this thread through the competitor.</para>
+    /// <para>**ONCE A SECOND, ON THE METER'S CADENCE**, because the survey's
+    /// examination is not free and the light cannot usefully change faster than the
+    /// meter beside it.</para>
+    /// </remarks>
+    private void ObserveHearing(CwDecoder decoder)
+    {
+        if (DateTime.UtcNow - _hearingLastUtc < KeyingMeterEvery)
+        {
+            return;
+        }
+
+        _hearingLastUtc = DateTime.UtcNow;
+
+        var report = DecodeReport;
+
+        CwHearing.Observe(new CwHearingState(
+            _keyingReading,
+            report.ToneHz,
+            report.PitchWasMeasured,
+            report.HasKeying,
+            decoder.Tracker.CoarseCandidates()));
     }
 
     /// <summary>Put a reading on the screen.</summary>

@@ -1,0 +1,3 @@
+unit474 task 1: the light - "I think I hear CW" or "I don't think I hear CW" beside the transcript, lit when the keying meter calls it keying or the survey admits a pitch, hover says it is Hamlet's guess; read once a second from PublishKeying's reading, the decoder report and CwToneTracker.CoarseCandidates(), nothing added to the decoder; watched red 3 of 4 on a stub, green 5 of 5 with the window check; binding health 1/1, every-control 3/3; no recording read (11.1)
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
