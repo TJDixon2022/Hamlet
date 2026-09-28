@@ -378,8 +378,8 @@ because every later change to ours is better aimed with the comparison in hand.
 - [ ] 11.2 A strip on the CW tab shows the pitch range drawn 200 to 1200 Hz, the band the tracker searches shaded and numbered, every admitted bin, the mixing pitch and the meter's best pitch with its four figures on hover; it changes nothing about where the detector looks. - retired by unit 478 under R92; the scope shows what they showed
 - [ ] 11.3 Two buttons - I agree with you, You're an idiot - each write one telemetry row, category cw, event owner_verdict, carrying the verdict beside the light, the tracker, the meter's figures, the survey's bins and the rig state at that moment.
 - [ ] 11.4 The owner's verdict rows are read from the telemetry file and the gate that disagreed with his ear is named from them and moved, one number per unit, with the constant's remark rewritten to say what it now rests on; no recording is read.
-- [ ] 11.5 The app carry-forward line is green at exit, no recording was read, and the report says so.
-- [ ] 11.6 A mode or frequency change the radio announces leaves the window exactly as the same change chosen in the app does - every panel's position and size, and every sentence in the neighborhood panel - proved by a headless test that drives both paths to 14.0754 in USB-D and asserts they match; unit 423's privilege test and unit 389's sun-map rule still hold (R95).
+- [x] 11.5 The app carry-forward line is green at exit, no recording was read, and the report says so. - met by unit 481: 278 of 278 at exit on the first run, no recording read
+- [x] 11.6 A mode or frequency change the radio announces leaves the window exactly as the same change chosen in the app does - every panel's position and size, and every sentence in the neighborhood panel - proved by a headless test that drives both paths to 14.0754 in USB-D and asserts they match; unit 423's privilege test and unit 389's sun-map rule still hold (R95). - met by unit 481: TheAnnouncedChangeMatchesTheChosenChangeTests green, and green at HEAD with no change to src; 423 1 of 1, 389 2 of 2
 
 **Depends on:** nothing. **The only authorable step while R88 stands.**
 

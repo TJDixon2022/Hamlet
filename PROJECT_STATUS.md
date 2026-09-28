@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: EXECUTING
+STATE: COMPLETED
 TASK: 3 of 3
 WORK_INSTRUCTION: 481 - the window holds still when the radio moves the dial
-BALL: code
-NEXT_PASTE: none
+BALL: tim
+NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-188 (2026-09-28)
-UPDATED: 2026-09-28T15:26:23-04:00
-NOTE: Task 2 committed (green at HEAD, no fix); task 3 starting: full no-incremental build with warnings as errors
+UPDATED: 2026-09-28T15:31:18-04:00
+NOTE: Unit 481 done: the radio-announced change to 14.0754 USB-D leaves the window as the chosen one does (green at HEAD, no fix); 11.5 and 11.6 ticked; no recording read
 
 ---
 
