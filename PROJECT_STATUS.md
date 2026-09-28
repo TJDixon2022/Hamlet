@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 0 of 3
+TASK: 1 of 3
 WORK_INSTRUCTION: 483 - the owner's rows name the gate
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-188 (2026-09-28)
-UPDATED: 2026-09-28T16:04:17-04:00
-NOTE: Task 0 entry round green (build clean, carry-forward 278/278 on re-run, row types 7/7, 4/4, 1/1); committing and pushing task 0
+UPDATED: 2026-09-28T16:06:22-04:00
+NOTE: Task 1 at its stop: the gate list is written and 0 rows were read (the telemetry folder is outside the session), so nothing is moved; committing the replay, then output.md
 
 ---
 
