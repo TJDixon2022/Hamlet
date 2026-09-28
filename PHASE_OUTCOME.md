@@ -1307,3 +1307,33 @@ LICENCE: PHASE_PLAN.md R88, R89, R92, R80, R85, section 6, step 11; CLAUDE.md 0.
 ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
 ADVANCES: step 11 criterion 3
 RUN: hand run of instruction 482 (the owner's press lands in the file); SESSION.lock was already present at the root when the session began, so the session did not take it and does not release it.
+
+## UNIT 3 - STEP 11
+
+STEP: 11
+APPROACH: press both verdict buttons in a headless main window and read the rows back from the telemetry file to prove 11.3, watched red by breaking the row once, fix only a missing field or binding
+HIT: section 4 asked nothing inside the two stops - author's, overrulable, the loop continued - The item asks how much test proof is enough for the survey bins in the logged row, which is a question about a test's shape rather than a change to what the product logs or promises, and the unit has already acted on its own recommendation and marked it not blocking.
+MOVE: work around
+WHY: The launcher named step 3, but R88 closes steps 2 to 10 and 3.4 needs a recording decoded; 11.3 is the one open criterion of steps 11 and 12 the loop can judge without the owner, since 12.2 and 12.4 wait on him and he unticked 12.1 and 12.3 himself.
+DECIDED: step 3 is not authored while R88 stands (plan section 6 routing, not a self-ruling); 11.3's 'the light' is read as the bars' verdict that took its field under R92; 12.1 to 12.3 are not re-ticked by a loop unit because the owner unticked them - author's, overrulable
+LICENCE: PHASE_PLAN.md R88, R89, R92, R80, R85, section 6, step 11; CLAUDE.md 0.0, 0.2 and 0.6; HM-DEC-155; HM-DEC-165; FACT-006
+COST: 3.3655659999999994
+ACCOMPLISHED: every press of either verdict button puts one line in the telemetry file carrying the owner's verdict beside what the detector saw, so the next gate is moved on rows that are known to land
+FATE: executed
+STATE_AFTER: partial
+STATE_WHY: 11.3 is met, with the pasted owner_verdict row from a real button press, a watched red run on a dropped trackerHz and green at HEAD, but 11.4 is still open and 11.1 and 11.2 are retired without being ticked, so not every exit criterion is met.
+ADVANCED: yes
+ATTEMPT: 11.3 | unit 3 launched 2026-09-28T19:35:23.827Z | yes | executed | press both verdict buttons in a headless main window and read the rows back from the telemetry file to prove 11.3, watched red by breaking the row once, fix only a missing field or binding
+
+## UNIT 483 - STEP 11
+
+STEP: 11
+APPROACH: replay every owner_verdict row in the owner's telemetry file against the detector's gate constants at HEAD, name the one gate his idiot presses contradicted with no agree row flipped, move that one number to a value one row's figure names, rewrite its remark
+MOVE: work around
+WHY: The launcher named step 3, but R88 closes steps 2 to 10; 11.4 is the last open line of step 11 and the one the owner's ear exists to teach, its only attempt (unit 475) failed because the plan then had no criterion lines rather than on its merits, and the gates have moved under his rows since (477, 479, 480), so the rows are read against HEAD rather than the old swing bar.
+STATE: partial
+DECIDED: step 3 is not authored while R88 stands (plan section 6 routing, not a self-ruling); telemetry rows are not recordings under R88; an idiot row with the bars saying no keying reads as a gate too strict and with keying as too loose, agree rows are controls no move may flip, and a tie goes to a bar-side gate under R91 - author's, overrulable
+LICENCE: PHASE_PLAN.md step 11 line 11.4, R88, R89, R91, R93, R80, R85, section 6; CLAUDE.md 0.0, 0.2 and 0.6; HM-DEC-155; HM-DEC-165; FACT-006
+ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
+ADVANCES: step 11 criterion 4
+RUN: hand run of instruction 483 (the owner's rows name the gate); SESSION.lock was already present at the root when the session began, so the session did not take it and does not release it.

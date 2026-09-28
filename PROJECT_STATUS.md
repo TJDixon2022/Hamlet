@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-TASK: 3 of 3
-WORK_INSTRUCTION: 482 - the owner's press lands in the file
-BALL: tim
-NEXT_PASTE: output.md -> Claude Web
+STATE: EXECUTING
+TASK: 0 of 3
+WORK_INSTRUCTION: 483 - the owner's rows name the gate
+BALL: code
+NEXT_PASTE: none
 RULES_AT: HM-DEC-188 (2026-09-28)
-UPDATED: 2026-09-28T15:51:43-04:00
-NOTE: Unit 482 done: each verdict button press writes exactly one owner_verdict row to the telemetry file (green at HEAD, no fix, watched red); 11.3 ticked; no recording read
+UPDATED: 2026-09-28T16:04:17-04:00
+NOTE: Task 0 entry round green (build clean, carry-forward 278/278 on re-run, row types 7/7, 4/4, 1/1); committing and pushing task 0
 
 ---
 
