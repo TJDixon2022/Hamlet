@@ -7,106 +7,114 @@ section 0's checks hold. Hamlet confirmed. Nothing in this report is evidence ab
 **Run by hand, outside the loop.**
 - `SESSION.lock` was taken through `tools\arbiter\lock.bat take` and released the same way.
 - Nothing was written to `RUN_LEDGER.md`, and nothing under `tools\arbiter\` was touched.
-- No box in `PHASE_PLAN.md` was ticked; its checkbox count is 42 before and after.
+- No box was ticked; the checkbox count is 42 before and after.
 - No recording, fixture, floor or telemetry was read.
 
-**The changes, file by file** (all in `ada6b884`):
-- **`src/Hamlet.RadioEngine/Cw/CwDecoder.cs` - no detection, no letters.** A new `KeyingGate`
-  takes the detector's keying verdict.
-  - The decoder keeps the stretches of its own audio clock during which the gate was open. Each
-    stretch starts `CwEnvelopeDetector.KeyingSeconds` early, because that is the window in which
-    the detector saw the bars that opened it.
-  - A character reaches the transcript, the leading edge and the scope only if its audio lies in
-    one of those stretches. It is judged by when the audio was heard, not by when it settles,
-    because the settled pass runs seconds behind: the last letters of an over settle after the
-    detector lets go.
-  - The lattice, the unit estimator and the emission gate are not changed.
-- **`src/Hamlet.App/ViewModels/MainWindowViewModel.cs`** sets the gate to the detector's
-  `Reading.Keying` when listening starts. That is the wiring criterion 12.4 named and nobody had
-  built.
-- **`src/Hamlet.RadioEngine/Cw/CwEnvelopeDetector.cs` - the station is held through its gaps.**
-  - A new `HoldSeconds` of one second has a remark saying it is a word gap at the slow end of
-    ordinary sending, not fitted to any recording.
-  - While any bin is keying, the detector's own choice of pitch stands and the hold follows it.
-  - In a gap, keying and the watched pitch are held. They are let go only when no mark has
-    arrived at that pitch for `HoldSeconds`, counted from the last mark itself.
-  - The hold clears on a new passband.
-- **`CwScopeControl.cs`, `CwTrainingGraph.cs` and `CwHearingViewModel.cs` - blocks only.**
-  - The level trace is removed from the frame, the graph and the drawing, and from the lines and
-    item kinds.
-  - A letter is drawn only with a block beneath it; the hover and the render read the same list.
-  - With no keying the panel is empty apart from the tone and mixing words.
-  - The hover text is rewritten for blocks, letters and the empty panel.
+**The changes, file by file** (all in `fec08bba`):
+- **`src/Hamlet.RadioEngine/Cw/CwDecoder.cs` - the screen tells the truth.** The gate now judges
+  each character by the detector at the moment it would reach a surface. It must be keying now,
+  and the character must have been heard in the stretch that is keying now. When keying goes
+  false, the terminal's provisional tip is cleared in the same moment. Unit 485 judged by when
+  the audio was heard, which is what let letters land under a panel saying no keying.
+- **`CwDecoder.cs` - the decoder listens where the detector hears.** A new `DetectorPitch` is the
+  second rung of the mixing pitch, after the operator's lock and before the tracker. That is unit
+  477's task 2, never built. The lattice, the unit estimator and the emission gate are untouched.
+- **`src/Hamlet.App/ViewModels/MainWindowViewModel.cs`** sets `DetectorPitch` to the detector's
+  watched pitch while it says keying, and NaN otherwise. The unit 485 hold keeps that pitch
+  through a station's gaps.
+- **`data/bands/mode-receiver-conditions.json` - R98.** The CW preamp row is now off (0) on every
+  band, confirmed, with no band rule and no overload rule. Its text cites R98 and HM-DEC-191 and
+  keeps the manual's page 4-3 reasoning as history. The data rows are unchanged.
+- **`src/Hamlet.RadioEngine/Rig/ReceiverSetup.cs` - his hand first.** The tune-in now asks whether
+  he moved the setting by hand before it accepts the setting as already right.
+- **`src/Hamlet.RadioEngine/Rig/ReceiveAdvice.cs`.** With the preamp off, the advice list said
+  "Switch the preamp on" in any block that does not state the preamp. It now says the preamp is
+  off, which is how he runs it, and proposes nothing.
 - **Tests.**
-  - `NoDetectionNoLettersTests` is new. It writes its own audio: a nine words a minute call
-    between four seconds of noise, with nothing read from disk.
-  - Five existing scope tests asserted the trace or a letter over no block. They were rewritten
-    to R97.
-- **Records.** R97 is in both copies of `PHASE_PLAN.md`, `DECISIONS.md` has HM-DEC-190, both
-  status and outcome copies name 485, and the version went from 1.13.171 to 1.13.172.
+  - `NoDetectionNoLettersTests` gained two synthetic tests, both watched failing first. A `K`
+    reached the screen after the detector let go. The decoder stayed at 536 Hz with the detector
+    at 675.
+  - Twelve engine test files, their shared bench helper and two app test files encoded the
+    superseded preamp 1, the old advice, or the Q of a short call. They were moved to R98 and
+    R97, and no file lost assertions without gaining more.
+- **Records.**
+  - R98 is in both copies of `PHASE_PLAN.md`, and `DECISIONS.md` has HM-DEC-191.
+  - Both status and outcome copies name 486.
+  - The version went from 1.13.172 to 1.13.173.
+- The commit also carries this unit's scratch logs and two copies of the view model made for a
+  comparison, under `.run-unit/`. They are harmless, and `rm` is refused here.
 
-**Watched failing first.** Before the change, the same audio at 9 WPM behaved like this:
-- The detector dropped keying for 49 hops mid-call.
-- The ungated decoder printed an `E` at 29.0 s, after the call had ended at 27.3 s.
+**The three preamp faults, named.**
+1. **Coming back to CW did not restore off because CW asked for preamp 1.** HM-DEC-177's rule
+   was preamp 1 from 1.8 to 29.999 MHz. The data rows have never stated the preamp, so the 1 he
+   saw in data was the CW tune-in's 1, left standing; the radio keeps the preamp per band. So
+   there was nothing to restore. Under R98, CW asks for off, and returning to CW writes it.
+2. **His hand lost in `ReceiverSetup.ApplyAsync`.** The "found already right" branch ran before
+   the hand check and recorded the reading as Hamlet's own. Suppose he set the preamp off, and a
+   tune-in on an overloading band wanted off too. His off was adopted as Hamlet's, and the next
+   tune-in that wanted 1 saw no hand and wrote 1. The overload follow already asked in the right
+   order.
+3. **R98** is the CW row, above.
 
-After the change:
-- Keying held from 4.56 s to 28.33 s with no drop.
-- The call read `<AR>Q CQ DE N,CALL KK`, with the decoder's own misreads at that speed unchanged,
-  and nothing was emitted in either silence.
+**What each row asks and writes now.**
 
-At 10 WPM with light noise both faults were absent. That speed was measured first and could not
-fail, so the test moved to 9 WPM.
+| mode | asked | written | his own change survives a later tune-in |
+|---|---|---|---|
+| CW, CW DX, QRP (every band, 50 MHz too) | off | `FE FE 94 E0 16 02 00 FD` (CI-V `16 02`, value `00`, page 19-3) when the radio reads preamp 1 or 2; nothing when it reads off | yes, until a band change re-arms it (HM-DEC-056, unchanged) |
+| FT8, FT4 | nothing: the rows do not state the preamp | nothing | yes, nothing touches it |
 
-**The top of the window** was already built by unit 484: placement by width alone, and the
-licence line following the block. Nothing here changes it.
+No row follows the overload flag any more, because the CW row was the only one with an overload
+rule. The follow code is unchanged, and its tests now run on a condition built in the test.
+
+**Mismatch with the instruction.** It names the overridden ruling HM-DEC-176; in `DECISIONS.md`
+that is the floors' span bar, and the preamp ruling is HM-DEC-177. HM-DEC-191 says so.
 
 **Verification.**
-- The build of `Hamlet.sln` with warnings as errors: 0 warnings, 0 errors.
-- The app carry-forward line: 278 of 278.
-- The seven app scope and verdict types: 29 of 29.
-- The four engine detector and gate types: 13 of 15. The two reds are
-  `AMarkIsTheEnvelopeOverAThresholdTests`' ten and fifteen decibel cases. They fail identically on
-  HEAD's detector (40 and 208), so they were not caused by this unit.
+- The build: 0 warnings, 0 errors.
+- The app carry-forward line: 276 of 278. The two failures are the dispatcher-loop loss,
+  `TheWindowHoldsBelowItsMinimumTests` and `TheChipSaysTheChosenModeTests`, and both pass alone,
+  3 of 3 and 6 of 6.
+- Engine preamp, setup, advice and gate types: 180 of 180.
+- App preamp, setup and scope types: 86 of 89. The three reds were already red before unit 484,
+  checked on that commit in a separate worktree (see section 4).
 
 ## 2. What the owner should expect
 
 1. Rebuild.
-2. On the CW tab with nobody keying: an empty panel and an empty terminal, with only the tone
-   and mixing words at the top.
-3. When somebody keys: blocks appear, short for a dit and long for a dah, with the letters over
-   them, and the terminal fills only then. Between words the picture stays put rather than
-   flickering, because the detector now holds the station through its gaps.
-4. When the station stops, the blocks and letters leave about a second later.
-5. Turning the dial into the data block should leave the top of the window where it is.
+2. On a quiet band the panel and the terminal are empty and stay empty.
+3. When a station keys, the blocks, the letters over them and the terminal fill together, and
+   when it stops they stop together.
+4. The *tone* and *mixing* numbers should now be the same number.
+5. Tune into CW and the preamp goes off. Turn it on or off yourself, in CW or in data, and it
+   stays where you put it; a band change is the only thing that re-arms it.
 
-One thing to watch for. A station too weak or too broken for the detector to find will now print
-nothing at all, even where the decoder alone would have read something. In one noisy synthetic
-case the decoder read the call and the detector never found it. That is the ruling working as
-written.
+**The cost you ruled, and it is bigger than it sounds.** The letters the decoder settles after
+the detector lets go are dropped. On a long over that is the last letter or two. On a short call
+it is a whole letter every time: the training radio's `CQ` now shows the `C` and never the `Q`.
+If it proves too much at the radio, the hold is the figure to lengthen, since it decides how long
+the screen stays open after the last mark.
 
 ## 3. What you should see
 
-- **Quiet band:** no line, no blocks, no letters, no terminal text.
-- **A station keying:** flat-topped blocks at the mark lengths, a letter over each group, and the
-  terminal filling at the same time.
-- **Slow sending, around 9 to 10 WPM:** no flicker between words. At 5 to 8 WPM a word gap can
-  run past one second, and the panel may blink once between words.
+- **Quiet band:** empty scope, empty terminal, and `no keying` on the panel.
+- **A station keying:** the panel says `tone 700 Hz · mixing 700 Hz`, or whatever the pitch is,
+  and the two agree. Blocks and letters appear together. The last letter of a short over may not
+  appear.
+- **The preamp:** off after a CW tune-in, and not put back when you change it.
 
 ## 4. What's blocking us
 
 Nothing blocks. What is left, a line each:
-- **The layout the owner calls screen 1 is not what wide windows get.** Neighborhood on the left
-  and map on the right is what narrow windows get. At wide windows, unit 389's rule, which this
-  order keeps, puts the map at the band's left edge. Both are decided by width alone now, so
-  neither moves, but which one he wants at wide windows is his ruling.
-- **The strayed-frequency line can still move the map for a moment** while the mode catches up.
-  The choice is put to the owner in the last conversation, options A to C; A is recommended.
-- **A one-second hold does not bridge a word gap below about 8 WPM.** If slow senders blink, the
-  figure is the owner's to change.
-- **The decoder is not reset when keying starts.** Characters from before the silence are simply
-  not let out, so the decoder's own reading is untouched, as section 3 asks.
-- **`AMarkIsTheEnvelopeOverAThresholdTests` has two cases red at HEAD, 40 and 208 misjudged
-  hops.** They are not on any carry-forward line.
+- **Two app tests were red before unit 484 and are not this unit's.**
+  - `HowMuchTheApplicationSaysTests`: the CW tab holds 585 characters against a ceiling of 550,
+    the same at units 483, 484 and 485.
+  - `ModeFollowsTheMapAgainTests.NothingButTheModeIsEverWritten`: its sweep region is 6,115
+    characters against a 6,000 bound, the same since unit 440 at least.
+  - Neither is on a carry-forward line.
+- **`AMarkIsTheEnvelopeOverAThresholdTests` has two cases red at HEAD** (40 and 208), unchanged
+  from unit 485.
+- **The strayed-frequency question from unit 484** (options A to C) is still the owner's.
+- **"Screen 1" at wide windows is still the owner's to rule**, from unit 485.
 
 ### Asks still outstanding
 
@@ -116,3 +124,5 @@ Nothing blocks. What is left, a line each:
   record work under R80.
 - **Unit 484's strayed-line question** (options A to C), 2026-09-28, waiting on the owner; no
   change sits in the tree.
+- **Unit 485's screen 1 question at wide windows**, 2026-09-28, waiting on the owner; no change
+  sits in the tree.
