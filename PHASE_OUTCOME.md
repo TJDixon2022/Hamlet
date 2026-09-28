@@ -12,7 +12,7 @@ STEP: 7 | partial | The conditions can be generated - sections E, F and G: chann
 STEP: 8 | not started | Tim at the radio - CW on 20 m or 40 m, text on the CW tab that reads as what was sent, and he says it read.
 STEP: 9 | partial | Two decoders read the same audio - section M: fldigi's CW modem ported faithfully as the second decoder, both scored on every recording before either votes, both confidences calibrated against the keys, and the arbitration that emits one transcript, never worse than the better decoder alone.
 STEP: 11 | not started | The owner's ear teaches the detector where the entry is - a light saying whether Hamlet thinks it hears CW, a strip showing the whole pitch range and where it looks, two buttons that write his verdict beside the detector's state; no decode, no corpus.
-STEP: 12 | partial | The oscilloscope - a keyed signal is found as the audio envelope over a threshold above the tracked noise floor, at any pitch the filter passes, its frequency read from the spectrum after; shown on the CW tab first, then driving the decoder.
+STEP: 12 | not started | The oscilloscope - a keyed signal is found as the audio envelope over a threshold above the tracked noise floor, at any pitch the filter passes, its frequency read from the spectrum after; shown on the CW tab first, then driving the decoder.
 
 ## UNIT 439 - STEP 0
 
@@ -1109,3 +1109,16 @@ STATE_AFTER: partial
 STATE_WHY: The report backs 12.1 with a detector test that went red 6/6 on a stub and then green 6/6 on synthetic keying, with 0 of 200 key-down hops missed, 0 of 292 key-up hops marked and 0 of 800 noise-alone hops marked, and a diff showing the Cw folder gained one new file and changed nothing, and 12.3 with a verdict row test at 3/3 and the closed key set at 6/6, but 12.2 is left unticked for the owner to judge by eye, 12.4 is not authored, and 12.5 is not ticked even though the report says the carry-forward line was 278 of 278 and no recording was read.
 ADVANCED: yes
 ATTEMPT: 12.1 | unit 1 launched 2026-09-28T12:42:00.491Z | yes | executed | build an envelope detector over the whole passband - envelope, tracked floor, a 9 dB threshold from the owner's rows, marks and gaps, the pitch read from the spectrum while a mark is up - draw it as an oscilloscope on the CW tab, and carry its state on the owner's verdict row, driving nothing yet
+
+## UNIT 477 - STEP 12
+
+STEP: 12
+APPROACH: replace the envelope detector's floor and margin with run detection per bin across the passband - a bin is keying when it makes flat-topped bars of dit length separated by gaps - wire the tracker to take the meter's pitch and keying verdict within a hop, and replace the meter's swing gate with the bar test
+MOVE: continue
+WHY: PHASE_PLAN.md step 12 criterion 12.4 asks that the detector drive the decoder - nothing decoded until a mark is found, the decoder mixed at the detector's pitch and started when the tone is present - judged by the owner's ear and his verdict rows, and those rows show the meter finding each station within a second while the tracker waited on the survey or held its keying flag false on an 18 dB swing
+STATE: partial
+DECIDED: the flatness tolerance, the bar-count that makes keying, and whether task 3 is reached are the author's, overrulable; every number's remark names its reason and none rests on a recording
+LICENCE: PHASE_PLAN.md R88, R90, R91, section 6, step 12; HM-DEC-186; CLAUDE.md 0.0, 0.2 and 0.6; HM-DEC-155; FACT-006
+ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
+ADVANCES: step 12 criterion 4
+RUN: session launched with SESSION.lock already present and an empty STOP at the root, both the launcher's; neither taken, released nor removed by the session.
