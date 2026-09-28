@@ -1,0 +1,44 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:01.51]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:01.72]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:01.72]   Starting:    Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:02.12]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.AMarkIsTheEnvelopeOverAThresholdTests.TheRunReadsTheDahAndTheMarksAreCounted [91 ms]
+  Standard Output Messages:
+ longest run 185 ms, marks 8
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.AMarkIsTheEnvelopeOverAThresholdTests.TheThresholdIsTheFloorPlusTheMargin [57 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.AMarkIsTheEnvelopeOverAThresholdTests.ATonePastNineHundredIsFoundWithTheRigUnknown [84 ms]
+  Standard Output Messages:
+ key down hops 200, missed 0; key up hops 292, marked 0
+ tone 1242 Hz, 39 dB over the band
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.AMarkIsTheEnvelopeOverAThresholdTests.NoiseAloneRaisesNoMark [31 ms]
+  Standard Output Messages:
+ hops 800, marked 0
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.AMarkIsTheEnvelopeOverAThresholdTests.AToneFifteenDecibelsOverTheNoiseStillKeys [53 ms]
+  Standard Output Messages:
+ tone over floor at mid-dah: 14.5 dB
+ key down hops 200, missed 0; key up hops 292, marked 0
+ tone 609 Hz, 30 dB over the band
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.AMarkIsTheEnvelopeOverAThresholdTests.MarksLandWhereTheToneWasOnAndThePitchReadsIt [52 ms]
+  Standard Output Messages:
+ key down hops 200, missed 0; key up hops 292, marked 0
+ tone 750 Hz, 39 dB over the band
+
+
+
+Test Run Successful.
+Total tests: 6
+     Passed: 6
+ Total time: 2.5606 Seconds
+RC=0 WALL=3s

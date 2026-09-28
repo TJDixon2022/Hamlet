@@ -355,9 +355,9 @@ because every later change to ours is better aimed with the comparison in hand.
 **Entry:** nothing.
 
 **Exit:**
-- [ ] 12.1 `CwEnvelopeDetector` computes per hop the passband envelope, a tracked noise floor, a threshold of floor plus a margin from the owner's verdict rows, mark or gap, the run length, and while a mark is up the pitch and its contrast read from the whole passband; it changes nothing about the decoder; proved on synthetic hops in a test, no recording.
+- [x] 12.1 `CwEnvelopeDetector` computes per hop the passband envelope, a tracked noise floor, a threshold of floor plus a margin from the owner's verdict rows, mark or gap, the run length, and while a mark is up the pitch and its contrast read from the whole passband; it changes nothing about the decoder; proved on synthetic hops in a test, no recording.
 - [ ] 12.2 The CW tab draws the last four seconds as an oscilloscope - trace, floor, threshold, marks as bars along the bottom, the tone line as text, the passband edges shaded - fed fast enough that the owner sees dits, with words on every mark.
-- [ ] 12.3 The owner's verdict row carries the detector's state at the press, including the count of marks in the last four seconds, with its key set asserted closed.
+- [x] 12.3 The owner's verdict row carries the detector's state at the press, including the count of marks in the last four seconds, with its key set asserted closed.
 - [ ] 12.4 After the owner has judged the scope by ear and said so, the detector drives the decoder: nothing is decoded until a mark is found, the decoder is mixed at the detector's pitch and started with the detector's dit, and it stops when the tone stops; judged by the owner's ear and his verdict rows, not by a recording.
 - [ ] 12.5 The app carry-forward line is green at exit, no recording was read, and the report says so.
 

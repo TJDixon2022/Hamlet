@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: EXECUTING
+STATE: COMPLETED
 TASK: 4 of 4
 WORK_INSTRUCTION: 476 - the oscilloscope: a mark is the envelope over a threshold, at any pitch
-BALL: code
-NEXT_PASTE: none
+BALL: tim
+NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-185 (2026-09-28)
-UPDATED: 2026-09-28T09:04:55-04:00
-NOTE: Task 3 committed - the verdict row carries 8 scope fields; task 4 exit round: build, app carry-forward line, touched types, diffs
+UPDATED: 2026-09-28T09:10:36-04:00
+NOTE: Unit 476 done: the oscilloscope is on the CW tab - bars light where the envelope stands 9 dB over the noise, at any pitch; 12.1 and 12.3 ticked, 12.2 left for the owner's eye; no recording read; owner STOP file still at the root
 
 ---
 
