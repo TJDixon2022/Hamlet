@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 3 of 4
+TASK: 4 of 4
 WORK_INSTRUCTION: 476 - the oscilloscope: a mark is the envelope over a threshold, at any pitch
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-185 (2026-09-28)
-UPDATED: 2026-09-28T09:03:07-04:00
-NOTE: Task 2 committed - scope on the CW tab, 6/6 and the window-wide types green; task 3 adding the eight scope fields to the owner_verdict row
+UPDATED: 2026-09-28T09:04:55-04:00
+NOTE: Task 3 committed - the verdict row carries 8 scope fields; task 4 exit round: build, app carry-forward line, touched types, diffs
 
 ---
 

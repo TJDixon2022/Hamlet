@@ -357,6 +357,7 @@ public sealed partial class CwHearingViewModel : ObservableObject
         var state = State;
         var meter = state.Meter;
         var rig = _rig();
+        var scope = Scope.Reading;
 
         return new Dictionary<string, object?>
         {
@@ -384,6 +385,17 @@ public sealed partial class CwHearingViewModel : ObservableObject
             ["inputPeakDb"] = Measured(rig.InputPeakDb),
             ["inputFloorDb"] = Measured(rig.InputFloorDb),
             ["sinceVerdictMs"] = (long)Math.Round((_clock() - _lightChangedUtc).TotalMilliseconds),
+
+            // **WHAT THE SCOPE SAW AT THE PRESS** (work instruction 476 task 3), at most one
+            // redraw old, so the next unit can read whether it saw keying where he heard it.
+            ["scopeEnvelopeDb"] = Measured(scope.EnvelopeDb),
+            ["scopeFloorDb"] = Measured(scope.FloorDb),
+            ["scopeThresholdDb"] = Measured(scope.ThresholdDb),
+            ["scopeMark"] = scope.Mark,
+            ["scopeRunMs"] = scope.RunMs,
+            ["scopePitchHz"] = Measured(scope.PitchHz),
+            ["scopeContrastDb"] = Measured(scope.ContrastDb),
+            ["scopeMarksLast4s"] = scope.MarksLast4s,
         };
     }
 

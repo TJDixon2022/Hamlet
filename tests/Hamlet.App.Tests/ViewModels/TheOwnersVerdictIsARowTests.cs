@@ -31,6 +31,11 @@ public sealed class TheOwnersVerdictIsARowTests
         "frequency", "mode", "agc", "preamp",
         "inputPeakDb", "inputFloorDb",
         "sinceVerdictMs",
+
+        // Work instruction 476 task 3 extends the row with the scope's state at the press;
+        // TheVerdictCarriesTheScopeTests asserts these eight by value.
+        "scopeEnvelopeDb", "scopeFloorDb", "scopeThresholdDb", "scopeMark",
+        "scopeRunMs", "scopePitchHz", "scopeContrastDb", "scopeMarksLast4s",
     };
 
     /// <remarks>Proves "I agree with you" writes one cw owner_verdict row with every field.</remarks>
