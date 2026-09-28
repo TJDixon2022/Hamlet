@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-TASK: 3 of 3
-WORK_INSTRUCTION: 479 - the tolerance follows the signal
-BALL: tim
-NEXT_PASTE: output.md -> Claude Web
-RULES_AT: HM-DEC-187 (2026-09-28)
-UPDATED: 2026-09-28T12:20:54-04:00
-NOTE: Unit 479 done: tolerance now max(1.5, formula at contrast over the loudest gap hop) - 15 dB tone 51 to 40 unmarked, 10 dB tone still no bars (never pairs), noise 0 of 1500; meter swing bar 17 to 15; 12.1-12.3 re-ticked; no recording read
+STATE: EXECUTING
+TASK: 1 of 4
+WORK_INSTRUCTION: 480 - the radio points, the bars show, the letters ride on top
+BALL: code
+NEXT_PASTE: none
+RULES_AT: HM-DEC-188 (2026-09-28)
+UPDATED: 2026-09-28T13:30:54-04:00
+NOTE: Task 0 committed (HM-DEC-188, 1.13.166, entry app line 276 then 274 of 278, all dispatcher loop); tracing RigSpectrumSource, ScopeFlow, Ic7300Rig 0x27 and the CW receive conditions
 
 ---
 

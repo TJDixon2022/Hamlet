@@ -4,6 +4,33 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-188
+date: 2026-09-28
+refs: PHASE_PLAN.md R94 R95 and criterion 12.4, RigSpectrumSource.cs, ScopeFlow.cs, Ic7300Rig.cs 0x27, CwEnvelopeDetector.cs, CwScopeControl.cs, the owner's verdict rows of 2026-09-28 17:13, work instruction 480
+---
+
+**In CW mode Hamlet turns on the IC-7300's scope output and reads its waveform over CI-V
+0x27; the detector watches the bin the radio's scope points at; the CW tab draws bars only,
+never noise, with each settled character written above the bars that made it.** Tim,
+2026-09-28.
+
+**What was wrong.** Every capture sheet since the restore phase has read "ScopeOn on,
+ScopeOutput off". The tree parses the radio's scope stream and nothing in CW mode turns it
+on. Meanwhile the detector chose its own bin by sweeping, and on two stations the owner heard
+plainly tonight its meter sat at 350 to 425 Hz with scores near zero, reading the loudest
+noise. The owner: "You have a waterfall. Why aren't we using that?"
+
+**What is ruled.** Scope output on is a CW receive condition, set the way the preamp is set,
+read back the same way. The detector's watched bin is the peak the radio's scope reports,
+offset from the dial by the CW pitch; the sweep stays as the fallback when the scope is
+unavailable. The scope on the CW tab draws nothing while no bars are found, draws the bars
+as they are when found, and writes each settled character above its bars - a training tool
+and the honest view of every miss, invention and wrong letter.
+
+**Whose words are whose.** The rulings are Tim's; the wording is work instruction 480's
+record of them.
+
+---
 id: HM-DEC-187
 date: 2026-09-28
 refs: PHASE_PLAN.md R93 and criterion 12.4, CwEnvelopeDetector.cs FlatToleranceDb, CwKeyingMeter.cs ConfidentSwingDb, unit 477's report, the owner's verdict rows of 2026-09-28 15:38, work instruction 479

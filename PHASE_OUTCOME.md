@@ -12,7 +12,7 @@ STEP: 7 | partial | The conditions can be generated - sections E, F and G: chann
 STEP: 8 | not started | Tim at the radio - CW on 20 m or 40 m, text on the CW tab that reads as what was sent, and he says it read.
 STEP: 9 | partial | Two decoders read the same audio - section M: fldigi's CW modem ported faithfully as the second decoder, both scored on every recording before either votes, both confidences calibrated against the keys, and the arbitration that emits one transcript, never worse than the better decoder alone.
 STEP: 11 | not started | The owner's ear teaches the detector where the entry is - a light saying whether Hamlet thinks it hears CW, a strip showing the whole pitch range and where it looks, two buttons that write his verdict beside the detector's state; no decode, no corpus.
-STEP: 12 | partial | The oscilloscope - a keyed signal is found as the audio envelope over a threshold above the tracked noise floor, at any pitch the filter passes, its frequency read from the spectrum after; shown on the CW tab first, then driving the decoder.
+STEP: 12 | not started | The oscilloscope - a keyed signal is found as the audio envelope over a threshold above the tracked noise floor, at any pitch the filter passes, its frequency read from the spectrum after; shown on the CW tab first, then driving the decoder.
 
 ## UNIT 439 - STEP 0
 
@@ -1202,3 +1202,16 @@ STATE_WHY: Three of the five criteria are ticked, since 12.1 to 12.3 were restor
 ADVANCED: no
 ATTEMPT: 12.4 | unit 1 launched 2026-09-28T15:46:42.470Z | no | executed | make the run detector's flatness tolerance the wobble a tone at the bar's measured contrast has, floored at 1.5 dB, so weak stations make unbroken bars; move the meter's swing bar from 17 to 15, the lowest swing on a station the owner heard; restore the three ticks 477 earned
 REASON: 12.4 | unit 1 launched 2026-09-28T15:46:42.470Z | the unit ran to completion and the criterion did not flip from unmet to met
+
+## UNIT 480 - STEP 12
+
+STEP: 12
+APPROACH: turn on the IC-7300's scope output as a CW receive condition and read its 0x27 waveform through RigSpectrumSource, point the envelope detector and the tracker at the peak the radio reports within the filter, and redraw the CW tab's scope as bars only with each settled character written above the bars that made it
+MOVE: continue
+WHY: PHASE_PLAN.md step 12 criterion 12.4 asks that the detector drive the decoder judged by the owner's ear and his verdict rows, and seven rows tonight show the meter reading the loudest noise bin at scores near zero on two stations the owner heard plainly, while every capture sheet this week has said the radio's scope output is off and the tree already parses it
+STATE: partial
+DECIDED: the peak-finding within the frame, the fallback rule when the scope is quiet, the graph's eight-second window and its letter placement are the author's, overrulable
+LICENCE: PHASE_PLAN.md R67, R74, R88, R91, R94, R95, section 6, step 12; HM-DEC-188; HM-DEC-056; CLAUDE.md 0.0, 0.2 and 0.6; HM-DEC-155; FACT-006
+ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
+ADVANCES: step 12 criterion 4
+RUN: session launched with SESSION.lock already present at the root and no STOP, the lock the launcher's; not taken, released nor removed by the session.
