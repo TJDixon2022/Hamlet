@@ -1,29 +1,30 @@
 using System.Globalization;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Input;
 using Avalonia.Media;
 using Hamlet.App.ViewModels;
 using Hamlet.RadioEngine.Cw;
 
 namespace Hamlet.App.Controls;
 
-/// <summary>What one labelled line on the scope is.</summary>
+/// <summary>What one thing the scope draws is.</summary>
 public enum CwScopeLineKind
 {
-    /// <summary>The level in the pitch with the most bars, hop by hop: a thin trace.</summary>
-    Envelope,
+    /// <summary>The level of the bin the detector reads, hop by hop: one line.</summary>
+    Trace,
 
-    /// <summary>That pitch's gap level, measured: a dashed line (work instruction 477).</summary>
-    Floor,
+    /// <summary>The marks: a filled block along the bottom under every marked hop.</summary>
+    Bars,
 
-    /// <summary>Midway between its gap and bar levels, measured, deciding nothing: a solid, heavier line.</summary>
-    Threshold,
+    /// <summary>The detector's pitch, as text in the corner.</summary>
+    Tone,
 
-    /// <summary>Where the energy is summed: a shaded band on the rail at the top.</summary>
-    Passband,
+    /// <summary>The tracker's pitch, as text beside it.</summary>
+    Mixing,
 }
 
-/// <summary>One line the scope draws, with its words.</summary>
+/// <summary>One thing the scope draws, with its words.</summary>
 /// <param name="Kind">What it is.</param>
 /// <param name="Label">The words it carries.</param>
 public sealed record CwScopeLine(CwScopeLineKind Kind, string Label);
@@ -35,54 +36,54 @@ public sealed record CwScopeLine(CwScopeLineKind Kind, string Label);
 public sealed record CwScopeBar(double X, double X2, string Label);
 
 /// <summary>
-/// **THE OSCILLOSCOPE: THE LAST FOUR SECONDS, AND A BAR WHEREVER THE TRACE STOOD OVER THE
-/// THRESHOLD** (work instruction 476 task 2, step 12 criterion 12.2, R90, HM-DEC-185).
+/// **THE OSCILLOSCOPE: THE LEVEL TRACE, AND A BAR UNDER EVERY MARK** (work instruction 478
+/// task 1, step 12 criterion 12.2 rewritten, R92).
 /// </summary>
 /// <remarks>
-/// <para>**TIM, 2026-09-28**: *"Think you're an oscilloscope."* The envelope is drawn as a
-/// trace, the gap level as a dashed line under it, the midpoint between gap and bar as a solid
-/// line, both measured and neither deciding anything, and the marks as bars along the bottom,
-/// so the owner sees dits and dahs light up as he hears them. **Since work instruction 477 a
-/// mark is a bar** - a level that held, dropped and held again (R91) - not the trace over a
-/// line.</para>
-/// <para>**EVERY HOP IS DRAWN; THE SCREEN IS REDRAWN TWENTY TIMES A SECOND.** The detector
-/// works at 5 ms, two hundred hops a second, and a frame carries all of them, so a dit is
-/// its true width; only how often the picture is refreshed is 20 a second.</para>
-/// <para>**WORDS ON EVERY MARK, NEVER COLOR ALONE** (§0.6): the lines differ in shape - thin,
-/// dashed, heavy - and each is named at the right-hand end; every bar carries its length
-/// where it fits and on the line beneath; the passband is labelled with its numbers.</para>
-/// <para>**IT SHOWS AND CHANGES NOTHING.** Everything here is the detector's, read through the
-/// view model; nothing is handed back.</para>
+/// <para>**TIM, 2026-09-28**: *"We should have replaced the temp controls with something that
+/// looks like #2"* - the middle panel of the bars-not-waves picture: a keyed station's trace
+/// with flat tops and flat bottoms, and the dits and dahs marked underneath. **That is all it
+/// draws.** Units 476 and 477 drew a floor line, a threshold line and a shaded passband; since
+/// 477 none of them decides anything (R91), so they are gone (§0.0). The detector still
+/// computes them; the verdict row still carries them.</para>
+/// <para>**THE TRACE IS ONE BIN**, the one the detector reads. Before any station is found
+/// that is the middle of the passband, and after one stops it stays on the last station's
+/// pitch, so the trace is never blank; the detector chooses it and this only draws it.</para>
+/// <para>**EVERY HOP IS DRAWN; THE SCREEN IS REDRAWN TWENTY TIMES A SECOND.** A dit is its
+/// true width.</para>
+/// <para>**WORDS FOR EVERYTHING, NEVER COLOR ALONE** (§0.6): the trace and the bars are
+/// named at the right-hand end, every bar carries its length where it fits, the pitch is
+/// text, and the hover says what the trace is or what a bar is under the pointer.</para>
+/// <para>**IT SHOWS AND CHANGES NOTHING.**</para>
 /// </remarks>
 public sealed class CwScopeControl : Control
 {
     /// <summary>The margin at each side, in pixels.</summary>
     public const double Pad = 6;
 
+    /// <summary>The height of the plot the trace is drawn in.</summary>
+    public const double PlotHeight = 84;
+
+    /// <summary>Where the row of bars starts, from the top.</summary>
+    public const double BarRowTop = PlotHeight + Gap;
+
+    /// <summary>The room at the right for the words naming the trace and the bars.</summary>
+    public const double LabelRoom = 60;
+
     /// <summary>What to draw.</summary>
     public static readonly StyledProperty<CwScopeFrame?> FrameProperty =
         AvaloniaProperty.Register<CwScopeControl, CwScopeFrame?>(nameof(Frame));
 
-    private const double RailHeight = 14;
-    private const double PlotHeight = 84;
     private const double BarHeight = 10;
     private const double BarLabelHeight = 12;
     private const double Gap = 3;
-    private const double LabelRoom = 150;
     private const double DbSpanAtLeast = 30;
 
-    private static readonly IBrush Rail = new SolidColorBrush(Color.Parse("#E8ECEF"));
-    private static readonly IBrush Passband = new SolidColorBrush(Color.Parse("#C9DDF0"));
     private static readonly IBrush Plot = new SolidColorBrush(Color.Parse("#F6F8F9"));
     private static readonly IBrush Ink = new SolidColorBrush(Color.Parse("#44505A"));
     private static readonly IBrush Muted = new SolidColorBrush(Color.Parse("#7A8590"));
     private static readonly IBrush MarkInk = new SolidColorBrush(Color.Parse("#3B6D11"));
-    private static readonly IBrush ThresholdInk = new SolidColorBrush(Color.Parse("#B06A10"));
-    private static readonly Pen EnvelopePen = new(Ink, 1);
-    private static readonly Pen FloorPen = new(Muted, 1, new DashStyle(new double[] { 3, 3 }, 0));
-    private static readonly Pen ThresholdPen = new(ThresholdInk, 2);
-    private static readonly Pen EdgePen = new(new SolidColorBrush(Color.Parse("#9AA5AF")), 1);
-    private static readonly Pen TonePen = new(MarkInk, 2);
+    private static readonly Pen TracePen = new(Ink, 1);
 
     static CwScopeControl()
     {
@@ -111,7 +112,7 @@ public sealed class CwScopeControl : Control
     /// <summary>Where the start of a hop lands; the newest hop ends at the right edge.</summary>
     /// <param name="index">The hop, oldest 0; <c>Hops.Count</c> is the right edge.</param>
     /// <param name="frame">The frame.</param>
-    /// <param name="width">The control's width.</param>
+    /// <param name="width">The width the four seconds are laid across, pads included.</param>
     /// <returns>Pixels from the left.</returns>
     public static double XOfHop(int index, CwScopeFrame frame, double width)
     {
@@ -125,8 +126,8 @@ public sealed class CwScopeControl : Control
 
     /// <summary>Every mark in the frame, as a bar with its length.</summary>
     /// <param name="frame">The frame.</param>
-    /// <param name="width">The control's width.</param>
-    /// <returns>One bar per run of marked hops, oldest first.</returns>
+    /// <param name="width">The width the four seconds are laid across, pads included.</param>
+    /// <returns>One bar per run of marked hops, oldest first; nothing under a gap.</returns>
     public static IReadOnlyList<CwScopeBar> Bars(CwScopeFrame frame, double width)
     {
         ArgumentNullException.ThrowIfNull(frame);
@@ -155,29 +156,69 @@ public sealed class CwScopeControl : Control
         return bars;
     }
 
-    /// <summary>Every line the scope draws, with its words.</summary>
+    /// <summary>Everything the scope draws, with its words: nothing else is drawn.</summary>
     /// <param name="frame">The frame.</param>
-    /// <returns>The trace, the floor, the threshold and the passband.</returns>
+    /// <returns>The trace, the bars, the detector's pitch and the tracker's.</returns>
     public static IReadOnlyList<CwScopeLine> Lines(CwScopeFrame frame)
     {
         ArgumentNullException.ThrowIfNull(frame);
 
         return new[]
         {
-            new CwScopeLine(CwScopeLineKind.Envelope, "envelope"),
-            new CwScopeLine(CwScopeLineKind.Floor, CwScopeFrame.FloorWords),
-            new CwScopeLine(CwScopeLineKind.Threshold, frame.ThresholdLabel),
-            new CwScopeLine(
-                CwScopeLineKind.Passband,
-                frame.PassbandLabel.Length > 0 ? frame.PassbandLabel : "not listening"),
+            new CwScopeLine(CwScopeLineKind.Trace, "level"),
+            new CwScopeLine(CwScopeLineKind.Bars, "marks"),
+            new CwScopeLine(CwScopeLineKind.Tone, frame.ToneLine),
+            new CwScopeLine(CwScopeLineKind.Mixing, frame.MixingLine),
         };
+    }
+
+    /// <summary>What the hover says at a point: a bar's words over a bar, the trace's over the plot.</summary>
+    /// <param name="frame">The frame.</param>
+    /// <param name="width">The width the four seconds are laid across, as <see cref="Bars"/> takes it.</param>
+    /// <param name="point">The pointer, in the control's pixels.</param>
+    /// <returns>The words.</returns>
+    public static string TipAt(CwScopeFrame frame, double width, Point point)
+    {
+        ArgumentNullException.ThrowIfNull(frame);
+
+        if (point.Y < PlotHeight && point.X <= width - Pad)
+        {
+            return CwHearingViewModel.ScopeTraceTip;
+        }
+
+        if (point.Y >= BarRowTop
+            && point.Y < BarRowTop + BarHeight + BarLabelHeight
+            && Bars(frame, width).Any(b => point.X >= b.X && point.X <= Math.Max(b.X2, b.X + 1)))
+        {
+            return CwHearingViewModel.ScopeBarTip;
+        }
+
+        return CwHearingViewModel.ScopeTip;
     }
 
     /// <inheritdoc/>
     protected override Size MeasureOverride(Size availableSize)
         => new(
             double.IsInfinity(availableSize.Width) ? 400 : availableSize.Width,
-            RailHeight + Gap + PlotHeight + Gap + BarHeight + BarLabelHeight);
+            BarRowTop + BarHeight + BarLabelHeight);
+
+    /// <inheritdoc/>
+    protected override void OnPointerMoved(PointerEventArgs e)
+    {
+        base.OnPointerMoved(e);
+
+        if (Frame is { } frame)
+        {
+            ToolTip.SetTip(this, TipAt(frame, PlotWidth(Bounds.Width), e.GetPosition(this)));
+        }
+    }
+
+    /// <inheritdoc/>
+    protected override void OnPointerExited(PointerEventArgs e)
+    {
+        base.OnPointerExited(e);
+        ToolTip.SetTip(this, CwHearingViewModel.ScopeTip);
+    }
 
     /// <inheritdoc/>
     public override void Render(DrawingContext context)
@@ -187,33 +228,32 @@ public sealed class CwScopeControl : Control
             return;
         }
 
-        var width = Bounds.Width;
-        var plotRight = width - LabelRoom;
+        var across = PlotWidth(Bounds.Width);
+        var plotRight = across - Pad;
         var lines = Lines(frame);
 
-        DrawRail(context, frame, width, lines.Single(l => l.Kind == CwScopeLineKind.Passband).Label);
-
-        var plotTop = RailHeight + Gap;
-        var plotBottom = plotTop + PlotHeight;
-
-        context.FillRectangle(Plot, new Rect(Pad, plotTop, plotRight - Pad, PlotHeight));
+        context.FillRectangle(Plot, new Rect(Pad, 0, plotRight - Pad, PlotHeight));
 
         if (frame.Hops.Count > 1)
         {
-            DrawTraces(context, frame, plotRight, plotTop, plotBottom, lines);
+            DrawTrace(context, frame, across);
         }
-        else
-        {
-            Text(context, frame.ToneLine, Pad + 4, plotTop + 4, Muted, 10, left: true);
-        }
+
+        Text(context, "─ " + Label(lines, CwScopeLineKind.Trace), plotRight + 4, 0, Ink, 10);
+
+        // The detector's pitch and the tracker's, in the corner, as words.
+        var tone = new FormattedText(
+            Label(lines, CwScopeLineKind.Tone), CultureInfo.InvariantCulture, FlowDirection.LeftToRight,
+            Typeface.Default, 11, double.IsNaN(frame.ToneHz) ? Muted : MarkInk);
+
+        context.DrawText(tone, new Point(Pad + 4, 2));
+        Text(context, "· " + Label(lines, CwScopeLineKind.Mixing), Pad + 4 + tone.Width + 6, 3, Muted, 10);
 
         // The marks, along the bottom, each labelled where it is wide enough to carry it.
-        var barTop = plotBottom + Gap;
-
-        foreach (var bar in Bars(frame, plotRight + Pad))
+        foreach (var bar in Bars(frame, across))
         {
             var w = Math.Max(1, bar.X2 - bar.X);
-            context.FillRectangle(MarkInk, new Rect(bar.X, barTop, w, BarHeight));
+            context.FillRectangle(MarkInk, new Rect(bar.X, BarRowTop, w, BarHeight));
 
             var label = new FormattedText(
                 bar.Label.Replace("mark ", "", StringComparison.Ordinal), CultureInfo.InvariantCulture,
@@ -221,60 +261,30 @@ public sealed class CwScopeControl : Control
 
             if (label.Width <= w + 4)
             {
-                context.DrawText(label, new Point(bar.X, barTop + BarHeight));
+                context.DrawText(label, new Point(bar.X, BarRowTop + BarHeight));
             }
         }
 
-        Text(context, "marks", plotRight + 4, barTop - 1, MarkInk, 10, left: true);
+        Text(context, "▬ " + Label(lines, CwScopeLineKind.Bars), plotRight + 4, BarRowTop - 1, MarkInk, 10);
     }
 
-    private void DrawRail(DrawingContext context, CwScopeFrame frame, double width, string label)
-    {
-        var reading = frame.Reading;
-        var topHz = Math.Max(CwEnvelopeDetector.WholeBandHighHz, double.IsNaN(reading.PassbandHighHz) ? 0 : reading.PassbandHighHz);
+    /// <summary>The width the four seconds are laid across: the control less the words at the right.</summary>
+    private static double PlotWidth(double controlWidth) => controlWidth - LabelRoom + Pad;
 
-        double X(double hz) => Pad + (Math.Clamp(hz / topHz, 0, 1) * (width - (2 * Pad)));
+    private static string Label(IReadOnlyList<CwScopeLine> lines, CwScopeLineKind kind)
+        => lines.Single(l => l.Kind == kind).Label;
 
-        context.FillRectangle(Rail, new Rect(Pad, 0, width - (2 * Pad), RailHeight));
-
-        if (!double.IsNaN(reading.PassbandLowHz) && !double.IsNaN(reading.PassbandHighHz))
-        {
-            var x1 = X(reading.PassbandLowHz);
-            var x2 = X(reading.PassbandHighHz);
-
-            context.FillRectangle(Passband, new Rect(x1, 0, Math.Max(1, x2 - x1), RailHeight));
-            context.DrawLine(EdgePen, new Point(x1, 0), new Point(x1, RailHeight));
-            context.DrawLine(EdgePen, new Point(x2, 0), new Point(x2, RailHeight));
-        }
-
-        if (reading.Mark && !double.IsNaN(reading.PitchHz))
-        {
-            var x = X(reading.PitchHz);
-            context.DrawLine(TonePen, new Point(x, 0), new Point(x, RailHeight));
-        }
-
-        Text(context, label, width / 2, 1, Ink, 10, left: false);
-    }
-
-    private void DrawTraces(
-        DrawingContext context, CwScopeFrame frame, double plotRight, double plotTop, double plotBottom,
-        IReadOnlyList<CwScopeLine> lines)
+    private static void DrawTrace(DrawingContext context, CwScopeFrame frame, double across)
     {
         var low = double.PositiveInfinity;
         var high = double.NegativeInfinity;
 
-        // **THE LINES ARE MEASURED, SO THEY MAY BE ABSENT** (work instruction 477): with no
-        // bars there is no gap level and no midpoint, and nothing is drawn for them rather
-        // than a number nobody measured.
         foreach (var hop in frame.Hops)
         {
-            foreach (var db in new[] { hop.EnvelopeDb, hop.FloorDb, hop.ThresholdDb })
+            if (double.IsFinite(hop.EnvelopeDb))
             {
-                if (double.IsFinite(db))
-                {
-                    low = Math.Min(low, db);
-                    high = Math.Max(high, db);
-                }
+                low = Math.Min(low, hop.EnvelopeDb);
+                high = Math.Max(high, hop.EnvelopeDb);
             }
         }
 
@@ -283,64 +293,44 @@ public sealed class CwScopeControl : Control
             return;
         }
 
-        low -= 6;
-        high = Math.Max(high + 3, low + DbSpanAtLeast);
+        // Room above for the words in the corner, and a span wide enough that noise alone
+        // does not fill the plot.
+        low -= 3;
+        high = Math.Max(high + 8, low + DbSpanAtLeast);
 
-        double Y(double db) => plotBottom - ((Math.Clamp(db, low, high) - low) / (high - low) * (plotBottom - plotTop));
+        double Y(double db) => PlotHeight - ((Math.Clamp(db, low, high) - low) / (high - low) * PlotHeight);
 
-        var envelope = Polyline(frame, plotRight, h => h.EnvelopeDb, Y);
-        context.DrawGeometry(null, EnvelopePen, envelope);
-
-        // Each line named at its right-hand end, beside where it stands now.
-        var last = frame.Hops[^1];
-
-        if (double.IsFinite(last.FloorDb) && double.IsFinite(last.ThresholdDb))
-        {
-            context.DrawGeometry(null, FloorPen, Polyline(frame, plotRight, h => h.FloorDb, Y));
-            context.DrawGeometry(null, ThresholdPen, Polyline(frame, plotRight, h => h.ThresholdDb, Y));
-
-            Text(context, "- - " + lines.Single(l => l.Kind == CwScopeLineKind.Floor).Label, plotRight + 4, Y(last.FloorDb) - 6, Muted, 10, left: true);
-            Text(context, "━ " + lines.Single(l => l.Kind == CwScopeLineKind.Threshold).Label, plotRight + 4, Y(last.ThresholdDb) - 6, ThresholdInk, 10, left: true);
-        }
-        Text(context, "─ " + lines.Single(l => l.Kind == CwScopeLineKind.Envelope).Label, plotRight + 4, plotTop, Ink, 10, left: true);
-        Text(context, frame.ToneLine, Pad + 4, plotTop + 2, frame.Reading.Mark ? MarkInk : Muted, 11, left: true);
-    }
-
-    private static StreamGeometry Polyline(
-        CwScopeFrame frame, double plotRight, Func<CwScopeHop, double> value, Func<double, double> y)
-    {
         var geometry = new StreamGeometry();
 
-        using var g = geometry.Open();
-
-        for (var i = 0; i < frame.Hops.Count; i++)
+        using (var g = geometry.Open())
         {
-            var point = new Point(XOfHop(i, frame, plotRight + Pad), y(value(frame.Hops[i])));
+            for (var i = 0; i < frame.Hops.Count; i++)
+            {
+                var db = frame.Hops[i].EnvelopeDb;
+                var point = new Point(XOfHop(i, frame, across), Y(double.IsFinite(db) ? db : low));
 
-            if (i == 0)
-            {
-                g.BeginFigure(point, false);
+                if (i == 0)
+                {
+                    g.BeginFigure(point, false);
+                }
+                else
+                {
+                    g.LineTo(point);
+                }
             }
-            else
-            {
-                g.LineTo(point);
-            }
+
+            g.EndFigure(false);
         }
 
-        g.EndFigure(false);
-
-        return geometry;
+        context.DrawGeometry(null, TracePen, geometry);
     }
 
-    private void Text(DrawingContext context, string words, double x, double top, IBrush brush, double size, bool left)
+    private void Text(DrawingContext context, string words, double x, double top, IBrush brush, double size)
     {
         var text = new FormattedText(
             words, CultureInfo.InvariantCulture, FlowDirection.LeftToRight,
             Typeface.Default, size, brush);
 
-        var at = left ? x : x - (text.Width / 2);
-        at = Math.Clamp(at, 0, Math.Max(0, Bounds.Width - text.Width));
-
-        context.DrawText(text, new Point(at, top));
+        context.DrawText(text, new Point(Math.Clamp(x, 0, Math.Max(0, Bounds.Width - text.Width)), top));
     }
 }

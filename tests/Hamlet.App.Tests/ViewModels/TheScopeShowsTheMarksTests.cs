@@ -11,8 +11,9 @@ using Xunit;
 namespace Hamlet.App.Tests.ViewModels;
 
 /// <summary>
-/// **THE OSCILLOSCOPE ON THE CW TAB: TRACE, FLOOR, THRESHOLD, MARKS AS BARS, THE TONE LINE**
-/// (work instruction 476 task 2, step 12 criterion 12.2, R90, HM-DEC-185).
+/// **THE OSCILLOSCOPE ON THE CW TAB: TRACE, MARKS AS BARS, THE TONE LINE** (work instruction
+/// 476 task 2, step 12 criterion 12.2, R90, HM-DEC-185; the floor, threshold and passband
+/// removed by work instruction 478, R92).
 /// </summary>
 /// <remarks>
 /// <para>**A DRIVEN DETECTOR, NO RECORDING** (R88). The detector is fed a keyed tone made
@@ -64,8 +65,8 @@ public sealed class TheScopeShowsTheMarksTests
     }
 
     /// <remarks>
-    /// Proves the tone line reads the pitch and its contrast while a mark is up, and says
-    /// "no tone" when none is.
+    /// Proves the tone line reads the pitch while a mark is up, and says "no keying" before
+    /// any keying (work instruction 478: the pitch alone, no contrast).
     /// </remarks>
     [Fact]
     public void TheToneLineReadsThePitchWhileAMarkIsUp()
@@ -79,58 +80,30 @@ public sealed class TheScopeShowsTheMarksTests
         hearing.ObserveScope(CwScopeFrame.From(mid.History(), mid.HopMs, mid.Reading));
 
         Assert.True(hearing.Scope.Reading.Mark);
-        Assert.Matches(@"^tone 7[3-5]\d Hz, \d+ dB over the band$", hearing.Scope.ToneLine);
+        Assert.Matches(@"^tone 7[3-5]\d Hz$", hearing.Scope.ToneLine);
 
         var quiet = Keyed(742, 500, 0.7);
         hearing.ObserveScope(CwScopeFrame.From(quiet.History(), quiet.HopMs, quiet.Reading));
 
         Assert.False(hearing.Scope.Reading.Mark);
-        Assert.Equal("no tone", hearing.Scope.ToneLine);
+        Assert.Equal("no keying", hearing.Scope.ToneLine);
     }
 
     /// <remarks>
-    /// Proves the two lines are labelled as measured (work instruction 477), and the passband with the radio's
-    /// filter width and pitch - or says the rig's filter is unknown and the whole band is used.
+    /// Proves the hover says what the trace and the bars are and what is in the corner, and
+    /// no longer names a dashed or a solid line (work instruction 478).
     /// </remarks>
     [Fact]
-    public void TheThresholdAndThePassbandAreLabelled()
-    {
-        var hearing = new CwHearingViewModel();
-        var detector = Keyed(742, 500, 1.0);
-
-        hearing.ObserveScope(CwScopeFrame.From(detector.History(), detector.HopMs, detector.Reading));
-
-        Assert.Equal("midway: gap to bar, measured", hearing.Scope.ThresholdLabel);
-        Assert.Equal("filter 500 Hz at pitch 742 Hz: 492 to 992 Hz", hearing.Scope.PassbandLabel);
-
-        var unknown = Keyed(null, null, 1.0);
-        hearing.ObserveScope(CwScopeFrame.From(unknown.History(), unknown.HopMs, unknown.Reading));
-
-        Assert.Equal("rig filter unknown: whole band 100 to 3000 Hz", hearing.Scope.PassbandLabel);
-
-        var lines = CwScopeControl.Lines(hearing.Scope);
-
-        Assert.Contains(lines, l => l.Kind == CwScopeLineKind.Envelope && l.Label == "envelope");
-        Assert.Contains(lines, l => l.Kind == CwScopeLineKind.Floor && l.Label == "gap level, measured");
-        Assert.Contains(lines, l => l.Kind == CwScopeLineKind.Threshold && l.Label == "midway: gap to bar, measured");
-        Assert.Contains(lines, l => l.Kind == CwScopeLineKind.Passband && l.Label == hearing.Scope.PassbandLabel);
-        Assert.All(lines, l => Assert.False(string.IsNullOrWhiteSpace(l.Label)));
-    }
-
-    /// <remarks>
-    /// Proves the hover says what each line is, that bars decide a mark and the solid line
-    /// does not (work instruction 477), and how often the scope is fed.
-    /// </remarks>
-    [Fact]
-    public void TheHoverSaysWhatEachLineIsAndWhatDecidesAMark()
+    public void TheHoverSaysWhatTheTraceAndTheBarsAre()
     {
         var tip = CwHearingViewModel.ScopeTip;
 
         Assert.Contains("Trace", tip, StringComparison.Ordinal);
-        Assert.Contains("Dashed line", tip, StringComparison.Ordinal);
-        Assert.Contains("Solid line", tip, StringComparison.Ordinal);
         Assert.Contains("Bars", tip, StringComparison.Ordinal);
-        Assert.Contains("It decides nothing. Bars decide", tip, StringComparison.Ordinal);
+        Assert.Contains("nothing is drawn under a gap", tip, StringComparison.Ordinal);
+        Assert.Contains("mixing at", tip, StringComparison.Ordinal);
+        Assert.DoesNotContain("Dashed line", tip, StringComparison.Ordinal);
+        Assert.DoesNotContain("Solid line", tip, StringComparison.Ordinal);
         Assert.Contains("20 times a second", tip, StringComparison.Ordinal);
     }
 

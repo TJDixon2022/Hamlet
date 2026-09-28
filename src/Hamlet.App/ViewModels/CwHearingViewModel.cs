@@ -63,56 +63,70 @@ public sealed record CwPitchStrip(
 }
 
 /// <summary>
-/// What the oscilloscope draws: the envelope detector's last four seconds and what it says
-/// now (work instruction 476 task 2).
+/// What the oscilloscope draws: the level trace, the marks, the detector's pitch and the
+/// tracker's (work instruction 478 task 1, R92).
 /// </summary>
 /// <param name="Hops">Every hop of the last four seconds, oldest first.</param>
 /// <param name="HopMs">One hop, in milliseconds.</param>
 /// <param name="Reading">The detector at its last hop.</param>
-/// <param name="ToneLine">"tone 742 Hz, 24 dB over the band" while a mark is up, "no tone" when not.</param>
-/// <param name="PassbandLabel">The radio's filter width and pitch, or that they are unknown.</param>
-/// <param name="ThresholdLabel">The solid line, as what it is: midway between gap and bar, measured.</param>
+/// <param name="ToneHz">The detector's pitch while it says keying; NaN when it does not.</param>
+/// <param name="MixingHz">The pitch the decoder is mixing at; NaN when nothing is decoding.</param>
 public sealed record CwScopeFrame(
     IReadOnlyList<CwScopeHop> Hops,
     double HopMs,
     CwEnvelopeReading Reading,
-    string ToneLine,
-    string PassbandLabel,
-    string ThresholdLabel)
+    double ToneHz,
+    double MixingHz)
 {
-    /// <summary>The solid line's label: what it is, and that it is measured (work instruction 477).</summary>
-    public static string ThresholdWords { get; } = "midway: gap to bar, measured";
+    /// <summary>The pitch line when the detector says nobody is keying.</summary>
+    public const string NoKeyingWords = "no keying";
 
-    /// <summary>The dashed line's label (work instruction 477).</summary>
-    public const string FloorWords = "gap level, measured";
+    /// <summary>The tracker's line when nothing is decoding.</summary>
+    public const string NotMixingWords = "not mixing";
 
     /// <summary>Nothing is listening.</summary>
     public static CwScopeFrame Empty { get; } = new(
-        Array.Empty<CwScopeHop>(), 5, CwEnvelopeReading.None, "not listening", "", ThresholdWords);
+        Array.Empty<CwScopeHop>(), 5, CwEnvelopeReading.None, double.NaN, double.NaN);
+
+    /// <summary>"tone 742 Hz" while the detector says keying, "no keying" otherwise.</summary>
+    public string ToneLine => double.IsNaN(ToneHz)
+        ? NoKeyingWords
+        : string.Create(CultureInfo.InvariantCulture, $"tone {ToneHz:0} Hz");
+
+    /// <summary>"mixing 742 Hz" from the tracker, so the owner sees whether the two agree.</summary>
+    public string MixingLine => double.IsNaN(MixingHz)
+        ? NotMixingWords
+        : string.Create(CultureInfo.InvariantCulture, $"mixing {MixingHz:0} Hz");
 
     /// <summary>A frame from what the detector holds.</summary>
     /// <param name="hops">Its history, oldest first.</param>
     /// <param name="hopMs">One hop, in milliseconds.</param>
     /// <param name="reading">Its last reading.</param>
-    /// <returns>The frame, with its words.</returns>
-    public static CwScopeFrame From(IReadOnlyList<CwScopeHop> hops, double hopMs, CwEnvelopeReading reading)
+    /// <param name="mixingHz">The pitch the decoder is mixing at, or NaN.</param>
+    /// <param name="previous">The frame before this one, or null.</param>
+    /// <returns>The frame.</returns>
+    /// <remarks>
+    /// **THE PITCH HOLDS ACROSS A GAP.** The detector names its pitch only while a mark is up,
+    /// and a keyed station is half gaps; so while it still says keying, the pitch the last
+    /// frame showed stands, and when it stops saying keying the line says so. Nothing is
+    /// guessed: every pitch shown is one the detector measured during this keying.
+    /// </remarks>
+    public static CwScopeFrame From(
+        IReadOnlyList<CwScopeHop> hops,
+        double hopMs,
+        CwEnvelopeReading reading,
+        double mixingHz = double.NaN,
+        CwScopeFrame? previous = null)
     {
         ArgumentNullException.ThrowIfNull(hops);
         ArgumentNullException.ThrowIfNull(reading);
 
-        var low = reading.PassbandLowHz;
-        var high = reading.PassbandHighHz;
-
-        var passband = reading.PassbandFromRig
-            ? string.Create(
-                CultureInfo.InvariantCulture,
-                $"filter {high - low:0} Hz at pitch {(low + high) / 2:0} Hz: {low:0} to {high:0} Hz")
-            : string.Create(
-                CultureInfo.InvariantCulture,
-                $"rig filter unknown: whole band {low:0} to {high:0} Hz");
+        var tone = reading.Mark && double.IsFinite(reading.PitchHz)
+            ? reading.PitchHz
+            : reading.Keying && previous is not null ? previous.ToneHz : double.NaN;
 
         return new CwScopeFrame(
-            hops, hopMs, reading, CwEnvelopeDetector.ToneLine(reading), passband, ThresholdWords);
+            hops, hopMs, reading, tone, double.IsFinite(mixingHz) && mixingHz > 0 ? mixingHz : double.NaN);
     }
 }
 
@@ -304,19 +318,24 @@ public sealed partial class CwHearingViewModel : ObservableObject
     /// <summary>What the oscilloscope shows, on hover.</summary>
     public const string ScopeTip =
         "The last four seconds of what the radio's audio is doing, newest at the right, "
-        + "like an oscilloscope (work instructions 476 and 477)." + "\n"
-        + "Trace: the envelope - the level in the one pitch where Hamlet found the most bars, hop by hop." + "\n"
-        + "Dashed line: the gap level - measured from the gaps between that pitch's bars." + "\n"
-        + "Solid line: midway between the gap level and the bar level, measured. It decides nothing. "
-        + "Bars decide: a level that holds flat for a dit or longer, drops, and holds again at the same level "
-        + "(bars, not waves - no floor, no margin, no swing)." + "\n"
-        + "Bars along the bottom: the marks, each labelled with how long it lasted. "
-        + "Dits and dahs should light up as you hear them; a steady carrier and plain noise light none." + "\n"
-        + "Shaded band at the top: where Hamlet looks - every 25 Hz across the radio's filter around its CW pitch, "
-        + "or the whole audio band where the radio has not said." + "\n"
-        + "The tone line names that pitch only while a mark is up." + "\n"
+        + "like an oscilloscope (work instructions 476 to 478)." + "\n"
+        + "Trace: the level of the one pitch the detector is reading, hop by hop. A keyed station "
+        + "is flat on top and flat underneath. Before any station is found it reads the middle of "
+        + "where Hamlet looks; after one stops it stays on that station's pitch." + "\n"
+        + "Bars along the bottom: the marks - wherever the level held flat for at least a dit, dropped, "
+        + "and held again. A dit is a short bar and a dah a long one; nothing is drawn under a gap. "
+        + "They should match the dits and dahs you hear; a steady carrier and plain noise make none." + "\n"
+        + "Top left: the pitch the detector found while it says keying, or no keying; beside it the "
+        + "pitch the decoder is mixing at, so you can see whether the two agree." + "\n"
         + "Redrawn 20 times a second; every hop of 5 ms is drawn. This shows what Hamlet hears "
         + "and changes nothing about how it decodes.";
+
+    /// <summary>What the trace is, on hover over it.</summary>
+    public const string ScopeTraceTip =
+        "the level of the bin the detector is reading, over the last four seconds";
+
+    /// <summary>What a bar is, on hover over one.</summary>
+    public const string ScopeBarTip = "a mark - the level held flat for at least a dit";
 
     /// <summary>What the oscilloscope draws.</summary>
     [ObservableProperty]

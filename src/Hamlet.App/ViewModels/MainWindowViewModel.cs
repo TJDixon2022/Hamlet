@@ -12449,7 +12449,14 @@ public partial class MainWindowViewModel : ObservableObject
 
         envelope.SetPassband(pitch, width);
 
-        CwHearing.ObserveScope(CwScopeFrame.From(envelope.History(), envelope.HopMs, envelope.Reading));
+        // The tracker's pitch goes beside the detector's, so the owner sees whether they agree
+        // (work instruction 478); the last frame is handed back so the pitch holds across a gap.
+        CwHearing.ObserveScope(CwScopeFrame.From(
+            envelope.History(),
+            envelope.HopMs,
+            envelope.Reading,
+            IsDecoding ? DecodeReport.ToneHz : double.NaN,
+            CwHearing.Scope));
     }
 
     /// <summary>Put a reading on the screen.</summary>
