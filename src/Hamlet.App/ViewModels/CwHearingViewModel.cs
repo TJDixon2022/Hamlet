@@ -63,6 +63,58 @@ public sealed record CwPitchStrip(
 }
 
 /// <summary>
+/// What the oscilloscope draws: the envelope detector's last four seconds and what it says
+/// now (work instruction 476 task 2).
+/// </summary>
+/// <param name="Hops">Every hop of the last four seconds, oldest first.</param>
+/// <param name="HopMs">One hop, in milliseconds.</param>
+/// <param name="Reading">The detector at its last hop.</param>
+/// <param name="ToneLine">"tone 742 Hz, 24 dB over the band" while a mark is up, "no tone" when not.</param>
+/// <param name="PassbandLabel">The radio's filter width and pitch, or that they are unknown.</param>
+/// <param name="ThresholdLabel">The threshold, as what it is: the floor plus the margin.</param>
+public sealed record CwScopeFrame(
+    IReadOnlyList<CwScopeHop> Hops,
+    double HopMs,
+    CwEnvelopeReading Reading,
+    string ToneLine,
+    string PassbandLabel,
+    string ThresholdLabel)
+{
+    /// <summary>The threshold's label, from the one constant that sets it.</summary>
+    public static string ThresholdWords { get; } = string.Create(
+        CultureInfo.InvariantCulture, $"threshold: floor + {CwEnvelopeDetector.ThresholdMarginDb:0} dB");
+
+    /// <summary>Nothing is listening.</summary>
+    public static CwScopeFrame Empty { get; } = new(
+        Array.Empty<CwScopeHop>(), 5, CwEnvelopeReading.None, "not listening", "", ThresholdWords);
+
+    /// <summary>A frame from what the detector holds.</summary>
+    /// <param name="hops">Its history, oldest first.</param>
+    /// <param name="hopMs">One hop, in milliseconds.</param>
+    /// <param name="reading">Its last reading.</param>
+    /// <returns>The frame, with its words.</returns>
+    public static CwScopeFrame From(IReadOnlyList<CwScopeHop> hops, double hopMs, CwEnvelopeReading reading)
+    {
+        ArgumentNullException.ThrowIfNull(hops);
+        ArgumentNullException.ThrowIfNull(reading);
+
+        var low = reading.PassbandLowHz;
+        var high = reading.PassbandHighHz;
+
+        var passband = reading.PassbandFromRig
+            ? string.Create(
+                CultureInfo.InvariantCulture,
+                $"filter {high - low:0} Hz at pitch {(low + high) / 2:0} Hz: {low:0} to {high:0} Hz")
+            : string.Create(
+                CultureInfo.InvariantCulture,
+                $"rig filter unknown: whole band {low:0} to {high:0} Hz");
+
+        return new CwScopeFrame(
+            hops, hopMs, reading, CwEnvelopeDetector.ToneLine(reading), passband, ThresholdWords);
+    }
+}
+
+/// <summary>
 /// **THE LIGHT ON THE CW TAB: WHETHER HAMLET THINKS IT HEARS CW** (work instruction 474,
 /// step 11, HM-DEC-184).
 /// </summary>
@@ -245,6 +297,35 @@ public sealed partial class CwHearingViewModel : ObservableObject
             tracker,
             meterLine,
             "This shows where Hamlet looks and changes nothing about it.");
+    }
+
+    /// <summary>What the oscilloscope shows, on hover.</summary>
+    public const string ScopeTip =
+        "The last four seconds of what the radio's audio is doing, newest at the right, "
+        + "like an oscilloscope (work instruction 476)." + "\n"
+        + "Trace: the envelope - the energy across the radio's filter, hop by hop." + "\n"
+        + "Dashed line: the floor - the noise's average level between marks." + "\n"
+        + "Solid line: the threshold - the floor plus 9 dB. It is the one number that decides a mark: "
+        + "the trace over it is a mark, under it is a gap." + "\n"
+        + "Bars along the bottom: the marks, each labelled with how long it lasted. "
+        + "Dits and dahs should light up as you hear them." + "\n"
+        + "Shaded band at the top: where the energy is summed - the radio's filter around its CW pitch, "
+        + "or the whole audio band where the radio has not said." + "\n"
+        + "The tone line reads the pitch from the spectrum only while a mark is up." + "\n"
+        + "Redrawn 20 times a second; every hop of 5 ms is drawn. This shows what Hamlet hears "
+        + "and changes nothing about how it decodes.";
+
+    /// <summary>What the oscilloscope draws.</summary>
+    [ObservableProperty]
+    private CwScopeFrame _scope = CwScopeFrame.Empty;
+
+    /// <summary>Read what the envelope detector holds now.</summary>
+    /// <param name="frame">Its last four seconds and its reading.</param>
+    public void ObserveScope(CwScopeFrame frame)
+    {
+        ArgumentNullException.ThrowIfNull(frame);
+
+        Scope = frame;
     }
 
     /// <summary>The owner says Hamlet was right.</summary>

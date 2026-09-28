@@ -1832,6 +1832,23 @@
                                    Foreground="{StaticResource HmTextMutedBrush}" />
                     </StackPanel>
 
+                    <!-- THE OSCILLOSCOPE (work instruction 476, R90, HM-DEC-185).
+                         The last four seconds: the envelope as a trace, the floor
+                         dashed under it, the threshold solid above it with its
+                         margin, and a bar along the bottom wherever the trace
+                         stood over the threshold. The tone line reads the pitch
+                         only while a mark is up. It shows and drives nothing. -->
+                    <StackPanel x:Name="CwScopeRow" Spacing="1">
+                        <ctl:CwScopeControl x:Name="CwScope"
+                                            Frame="{Binding CwHearing.Scope}"
+                                            ToolTip.Tip="{x:Static vm:CwHearingViewModel.ScopeTip}"
+                                            ToolTip.ShowDelay="300" />
+                        <TextBlock Text="{Binding CwHearing.Scope.ToneLine}"
+                                   FontSize="11"
+                                   TextTrimming="CharacterEllipsis"
+                                   Foreground="{StaticResource HmTextMutedBrush}" />
+                    </StackPanel>
+
                     <!-- ONE ADVISORY REGION, AND IT NEVER CHANGES HEIGHT.
                          Below the transcript sat a stack of boxes that each
                          appeared and vanished on their own, and every one of

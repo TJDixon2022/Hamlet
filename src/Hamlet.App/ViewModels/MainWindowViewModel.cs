@@ -197,6 +197,15 @@ public partial class MainWindowViewModel : ObservableObject
     private TrainingSpectrumSource? _trainingSpectrum;
     private readonly DispatcherTimer _decodeTimer;
 
+    /// <summary>Redraws the oscilloscope, twenty times a second while listening (work instruction 476).</summary>
+    private readonly DispatcherTimer _scopeTimer;
+
+    /// <summary>
+    /// The envelope detector the oscilloscope draws, listening beside the decoder and
+    /// read by nothing else (work instruction 476, HM-DEC-185).
+    /// </summary>
+    private CwEnvelopeDetector? _envelope;
+
     /// <summary>Asks the time servers how far the machine's clock is out.</summary>
     /// <remarks>
     /// **EVERY TEN MINUTES, AND THE INTERVAL IS REASONED.** A PC clock the
@@ -9646,6 +9655,13 @@ public partial class MainWindowViewModel : ObservableObject
         _decodeTimer = new DispatcherTimer(
             TimeSpan.FromMilliseconds(250), DispatcherPriority.Background, OnDecodeTick);
 
+        // **THE OWNER HAS TO SEE DITS** (work instruction 476). The detector works at the
+        // decoder's 5 ms hop and every hop is drawn; this is only how often the picture is
+        // redrawn, and twenty a second keeps a 60 ms dit visibly lighting as it is heard
+        // without redrawing the tab two hundred times a second.
+        _scopeTimer = new DispatcherTimer(
+            TimeSpan.FromMilliseconds(50), DispatcherPriority.Background, OnScopeTick);
+
         _clockTimer = new DispatcherTimer(
             TimeSpan.FromMinutes(10), DispatcherPriority.Background, OnClockTick);
         _clockTimer.Start();
@@ -11310,11 +11326,17 @@ public partial class MainWindowViewModel : ObservableObject
         DigitalSpectrum.Listen(_audioInput);
         DigitalSpectrum.Start();
 
+        // **THE OSCILLOSCOPE RIDES ALONG TOO** (work instruction 476, HM-DEC-185). The same
+        // samples the decoder gets, walked at the same hop; it drives nothing.
+        _envelope = new CwEnvelopeDetector(_audioInput.SampleRate);
+        _envelope.Listen(_audioInput);
+
         _audioInput.Start();
 
         AudioInputName = _audioInput.DeviceName;
         IsDecoding = true;
         _decodeTimer.Start();
+        _scopeTimer.Start();
 
         AppEvents.DecoderStarted(
             _telemetry,
@@ -11388,6 +11410,11 @@ public partial class MainWindowViewModel : ObservableObject
     private void StopDecoding()
     {
         _decodeTimer.Stop();
+        _scopeTimer.Stop();
+
+        _envelope?.Listen(null);
+        _envelope = null;
+        CwHearing.ObserveScope(CwScopeFrame.Empty);
 
         if (_decoder is not null)
         {
@@ -12393,6 +12420,36 @@ public partial class MainWindowViewModel : ObservableObject
             report.PitchWasMeasured,
             report.HasKeying,
             decoder.Tracker.CoarseCandidates()));
+    }
+
+    /// <summary>
+    /// Hand the oscilloscope the envelope detector's last four seconds (work instruction 476).
+    /// </summary>
+    /// <remarks>
+    /// <para>**THE PASSBAND IS THE RADIO'S, READ HERE, OR THE WHOLE BAND.** In CW or CW-R the
+    /// radio centres its filter on its CW pitch, so the envelope is summed over the pitch
+    /// plus and minus half the filter width it reports. In any other mode, or where either
+    /// figure is unread, the detector sums the whole audio band and the scope says so rather
+    /// than guessing a pitch (§0.0).</para>
+    /// <para>**NOTHING HERE DECIDES ANYTHING**; it copies what the detector holds to the
+    /// screen.</para>
+    /// </remarks>
+    private void OnScopeTick(object? sender, EventArgs e)
+    {
+        if (_envelope is not { } envelope)
+        {
+            return;
+        }
+
+        var state = RigState;
+        var cw = state[RigField.Mode] is { IsKnown: true, Number: { } mode }
+                 && CivValues.IsCw((CivMode)(int)mode);
+        var pitch = cw && state[RigField.CwPitch] is { IsKnown: true, Number: { } hz } ? hz : (double?)null;
+        var width = cw ? state.FilterBandwidthHz : null;
+
+        envelope.SetPassband(pitch, width);
+
+        CwHearing.ObserveScope(CwScopeFrame.From(envelope.History(), envelope.HopMs, envelope.Reading));
     }
 
     /// <summary>Put a reading on the screen.</summary>

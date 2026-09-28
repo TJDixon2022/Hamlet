@@ -1,0 +1,125 @@
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  Ft8Sharp -> C:\Source\HamLet\src\Ft8Sharp\bin\Debug\net8.0\Ft8Sharp.dll
+  Ft8Sharp.Deep -> C:\Source\HamLet\src\Ft8Sharp.Deep\bin\Debug\net8.0\Ft8Sharp.Deep.dll
+  Hamlet.RadioEngine -> C:\Source\HamLet\src\Hamlet.RadioEngine\bin\Debug\net8.0\Hamlet.RadioEngine.dll
+  Hamlet.App -> C:\Source\HamLet\src\Hamlet.App\bin\Debug\net8.0\Hamlet.App.dll
+  Hamlet.App.Tests -> C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll
+Test run for C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:02.54]   Discovering: Hamlet.App.Tests
+[xUnit.net 00:00:02.70]   Discovered:  Hamlet.App.Tests
+[xUnit.net 00:00:02.70]   Starting:    Hamlet.App.Tests
+[xUnit.net 00:00:02.76]     Hamlet.App.Tests.ViewModels.TheScopeShowsTheMarksTests.TheThresholdAndThePassbandAreLabelled [FAIL]
+[xUnit.net 00:00:02.76]       Assert.Equal() Failure: Strings differ
+[xUnit.net 00:00:02.76]                  ↓ (pos 0)
+[xUnit.net 00:00:02.76]       Expected: "threshold: floor + 9 dB"
+[xUnit.net 00:00:02.76]       Actual:   ""
+[xUnit.net 00:00:02.76]       Stack Trace:
+[xUnit.net 00:00:02.76]         C:\Source\HamLet\tests\Hamlet.App.Tests\ViewModels\TheScopeShowsTheMarksTests.cs(101,0): at Hamlet.App.Tests.ViewModels.TheScopeShowsTheMarksTests.TheThresholdAndThePassbandAreLabelled()
+[xUnit.net 00:00:02.76]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:02.76]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:02.77]     Hamlet.App.Tests.ViewModels.TheScopeShowsTheMarksTests.TheToneLineReadsThePitchWhileAMarkIsUp [FAIL]
+[xUnit.net 00:00:02.77]       Assert.True() Failure
+[xUnit.net 00:00:02.77]       Expected: True
+[xUnit.net 00:00:02.77]       Actual:   False
+[xUnit.net 00:00:02.77]       Stack Trace:
+[xUnit.net 00:00:02.77]         C:\Source\HamLet\tests\Hamlet.App.Tests\ViewModels\TheScopeShowsTheMarksTests.cs(79,0): at Hamlet.App.Tests.ViewModels.TheScopeShowsTheMarksTests.TheToneLineReadsThePitchWhileAMarkIsUp()
+[xUnit.net 00:00:02.77]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:02.77]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:03.65]     Hamlet.App.Tests.ViewModels.TheScopeShowsTheMarksTests.TheScopeIsOnTheCwTabUnderTheStripAndPaints [FAIL]
+[xUnit.net 00:00:03.65]       System.InvalidOperationException : Sequence contains no elements
+[xUnit.net 00:00:03.65]       Stack Trace:
+[xUnit.net 00:00:03.65]            at System.Linq.ThrowHelper.ThrowNoElementsException()
+[xUnit.net 00:00:03.65]            at System.Linq.Enumerable.Single[TSource](IEnumerable`1 source)
+[xUnit.net 00:00:03.65]         C:\Source\HamLet\tests\Hamlet.App.Tests\ViewModels\TheScopeShowsTheMarksTests.cs(152,0): at Hamlet.App.Tests.ViewModels.TheScopeShowsTheMarksTests.TheScopeIsOnTheCwTabUnderTheStripAndPaints()
+[xUnit.net 00:00:03.65]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:03.65]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:03.70]     Hamlet.App.Tests.ViewModels.TheScopeShowsTheMarksTests.FourSecondsSpanTheWidthNewestAtTheRight [FAIL]
+[xUnit.net 00:00:03.70]       Assert.Equal() Failure: Values are not within 2 decimal places
+[xUnit.net 00:00:03.70]       Expected: 4 (rounded from 4)
+[xUnit.net 00:00:03.70]       Actual:   0 (rounded from 0)
+[xUnit.net 00:00:03.70]       Stack Trace:
+[xUnit.net 00:00:03.70]         C:\Source\HamLet\tests\Hamlet.App.Tests\ViewModels\TheScopeShowsTheMarksTests.cs(61,0): at Hamlet.App.Tests.ViewModels.TheScopeShowsTheMarksTests.FourSecondsSpanTheWidthNewestAtTheRight()
+[xUnit.net 00:00:03.70]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:03.70]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:03.75]     Hamlet.App.Tests.ViewModels.TheScopeShowsTheMarksTests.EveryKeyedMarkIsABarWithItsLength [FAIL]
+[xUnit.net 00:00:03.75]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:03.75]       Expected: 8
+[xUnit.net 00:00:03.75]       Actual:   0
+[xUnit.net 00:00:03.75]       Stack Trace:
+[xUnit.net 00:00:03.75]         C:\Source\HamLet\tests\Hamlet.App.Tests\ViewModels\TheScopeShowsTheMarksTests.cs(42,0): at Hamlet.App.Tests.ViewModels.TheScopeShowsTheMarksTests.EveryKeyedMarkIsABarWithItsLength()
+[xUnit.net 00:00:03.75]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:03.75]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:03.75]     Hamlet.App.Tests.ViewModels.TheScopeShowsTheMarksTests.TheHoverSaysWhatEachLineIsAndWhatDecidesAMark [FAIL]
+[xUnit.net 00:00:03.75]       Assert.Contains() Failure: Sub-string not found
+[xUnit.net 00:00:03.75]       String:    ""
+[xUnit.net 00:00:03.75]       Not found: "Trace"
+[xUnit.net 00:00:03.75]       Stack Trace:
+[xUnit.net 00:00:03.75]         C:\Source\HamLet\tests\Hamlet.App.Tests\ViewModels\TheScopeShowsTheMarksTests.cs(127,0): at Hamlet.App.Tests.ViewModels.TheScopeShowsTheMarksTests.TheHoverSaysWhatEachLineIsAndWhatDecidesAMark()
+[xUnit.net 00:00:03.75]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:03.75]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:03.75]   Finished:    Hamlet.App.Tests
+  Failed Hamlet.App.Tests.ViewModels.TheScopeShowsTheMarksTests.TheThresholdAndThePassbandAreLabelled [24 ms]
+  Error Message:
+   Assert.Equal() Failure: Strings differ
+           ↓ (pos 0)
+Expected: "threshold: floor + 9 dB"
+Actual:   ""
+  Stack Trace:
+     at Hamlet.App.Tests.ViewModels.TheScopeShowsTheMarksTests.TheThresholdAndThePassbandAreLabelled() in C:\Source\HamLet\tests\Hamlet.App.Tests\ViewModels\TheScopeShowsTheMarksTests.cs:line 101
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Failed Hamlet.App.Tests.ViewModels.TheScopeShowsTheMarksTests.TheToneLineReadsThePitchWhileAMarkIsUp [8 ms]
+  Error Message:
+   Assert.True() Failure
+Expected: True
+Actual:   False
+  Stack Trace:
+     at Hamlet.App.Tests.ViewModels.TheScopeShowsTheMarksTests.TheToneLineReadsThePitchWhileAMarkIsUp() in C:\Source\HamLet\tests\Hamlet.App.Tests\ViewModels\TheScopeShowsTheMarksTests.cs:line 79
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Failed Hamlet.App.Tests.ViewModels.TheScopeShowsTheMarksTests.TheScopeIsOnTheCwTabUnderTheStripAndPaints [784 ms]
+  Error Message:
+   System.InvalidOperationException : Sequence contains no elements
+  Stack Trace:
+     at System.Linq.ThrowHelper.ThrowNoElementsException()
+   at System.Linq.Enumerable.Single[TSource](IEnumerable`1 source)
+   at Hamlet.App.Tests.ViewModels.TheScopeShowsTheMarksTests.TheScopeIsOnTheCwTabUnderTheStripAndPaints() in C:\Source\HamLet\tests\Hamlet.App.Tests\ViewModels\TheScopeShowsTheMarksTests.cs:line 152
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Failed Hamlet.App.Tests.ViewModels.TheScopeShowsTheMarksTests.FourSecondsSpanTheWidthNewestAtTheRight [58 ms]
+  Error Message:
+   Assert.Equal() Failure: Values are not within 2 decimal places
+Expected: 4 (rounded from 4)
+Actual:   0 (rounded from 0)
+  Stack Trace:
+     at Hamlet.App.Tests.ViewModels.TheScopeShowsTheMarksTests.FourSecondsSpanTheWidthNewestAtTheRight() in C:\Source\HamLet\tests\Hamlet.App.Tests\ViewModels\TheScopeShowsTheMarksTests.cs:line 61
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Failed Hamlet.App.Tests.ViewModels.TheScopeShowsTheMarksTests.EveryKeyedMarkIsABarWithItsLength [45 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: 8
+Actual:   0
+  Stack Trace:
+     at Hamlet.App.Tests.ViewModels.TheScopeShowsTheMarksTests.EveryKeyedMarkIsABarWithItsLength() in C:\Source\HamLet\tests\Hamlet.App.Tests\ViewModels\TheScopeShowsTheMarksTests.cs:line 42
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Failed Hamlet.App.Tests.ViewModels.TheScopeShowsTheMarksTests.TheHoverSaysWhatEachLineIsAndWhatDecidesAMark [< 1 ms]
+  Error Message:
+   Assert.Contains() Failure: Sub-string not found
+String:    ""
+Not found: "Trace"
+  Stack Trace:
+     at Hamlet.App.Tests.ViewModels.TheScopeShowsTheMarksTests.TheHoverSaysWhatEachLineIsAndWhatDecidesAMark() in C:\Source\HamLet\tests\Hamlet.App.Tests\ViewModels\TheScopeShowsTheMarksTests.cs:line 127
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+
+Test Run Failed.
+Total tests: 6
+     Failed: 6
+ Total time: 4.1300 Seconds
+RC=1 WALL=11s

@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 2 of 4
+TASK: 3 of 4
 WORK_INSTRUCTION: 476 - the oscilloscope: a mark is the envelope over a threshold, at any pitch
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-185 (2026-09-28)
-UPDATED: 2026-09-28T08:58:22-04:00
-NOTE: Task 1 committed - detector green 6/6 on synthetic keying; task 2 building CwScopeControl under the pitch strip
+UPDATED: 2026-09-28T09:03:07-04:00
+NOTE: Task 2 committed - scope on the CW tab, 6/6 and the window-wide types green; task 3 adding the eight scope fields to the owner_verdict row
 
 ---
 
