@@ -188,6 +188,12 @@ the app does - every panel's position and size, and every sentence. Unit 423 pro
 privilege path; the announced path was never driven. *"We fixed this in some places, but
 clearly this bug still exists."*
 
+**R96 - Tim, 2026-09-28: the owner's report at the radio is the test.** *"You spend too much time
+testing against stuff that we don't need. I don't want all those tests against data in our
+library. These are useless and pointless. I will report back. That's the only testing you need
+for the most part."* A unit verifies by building with warnings as errors and running the app
+carry-forward line; no test against recorded audio, no copied telemetry, no fixture, no floor.
+
 ## §3 What is different from the phases before it
 
 1. **A criterion is a requirement id.** A report states the requirement, the condition, the

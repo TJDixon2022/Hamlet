@@ -232,9 +232,10 @@ public sealed class CwScopeControl : Control
     /// <param name="width">The control's width.</param>
     /// <returns>The items.</returns>
     /// <remarks>
-    /// <para>**THE TRACE, AND A BAR UNDER EVERY MARK** (R94). The level of the watched bin is
-    /// drawn across the eight seconds whenever the detector has heard anything, marked or not,
-    /// so a band with nothing keyed still shows its noise and a keyed station shows flat tops.
+    /// <para>**THE TRACE, AND A BAR UNDER EVERY MARK** (R94), **ONLY WHILE THE DETECTOR SAYS
+    /// KEYING** (work instruction 484). The level of the watched bin is drawn across the eight
+    /// seconds while someone is keying, so a keyed station shows flat tops; with nobody keying
+    /// the plot is empty, because the owner reads a noise line as a signal.
     /// Bars are drawn at their true length under it, newest at the right, and a gap is empty
     /// space as long as the gap was. No floor, no threshold. "listening" only before anything
     /// has been heard at all.</para>
@@ -262,22 +263,27 @@ public sealed class CwScopeControl : Control
             return items;
         }
 
-        if (training.Trace.Count > 1)
+        // **SILENCE IS EMPTY** (work instruction 484). The trace and the bars are drawn only
+        // while the detector says keying; with nobody keying the plot holds no noise line.
+        if (frame.Reading.Keying)
         {
-            items.Add(new CwScopeItem(
-                CwScopeItemKind.Trace,
-                XOfTime(training.Trace[0].StartUtc, training.NowUtc, width),
-                XOfTime(training.NowUtc, training.NowUtc, width),
-                CwHearingViewModel.ScopeTraceTip));
-        }
+            if (training.Trace.Count > 1)
+            {
+                items.Add(new CwScopeItem(
+                    CwScopeItemKind.Trace,
+                    XOfTime(training.Trace[0].StartUtc, training.NowUtc, width),
+                    XOfTime(training.NowUtc, training.NowUtc, width),
+                    CwHearingViewModel.ScopeTraceTip));
+            }
 
-        foreach (var bar in training.Bars)
-        {
-            items.Add(new CwScopeItem(
-                CwScopeItemKind.Bar,
-                XOfTime(bar.StartUtc, training.NowUtc, width),
-                XOfTime(bar.EndUtc, training.NowUtc, width),
-                string.Create(CultureInfo.InvariantCulture, $"{(bar.Dah ? "dah" : "dit")}, {bar.LengthMs:0} ms")));
+            foreach (var bar in training.Bars)
+            {
+                items.Add(new CwScopeItem(
+                    CwScopeItemKind.Bar,
+                    XOfTime(bar.StartUtc, training.NowUtc, width),
+                    XOfTime(bar.EndUtc, training.NowUtc, width),
+                    string.Create(CultureInfo.InvariantCulture, $"{(bar.Dah ? "dah" : "dit")}, {bar.LengthMs:0} ms")));
+            }
         }
 
         foreach (var letter in training.Letters)

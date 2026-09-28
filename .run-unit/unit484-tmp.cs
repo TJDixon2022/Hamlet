@@ -23,13 +23,10 @@ namespace Hamlet.App.Controls;
 /// here: **the rig face says how tall the row is** (its height does not depend on its width), the
 /// map is made that tall, and the card takes the width that is left. The card's header, padding and
 /// caption no longer stand over or under the map, because the map is no longer inside the card.</para>
-/// <para>**THE ARRANGEMENT FOLLOWS THE WIDTH, NEVER THE CARD'S WORDS** (work instruction 484; Tim
-/// at the radio: turning the dial into the data block swapped the map and the card, because the
-/// dial's frequency arrives before the mode and the card was measured half updated, with more lines
-/// than it fitted). Where the card would be made narrower than <see cref="CardFloor"/>, the map
-/// gives the width back; the card's words wrap in the slot that leaves and scroll inside the row,
-/// which grows only by the outside-privileges lines (R62). The map gives width back down to
-/// <see cref="MapFloor"/>, the
+/// <para>**THE CARD MUST STILL FIT.** Narrow windows leave the card too little width for the green
+/// block's words at the row's height, and a taller card would make a taller band. So where the card
+/// would outgrow the row, or be made narrower than <see cref="CardFloor"/>, the map gives the width
+/// back - down to <see cref="MapFloor"/>, the
 /// 246 x 134 map units 337 and 376 kept, and never below it - and where even that is not enough the
 /// card governs exactly as it did before this unit. **The map never takes width from the rig face.**</para>
 /// <para>**AND WHERE THE WINDOW ALLOWS IT, THE MAP STANDS AT THE BAND'S LEFT EDGE** (PHASE_PLAN.md
@@ -210,7 +207,7 @@ public sealed class BandGovernsTheMapPanel : Panel
 
         if (!double.IsInfinity(width) && _decided && !Equals(HeldAcross, _decidedUnder) && room == _decidedFor)
         {
-            return Held(width, card, map, rig, rowHeight, outside);
+            return Held(width, card, map, rig, rowHeight);
         }
 
         if (!double.IsInfinity(width) && Pills is { } pills && AtTheLeftEdge(pills))
@@ -237,9 +234,9 @@ public sealed class BandGovernsTheMapPanel : Panel
                 Math.Max(rowHeight, Math.Max(card.DesiredSize.Height, map.DesiredSize.Height)));
         }
 
-        // **AS TALL AS THE ROW, IF THE CARD KEEPS ITS FLOOR.** Otherwise the largest height, down
-        // to the floor, at which it does - found by halving, because a shorter map is narrower.
-        // Asked of widths alone since work instruction 484: the card's words never decide it.
+        // **AS TALL AS THE ROW, IF THE CARD STILL FITS.** Otherwise the largest height, down to
+        // the floor, at which it does - found by halving, because the card's height only ever
+        // falls as its width grows.
         var high = Math.Max(MapFloor, rowHeight);
 
         if (!CardFits(high))
@@ -273,7 +270,9 @@ public sealed class BandGovernsTheMapPanel : Panel
         map.Measure(new Size(double.PositiveInfinity, _mapHeight));
         card.Measure(new Size(CardWidth(width, map, rig), double.PositiveInfinity));
 
-        return new Size(width, Math.Max(rowHeight + Outside(outside), map.DesiredSize.Height));
+        return new Size(
+            width,
+            Math.Max(rowHeight, Math.Max(card.DesiredSize.Height, map.DesiredSize.Height)));
 
         bool CardFits(double mapHeight)
         {
@@ -281,7 +280,14 @@ public sealed class BandGovernsTheMapPanel : Panel
 
             var slot = CardWidth(width, map, rig);
 
-            return mapHeight <= MapFloor || slot - card.Margin.Left - card.Margin.Right >= CardFloor;
+            if (mapHeight > MapFloor && slot - card.Margin.Left - card.Margin.Right < CardFloor)
+            {
+                return false;
+            }
+
+            card.Measure(new Size(slot, double.PositiveInfinity));
+
+            return FitHeight(card, outside) <= rowHeight + 0.5;
         }
 
         // **THE MAP AT THE BAND'S LEFT EDGE, IF BOTH NEIGHBOURS STILL FIT** (work instruction 389
@@ -303,7 +309,6 @@ public sealed class BandGovernsTheMapPanel : Panel
             var slot = width - mapWidth - rig.DesiredSize.Width;
 
             if (reach <= 0
-                || strayed
                 || width - mapWidth < need
                 || slot - card.Margin.Left - card.Margin.Right < CardFloor)
             {
@@ -311,6 +316,11 @@ public sealed class BandGovernsTheMapPanel : Panel
             }
 
             card.Measure(new Size(slot, double.PositiveInfinity));
+
+            if (FitHeight(card, outside) > rowHeight + 0.5)
+            {
+                return false;
+            }
 
             _pillsReach = reach;
             _mapHeight = tall;
@@ -354,7 +364,7 @@ public sealed class BandGovernsTheMapPanel : Panel
     /// **THE ARRANGEMENT DECIDED A MOMENT BEFORE**, measured again as it stood: the map at the height
     /// it was given, the card in the slot that leaves, the pills where they were.
     /// </summary>
-    private Size Held(double width, Control card, Control map, Control rig, double rowHeight, IReadOnlyList<Control> outside)
+    private Size Held(double width, Control card, Control map, Control rig, double rowHeight)
     {
         map.Measure(new Size(double.PositiveInfinity, _mapHeight));
 
@@ -369,7 +379,9 @@ public sealed class BandGovernsTheMapPanel : Panel
         PlacePills(0);
         card.Measure(new Size(CardWidth(width, map, rig), double.PositiveInfinity));
 
-        return new Size(width, Math.Max(rowHeight + Outside(outside), map.DesiredSize.Height));
+        return new Size(
+            width,
+            Math.Max(rowHeight, Math.Max(card.DesiredSize.Height, map.DesiredSize.Height)));
     }
 
     /// <summary>Moves the pills row's left edge, and nothing else about it.</summary>
@@ -419,18 +431,13 @@ public sealed class BandGovernsTheMapPanel : Panel
         return finalSize;
     }
 
-    /// <summary>The strayed-frequency line's name in the card, which unit 389's rule keys on.</summary>
-    public const string StrayedLineName = "GreenZoneStrayedLine";
-
     /// <summary>
-    /// **HOW MUCH THE ROW GROWS: THE OUTSIDE-PRIVILEGES LINES AND NOTHING ELSE** (R62; work
-    /// instruction 484). Each drawn line marked <see cref="OutsideTheFitProperty"/> and the spacing
-    /// its stack gives it. Every other word of the card wraps and scrolls inside the row, so the
-    /// row's height and the map's place never follow how much the card has to say.
+    /// The card's height as the fit questions ask it: as measured, less each drawn line marked
+    /// <see cref="OutsideTheFitProperty"/> and the spacing its stack gives it.
     /// </summary>
-    private static double Outside(IReadOnlyList<Control> outside)
+    private static double FitHeight(Control card, IReadOnlyList<Control> outside)
     {
-        var height = 0.0;
+        var height = card.DesiredSize.Height;
 
         foreach (var line in outside)
         {
@@ -441,7 +448,7 @@ public sealed class BandGovernsTheMapPanel : Panel
 
             var spacing = line.GetVisualParent() is StackPanel stack ? stack.Spacing : 0;
 
-            height += line.DesiredSize.Height + spacing;
+            height -= line.DesiredSize.Height + spacing;
         }
 
         return height;

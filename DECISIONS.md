@@ -4,6 +4,23 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-189
+date: 2026-09-28
+refs: docs/phase-requirements/PHASE_PLAN.md R96, work instruction 484
+---
+
+**The owner's report at the radio is the test.** Tim, 2026-09-28: *"You spend too much time
+testing against stuff that we don't need. I don't want all those tests against data in our
+library. These are useless and pointless. I will report back. That's the only testing you need
+for the most part."*
+
+A unit verifies by building `Hamlet.sln` with warnings as errors and running the app
+carry-forward line so nothing that worked breaks. It writes no test against recorded audio, copies
+no telemetry, and adds no fixture and no floor; the owner verifies the change at the radio.
+
+**Whose words are whose.** The ruling is Tim's; the wording is work instruction 484's record of it.
+
+---
 id: HM-DEC-188
 date: 2026-09-28
 refs: PHASE_PLAN.md R94 R95 and criterion 12.4, RigSpectrumSource.cs, ScopeFlow.cs, Ic7300Rig.cs 0x27, CwEnvelopeDetector.cs, CwScopeControl.cs, the owner's verdict rows of 2026-09-28 17:13, work instruction 480

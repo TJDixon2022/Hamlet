@@ -1337,3 +1337,25 @@ LICENCE: PHASE_PLAN.md step 11 line 11.4, R88, R89, R91, R93, R80, R85, section 
 ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
 ADVANCES: step 11 criterion 4
 RUN: hand run of instruction 483 (the owner's rows name the gate); SESSION.lock was already present at the root when the session began, so the session did not take it and does not release it.
+
+## UNIT 4 - STEP 11
+
+STEP: 11
+APPROACH: replay every owner_verdict row in the owner's telemetry file against the detector's gate constants at HEAD, name the one gate his idiot presses contradicted with no agree row flipped, move that one number to a value one row's figure names, rewrite its remark
+HIT: section 4 asked nothing inside the two stops - author's, overrulable, the loop continued - The first item asks how the owner's telemetry rows reach a session, which is a question of file access on his own machine and not keying, transmit, radio safety or a promise to the operator, and the second item is an author's ruling the unit has already taken.
+MOVE: work around
+WHY: The launcher named step 3, but R88 closes steps 2 to 10; 11.4 is the last open line of step 11 and the one the owner's ear exists to teach, its only attempt (unit 475) failed because the plan then had no criterion lines rather than on its merits, and the gates have moved under his rows since (477, 479, 480), so the rows are read against HEAD rather than the old swing bar.
+DECIDED: step 3 is not authored while R88 stands (plan section 6 routing, not a self-ruling); telemetry rows are not recordings under R88; an idiot row with the bars saying no keying reads as a gate too strict and with keying as too loose, agree rows are controls no move may flip, and a tie goes to a bar-side gate under R91 - author's, overrulable
+LICENCE: PHASE_PLAN.md step 11 line 11.4, R88, R89, R91, R93, R80, R85, section 6; CLAUDE.md 0.0, 0.2 and 0.6; HM-DEC-155; HM-DEC-165; FACT-006
+COST: 1.8110240000000002
+ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
+FATE: executed
+STATE_AFTER: partial
+STATE_WHY: the checkboxes say partial and the judge said blocked - the checkboxes win. The judge-s reason: Criteria 11.3, 11.5 and 11.6 are met and 11.4 is not, because the report shows 0 owner verdict rows read, no gate named, nothing moved and no remark rewritten, and it quotes the file tools refusing the telemetry folder as outside the session's allowed directories, so 11.4 cannot proceed until the rows reach a session through an outside change such as the owner copying them into the tree, and more effort will not help.
+ADVANCED: no
+ATTEMPT: 11.4 | unit 4 launched 2026-09-28T19:56:11.481Z | no | executed | replay every owner_verdict row in the owner's telemetry file against the detector's gate constants at HEAD, name the one gate his idiot presses contradicted with no agree row flipped, move that one number to a value one row's figure names, rewrite its remark
+REASON: 11.4 | unit 4 launched 2026-09-28T19:56:11.481Z | the unit ran to completion and the criterion did not flip from unmet to met
+
+## UNIT 484 - STEP 11
+
+Run by hand, outside the loop; SESSION.lock taken and released, nothing written to RUN_LEDGER.md, nothing under tools\arbiter\ touched, no box ticked. Version 1.13.170 to 1.13.171. Two fixes the owner reported at the radio, verified only by the build and the app carry-forward line under R96, which is appended to PHASE_PLAN.md. **Silence is empty:** CwScopeControl.Items draws the level trace and the bars only while the detector's reading says keying, so a band with nobody keying shows no noise line; the tone and mixing words and the letters are drawn as before, and the detector is untouched. **The top row holds still:** BandGovernsTheMapPanel decided where the map stood and how tall it was by measuring whether the neighborhood card's current words fitted the row, so a card measured half updated - the dial's frequency in the data block before the radio's mode followed - could move the map from the band's left edge to beside the card. The fit questions now ask widths alone (the card's floor, the pills' row) and unit 389's strayed-line rule, and the row grows only by the outside-privileges lines (R62); every other word of the card wraps and scrolls inside it. **The licence sentence follows the block:** the card now answers for the mode of the block the frequency is in, and for the tab only on open or unclaimed ground, so "Your General license covers Morse here" is not written on a data-block frequency on any path. Display only; no send path reads it. Build 0 warnings 0 errors; app carry-forward 278 of 278. No recording and no telemetry read.

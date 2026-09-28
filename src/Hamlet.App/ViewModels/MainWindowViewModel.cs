@@ -530,6 +530,25 @@ public partial class MainWindowViewModel : ObservableObject
         _ => TransmitMode.Cw,
     };
 
+    /// <summary>Which mode the licence card answers for at this frequency.</summary>
+    /// <param name="here">The block the frequency is in, or null.</param>
+    /// <returns>The block's own mode where it has one; the tab's where it does not.</returns>
+    /// <remarks>
+    /// **THE BLOCK THE FREQUENCY IS IN, SINCE WORK INSTRUCTION 484** (Tim at the radio: the card
+    /// said *Your General license covers Morse here* on a data-block frequency). The card is a
+    /// sentence about this frequency, so where the band plan's block names one family - Morse,
+    /// data or voice - it answers for that family, on every path that reaches it: a tab pressed,
+    /// the dial turned, or the dial arriving before the radio's mode does. Only open or unclaimed
+    /// ground falls back to the tab. Display only: no send path reads this card.
+    /// </remarks>
+    private TransmitMode LicenceModeHere(Neighborhood? here) => here?.Family switch
+    {
+        ModeFamily.Cw => TransmitMode.Cw,
+        ModeFamily.Digital => TransmitMode.Data,
+        ModeFamily.Phone => TransmitMode.Phone,
+        _ => LicenceModeForTheTab,
+    };
+
     partial void OnOperatingModeChanged(string value)
     {
         OnPropertyChanged(nameof(IsCwMode));
@@ -22238,9 +22257,10 @@ public partial class MainWindowViewModel : ObservableObject
         PrivilegeSpans = _privileges.SpansFor(SelectedBand.Band, cls);
         // The card answers two questions at once: what the license allows, and
         // what is actually going on where the dial is pointing (HM-DEC-054).
+        var here = Neighborhoods.FirstOrDefault(n => n.Contains(FrequencyHz));
+
         PrivilegeStatus = PrivilegeStatusLine.Build(
-            _privileges, cls, FrequencyHz, LicenceModeForTheTab,
-            Neighborhoods.FirstOrDefault(n => n.Contains(FrequencyHz)));
+            _privileges, cls, FrequencyHz, LicenceModeHere(here), here);
 
         // A pending mismatch is a question about a class the operator has
         // since changed. Answering it by other means makes it moot, and a
