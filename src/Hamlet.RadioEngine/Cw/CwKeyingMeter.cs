@@ -110,6 +110,25 @@ public static class CwKeyingThresholds
     /// figure is trusted over the operator's.
     /// </summary>
     /// <remarks>
+    /// <para>**SEVENTEEN, FROM THE OWNER'S EAR AT THE RADIO, AND TWENTY DID NOT
+    /// SURVIVE THE AIR** (R89, work instruction 475). Seven verdict rows on
+    /// 2026-09-28, 01:14 to 01:17 UTC, 7.020 and 7.054 MHz, every one under AGC
+    /// FAST - which the CW receive condition sets and which flattens level swing by
+    /// design. At 01:16:22 he heard code and pressed "You're an idiot" with the
+    /// light dark: score 0.27, nearly three times the tenth, plain median 48 ms, and
+    /// a swing of 18.6 against twenty. Refused for 1.4 decibels. The swing on all
+    /// seven rows ran 17.5 to 21.8, so ordinary strong stations on 40 m under the
+    /// app's own AGC sit across the old bar.</para>
+    /// <para>**WHAT SEVENTEEN GIVES UP, NAMED.** It stays above the evening's empty
+    /// captures at 13 to 14 and the tree's empty recording at 14.1, and it sits
+    /// **below** the tree's other empty recording at 17.7 and inside the 14.7 to 17.7
+    /// the eleven empty six-second windows swung (remarks in
+    /// <see cref="CwKeyingMeter.Update(MonoAudio?)"/>). Those windows already
+    /// cleared the score and the element range, so any of them swinging 17 or more
+    /// is now called keying on a band holding nothing.
+    /// Seventeen is the author's and overrulable; the next rows say whether it
+    /// lights on nothing.</para>
+    /// <para>**HISTORY, KEPT: WHERE TWENTY CAME FROM.** Recordings, not the air.</para>
     /// <para>**THE SWING IS THE FIGURE THAT HELD STEADY ALL EVENING AND THE
     /// TIMING IS NOT.** On the evening of 2026-08-20 the four captures holding a
     /// real station measured 20 to 24 decibels of swing and every capture with
@@ -128,7 +147,7 @@ public static class CwKeyingThresholds
     /// of two speed estimates the decoder starts from, and the decoder's own
     /// refusals are untouched (§0.0).</para>
     /// </remarks>
-    public const double ConfidentSwingDb = 20;
+    public const double ConfidentSwingDb = 17;
 
     /// <summary>
     /// How many windows in a row must show nothing before the meter says so.

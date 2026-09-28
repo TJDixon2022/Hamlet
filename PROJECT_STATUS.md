@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 0 of 3
+TASK: 1 of 3
 WORK_INSTRUCTION: 475 - the swing bar the owner's ear says is wrong
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-184 (2026-09-27)
-UPDATED: 2026-09-27T22:05:12-04:00
-NOTE: Task 0 - entry round re-run once: 274 of 278 first pass, four 1 ms losses to the dispatcher loop
+UPDATED: 2026-09-27T22:12:06-04:00
+NOTE: Task 1 - 20 moved to 17, fact red at 20 and green at 17, build clean; committing and pushing
 
 ---
 
