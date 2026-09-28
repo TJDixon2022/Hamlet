@@ -110,8 +110,21 @@ public static class CwKeyingThresholds
     /// figure is trusted over the operator's.
     /// </summary>
     /// <remarks>
-    /// <para>**SEVENTEEN, FROM THE OWNER'S EAR AT THE RADIO, AND TWENTY DID NOT
-    /// SURVIVE THE AIR** (R89, work instruction 475). Seven verdict rows on
+    /// <para>**FIFTEEN, THE LOWEST SWING ON A STATION THE OWNER HEARD** (R93, work
+    /// instruction 479, HM-DEC-187). Unit 475 set seventeen from seven rows; four more, on
+    /// 2026-09-28 at 15:38 to 15:39 UTC, were stations he heard and pressed "You're an
+    /// idiot" on, the meter blind on every one at swings of 15.1 to 19.7 and medians of 3
+    /// to 9 ms. The lowest, 15.1, sets the bar at fifteen. **This swing test is the gate
+    /// unit 477's task 3 was to replace with the bar test and did not** - that task was
+    /// dropped - so the meter kept its own gate while the bars moved on; lowering it is the
+    /// owner's ruling, and the bar test replacing it is still owed.</para>
+    /// <para>**WHAT FIFTEEN GIVES UP, NAMED.** It sits inside the 14.7 to 17.7 the eleven
+    /// empty six-second windows swung and above the tree's empty recording at 14.1, so more
+    /// of those windows, which already cleared the score and the element range, are now
+    /// called keying on a band holding nothing. Author's reading of the owner's rows; no
+    /// recording chose it and none was run to check it (R88).</para>
+    /// <para>**HISTORY, KEPT: SEVENTEEN, FROM THE OWNER'S EAR AT THE RADIO, AND TWENTY DID
+    /// NOT SURVIVE THE AIR** (R89, work instruction 475). Seven verdict rows on
     /// 2026-09-28, 01:14 to 01:17 UTC, 7.020 and 7.054 MHz, every one under AGC
     /// FAST - which the CW receive condition sets and which flattens level swing by
     /// design. At 01:16:22 he heard code and pressed "You're an idiot" with the
@@ -154,7 +167,7 @@ public static class CwKeyingThresholds
     /// of two speed estimates the decoder starts from, and the decoder's own
     /// refusals are untouched (§0.0).</para>
     /// </remarks>
-    public const double ConfidentSwingDb = 17;
+    public const double ConfidentSwingDb = 15;
 
     /// <summary>
     /// How many windows in a row must show nothing before the meter says so.
@@ -286,10 +299,7 @@ public sealed class CwKeyingMeter
         // of twenty. **What it holds**: all four recordings that emit nothing
         // produce nought Keying windows out of twenty-five each, and their
         // whole-file swings are 14.1, 15.7, 16.7 and 17.7.
-        var looksKeyed = best.Profile.Score >= CwKeyingThresholds.KeyingScore
-                         && best.Profile.ElementMedianMs >= CwKeyingThresholds.SlowestChatterMs
-                         && best.Profile.ElementMedianMs <= CwKeyingThresholds.LongestElementMs
-                         && best.Profile.SwingDb >= CwKeyingThresholds.ConfidentSwingDb;
+        var looksKeyed = LooksKeyed(best.Profile);
 
         if (looksKeyed)
         {
@@ -316,6 +326,18 @@ public sealed class CwKeyingMeter
 
         return Reading;
     }
+
+    /// <summary>Whether one window's figures look like somebody keying.</summary>
+    /// <param name="profile">The best pitch's figures.</param>
+    /// <returns>
+    /// True when the score, the element median and the swing all clear their bars in
+    /// <see cref="CwKeyingThresholds"/>; the reasons are in <see cref="Update(MonoAudio?)"/>.
+    /// </returns>
+    public static bool LooksKeyed(KeyingProfile profile)
+        => profile.Score >= CwKeyingThresholds.KeyingScore
+           && profile.ElementMedianMs >= CwKeyingThresholds.SlowestChatterMs
+           && profile.ElementMedianMs <= CwKeyingThresholds.LongestElementMs
+           && profile.SwingDb >= CwKeyingThresholds.ConfidentSwingDb;
 
     /// <summary>Forget everything, for a fresh decoder or a fresh device.</summary>
     public void Reset()

@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 2 of 3
+TASK: 3 of 3
 WORK_INSTRUCTION: 479 - the tolerance follows the signal
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-187 (2026-09-28)
-UPDATED: 2026-09-28T12:10:59-04:00
-NOTE: Task 1 committed (15 dB tone 51 to 40 unmarked, 10 dB red, noise 0 of 1500); task 2 starting: writing the 15.5 dB swing meter profile test to watch it fail at ConfidentSwingDb 17
+UPDATED: 2026-09-28T12:12:29-04:00
+NOTE: Task 2 committed (ConfidentSwingDb 15, the 15.5 dB profile red at 17 then green); task 3 exit round starting: full no-incremental build with warnings as errors, then the app carry-forward line
 
 ---
 
