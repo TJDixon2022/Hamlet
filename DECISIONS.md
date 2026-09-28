@@ -4,6 +4,32 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-187
+date: 2026-09-28
+refs: PHASE_PLAN.md R93 and criterion 12.4, CwEnvelopeDetector.cs FlatToleranceDb, CwKeyingMeter.cs ConfidentSwingDb, unit 477's report, the owner's verdict rows of 2026-09-28 15:38, work instruction 479
+---
+
+**A run's flatness tolerance is the wobble a tone at the bar's measured contrast actually
+has, not one number for every signal; and the meter's swing bar is the lowest swing on a
+station the owner heard.** Tim, 2026-09-28.
+
+**What was wrong.** Unit 477 set the tolerance at 1.5 dB so that seeded noise never read as
+keying, and named the cost: a tone 15 dB over the noise splits its bars. The owner then
+pressed "You're an idiot" on four stations 10 to 15 dB weaker than the morning's, and the
+bars found none of them. The meter, keeping its own 17 dB swing gate because 477's task 3 was
+dropped, found none of them either at swings of 15 to 20.
+
+**What is ruled.** The tolerance is 477's own formula applied to the measured contrast -
+20·log10(1 + 10^(-S/20)) for a bar S dB over its gap - with 1.5 dB as its floor for loud
+signals and no ceiling, so a weak bar is allowed the wobble a weak bar has. The meter's
+`ConfidentSwingDb` moves from 17 to 15, the lowest swing on a station the owner heard.
+Neither number rests on a recording; both rest on the physics 477 wrote down and the owner's
+rows. The three ticks 477 earned and the web session's plan delivery erased are restored.
+
+**Whose words are whose.** The ruling is Tim's; the wording is work instruction 479's record
+of it.
+
+---
 id: HM-DEC-186
 date: 2026-09-28
 refs: PHASE_PLAN.md R91 and criterion 12.4, the owner's verdict rows of 2026-09-28, CwEnvelopeDetector.cs, CwKeyingMeter.cs, CwToneTracker.cs, work instruction 477

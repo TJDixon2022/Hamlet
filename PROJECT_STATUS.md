@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-TASK: 3 of 3
-WORK_INSTRUCTION: 478 - the scope is the middle picture
-BALL: tim
-NEXT_PASTE: output.md -> Claude Web
-RULES_AT: HM-DEC-186 (2026-09-28)
-UPDATED: 2026-09-28T10:50:52-04:00
-NOTE: Unit 478 done: the scope is a level trace with bars under the marks and tone/mixing words, no floor or threshold; light and strip off the CW tab, buttons beside the scope, row keys unchanged; three retired files emptied because git rm was refused - owner deletes; no recording read
+STATE: EXECUTING
+TASK: 1 of 3
+WORK_INSTRUCTION: 479 - the tolerance follows the signal
+BALL: code
+NEXT_PASTE: none
+RULES_AT: HM-DEC-187 (2026-09-28)
+UPDATED: 2026-09-28T11:56:34-04:00
+NOTE: Task 0 committed (entry: build green, app line 278/278 on the re-run); task 1 starting: watching 476's 15 dB tone test fail at HEAD before the tolerance becomes a formula
 
 ---
 
