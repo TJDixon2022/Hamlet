@@ -1,0 +1,72 @@
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  Ft8Sharp -> C:\Source\HamLet\src\Ft8Sharp\bin\Debug\net8.0\Ft8Sharp.dll
+  Ft8Sharp.Deep -> C:\Source\HamLet\src\Ft8Sharp.Deep\bin\Debug\net8.0\Ft8Sharp.Deep.dll
+  Hamlet.RadioEngine -> C:\Source\HamLet\src\Hamlet.RadioEngine\bin\Debug\net8.0\Hamlet.RadioEngine.dll
+  Hamlet.RadioEngine.Tests -> C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:02.12]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:02.41]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:02.41]   Starting:    Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:02.49]     Hamlet.RadioEngine.Tests.Cw.TheRadioPointsTheDetectorTests.APeak250HzAboveTheDialWithPitch600WatchesTheBinAt850 [FAIL]
+[xUnit.net 00:00:02.49]       Assert.Equal() Failure: Values are not within 0 decimal places
+[xUnit.net 00:00:02.49]       Expected: 850 (rounded from 850)
+[xUnit.net 00:00:02.49]       Actual:   600 (rounded from 600)
+[xUnit.net 00:00:02.49]       Stack Trace:
+[xUnit.net 00:00:02.49]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\TheRadioPointsTheDetectorTests.cs(61,0): at Hamlet.RadioEngine.Tests.Cw.TheRadioPointsTheDetectorTests.APeak250HzAboveTheDialWithPitch600WatchesTheBinAt850()
+[xUnit.net 00:00:02.49]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:02.49]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:02.49]       Output:
+[xUnit.net 00:00:02.49]         peak +252 Hz from the dial, level 125, pitch 852 Hz; swept bin 600 Hz, pointed bin 600 Hz, reading pointed False
+[xUnit.net 00:00:02.51]     Hamlet.RadioEngine.Tests.Cw.TheRadioPointsTheDetectorTests.WhenTheScopeAndTheMeterBothNameAPitchTheScopeWins [FAIL]
+[xUnit.net 00:00:02.51]       Assert.Equal() Failure: Values are not within 0 decimal places
+[xUnit.net 00:00:02.51]       Expected: 850 (rounded from 850)
+[xUnit.net 00:00:02.51]       Actual:   600 (rounded from 600)
+[xUnit.net 00:00:02.51]       Stack Trace:
+[xUnit.net 00:00:02.51]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\TheRadioPointsTheDetectorTests.cs(120,0): at Hamlet.RadioEngine.Tests.Cw.TheRadioPointsTheDetectorTests.WhenTheScopeAndTheMeterBothNameAPitchTheScopeWins()
+[xUnit.net 00:00:02.51]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:02.51]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:02.51]       Output:
+[xUnit.net 00:00:02.51]         meter 600 and scope 850: 600 Hz, keying True; scope gone: 600 Hz
+[xUnit.net 00:00:02.52]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.TheRadioPointsTheDetectorTests.ThreeSecondsWithoutAFrameIsTheScopeQuietAndTheDetectorSweeps [26 ms]
+  Standard Output Messages:
+ at 2.9 s 852 Hz; past 3 s quiet; frames in the last four seconds 1
+
+
+  Failed Hamlet.RadioEngine.Tests.Cw.TheRadioPointsTheDetectorTests.APeak250HzAboveTheDialWithPitch600WatchesTheBinAt850 [11 ms]
+  Error Message:
+   Assert.Equal() Failure: Values are not within 0 decimal places
+Expected: 850 (rounded from 850)
+Actual:   600 (rounded from 600)
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Cw.TheRadioPointsTheDetectorTests.APeak250HzAboveTheDialWithPitch600WatchesTheBinAt850() in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\TheRadioPointsTheDetectorTests.cs:line 61
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Standard Output Messages:
+ peak +252 Hz from the dial, level 125, pitch 852 Hz; swept bin 600 Hz, pointed bin 600 Hz, reading pointed False
+
+
+  Failed Hamlet.RadioEngine.Tests.Cw.TheRadioPointsTheDetectorTests.WhenTheScopeAndTheMeterBothNameAPitchTheScopeWins [26 ms]
+  Error Message:
+   Assert.Equal() Failure: Values are not within 0 decimal places
+Expected: 850 (rounded from 850)
+Actual:   600 (rounded from 600)
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Cw.TheRadioPointsTheDetectorTests.WhenTheScopeAndTheMeterBothNameAPitchTheScopeWins() in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\TheRadioPointsTheDetectorTests.cs:line 120
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Standard Output Messages:
+ meter 600 and scope 850: 600 Hz, keying True; scope gone: 600 Hz
+
+
+
+Test Run Failed.
+Total tests: 3
+     Passed: 1
+     Failed: 2
+ Total time: 2.9040 Seconds
+RC=1 WALL=10s

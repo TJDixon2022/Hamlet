@@ -320,6 +320,7 @@ public sealed class CwToneTracker
     /// <summary>A move that is waiting for the character in progress to end.</summary>
     private double _heldSwitchHz = double.NaN;
     private double _meterHz = double.NaN;
+    private double _scopeHz = double.NaN;
 
     /// <summary>
     /// How many more surveys the last keying finding may go on protecting its
@@ -703,7 +704,7 @@ public sealed class CwToneTracker
     /// four rows of six while the meter said keying: the decoder was told nobody was
     /// there.</para>
     /// </remarks>
-    public bool HasKeying => MeterKeying || Verdict.Keyed is not null;
+    public bool HasKeying => MeterKeying || ScopeKeying || Verdict.Keyed is not null;
 
     /// <summary>
     /// True when keying was found within the last few seconds (HM-DEC-096).
@@ -755,10 +756,44 @@ public sealed class CwToneTracker
     /// <summary>Whether the meter says keying now, and so owns the pitch and the flag.</summary>
     public bool MeterKeying => !double.IsNaN(Volatile.Read(ref _meterHz));
 
-    /// <summary>Take the meter's pitch, if it has one the filter is not already on.</summary>
+    /// <summary>
+    /// **THE RADIO POINTS, AND THE SCOPE BEATS THE METER** (work instruction 480 task 2, R94,
+    /// HM-DEC-188): hand it the pitch the radio's scope points at while the bars there say keying,
+    /// or null, from any thread.
+    /// </summary>
+    /// <param name="pitchHz">The pointed pitch, or null.</param>
+    /// <remarks>
+    /// <para>**BOTH ARE CANDIDATES AND THE SCOPE WINS**: the meter's pitch is the loudest keyed
+    /// bin its own sweep of the audio found, and the scope's is the radio's calibrated spectrum
+    /// centred on the dial. Where both are present the tracker mixes at the scope's, exactly as
+    /// it mixes at the meter's from the next hop, and the survey moves nothing.</para>
+    /// <para>**ONLY WHILE THE BARS THERE SAY KEYING - AUTHOR'S, OVERRULABLE.** The app hands the
+    /// pitch over only while the envelope detector, watching the pointed bin, says keying. On an
+    /// empty band the tallest bin of each frame is noise and wanders across the filter several
+    /// times a second, and a tracker retuned by each would lose its clock on every one.</para>
+    /// </remarks>
+    public void FollowScope(double? pitchHz)
+    {
+        var hz = pitchHz is > 0 and var p ? Math.Clamp(p, MinimumToneHz, MaximumToneHz) : double.NaN;
+
+        Interlocked.Exchange(ref _scopeHz, hz);
+    }
+
+    /// <summary>Whether the scope points at keying now, and so owns the pitch and the flag.</summary>
+    public bool ScopeKeying => !double.IsNaN(Volatile.Read(ref _scopeHz));
+
+    /// <summary>The pitch the tracker is told to mix at: the scope's where it points, else the meter's.</summary>
+    private double Told()
+    {
+        var scope = Volatile.Read(ref _scopeHz);
+
+        return !double.IsNaN(scope) ? scope : Volatile.Read(ref _meterHz);
+    }
+
+    /// <summary>Take the scope's or the meter's pitch, if one is given the filter is not already on.</summary>
     private void ApplyMeter()
     {
-        var hz = Volatile.Read(ref _meterHz);
+        var hz = Told();
 
         if (double.IsNaN(hz) || hz == _reportedHz)
         {
@@ -1052,11 +1087,12 @@ public sealed class CwToneTracker
         // HM-DEC-186). It goes on observing, so it is ready when the meter lets go; its keying
         // verdict is not the tracker's while the meter's stands, and a hold waiting on it
         // is dropped, because the meter's pitch wins.
-        if (MeterKeying)
+        // The same while the scope points at keying (work instruction 480), at the scope's pitch.
+        if (MeterKeying || ScopeKeying)
         {
             _previousKeyedHz = coarse.Keyed?.ToneHz ?? double.NaN;
             _heldSwitchHz = double.NaN;
-            KeyingFoundAt(Volatile.Read(ref _meterHz));
+            KeyingFoundAt(Told());
             Verdict = new ToneVerdict(
                 null, Filtered(coarse.Interference ?? coarse.Strongest), coarse.Strongest);
 

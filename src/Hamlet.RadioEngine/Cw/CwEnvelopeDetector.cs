@@ -34,6 +34,7 @@ public sealed record CwBarBin(
 /// <param name="PassbandFromRig">Whether the edges came from the radio's pitch and filter.</param>
 /// <param name="MarksLast4s">How many marks the last four seconds hold.</param>
 /// <param name="Keying">Whether any bin in the passband made two bars and a gap in the last second.</param>
+/// <param name="Pointed">Whether the watched bin is the one the radio's scope points at, not the sweep's.</param>
 public sealed record CwEnvelopeReading(
     double EnvelopeDb,
     double FloorDb,
@@ -46,7 +47,8 @@ public sealed record CwEnvelopeReading(
     double PassbandHighHz,
     bool PassbandFromRig,
     int MarksLast4s,
-    bool Keying = false)
+    bool Keying = false,
+    bool Pointed = false)
 {
     /// <summary>Nothing heard.</summary>
     public static CwEnvelopeReading None { get; } = new(
@@ -197,6 +199,7 @@ public sealed class CwEnvelopeDetector
     private double _highHz = double.NaN;
     private bool _fromRig;
     private double _loudestGapDb = double.NaN;
+    private double _pointedHz = double.NaN;
     private CwEnvelopeReading _reading = CwEnvelopeReading.None;
 
     private IAudioSource? _attached;
@@ -318,6 +321,50 @@ public sealed class CwEnvelopeDetector
                 PassbandHighHz = _highHz,
                 PassbandFromRig = _fromRig,
             };
+        }
+    }
+
+    /// <summary>
+    /// **THE RADIO POINTS** (work instruction 480 task 2, R94, HM-DEC-188): watch the bin nearest
+    /// the pitch the radio's scope reports, or sweep again when it reports none.
+    /// </summary>
+    /// <param name="pitchHz">The pitch <see cref="CwScopePointer"/> gives, or null while the scope is quiet.</param>
+    /// <remarks>
+    /// <para>**WHILE THE SCOPE POINTS, THERE IS NO SWEEP.** The watched bin is the pointed one on
+    /// every hop, so the bars, the contrast and the pitch all come from it; the other bins go on
+    /// being measured, and are what the sweep picks from again the moment the pointer is null.</para>
+    /// <para>A pitch outside the bins, beyond the passband's edge by more than half a bin, is not
+    /// one the detector hears, and it sweeps as if nothing pointed.</para>
+    /// </remarks>
+    public void PointAt(double? pitchHz)
+    {
+        lock (_gate)
+        {
+            _pointedHz = pitchHz is > 0 and var hz ? hz : double.NaN;
+        }
+    }
+
+    /// <summary>The pitch of the bin being watched, pointed or swept.</summary>
+    public double WatchedHz
+    {
+        get
+        {
+            lock (_gate)
+            {
+                return _bins.Length > 0 ? _bins[_watched].Hz : double.NaN;
+            }
+        }
+    }
+
+    /// <summary>The pitch the radio's scope points at, or NaN while it points nowhere.</summary>
+    public double PointedHz
+    {
+        get
+        {
+            lock (_gate)
+            {
+                return _pointedHz;
+            }
         }
     }
 
@@ -509,7 +556,11 @@ public sealed class CwEnvelopeDetector
         var best = -1;
         Evaluation? bestEval = null;
 
-        for (var i = 0; i < _bins.Length; i++)
+        // **THE RADIO POINTS; THE SWEEP IS THE FALLBACK** (work instruction 480, R94). While the
+        // scope names a pitch inside the bins, that bin is watched and nothing is searched.
+        var pointed = Pointed();
+
+        for (var i = 0; pointed < 0 && i < _bins.Length; i++)
         {
             var e = evals[i];
 
@@ -539,7 +590,11 @@ public sealed class CwEnvelopeDetector
             }
         }
 
-        if (best >= 0)
+        if (pointed >= 0)
+        {
+            _watched = pointed;
+        }
+        else if (best >= 0)
         {
             _watched = best;
         }
@@ -577,7 +632,29 @@ public sealed class CwEnvelopeDetector
             _highHz,
             _fromRig,
             eval.Marked.Count(m => m.End > hop - HistoryHops),
-            keying);
+            keying,
+            pointed >= 0);
+    }
+
+    /// <summary>The bin nearest the pointed pitch, or -1 where nothing points or it is off the bins.</summary>
+    private int Pointed()
+    {
+        if (double.IsNaN(_pointedHz) || _bins.Length == 0)
+        {
+            return -1;
+        }
+
+        var nearest = 0;
+
+        for (var i = 1; i < _bins.Length; i++)
+        {
+            if (Math.Abs(_bins[i].Hz - _pointedHz) < Math.Abs(_bins[nearest].Hz - _pointedHz))
+            {
+                nearest = i;
+            }
+        }
+
+        return Math.Abs(_bins[nearest].Hz - _pointedHz) <= BinSpacingHz / 2 ? nearest : -1;
     }
 
     /// <summary>One bin's level this hop, as mean square: a full-scale sine reads -3 dB.</summary>

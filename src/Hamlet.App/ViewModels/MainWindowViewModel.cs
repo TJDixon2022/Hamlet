@@ -345,6 +345,17 @@ public partial class MainWindowViewModel : ObservableObject
     private bool _spotsEverLoaded;
     private IReadOnlyList<StoredSpot> _bandHistory = Array.Empty<StoredSpot>();
     private RigSpectrumSource? _rigSpectrum;
+
+    /// <summary>
+    /// Where the radio's scope points, frame by frame (work instruction 480 task 2, HM-DEC-188).
+    /// </summary>
+    private readonly CwScopePointer _scopePointer = new();
+
+    // The dial, CW pitch and filter width the scope tick last read in CW, for the frame handler
+    // on the radio's thread; NaN where any is unread or the radio is not in CW.
+    private double _pointDialHz = double.NaN;
+    private double _pointPitchHz = double.NaN;
+    private double _pointWidthHz = double.NaN;
     private int _lastNewSpotCount;
 
     /// <summary>
@@ -8955,7 +8966,14 @@ public partial class MainWindowViewModel : ObservableObject
             state[RigField.Agc] is { IsKnown: true } agc ? agc.Text : null,
             state[RigField.Preamp] is { IsKnown: true } preamp ? preamp.Text : null,
             IsDecoding ? level.PeakDb : double.NaN,
-            IsDecoding ? level.FloorDb : double.NaN);
+            IsDecoding ? level.FloorDb : double.NaN)
+        {
+            // Where the radio's scope pointed at the press, and how many frames it sent in the
+            // last four seconds; null with no radio's scope attached (work instruction 480).
+            ScopePeakHz = _scopePointer.Pointing(DateTime.UtcNow)?.PitchHz ?? double.NaN,
+            ScopePeakLevel = _scopePointer.Pointing(DateTime.UtcNow)?.Level,
+            ScopeFramesLast4s = _rigSpectrum is null ? null : _scopePointer.FramesLast4s(DateTime.UtcNow),
+        };
     }
 
     /// <summary>When the light last read the detector.</summary>
@@ -10729,6 +10747,8 @@ public partial class MainWindowViewModel : ObservableObject
         }
 
         _rigSpectrum = new RigSpectrumSource(radio);
+        _rigSpectrum.FrameReady += OnRadioScopeFrame;
+        _scopePointer.Reset();
         _rigSpectrum.Start();
 
         SpectrumSource = _rigSpectrum;
@@ -12453,14 +12473,49 @@ public partial class MainWindowViewModel : ObservableObject
 
         envelope.SetPassband(pitch, width);
 
+        // **THE RADIO POINTS** (work instruction 480 task 2, R94, HM-DEC-188). The frame handler
+        // reads the dial, pitch and filter the tick last saw in CW; the detector watches the
+        // pointed bin while the scope sends frames and sweeps when it has been quiet three
+        // seconds; the tracker takes the scope's pitch only while the bars there say keying.
+        var dial = cw && state[RigField.Frequency] is { IsKnown: true, Number: { } f } ? f : double.NaN;
+        Volatile.Write(ref _pointDialHz, dial);
+        Volatile.Write(ref _pointPitchHz, pitch ?? double.NaN);
+        Volatile.Write(ref _pointWidthHz, width is { } w ? w : double.NaN);
+
+        var pointed = cw ? _scopePointer.Pointing(DateTime.UtcNow) : null;
+        envelope.PointAt(pointed?.PitchHz);
+
+        var reading = envelope.Reading;
+        _decoder?.Tracker.FollowScope(reading is { Pointed: true, Keying: true } ? pointed?.PitchHz : null);
+
         // The tracker's pitch goes beside the detector's, so the owner sees whether they agree
         // (work instruction 478); the last frame is handed back so the pitch holds across a gap.
         CwHearing.ObserveScope(CwScopeFrame.From(
             envelope.History(),
             envelope.HopMs,
-            envelope.Reading,
+            reading,
             IsDecoding ? DecodeReport.ToneHz : double.NaN,
-            CwHearing.Scope));
+            CwHearing.Scope,
+            scopeQuiet: cw && pointed is null));
+    }
+
+    /// <summary>One of the radio's scope frames, on its read thread (work instruction 480).</summary>
+    /// <remarks>
+    /// Only in CW, with the dial, the CW pitch and the filter all read; any other frame is
+    /// counted by the source and passed by here, so a data mode's waterfall is untouched.
+    /// </remarks>
+    private void OnRadioScopeFrame(in SpectrumFrame frame)
+    {
+        var dial = Volatile.Read(ref _pointDialHz);
+        var pitch = Volatile.Read(ref _pointPitchHz);
+        var width = Volatile.Read(ref _pointWidthHz);
+
+        if (double.IsNaN(dial) || double.IsNaN(pitch) || double.IsNaN(width))
+        {
+            return;
+        }
+
+        _scopePointer.Observe(frame, dial, pitch, width, DateTime.UtcNow);
     }
 
     /// <summary>Put a reading on the screen.</summary>
@@ -13501,9 +13556,11 @@ public partial class MainWindowViewModel : ObservableObject
             return;
         }
 
+        _rigSpectrum.FrameReady -= OnRadioScopeFrame;
         _rigSpectrum.Stop();
         _rigSpectrum.Dispose();
         _rigSpectrum = null;
+        _scopePointer.Reset();
 
         if (SpectrumSource is RigSpectrumSource)
         {

@@ -31,13 +31,21 @@ public sealed record CwHearingState(
 /// <param name="Preamp">The preamp setting in the radio's words, or null.</param>
 /// <param name="InputPeakDb">The loudest the decoder's input has been in the last moment.</param>
 /// <param name="InputFloorDb">The quietest it has been recently.</param>
+/// <param name="ScopePeakHz">
+/// The pitch the radio's scope points at, or NaN where it is quiet (work instruction 480).
+/// </param>
+/// <param name="ScopePeakLevel">That peak's height on the radio's own 0 to 160 scale, or null.</param>
+/// <param name="ScopeFramesLast4s">Frames the radio's scope sent in the last four seconds, or null with no radio.</param>
 public sealed record CwHearingRig(
     long? FrequencyHz,
     string? Mode,
     string? Agc,
     string? Preamp,
     double InputPeakDb,
-    double InputFloorDb)
+    double InputFloorDb,
+    double ScopePeakHz = double.NaN,
+    int? ScopePeakLevel = null,
+    int? ScopeFramesLast4s = null)
 {
     /// <summary>Nothing read.</summary>
     public static CwHearingRig Unknown { get; } = new(null, null, null, null, double.NaN, double.NaN);
@@ -52,15 +60,23 @@ public sealed record CwHearingRig(
 /// <param name="Reading">The detector at its last hop.</param>
 /// <param name="ToneHz">The detector's pitch while it says keying; NaN when it does not.</param>
 /// <param name="MixingHz">The pitch the decoder is mixing at; NaN when nothing is decoding.</param>
+/// <param name="ScopeQuiet">
+/// In CW, the radio's scope has sent nothing for three seconds and the detector sweeps on its own
+/// (work instruction 480 task 2).
+/// </param>
 public sealed record CwScopeFrame(
     IReadOnlyList<CwScopeHop> Hops,
     double HopMs,
     CwEnvelopeReading Reading,
     double ToneHz,
-    double MixingHz)
+    double MixingHz,
+    bool ScopeQuiet = false)
 {
     /// <summary>The pitch line when the detector says nobody is keying.</summary>
     public const string NoKeyingWords = "no keying";
+
+    /// <summary>What leads the tone line while the radio's scope is quiet in CW.</summary>
+    public const string ScopeQuietWords = "scope quiet, sweeping";
 
     /// <summary>The tracker's line when nothing is decoding.</summary>
     public const string NotMixingWords = "not mixing";
@@ -69,10 +85,21 @@ public sealed record CwScopeFrame(
     public static CwScopeFrame Empty { get; } = new(
         Array.Empty<CwScopeHop>(), 5, CwEnvelopeReading.None, double.NaN, double.NaN);
 
-    /// <summary>"tone 742 Hz" while the detector says keying, "no keying" otherwise.</summary>
-    public string ToneLine => double.IsNaN(ToneHz)
-        ? NoKeyingWords
-        : string.Create(CultureInfo.InvariantCulture, $"tone {ToneHz:0} Hz");
+    /// <summary>
+    /// "tone 742 Hz" while the detector says keying, "no keying" otherwise; led by
+    /// "scope quiet, sweeping" while the radio's scope is quiet in CW.
+    /// </summary>
+    public string ToneLine
+    {
+        get
+        {
+            var tone = double.IsNaN(ToneHz)
+                ? NoKeyingWords
+                : string.Create(CultureInfo.InvariantCulture, $"tone {ToneHz:0} Hz");
+
+            return ScopeQuiet ? ScopeQuietWords + ", " + tone : tone;
+        }
+    }
 
     /// <summary>"mixing 742 Hz" from the tracker, so the owner sees whether the two agree.</summary>
     public string MixingLine => double.IsNaN(MixingHz)
@@ -85,6 +112,7 @@ public sealed record CwScopeFrame(
     /// <param name="reading">Its last reading.</param>
     /// <param name="mixingHz">The pitch the decoder is mixing at, or NaN.</param>
     /// <param name="previous">The frame before this one, or null.</param>
+    /// <param name="scopeQuiet">In CW, the radio's scope is quiet and the detector sweeps.</param>
     /// <returns>The frame.</returns>
     /// <remarks>
     /// **THE PITCH HOLDS ACROSS A GAP.** The detector names its pitch only while a mark is up,
@@ -97,7 +125,8 @@ public sealed record CwScopeFrame(
         double hopMs,
         CwEnvelopeReading reading,
         double mixingHz = double.NaN,
-        CwScopeFrame? previous = null)
+        CwScopeFrame? previous = null,
+        bool scopeQuiet = false)
     {
         ArgumentNullException.ThrowIfNull(hops);
         ArgumentNullException.ThrowIfNull(reading);
@@ -107,7 +136,7 @@ public sealed record CwScopeFrame(
             : reading.Keying && previous is not null ? previous.ToneHz : double.NaN;
 
         return new CwScopeFrame(
-            hops, hopMs, reading, tone, double.IsFinite(mixingHz) && mixingHz > 0 ? mixingHz : double.NaN);
+            hops, hopMs, reading, tone, double.IsFinite(mixingHz) && mixingHz > 0 ? mixingHz : double.NaN, scopeQuiet);
     }
 }
 
@@ -303,6 +332,15 @@ public sealed partial class CwHearingViewModel : ObservableObject
             ["scopePitchHz"] = Measured(scope.PitchHz),
             ["scopeContrastDb"] = Measured(scope.ContrastDb),
             ["scopeMarksLast4s"] = scope.MarksLast4s,
+
+            // **WHERE THE RADIO'S SCOPE SAID THE SIGNAL WAS** (work instruction 480 task 2). The
+            // decibels are null on every row: the radio sends its waveform on a 0 to 160 scale
+            // and nothing in this tree ties that scale to decibels, so the level goes beside it
+            // as the radio sent it rather than as a number wearing a unit it has not earned.
+            ["scopePeakHz"] = Measured(rig.ScopePeakHz),
+            ["scopePeakDb"] = null,
+            ["scopePeakLevel"] = rig.ScopePeakLevel,
+            ["scopeFramesLast4s"] = rig.ScopeFramesLast4s,
         };
     }
 

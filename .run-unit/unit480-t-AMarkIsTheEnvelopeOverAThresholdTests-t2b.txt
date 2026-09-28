@@ -1,0 +1,108 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.07]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.28]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.29]   Starting:    Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.95]     Hamlet.RadioEngine.Tests.Cw.AMarkIsTheEnvelopeOverAThresholdTests.AToneFifteenDecibelsOverTheNoiseStillKeys [FAIL]
+[xUnit.net 00:00:00.95]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:00.95]       Expected: 0
+[xUnit.net 00:00:00.95]       Actual:   40
+[xUnit.net 00:00:00.95]       Stack Trace:
+[xUnit.net 00:00:00.95]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\AMarkIsTheEnvelopeOverAThresholdTests.cs(315,0): at Hamlet.RadioEngine.Tests.Cw.AMarkIsTheEnvelopeOverAThresholdTests.AssertMarksAndGaps(DriveResult result)
+[xUnit.net 00:00:00.95]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\AMarkIsTheEnvelopeOverAThresholdTests.cs(91,0): at Hamlet.RadioEngine.Tests.Cw.AMarkIsTheEnvelopeOverAThresholdTests.AToneFifteenDecibelsOverTheNoiseStillKeys()
+[xUnit.net 00:00:00.95]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:00.95]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:00.95]       Output:
+[xUnit.net 00:00:00.95]         tone over floor at mid-dah: 16.0 dB
+[xUnit.net 00:00:00.95]         key down hops 208, missed 40; key up hops 300, marked 0
+[xUnit.net 00:00:00.95]         bins 350:1/0/NaN/NaN 375:1/0/NaN/NaN 400:1/0/NaN/NaN 425:2/0/NaN/NaN 450:4/0/NaN/NaN 475:1/0/NaN/NaN 525:2/0/NaN/NaN 550:3/0/NaN/NaN 575:4/2/-26.3/-42.4 600:2/0/NaN/NaN 625:3/2/-26.6/-46.3 650:1/0/NaN/NaN 700:2/0/NaN/NaN 725:1/0/NaN/NaN 750:3/0/NaN/NaN 775:3/0/NaN/NaN 800:1/0/NaN/NaN
+[xUnit.net 00:00:00.95]         hops: ooooooooooooooooooooooooooooooooooo ........... ########### ........... ################################### ........... ########### ................................... ################################### ........... ################################### ........... oooo####### ........... o################################## ...................................................................................................
+[xUnit.net 00:00:01.16]     Hamlet.RadioEngine.Tests.Cw.AMarkIsTheEnvelopeOverAThresholdTests.AToneTenDecibelsOverTheNoiseStillKeys [FAIL]
+[xUnit.net 00:00:01.16]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:01.16]       Expected: 0
+[xUnit.net 00:00:01.16]       Actual:   208
+[xUnit.net 00:00:01.16]       Stack Trace:
+[xUnit.net 00:00:01.16]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\AMarkIsTheEnvelopeOverAThresholdTests.cs(315,0): at Hamlet.RadioEngine.Tests.Cw.AMarkIsTheEnvelopeOverAThresholdTests.AssertMarksAndGaps(DriveResult result)
+[xUnit.net 00:00:01.16]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\AMarkIsTheEnvelopeOverAThresholdTests.cs(113,0): at Hamlet.RadioEngine.Tests.Cw.AMarkIsTheEnvelopeOverAThresholdTests.AToneTenDecibelsOverTheNoiseStillKeys()
+[xUnit.net 00:00:01.16]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:01.16]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:01.16]       Output:
+[xUnit.net 00:00:01.16]         tone over floor at mid-dah: NaN dB
+[xUnit.net 00:00:01.16]         key down hops 208, missed 208; key up hops 300, marked 0
+[xUnit.net 00:00:01.16]         bins 350:1/0/NaN/NaN 425:2/0/NaN/NaN 450:1/0/NaN/NaN 500:2/0/NaN/NaN 525:2/0/NaN/NaN 575:1/0/NaN/NaN 600:3/0/NaN/NaN 625:1/0/NaN/NaN 650:1/0/NaN/NaN 675:3/0/NaN/NaN 700:3/0/NaN/NaN 725:3/0/NaN/NaN 750:1/0/NaN/NaN
+[xUnit.net 00:00:01.16]         hops: ooooooooooooooooooooooooooooooooooo ........... ooooooooooo ........... ooooooooooooooooooooooooooooooooooo ........... ooooooooooo ................................... ooooooooooooooooooooooooooooooooooo ........... ooooooooooooooooooooooooooooooooooo ........... ooooooooooo ........... ooooooooooooooooooooooooooooooooooo ...................................................................................................
+[xUnit.net 00:00:01.16]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.AMarkIsTheEnvelopeOverAThresholdTests.TheRunReadsTheDahAndTheMarksAreCounted [104 ms]
+  Standard Output Messages:
+ longest run 175 ms, marks 8
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.AMarkIsTheEnvelopeOverAThresholdTests.ATonePastNineHundredIsFoundWithTheRigUnknown [346 ms]
+  Standard Output Messages:
+ key down hops 208, missed 0; key up hops 300, marked 0
+ bins 125:1/0/NaN/NaN 175:2/0/NaN/NaN 200:1/0/NaN/NaN 225:1/0/NaN/NaN 300:1/0/NaN/NaN 325:3/0/NaN/NaN 350:2/0/NaN/NaN 375:1/0/NaN/NaN 425:2/0/NaN/NaN 450:1/0/NaN/NaN 525:1/0/NaN/NaN 550:1/0/NaN/NaN 575:2/0/NaN/NaN 600:2/0/NaN/NaN 625:2/0/NaN/NaN 700:1/0/NaN/NaN 725:2/0/NaN/NaN 750:2/0/NaN/NaN 775:1/0/NaN/NaN 875:2/0/NaN/NaN 900:1/0/NaN/NaN 925:4/0/NaN/NaN 950:2/0/NaN/NaN 1050:1/0/NaN/NaN 1075:1/0/NaN/NaN 1125:3/3/-23.2/-47.2 1150:1/0/NaN/NaN 1175:4/3/-16.7/-46.8 1200:3/3/-14.9/-46.7 1225:3/3/-13.8/-46.6 1250:3/3/-13.5/-46.5 1275:5/2/-13.8/-46.4 1300:4/3/-14.9/-46.5 1325:3/3/-16.8/-46.5 1375:3/3/-23.3/-46.6 1475:1/0/NaN/NaN 1575:1/0/NaN/NaN 1600:1/0/NaN/NaN 1625:1/0/NaN/NaN 1675:1/0/NaN/NaN 1700:2/0/NaN/NaN 1725:2/0/NaN/NaN 1750:1/0/NaN/NaN 1775:1/0/NaN/NaN 1800:1/0/NaN/NaN 1825:1/0/NaN/NaN 1850:1/0/NaN/NaN 1875:2/0/NaN/NaN 1900:2/0/NaN/NaN 1925:3/0/NaN/NaN 1950:2/0/NaN/NaN 2000:1/0/NaN/NaN 2025:1/0/NaN/NaN 2050:1/0/NaN/NaN 2100:1/0/NaN/NaN 2125:1/0/NaN/NaN 2200:2/0/NaN/NaN 2225:3/0/NaN/NaN 2250:1/0/NaN/NaN 2275:1/0/NaN/NaN 2300:2/0/NaN/NaN 2375:2/0/NaN/NaN 2400:1/0/NaN/NaN 2500:1/0/NaN/NaN 2625:1/0/NaN/NaN 2700:1/0/NaN/NaN 2725:1/0/NaN/NaN 2825:1/0/NaN/NaN 2850:2/0/NaN/NaN 2875:1/0/NaN/NaN 2925:1/0/NaN/NaN 2950:1/0/NaN/NaN 2975:1/0/NaN/NaN 3000:1/0/NaN/NaN
+ hops: ################################### ........... ########### ........... ################################### ........... ########### ................................... ################################### ........... ################################### ........... ########### ........... ################################### ...................................................................................................
+ tone 1250 Hz, 33 dB over the band
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.AMarkIsTheEnvelopeOverAThresholdTests.NoiseAloneRaisesNoMark [110 ms]
+  Standard Output Messages:
+ hops 800, marked 0
+
+
+  Failed Hamlet.RadioEngine.Tests.Cw.AMarkIsTheEnvelopeOverAThresholdTests.AToneFifteenDecibelsOverTheNoiseStillKeys [73 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: 0
+Actual:   40
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Cw.AMarkIsTheEnvelopeOverAThresholdTests.AssertMarksAndGaps(DriveResult result) in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\AMarkIsTheEnvelopeOverAThresholdTests.cs:line 315
+   at Hamlet.RadioEngine.Tests.Cw.AMarkIsTheEnvelopeOverAThresholdTests.AToneFifteenDecibelsOverTheNoiseStillKeys() in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\AMarkIsTheEnvelopeOverAThresholdTests.cs:line 91
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Standard Output Messages:
+ tone over floor at mid-dah: 16.0 dB
+ key down hops 208, missed 40; key up hops 300, marked 0
+ bins 350:1/0/NaN/NaN 375:1/0/NaN/NaN 400:1/0/NaN/NaN 425:2/0/NaN/NaN 450:4/0/NaN/NaN 475:1/0/NaN/NaN 525:2/0/NaN/NaN 550:3/0/NaN/NaN 575:4/2/-26.3/-42.4 600:2/0/NaN/NaN 625:3/2/-26.6/-46.3 650:1/0/NaN/NaN 700:2/0/NaN/NaN 725:1/0/NaN/NaN 750:3/0/NaN/NaN 775:3/0/NaN/NaN 800:1/0/NaN/NaN
+ hops: ooooooooooooooooooooooooooooooooooo ........... ########### ........... ################################### ........... ########### ................................... ################################### ........... ################################### ........... oooo####### ........... o################################## ...................................................................................................
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.AMarkIsTheEnvelopeOverAThresholdTests.MarksLandWhereTheToneWasOnAndThePitchReadsIt [65 ms]
+  Standard Output Messages:
+ key down hops 208, missed 0; key up hops 300, marked 0
+ bins 500:1/0/NaN/NaN 600:1/0/NaN/NaN 625:4/2/-21.9/-46.3 675:3/3/-16.0/-46.6 700:5/3/-14.4/-46.5 725:3/3/-13.6/-46.7 750:5/3/-13.5/-46.6 775:4/3/-14.1/-46.5 800:4/3/-15.4/-46.5 825:2/0/NaN/NaN 850:3/0/NaN/NaN 875:1/0/NaN/NaN 900:2/0/NaN/NaN 925:4/0/NaN/NaN 950:2/0/NaN/NaN 975:1/0/NaN/NaN
+ hops: ################################### ........... ########### ........... ################################### ........... ########### ................................... ################################### ........... ################################### ........... ########### ........... ################################### ...................................................................................................
+ tone 750 Hz, 33 dB over the band
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.AMarkIsTheEnvelopeOverAThresholdTests.TheLinesAreTheGapLevelAndTheMidpointMeasured [72 ms]
+  Standard Output Messages:
+ bin 750 Hz: bar -13.5 dB, gap -47.0 dB
+
+
+  Failed Hamlet.RadioEngine.Tests.Cw.AMarkIsTheEnvelopeOverAThresholdTests.AToneTenDecibelsOverTheNoiseStillKeys [73 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: 0
+Actual:   208
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Cw.AMarkIsTheEnvelopeOverAThresholdTests.AssertMarksAndGaps(DriveResult result) in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\AMarkIsTheEnvelopeOverAThresholdTests.cs:line 315
+   at Hamlet.RadioEngine.Tests.Cw.AMarkIsTheEnvelopeOverAThresholdTests.AToneTenDecibelsOverTheNoiseStillKeys() in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\AMarkIsTheEnvelopeOverAThresholdTests.cs:line 113
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Standard Output Messages:
+ tone over floor at mid-dah: NaN dB
+ key down hops 208, missed 208; key up hops 300, marked 0
+ bins 350:1/0/NaN/NaN 425:2/0/NaN/NaN 450:1/0/NaN/NaN 500:2/0/NaN/NaN 525:2/0/NaN/NaN 575:1/0/NaN/NaN 600:3/0/NaN/NaN 625:1/0/NaN/NaN 650:1/0/NaN/NaN 675:3/0/NaN/NaN 700:3/0/NaN/NaN 725:3/0/NaN/NaN 750:1/0/NaN/NaN
+ hops: ooooooooooooooooooooooooooooooooooo ........... ooooooooooo ........... ooooooooooooooooooooooooooooooooooo ........... ooooooooooo ................................... ooooooooooooooooooooooooooooooooooo ........... ooooooooooooooooooooooooooooooooooo ........... ooooooooooo ........... ooooooooooooooooooooooooooooooooooo ...................................................................................................
+
+
+
+Test Run Failed.
+Total tests: 7
+     Passed: 5
+     Failed: 2
+ Total time: 1.4486 Seconds
+RC=1 WALL=2s

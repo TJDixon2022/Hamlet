@@ -36,6 +36,9 @@ public sealed class TheOwnersVerdictIsARowTests
         // TheVerdictCarriesTheScopeTests asserts these eight by value.
         "scopeEnvelopeDb", "scopeFloorDb", "scopeThresholdDb", "scopeMark",
         "scopeRunMs", "scopePitchHz", "scopeContrastDb", "scopeMarksLast4s",
+
+        // Work instruction 480 task 2: where the radio's own scope said the signal was.
+        "scopePeakHz", "scopePeakDb", "scopePeakLevel", "scopeFramesLast4s",
     };
 
     /// <remarks>Proves "I agree with you" writes one cw owner_verdict row with every field.</remarks>

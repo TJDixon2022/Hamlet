@@ -35,7 +35,32 @@ public sealed class TheVerdictCarriesTheScopeTests
         "sinceVerdictMs",
         "scopeEnvelopeDb", "scopeFloorDb", "scopeThresholdDb", "scopeMark",
         "scopeRunMs", "scopePitchHz", "scopeContrastDb", "scopeMarksLast4s",
+        "scopePeakHz", "scopePeakDb", "scopePeakLevel", "scopeFramesLast4s",
     };
+
+    /// <remarks>
+    /// Proves work instruction 480's four fields carry what the radio's scope said at the
+    /// press - the pointed pitch, its level on the radio's own scale and the frames of the last
+    /// four seconds - and that the decibels are null, because the radio's scale carries none.
+    /// </remarks>
+    [Fact]
+    public void APressCarriesWhereTheRadiosScopePointed()
+    {
+        var rows = new List<(TelemetryCategory Category, string Event, IReadOnlyDictionary<string, object?> Data)>();
+        var hearing = new CwHearingViewModel(
+            new Recording(rows),
+            () => CwHearingRig.Unknown with { ScopePeakHz = 850, ScopePeakLevel = 125, ScopeFramesLast4s = 18 });
+
+        hearing.IdiotCommand.Execute(null);
+
+        var row = Assert.Single(rows);
+
+        Assert.Equal(Fields.OrderBy(f => f), row.Data.Keys.OrderBy(k => k));
+        Assert.Equal(850.0, row.Data["scopePeakHz"]);
+        Assert.Null(row.Data["scopePeakDb"]);
+        Assert.Equal(125, row.Data["scopePeakLevel"]);
+        Assert.Equal(18, row.Data["scopeFramesLast4s"]);
+    }
 
     /// <remarks>
     /// Proves a press mid-dah writes the scope's state as it stood: a mark up, its run, the
