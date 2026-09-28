@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-TASK: 3 of 3
-WORK_INSTRUCTION: 475 - the swing bar the owner's ear says is wrong
-BALL: tim
-NEXT_PASTE: output.md -> Claude Web
-RULES_AT: HM-DEC-184 (2026-09-27)
-UPDATED: 2026-09-27T22:18:13-04:00
-NOTE: Unit 475 done: swing bar 20 to 17, red at 20 and green at 17 on a synthetic window; 17 sits below the 17.7 empty recording - ruling asked; no recording read; owner STOP file still at the root
+STATE: EXECUTING
+TASK: 1 of 4
+WORK_INSTRUCTION: 476 - the oscilloscope: a mark is the envelope over a threshold, at any pitch
+BALL: code
+NEXT_PASTE: none
+RULES_AT: HM-DEC-185 (2026-09-28)
+UPDATED: 2026-09-28T08:50:11-04:00
+NOTE: Task 0 committed (entry line 278/278 on re-run); task 1 reading the decoder's hop feed and rig state for CwEnvelopeDetector
 
 ---
 

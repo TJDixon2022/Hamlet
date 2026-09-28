@@ -11,7 +11,8 @@ STEP: 6 | partial | The text is right - sections H and I, the character table, t
 STEP: 7 | partial | The conditions can be generated - sections E, F and G: channel, sender and interference profiles, which nothing in the tree produces today.
 STEP: 8 | not started | Tim at the radio - CW on 20 m or 40 m, text on the CW tab that reads as what was sent, and he says it read.
 STEP: 9 | partial | Two decoders read the same audio - section M: fldigi's CW modem ported faithfully as the second decoder, both scored on every recording before either votes, both confidences calibrated against the keys, and the arbitration that emits one transcript, never worse than the better decoder alone.
-STEP: 11 | partial | The owner's ear teaches the detector where the entry is - a light saying whether Hamlet thinks it hears CW, a strip showing the whole pitch range and where it looks, two buttons that write his verdict beside the detector's state; no decode, no corpus.
+STEP: 11 | not started | The owner's ear teaches the detector where the entry is - a light saying whether Hamlet thinks it hears CW, a strip showing the whole pitch range and where it looks, two buttons that write his verdict beside the detector's state; no decode, no corpus.
+STEP: 12 | not started | The oscilloscope - a keyed signal is found as the audio envelope over a threshold above the tracked noise floor, at any pitch the filter passes, its frequency read from the spectrum after; shown on the CW tab first, then driving the decoder.
 
 ## UNIT 439 - STEP 0
 
@@ -1078,3 +1079,16 @@ STATE_WHY: Unit 474 delivered the light, strip and buttons with counts of 5 of 5
 ADVANCED: no
 ATTEMPT: 11.4 | unit 1 launched 2026-09-28T01:59:15.224Z | no | executed | move CwKeyingThresholds.ConfidentSwingDb from 20 to 17 on the owner's seven verdict rows, rewrite its remark to say so, watch a synthetic-profile test fail first, and change nothing else
 REASON: 11.4 | unit 1 launched 2026-09-28T01:59:15.224Z | the unit ran to completion and the criterion did not flip from unmet to met
+
+## UNIT 476 - STEP 12
+
+STEP: 12
+APPROACH: build an envelope detector over the whole passband - envelope, tracked floor, a 9 dB threshold from the owner's rows, marks and gaps, the pitch read from the spectrum while a mark is up - draw it as an oscilloscope on the CW tab, and carry its state on the owner's verdict row, driving nothing yet
+MOVE: continue
+WHY: PHASE_PLAN.md step 12 criterion 12.1 asks for a detector that finds a keyed signal as the audio envelope standing over a threshold above the tracked noise floor at any pitch the filter passes, reading the pitch from the spectrum after, and changing nothing about the decoder
+STATE: not started
+DECIDED: the floor-tracking rule, the scope's frame rate, and the drawn passband when the rig state is unknown are the author's, overrulable
+LICENCE: PHASE_PLAN.md R88, R90, section 6, step 12; HM-DEC-185; CLAUDE.md 0.0, 0.2 and 0.6; HM-DEC-155; FACT-006
+ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
+ADVANCES: step 12 criterion 1
+RUN: session launched with SESSION.lock already present and an empty STOP at the root, both the launcher's; neither taken, released nor removed by the session.
