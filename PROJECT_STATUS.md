@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 2 of 3
+TASK: 3 of 3
 WORK_INSTRUCTION: 482 - the owner's press lands in the file
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-188 (2026-09-28)
-UPDATED: 2026-09-28T15:42:41-04:00
-NOTE: Trace committed: all six things carried, gate opens by connecting the training radio; now writing TheOwnersPressLandsInTheFileTests against a temp telemetry folder
+UPDATED: 2026-09-28T15:46:26-04:00
+NOTE: Test green at HEAD (1 row per press, 2 in the file), watched red on a dropped trackerHz; exit round starting: full no-incremental build
 
 ---
 
