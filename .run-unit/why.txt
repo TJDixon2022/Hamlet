@@ -1,1 +1,1 @@
-PHASE_PLAN.md step 11 criterion 11.1 asks for one indicator on the CW tab that says whether Hamlet thinks it hears CW, in words as well as color, driven by the existing detector and translating nothing
+PHASE_PLAN.md step 11 criterion 11.4 asks that the owner's verdict rows be read and that the detector's gate which disagreed with his ear be named from them; his row at 01:16:22 names the swing bar - score 0.27, median 48 ms, swing 18.6 against 20

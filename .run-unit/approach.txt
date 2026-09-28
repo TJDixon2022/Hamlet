@@ -1,1 +1,1 @@
-put a light on the CW tab that says whether Hamlet thinks it hears CW, a strip showing the whole pitch range and where the detector is looking, and two buttons whose press writes the owner's verdict beside the detector's state to telemetry - reading no recording and changing no detector
+move CwKeyingThresholds.ConfidentSwingDb from 20 to 17 on the owner's seven verdict rows, rewrite its remark to say so, watch a synthetic-profile test fail first, and change nothing else

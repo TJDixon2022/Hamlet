@@ -86,9 +86,9 @@ FOLLOWS: report   it drifted to the output - the criterion was chosen because
 and where it is report, one more line saying what it cited instead:
 FOLLOWED: one sentence, plain text
 
-The instruction it produced named  step 3 criterion 6  and gave this WHY:
+The instruction it produced named  step 11 criterion 4  and gave this WHY:
 
-PHASE_PLAN.md step 3's open lines are 3.4, whose 7.052 recording is absent from the tree, 3.5, a closing rule at 0 of 3, and 3.6, which a unit meets as unit 460 met 2.5 by every commit exiting green; so the unit names 3.6 and spends its work on HM-REQ-011's MET-INVENTED, 33 over 473 real and 14 over 252 synthetic, with a trace no unit has made - where each invented letter sits against what was sent - and the loop test finds no entry for it.
+PHASE_PLAN.md step 11 criterion 11.4 asks that the owner's verdict rows be read and that the detector's gate which disagreed with his ear be named from them; his row at 01:16:22 names the swing bar - score 0.27, median 48 ms, swing 18.6 against 20
 
 Answer with the lines asked for above and nothing else, beginning with:
 
@@ -97,296 +97,228 @@ WHY: one sentence, plain text, no punctuation beyond commas and full stops
 
 --- the step from the phase plan follows ---
 
-﻿STEP: 3 | The junk between words goes - MET-INVENTED driven toward HM-REQ-011's zero, from the 13 added characters unit 439 measured.
-## Step 3 - The junk between words goes
-
-**Delivers:** R81 and HM-REQ-011. The 13 added characters, and the litter the operator reads
-between real words.
-
-**Entry:** steps 0 and 1 met.
-
-**Exit:**
-- [x] 3.1 The 13 sure added characters are traced the same way as 2.1, each with its recording, span, speed, pitch and the marks it rested on.
-- [x] 3.2 Each change is built in its own commit and kept under R78: MET-INVENTED falls, MET-CER-SURE does not rise, MET-COVERAGE does not fall, the adjudicated readings hold, and V-11 holds.
-- [x] 3.3 MET-INVENTED is reported before and after every kept change, per condition, with the key kind beside each number, and the running figure is in `metrics.md`.
-- [ ] 3.4 The 7.052 traffic net's `EETTTEETTTTTTTTETTETETKTETEE` between `GRAY KC` and `LIVER VIA` is printed before and after, so the owner reads the difference rather than the number.
-- [ ] 3.5 After three consecutive units with no kept change the trace goes to `PARKED.md` and the step closes partial.
-- [x] 3.6 The three floor tests and both carry-forward lines are green at the exit of every commit of the step.
-
-**Depends on:** steps 0 and 1. Independent of step 2: when one blocks the arbiter works the other.
-
-
---- what the script saw ---
-criteria-count.bat saw step 3 criterion 6 flip from unmet to met in
-PHASE_PLAN.md during this unit. THE COUNT IS THE SCRIPT'S; you do not count.
-Answer one more line after WHY:
-HONEST: yes   if the report shows that criterion honestly met
-HONEST: no    if the marker was turned without the criterion being met
+﻿STEP: 11 | The owner's ear teaches the detector where the entry is - a light saying whether Hamlet thinks it hears CW, a strip showing the whole pitch range and where it looks, two buttons that write his verdict beside the detector's state; no decode, no corpus.
 
 --- the unit's report follows ---
 
 READ IN THIS ORDER.
 
-A. Phase goal: Hamlet meets the CW requirements. Steps by the plan -
-   0 done, 1 done, 2 done (closed partial), 3 4 of 6, 4 5 of 7,
-   5 1 of 6, 6 3 of 6, 7 4 of 5, 8 0 of 6, 9 7 of 8; 9.4 ended as a
-   loop, and this unit worked step 3 against R86's words, reported as
-   a mismatch.
-B. Step 3 (HM-REQ-011): the invented letters placed against the sent
-   text - largest unattacked group split, 0 real, 6 synthetic;
-   the change kept; real MET-INVENTED 33/473 -> 25/473, synthetic
-   14/252 -> 7/252; 3.6 ticked, every commit green on the five; 3.5's
-   count 0 of 3; 3.4 recording absent.
-C. The findings weighed against A and B: section 4 raises 9 items.
-   None is in the way of 3.6, which is ticked, or of 3.5, whose count
-   the kept change holds at 0. Item 2 is in the way of 3.4: no unit can
-   meet it until the 7.052 recording and its cases row are in the tree.
-   The R86 mismatch in one line: R86 bars steps 2 to 8 until 9.4 has a
-   kept change, 9.4 has no route left, and this unit worked step 3
-   anyway as the launcher named it.
+A. Phase goal: Hamlet's CW receive meets CW_REQUIREMENTS.md, and under R88 the owner's ear at
+   the radio judges it, not the corpus. The one number that moved: `ConfidentSwingDb`, from 20
+   to 17. The row that moved it is 01:16:22: the owner heard code, and the meter refused it on
+   swing alone at 18.6 dB (score 0.27, plain median 48 ms).
+B. Step 11, criterion 11.4: read the owner's rows and name the gate that disagreed with his
+   ear. The rows name the keying meter's swing bar. It is moved to 17 and its remark says why.
+   A synthetic window with the refused row's figures was red at 20 and is green at 17. The
+   survey's hysteresis is described and not moved. Neither copy of `PHASE_PLAN.md` has any
+   step 11 criterion lines, so nothing could be ticked: not 11.1 to 11.3 from unit 474, and
+   not 11.4.
+C. The rest. Section 4 raises 7 items, none blocking. Two bear on A and B. First, 17 is BELOW
+   the tree's 17.7 dB empty recording, not above it as the instruction says, so the light may
+   now light on an empty band. Second, the verdict row records the plain median, not the
+   element median the gate tests. No recording was read.
 
-UNIT:       472 - complete at task 4 of 4, decode-time line dropped - 2026-09-27 20:10
-PHASE GOAL: Hamlet's CW decoder meets every requirement in CW_REQUIREMENTS.md at the conditions CW_SPEC.md names, each proved by a test that names it.
-UNIT GOAL:  Find where each letter Hamlet prints with confidence but was never sent sits against what was sent. Remove the largest kind no earlier attempt touched, and only if R78 holds. Keep every commit green on the floors and both carry-forward lines, which is what 3.6 asks.
-ADVANCED:   yes - step 3 criterion 6, ticked: every commit of the unit (600c6da4, 62bb097f, 45e4c50a and the task 4 commit) exits green on build, both carry-forward lines and the three floor tests, the app line's dispatcher losses handled under DECIDED (7)
-NUMBER:     MET-INVENTED real 33/473 -> 25/473, synthetic 14/252 -> 7/252; coverage real 403 -> 403; change kept
-DRIFT:      step 3 0; step 4 1; step 5 1; step 6 0; step 7 0; step 9 0 (carried from 471's report; step 3 reset on this unit's advance)
+UNIT:       475 - complete at task 3 of 3, none dropped - 2026-09-27 22:17
+PHASE GOAL: Hamlet's CW receive meets CW_REQUIREMENTS.md. With the corpus banned, the owner's verdicts at the radio are what the detector is now tuned against.
+UNIT GOAL:  Make the "I hear CW" light agree with the owner's ear more often by moving the one detector gate his verdict rows showed refusing a real station, and nothing else.
+ADVANCED:   yes - step 11 criterion 4: the gate his rows named is moved, with a watched red-then-green fact. Whether it helped on the air is his next set of presses.
+ADVANCES:   step 11 criterion 4
+NUMBER:     ConfidentSwingDb 20 -> 17; owner rows refused at the old bar and accepted at the new: 1 of 7; recordings read: 0
+DRIFT:      0 consecutive units without advance - was 0
 
 ## 1. What Claude did
 
-**Complete at task 4 of 4.** I dropped one line, task 2's decode time. It is the instruction's
-first drop candidate. Measuring it needs a parity run before and after, and the before needs HEAD's
-`src` restored and rebuilt. Nothing that is never shed was dropped. Provenance: Claude Code on
-QUIVERFULL, project Hamlet, branch `main`. The gate passed: the four MUST EXIST are present and
-`CoreHMI.sln` and `MURC.sln` are absent. HEAD at entry was `80df7cd5`, and the version went from
-1.13.158 to 1.13.159.
+**Complete: tasks 0 to 3 all done, none dropped.** Claude Code on QUIVERFULL, project Hamlet
+(gate confirmed: SHACK_FACTS.md, CwProbabilisticDecoder.cs and CW_REQUIREMENTS.md present, no
+CoreHMI.sln or MURC.sln), branch `main`. Each task was committed and pushed before the next one
+started: 34262754 (task 0), 57f50c02 (task 1), 25b96e70 (task 2), and the task 3 commit that
+carries this report.
 
-**The tree against section 3.** It matched except as follows:
-- **Plans:** both `PHASE_PLAN.md` copies are identical. Every line of step 2 is ticked; 3.1 to 3.3
-  are ticked and 3.4 to 3.6 open; 9.4 is step 9's only open line; R86 is at line 342.
-- **Patches and the port:** the 470 and 471 patches exist and were not applied. The port diff
-  against `19109b51` is empty.
-- **7.052 traffic net: absent.** `GRAY KC` and `LIVER VIA` appear only as quotations, in both plans,
-  the instruction, `.run-unit/arbiter-prompt.txt`, `.run-unit/reload.txt` and an earlier report. No
-  audio file is dated 2026-09-25 or later, and no tracked file from those dates holds a recording.
-- **Mismatch:** `.run-unit\watched.rc` did not exist. `watched.cpu` was the runner's deleted file at
-  launch; the runner rewrote it during the session, and it was committed as it stood at each commit.
-- **Mismatch, arising during the unit:** an empty `STOP` file appeared at the repository root at
-  19:30, after the task 2 commit. `tools/arbiter/run-phase.bat` reads it as the owner's brake at
-  the top of its next iteration: the running unit finishes and is judged, and then the run ends.
-  I finished the unit and began nothing after it. The file was not staged, moved or deleted.
-- **Not staged:** `SESSION.lock`, `.run-unit\fldigi\` and `STOP`. Nothing was fetched.
+**Task 0, the record and the entry round.**
+- `## UNIT 475 - STEP 11` was appended to both copies of `PHASE_OUTCOME.md`, from the
+  instruction's block.
+- Both copies of `PHASE_STATUS.md` now name 475 and `CURRENT_STEP: 11`.
+- Version 1.13.160 to 1.13.161.
+- **11.1, 11.2 and 11.3 were not ticked.** Neither copy of `PHASE_PLAN.md` has a step 11
+  section or any `11.k` line. The seed commit 62e272e6 is titled "step 11 criteria", but its
+  plan diff only changes the R88 bullet and adds the line-C bullet. Unit 474's evidence is
+  named in the outcome entry instead: light 5/5, strip 7/7, buttons 6/6, each count checked in
+  474's saved exit outputs. No criteria were invented. See section 4.
+- Entry round: build 0 errors. App carry-forward line: 274/278 on the first run. The four
+  losses took 1 ms each, and the output mentions "dispatcher loop" 8 times. On the one re-run
+  it was 278/278.
 
-**Task 0.** I wrote the record in both `PHASE_OUTCOME.md` copies, set both `PHASE_STATUS.md` copies
-to 472 and step 3, bumped the version, and committed the runner's writes as they were. Every entry
-figure matched 471's exit. The app line lost 2 to the dispatcher loop, then passed 278 of 278 on the
-one rerun. The texts with classes are byte-identical to `unit471-texts-entry.txt` (`600c6da4`).
+**Task 1, the swing bar.**
+- `CwKeyingThresholds.ConfidentSwingDb` changed from 20 to 17 (`src/Hamlet.RadioEngine/Cw/CwKeyingMeter.cs`).
+- The remark now leads with what 17 rests on:
+  - the seven owner verdicts of 2026-09-28, all under AGC FAST;
+  - 01:16:22 refused for 1.4 dB;
+  - swing 17.5 to 21.8 across all seven rows;
+  - what 17 gives up, named: it sits below the tree's 17.7 empty recording and inside the
+    14.7 to 17.7 range of the eleven empty windows, which already cleared the score and the
+    element range.
+- Everything the old remark said about the 2026-08-20 evening and the tree's recordings is
+  kept, under "HISTORY, KEPT".
+- **Watched it fail first.** `TheOwnersRefusedStationIsKeyingTests`, a new file with no
+  recording, builds a 600 Hz tone keyed in 48 ms dits at duty 0.27. Between dits it drops to
+  18.6 dB below itself.
+  - First red, at 20: my own guard failed, not the verdict. The window measured 19.6 dB, and I
+    had set the guard to 17.5 to 19.5.
+  - I set the guard to the band that matters, 17 up to just under 20, and ran it again. Red at
+    20: `Listening at 675 Hz, score 0.31, element median 54 ms, swing 19.6 dB against 20.0`.
+  - Green at 17: `Keying ... against 17.0, held False`.
+- Build 0 errors.
+- **Tests that pin the bar:**
+  - No app test pins 20. The app's no-keying line reads the constant, and no test asserts on
+    its text.
+  - `TheSwingIsTheFigureThatHoldsTests` and `TheTwoPitchesTableTests` use it and read
+    recordings, so neither was run. See section 4.
 
-**Task 1, the trace.** I read `CwMetrics` first. Its alignment is `CwScorer`'s own Levenshtein on
-symbols, with spaces taken out of both sides. A sure letter with no key is added, and a sure letter
-whose key differs is substituted.
+**Task 2, the survey's hysteresis: described, not moved.** Printed in section 4, item 4. The
+full paragraph is at `.run-unit/unit475-survey.md`.
 
-`WhereTheInventedLettersSitFact` drives the same harness and the same `Covered`, `Symbols` and
-`Align` calls as `TheRequirementsAreMeasuredTests`. Its totals cross-check exactly: real 33 invented
-(5 added, 28 substituted), synthetic 14 (6 added, 8 substituted).
+**Task 3, the exit round.**
+- Build 0 errors, warnings as errors.
+- App carry-forward line 278/278 on the first run.
+- `TheOwnersRefusedStationIsKeyingTests` 1/1. It is the one touched type that reads no
+  recording. Every other test type that drives `CwKeyingMeter` reads recordings, so none was
+  run: `CwKeyingMeterTests`, `TheMeterRunsOnLiveAudioTests`,
+  `TheKeyingWitnessSaysNothingImpossibleTests`, `TheCwBaselineTable`.
+- `git diff 7e209cb4` over the eleven transmit files prints nothing.
+- `git diff 62e272e6 -- src/Hamlet.RadioEngine/Cw`: one file, 20 insertions and 1 deletion.
+  The only line changed that is not a doc comment is `ConfidentSwingDb = 20` to `17`.
+- No file under `tests/fixtures` changed.
 
-It places each letter two ways:
-- **Alignment reading, both sets:**
-  - a split is a run of steps that spells one key letter;
-  - a merge is a substituted letter spelling its key letter and a deleted neighbour's;
-  - an added letter sits at a word boundary or the stretch's end, or else in a character gap.
-- **Timing reading, synthetic set only:** the sent marks are rebuilt from `CwFixtureGenerator.KeyEdges`.
-  Each letter's span is shifted by the right letters' median lag (start 17-20 ms, end 8-12 ms), and
-  the letter is placed by the sent characters it covers.
+**No recording was read.** No floor was run, and no engine line, metric or keyed set.
 
-The table uses the timing reading where the key is exact. The two readings disagree on 12 of the
-synthetic 14 (section 4, item 3).
+**Decisions I made myself, all overrulable:**
+1. **I used 17 exactly as the instruction ordered**, even though its reason for 17 is wrong
+   about the 17.7 recording (section 4, item 1). The owner ruled R89 "write it", and choosing a
+   different number was not mine to do.
+2. **I did not edit the comment inside `Update`**, which still says the bar "is already
+   twenty". The instruction limits the Cw diff to the constant and its remark. It is now stale
+   (section 4, item 2).
+3. **The test's window was built at 18.6 dB and measures 19.6 dB**, at 675 Hz rather than the
+   600 Hz it was built at. That still lies between 17 and 20, which is the one thing the fact
+   depends on. I did not tune the construction to measure exactly 18.6.
+4. **The status file was written by `.run-unit/unit475-status.sh`**, because Python cannot run
+   here.
 
-The largest group no earlier route acted on is **split: 6 synthetic, 0 real**, all on
-`cq-18wpm-5db-char5`:
-- **What they are:** a dit lost in the noise between two element gaps leaves 3.2 to 3.6 units of
-  key-up. This sender's character gap is 5 units, and the stream holds 357 ms. So `D` (-..) printed
-  sure as `T` then `E`.
-- **No single column separates them.** Every measured quantity puts them inside the right letters'
-  range.
-- **The ratio does.** The quantity is the shorter key-up the path read as a character gap, over the
-  character gap in force. Five of the six sit at 0.588 to 0.60. The lowest sure right letter on
-  either set is at 0.632 (`032113` `R` and `S`), and 2 of 403 real and 0 of 159 synthetic right
-  letters lie at or under the group's top.
-
-I registered the rule in `.run-unit/unit472-trace.txt` before any after-figure. I committed it with
-the fact, green on the five (`62bb097f`).
-
-**Task 2, the change.** `TheInventedLettersAreNotPrintedSureTests` (HM-REQ-011) was watched red at
-HEAD: `T` and `E` sure over the sent `D` at 8.200 to 8.667 s (`.run-unit/unit472-red.txt`). I built
-the rule as registered, in one form. `CwProbabilisticStream.Character` now emits `Low` where
-`NearGapFitsTheCharacterGap` finds that key-up under `NearGapShare` = 0.62 of the held character gap,
-or of three units where none is held. It acts the same on settled letters and the leading edge. The
-test then passed.
-
-Every line of 3.2 held. It was committed with its test and `metrics.md`'s Unit 472 section as
-`45e4c50a`, with task 3's line folded in: step 3's count 0 of 3.
-
-**Task 4, the exit round.** Every figure is as under the change, and the texts are byte-identical
-to the change's. The app line lost 1 type to the dispatcher loop and then 3 others on the one rerun.
-None was lost twice. All four were run alone and passed under DECIDED (7):
-- `TheWindowHoldsBelowItsMinimumTests` 3/3;
-- `Unit376TheTopBandTests` 5/5;
-- `TheFavoritesAreUnderTheGreenZoneTests` 3/3;
-- `ThePsk31ConversationCardTests` 8/8.
-
-`TheSpeedFollowsTheSendersMarkPairsTests` is red, as expected, now at 26 of 29 sure wrong or added
-against 471's 28 of 31. Sure and right is unchanged at 3 of 21. I ticked 3.6 in both plans and
-nothing else.
-
-Decisions I made for myself:
-- **Which neighbours the rule sees.** In the stream it reads the letters in the same read, where the
-  trace read the settled letters. The rule was registered naming that risk, and R78 measured it.
-- **The four lost app types.** I ran all four alone, not only a type lost twice, since none was.
+**Mismatches, reported for the record:**
+- **The owner's telemetry file was not read.** This session's file tools and search are
+  confined to `C:\Source\HamLet`, and both refused
+  `%AppData%\Hamlet\telemetry\2026-09-28.jsonl`. I did not try to get around that. The
+  figures used are the instruction's table, **not checked against the file**.
+- **An owner's empty `STOP` file is at the root**, as it was for unit 474. `run-phase.bat`
+  reads it between units. This single seeded unit was finished and nothing was started after
+  it. The file was left in place, unstaged.
+- **`SESSION.lock`** was already held by the launcher (watched PID 56780), and this session did
+  not take or release it.
 
 ## 2. What the owner should expect
 
-**What changes.** When a weak station's dit drops into the noise in the middle of a letter, Hamlet
-no longer prints the two halves as two certain letters. The pieces now come up dim. The screen shows
-them as a guess, and they no longer count as invented. On the bulletin
-`032050`, `IULLETIN CAN BE FOTAND IN TELEWRITTER` now reads `IULLETIN CAN BE FO[T][A]ND IN
-TELEWRITTER` (brackets are dim): the U of FOUND lost a dit and split. On `004234`, `T HANTT TK■ET
-FOR` now reads `T HAN[T][T] TK■[E][T] FOR`: the K of THANK lost its middle dit. On the synthetic
-five-unit sender at 5 dB, `C Q TEE T ■KTDUUEUEN` now reads `C Q [T][E]E T ■[K]TDU[U][E][U][E]N`.
+**Rebuild, tune the same stations on 7.020 and 7.054 with the same AGC FAST and preamp 1, and
+press again.** Only one gate changed: the keying meter now accepts a swing of 17 dB where it
+wanted 20. A station like the 01:16:22 one should now light it. That station's figures were
+score 0.27, a steady fist and a swing in the high teens. In the owner's words, it should now
+read "I think I hear CW" where it said it didn't.
 
-**What does not change.** No letter changes, none is added or removed, and no right letter in the
-keyed stretches went dim. Coverage is exactly where it was.
-
-**What will look wrong but is not.** 23 letters outside the keyed stretches also went dim:
-- 9 in the `013347` opening noise run (`E EI I` -> `E [E][I] I`);
-- `NT` on `134712`;
-- the `E5` at the head of `004507`;
-- `TM` at the head of `031948`;
-- 8 more on keyed recordings, outside their scored stretches (`003758` 1, `031838` 2,
-  `032129` 3, `004234` 2).
-
-No key says whether those were right. They sit beside the same short key-ups.
+**What will look wrong but is not:**
+- **The light may now come on with nothing there.** The tree's own empty-band windows swing up
+  to 17.7 dB, and they already cleared the score and the element-length tests. If the light
+  lights on a dead stretch, press "You're an idiot". That row shows whether the score gate is
+  the next thing to move, or whether 17 was too low. Either answer comes from his rows.
+- **The strip will look the same.** The survey still admits nothing where it admitted nothing
+  before. Its gate was described and not moved, so "survey admitted nothing" and "mixing ...
+  not measured" will keep appearing.
+- **Rows that were already lit stay lit.** The 01:16:01 and 01:17:37 rows swung 18.4 and 17.5
+  dB and were lit only because the meter was holding an earlier yes. Windows like those now pass
+  the swing test on their own, so the light will hold less often and say keying directly more
+  often. The screen looks no different.
+- **Nothing about decoding changed.** The constant decides only what the meter says. The
+  decoder does not read it.
 
 ## 3. What you should see
 
-**The commits, with the five at each exit** (3.6 is judged on this):
+**The answer: `ConfidentSwingDb` is 17. The window built to the refused row's figures is called
+keying at 17, and was not at 20.**
 
-| commit | what | build | engine line | app line | named floors | captures | adjudicated |
-|---|---|---|---|---|---|---|---|
-| `600c6da4` | task 0, record and entry round | 0 errors | 178/178 | 278/278 on the one rerun (2 lost to the dispatcher loop first) | 13/13 | 51/51 | 13/13 |
-| `62bb097f` | task 1, fact and trace, rule registered | 0 errors | 178/178 | 278/278 on the one rerun (3 lost first) | 13/13 | 51/51 | 13/13 |
-| `45e4c50a` | task 2, the kept change, its test, `metrics.md` | 0 errors | 178/178 | 278/278 first run | 13/13 | 51/51 | 13/13 |
-| task 4 commit | exit printouts, `output.md`, the 3.6 tick; nothing under `src` or `tests` | takes `45e4c50a`'s; re-measured: 0 errors | 178/178 | 277/278, then 275/278 on the rerun; the 4 lost types each pass alone (DECIDED (7)) | 13/13 | 51/51 | 13/13 |
-
-**1. The R78 table**, before (HEAD, `src` as at `80df7cd5`) -> after (`45e4c50a`):
-
-| part of R78 | before | after | verdict |
-|---|---|---|---|
-| MET-INVENTED, real, inferred | 33 over 473 (5 added, 28 wrong) | 25 over 473 (4 added, 21 wrong) | falls |
-| MET-INVENTED, synthetic, exact | 14 over 252 (6 added, 8 wrong) | 7 over 252 (4 added, 3 wrong) | falls |
-| MET-CER-SURE, real, inferred | 33 of 436, 0.0757 | 25 of 428, 0.0584 | falls |
-| MET-CER-SURE, synthetic, exact | 14 of 173, 0.0809 | 7 of 166, 0.0422 | falls |
-| coverage, real, inferred | 403 over 473, 0.8520 | 403 over 473 | holds |
-| coverage, synthetic, exact | 159 over 252, 0.6310 | 159 over 252 | holds |
-| MET-WBE, real / synthetic | 37 over 113 / 44 over 84 | the same | unchanged |
-| dim precision (HM-REQ-014), scored stretches | no dim letter on either set | real 0 right of 8 dim; synthetic 0 right of 7 dim | reported |
-| adjudicated readings | 13 of 13 | 13 of 13 | hold |
-| V-11, 35 recordings | - | 0 worse; 5 rows fewer wrong or added, sure-and-right held on every row | holds |
-| floors, both carry-forward lines, `TheArbitrationEarnsItsPlaceTests` (5, 1, 2) | green | green | hold |
-
-Per condition, before -> after, key's kind beside each:
-- **Real, sender not stated (inferred):**
-  - MET-INVENTED 33 over 410 (5 added, 28 wrong) -> 25 over 410 (4 added, 21 wrong);
-  - MET-CER-SURE 33 of 374 -> 25 of 366;
-  - coverage 0.8317 -> 0.8317;
-  - MET-WBE 32 of 97 -> 32 of 97.
-- **Real, TX-FARNS, TX-ITU and TX-TIGHT (inferred):** 0 invented before and after; every figure
-  unchanged.
-- **Synthetic, character gap 5 at 5 dB (exact):**
-  - MET-INVENTED 11 over 21 (4 added, 7 wrong) -> 4 over 21 (2 added, 2 wrong);
-  - MET-CER-SURE 11 of 25 -> 4 of 18;
-  - coverage 0.6667 -> 0.6667;
-  - MET-WBE 8 of 7 -> 8 of 7.
-- **Every other synthetic condition (exact):** unchanged. TX-ITU 5 dB and 15 dB 1 added each;
-  character gap 5 at 15 dB 1 wrong; both 0 dB no sure letter.
-
-The full tables are in `docs/phase-requirements/metrics.md` under `## Unit 472`.
-
-**2. Task 1's position table** (timing reading on the exact set, alignment reading on the inferred;
-"no route" = no earlier route acted on it):
-
-| position | real invented (no route) | synthetic invented (no route) | earlier routes beside it |
-|---|---|---|---|
-| word gap | 0 | 0 | - |
-| character gap | 5 (0) | 0 | all 5 acquiring (470, 471); 1 overlaps a neighbour (443) |
-| split | 0 | 11 (6) | 2 are the 25 WPM `KK` double read (443); 3 under 1 nat (442), 1 of them acquiring; fldigi (E), (W) refused |
-| merge | 0 | 0 | 445's inner-gap edge (kept); fldigi (E) |
-| stand-in | 28 (4) | 3 (2) | 24 real acquiring (470, 471), 4 of them under 1 nat (442), 2 overlap (443); fldigi (A), (B), (C), (D) refused |
-
-**3. The right letters at risk** for the split group. On the quantity, the group lies at 0.588 to
-0.658. Right letters at or under 0.658: real 2 of 403 (`032113` 11.285 s `R` and 11.760 s `S`, both
-0.632); synthetic 0 of 159. No right letter lies under 0.632 on either set. Under the change, no
-scored right letter was dimmed: coverage held on every condition.
-
-**4. The rule as registered** (`62bb097f`, `.run-unit/unit472-trace.txt` part 5):
-> In `CwProbabilisticStream.Character`, a known letter that `GapsFitTheUnit` would emit High is
-> emitted Low where the shorter key-up between it and the named letter before or after it in the
-> same read is shorter than 0.62 of the character gap in force. The key-up is taken span to span
-> from the path's own characters, and only on a side where the read places no word space that the
-> relabel keeps. The character gap in force is the stream's held length where structure is held,
-> otherwise three units at the read's speed. The edge is not from `CW_SPEC.md`'s timing, which gives
-> no line between one and five units that parts a lost dit from a five-unit character gap. It is a
-> line no sure right letter crosses on either set: the lowest is at 0.632, and five of the group's
-> six are under it at 0.588 to 0.60. The sixth, at 0.658, is not reached and the edge is not moved
-> to reach it.
-
-**5. Every recording whose text or classes changed** (dim in brackets; entry -> exit). No letter
-changed, only classes. The port's texts are byte-identical.
-- `cq-18wpm-5db-char5`: `C QC Q C Q TEE T ■KTDUUEUEN 0CAL L K` -> `C QC Q C Q [T][E]E T ■[K]TDU[U][E][U][E]N 0CAL L K`
-- `013347`: `E EI I HIAEIHEEEA E EEE HEEIEE ...` -> `E [E][I] I HIAEIH[E][E][E]A E E[E][E] [H][E]EIEE ...` (all outside the keyed `VA3VRR`, which is unchanged)
-- `134712`: `E ■ NT N4LQ K` -> `E ■ [N][T] N4LQ K`
-- `004507`: `E5 I E A T ARRL ...` -> `[E][5] I E A T ARRL ...`
-- `003758`: `... A ET EEEETMP/4 QNIKK ...` -> `... A ET E[E][E][E][T]MP/4 QNIKK ...`
-- `031838`: `A 3, AT3 , 2TT 2, AND ■ WIAHA MEAN OF 2 TT` -> `A 3, [A][T]3 , 2TT 2, AND ■ WIAHA MEAN OF 2 T[T]`
-- `031948`: `TM 150 110, AND 110 ...` -> `[T][M] 150 110, AND 110 ...`
-- `032050`: `... BE FOTAND IN TELEWRITTER ...` -> `... BE FO[T][A]ND IN TELEWRITTER ...`
-- `032129`: `■ MTMTJ26 PGOPAGATION ...` -> `■ [M][T][M]TJ26 PGOPAGATION ...`
-- `004234`: `... T HANTT TK■ET FOR ...` -> `... T HAN[T][T] TK■[E][T] FOR ...`
-
-**6. The 7.052 traffic net:** searched once. It is absent (section 1), so no stretch is printed.
-
-**Exit diffs:**
-- `git diff 80df7cd5 -- src` prints only the change in `CwProbabilisticStream.cs`.
-- The port diff against `19109b51` and the transmit diff against `7e209cb4` (eleven files, all
-  present) print nothing.
-- `git status` shows `.run-unit/fldigi/`, `SESSION.lock` and `STOP` untracked.
+- `.run-unit/unit475-swing-red2.txt`: `Listening at 675 Hz, score 0.31, element median 54 ms,
+  swing 19.6 dB against 20.0`, then `Assert.Equal() Failure ... Expected: Keying`.
+- `.run-unit/unit475-swing-green.txt` and `-exit-TheOwnersRefusedStationIsKeyingTests.txt`:
+  `Keying at 675 Hz ... against 17.0, held False`, 1/1.
+- Owner rows refused at 20 and accepted at 17: **1 of 7**, the 01:16:22 row. The 01:14:56 row
+  is still refused on its score of 0.02. The other five were already lit.
+- Build: 0 errors, warnings as errors, at entry, after task 1 and at exit.
+- App carry-forward line: 274 then 278/278 at entry (one re-run, dispatcher loop), 278/278 at
+  exit.
+- Diffs: the transmit files print nothing. `Cw` shows one constant and its remark.
+- `PHASE_OUTCOME.md` (both copies) ends with `## UNIT 475 - STEP 11`. `PHASE_STATUS.md` (both
+  copies) reads `CURRENT_STEP: 11` and `WORK_INSTRUCTION: 475 ...`. `Directory.Build.props`
+  reads 1.13.161.
 
 ## 4. What's blocking us
 
-1. **R86 mismatch.** R86 (`PHASE_PLAN.md` section 6) reads that steps 2 to 8 are not authorable
-   until 9.4 has a kept change. 9.4 has no route left (ARBITER.md section 4, (A) to (E) and (W)
-   refused). This unit worked step 3 as the launcher named it, as units 468 to 471 did. This is a
-   plain reading, not a claim that R86 is overruled.
-2. **3.4.** The 7.052 traffic-net recording holding `EETTTEETTTTTTTTETTETETKTETEE` is not in the
-   tree. No unit can meet 3.4 until that recording and its `cases-*.txt` row are added.
-3. **DECIDED (4), the reading of where a letter sits, is the arbiter's and overrulable.**
-   - **Where the tree forced a reading (R85):** a real key is text without timing, so on the real
-     set the position comes from the alignment and the Morse patterns alone.
-   - **The two readings disagree on the exact set, 12 of 14.** The alignment files most splits as an
-     added letter in a word gap or as a stand-in. So "0 real splits" is the alignment's reading and
-     likely understates them. `032050`'s `FOTAND` and `004234`'s `HANTT`, dimmed by this change, look
-     like splits.
-4. **3.5's count after this unit: 0 of 3.** Unit 472 kept a change. It was 0 after unit 445, and no
-   unit worked step 3 between them.
-5. **An owner's `STOP` file** appeared at the root at 19:30, empty, after the task 2 commit. I read
-   it as `run-phase.bat` does: finish the running unit, then the run ends. I finished this unit,
-   started nothing after it, and left the file in place for the runner.
-6. **The edge is narrow**, 0.62 against the lowest right letter at 0.632, as unit 445's was.
-   Beside the 15 scored letters it dimmed, all wrong, it dimmed 23 letters outside the keyed
-   stretches, whose rightness no key states (section 2).
-7. **A second form, one line:** the group's sixth letter (12.005 s `T`, 0.658) and the real
-   stand-ins under 0.632 suggest the same quantity with an edge from each sender's own measured
-   gaps. It was not tried.
-8. **`TheSpeedFollowsTheSendersMarkPairsTests`** moved with the change, from 28 of 31 to 26 of 29
-   sure wrong or added. It is red as before and on neither carry-forward line.
-9. **Mismatch:** `.run-unit\watched.rc`, which the instruction names, did not exist.
+Nothing here halts the unit. Seven items, the most consequential first.
+
+1. **17 is below the 17.7 dB empty recording, not above it.** The instruction says 17 "stays
+   above the two empty recordings ... and only just above the 17.7 one". 17 is 0.7 dB below
+   17.7. It is also inside the 14.7 to 17.7 range of the eleven empty six-second windows from
+   `cw-2026-08-20-014854` and `-014935`. The comment in `CwKeyingMeter.Update` records that
+   those windows already clear the score and the element range. Any of them at 17 or more is
+   now called keying. **Ruling wanted: keep 17 or use 18.** 18 still accepts the 01:16:22 row
+   at 18.6 and stays above 17.7. It gives up the 17.5 row, which was only lit by the hold.
+   18 was rejected in `Update`'s own comment as "fitting a constant to a fixture". That
+   objection was about recordings, and R89 now sets the bar from the air. I kept 17 because
+   the instruction names it and the owner ruled "write it".
+2. **Two recording-reading tests now disagree with the bar. Neither was run, under R88.**
+   `TheSwingIsTheFigureThatHoldsTests` asserts that the empty recordings' maximum, 17.7, is
+   below `ConfidentSwingDb`. At 17 it will be red. `TheTwoPitchesTableTests` computes a
+   verdict with the constant and prints it, so its table will shift. The comment inside
+   `CwKeyingMeter.Update` still says the bar "is already twenty". It was left alone because the
+   instruction limits the diff to the constant and its remark. **Ruling wanted:** when the
+   corpus ban lifts, re-point the first test at the new basis or retire it (HM-DEC-103: list,
+   never delete), and correct that comment.
+3. **The verdict row records the plain median, not the element median the gate tests.**
+   `CwHearingViewModel.cs:290` writes `meterMedianMs = meter.MedianMs`, the middle of every
+   threshold crossing. The meter decides on `ElementMedianMs`, which only counts runs of 20 to
+   500 ms. Two consequences:
+   - **01:16:22 "failed only the swing" is an inference.** The row has no element median. A
+     plain median of 48 makes an element median inside 25 to 250 ms likely, but not certain.
+   - **The instruction asks section 4 to say that four agreed rows had medians of 4 to 9 ms,
+     "which are not dits, so the meter's score gate lets noise through".** The rows do show
+     plain medians of 4, 6, 8 and 9 ms (01:17:19, 01:17:37, 01:16:01, 01:16:28). But the source
+     says a plain median that low is normal on a real station: `KeyingEnvelope.cs:292-296`
+     measured the adjudicated `VA3VRR` at plain 4 ms with an element median of 88, and `N4L`
+     at plain 3 with 55. **Those four rows are not evidence that the score gate lets noise
+     through.**
+
+   **Ruling wanted:** add `meterElementMedianMs` to the `owner_verdict` row so the next rows
+   carry the figure the gate uses. Rejected: judging the score gate from the plain median,
+   because the code says that number is not a key-down length.
+4. **The survey's hysteresis admitted nothing on all seven rows. It is a gate on the same kind
+   of level evidence, one stage earlier than the meter's swing.** From the source
+   (`CwToneSurvey.cs:195, 564-565, 609 on`): `HysteresisDb = 3.0` sets a mark mask that turns
+   on above, and off below, the two-means midpoint of each bin's own dB history, ±3 dB. So it
+   asks for the bin's quiet and loud cluster means to sit **more than about 6 dB apart**. It is
+   not a 3 dB swing requirement. The meter's 17 dB is a 10th-to-90th percentile spread of a
+   1 ms linear envelope, so the two figures are not directly comparable. Even so, a station
+   swinging 17 to 22 dB on the meter would have to lose two thirds of that contrast to fail a
+   6 dB span. **Reading the source, the likelier refusals are the mark-duration gates after
+   the mask:** 8 marks, dits of 25 to 200 ms, a separation of 4.0 and a ratio of 2.5 to 3.8.
+   None of their figures is in the verdict row. If the owner presses "You're an idiot" while
+   the meter says keying and the survey admits nothing, the next unit should first record which
+   survey test refused, then move that one.
+5. **`PHASE_PLAN.md` has no step 11 criteria.** Neither copy has a step 11 or step 10 section.
+   Step 11 exists only as a `PHASE_STATUS.md` line marked "not started", even though 474
+   delivered the light, the strip and the buttons. The seed commit's message says "step 11
+   criteria", but its diff adds none. **Ruling wanted:** write step 11's criteria 11.1 to 11.4
+   into the plan, so that 474's work (5/5, 7/7, 6/6) and this unit's 11.4 can be ticked and the
+   step's state is not read as not started.
+6. **The owner's rows were not read from the file.** This session is confined to the
+   repository, and it refused `%AppData%\Hamlet\telemetry\2026-09-28.jsonl`. The table in the
+   instruction was used as written. **Ruling wanted:** copy the day's `owner_verdict` rows into
+   the tree for the next unit, or let the session read that folder.
+7. **An owner's empty `STOP` file is at the root.** It was left in place, as unit 474 left it.
+   The runner will end the next launch at the door and delete it, unless it is removed by hand
+   first.

@@ -1,4 +1,4 @@
-﻿PHASE: Hamlet meets the CW requirements
+PHASE: Hamlet meets the CW requirements
 PHASE_SET: 2026-09-25
 DESCRIPTION: CW_REQUIREMENTS.md and CW_SPEC.md at the repository root are the specification from here on. Sixty-eight requirements, sixty-five of them must-tier, and section T shows fourteen groups with no test at all. This phase traces what exists, builds the metrics the requirements are written in - invented characters, sure-character error, coverage, word-boundary error, acquisition time - and then meets the requirements group by group, highest tier first. Every unit recenters on those two documents. Judged by requirement ids and, at the end, by Tim at the radio.
 STEP: 0 | Every CW test is traced - section T names, for each requirement, the test that proves it or the word none, and every existing CW test names the requirement it proves or is marked as proving none.
@@ -12,6 +12,7 @@ STEP: 7 | The conditions can be generated - sections E, F and G: channel, sender
 STEP: 8 | The record and the tests are put right - last, not first: the decision log, the traceability table, the 43 tests that measure something other than what their requirement states, and the 63 requirements with no test.
 STEP: 9 | Two decoders read the same audio - section M: fldigi's CW modem ported faithfully as the second decoder, both scored on every recording before either votes, both confidences calibrated against the keys, and the arbitration that emits one transcript, never worse than the better decoder alone.
 STEP: 11 | The owner's ear teaches the detector where the entry is - a light saying whether Hamlet thinks it hears CW, a strip showing the whole pitch range and where it looks, two buttons that write his verdict beside the detector's state; no decode, no corpus.
+STEP: 12 | The oscilloscope - a keyed signal is found as the audio envelope over a threshold above the tracked noise floor, at any pitch the filter passes, its frequency read from the spectrum after; shown on the CW tab first, then driving the decoder.
 
 ---
 
@@ -22,7 +23,7 @@ finishing CW based on the specifications and requirements. I want the arbiter to
 itself during every iteration on these two documents."* And on unit tests: *"We should be
 tracing to requirements."*
 
-## Â§1 What this phase is
+## §1 What this phase is
 
 The correctness phase, *Hamlet reads a CQ call correctly*, is archived at
 `docs/phase-correctness-run/` with **5.1 open - Tim's verdict, which stays his** - and with
@@ -34,14 +35,14 @@ floors and the scorer; the receiver conditions set from the radio's manual; the 
 sentences made true; the card that says where a station is.
 
 **Why the phase changes shape.** Six units on 2026-09-25 built changes that read the opening
-correctly - at 24 WPM, `EANQNID EANâ– IK` where a week of junk had stood - and every one was
+correctly - at 24 WPM, `EANQNID EANâ– IK` where a week of junk had stood - and every one was
 rejected because capture rows' character counts fell. **Character counts are not a requirement
 anywhere in `CW_REQUIREMENTS.md`.** What is required is MET-INVENTED at zero, MET-CER-SURE
 below 1%, coverage at or above 90%, and MET-WBE at or below 5%. A change that removes invented
 characters *lowers* a character count and *meets* the requirements. The old keep rule was
 measuring the wrong thing, and it cost six units.
 
-## Â§2 What is the same
+## §2 What is the same
 
 **`CW_REQUIREMENTS.md` and `CW_SPEC.md` at the repository root are the specification.** Every
 unit of this phase reads them before it reads anything else. Where this plan and those
@@ -57,11 +58,11 @@ ruled it on 2026-09-24 as HM-DEC-175, so section R's first row is answered**; **
 sets the radio and the operator is not rig control; **R75** the tone tracker is open; **R76**
 the pitch instrument is built and proved before the tracker is changed.
 
-`CLAUDE.md` **Â§0.0** never present a guess as a decode; **Â§0.2** transmit safety; **Â§12.5** a
+`CLAUDE.md` **§0.0** never present a guess as a decode; **§0.2** transmit safety; **§12.5** a
 fixture built from the same misunderstanding as the code proves nothing; **HM-DEC-091**,
 **HM-DEC-103**, **HM-DEC-155**, **HM-DEC-165**, **HM-DEC-168**, **FACT-004**, **FACT-006**.
 
-## Â§R Rulings, Tim, 2026-09-25
+## §R Rulings, Tim, 2026-09-25
 
 **R77 - the requirements are the specification, and the tests trace to them.** *"We will now
 focus moving forward on finishing CW based on the specifications and requirements."* Every
@@ -132,7 +133,28 @@ floor, a definition or what the decoder should do is answered from `CW_REQUIREME
 arbiter's reading and overrulable, and **never parked for the owner**. The owner is asked about
 what he sees on screen, what he hears at the radio, and the three stops. Nothing else.
 
-## Â§3 What is different from the phases before it
+**R88 - Tim, 2026-09-27: the corpus is banned and the owner's ear is the yardstick.** Twenty
+strong stations, high pitch to low, zero characters. Every threshold between a tone and a signal
+- the 300 to 900 Hz range, the survey's 3 dB hysteresis, the meter's 20 dB swing - was fitted to
+recordings and never checked against the air. **No unit reads, runs, tunes against or keeps a
+change on any recording until the ban is lifted. Steps 2 to 10 are closed; step 11 is the only
+authorable step.** His words: *"We're trying to teach you how to find the entry, how to know when
+to start evaluating. Right now, you have no clue."*
+
+**R89 - Tim, 2026-09-28: the detector's gates are set from his verdict rows.** Seven rows on
+2026-09-28 named the swing bar: a station with score 0.27 and a 48 ms dit refused at 18.6 dB
+against 20, under the AGC FAST the app itself sets. *"write it."*
+
+**R90 - Tim, 2026-09-28: think like an oscilloscope.** *"Once we hit a certain amplitude,
+regardless of frequency, that's probably a character. Everything else is noise."* The decoder
+has no start decision: it decodes at a guessed pitch while the survey and the meter try to
+correct it afterward by measuring a bin's level swing over time, which the app's own AGC FAST
+flattens, and only from 300 to 900 Hz. The detector is rebuilt as the envelope over a
+threshold above the tracked floor, at any pitch, with frequency read after. **The 90th
+percentile is one strong station in the filter, and that is what this serves.** Shown first,
+wired to the decoder after the owner's ear has judged it.
+
+## §3 What is different from the phases before it
 
 1. **A criterion is a requirement id.** A report states the requirement, the condition, the
    metric and the number. *"HM-REQ-011, MET-INVENTED, TX-ITU at 20 WPM on CH-AWGN: 17 to 0"*,
@@ -141,7 +163,7 @@ what he sees on screen, what he hears at the radio, and the three stops. Nothing
    method (T, A or I), condition, threshold, unknown-versus-wrong, truth grade.
 3. **The documents are read first, every unit.** Not this plan's summary of them.
 
-## Â§4 The steps
+## §4 The steps
 
 Exit criteria carry ids `N.k`; met is `[x]`; R45 gives the form. A step's exit is its own
 assertions, the three floor tests, and `docs/carry-forward-tests.txt` run as its comment says -
@@ -270,7 +292,7 @@ requirement can be judged at its own condition (unit 439's finding 1).
 - [x] 7.1 The generator produces the CH-* channel profiles `CW_SPEC.md` names, each carrying a shaped noise band and never digital silence (V-06), with the recipe for every case stated so another unit can rebuild them.
 - [x] 7.2 The generator produces the TX-* sender profiles, and HM-REQ-050 is measured on each must-tier profile at 15 dB reference.
 - [x] 7.3 The generator produces the INT-* interference profiles, and HM-REQ-060, 061, 062 and 066 are measured against them.
-- [ ] 7.4 Every generated fixture carries its exact key by construction, and the report states what each does not prove (Â§12.5, V-04); a real capture is reported by the sender profile the spec names or as `not stated`, and is never counted toward a CH-* condition.
+- [ ] 7.4 Every generated fixture carries its exact key by construction, and the report states what each does not prove (§12.5, V-04); a real capture is reported by the sender profile the spec names or as `not stated`, and is never counted toward a CH-* condition.
 - [x] 7.5 The three floor tests and both carry-forward lines are green at exit.
 
 **Depends on:** steps 0 and 1. Independent of steps 2 to 6.
@@ -311,14 +333,44 @@ because every later change to ours is better aimed with the comparison in hand.
 
 **Depends on:** steps 0 and 1.
 
-## Â§5 Dependencies
+## Step 11 - The owner's ear teaches the detector where the entry is
+
+**Delivers:** R88 and R89. Nothing translates. Nothing reads a recording.
+
+**Entry:** nothing.
+
+**Exit:**
+- [ ] 11.1 One indicator on the CW tab says whether Hamlet thinks it hears CW, in words as well as color, driven by the existing detector, translating nothing, with hover text saying it is a guess.
+- [ ] 11.2 A strip on the CW tab shows the pitch range drawn 200 to 1200 Hz, the band the tracker searches shaded and numbered, every admitted bin, the mixing pitch and the meter's best pitch with its four figures on hover; it changes nothing about where the detector looks.
+- [ ] 11.3 Two buttons - I agree with you, You're an idiot - each write one telemetry row, category cw, event owner_verdict, carrying the verdict beside the light, the tracker, the meter's figures, the survey's bins and the rig state at that moment.
+- [ ] 11.4 The owner's verdict rows are read from the telemetry file and the gate that disagreed with his ear is named from them and moved, one number per unit, with the constant's remark rewritten to say what it now rests on; no recording is read.
+- [ ] 11.5 The app carry-forward line is green at exit, no recording was read, and the report says so.
+
+**Depends on:** nothing. **The only authorable step while R88 stands.**
+
+## Step 12 - The oscilloscope
+
+**Delivers:** R90. The front half of a signal detector the decoder does not have.
+
+**Entry:** nothing.
+
+**Exit:**
+- [ ] 12.1 `CwEnvelopeDetector` computes per hop the passband envelope, a tracked noise floor, a threshold of floor plus a margin from the owner's verdict rows, mark or gap, the run length, and while a mark is up the pitch and its contrast read from the whole passband; it changes nothing about the decoder; proved on synthetic hops in a test, no recording.
+- [ ] 12.2 The CW tab draws the last four seconds as an oscilloscope - trace, floor, threshold, marks as bars along the bottom, the tone line as text, the passband edges shaded - fed fast enough that the owner sees dits, with words on every mark.
+- [ ] 12.3 The owner's verdict row carries the detector's state at the press, including the count of marks in the last four seconds, with its key set asserted closed.
+- [ ] 12.4 After the owner has judged the scope by ear and said so, the detector drives the decoder: nothing is decoded until a mark is found, the decoder is mixed at the detector's pitch and started with the detector's dit, and it stops when the tone stops; judged by the owner's ear and his verdict rows, not by a recording.
+- [ ] 12.5 The app carry-forward line is green at exit, no recording was read, and the report says so.
+
+**Depends on:** nothing. Authorable beside step 11 while R88 stands.
+
+## §5 Dependencies
 
 Steps 0 and 1 are met by the hand-run unit 439 and are ticked at the next unit's task 0 from
 its report. **Steps 2, 3, 4, 5, 6 and 7 each depend only on those two**, so there are six
 independent places to route and the loop need never stall for want of work. **Step 9 is preferred until 9.2 is met** (R84). **Step 8 is last
 and no unit is authored against it while any criterion of steps 2 to 7 or 9 is open** (R80).
 
-## Â§6 Branching
+## §6 Branching
 
 - **Three stops only**: keying, transmit or the radio's safety; money past the budget; a fact
   the product states to the operator about a signal, a station or a send. A threshold, a
@@ -348,6 +400,8 @@ and no unit is authored against it while any criterion of steps 2 to 7 or 9 is o
   is switched off on any condition where it loses to a single decoder (HM-REQ-128).
 - **No unit is authored for the record or for the tests** (R80) while a criterion of steps 2 to
   7 is open and authorable. A unit records a ruling only when its own instruction carries one.
+- **Steps 11 and 12 are the only authorable steps while R88 stands.** 12.4 is not authored
+  until the owner has judged 12.2 by ear and said so.
 - **The corpus is banned** (R88): no unit reads, runs, or keeps a change on a recording; the
   floor tests and the engine line are not run. Steps 2 to 10 are closed and not authorable.
 - **A report's line C names how many items section 4 raises.** The validator refuses one that
@@ -356,7 +410,7 @@ and no unit is authored against it while any criterion of steps 2 to 7 or 9 is o
 - **A package is needed.** `MOVE: stop`.
 - **A CW test costing more than 300 s** never goes on a carry-forward line.
 
-## Â§7 Carried
+## §7 Carried
 
 The correctness phase's 5.1, Tim's, at `docs/phase-correctness-run/`; its 3.6, 6.5, 7.1, 7.2,
 7.4, 7.6 and 7.8, each reappearing here as a requirement id; every item of its `PARKED.md`;
@@ -367,7 +421,13 @@ license covers Morse on an FT8 frequency** - both banked 2026-09-25 and not in t
 scope; the seven rulings of section R, of which the first is answered by R72; the attenuator
 sentence outside an owned block.
 
-## Â§8 Revision record
+## §8 Revision record
+
+- **2026-09-28.** R90 and step 12, the oscilloscope; the STEP: 11 header line restored, having
+  been lost in the encoding repair.
+
+- **2026-09-28.** The plan's encoding repaired after an in-place edit double-encoded every §;
+  step 11's criteria written as a file; R88 and R89 recorded.
 
 - **2026-09-26.** R84 two decoders read the same audio, ordered by section M of
   `CW_REQUIREMENTS.md` v1.1; step 9 with eight criteria, preferred until the parity table

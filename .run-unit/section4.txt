@@ -1,28 +1,64 @@
 ﻿
-1. **R86 mismatch.** R86 (`PHASE_PLAN.md` section 6) reads that steps 2 to 8 are not authorable
-   until 9.4 has a kept change. 9.4 has no route left (ARBITER.md section 4, (A) to (E) and (W)
-   refused). This unit worked step 3 as the launcher named it, as units 468 to 471 did. This is a
-   plain reading, not a claim that R86 is overruled.
-2. **3.4.** The 7.052 traffic-net recording holding `EETTTEETTTTTTTTETTETETKTETEE` is not in the
-   tree. No unit can meet 3.4 until that recording and its `cases-*.txt` row are added.
-3. **DECIDED (4), the reading of where a letter sits, is the arbiter's and overrulable.**
-   - **Where the tree forced a reading (R85):** a real key is text without timing, so on the real
-     set the position comes from the alignment and the Morse patterns alone.
-   - **The two readings disagree on the exact set, 12 of 14.** The alignment files most splits as an
-     added letter in a word gap or as a stand-in. So "0 real splits" is the alignment's reading and
-     likely understates them. `032050`'s `FOTAND` and `004234`'s `HANTT`, dimmed by this change, look
-     like splits.
-4. **3.5's count after this unit: 0 of 3.** Unit 472 kept a change. It was 0 after unit 445, and no
-   unit worked step 3 between them.
-5. **An owner's `STOP` file** appeared at the root at 19:30, empty, after the task 2 commit. I read
-   it as `run-phase.bat` does: finish the running unit, then the run ends. I finished this unit,
-   started nothing after it, and left the file in place for the runner.
-6. **The edge is narrow**, 0.62 against the lowest right letter at 0.632, as unit 445's was.
-   Beside the 15 scored letters it dimmed, all wrong, it dimmed 23 letters outside the keyed
-   stretches, whose rightness no key states (section 2).
-7. **A second form, one line:** the group's sixth letter (12.005 s `T`, 0.658) and the real
-   stand-ins under 0.632 suggest the same quantity with an edge from each sender's own measured
-   gaps. It was not tried.
-8. **`TheSpeedFollowsTheSendersMarkPairsTests`** moved with the change, from 28 of 31 to 26 of 29
-   sure wrong or added. It is red as before and on neither carry-forward line.
-9. **Mismatch:** `.run-unit\watched.rc`, which the instruction names, did not exist.
+Nothing here halts the unit. Seven items, the most consequential first.
+
+1. **17 is below the 17.7 dB empty recording, not above it.** The instruction says 17 "stays
+   above the two empty recordings ... and only just above the 17.7 one". 17 is 0.7 dB below
+   17.7. It is also inside the 14.7 to 17.7 range of the eleven empty six-second windows from
+   `cw-2026-08-20-014854` and `-014935`. The comment in `CwKeyingMeter.Update` records that
+   those windows already clear the score and the element range. Any of them at 17 or more is
+   now called keying. **Ruling wanted: keep 17 or use 18.** 18 still accepts the 01:16:22 row
+   at 18.6 and stays above 17.7. It gives up the 17.5 row, which was only lit by the hold.
+   18 was rejected in `Update`'s own comment as "fitting a constant to a fixture". That
+   objection was about recordings, and R89 now sets the bar from the air. I kept 17 because
+   the instruction names it and the owner ruled "write it".
+2. **Two recording-reading tests now disagree with the bar. Neither was run, under R88.**
+   `TheSwingIsTheFigureThatHoldsTests` asserts that the empty recordings' maximum, 17.7, is
+   below `ConfidentSwingDb`. At 17 it will be red. `TheTwoPitchesTableTests` computes a
+   verdict with the constant and prints it, so its table will shift. The comment inside
+   `CwKeyingMeter.Update` still says the bar "is already twenty". It was left alone because the
+   instruction limits the diff to the constant and its remark. **Ruling wanted:** when the
+   corpus ban lifts, re-point the first test at the new basis or retire it (HM-DEC-103: list,
+   never delete), and correct that comment.
+3. **The verdict row records the plain median, not the element median the gate tests.**
+   `CwHearingViewModel.cs:290` writes `meterMedianMs = meter.MedianMs`, the middle of every
+   threshold crossing. The meter decides on `ElementMedianMs`, which only counts runs of 20 to
+   500 ms. Two consequences:
+   - **01:16:22 "failed only the swing" is an inference.** The row has no element median. A
+     plain median of 48 makes an element median inside 25 to 250 ms likely, but not certain.
+   - **The instruction asks section 4 to say that four agreed rows had medians of 4 to 9 ms,
+     "which are not dits, so the meter's score gate lets noise through".** The rows do show
+     plain medians of 4, 6, 8 and 9 ms (01:17:19, 01:17:37, 01:16:01, 01:16:28). But the source
+     says a plain median that low is normal on a real station: `KeyingEnvelope.cs:292-296`
+     measured the adjudicated `VA3VRR` at plain 4 ms with an element median of 88, and `N4L`
+     at plain 3 with 55. **Those four rows are not evidence that the score gate lets noise
+     through.**
+
+   **Ruling wanted:** add `meterElementMedianMs` to the `owner_verdict` row so the next rows
+   carry the figure the gate uses. Rejected: judging the score gate from the plain median,
+   because the code says that number is not a key-down length.
+4. **The survey's hysteresis admitted nothing on all seven rows. It is a gate on the same kind
+   of level evidence, one stage earlier than the meter's swing.** From the source
+   (`CwToneSurvey.cs:195, 564-565, 609 on`): `HysteresisDb = 3.0` sets a mark mask that turns
+   on above, and off below, the two-means midpoint of each bin's own dB history, Â±3 dB. So it
+   asks for the bin's quiet and loud cluster means to sit **more than about 6 dB apart**. It is
+   not a 3 dB swing requirement. The meter's 17 dB is a 10th-to-90th percentile spread of a
+   1 ms linear envelope, so the two figures are not directly comparable. Even so, a station
+   swinging 17 to 22 dB on the meter would have to lose two thirds of that contrast to fail a
+   6 dB span. **Reading the source, the likelier refusals are the mark-duration gates after
+   the mask:** 8 marks, dits of 25 to 200 ms, a separation of 4.0 and a ratio of 2.5 to 3.8.
+   None of their figures is in the verdict row. If the owner presses "You're an idiot" while
+   the meter says keying and the survey admits nothing, the next unit should first record which
+   survey test refused, then move that one.
+5. **`PHASE_PLAN.md` has no step 11 criteria.** Neither copy has a step 11 or step 10 section.
+   Step 11 exists only as a `PHASE_STATUS.md` line marked "not started", even though 474
+   delivered the light, the strip and the buttons. The seed commit's message says "step 11
+   criteria", but its diff adds none. **Ruling wanted:** write step 11's criteria 11.1 to 11.4
+   into the plan, so that 474's work (5/5, 7/7, 6/6) and this unit's 11.4 can be ticked and the
+   step's state is not read as not started.
+6. **The owner's rows were not read from the file.** This session is confined to the
+   repository, and it refused `%AppData%\Hamlet\telemetry\2026-09-28.jsonl`. The table in the
+   instruction was used as written. **Ruling wanted:** copy the day's `owner_verdict` rows into
+   the tree for the next unit, or let the session read that folder.
+7. **An owner's empty `STOP` file is at the root.** It was left in place, as unit 474 left it.
+   The runner will end the next launch at the door and delete it, unless it is removed by hand
+   first.

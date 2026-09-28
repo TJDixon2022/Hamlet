@@ -11,7 +11,7 @@ STEP: 6 | partial | The text is right - sections H and I, the character table, t
 STEP: 7 | partial | The conditions can be generated - sections E, F and G: channel, sender and interference profiles, which nothing in the tree produces today.
 STEP: 8 | not started | Tim at the radio - CW on 20 m or 40 m, text on the CW tab that reads as what was sent, and he says it read.
 STEP: 9 | partial | Two decoders read the same audio - section M: fldigi's CW modem ported faithfully as the second decoder, both scored on every recording before either votes, both confidences calibrated against the keys, and the arbitration that emits one transcript, never worse than the better decoder alone.
-STEP: 11 | not started | The owner's ear teaches the detector where the entry is - a light saying whether Hamlet thinks it hears CW, a strip showing the whole pitch range and where it looks, two buttons that write his verdict beside the detector's state; no decode, no corpus.
+STEP: 11 | partial | The owner's ear teaches the detector where the entry is - a light saying whether Hamlet thinks it hears CW, a strip showing the whole pitch range and where it looks, two buttons that write his verdict beside the detector's state; no decode, no corpus.
 
 ## UNIT 439 - STEP 0
 
@@ -1060,3 +1060,21 @@ ACCOMPLISHED: written in output.md at the end of the unit and not claimed here a
 ADVANCES: step 11 criterion 4
 TICKS_FROM_474: 11.1 the light (TheLightSaysWhatHamletThinksItHearsTests 5/5), 11.2 the strip (TheStripShowsWhereTheDetectorLooksTests 7/7), 11.3 the buttons (TheOwnersVerdictIsARowTests 6/6) - evidenced by unit 474; NOT TICKED because neither copy of PHASE_PLAN.md carries a step 11 section or any 11.k line to tick; raised in output.md section 4.
 RUN: session launched with SESSION.lock already present; the lock is the launcher's and was not taken or released by the session.
+
+## UNIT 1 - STEP 11
+
+STEP: 11
+APPROACH: move CwKeyingThresholds.ConfidentSwingDb from 20 to 17 on the owner's seven verdict rows, rewrite its remark to say so, watch a synthetic-profile test fail first, and change nothing else
+HIT: section 4 asked nothing inside the two stops - author's, overrulable, the loop continued - Every question in the section is outside the two, since the bar is a receive side number the owner already ruled on, the extra field adds diagnostic data to the verdict row without changing any fact stated to the operator, and the rest concern test upkeep, plan criteria and file access.
+MOVE: continue
+WHY: PHASE_PLAN.md step 11 criterion 11.4 asks that the owner's verdict rows be read and that the detector's gate which disagreed with his ear be named from them; his row at 01:16:22 names the swing bar - score 0.27, median 48 ms, swing 18.6 against 20
+DECIDED: seventeen, from the rows, is the author's and overrulable; the survey's hysteresis is described and not moved
+LICENCE: PHASE_PLAN.md R85, R88, R89, section 6, step 11; HM-DEC-184; CLAUDE.md 0.0 and 0.2; HM-DEC-155; FACT-006
+COST: 3.352951799999999
+ACCOMPLISHED: the light stops refusing a plausibly keyed strong station for 1.4 dB of swing the radio's own AGC took away
+FATE: executed
+STATE_AFTER: partial
+STATE_WHY: Unit 474 delivered the light, strip and buttons with counts of 5 of 5, 7 of 7 and 6 of 6, and this unit moved the gate the owner's row named, with a red test at 20 and a green one at 17, but neither copy of PHASE_PLAN.md has any step 11 criterion lines, so nothing could be ticked. The row figures were taken from the instruction and not checked against the telemetry file, 17 sits below the 17.7 empty recording and invites false lights, and whether the light now agrees with the owner's ear waits on his next presses.
+ADVANCED: no
+ATTEMPT: 11.4 | unit 1 launched 2026-09-28T01:59:15.224Z | no | executed | move CwKeyingThresholds.ConfidentSwingDb from 20 to 17 on the owner's seven verdict rows, rewrite its remark to say so, watch a synthetic-profile test fail first, and change nothing else
+REASON: 11.4 | unit 1 launched 2026-09-28T01:59:15.224Z | the unit ran to completion and the criterion did not flip from unmet to met
