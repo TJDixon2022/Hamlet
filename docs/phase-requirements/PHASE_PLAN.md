@@ -356,8 +356,8 @@ because every later change to ours is better aimed with the comparison in hand.
 **Entry:** nothing.
 
 **Exit:**
-- [ ] 11.1 One indicator on the CW tab says whether Hamlet thinks it hears CW, in words as well as color, driven by the existing detector, translating nothing, with hover text saying it is a guess.
-- [ ] 11.2 A strip on the CW tab shows the pitch range drawn 200 to 1200 Hz, the band the tracker searches shaded and numbered, every admitted bin, the mixing pitch and the meter's best pitch with its four figures on hover; it changes nothing about where the detector looks.
+- [ ] 11.1 One indicator on the CW tab says whether Hamlet thinks it hears CW, in words as well as color, driven by the existing detector, translating nothing, with hover text saying it is a guess. - retired by unit 478 under R92; the scope shows what they showed
+- [ ] 11.2 A strip on the CW tab shows the pitch range drawn 200 to 1200 Hz, the band the tracker searches shaded and numbered, every admitted bin, the mixing pitch and the meter's best pitch with its four figures on hover; it changes nothing about where the detector looks. - retired by unit 478 under R92; the scope shows what they showed
 - [ ] 11.3 Two buttons - I agree with you, You're an idiot - each write one telemetry row, category cw, event owner_verdict, carrying the verdict beside the light, the tracker, the meter's figures, the survey's bins and the rig state at that moment.
 - [ ] 11.4 The owner's verdict rows are read from the telemetry file and the gate that disagreed with his ear is named from them and moved, one number per unit, with the constant's remark rewritten to say what it now rests on; no recording is read.
 - [ ] 11.5 The app carry-forward line is green at exit, no recording was read, and the report says so.

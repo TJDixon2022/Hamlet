@@ -53,7 +53,9 @@ public sealed class TheOwnersVerdictIsARowTests
         Assert.Equal(Fields.OrderBy(f => f), row.Data.Keys.OrderBy(k => k));
 
         Assert.Equal("agree", row.Data["verdict"]);
-        Assert.Equal("I think I hear CW", row.Data["light"]);
+        // Work instruction 478: the light is gone and the field carries the bars' verdict.
+        // Nothing has fed the scope here, so the bars say no keying.
+        Assert.Equal("the bars say no keying", row.Data["light"]);
         Assert.Equal(612.0, row.Data["trackerHz"]);
         Assert.Equal(true, row.Data["trackerHasPitch"]);
         Assert.Equal(false, row.Data["trackerHasKeying"]);
@@ -75,6 +77,31 @@ public sealed class TheOwnersVerdictIsARowTests
 
         Assert.Equal(575.0, bin["hz"]);
         Assert.Equal(-40.0, bin["levelDb"]);
+    }
+
+    /// <remarks>
+    /// Proves the row's <c>light</c> field is the scope's keying verdict in words, and that
+    /// <c>sinceVerdictMs</c> counts from when that verdict last changed (work instruction 478).
+    /// </remarks>
+    [Fact]
+    public void TheLightFieldIsTheBarsVerdictInWords()
+    {
+        var (hearing, rows, at) = Driven();
+
+        hearing.ObserveScope(CwScopeFrame.Empty with
+        {
+            Reading = CwEnvelopeReading.None with { Keying = true },
+        });
+        hearing.AgreeCommand.Execute(null);
+
+        Assert.Equal("the bars say keying", rows[^1].Data["light"]);
+        Assert.Equal(0L, rows[^1].Data["sinceVerdictMs"]);
+
+        hearing.ObserveScope(CwScopeFrame.Empty);
+        hearing.IdiotCommand.Execute(null);
+
+        Assert.Equal("the bars say no keying", rows[^1].Data["light"]);
+        Assert.NotEqual(at, hearing.LightChangedUtc);
     }
 
     /// <remarks>Proves "You're an idiot" writes the same row with its own verdict.</remarks>

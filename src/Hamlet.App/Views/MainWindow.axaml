@@ -1753,101 +1753,56 @@
                         </ScrollViewer>
                     </Border>
 
-                    <!-- DOES HAMLET THINK IT HEARS CW (work instruction 474,
-                         HM-DEC-184). Twenty strong stations gave no characters and
-                         nothing on the screen said whether Hamlet had noticed any
-                         of them. This is the existing detector's opinion, not a new
-                         one: lit when the keying meter calls it keying or the
-                         survey admits a pitch. It says "I think", never "there
-                         is" (0.0), and the words carry it; the dot and the tint
-                         only agree (0.6). Always present, so it changing moves
-                         nothing. -->
-                    <Grid x:Name="CwHearingRow" ColumnDefinitions="Auto,*"
+                    <!-- THE OSCILLOSCOPE, THE MIDDLE PICTURE (work instructions 476
+                         to 478, R92). The last four seconds: the level of the one
+                         pitch the detector reads as a trace, and a bar along the
+                         bottom under every mark - flat for at least a dit, dropped,
+                         and flat again - with nothing under a gap. Top left, in
+                         words: the detector's pitch while it says keying, and the
+                         pitch the decoder is mixing at. No floor, no threshold, no
+                         passband. It shows and drives nothing.
+
+                         The light and the pitch strip of unit 474 were here and are
+                         gone (478): the scope shows what they showed. The two
+                         buttons stay, beside the scope, and write the same row. -->
+                    <Grid x:Name="CwScopeRow" ColumnDefinitions="*,Auto"
                           Margin="0,2,0,0">
-                        <Border Grid.Column="0" x:Name="CwHearingLight"
-                                BorderThickness="1" CornerRadius="6"
-                                Padding="8,3"
-                                ToolTip.Tip="{x:Static vm:CwHearingViewModel.LightTip}"
-                                ToolTip.ShowDelay="300"
-                                Background="{StaticResource HmGreenTintBrush}"
-                                BorderBrush="{StaticResource HmGreenEdgeBrush}"
-                                IsVisible="{Binding CwHearing.IsLit}">
-                            <TextBlock FontSize="12" FontWeight="SemiBold"
-                                       Foreground="{StaticResource HmGreenBrush}">
-                                <Run Text="●" />
-                                <Run Text="{Binding CwHearing.LightWords}" />
-                            </TextBlock>
-                        </Border>
-                        <Border Grid.Column="0" x:Name="CwHearingDark"
-                                BorderThickness="1" CornerRadius="6"
-                                Padding="8,3"
-                                ToolTip.Tip="{x:Static vm:CwHearingViewModel.LightTip}"
-                                ToolTip.ShowDelay="300"
-                                Background="{StaticResource HmSlateTintBrush}"
-                                BorderBrush="{StaticResource HmSlateEdgeBrush}"
-                                IsVisible="{Binding !CwHearing.IsLit}">
-                            <TextBlock FontSize="12"
+                        <StackPanel Grid.Column="0" Spacing="1">
+                            <ctl:CwScopeControl x:Name="CwScope"
+                                                Frame="{Binding CwHearing.Scope}"
+                                                ToolTip.Tip="{x:Static vm:CwHearingViewModel.ScopeTip}"
+                                                ToolTip.ShowDelay="300" />
+                            <TextBlock FontSize="11"
+                                       TextTrimming="CharacterEllipsis"
                                        Foreground="{StaticResource HmTextMutedBrush}">
-                                <Run Text="○" />
-                                <Run Text="{Binding CwHearing.LightWords}" />
+                                <Run Text="{Binding CwHearing.Scope.ToneLine}" />
+                                <Run Text=" · " />
+                                <Run Text="{Binding CwHearing.Scope.MixingLine}" />
                             </TextBlock>
-                        </Border>
+                        </StackPanel>
 
                         <!-- HIS EAR IS THE YARDSTICK (HM-DEC-184). Each press
                              writes one telemetry row, category cw, event
-                             owner_verdict: his verdict beside what the light said
+                             owner_verdict: his verdict beside what the bars said
                              and the detector's state. No audio, no sidecar. The
                              next unit reads the rows. -->
-                        <StackPanel Grid.Column="1" Orientation="Horizontal"
-                                    HorizontalAlignment="Right" Spacing="6">
+                        <StackPanel Grid.Column="1" Orientation="Vertical"
+                                    VerticalAlignment="Center"
+                                    Margin="8,0,0,0" Spacing="6">
                             <Button Content="I agree with you"
                                     FontSize="11" Padding="10,4"
-                                    VerticalAlignment="Center"
+                                    HorizontalAlignment="Stretch"
                                     IsEnabled="{Binding IsDecoding}"
                                     ToolTip.Tip="{x:Static vm:CwHearingViewModel.AgreeTip}"
                                     Command="{Binding CwHearing.AgreeCommand}" />
                             <Button Content="You're an idiot"
                                     FontSize="11" Padding="10,4"
-                                    VerticalAlignment="Center"
+                                    HorizontalAlignment="Stretch"
                                     IsEnabled="{Binding IsDecoding}"
                                     ToolTip.Tip="{x:Static vm:CwHearingViewModel.IdiotTip}"
                                     Command="{Binding CwHearing.IdiotCommand}" />
                         </StackPanel>
                     </Grid>
-
-                    <!-- WHERE IT IS LOOKING (work instruction 474 task 2). Drawn
-                         200 to 1200 Hz, wider than the 300 to 900 the tracker
-                         searches, so a station outside the searched band shows as
-                         outside it. It shows and changes nothing. Every mark has
-                         words and a shape; the admitted bins are named on the line
-                         under it. -->
-                    <StackPanel x:Name="CwPitchStripRow" Spacing="1">
-                        <ctl:CwPitchStripControl x:Name="CwPitchStrip"
-                                                 Strip="{Binding CwHearing.Strip}"
-                                                 ToolTip.Tip="{Binding CwHearing.StripTip}"
-                                                 ToolTip.ShowDelay="300" />
-                        <TextBlock Text="{Binding CwHearing.Strip.AdmittedLabel}"
-                                   FontSize="11"
-                                   TextTrimming="CharacterEllipsis"
-                                   Foreground="{StaticResource HmTextMutedBrush}" />
-                    </StackPanel>
-
-                    <!-- THE OSCILLOSCOPE (work instruction 476, R90, HM-DEC-185).
-                         The last four seconds: the envelope as a trace, the floor
-                         dashed under it, the threshold solid above it with its
-                         margin, and a bar along the bottom wherever the trace
-                         stood over the threshold. The tone line reads the pitch
-                         only while a mark is up. It shows and drives nothing. -->
-                    <StackPanel x:Name="CwScopeRow" Spacing="1">
-                        <ctl:CwScopeControl x:Name="CwScope"
-                                            Frame="{Binding CwHearing.Scope}"
-                                            ToolTip.Tip="{x:Static vm:CwHearingViewModel.ScopeTip}"
-                                            ToolTip.ShowDelay="300" />
-                        <TextBlock Text="{Binding CwHearing.Scope.ToneLine}"
-                                   FontSize="11"
-                                   TextTrimming="CharacterEllipsis"
-                                   Foreground="{StaticResource HmTextMutedBrush}" />
-                    </StackPanel>
 
                     <!-- ONE ADVISORY REGION, AND IT NEVER CHANGES HEIGHT.
                          Below the transcript sat a stack of boxes that each

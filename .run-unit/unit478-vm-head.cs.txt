@@ -1,0 +1,82 @@
+/// <summary>
+/// **THE OWNER'S EAR AND THE SCOPE ON THE CW TAB** (work instructions 474, 476 and 478,
+/// steps 11 and 12, HM-DEC-184).
+/// </summary>
+/// <remarks>
+/// <para>**TIM, 2026-09-27**: *"We're trying to teach you how to find the entry, how to
+/// know when to start evaluating. Right now, you have no clue."* Unit 474 put a light and a
+/// pitch strip on the tab to show what the detector thought; **unit 478 took them off**
+/// (R92), because the scope shows what they showed in the one picture the owner said he
+/// understood - a trace, and bars where the keying is.</para>
+/// <para>**THE TWO BUTTONS AND THEIR ROW STAY.** The row's key set is unchanged; its
+/// <c>light</c> field now records the scope's keying verdict in words, so a row written
+/// after 478 says which picture the owner was judging.</para>
+/// </remarks>
+public sealed partial class CwHearingViewModel : ObservableObject
+{
+    /// <summary>
+    /// What the row's <c>light</c> field says when the bars say keying (work instruction 478).
+    /// </summary>
+    /// <remarks>
+    /// **NOT 474'S WORDS.** Rows written before 478 said "I think I hear CW" from the keying
+    /// meter and the survey; these say what the envelope detector's bars say, and read
+    /// differently so the two are never confused.
+    /// </remarks>
+    public const string BarsKeyingWords = "the bars say keying";
+
+    /// <summary>What the row's <c>light</c> field says when the bars do not say keying.</summary>
+    public const string BarsNoKeyingWords = "the bars say no keying";
+
+    /// <summary>What "I agree with you" records, on hover.</summary>
+    public const string AgreeTip =
+        "Tells Hamlet the scope is right about what you hear now. It writes one row to "
+        + "Hamlet's telemetry: your verdict, what the bars said, the pitches and figures "
+        + "the detector is using, and the radio's frequency, mode, AGC and preamp. No audio "
+        + "is kept and nothing on the radio changes.";
+
+    /// <summary>What "You're an idiot" records, on hover.</summary>
+    public const string IdiotTip =
+        "Tells Hamlet the scope is wrong about what you hear now. It writes one row to "
+        + "Hamlet's telemetry: your verdict, what the bars said, the pitches and figures "
+        + "the detector is using, and the radio's frequency, mode, AGC and preamp. No audio "
+        + "is kept and nothing on the radio changes.";
+
+    private readonly ITelemetry? _telemetry;
+    private readonly Func<CwHearingRig> _rig;
+    private readonly Func<DateTime> _clock;
+
+    private DateTime _lightChangedUtc;
+    private bool _barsKeying;
+
+    /// <summary>Creates the view model with nothing heard.</summary>
+    /// <param name="telemetry">Where a verdict row goes, or null.</param>
+    /// <param name="rig">What the rig and the input say at a press, or null for nothing read.</param>
+    /// <param name="clock">The clock, or null for the system's.</param>
+    public CwHearingViewModel(
+        ITelemetry? telemetry = null,
+        Func<CwHearingRig>? rig = null,
+        Func<DateTime>? clock = null)
+    {
+        _telemetry = telemetry;
+        _rig = rig ?? (() => CwHearingRig.Unknown);
+        _clock = clock ?? (() => DateTime.UtcNow);
+        _lightChangedUtc = _clock();
+    }
+
+    /// <summary>What the detector said at the last look.</summary>
+    public CwHearingState State { get; private set; } = CwHearingState.None;
+
+    /// <summary>The row's <c>light</c> field: the scope's keying verdict, in words.</summary>
+    public string LightWords => _barsKeying ? BarsKeyingWords : BarsNoKeyingWords;
+
+    /// <summary>When the bars' verdict last changed, or when this was made where it never has.</summary>
+    public DateTime LightChangedUtc => _lightChangedUtc;
+
+    /// <summary>Read what the detector says now, for the row.</summary>
+    /// <param name="state">The detector's state.</param>
+    public void Observe(CwHearingState state)
+    {
+        ArgumentNullException.ThrowIfNull(state);
+
+        State = state;
+    }

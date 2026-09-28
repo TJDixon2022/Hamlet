@@ -108,11 +108,12 @@ public sealed class TheScopeShowsTheMarksTests
     }
 
     /// <remarks>
-    /// Proves the scope is on the CW tab under 474's strip, with its hover and tone line,
-    /// and paints a driven detector's frame without throwing.
+    /// Proves the scope is on the CW tab with the two verdict buttons beside it and no light
+    /// or pitch strip left (work instruction 478 task 2), with its hover and tone line, and
+    /// paints a driven detector's frame without throwing.
     /// </remarks>
     [AvaloniaFact]
-    public void TheScopeIsOnTheCwTabUnderTheStripAndPaints()
+    public void TheScopeIsOnTheCwTabBesideTheButtonsAndPaints()
     {
         var (window, panel) = TheControlsTimCanPress.Open();
 
@@ -126,16 +127,35 @@ public sealed class TheScopeShowsTheMarksTests
 
             var cw = TheTopRowTests.Named<Grid>(window, "CwWorkspace");
             var scope = cw.GetVisualDescendants().OfType<CwScopeControl>().Single();
-            var strip = cw.GetVisualDescendants().OfType<CwPitchStripControl>().Single();
+            var buttons = cw.GetVisualDescendants().OfType<Button>()
+                .Where(b => b.Content is "I agree with you" or "You're an idiot")
+                .ToList();
 
             Assert.True(scope.IsEffectivelyVisible && scope.Bounds.Width > 100, "the scope is not drawn on the CW tab");
-            Assert.True(
-                scope.TranslatePoint(default, window)!.Value.Y > strip.TranslatePoint(default, window)!.Value.Y,
-                "the scope is not under the strip");
+            Assert.Equal(2, buttons.Count);
+
+            var scopeAt = scope.TranslatePoint(default, window)!.Value;
+
+            foreach (var button in buttons)
+            {
+                var at = button.TranslatePoint(default, window)!.Value;
+
+                Assert.True(at.X >= scopeAt.X + scope.Bounds.Width, $"{button.Content} is not to the right of the scope");
+                Assert.True(
+                    at.Y >= scopeAt.Y && at.Y + button.Bounds.Height <= scopeAt.Y + scope.Bounds.Height + 20,
+                    $"{button.Content} is not beside the scope");
+            }
+
+            Assert.DoesNotContain(
+                cw.GetVisualDescendants(),
+                v => v.GetType().Name.Contains("PitchStrip", StringComparison.Ordinal)
+                     || v.Name is "CwHearingLight" or "CwHearingDark");
             Assert.Equal(CwHearingViewModel.ScopeTip, ToolTip.GetTip(scope));
             Assert.Contains(
                 cw.GetVisualDescendants().OfType<TextBlock>(),
-                t => t.Text is { } text && text.StartsWith("tone 7", StringComparison.Ordinal));
+                t => (t.Inlines?.Text ?? t.Text) is { } text
+                     && text.StartsWith("tone 7", StringComparison.Ordinal)
+                     && text.Contains("not mixing", StringComparison.Ordinal));
 
             window.UpdateLayout();
 

@@ -43,25 +43,6 @@ public sealed record CwHearingRig(
     public static CwHearingRig Unknown { get; } = new(null, null, null, null, double.NaN, double.NaN);
 }
 
-/// <summary>What the pitch strip draws.</summary>
-public sealed record CwPitchStrip(
-    double LowHz,
-    double HighHz,
-    double SearchLowHz,
-    double SearchHighHz,
-    string SearchLabel,
-    IReadOnlyList<double> AdmittedHz,
-    string AdmittedLabel,
-    double TrackerHz,
-    string TrackerLabel,
-    double MeterHz,
-    string MeterLabel)
-{
-    /// <summary>Nothing.</summary>
-    public static CwPitchStrip Empty { get; } = new(
-        0, 0, 0, 0, "", Array.Empty<double>(), "", double.NaN, "", double.NaN, "");
-}
-
 /// <summary>
 /// What the oscilloscope draws: the level trace, the marks, the detector's pitch and the
 /// tracker's (work instruction 478 task 1, R92).
@@ -131,43 +112,45 @@ public sealed record CwScopeFrame(
 }
 
 /// <summary>
-/// **THE LIGHT ON THE CW TAB: WHETHER HAMLET THINKS IT HEARS CW** (work instruction 474,
-/// step 11, HM-DEC-184).
+/// **THE OWNER'S EAR AND THE SCOPE ON THE CW TAB** (work instructions 474, 476 and 478,
+/// steps 11 and 12, HM-DEC-184).
 /// </summary>
 /// <remarks>
 /// <para>**TIM, 2026-09-27**: *"We're trying to teach you how to find the entry, how to
-/// know when to start evaluating. Right now, you have no clue."* Twenty strong stations
-/// gave no characters, and nothing on the screen said whether Hamlet had even noticed
-/// them.</para>
-/// <para>**IT ADDS NO DETECTOR.** It is lit when the keying meter calls it keying or the
-/// coarse survey admits a pitch, which are two opinions the code already forms; this only
-/// puts them where the owner can judge them. **It says *I think*, never *there is***
-/// (§0.0), and the words carry it with the color only agreeing (§0.6).</para>
+/// know when to start evaluating. Right now, you have no clue."* Unit 474 put a light and a
+/// pitch strip on the tab to show what the detector thought; **unit 478 took them off**
+/// (R92), because the scope shows what they showed in the one picture the owner said he
+/// understood - a trace, and bars where the keying is.</para>
+/// <para>**THE TWO BUTTONS AND THEIR ROW STAY.** The row's key set is unchanged; its
+/// <c>light</c> field now records the scope's keying verdict in words, so a row written
+/// after 478 says which picture the owner was judging.</para>
 /// </remarks>
 public sealed partial class CwHearingViewModel : ObservableObject
 {
-    /// <summary>What the light says when it is lit.</summary>
-    public const string LitWords = "I think I hear CW";
+    /// <summary>
+    /// What the row's <c>light</c> field says when the bars say keying (work instruction 478).
+    /// </summary>
+    /// <remarks>
+    /// **NOT 474'S WORDS.** Rows written before 478 said "I think I hear CW" from the keying
+    /// meter and the survey; these say what the envelope detector's bars say, and read
+    /// differently so the two are never confused.
+    /// </remarks>
+    public const string BarsKeyingWords = "the bars say keying";
 
-    /// <summary>What the light says when it is dark.</summary>
-    public const string DarkWords = "I don't think I hear CW";
-
-    /// <summary>What the light rests on, on hover.</summary>
-    public const string LightTip =
-        "lit when the keying meter calls it keying or the survey admits a pitch; "
-        + "this is Hamlet's guess, not a fact.";
+    /// <summary>What the row's <c>light</c> field says when the bars do not say keying.</summary>
+    public const string BarsNoKeyingWords = "the bars say no keying";
 
     /// <summary>What "I agree with you" records, on hover.</summary>
     public const string AgreeTip =
-        "Tells Hamlet the light is right about what you hear now. It writes one row to "
-        + "Hamlet's telemetry: your verdict, what the light said, the pitches and figures "
+        "Tells Hamlet the scope is right about what you hear now. It writes one row to "
+        + "Hamlet's telemetry: your verdict, what the bars said, the pitches and figures "
         + "the detector is using, and the radio's frequency, mode, AGC and preamp. No audio "
         + "is kept and nothing on the radio changes.";
 
     /// <summary>What "You're an idiot" records, on hover.</summary>
     public const string IdiotTip =
-        "Tells Hamlet the light is wrong about what you hear now. It writes one row to "
-        + "Hamlet's telemetry: your verdict, what the light said, the pitches and figures "
+        "Tells Hamlet the scope is wrong about what you hear now. It writes one row to "
+        + "Hamlet's telemetry: your verdict, what the bars said, the pitches and figures "
         + "the detector is using, and the radio's frequency, mode, AGC and preamp. No audio "
         + "is kept and nothing on the radio changes.";
 
@@ -176,8 +159,9 @@ public sealed partial class CwHearingViewModel : ObservableObject
     private readonly Func<DateTime> _clock;
 
     private DateTime _lightChangedUtc;
+    private bool _barsKeying;
 
-    /// <summary>Creates the light, dark.</summary>
+    /// <summary>Creates the view model with nothing heard.</summary>
     /// <param name="telemetry">Where a verdict row goes, or null.</param>
     /// <param name="rig">What the rig and the input say at a press, or null for nothing read.</param>
     /// <param name="clock">The clock, or null for the system's.</param>
@@ -190,129 +174,24 @@ public sealed partial class CwHearingViewModel : ObservableObject
         _rig = rig ?? (() => CwHearingRig.Unknown);
         _clock = clock ?? (() => DateTime.UtcNow);
         _lightChangedUtc = _clock();
-
-        // The range and the searched band are drawn before anything listens, so the
-        // edges are on the screen from the start.
-        _strip = StripFor(CwHearingState.None);
-        _stripTip = TipFor(_strip, KeyingReading.None);
     }
 
     /// <summary>What the detector said at the last look.</summary>
     public CwHearingState State { get; private set; } = CwHearingState.None;
 
-    /// <summary>Whether the light is lit.</summary>
-    [ObservableProperty]
-    private bool _isLit;
+    /// <summary>The row's <c>light</c> field: the scope's keying verdict, in words.</summary>
+    public string LightWords => _barsKeying ? BarsKeyingWords : BarsNoKeyingWords;
 
-    /// <summary>What the light says.</summary>
-    [ObservableProperty]
-    private string _lightWords = DarkWords;
-
-    /// <summary>What the strip draws.</summary>
-    [ObservableProperty]
-    private CwPitchStrip _strip = CwPitchStrip.Empty;
-
-    /// <summary>What the strip says on hover.</summary>
-    [ObservableProperty]
-    private string _stripTip = "";
-
-    /// <summary>When the light last changed, or when it was made where it never has.</summary>
+    /// <summary>When the bars' verdict last changed, or when this was made where it never has.</summary>
     public DateTime LightChangedUtc => _lightChangedUtc;
 
-    /// <summary>Read what the detector says now.</summary>
+    /// <summary>Read what the detector says now, for the row.</summary>
     /// <param name="state">The detector's state.</param>
     public void Observe(CwHearingState state)
     {
         ArgumentNullException.ThrowIfNull(state);
 
         State = state;
-
-        var lit = state.Meter.Verdict == KeyingVerdict.Keying || state.Survey.Count > 0;
-
-        if (lit != IsLit)
-        {
-            _lightChangedUtc = _clock();
-        }
-
-        IsLit = lit;
-        LightWords = lit ? LitWords : DarkWords;
-
-        Strip = StripFor(state);
-        StripTip = TipFor(Strip, state.Meter);
-    }
-
-    /// <summary>
-    /// The low end the strip is drawn from, below anything the tracker searches.
-    /// </summary>
-    /// <remarks>
-    /// **DRAWN WIDER THAN THE DETECTOR LOOKS, ON PURPOSE** (work instruction 474). The
-    /// tracker searches 300 to 900 Hz, the IC-7300's sidetone setting range from its
-    /// manual (page 4-14) and not where a received station lands, so a station beating
-    /// at 1000 Hz is invisible by design. The strip shows the edges so the owner can see
-    /// a station sitting outside them. Author's, overrulable.
-    /// </remarks>
-    public const double StripLowHz = 200;
-
-    /// <summary>The high end the strip is drawn to.</summary>
-    public const double StripHighHz = 1200;
-
-    private static CwPitchStrip StripFor(CwHearingState state)
-    {
-        var admitted = state.Survey.Select(c => c.ToneHz).ToList();
-        var meter = state.Meter;
-
-        return new CwPitchStrip(
-            StripLowHz,
-            StripHighHz,
-            CwToneTracker.MinimumToneHz,
-            CwToneTracker.MaximumToneHz,
-            string.Create(
-                CultureInfo.InvariantCulture,
-                $"searched {CwToneTracker.MinimumToneHz:0} to {CwToneTracker.MaximumToneHz:0} Hz"),
-            admitted,
-            admitted.Count == 0
-                ? "survey admitted nothing"
-                : "survey admitted "
-                  + string.Join(", ", admitted.Select(hz => hz.ToString("0", CultureInfo.InvariantCulture)))
-                  + " Hz",
-            state.TrackerHz,
-            double.IsNaN(state.TrackerHz)
-                ? "not listening"
-                : string.Create(CultureInfo.InvariantCulture, $"mixing {state.TrackerHz:0} Hz")
-                  + (state.TrackerHasPitch ? "" : ", not measured"),
-            meter.ToneHz > 0 ? meter.ToneHz : double.NaN,
-            meter.ToneHz > 0
-                ? string.Create(CultureInfo.InvariantCulture, $"meter {meter.ToneHz:0} Hz")
-                : "meter has no pitch");
-    }
-
-    private static string TipFor(CwPitchStrip strip, KeyingReading meter)
-    {
-        var tracker = double.IsNaN(strip.TrackerHz)
-            ? "Solid line: the pitch the decoder is mixing at. Nothing is listening, so there is none."
-            : "Solid line: the pitch the decoder is mixing at now, "
-              + strip.TrackerLabel.Replace("mixing ", "", StringComparison.Ordinal)
-              + ". Where nothing is measured it falls back to the last pitch, the bank's centre or your CW pitch.";
-
-        var meterLine = double.IsNaN(strip.MeterHz)
-            ? "Dashed line: the keying meter's best pitch. It has not measured one yet."
-            : string.Create(
-                CultureInfo.InvariantCulture,
-                $"Dashed line: the keying meter's best pitch, {strip.MeterHz:0} Hz - score {meter.Score:0.00}, "
-                + $"median {meter.MedianMs:0} ms, swing {meter.SwingDb:0} dB, verdict {VerdictWord(meter.Verdict)}.");
-
-        return string.Join(
-            Environment.NewLine,
-            string.Create(
-                CultureInfo.InvariantCulture,
-                $"The whole range the detector could sweep, {strip.LowHz:0} to {strip.HighHz:0} Hz."),
-            "Shaded: the band the tracker searches today, "
-                + strip.SearchLabel.Replace("searched ", "", StringComparison.Ordinal) + ".",
-            "Short ticks: pitches the survey has admitted as keying - "
-                + strip.AdmittedLabel.Replace("survey admitted ", "", StringComparison.Ordinal) + ".",
-            tracker,
-            meterLine,
-            "This shows where Hamlet looks and changes nothing about it.");
     }
 
     /// <summary>What the oscilloscope shows, on hover.</summary>
@@ -346,6 +225,12 @@ public sealed partial class CwHearingViewModel : ObservableObject
     public void ObserveScope(CwScopeFrame frame)
     {
         ArgumentNullException.ThrowIfNull(frame);
+
+        if (frame.Reading.Keying != _barsKeying)
+        {
+            _barsKeying = frame.Reading.Keying;
+            _lightChangedUtc = _clock();
+        }
 
         Scope = frame;
     }
