@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-TASK: 3 of 3
-WORK_INSTRUCTION: 481 - the window holds still when the radio moves the dial
-BALL: tim
-NEXT_PASTE: output.md -> Claude Web
+STATE: EXECUTING
+TASK: 1 of 3
+WORK_INSTRUCTION: 482 - the owner's press lands in the file
+BALL: code
+NEXT_PASTE: none
 RULES_AT: HM-DEC-188 (2026-09-28)
-UPDATED: 2026-09-28T15:31:18-04:00
-NOTE: Unit 481 done: the radio-announced change to 14.0754 USB-D leaves the window as the chosen one does (green at HEAD, no fix); 11.5 and 11.6 ticked; no recording read
+UPDATED: 2026-09-28T15:39:42-04:00
+NOTE: Task 0 committed (entry 0/0, 278/278, row 7/7, scope 4/4); task 1 tracing the press from each button to the line JsonlTelemetry writes
 
 ---
 

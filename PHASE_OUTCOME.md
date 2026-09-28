@@ -11,7 +11,7 @@ STEP: 6 | partial | The text is right - sections H and I, the character table, t
 STEP: 7 | partial | The conditions can be generated - sections E, F and G: channel, sender and interference profiles, which nothing in the tree produces today.
 STEP: 8 | not started | Tim at the radio - CW on 20 m or 40 m, text on the CW tab that reads as what was sent, and he says it read.
 STEP: 9 | partial | Two decoders read the same audio - section M: fldigi's CW modem ported faithfully as the second decoder, both scored on every recording before either votes, both confidences calibrated against the keys, and the arbitration that emits one transcript, never worse than the better decoder alone.
-STEP: 11 | not started | The owner's ear teaches the detector where the entry is - a light saying whether Hamlet thinks it hears CW, a strip showing the whole pitch range and where it looks, two buttons that write his verdict beside the detector's state; no decode, no corpus.
+STEP: 11 | partial | The owner's ear teaches the detector where the entry is - a light saying whether Hamlet thinks it hears CW, a strip showing the whole pitch range and where it looks, two buttons that write his verdict beside the detector's state; no decode, no corpus.
 STEP: 12 | not started | The oscilloscope - a keyed signal is found as the audio envelope over a threshold above the tracked noise floor, at any pitch the filter passes, its frequency read from the spectrum after; shown on the CW tab first, then driving the decoder.
 
 ## UNIT 439 - STEP 0
@@ -1277,3 +1277,33 @@ LICENCE: PHASE_PLAN.md R88, R95, R74, R80, R85, section 6, step 11; CLAUDE.md 0.
 ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
 ADVANCES: step 11 criterion 6
 RUN: hand run of instruction 481 (the window holds still when the radio moves the dial); SESSION.lock was already present at the root when the session began, so the session did not take it and does not release it.
+
+## UNIT 2 - STEP 11
+
+STEP: 11
+APPROACH: headless test drives radio-announced and app-chosen frequency change to 14.0754 USB-D and asserts window layout and neighborhood sentences match, trace where the two paths part, route the announced path through the app path
+HIT: section 4 wants a ruling: yes - The first question asks the owner whether the licence card should state its privilege claim for the radio's reported mode rather than the tab, which changes what a card asserts to the operator about the radio and is not a matter of wording.
+MOVE: work around
+WHY: The launcher named step 3, but R88 closes steps 2 to 10 and 3.4 cannot be met without decoding a recording; of steps 11 and 12, 11.6 is the one open criterion the loop can judge without the owner, and no unit has attempted it.
+DECIDED: step 3 is not authored while R88 stands, and the unit is re-aimed at 11.6 under plan section 6 (plan routing, not a self-ruling); if the test is green at HEAD, two further path pairs are driven rather than a failure invented - author's, overrulable
+LICENCE: PHASE_PLAN.md R88, R95, R74, R80, R85, section 6, step 11; CLAUDE.md 0.2 and 0.6; HM-DEC-155; HM-DEC-165; FACT-006
+COST: 4.858822800000001
+ACCOMPLISHED: when the radio's dial moves to a data frequency, the owner's window stays exactly as it would if he had picked that frequency in Hamlet, with the same panels and the same sentences
+FATE: executed
+STATE_AFTER: partial
+STATE_WHY: 11.5 and 11.6 are met, since the new two-window test compares 1121 lines per window and shows 0 differences at 14.0754 USB-D, it goes red with 35 differences when the band switch is disabled, 423 is 1 of 1, 389 is 2 of 2 and the app line is 278 of 278, but 11.3 and 11.4 are still open because no verdict buttons or verdict rows exist and no gate was moved.
+ADVANCED: yes
+ATTEMPT: 11.6 | unit 2 launched 2026-09-28T19:11:58.915Z | yes | executed | headless test drives radio-announced and app-chosen frequency change to 14.0754 USB-D and asserts window layout and neighborhood sentences match, trace where the two paths part, route the announced path through the app path
+
+## UNIT 482 - STEP 11
+
+STEP: 11
+APPROACH: press both verdict buttons in a headless main window and read the rows back from the telemetry file to prove 11.3, watched red by breaking the row once, fix only a missing field or binding
+MOVE: work around
+WHY: The launcher named step 3, but R88 closes steps 2 to 10 and 3.4 needs a recording decoded; 11.3 is the one open criterion of steps 11 and 12 the loop can judge without the owner, since 12.2 and 12.4 wait on him and he unticked 12.1 and 12.3 himself.
+STATE: partial
+DECIDED: step 3 is not authored while R88 stands (plan section 6 routing, not a self-ruling); 11.3's "the light" is read as the bars' verdict that took its field under R92; 12.1 to 12.3 are not re-ticked by a loop unit because the owner unticked them - author's, overrulable
+LICENCE: PHASE_PLAN.md R88, R89, R92, R80, R85, section 6, step 11; CLAUDE.md 0.0, 0.2 and 0.6; HM-DEC-155; HM-DEC-165; FACT-006
+ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
+ADVANCES: step 11 criterion 3
+RUN: hand run of instruction 482 (the owner's press lands in the file); SESSION.lock was already present at the root when the session began, so the session did not take it and does not release it.
