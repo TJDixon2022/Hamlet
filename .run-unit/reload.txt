@@ -1,5 +1,5 @@
 ﻿RELOAD - PHASE_CONTROL.md section 3
-measured 2026-09-28T10:27:25-04:00  root C:\Source\HamLet
+measured 2026-09-28T11:46:28-04:00  root C:\Source\HamLet
 Every line below was read from the tree at that moment. Nothing is remembered.
 
 ==============================================================
@@ -19,7 +19,7 @@ Every line below was read from the tree at that moment. Nothing is remembered.
 ==============================================================
 
   branch : main
-  HEAD   : 1b738a76
+  HEAD   : 73622034
   uncommitted at the root : 0
 
 ==============================================================
@@ -34,7 +34,7 @@ Every line below was read from the tree at that moment. Nothing is remembered.
 ==============================================================
 
   --- PHASE_PLAN.md ---
-  467 lines, 36746 bytes
+  477 lines, 37593 bytes
   PHASE: Hamlet meets the CW requirements
   PHASE_SET: 2026-09-25
   DESCRIPTION: CW_REQUIREMENTS.md and CW_SPEC.md at the repository root are the specification from here on. Sixty-eight requirements, sixty-five of them must-tier, and section T shows fourteen groups with no test at all. This phase traces what exists, builds the metrics the requirements are written in - invented characters, sure-character error, coverage, word-boundary error, acquisition time - and then meets the requirements group by group, highest tier first. Every unit recenters on those two documents. Judged by requirement ids and, at the end, by Tim at the radio.
@@ -206,6 +206,13 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   controls with something that looks like #2."* The trace, and bars along the bottom where the
   run detector calls a mark. No floor line, no threshold line, no light, no pitch strip. The two
   verdict buttons and the row stay.
+  
+  **R93 - Tim, 2026-09-28: the tolerance follows the signal.** Unit 477 fixed the run detector's
+  flatness tolerance at 1.5 dB so noise never read as keying, and named the cost: a tone 15 dB
+  over the noise splits its bars. Four stations the owner heard, 10 to 15 dB weaker than the
+  morning's, made no bars and the meter's 17 dB swing gate refused them too. The tolerance
+  becomes 477's own wobble formula at the bar's measured contrast, floored at 1.5; the meter's
+  swing bar moves to 15, the lowest on a station he heard. *"Just do it."*
   
   ## Â§3 What is different from the phases before it
   
@@ -393,8 +400,8 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   **Entry:** nothing.
   
   **Exit:**
-  - [ ] 11.1 One indicator on the CW tab says whether Hamlet thinks it hears CW, in words as well as color, driven by the existing detector, translating nothing, with hover text saying it is a guess.
-  - [ ] 11.2 A strip on the CW tab shows the pitch range drawn 200 to 1200 Hz, the band the tracker searches shaded and numbered, every admitted bin, the mixing pitch and the meter's best pitch with its four figures on hover; it changes nothing about where the detector looks.
+  - [ ] 11.1 One indicator on the CW tab says whether Hamlet thinks it hears CW, in words as well as color, driven by the existing detector, translating nothing, with hover text saying it is a guess. - retired by unit 478 under R92; the scope shows what they showed
+  - [ ] 11.2 A strip on the CW tab shows the pitch range drawn 200 to 1200 Hz, the band the tracker searches shaded and numbered, every admitted bin, the mixing pitch and the meter's best pitch with its four figures on hover; it changes nothing about where the detector looks. - retired by unit 478 under R92; the scope shows what they showed
   - [ ] 11.3 Two buttons - I agree with you, You're an idiot - each write one telemetry row, category cw, event owner_verdict, carrying the verdict beside the light, the tracker, the meter's figures, the survey's bins and the rig state at that moment.
   - [ ] 11.4 The owner's verdict rows are read from the telemetry file and the gate that disagreed with his ear is named from them and moved, one number per unit, with the constant's remark rewritten to say what it now rests on; no recording is read.
   - [ ] 11.5 The app carry-forward line is green at exit, no recording was read, and the report says so.
@@ -478,6 +485,9 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   
   ## Â§8 Revision record
   
+  - **2026-09-28, night.** R93: the flatness tolerance follows the contrast; ConfidentSwingDb 17
+    to 15; 12.1 to 12.3 restored by unit 479 after the 478 plan delivery erased them.
+  
   - **2026-09-28, evening.** R92: the scope drawn as the trace and the bars; the light and the
     strip retired; 12.2 rewritten in place.
   
@@ -504,12 +514,12 @@ Every line below was read from the tree at that moment. Nothing is remembered.
     metrics after six units were rejected on counts that no requirement states.
 
   --- PHASE_STATUS.md ---
-  17 lines, 3048 bytes
+  17 lines, 3068 bytes
   PHASE: Hamlet meets the CW requirements
   PHASE_SET: 2026-09-25
   DESCRIPTION: CW_REQUIREMENTS.md and CW_SPEC.md at the repository root are the specification from here on. Sixty-eight requirements, sixty-five of them must-tier, and section T shows fourteen groups with no test at all. This phase traces what exists, builds the metrics the requirements are written in - invented characters, sure-character error, coverage, word-boundary error, acquisition time - and then meets the requirements group by group, highest tier first. Every unit recenters on those two documents. Judged by requirement ids and, at the end, by Tim at the radio.
   CURRENT_STEP: 3
-  WORK_INSTRUCTION: 477 - bars, not waves
+  WORK_INSTRUCTION: 478 - the scope is the middle picture
   STEP: 0 | done | Every CW test is traced - section T names, for each requirement, the test that proves it or the word none, and every existing CW test names the requirement it proves or is marked as proving none.
   STEP: 1 | done | The metrics exist - MET-INVENTED, MET-CER-SURE, MET-COVERAGE and MET-WBE are computed over the corpus and reported per condition, so the requirements can be measured at all.
   STEP: 2 | done | The decoder stops printing wrong letters with confidence - MET-CER-SURE driven toward HM-REQ-010's one in a hundred, from the 54 sure-but-wrong characters unit 439 measured.
@@ -521,10 +531,10 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   STEP: 8 | not started | The record and the tests are put right - last, not first: the decision log, the traceability table, the 43 tests that measure something other than what their requirement states, and the 63 requirements with no test.
   STEP: 9 | partial | Two decoders read the same audio - section M: fldigi's CW modem ported faithfully as the second decoder, both scored on every recording before either votes, both confidences calibrated against the keys, and the arbitration that emits one transcript, never worse than the better decoder alone.
   STEP: 11 | not started | The owner's ear teaches the detector where the entry is - a light saying whether Hamlet thinks it hears CW, a strip showing the whole pitch range and where it looks, two buttons that write his verdict beside the detector's state; no decode, no corpus.
-  STEP: 12 | partial | The oscilloscope - a keyed signal is found as the audio envelope over a threshold above the tracked noise floor, at any pitch the filter passes, its frequency read from the spectrum after; shown on the CW tab first, then driving the decoder.
+  STEP: 12 | not started | The oscilloscope - a keyed signal is found as the audio envelope over a threshold above the tracked noise floor, at any pitch the filter passes, its frequency read from the spectrum after; shown on the CW tab first, then driving the decoder.
 
   --- PHASE_OUTCOME.md ---
-  1142 lines, 254212 bytes
+  1173 lines, 257776 bytes
   PHASE: Hamlet meets the CW requirements
   PHASE_SET: 2026-09-25
   DESCRIPTION: CW_REQUIREMENTS.md and CW_SPEC.md at the repository root are the specification from here on. Sixty-eight requirements, sixty-five of them must-tier, and section T shows fourteen groups with no test at all. This phase traces what exists, builds the metrics the requirements are written in - invented characters, sure-character error, coverage, word-boundary error, acquisition time - and then meets the requirements group by group, highest tier first. Every unit recenters on those two documents. Judged by requirement ids and, at the end, by Tim at the radio.
@@ -539,7 +549,7 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   STEP: 8 | not started | Tim at the radio - CW on 20 m or 40 m, text on the CW tab that reads as what was sent, and he says it read.
   STEP: 9 | partial | Two decoders read the same audio - section M: fldigi's CW modem ported faithfully as the second decoder, both scored on every recording before either votes, both confidences calibrated against the keys, and the arbitration that emits one transcript, never worse than the better decoder alone.
   STEP: 11 | not started | The owner's ear teaches the detector where the entry is - a light saying whether Hamlet thinks it hears CW, a strip showing the whole pitch range and where it looks, two buttons that write his verdict beside the detector's state; no decode, no corpus.
-  STEP: 12 | partial | The oscilloscope - a keyed signal is found as the audio envelope over a threshold above the tracked noise floor, at any pitch the filter passes, its frequency read from the spectrum after; shown on the CW tab first, then driving the decoder.
+  STEP: 12 | not started | The oscilloscope - a keyed signal is found as the audio envelope over a threshold above the tracked noise floor, at any pitch the filter passes, its frequency read from the spectrum after; shown on the CW tab first, then driving the decoder.
   
   ## UNIT 439 - STEP 0
   
@@ -1667,6 +1677,37 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   ADVANCED: no
   ATTEMPT: 12.4 | unit 1 launched 2026-09-28T13:43:22.675Z | no | executed | replace the envelope detector's floor and margin with run detection per bin across the passband - a bin is keying when it makes flat-topped bars of dit length separated by gaps - wire the tracker to take the meter's pitch and keying verdict within a hop, and replace the meter's swing gate with the bar test
   REASON: 12.4 | unit 1 launched 2026-09-28T13:43:22.675Z | the unit ran to completion and the criterion did not flip from unmet to met
+  
+  ## UNIT 478 - STEP 12
+  
+  STEP: 12
+  APPROACH: redraw the scope as the level trace with bars along the bottom where the run detector calls a mark, drop the floor and threshold lines, retire the light and the pitch strip, and keep the verdict buttons and row unchanged
+  MOVE: continue
+  WHY: PHASE_PLAN.md step 12 criterion 12.2 asks that the CW tab draw the last four seconds as an oscilloscope with marks as bars along the bottom, fed fast enough that the owner sees dits, and R92 rules that it look like the picture that convinced him - a trace and bars, nothing else
+  STATE: partial
+  DECIDED: the trace's fallback bin when nothing is found, the bar's exact drawing, and the placement of the buttons beside the scope are the author's, overrulable
+  LICENCE: PHASE_PLAN.md R88, R90, R91, R92, section 6, step 12; CLAUDE.md 0.0, 0.2 and 0.6; HM-DEC-155; FACT-006
+  ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
+  ADVANCES: step 12 criterion 2
+  RUN: session launched with SESSION.lock already present and an empty STOP at the root, both the launcher's; neither taken, released nor removed by the session.
+  
+  ## UNIT 1 - STEP 12
+  
+  STEP: 12
+  APPROACH: redraw the scope as the level trace with bars along the bottom where the run detector calls a mark, drop the floor and threshold lines, retire the light and the pitch strip, and keep the verdict buttons and row unchanged
+  HIT: section 4 asked nothing inside the two stops - author's, overrulable, the loop continued - The five items cover how the trace is drawn, deleting emptied files, the wording of tips and the verdict row field, ticking a plan line and the launcher edits to the phase files, and none of them touches keying or transmit or changes a fact stated to the operator about the radio, a contact or a send.
+  MOVE: continue
+  WHY: PHASE_PLAN.md step 12 criterion 12.2 asks that the CW tab draw the last four seconds as an oscilloscope with marks as bars along the bottom, fed fast enough that the owner sees dits, and R92 rules that it look like the picture that convinced him - a trace and bars, nothing else
+  DECIDED: the trace's fallback bin when nothing is found, the bar's exact drawing, and the placement of the buttons beside the scope are the author's, overrulable
+  LICENCE: PHASE_PLAN.md R88, R90, R91, R92, section 6, step 12; CLAUDE.md 0.0, 0.2 and 0.6; HM-DEC-155; FACT-006
+  COST: 4.577319599999999
+  ACCOMPLISHED: the owner watches the detector see what he hears, in the one picture he said he understood
+  FATE: executed
+  STATE_AFTER: not started
+  STATE_WHY: the checkboxes say not started and the judge said in progress - the checkboxes win. The judge-s reason: The unit rebuilt the scope as R92 asks, a trace and bars with tone and mixing words proved on synthetic audio, but 12.2 as the step states it still names floor, threshold and shaded passband edges, the owner has not yet judged it by ear, the report shows no evidence for 12.1 or 12.3 as criteria, 12.4 has not been started, 12.5 shows 277 of 278 with the failure counted neither way rather than a green line, and no criterion is ticked.
+  ADVANCED: no
+  ATTEMPT: 12.2 | unit 1 launched 2026-09-28T14:27:38.895Z | no | executed | redraw the scope as the level trace with bars along the bottom where the run detector calls a mark, drop the floor and threshold lines, retire the light and the pitch strip, and keep the verdict buttons and row unchanged
+  REASON: 12.2 | unit 1 launched 2026-09-28T14:27:38.895Z | the unit ran to completion and the criterion did not flip from unmet to met
 
   --- CLAUDE.md ---
   1408 lines, 214833 bytes
@@ -1689,17 +1730,17 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   to run every unit. Run TEST_CMD yourself if the number matters.
 
   --- PROJECT_STATUS.md ---
-  19 lines, 890 bytes
+  19 lines, 874 bytes
   PROTOCOL: 2
   PROJECT: Hamlet
   STATE: COMPLETED
-  TASK: 4 of 4
-  WORK_INSTRUCTION: 477 - bars, not waves
+  TASK: 3 of 3
+  WORK_INSTRUCTION: 478 - the scope is the middle picture
   BALL: tim
   NEXT_PASTE: output.md -> Claude Web
   RULES_AT: HM-DEC-186 (2026-09-28)
-  UPDATED: 2026-09-28T10:21:57-04:00
-  NOTE: Unit 477 done: the scope finds keying by bars (flat, dropped, flat again) with no floor or margin; the tracker takes the meter's pitch and keying flag on its next hop; task 3 dropped, meter still gates on 17 dB; 476's 15 dB test left red (51/208); no recording read; launcher's STOP and SESSION.lock left in place
+  UPDATED: 2026-09-28T10:50:52-04:00
+  NOTE: Unit 478 done: the scope is a level trace with bars under the marks and tone/mixing words, no floor or threshold; light and strip off the CW tab, buttons beside the scope, row keys unchanged; three retired files emptied because git rm was refused - owner deletes; no recording read
   
   ---
   

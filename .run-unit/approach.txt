@@ -1,1 +1,1 @@
-redraw the scope as the level trace with bars along the bottom where the run detector calls a mark, drop the floor and threshold lines, retire the light and the pitch strip, and keep the verdict buttons and row unchanged
+make the run detector's flatness tolerance the wobble a tone at the bar's measured contrast has, floored at 1.5 dB, so weak stations make unbroken bars; move the meter's swing bar from 17 to 15, the lowest swing on a station the owner heard; restore the three ticks 477 earned

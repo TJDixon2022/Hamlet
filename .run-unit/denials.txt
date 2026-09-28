@@ -1,8 +1,7 @@
-﻿   Bash  {"command":"pwd -W; for f in SHACK_FACTS.md src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs CW_REQUIREMENTS.md CoreHMI.sln MURC.sln; do test -e \"$f\" \u0026\u0026 echo \"exists $f\" || echo \"missing $f\"; done; cat PROJECT_STATUS.md;  ...(truncated)
-   Bash  {"command":"pwd -W \u0026\u0026 ls SHACK_FACTS.md src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs CW_REQUIREMENTS.md CoreHMI.sln MURC.sln","description":"Run project gate file checks"}
-   Bash  {"command":"date -Iseconds \u0026\u0026 ls tools/arbiter/ \u0026\u0026 cat .run-unit/why.txt .run-unit/approach.txt .run-unit/watched.pid 2\u003e/dev/null | head -40","description":"Check clock, arbiter tools, launcher state"}
-   Bash  {"command":"date -Iseconds","description":"Read the clock"}
-   Bash  {"command":"cd /c/Source/HamLet \u0026\u0026 tail -20 PHASE_OUTCOME.md \u0026\u0026 grep -n \"CURRENT_STEP\\|WORK_INSTRUCTION\" PHASE_STATUS.md docs/phase-requirements/PHASE_STATUS.md \u0026\u0026 git diff --stat","description":"Inspect out ...(truncated)
-   Bash  {"command":"git -C /c/Source/HamLet diff -- PHASE_OUTCOME.md PHASE_STATUS.md","description":"Show pre-existing uncommitted phase file changes"}
-   Bash  {"command":"sed -n \u00271,64p\u0027 \"/c/Source/HamLet/src/Hamlet.App/ViewModels/CwHearingViewModel.cs\" \u003e /c/Source/HamLet/.run-unit/unit478-hearing-head.tmp","description":"Save file head (not needed further)"}
-   Bash  {"command":"git -C /c/Source/HamLet rm -q src/Hamlet.App/Controls/CwPitchStripControl.cs tests/Hamlet.App.Tests/ViewModels/TheLightSaysWhatHamletThinksItHearsTests.cs tests/Hamlet.App.Tests/ViewModels/TheStripShowsWhereTheDetectorLooksTests ...(truncated)
+﻿   Bash  {"command":"for f in SHACK_FACTS.md src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs CW_REQUIREMENTS.md CoreHMI.sln MURC.sln; do if [ -e \"$f\" ]; then echo \"EXISTS $f\"; else echo \"MISSING $f\"; fi; done; pwd -W; cat SESSION.lock; ech ...(truncated)
+   Bash  {"command":"ls -d SHACK_FACTS.md src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs CW_REQUIREMENTS.md CoreHMI.sln MURC.sln; pwd -W; cat SESSION.lock; echo ---; cat STOP; echo ---; cat PROJECT_STATUS.md; ls .run-unit | head -60","descripti ...(truncated)
+   Bash  {"command":"for n in record0 cf build commit status; do sed -e \u0027s/unit478/unit479/g\u0027 -e \u0027s/UNIT 478/UNIT 479/g\u0027 -e \u0027s/1\\.13\\.164/1.13.165/g\u0027 -e \u0027s/1\\.13\\.163/1.13.164/g\u0027 -e \u0027s/478 - the scope ...(truncated)
+   Bash  {"command":"cp PHASE_PLAN.md docs/phase-requirements/PHASE_PLAN.md \u0026\u0026 git diff --stat \u0026\u0026 cat docs/carry-forward-tests.txt | head -20","description":"Copy plan and review diff"}
+   Bash  {"command":"sh .run-unit/unit479-exit-print.sh 2\u003e\u00261 | tee .run-unit/unit479-exit-print.txt | cut -c1-150","description":"Print exit diffs"}
+   Bash  {"command":"sh .run-unit/unit479-exit-print.sh \u003e .run-unit/unit479-exit-print.txt 2\u003e\u00261 \u0026\u0026 cut -c1-150 .run-unit/unit479-exit-print.txt","description":"Print exit diffs to file and show"}
+   Bash  {"command":"git check-ignore -v output.md","description":"Check if output.md is gitignored"}

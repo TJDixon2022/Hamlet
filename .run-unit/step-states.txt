@@ -1,13 +1,13 @@
 STEPS=0 1 2 3 4 5 6 7 8 9 11 12
 OPEN=9
-POSITION=0=done,1=done,2=done,3=partial,4=partial,5=partial,6=partial,7=partial,8=not started,9=partial,11=not started,12=not started
+POSITION=0=done,1=done,2=done,3=partial,4=partial,5=partial,6=partial,7=partial,8=not started,9=partial,11=not started,12=partial
 NOCRIT=0
 NOCRITSTEPS=
-WORK=30
+WORK=27
 OWNERN=0
 PARKEDN=0
 TARGET=3
-AUTHORABLE=3.4 3.5 4.4 4.7 5.1 5.2 5.3 5.4 5.6 6.1 6.4 6.6 7.4 8.1 8.2 8.3 8.4 8.5 8.6 9.4 11.1 11.2 11.3 11.4 11.5 12.1 12.2 12.3 12.4 12.5
+AUTHORABLE=3.4 3.5 4.4 4.7 5.1 5.2 5.3 5.4 5.6 6.1 6.4 6.6 7.4 8.1 8.2 8.3 8.4 8.5 8.6 9.4 11.1 11.2 11.3 11.4 11.5 12.4 12.5
 OWNERIDS=
 PARKEDIDS=
 STATE_0=done
@@ -109,12 +109,12 @@ OWNER_11=0
 PARKED_11=0
 AUTH_11=11.1 11.2 11.3 11.4 11.5
 TITLE_11=The owner's ear teaches the detector where the entry is - a light saying whether Hamlet thinks it hears CW, a strip showing the whole pitch range and where it looks, two buttons that write his verdict beside the detector's state; no decode, no corpus.
-STATE_12=not started
+STATE_12=partial
 SOURCE_12=checkboxes
-MET_12=0
+MET_12=3
 TOTAL_12=5
-WORK_12=5
+WORK_12=2
 OWNER_12=0
 PARKED_12=0
-AUTH_12=12.1 12.2 12.3 12.4 12.5
+AUTH_12=12.4 12.5
 TITLE_12=The oscilloscope - a keyed signal is found as the audio envelope over a threshold above the tracked noise floor, at any pitch the filter passes, its frequency read from the spectrum after; shown on the CW tab first, then driving the decoder.

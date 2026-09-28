@@ -6,9 +6,9 @@
 **Entry:** nothing.
 
 **Exit:**
-- [ ] 12.1 `CwEnvelopeDetector` computes per hop the passband envelope, a tracked noise floor, a threshold of floor plus a margin from the owner's verdict rows, mark or gap, the run length, and while a mark is up the pitch and its contrast read from the whole passband; it changes nothing about the decoder; proved on synthetic hops in a test, no recording.
-- [ ] 12.2 The CW tab draws the last four seconds as an oscilloscope - trace, floor, threshold, marks as bars along the bottom, the tone line as text, the passband edges shaded - fed fast enough that the owner sees dits, with words on every mark.
-- [ ] 12.3 The owner's verdict row carries the detector's state at the press, including the count of marks in the last four seconds, with its key set asserted closed.
+- [x] 12.1 `CwEnvelopeDetector` computes per hop the passband envelope, a tracked noise floor, a threshold of floor plus a margin from the owner's verdict rows, mark or gap, the run length, and while a mark is up the pitch and its contrast read from the whole passband; it changes nothing about the decoder; proved on synthetic hops in a test, no recording. - restored by unit 479 from unit 477's report: ABarIsALevelThatHoldsTests 3/3, AMarkIsTheEnvelopeOverAThresholdTests 5/6 (AToneFifteenDecibelsOverTheNoiseStillKeys red, the 1.5 dB tolerance's named cost), rewritten as bars under R91
+- [x] 12.2 The CW tab draws the last four seconds as an oscilloscope - trace, floor, threshold, marks as bars along the bottom, the tone line as text, the passband edges shaded - fed fast enough that the owner sees dits, with words on every mark. - restored by unit 479 from unit 478's report: TheScopeIsTheMiddlePictureTests 4/4, TheScopeShowsTheMarksTests 5/5, redrawn as the trace and the bars under R92
+- [x] 12.3 The owner's verdict row carries the detector's state at the press, including the count of marks in the last four seconds, with its key set asserted closed. - restored by unit 479 from unit 478's report: TheVerdictCarriesTheScopeTests 3/3, TheOwnersVerdictIsARowTests 7/7
 - [ ] 12.4 After the owner has judged the scope by ear and said so, the detector drives the decoder: nothing is decoded until a mark is found, the decoder is mixed at the detector's pitch and started with the detector's dit, and it stops when the tone stops; judged by the owner's ear and his verdict rows, not by a recording.
 - [ ] 12.5 The app carry-forward line is green at exit, no recording was read, and the report says so.
 
@@ -75,6 +75,9 @@ scope; the seven rulings of section R, of which the first is answered by R72; th
 sentence outside an owned block.
 
 ## Â§8 Revision record
+
+- **2026-09-28, night.** R93: the flatness tolerance follows the contrast; ConfidentSwingDb 17
+  to 15; 12.1 to 12.3 restored by unit 479 after the 478 plan delivery erased them.
 
 - **2026-09-28, evening.** R92: the scope drawn as the trace and the bars; the light and the
   strip retired; 12.2 rewritten in place.

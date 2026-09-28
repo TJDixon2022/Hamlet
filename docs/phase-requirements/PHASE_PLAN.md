@@ -177,6 +177,20 @@ morning's, made no bars and the meter's 17 dB swing gate refused them too. The t
 becomes 477's own wobble formula at the bar's measured contrast, floored at 1.5; the meter's
 swing bar moves to 15, the lowest on a station he heard. *"Just do it."*
 
+**R94 - Tim, 2026-09-28: use the radio's waterfall.** *"You have a waterfall. Why aren't we
+using that? You can read any settings from the radio."* Every capture sheet since the restore
+phase has read `ScopeOn on, ScopeOutput off`, and the tree already parses the IC-7300's scope
+stream over CI-V 0x27. In CW mode scope output is a receive condition Hamlet sets, and the
+detector watches the bin the radio's scope points at, offset from the dial by the CW pitch;
+the sweep is the fallback when the scope is quiet.
+
+**R95 - Tim, 2026-09-28: bars only, letters over them.** *"I don't care when it's noise. We
+don't need to show that. When we start to detect bars, I want to graph those. As we start to
+find letters, mark them in that graph and put the letter over top. This is a passive training
+tool for learning how to read CW."* The CW tab's scope draws nothing on silence, bars sized as
+they are when keying is found, and each settled character above the bars that made it - only
+where the decoder settled it, never invented.
+
 ## §3 What is different from the phases before it
 
 1. **A criterion is a requirement id.** A report states the requirement, the condition, the
@@ -378,9 +392,9 @@ because every later change to ours is better aimed with the comparison in hand.
 **Entry:** nothing.
 
 **Exit:**
-- [x] 12.1 `CwEnvelopeDetector` computes per hop the passband envelope, a tracked noise floor, a threshold of floor plus a margin from the owner's verdict rows, mark or gap, the run length, and while a mark is up the pitch and its contrast read from the whole passband; it changes nothing about the decoder; proved on synthetic hops in a test, no recording. - restored by unit 479 from unit 477's report: ABarIsALevelThatHoldsTests 3/3, AMarkIsTheEnvelopeOverAThresholdTests 5/6 (AToneFifteenDecibelsOverTheNoiseStillKeys red, the 1.5 dB tolerance's named cost), rewritten as bars under R91
-- [x] 12.2 The CW tab draws the last four seconds as an oscilloscope - trace, floor, threshold, marks as bars along the bottom, the tone line as text, the passband edges shaded - fed fast enough that the owner sees dits, with words on every mark. - restored by unit 479 from unit 478's report: TheScopeIsTheMiddlePictureTests 4/4, TheScopeShowsTheMarksTests 5/5, redrawn as the trace and the bars under R92
-- [x] 12.3 The owner's verdict row carries the detector's state at the press, including the count of marks in the last four seconds, with its key set asserted closed. - restored by unit 479 from unit 478's report: TheVerdictCarriesTheScopeTests 3/3, TheOwnersVerdictIsARowTests 7/7
+- [ ] 12.1 `CwEnvelopeDetector` computes per hop the passband envelope, a tracked noise floor, a threshold of floor plus a margin from the owner's verdict rows, mark or gap, the run length, and while a mark is up the pitch and its contrast read from the whole passband; it changes nothing about the decoder; proved on synthetic hops in a test, no recording.
+- [ ] 12.2 The CW tab draws the last four seconds as an oscilloscope - trace, floor, threshold, marks as bars along the bottom, the tone line as text, the passband edges shaded - fed fast enough that the owner sees dits, with words on every mark.
+- [ ] 12.3 The owner's verdict row carries the detector's state at the press, including the count of marks in the last four seconds, with its key set asserted closed.
 - [ ] 12.4 After the owner has judged the scope by ear and said so, the detector drives the decoder: nothing is decoded until a mark is found, the decoder is mixed at the detector's pitch and started with the detector's dit, and it stops when the tone stops; judged by the owner's ear and his verdict rows, not by a recording.
 - [ ] 12.5 The app carry-forward line is green at exit, no recording was read, and the report says so.
 
@@ -447,6 +461,9 @@ scope; the seven rulings of section R, of which the first is answered by R72; th
 sentence outside an owned block.
 
 ## §8 Revision record
+
+- **2026-09-28, late.** R94 the radio's scope points the detector; R95 bars with letters over
+  them; 12.2 rewritten in place, 12.4 authored again on the pointed bin.
 
 - **2026-09-28, night.** R93: the flatness tolerance follows the contrast; ConfidentSwingDb 17
   to 15; 12.1 to 12.3 restored by unit 479 after the 478 plan delivery erased them.

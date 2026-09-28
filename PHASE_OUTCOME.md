@@ -12,7 +12,7 @@ STEP: 7 | partial | The conditions can be generated - sections E, F and G: chann
 STEP: 8 | not started | Tim at the radio - CW on 20 m or 40 m, text on the CW tab that reads as what was sent, and he says it read.
 STEP: 9 | partial | Two decoders read the same audio - section M: fldigi's CW modem ported faithfully as the second decoder, both scored on every recording before either votes, both confidences calibrated against the keys, and the arbitration that emits one transcript, never worse than the better decoder alone.
 STEP: 11 | not started | The owner's ear teaches the detector where the entry is - a light saying whether Hamlet thinks it hears CW, a strip showing the whole pitch range and where it looks, two buttons that write his verdict beside the detector's state; no decode, no corpus.
-STEP: 12 | not started | The oscilloscope - a keyed signal is found as the audio envelope over a threshold above the tracked noise floor, at any pitch the filter passes, its frequency read from the spectrum after; shown on the CW tab first, then driving the decoder.
+STEP: 12 | partial | The oscilloscope - a keyed signal is found as the audio envelope over a threshold above the tracked noise floor, at any pitch the filter passes, its frequency read from the spectrum after; shown on the CW tab first, then driving the decoder.
 
 ## UNIT 439 - STEP 0
 
@@ -1184,3 +1184,21 @@ LICENCE: PHASE_PLAN.md R88, R91, R93, section 6, step 12; HM-DEC-187; CLAUDE.md 
 ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
 ADVANCES: step 12 criterion 4
 RUN: session launched with SESSION.lock already present and an empty STOP at the root, both the launcher's; neither taken, released nor removed by the session.
+
+## UNIT 1 - STEP 12
+
+STEP: 12
+APPROACH: make the run detector's flatness tolerance the wobble a tone at the bar's measured contrast has, floored at 1.5 dB, so weak stations make unbroken bars; move the meter's swing bar from 17 to 15, the lowest swing on a station the owner heard; restore the three ticks 477 earned
+HIT: section 4 asked nothing inside the two stops - author's, overrulable, the loop continued - All six questions are about detection thresholds, receive side tolerance mechanisms, plan criterion text and which status file copy is the real one, so none touches transmit keying or a promise to the operator and each is the unit's own call.
+MOVE: continue
+WHY: PHASE_PLAN.md step 12 criterion 12.4 asks that the detector drive the decoder judged by the owner's ear and his verdict rows, and four rows show the bars and the meter both blind on stations 10 to 15 dB over the noise, inside the range unit 477's own remark says its fixed tolerance breaks on
+DECIDED: how contrast is estimated before a station's first gap is measured, and the per-type timeouts, are the author's, overrulable
+LICENCE: PHASE_PLAN.md R88, R91, R93, section 6, step 12; HM-DEC-187; CLAUDE.md 0.0 and 0.2; HM-DEC-155; FACT-006
+COST: 7.101012599999999
+ACCOMPLISHED: the stations the owner hears at ordinary loudness make bars, and the meter finds them, without noise sneaking in
+FATE: executed
+STATE_AFTER: partial
+STATE_WHY: Three of the five criteria are ticked, since 12.1 to 12.3 were restored from the counts in the reports of units 477 and 478, but 12.4 is not met. The 15 dB tone still misses 40 of 208 key down hops and the 10 dB tone makes no bars, and the owner has not judged the scope by ear. 12.5 is also not ticked, because the app carry forward line ended at 277 of 278 with one dispatcher loop failure. The report also says the text of 12.1 and 12.2 no longer describes the tree it was ticked against.
+ADVANCED: no
+ATTEMPT: 12.4 | unit 1 launched 2026-09-28T15:46:42.470Z | no | executed | make the run detector's flatness tolerance the wobble a tone at the bar's measured contrast has, floored at 1.5 dB, so weak stations make unbroken bars; move the meter's swing bar from 17 to 15, the lowest swing on a station the owner heard; restore the three ticks 477 earned
+REASON: 12.4 | unit 1 launched 2026-09-28T15:46:42.470Z | the unit ran to completion and the criterion did not flip from unmet to met

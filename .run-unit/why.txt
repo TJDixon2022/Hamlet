@@ -1,1 +1,1 @@
-PHASE_PLAN.md step 12 criterion 12.2 asks that the CW tab draw the last four seconds as an oscilloscope with marks as bars along the bottom, fed fast enough that the owner sees dits, and R92 rules that it look like the picture that convinced him - a trace and bars, nothing else
+PHASE_PLAN.md step 12 criterion 12.4 asks that the detector drive the decoder judged by the owner's ear and his verdict rows, and four rows show the bars and the meter both blind on stations 10 to 15 dB over the noise, inside the range unit 477's own remark says its fixed tolerance breaks on
