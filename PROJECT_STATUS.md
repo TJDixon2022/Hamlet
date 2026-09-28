@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: EXECUTING
+STATE: COMPLETED
 TASK: 3 of 3
 WORK_INSTRUCTION: 482 - the owner's press lands in the file
-BALL: code
-NEXT_PASTE: none
+BALL: tim
+NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-188 (2026-09-28)
-UPDATED: 2026-09-28T15:46:26-04:00
-NOTE: Test green at HEAD (1 row per press, 2 in the file), watched red on a dropped trackerHz; exit round starting: full no-incremental build
+UPDATED: 2026-09-28T15:51:43-04:00
+NOTE: Unit 482 done: each verdict button press writes exactly one owner_verdict row to the telemetry file (green at HEAD, no fix, watched red); 11.3 ticked; no recording read
 
 ---
 
