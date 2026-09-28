@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 2 of 3
+TASK: 3 of 3
 WORK_INSTRUCTION: 481 - the window holds still when the radio moves the dial
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-188 (2026-09-28)
-UPDATED: 2026-09-28T15:25:19-04:00
-NOTE: Task 1 trace committed (paths meet at ApplyRigFrequency; 0 panels, 0 sentences differ at HEAD); task 2 starting: the new test green at HEAD, the two further pairs driven
+UPDATED: 2026-09-28T15:26:23-04:00
+NOTE: Task 2 committed (green at HEAD, no fix); task 3 starting: full no-incremental build with warnings as errors
 
 ---
 
