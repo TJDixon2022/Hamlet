@@ -1,0 +1,3 @@
+unit474 task 4: exit round - build 0 errors, app carry-forward line 277 then 272 of 278 with every lost type passing alone (TheStopIsAlwaysOnScreenTests 5/5, TheCarrierHoldsTheButtonsTests 8/8, TheFavoritesAreChipsTests 4/4, ThePsk31ConversationCardTests 8/8, all lost in the line by earlier units before this one), touched types 48/48 across nine; transmit files print nothing against 7e209cb4, src/Hamlet.RadioEngine/Cw prints nothing against entry, no seam exposed; no recording read; output.md written; an owner's STOP file at the root was left in place (11.1)
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
