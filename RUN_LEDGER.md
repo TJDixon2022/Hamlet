@@ -402,3 +402,4 @@ the owner reads instead of watching.
 | 1 | 2026-09-28T13:23 | 2026-09-28T14:09 | complete | 13.281570199999999 | ran unattended, 254 turns, 15 denied call(s) worked around, report valid |
 | 1 | 2026-09-28T14:10 | 2026-09-28T14:10 | note | none - not a run | no advance - step 12 criterion 4 was unmet and is unmet |
 | phase | 2026-09-28T14:10 | 2026-09-28T14:10 | failure | 0 | STOPPED, AND A STOP IS FAILURE - halted: a unit report claims a ruling that reverses an earlier arbiter ruling - HM-DEC-062 is superseded for the Morse family only. |
+| phase | 2026-09-28T14:41 | 2026-09-28T14:41 | ending | 0 | ENDED - the owner stopped the run. ended: the owner stopped the run - after iteration 0 - his reason: no reason written - the file was empty - the STOP file was deleted |

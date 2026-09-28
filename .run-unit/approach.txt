@@ -1,1 +1,1 @@
-turn on the IC-7300's scope output as a CW receive condition and read its 0x27 waveform through RigSpectrumSource, point the envelope detector and the tracker at the peak the radio reports within the filter, and redraw the CW tab's scope as bars only with each settled character written above the bars that made it
+find why the live CW tab hands the scope an empty frame and fix it so the trace and bars draw from live audio, remove the large T T rendering, and draw each settled character over the span of bars it rests on
