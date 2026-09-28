@@ -205,7 +205,7 @@ between real words.
 - [x] 3.3 MET-INVENTED is reported before and after every kept change, per condition, with the key kind beside each number, and the running figure is in `metrics.md`.
 - [ ] 3.4 The 7.052 traffic net's `EETTTEETTTTTTTTETTETETKTETEE` between `GRAY KC` and `LIVER VIA` is printed before and after, so the owner reads the difference rather than the number.
 - [ ] 3.5 After three consecutive units with no kept change the trace goes to `PARKED.md` and the step closes partial.
-- [ ] 3.6 The three floor tests and both carry-forward lines are green at the exit of every commit of the step.
+- [x] 3.6 The three floor tests and both carry-forward lines are green at the exit of every commit of the step.
 
 **Depends on:** steps 0 and 1. Independent of step 2: when one blocks the arbiter works the other.
 
