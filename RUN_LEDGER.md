@@ -378,3 +378,6 @@ the owner reads instead of watching.
 | 9 | 2026-09-27T14:10 | 2026-09-27T16:11 | complete | 7.978151600000003 | ran unattended, 203 turns, 10 denied call(s) worked around, report valid |
 | 9 | 2026-09-27T16:12 | 2026-09-27T16:12 | note | none - not a run | blocker-clear - cleared a blocker: step 2 criterion 4 |
 | 10 | 2026-09-27T16:16 | 2026-09-27T18:12 | complete | 11.6366396 | ran unattended, 219 turns, 10 denied call(s) worked around, report valid |
+| 11 | 2026-09-27T18:18 | 2026-09-27T20:10 | complete | 8.148045199999999 | ran unattended, 167 turns, 14 denied call(s) worked around, report valid |
+| 11 | 2026-09-27T20:12 | 2026-09-27T20:12 | note | none - not a run | no advance - step 3 criterion 6 flipped, and the state judge did not find it honestly met: no |
+| phase | 2026-09-27T20:12 | 2026-09-27T20:12 | ending | 95.4184 | ENDED - the owner stopped the run. ended: the owner stopped the run - after iteration 11 - his reason: no reason written - the file was empty - the STOP file was deleted |

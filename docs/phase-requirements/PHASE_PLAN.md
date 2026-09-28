@@ -11,6 +11,7 @@ STEP: 6 | The text is right - sections H and I, the character table, the prosign
 STEP: 7 | The conditions can be generated - sections E, F and G: channel, sender and interference profiles, which nothing in the tree produces today.
 STEP: 8 | The record and the tests are put right - last, not first: the decision log, the traceability table, the 43 tests that measure something other than what their requirement states, and the 63 requirements with no test.
 STEP: 9 | Two decoders read the same audio - section M: fldigi's CW modem ported faithfully as the second decoder, both scored on every recording before either votes, both confidences calibrated against the keys, and the arbitration that emits one transcript, never worse than the better decoder alone.
+STEP: 11 | The owner's ear teaches the detector where the entry is - a light saying whether Hamlet thinks it hears CW, a strip showing the whole pitch range and where it looks, two buttons that write his verdict beside the detector's state; no decode, no corpus.
 
 ---
 
@@ -347,6 +348,7 @@ and no unit is authored against it while any criterion of steps 2 to 7 or 9 is o
   is switched off on any condition where it loses to a single decoder (HM-REQ-128).
 - **No unit is authored for the record or for the tests** (R80) while a criterion of steps 2 to
   7 is open and authorable. A unit records a ruling only when its own instruction carries one.
+- **The corpus is banned** (R88): no unit reads, runs, or keeps a change on a recording; the floor tests are not run. Steps 2 to 10 are closed and not authorable.
 - **Anything would change what keys or transmits.** `MOVE: stop`.
 - **A package is needed.** `MOVE: stop`.
 - **A CW test costing more than 300 s** never goes on a carry-forward line.

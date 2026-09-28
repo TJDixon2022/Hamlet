@@ -1,29 +1,28 @@
 ﻿
-Nothing blocks. Each item is a plain reading, not a ruling request.
-
-1. **The R86 mismatch.** R86 bars steps 2 to 8 until 9.4 has a kept change. 9.4 has no route
-   left, since (A) to (E) and (W) were all refused. This unit worked step 2 as the launcher named
-   it, as units 468 to 470 worked outside step 9.
-2. **DECIDED (3) and (4) are the arbiter's, and overrulable.** "Re-read" was read as: the window
-   mixed down again from the raw audio at the proved pitch, decoded at the proved speed with the
-   read's gaps, and settled in place of the ordinary read over what arrived while acquiring and is
-   unsettled. "The proved values" were read as `Tracker.ToneHz` and `Reading.WordsPerMinute` at the
-   read where both states are proved. "First proved" was read per letter (section 1).
-3. **`PARKED.md`'s header against 449 DECIDED (3).** The header says the file is *"Written by
-   run-phase.bat, never by a session, and append-only"*. This session appended one line, as 449
-   DECIDED (3) and task 3 direct. The line is in the file's form, but its unit field is the
-   runner's iteration number, `unit 10`, and its launch time reads `not recorded`.
-4. **Ticking 2.4 leaves every line of step 2 ticked**, so the launcher reads step 2 as closed while
-   HM-REQ-010 is not met: real 33 of 436 against one in a hundred, synthetic 14 of 173. That is
-   2.4's own "closes partial" set against the owner's checkbox rule of 2026-09-23. It is a
-   finding.
-5. **Why the re-read cannot reach the wrong letters, as the tree stands.** The speed half is met
-   already: the read that proves the speed has decoded the unsettled letters at that speed. Only
-   the mix-down pitch can differ, and on this corpus that changes almost nothing. The wrong letters
-   settle before a proof arrives (the window is 1.0 s behind the audio), or sit in the 7 real
-   recordings that never reach both proved. A longer delay or a hold on settling would reach 5 of
-   the 29. Both are V-14's new constants and are not tried.
-6. **A side result:** synthetic TX-ITU at 5 dB fell to 0 of 62 under the refused change, below
-   HM-REQ-010's line, while character gap 5 at 5 dB rose. Recorded only.
-7. **2.4's state after this unit: ticked.** Step 2's count of consecutive units with no kept
-   change is 3 of 3 (460, 470, 471), and step 2 is closed partial.
+1. **R86 mismatch.** R86 (`PHASE_PLAN.md` section 6) reads that steps 2 to 8 are not authorable
+   until 9.4 has a kept change. 9.4 has no route left (ARBITER.md section 4, (A) to (E) and (W)
+   refused). This unit worked step 3 as the launcher named it, as units 468 to 471 did. This is a
+   plain reading, not a claim that R86 is overruled.
+2. **3.4.** The 7.052 traffic-net recording holding `EETTTEETTTTTTTTETTETETKTETEE` is not in the
+   tree. No unit can meet 3.4 until that recording and its `cases-*.txt` row are added.
+3. **DECIDED (4), the reading of where a letter sits, is the arbiter's and overrulable.**
+   - **Where the tree forced a reading (R85):** a real key is text without timing, so on the real
+     set the position comes from the alignment and the Morse patterns alone.
+   - **The two readings disagree on the exact set, 12 of 14.** The alignment files most splits as an
+     added letter in a word gap or as a stand-in. So "0 real splits" is the alignment's reading and
+     likely understates them. `032050`'s `FOTAND` and `004234`'s `HANTT`, dimmed by this change, look
+     like splits.
+4. **3.5's count after this unit: 0 of 3.** Unit 472 kept a change. It was 0 after unit 445, and no
+   unit worked step 3 between them.
+5. **An owner's `STOP` file** appeared at the root at 19:30, empty, after the task 2 commit. I read
+   it as `run-phase.bat` does: finish the running unit, then the run ends. I finished this unit,
+   started nothing after it, and left the file in place for the runner.
+6. **The edge is narrow**, 0.62 against the lowest right letter at 0.632, as unit 445's was.
+   Beside the 15 scored letters it dimmed, all wrong, it dimmed 23 letters outside the keyed
+   stretches, whose rightness no key states (section 2).
+7. **A second form, one line:** the group's sixth letter (12.005 s `T`, 0.658) and the real
+   stand-ins under 0.632 suggest the same quantity with an edge from each sender's own measured
+   gaps. It was not tried.
+8. **`TheSpeedFollowsTheSendersMarkPairsTests`** moved with the change, from 28 of 31 to 26 of 29
+   sure wrong or added. It is red as before and on neither carry-forward line.
+9. **Mismatch:** `.run-unit\watched.rc`, which the instruction names, did not exist.
