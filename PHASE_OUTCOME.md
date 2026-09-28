@@ -1029,3 +1029,20 @@ LICENCE: PHASE_PLAN.md R85, R88, section 6, step 11; HM-DEC-184; CLAUDE.md 0.0, 
 ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
 ADVANCES: step 11 criterion 1
 RUN: session launched with SESSION.lock already present; the lock is the launcher's and was not taken or released by the session.
+
+## UNIT 1 - STEP 11
+
+STEP: 11
+APPROACH: put a light on the CW tab that says whether Hamlet thinks it hears CW, a strip showing the whole pitch range and where the detector is looking, and two buttons whose press writes the owner's verdict beside the detector's state to telemetry - reading no recording and changing no detector
+HIT: not recorded - REPORT REFUSED by validate-output.bat: not judged, fate not recorded, the loop continued
+MOVE: continue
+WHY: PHASE_PLAN.md step 11 criterion 11.1 asks for one indicator on the CW tab that says whether Hamlet thinks it hears CW, in words as well as color, driven by the existing detector and translating nothing
+DECIDED: the exact wording of the light and the hover texts, the strip's drawn range beyond what the detector sweeps, and which seams are exposed for reading are the author's, overrulable
+LICENCE: PHASE_PLAN.md R85, R88, section 6, step 11; HM-DEC-184; CLAUDE.md 0.0, 0.2 and 0.6; HM-DEC-155; FACT-006
+COST: 7.985230200000001
+ACCOMPLISHED: the owner can see what Hamlet thinks it hears and where it is looking, and can tell it when it is wrong, so the next unit is aimed by his ear and not by a recording
+FATE: not recorded
+STATE_AFTER: not started
+STATE_WHY: the report was refused by validate-output.bat and was not judged - the state is the plan-s own reading, or the header-s where the step has no criterion lines
+ADVANCED: not recorded
+ATTEMPT: 11.1 | unit 1 launched 2026-09-28T00:29:25.091Z | not recorded | not recorded | put a light on the CW tab that says whether Hamlet thinks it hears CW, a strip showing the whole pitch range and where the detector is looking, and two buttons whose press writes the owner's verdict beside the detector's state to telemetry - reading no recording and changing no detector

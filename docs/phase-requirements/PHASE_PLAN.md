@@ -348,7 +348,10 @@ and no unit is authored against it while any criterion of steps 2 to 7 or 9 is o
   is switched off on any condition where it loses to a single decoder (HM-REQ-128).
 - **No unit is authored for the record or for the tests** (R80) while a criterion of steps 2 to
   7 is open and authorable. A unit records a ruling only when its own instruction carries one.
-- **The corpus is banned** (R88): no unit reads, runs, or keeps a change on a recording; the floor tests are not run. Steps 2 to 10 are closed and not authorable.
+- **The corpus is banned** (R88): no unit reads, runs, or keeps a change on a recording; the
+  floor tests and the engine line are not run. Steps 2 to 10 are closed and not authorable.
+- **A report's line C names how many items section 4 raises.** The validator refuses one that
+  does not; unit 474's was refused for it.
 - **Anything would change what keys or transmits.** `MOVE: stop`.
 - **A package is needed.** `MOVE: stop`.
 - **A CW test costing more than 300 s** never goes on a carry-forward line.
