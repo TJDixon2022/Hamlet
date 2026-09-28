@@ -1,15 +1,14 @@
-# Work instruction 480 - the radio points, the bars show, the letters ride on top
+# Work instruction 480 - the letter sits over the bars that made it
 
-**One unit. Seed it and drop STOP, or run it by hand.** Three things the owner asked for on
-2026-09-28, in one build: the radio's own spectrum scope is turned on and read so it points
-the detector at the signal; the noise trace goes away and only bars are drawn; and every
-character the decoder settles is written above the bars that made it. Four tasks.
+**Hand run. One unit.** Paste the prompt at the foot into Claude Code. No loop, no STOP.
 
-**The owner's words, R94:** *"You have a waterfall. Why aren't we using that? You can read
-any settings from the radio."* And R95: *"I don't care when it's noise. We don't need to show
-that. When we start to detect bars, I want to graph those. As we start to find letters, mark
-them in that graph and put the letter over top. This is a passive training tool for learning
-how to read CW."*
+The CW tab shows a blank panel and the letters `T T` where the middle picture should be.
+This unit makes the trace and the bars draw from live audio, and sets each decoded letter
+over the bars it came from. Three tasks.
+
+**The owner's words, 2026-09-28, R94:** *"I want to see the flat oscilloscope shapes with the
+letter over top. I need a visual of dit and dash."* And: *"This is a training tool. Over time
+I would start to recognize those patterns."*
 
 ---
 
@@ -40,7 +39,7 @@ If all five hold, say "Hamlet confirmed" and continue.
 
 **R88 - the corpus is banned.** No task reads a recording, runs a floor, the engine line, a
 metric or the keyed set. Entry and exit: the app carry-forward line and the types this unit
-touches; a touched type that reads a recording is not run and is named.
+touches.
 
 **HM-DEC-155.** No suite. Named types only, one per invocation, own `timeout`. Never
 background and poll. The app line loses names to the dispatcher loop; re-run once, count
@@ -50,13 +49,13 @@ Apostrophes in quoted heredocs break; doubled backslashes collapse; `;` is refus
 refused; Python cannot run here; `-m` more than once for a multi-line commit. Scripts go in
 `.run-unit\unit480-<name>.sh`, run with `sh`.
 
-**By hand:** take `SESSION.lock` through `tools\arbiter\lock.bat take`, release it at the end,
-write nothing to `RUN_LEDGER.md`, touch nothing under `tools\arbiter\`.
+**Hand run:** take `SESSION.lock` through `tools\arbiter\lock.bat take`, release it at the
+end, write nothing to `RUN_LEDGER.md`, touch nothing under `tools\arbiter\`. **Tick nothing
+in `PHASE_PLAN.md`**; the owner's eye is the judge.
 
 **The four report headings, exactly:** `## 1. What Claude did`, `## 2. What the owner should
 expect`, `## 3. What you should see`, `## 4. What's blocking us`. `UNIT:` line without brackets.
-`ADVANCES: step 12 criterion 4`. **Line C names how many items section 4 raises.** Nothing in
-section 4 halts this unit.
+**Line C of the ordering block names how many items section 4 raises.**
 
 ---
 
@@ -64,98 +63,53 @@ section 4 halts this unit.
 
 ```
 PHASE GOAL: Hamlet meets the CW requirements.
-UNIT GOAL:  The radio says where the signal is; the detector watches there;
-            the owner sees bars with letters over them.
-ADVANCES:   step 12 criterion 4
+UNIT GOAL:  On the live CW tab, the trace and the bars draw from the audio,
+            and each letter is drawn over the bars it came from.
 ```
 
-**What the owner's rows say tonight, 17:13 to 17:15 UTC, two stations.** Seven *idiot*
-verdicts. The meter's best pitch sat at 350 to 425 Hz on both stations with scores of 0.01
-to 0.04 and medians of 3 to 6 ms - it was reading the loudest noise bin and calling it its
-best. The bars found nothing. The owner, who wears hearing aids, heard both stations plainly
-and never touches the radio except to tune. **A signal a hearing-aided ear picks out at once
-is not weak. The software was not looking where it was.**
+**What the owner sees now**, from his screenshot at 18:30 UTC on 14.0685: the scope panel is
+blank - no trace, no bars - and beneath it, drawn large, the letters `T T`, with *"no keying ·
+mixing 525 Hz"* on two lines. Unit 478 proved its drawing headless on a driven detector and
+never on the live tab. Whatever the live tab feeds `CwScopeControl`, the result is text where
+the shapes should be.
 
-**What the sidecars have said all week, and nobody read:** `ScopeOn on, ScopeOutput off`. The
-IC-7300's spectrum scope is running on its own screen and Hamlet has never asked it to send
-the data. **The tree already parses it**: `RigSpectrumSource` assembles CI-V 0x27 waveform
-frames into `SpectrumFrame`s and raises `FrameReady`; `ScopeFlow` and `ScopeReadiness` know
-whether the output is on. Its own remark says it makes no write - something else has to turn
-the output on, and in CW mode nothing does.
-
-**The radio's scope is the frequency instrument.** Calibrated by Icom, centered on the dial,
-level per bin across the span. In CW mode a peak at the dial is the station at `CwPitch`; a
-peak 300 Hz above the dial is a beat note at `CwPitch` + 300. No sweep, no tolerance, no
-guessed sample rate. The detector's job shrinks to watching the one bin the radio points at
-for bars - which is what it is good at.
-
-**And the graph.** The trace draws noise; the owner does not want to see noise. He wants the
-bars, sized as they are, and **the letter the decoder settled written above the bars that made
-it.** A word slides past with its letters riding on top. It is a training tool, and it is the
-honest debugging view: a bar with no letter is a miss, a letter with no bar is an invention,
-a wrong letter sits over the shape that should have been something else.
+**What he wants**, and the picture he approved: the level trace with flat tops where the key
+is down; a filled bar under every mark, dit short and dah long; and **above each group of bars,
+the letter the decoder made of them**, drawn when the character settles. A gap between letters
+is empty. Junk is bars with no letter, or a letter over bars that do not look like Morse - and
+both are things to press *You're an idiot* on. This is a training tool: he will learn the
+shapes.
 
 ---
 
 ## 3. Verify against the tree
 
-- `RigSpectrumSource`: how it starts, what a `SpectrumFrame` carries (bins, span, centre,
-  level scale), and `FrameReady`. `ScopeFlow.Check` and `ScopeReadiness`: what states they
-  report and what "output off" looks like to them.
-- `Ic7300Rig`: the write that sets scope output on - the CI-V sub-command under 0x27 - and
-  whether any code path issues it today. **Which modes, if any, turn it on now.**
-- `data\bands\mode-receiver-conditions.json`: the CW row, and whether a `scopeOutput` field
-  exists as a condition anywhere. `ReceiverSetup`: how a new condition would be written and
-  read back (unit 419's one-scale comparison).
-- `CwEnvelopeDetector`: how its watched bin is chosen today (the bin with the most bars in the
-  last second), and the seam where an external pitch could name the bin instead.
-- The decoder's settled-character stream: `CwTranscript`, `CharacterSettled`, and **what
-  timing each settled character carries** - start and end hop, or span - so it can be placed
-  over the bars.
-- `CwScopeControl` and `CwScopeFrame` after 478: the trace and the bars.
+- **Why the scope is blank on the live tab.** `CwScopeControl.Lines(frame)` draws from a
+  `CwScopeFrame`; find what builds the frame on the live path (`CwHearingViewModel.Observe`,
+  the decode tick, `CwEnvelopeDetector.History()`) and **whether the frame it gets on the
+  live tab carries any hops at all.** 478's headless test drove the detector directly; the
+  live tab may be handing it an empty history, or feeding it once a second where it needs the
+  hop rate, or the control may not be laid out with a height. **Name the cause; do not guess.**
+- **Where the `T T` comes from.** Something under the scope is rendering settled characters
+  large. Find it - it may be 478's *tone · mixing* line's neighbour, or a leftover from 474 -
+  and name it.
+- **Where a settled character's time span is known.** `CharacterSettled` on
+  `CwProbabilisticStream`, `CwCharacter`, and whether a character carries the hop or the
+  sample it began and ended on. **If it does not, the smallest change that gives it one** -
+  a start and end hop on the settled character - is this unit's, and it is the only engine
+  change allowed, named in the report.
+- `CwTranscript` and `CwTerminalControl`: the letters already reach the terminal; this unit
+  draws them a second time, over the scope, and does not change the terminal.
 
 ## 4. Rulings in force
 
-`PHASE_PLAN.md` R77 to R95 and §6. **R88** the corpus is banned; steps 11 and 12 only.
-**R74 / R67** Hamlet sets the radio for the mode; the operator is not rig control - **turning
-the scope output on in CW mode is a receive condition and is Hamlet's to set.** **R91** bars
-decide keying. **R94** the radio's scope points the detector. **R95** bars only, letters over
-them. **§0.0** a letter is drawn only where the decoder settled it; the graph invents nothing.
-**§0.2** nothing that keys or transmits - scope output is receive-side. **§0.6** color never
-the sole carrier. **HM-DEC-155, HM-DEC-165, FACT-006.**
+`PHASE_PLAN.md` R77 to R94 and §6. **R88** the corpus is banned. **R92** the scope is the
+middle picture. **R94** the letter over the bars. **§0.0** the letter is drawn over the bars
+the decoder actually used, at the time it actually settled - never nudged to look right.
+**§0.6** words on hover for every drawn thing. **§0.2** nothing that keys or transmits.
+**HM-DEC-155, HM-DEC-165, FACT-006.**
 
-**Record this in `DECISIONS.md`, newest first, and one row at the top of `CLAUDE.md` §1's
-table dated 2026-09-28, headline **The radio's scope points the detector; bars with letters
-over them**, ref HM-DEC-188:**
-
-```
----
-id: HM-DEC-188
-date: 2026-09-28
-refs: PHASE_PLAN.md R94 R95 and criterion 12.4, RigSpectrumSource.cs, ScopeFlow.cs, Ic7300Rig.cs 0x27, CwEnvelopeDetector.cs, CwScopeControl.cs, the owner's verdict rows of 2026-09-28 17:13, work instruction 480
----
-
-**In CW mode Hamlet turns on the IC-7300's scope output and reads its waveform over CI-V
-0x27; the detector watches the bin the radio's scope points at; the CW tab draws bars only,
-never noise, with each settled character written above the bars that made it.** Tim,
-2026-09-28.
-
-**What was wrong.** Every capture sheet since the restore phase has read "ScopeOn on,
-ScopeOutput off". The tree parses the radio's scope stream and nothing in CW mode turns it
-on. Meanwhile the detector chose its own bin by sweeping, and on two stations the owner heard
-plainly tonight its meter sat at 350 to 425 Hz with scores near zero, reading the loudest
-noise. The owner: "You have a waterfall. Why aren't we using that?"
-
-**What is ruled.** Scope output on is a CW receive condition, set the way the preamp is set,
-read back the same way. The detector's watched bin is the peak the radio's scope reports,
-offset from the dial by the CW pitch; the sweep stays as the fallback when the scope is
-unavailable. The scope on the CW tab draws nothing while no bars are found, draws the bars
-as they are when found, and writes each settled character above its bars - a training tool
-and the honest view of every miss, invention and wrong letter.
-
-**Whose words are whose.** The rulings are Tim's; the wording is work instruction 480's
-record of them.
-```
+No decision record: R94 is a display ruling under R90 to R92, already recorded.
 
 ---
 
@@ -164,90 +118,51 @@ record of them.
 ### Task 0 - the record and the entry round
 
 `PHASE_OUTCOME.md` gets `## UNIT 480 - STEP 12` from the block at the foot. `PHASE_STATUS.md`
-names 480 and `CURRENT_STEP: 12`. Patch-bump. `DECISIONS.md` HM-DEC-188 and the `CLAUDE.md`
-row. Entry round: the app carry-forward line.
+names 480. Patch-bump. Entry round: the app carry-forward line.
 
-### Task 1 - the radio's scope output is on in CW (12.4)
+### Task 1 - the scope draws live
 
-Add a receive condition to the CW row - and the CW-family blocks unit 420 made state the CW
-conditions - `scopeOutput` wanted **on**, `confirmed: true`, with `wantedText` saying why: the
-detector reads the radio's own spectrum. Written by `ReceiverSetup` like the preamp, read
-back on one scale, and the operator's hand wins as HM-DEC-056 says. **`RigSpectrumSource`
-starts when the read-back says on**, and stops when the mode leaves the CW family.
+Fix the cause found in §3 so that, on the live CW tab, the trace and the bars draw from the
+audio the decoder is hearing, at the hop rate or at least 20 frames a second. **Remove the
+large `T T` rendering.** Keep the *tone · mixing* words.
 
-**Watch it fail first**: `ScriptedRadio` with scope output off, a CW tune-in, and the
-assertion that the write went and `RigSpectrumSource.IsRunning` is true after read-back.
+**Watch it fail first**: a headless test that builds the CW tab, feeds the *live* path -
+`CwDecoder` given synthetic hops of a keyed tone, not a driven detector - and asserts the scope
+frame it renders carries hops and bars. Red at HEAD if the live path is what is broken; if the
+test is green at HEAD, the cause is elsewhere and the report says where.
 
-**Data modes are untouched**; whatever they do with the scope today, they keep doing.
+### Task 2 - the letter over the bars
 
-### Task 2 - the radio points the detector (12.4)
+When a character settles, draw it above the span of bars it rests on: centred over the group,
+in the same row as the scope, drawn once, and scrolling left with the trace. The span comes
+from the character's start and end hop; if the tree does not carry those, add them to the
+settled character in the engine and say so.
 
-On each `SpectrumFrame`, find the peak within the radio's filter passband around the dial -
-`CwPitch` plus and minus half `FilterBandwidth`, mapped onto the frame's bins by its span and
-centre. **The station's beat note is the peak's offset from the dial plus `CwPitch`.** Hand
-that pitch to `CwEnvelopeDetector` as its watched bin.
+- A placeholder settles as its placeholder glyph, not a letter.
+- A prosign settles as its bracketed name.
+- A word gap draws nothing.
+- Hover over a letter: *"the decoder made this letter from the bars beneath it"*.
 
-- **While the scope is delivering frames**, the detector watches the pointed bin and does not
-  sweep. Its bars, its contrast, its pitch all come from that bin.
-- **When no frame has arrived for 3 seconds** (`ScopeFlow.QuietAfter`), the detector falls
-  back to its own sweep as today, and the tone line on the tab says *"scope quiet, sweeping"*.
-- **The tracker follows the same pitch** the moment the scope points, the way 477 made it
-  follow the meter - the meter's pitch and the scope's peak are both candidates, and when both
-  are present the scope wins, because it is the calibrated one. Say so in the tracker's remark.
+**Watch it fail first**, headless, on the live path with a synthetic `CQ` at 20 WPM: red when
+no letters are drawn over the scope; green when `C` sits over four bars and `Q` over four, at
+the hops where they settled, and nothing sits over the gap between.
 
-**Watch it fail first**: a synthetic `SpectrumFrame` with a peak 250 Hz above centre and
-`CwPitch` 600; red while the detector's watched bin is elsewhere, green at 850. **No
-recording.**
+### Task 3 - the exit round
 
-Add to the verdict row: `scopePeakHz` and `scopePeakDb` from the radio's frame, and
-`scopeFramesLast4s`. Key set asserted closed.
-
-### Task 3 - bars only, letters over them (12.2 rewritten, R95)
-
-`CwScopeControl` becomes the training graph:
-
-- **Nothing is drawn while no bars are found.** No trace, no line. The area is empty and says
-  *"listening"* in small words.
-- **When bars are found, draw them**, sized as they are, scrolling left over the last **eight
-  seconds** - long enough for a word. Gaps are empty space of their true length. **No trace
-  above them**; the bars are the picture.
-- **Each character the decoder settles is written above the bars that made it**, centred over
-  their span, in a size the owner can read from his chair. Sure characters in the terminal's
-  sure style, dim in its dim style, a placeholder as the placeholder glyph. **A character is
-  written only where the decoder settled it and only over its own span** (§0.0). A word gap
-  gets a wider empty space, and nothing else.
-- **If a settled character's span does not line up with any bars** - the decoder read
-  something the bars did not see - draw it anyway, above empty space, so the invention is
-  visible.
-- Hover on a bar: its length in ms and whether it read as a dit or a dah. Hover on a letter:
-  its class and confidence.
-
-**The timing.** The decoder's settled characters carry a span; the bars carry hop indices.
-Map both onto the same eight-second axis at the hop rate. **If a settled character carries no
-usable span, say so in section 4 and draw it at the settle time** - that is a finding for the
-decoder, not a reason to skip the graph.
-
-**Watch it fail first**, headless: a driven detector with bars for dah-dit-dah-dit and a
-driven settle of `C` over that span; red while the trace is drawn or the letter is missing,
-green when the four bars have `C` above them and nothing else on the canvas.
-
-### Task 4 - the exit round
-
-`Hamlet.sln` builds with warnings as errors. The app carry-forward line. Every type touched
-that reads no recording; `ReceiverSetup`'s types with `ScriptedRadio`. `src\Hamlet.RadioEngine`
-diff against entry names every file with one line each. Transmit files print nothing against
-`7e209cb4`. **No recording was read.**
+`Hamlet.sln` builds with warnings as errors. The app carry-forward line. Every type touched.
+`src\Hamlet.RadioEngine\Cw` diff against entry: nothing, or the one start-and-end-hop change
+named in §3, and nothing else. Transmit files print nothing against `7e209cb4`. **No recording
+was read.**
 
 ---
 
 ## 6. Do not
 
-- Do not sweep for pitch while the radio's scope is delivering frames. The radio points.
-- Do not draw a trace, a floor, a threshold or noise. Bars, and letters over them.
-- Do not draw a letter the decoder did not settle, or anywhere but over its own span.
-- Do not change what any other receive condition asks for.
-- Do not touch data modes' use of the scope.
+- Do not change the detector, the meter, the tracker or the decoder's decisions. Only what is
+  drawn, and at most the span a settled character carries.
+- Do not draw a letter anywhere but over the bars that made it, at the time it settled.
 - Do not read, run or measure against any recording.
+- Do not touch the terminal, the buttons or the verdict row.
 - Do not touch what keys or transmits.
 - **No unfiltered `dotnet test`. Never background and poll. Never compose a timestamp.**
 
@@ -258,36 +173,34 @@ diff against entry names every file with one line each. Transmit files print not
 ```
 READ IN THIS ORDER.
 
-A. What the owner sees now: nothing on silence, bars when keying, letters
-   over the bars - and where the radio's scope said the signal was.
-B. Step 12: 12.4 the scope output on and pointing; 12.2 the training graph.
+A. Why the scope was blank on the live tab, and what the owner sees now.
+B. Step 12: the trace and bars live, the letters over the bars.
 C. The rest. Section 4 raises <n> items, none blocking. No recording was read.
 ```
 
 ```
-UNIT:       480 - <complete|stopped> at task N of 4, <dropped or none dropped> - <date time>
+UNIT:       480 - <complete|stopped> at task N of 3, <dropped or none dropped> - <date time>
+            hand run, outside the loop
 PHASE GOAL: <in your own words>
 UNIT GOAL:  <in your own words>
-NUMBER:     scope output: off -> on in CW; the detector's bin: swept -> pointed by the radio; the graph: trace -> bars with letters; recordings read: 0
+NUMBER:     scope frames on the live tab: 0 -> <n> per second; letters drawn over bars: yes; recordings read: 0
 ```
 
-**Section 2 tells the owner:** rebuild, tune a station, and the radio's own scope now tells
-Hamlet where it is. Watch for bars appearing when you hear keying and nothing when you don't,
-and letters riding above the bars. Press the buttons. And that if the graph shows bars with
-no letters, the decoder is the next thing; if letters with no bars, it is inventing.
+**Section 2 tells the owner:** rebuild, tune a station, and watch the bars appear as you hear
+dits and dahs, and the letter land over each group when it settles.
 
 ---
 
 ```
 ARBITER-DECISION
 STEP: 12
-APPROACH: turn on the IC-7300's scope output as a CW receive condition and read its 0x27 waveform through RigSpectrumSource, point the envelope detector and the tracker at the peak the radio reports within the filter, and redraw the CW tab's scope as bars only with each settled character written above the bars that made it
+APPROACH: find why the live CW tab hands the scope an empty frame and fix it so the trace and bars draw from live audio, remove the large T T rendering, and draw each settled character over the span of bars it rests on
 MOVE: continue
-WHY: PHASE_PLAN.md step 12 criterion 12.4 asks that the detector drive the decoder judged by the owner's ear and his verdict rows, and seven rows tonight show the meter reading the loudest noise bin at scores near zero on two stations the owner heard plainly, while every capture sheet this week has said the radio's scope output is off and the tree already parses it
+WHY: PHASE_PLAN.md step 12 criterion 12.2 asks that the CW tab draw the last four seconds as an oscilloscope with marks as bars, fed fast enough that the owner sees dits, and R94 rules that the letter the decoder made sits over the bars it came from
 STATE: partial
-DECIDED: the peak-finding within the frame, the fallback rule when the scope is quiet, the graph's eight-second window and its letter placement are the author's, overrulable
-LICENCE: PHASE_PLAN.md R67, R74, R88, R91, R94, R95, section 6, step 12; HM-DEC-188; HM-DEC-056; CLAUDE.md 0.0, 0.2 and 0.6; HM-DEC-155; FACT-006
-ACCOMPLISHED: the calibrated instrument the radio already has points Hamlet at the signal, and the owner watches bars with letters over them - a picture of every miss and every invention, and a way to learn the code by watching it
-ADVANCES: step 12 criterion 4
+DECIDED: the exact placement and size of the letter over its bars, and the frame rate, are the author's, overrulable
+LICENCE: PHASE_PLAN.md R88, R90, R91, R92, R94, section 6, step 12; CLAUDE.md 0.0, 0.2 and 0.6; HM-DEC-155; FACT-006
+ACCOMPLISHED: the owner watches the shapes he hears become the letters Hamlet prints, and learns the patterns by seeing them
+ADVANCES: step 12 criterion 2
 END-ARBITER-DECISION
 ```

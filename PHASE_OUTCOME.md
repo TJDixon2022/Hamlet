@@ -1215,3 +1215,21 @@ LICENCE: PHASE_PLAN.md R67, R74, R88, R91, R94, R95, section 6, step 12; HM-DEC-
 ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
 ADVANCES: step 12 criterion 4
 RUN: session launched with SESSION.lock already present at the root and no STOP, the lock the launcher's; not taken, released nor removed by the session.
+
+## UNIT 1 - STEP 12
+
+STEP: 12
+APPROACH: turn on the IC-7300's scope output as a CW receive condition and read its 0x27 waveform through RigSpectrumSource, point the envelope detector and the tracker at the peak the radio reports within the filter, and redraw the CW tab's scope as bars only with each settled character written above the bars that made it
+HIT: section 4 asked nothing inside the two stops - author's, overrulable, the loop continued - None of the questions touch keying, transmit or the radio's safety, or anything the product tells the operator about what was logged, heard or sent, because they cover the scope stream, the tracker's mechanism, how a record field is filled, the CW-R sign, drift in the plan text and test notes, all of which are the unit's own to decide.
+MOVE: continue
+WHY: PHASE_PLAN.md step 12 criterion 12.4 asks that the detector drive the decoder judged by the owner's ear and his verdict rows, and seven rows tonight show the meter reading the loudest noise bin at scores near zero on two stations the owner heard plainly, while every capture sheet this week has said the radio's scope output is off and the tree already parses it
+DECIDED: the peak-finding within the frame, the fallback rule when the scope is quiet, the graph's eight-second window and its letter placement are the author's, overrulable
+LICENCE: PHASE_PLAN.md R67, R74, R88, R91, R94, R95, section 6, step 12; HM-DEC-188; HM-DEC-056; CLAUDE.md 0.0, 0.2 and 0.6; HM-DEC-155; FACT-006
+COST: 13.281570199999999
+ACCOMPLISHED: the calibrated instrument the radio already has points Hamlet at the signal, and the owner watches bars with letters over them - a picture of every miss and every invention, and a way to learn the code by watching it
+FATE: executed
+STATE_AFTER: not started
+STATE_WHY: the checkboxes say not started and the judge said partial - the checkboxes win. The judge-s reason: Unit 480 built and synthetically proved the scope pointing for 12.4 and the rewritten 12.2 graph, but its own report says 12.4 is not advanced because the owner has not yet judged 12.2 or the pointed detector by ear and no verdict rows exist for this build, so 12.4 is unmet. 12.5 is met, since the report quotes the app carry-forward line at 278 of 278 on re-run and says no recording was read. 12.3 has support in TheOwnersVerdictIsARowTests at 7 of 7 with the key set asserted closed. 12.1 still has two red tests in AMarkIsTheEnvelopeOverAThresholdTests, and unit 479 said its criterion text is false of the tree.
+ADVANCED: no
+ATTEMPT: 12.4 | unit 1 launched 2026-09-28T17:23:06.773Z | no | executed | turn on the IC-7300's scope output as a CW receive condition and read its 0x27 waveform through RigSpectrumSource, point the envelope detector and the tracker at the peak the radio reports within the filter, and redraw the CW tab's scope as bars only with each settled character written above the bars that made it
+REASON: 12.4 | unit 1 launched 2026-09-28T17:23:06.773Z | the unit ran to completion and the criterion did not flip from unmet to met

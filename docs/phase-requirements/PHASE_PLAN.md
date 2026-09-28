@@ -177,19 +177,16 @@ morning's, made no bars and the meter's 17 dB swing gate refused them too. The t
 becomes 477's own wobble formula at the bar's measured contrast, floored at 1.5; the meter's
 swing bar moves to 15, the lowest on a station he heard. *"Just do it."*
 
-**R94 - Tim, 2026-09-28: use the radio's waterfall.** *"You have a waterfall. Why aren't we
-using that? You can read any settings from the radio."* Every capture sheet since the restore
-phase has read `ScopeOn on, ScopeOutput off`, and the tree already parses the IC-7300's scope
-stream over CI-V 0x27. In CW mode scope output is a receive condition Hamlet sets, and the
-detector watches the bin the radio's scope points at, offset from the dial by the CW pitch;
-the sweep is the fallback when the scope is quiet.
+**R94 - Tim, 2026-09-28: the letter over the bars.** *"I want to see the flat oscilloscope
+shapes with the letter over top. I need a visual of dit and dash."* The scope draws the trace
+and the bars from live audio, and each settled character is drawn over the span of bars it
+came from. A training tool: he learns the shapes by seeing them become letters.
 
-**R95 - Tim, 2026-09-28: bars only, letters over them.** *"I don't care when it's noise. We
-don't need to show that. When we start to detect bars, I want to graph those. As we start to
-find letters, mark them in that graph and put the letter over top. This is a passive training
-tool for learning how to read CW."* The CW tab's scope draws nothing on silence, bars sized as
-they are when keying is found, and each settled character above the bars that made it - only
-where the decoder settled it, never invented.
+**R95 - Tim, 2026-09-25 and 09-28: the window holds still when the radio moves the dial.** A
+frequency change the radio announces leaves the window exactly as the same change chosen in
+the app does - every panel's position and size, and every sentence. Unit 423 proved the
+privilege path; the announced path was never driven. *"We fixed this in some places, but
+clearly this bug still exists."*
 
 ## §3 What is different from the phases before it
 
@@ -382,6 +379,7 @@ because every later change to ours is better aimed with the comparison in hand.
 - [ ] 11.3 Two buttons - I agree with you, You're an idiot - each write one telemetry row, category cw, event owner_verdict, carrying the verdict beside the light, the tracker, the meter's figures, the survey's bins and the rig state at that moment.
 - [ ] 11.4 The owner's verdict rows are read from the telemetry file and the gate that disagreed with his ear is named from them and moved, one number per unit, with the constant's remark rewritten to say what it now rests on; no recording is read.
 - [ ] 11.5 The app carry-forward line is green at exit, no recording was read, and the report says so.
+- [ ] 11.6 A mode or frequency change the radio announces leaves the window exactly as the same change chosen in the app does - every panel's position and size, and every sentence in the neighborhood panel - proved by a headless test that drives both paths to 14.0754 in USB-D and asserts they match; unit 423's privilege test and unit 389's sun-map rule still hold (R95).
 
 **Depends on:** nothing. **The only authorable step while R88 stands.**
 
@@ -462,8 +460,8 @@ sentence outside an owned block.
 
 ## §8 Revision record
 
-- **2026-09-28, late.** R94 the radio's scope points the detector; R95 bars with letters over
-  them; 12.2 rewritten in place, 12.4 authored again on the pointed bin.
+- **2026-09-28, night.** R94 the letter over the bars; R95 the announced path matches the
+  app path, as 11.6. Units 480 and 481, hand runs.
 
 - **2026-09-28, night.** R93: the flatness tolerance follows the contrast; ConfidentSwingDb 17
   to 15; 12.1 to 12.3 restored by unit 479 after the 478 plan delivery erased them.

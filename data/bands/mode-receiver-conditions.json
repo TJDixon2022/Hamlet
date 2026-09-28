@@ -144,7 +144,7 @@
           "wanted": 1,
           "wantedText": "on",
           "confirmed": true,
-          "because": "The radio already draws its spectrum scope on its own screen, calibrated by Icom and centred on the dial, and it sends the same picture down the cable once its scope output is on. Hamlet reads that picture to find where the station sits inside the filter, so the Morse detector listens at the pitch the radio points at instead of sweeping the audio and settling on the loudest patch of noise. It changes only what the radio sends over the cable, never what goes out of the antenna (HM-DEC-188, IC-7300 CI-V command 27 11, page 19-7)."
+          "because": "The radio already draws its spectrum scope on its own screen, calibrated by Icom and centered on the dial, and it sends the same picture down the cable once its scope output is on. Hamlet reads that picture to find where the station sits inside the filter, so the Morse detector listens at the pitch the radio points at instead of sweeping the audio and settling on the loudest patch of noise. It changes only what the radio sends over the cable, never what goes out of the antenna (HM-DEC-188, IC-7300 CI-V command 27 11, page 19-7)."
         }
       ]
     },
