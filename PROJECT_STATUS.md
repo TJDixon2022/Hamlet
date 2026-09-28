@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-TASK: 4 of 4
-WORK_INSTRUCTION: 474 - a light that says I think I hear CW, a pitch strip, and two buttons that write the owner verdict to telemetry
-BALL: tim
-NEXT_PASTE: output.md -> Claude Web
+STATE: EXECUTING
+TASK: 0 of 3
+WORK_INSTRUCTION: 475 - the swing bar the owner's ear says is wrong
+BALL: code
+NEXT_PASTE: none
 RULES_AT: HM-DEC-184 (2026-09-27)
-UPDATED: 2026-09-27T20:57:04-04:00
-NOTE: Unit 474 done: the CW tab has a light, a pitch strip and two verdict buttons that write owner_verdict rows; no recording read; an owner STOP file is at the root
+UPDATED: 2026-09-27T22:05:12-04:00
+NOTE: Task 0 - entry round re-run once: 274 of 278 first pass, four 1 ms losses to the dispatcher loop
 
 ---
 
