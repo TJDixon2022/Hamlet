@@ -1,1 +1,1 @@
-replace the envelope detector's floor and margin with run detection per bin across the passband - a bin is keying when it makes flat-topped bars of dit length separated by gaps - wire the tracker to take the meter's pitch and keying verdict within a hop, and replace the meter's swing gate with the bar test
+redraw the scope as the level trace with bars along the bottom where the run detector calls a mark, drop the floor and threshold lines, retire the light and the pitch strip, and keep the verdict buttons and row unchanged

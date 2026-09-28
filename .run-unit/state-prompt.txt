@@ -86,9 +86,9 @@ FOLLOWS: report   it drifted to the output - the criterion was chosen because
 and where it is report, one more line saying what it cited instead:
 FOLLOWED: one sentence, plain text
 
-The instruction it produced named  step 12 criterion 4  and gave this WHY:
+The instruction it produced named  step 12 criterion 2  and gave this WHY:
 
-PHASE_PLAN.md step 12 criterion 12.4 asks that the detector drive the decoder - nothing decoded until a mark is found, the decoder mixed at the detector's pitch and started when the tone is present - judged by the owner's ear and his verdict rows, and those rows show the meter finding each station within a second while the tracker waited on the survey or held its keying flag false on an 18 dB swing
+PHASE_PLAN.md step 12 criterion 12.2 asks that the CW tab draw the last four seconds as an oscilloscope with marks as bars along the bottom, fed fast enough that the owner sees dits, and R92 rules that it look like the picture that convinced him - a trace and bars, nothing else
 
 Answer with the lines asked for above and nothing else, beginning with:
 
@@ -105,9 +105,9 @@ WHY: one sentence, plain text, no punctuation beyond commas and full stops
 **Entry:** nothing.
 
 **Exit:**
-- [x] 12.1 `CwEnvelopeDetector` computes per hop the passband envelope, a tracked noise floor, a threshold of floor plus a margin from the owner's verdict rows, mark or gap, the run length, and while a mark is up the pitch and its contrast read from the whole passband; it changes nothing about the decoder; proved on synthetic hops in a test, no recording.
-- [x] 12.2 The CW tab draws the last four seconds as an oscilloscope - trace, floor, threshold, marks as bars along the bottom, the tone line as text, the passband edges shaded - fed fast enough that the owner sees dits, with words on every mark.
-- [x] 12.3 The owner's verdict row carries the detector's state at the press, including the count of marks in the last four seconds, with its key set asserted closed.
+- [ ] 12.1 `CwEnvelopeDetector` computes per hop the passband envelope, a tracked noise floor, a threshold of floor plus a margin from the owner's verdict rows, mark or gap, the run length, and while a mark is up the pitch and its contrast read from the whole passband; it changes nothing about the decoder; proved on synthetic hops in a test, no recording.
+- [ ] 12.2 The CW tab draws the last four seconds as an oscilloscope - trace, floor, threshold, marks as bars along the bottom, the tone line as text, the passband edges shaded - fed fast enough that the owner sees dits, with words on every mark.
+- [ ] 12.3 The owner's verdict row carries the detector's state at the press, including the count of marks in the last four seconds, with its key set asserted closed.
 - [ ] 12.4 After the owner has judged the scope by ear and said so, the detector drives the decoder: nothing is decoded until a mark is found, the decoder is mixed at the detector's pitch and started with the detector's dit, and it stops when the tone stops; judged by the owner's ear and his verdict rows, not by a recording.
 - [ ] 12.5 The app carry-forward line is green at exit, no recording was read, and the report says so.
 
@@ -175,6 +175,9 @@ sentence outside an owned block.
 
 ## Â§8 Revision record
 
+- **2026-09-28, evening.** R92: the scope drawn as the trace and the bars; the light and the
+  strip retired; 12.2 rewritten in place.
+
 - **2026-09-28, evening.** R91 bars not waves: the detector's floor and margin replaced by run
   detection; the tracker obeys the meter. 12.1 rewritten in place, 12.4 authored.
 
@@ -201,203 +204,145 @@ sentence outside an owned block.
 
 READ IN THIS ORDER.
 
-A. Phase goal: Hamlet meets the CW requirements. What decides keying now: the scope's detector (`CwEnvelopeDetector`) calls a pitch keying when its level holds flat for a dit or longer, drops, and holds again at the same level within the last second. It uses no floor and no margin, and the bars must clear their gaps by more than the gaps' own measured wander. The moment the keying meter says keying at a pitch, the tracker mixes there on its next hop and tells the decoder a station is present, whatever the swing.
-B. Step 12 and its exit criteria:
-   - 12.1: the detector is rewritten as bars, not waves, and is green on the three synthetic tests.
-   - 12.1, 12.2 and 12.3 are ticked from unit 476's work, as task 0 directed. 12.1's text in PHASE_PLAN.md still describes the old floor and margin (section 4, item 1).
-   - 12.4: its first half, the tracker obeying the meter, is wired and green. It is not ticked, because the criterion waits on the owner's ear and on the detector driving the decoder.
-   - Task 3, the bar test in the meter, was dropped whole.
-   - 12.5 is not ticked: the app line lost names to the dispatcher loop on both runs.
-C. What this report adds: the three synthetic tests' numbers, one of unit 476's tests left red with its cost named, and five places where this instruction does not match the tree. Section 4 raises 6 items, none blocking. No recording was read.
+A. What the CW tab shows now. Under the transcript is one picture: the last four seconds of the level of the one pitch the detector is reading, drawn as a single trace. Along the bottom is a filled bar under every mark the bar detector calls, and nothing under a gap. Top left are two short lines of words: "tone 742 Hz" while the detector says keying (or "no keying"), and beside it "mixing 742 Hz", the pitch the decoder is on (or "not mixing"). To the right of the picture are the two buttons, "I agree with you" and "You're an idiot", writing the same row as before. The light, the pitch strip, the floor line, the threshold line and the shaded passband are gone.
+B. Step 12: 12.2 is rewritten as the middle picture and is green on synthetic audio. It is not ticked, because the instruction does not say to tick it and the owner's eye is the test. Step 11: 11.1 and 11.2 are retired, with the clause appended in both PHASE_PLAN.md copies; neither is unticked.
+C. The rest: the red and green runs, two places where the instruction does not match the tree, and three deletions the session could not make. Section 4 raises 5 items, none blocking. No recording was read.
 
-UNIT:       477 - complete at task 4 of 4, task 3 dropped (the named drop candidate) - 2026-09-28 10:20
-PHASE GOAL: make Hamlet meet the CW requirements in CW_REQUIREMENTS.md and CW_SPEC.md, judged by requirement ids and at the end by Tim at the radio; while R88 stands, only steps 11 and 12 (the owner's ear and the oscilloscope) are authorable
-UNIT GOAL:  a keyed station at any pitch is found by its bars, not by a floor and a margin, and the tracker mixes at the meter's pitch and flags keying within a hop of the meter finding it
-ADVANCED:   yes - step 12 criterion 4's first half: the tracker now takes the meter's pitch and keying on the next hop (proved on synthetic audio), and the scope's detector decides by bars
-NUMBER:     gates removed: floor and margin (the detector), plus the swing gate as the decider of the tracker's keying flag; the meter's own 17 dB swing gate stays because task 3 was dropped; tracker follows the meter within 1 hop; recordings read: 0
+UNIT:       478 - complete at task 3 of 3, none dropped - 2026-09-28 10:50
+PHASE GOAL: make Hamlet meet the CW requirements in CW_REQUIREMENTS.md and CW_SPEC.md. While R88 bans the corpus, only steps 11 and 12 (the owner's ear and the oscilloscope) can be worked.
+UNIT GOAL:  show the owner what the detector sees, as the picture he said convinced him: a level trace with bars where the keying is, and nothing else
+ADVANCES:   step 12 criterion 2
+ADVANCED:   yes - 12.2's picture is now the one R92 asks for, proved headless on a driven detector; whether it matches his ear is his call at the radio
+NUMBER:     lines on the scope: trace and bars, 0 thresholds; controls removed: light, strip; recordings read: 0
 DRIFT:      0 consecutive units without advance (the instruction carried no count)
 
 ## 1. What Claude did
 
-**Complete at task 4 of 4, with task 3 dropped.** Task 3 is the drop candidate the instruction named. Claude Code on QUIVERFULL, project Hamlet confirmed by the five gate checks, branch `main`, entry `4d1d24cf`. Every task was pushed: `83dd6e0e` (task 0), `b2b8fc87` (task 1), `ccea84d0` (task 2), and this report's commit for task 4. `SESSION.lock` and an empty `STOP` were already at the root when the session started. Both are the launcher's; the session did not take, release or remove either.
+**Complete at task 3 of 3, none dropped.** Claude Code on QUIVERFULL, project Hamlet confirmed by the five gate checks, branch `main`, entry `1b738a76`. Tasks are pushed as `600aa01d` (task 0), `1bd93b2b` (task 1), `8b4d5406` (task 2), and this report's commit for task 3. `SESSION.lock` and an empty `STOP` were already at the root when the session started. Both are the launcher's, and the session did not take, release or remove either.
 
-**Task 0: the record.**
-- PHASE_OUTCOME.md (both copies) has `## UNIT 477 - STEP 12`.
-- PHASE_STATUS.md (both copies) names 477 and `CURRENT_STEP: 12`.
-- The version goes from 1.13.162 to 1.13.163.
-- HM-DEC-186 is at the top of DECISIONS.md, verbatim, and its row is at the top of CLAUDE.md §1.
-- 12.1, 12.2 and 12.3 are ticked in both PHASE_PLAN.md copies, as the instruction directs.
-- Entry round: the build had 0 errors. The app line ran 277/278, then 276/278 on the one re-run. Every failure was "You've caused dispatcher loop", so neither run is counted.
+**Task 0: the record and the entry round.**
+- PHASE_OUTCOME.md (both copies) has `## UNIT 478 - STEP 12` from the ARBITER-DECISION block.
+- PHASE_STATUS.md (both copies) names 478 with `CURRENT_STEP: 12`.
+- The version goes from 1.13.163 to 1.13.164.
+- The root copies of PHASE_OUTCOME.md and PHASE_STATUS.md held uncommitted launcher edits at entry. They are carried in the task 0 commit as found (section 4, item 5).
+- Entry build: 0 errors with warnings as errors.
+- App line: 277/278, then 277/278 on the one re-run. Both failures were "You've caused dispatcher loop" (`TheWindowHoldsBelowItsMinimumTests`, then `TheCarrierHoldsTheButtonsTests`), so neither run is counted (HM-DEC-155).
 
-**Task 1: bars, not waves.** `CwEnvelopeDetector` has no floor tracker, no margin and no floor-rise any more. The rule:
-- **Bins:** every 25 Hz (`KeyingEnvelope.ToneStepHz`, the meter's step) across CwPitch ± half FilterBandwidth, or 100 to 3000 Hz when the rig state is unknown (117 bins).
-- **Level:** each bin's level is read every 5 ms hop over a 10 ms Hann window.
-- **Run:** consecutive hops within `FlatToleranceDb` = **1.5** of the run's own mean.
-- **Bar:** a run whose windows cover at least `ShortestBarMs` = `CwToneSurvey.ShortestDitMs` (25 ms), standing wholly above the runs either side.
-- **Pair:** two consecutive bars within a second form a pair when all of these hold:
-  - the second bar holds the first's level within the tolerance;
-  - the hops between them last at least a dit, and every one sits under the lower bar's band;
-  - the bars clear the gaps' power-mean level by more than the gap hops' own wander. The wander is a standard deviation in dB, measured in that bin over the last second, with key-edge hops left out.
-- **Keying:** a bin is keying when a pair ended in the last second.
-- **Pitch:** the keying bin with the most paired bars in the last second. Only bins whose bars hold the loudest bar level within the window's ±200 Hz reach are counted, and the louder bin breaks a tie.
-- **Scope:** it watches that bin. The trace is its level; the dashed line, "gap level, measured", is its gap level; the solid line, "midway: gap to bar, measured", is the midpoint. The hover says the solid line decides nothing and bars decide.
-- `CwEnvelopeReading` gains `Keying`; `CwBarBin` and `Bins()` are new. The scope control no longer draws a line it has no measurement for.
+**Task 1: the scope becomes the middle picture.** `CwScopeControl` now draws four things and nothing else. `CwScopeControl.Lines(frame)` is the list the renderer draws from, and it holds exactly these four:
+- **The trace, "level":** the detector's watched bin, hop by hop, as one line.
+- **The bars, "marks":** a filled block under every marked hop, contiguous, so a dit is short and a dah long. Each bar carries its length where it fits, and nothing is drawn under a gap.
+- **Tone:** "tone 742 Hz" or "no keying". It shows the pitch the detector measured at its last mark, and holds it across gaps while `Reading.Keying` stays true. The detector only names a pitch while a mark is up, so without this hold the line would flicker at every gap. The frame is handed the previous frame to do this; nothing is guessed.
+- **Mixing:** "mixing 742 Hz" from `DecodeReport.ToneHz` while decoding, or "not mixing".
+- **Removed:** the floor line, the threshold line and their labels, the passband rail with its shading and tone tick. `CwScopeFrame` loses `ToneLine`-as-field, `PassbandLabel` and `ThresholdLabel`, and gains `ToneHz` and `MixingHz`.
+- **The detector is not changed.** It still computes floor, threshold and passband, and the verdict row still carries them.
+- **Hover:**
+  - over the plot: "the level of the bin the detector is reading, over the last four seconds";
+  - over a bar: "a mark - the level held flat for at least a dit";
+  - anywhere else: the rewritten whole-scope tip.
 
-**The tolerance and why (my decision, overrulable).** A tone S dB over its bin's noise wobbles by at most 20·log10(1 + 10^(-S/20)): 1.4 dB at 15 dB, 2.4 dB at 10 dB. The measurements that settled it, all on seeded synthetic audio in the tests and none on a recording or on the owner's rows:
-- **2 dB:** with every other rule in place, 30 s of loud noise read as keying in 11 of 1500 reads.
-- **1.5 dB:** the same noise read keying in 0 of 1500.
-- **The price, named in the constant's remark:** a tone 15 dB over the noise in a 500 Hz filter (measured 16 dB over its bin's gaps) splits its long dahs. Unit 476's `AToneFifteenDecibelsOverTheNoiseStillKeys` misses **51 of 208** key-down hops at 1.5 dB (35 at 2 dB). **That test is left red.**
+  The control sets the tip as the pointer moves.
+- **Red first:** `TheScopeIsTheMiddlePictureTests` was red 4/4 on stubs:
+  - the drawn kinds were Envelope, Floor, Passband and Threshold;
+  - the tone line read "no tone";
+  - the mixing line and both hover texts were empty.
+- **Then green 4/4:**
+  - only Trace, Bars, Tone and Mixing are drawn, and no label says gap level, midway, floor, threshold, margin, filter or whole band;
+  - the pitch reads "tone 7xx Hz" in a mark and still in the gap after it (1.86 s, keying, no mark up), and "no keying" before the keying and 2 s after it;
+  - "mixing 750 Hz" and "not mixing";
+  - both hover texts are asserted at a point over a bar and a point over the plot.
+- `TheScopeShowsTheMarksTests` is updated to the new words, and its floor/threshold/passband label test is removed.
 
-**The rules I added beyond the instruction's list, each reached only after the plainer rule failed a synthetic test:**
-- The gap must last at least a dit, and the second bar must hold the first's level. Without these, noise made 9 chance bars a second and paired them.
-- A bar must stand *wholly* above the runs either side.
-- **The bars must clear the gaps' measured wander.** Without this, noise's chance flat runs, which sit at the noise's own level, paired into keying. It is the rule nearest to a margin; it is measured on the bin and set by no constant (section 4, item 4).
-- The pitch is counted only among full-level bins. Without this, a bin 125 Hz off paired one hop before the tone's own bin and took the pitch.
+**The trace's fallback (my decision, and not what the instruction said).** The instruction says that when no bin is found, the trace should show the loudest bin's level. `CwEnvelopeDetector.History()` only ever returns its watched bin: the centre of the passband before any keying, and the last keying bin afterwards. Per-hop levels of other bins are not exposed, and the instruction forbids changing the detector. So the trace never goes blank, but it shows the watched bin, not the loudest one (section 4, item 1).
 
-**Red first, then green:**
-- `ABarIsALevelThatHoldsTests` was red 3/3 on a stub, then green 3/3.
-- `AMarkIsTheEnvelopeOverAThresholdTests` is 5/6. Its margin test became `TheLinesAreTheGapLevelAndTheMidpointMeasured`, and the 15 dB case is red as above.
-- `TheScopeShowsTheMarksTests` is 6/6 after I changed three things in unit 476's test: the label strings, the hover phrase, and the mid-dah frame. The frame moved from C's first dah (0.89 s) to Q's first dah (1.73 s), because the first element of a transmission has no partner bar yet and is marked only when the next element pairs with it.
-- `TheVerdictCarriesTheScopeTests` is 3/3 and unchanged.
+**Task 2: the temporary controls come out.**
+- The light (`CwHearingLight`, `CwHearingDark`) and the strip (`CwPitchStripRow`) are gone from `MainWindow.axaml`.
+- The scope and the two buttons now share one Grid, `CwScopeRow`. The buttons are stacked to the right of the scope, with the same words, commands, `IsDecoding` gate and hover texts except for the change below. Under the scope, one line reads "tone … · mixing …".
+- `CwHearingViewModel` drops `IsLit`, `LitWords`, `DarkWords`, `LightTip`, `Strip`, `StripTip`, the `CwPitchStrip` record and its builders. `Observe` now only stores the state the row reads.
+- **The row's key set is unchanged: 26 fields.**
+  - `light` now records the scope's keying verdict as "the bars say keying" or "the bars say no keying".
+  - `sinceVerdictMs` counts from the last change of that verdict (section 4, item 3).
+- **The button tips said "the light".** They now say "the scope" and "what the bars said", because the light they named is gone (section 4, item 3).
+- **Three files could not be deleted.** `git rm` was refused in this session, and I did not work around the refusal. `CwPitchStripControl.cs`, `TheLightSaysWhatHamletThinksItHearsTests.cs` and `TheStripShowsWhereTheDetectorLooksTests.cs` are each overwritten with a three-line comment saying they are retired and should be deleted (section 4, item 2).
+- Test results:
+  - `TheScopeShowsTheMarksTests` 5/5. Its placement test now asserts both buttons are right of the scope and within its height, and that no light or strip is in the CW tab's tree.
+  - `TheOwnersVerdictIsARowTests` 7/7, with a new test, `TheLightFieldIsTheBarsVerdictInWords`.
+- PHASE_PLAN.md, both copies: 11.1 and 11.2 now end with "- retired by unit 478 under R92; the scope shows what they showed". Neither is unticked.
 
-**Task 2: the tracker obeys the meter.**
-- `CwToneTracker.FollowMeter(KeyingReading)` takes the reading from any thread.
-- While the verdict is Keying at a pitch, the tracker mixes there from its next hop, as a measured pitch the decoder takes: a `Switch` outside the fine bank's reach, the nearest fine bin inside it.
-- Meanwhile the survey moves nothing: no admission, no held switch, no cold-start move. `HasKeying` is true at any swing.
-- When the meter stops saying keying, the survey owns every move again.
-- `MainWindowViewModel.PublishKeying` hands the same reading the light shows to `_decoder.Tracker`.
-- The decoder is not changed.
-- `ConfidentSwingDb` stays, and its remark now says the tracker's flag does not consult it.
-- `TheTrackerObeysTheMeterTests` was red 3/3 on a stub:
-  - the tracker held 500;
-  - `HasKeying` was false at 18.6 dB;
-  - the survey's cold-start rule dragged the tracker to 750.
-- It is now green 3/3:
-  - the tracker is at 600 on the next hop, as a measured pitch;
-  - `HasKeying` is true at 375 Hz on 18.6 dB, and false again when the meter stops;
-  - 1800 hops read 600 against a keyed 750.
-- One limit: in that last test the survey admitted no candidate in 8 s. What it proves is that the survey's cold-start move is held off. An admission elsewhere goes through the same early return and is not exercised separately.
-- I also decided that the move goes at once, even mid-character (section 4, item 5).
-
-**Task 3: dropped whole.** The meter still gates on its swing. Three reasons:
-- The instruction's precondition is "only if task 1 and task 2 are green", and task 1 left unit 476's 15 dB test red.
-- `CwKeyingMeterTests` reads a WAV recording, so under R88 the meter's own tests cannot check a change to its verdict. The silence property HM-DEC-120 rests on also cannot be re-measured.
-- The meter now drives the tracker, and the bar test has a measured weakness at about 16 dB over the bin's noise that the 17 dB swing gate does not have.
-
-Task 2's wiring lands regardless.
-
-**Task 4: the exit round.**
+**Task 3: the exit round.**
 - **Build:** a full non-incremental build of Hamlet.sln with warnings as errors gives 0 warnings and 0 errors.
-- **App line:** 274/278, then 276/278 on the one re-run. All six failures across the two runs are "You've caused dispatcher loop": the three `TheFavoritesAreUnderTheGreenZoneTests` tests and `ThePsk31OfferTests.TheOfferIsOneButtonAndItIsTheOneTheEngineNamed`. Neither run is counted.
+- **App line:** 277/278, then 277/278 on the one re-run. Both failures were "You've caused dispatcher loop" (`ThePsk31OfferTests.TheOfferIsOneButtonAndItIsTheOneTheEngineNamed`, then `TheCarrierHoldsTheButtonsTests.HisCardIsDrawnInTheSendingGreenWithTheWord`), so neither run is counted. That matches entry.
 - **Touched types, one invocation each:**
 
   | Type | Result |
   |---|---|
-  | `ABarIsALevelThatHoldsTests` | 3/3 |
-  | `AMarkIsTheEnvelopeOverAThresholdTests` | **5/6** (the 15 dB case) |
-  | `TheTrackerObeysTheMeterTests` | 3/3 |
-  | `TheScopeShowsTheMarksTests` | 6/6 |
+  | `TheScopeIsTheMiddlePictureTests` (new) | 4/4 |
+  | `TheScopeShowsTheMarksTests` | 5/5 |
   | `TheVerdictCarriesTheScopeTests` | 3/3 |
-  | `TheOwnersVerdictIsARowTests` | 6/6 |
-  | `TheLightSaysWhatHamletThinksItHearsTests` | 5/5 |
-  | `TheStripShowsWhereTheDetectorLooksTests` | 7/7 |
+  | `TheOwnersVerdictIsARowTests` | 7/7 |
   | `BindingHealthTests` | 1/1 |
   | `EveryControlSaysWhatItDoesTests` | 3/3 |
   | `WhatEveryControlSaysOnHoverTests` | 1/1 |
 
-- **Not run because it reads a recording:** `CwKeyingMeterTests`. The meter's source changed only in a remark.
+- **`src/Hamlet.RadioEngine/Cw` against `1b738a76` prints nothing.** This unit changed the app, not the engine.
 - **Transmit files:** print nothing against `7e209cb4`.
-- **Fixtures:** nothing under `tests/fixtures` was touched.
-- **`src/Hamlet.RadioEngine/Cw` against `4d1d24cf`: three files.**
-  - `CwEnvelopeDetector.cs`: the floor and margin are replaced by per-bin bars, pairs, pitch and measured lines.
-  - `CwToneTracker.cs`: `FollowMeter` is added, the survey holds while the meter says keying, and `HasKeying` follows the meter.
-  - `CwKeyingMeter.cs`: a remark only, saying `ConfidentSwingDb` is not the tracker flag's gate.
+- **Fixtures:** nothing under `tests/fixtures` was touched. No recording was read.
 
 **Where the instruction does not match the tree** (reported, not repaired):
-1. `ConfidentSwingDb` is **17**, not 20 (R89, unit 475). The 01:16:22 profile at 18.6 dB already passes the meter's swing test, so task 3's red case would not have been red.
-2. `CwToneTracker.HasKeying` never rested on the 20 dB swing gate. It was `Verdict.Keyed is not null`, the survey's admission: eight clean marks over three seconds, confirmed by two surveys.
-3. The meter's sweep is 300 to 900 Hz at 25 Hz: `KeyingEnvelope.LowestToneHz` and `HighestToneHz`, taken from the tracker's own range. So the tracker obeys the meter only inside 300 to 900. The scope's detector sweeps the whole passband.
-4. PHASE_PLAN.md's log says "12.1 rewritten in place", but 12.1's criterion text still describes "a tracked noise floor, a threshold of floor plus a margin".
-5. The meter feeds the app once a second over a 6 s window, so "within a second" is the meter's cadence plus one hop.
+1. §3 says the closed control list in `EveryControlSaysWhatItDoesTests` holds the light and the strip. It never did: it lists pressable controls and hint marks, and neither the light nor the strip was one. The list is unchanged, and it is green.
+2. The instruction asks for a loudest-bin fallback that the detector does not expose (task 1 above).
 
 ## 2. What the owner should expect
 
-Rebuild and tune a station at any pitch the filter passes. On the CW tab, watch three things.
+Rebuild, tune a station, and look at one thing: **do the bars under the trace match the dits and dahs you hear?** Press the buttons as before. They now sit to the right of the scope.
 
-**Bars under the trace as you hear keying.**
-- The trace is now the level in the one pitch Hamlet found the most bars in, not the whole filter summed.
-- A dit or a dah lights a bar only once there is a second element to pair it with, so the first element of an over appears a moment late. It appears when the second arrives, drawn where it happened.
-- The dashed line is that pitch's measured gap level, and the solid line is midway to the bars. Neither decides anything. With no bars, neither line is drawn.
-
-**The mixing line jumping to where the meter's line is within a second.**
-- When the light says "somebody is keying" at a pitch, the strip's tracker line should move there on the next update, at any swing.
-- The meter reads six seconds once a second, so the jump comes when the meter says keying, not before.
-- The meter still only looks from 300 to 900 Hz.
-
-**Characters.** The decoder was not touched. It is now mixed at the meter's pitch and told a station is present, so where the survey kept it on an empty bin it should now read the station. Then press.
+- Top left, "tone 742 Hz" means the bars say somebody is keying there. Beside it, "mixing 742 Hz" is where the decoder is. If the two numbers differ, the detector and the decoder are listening at different pitches.
+- Hover over the trace or a bar to see what it is.
 
 **What will look wrong but is not:**
-- A steady carrier shows no bars, and neither does plain noise however loud: no bar, no pairing, no tone line.
-- A weak station, about 10 to 16 dB over the noise in a 500 Hz filter, may show broken or missing bars on long dahs. That is the tolerance's named cost (section 4, item 2).
-- The meter itself still refuses a station swinging under 17 dB, because task 3 was dropped.
+- The first dit or dah of an over gets its bar a moment late. It is drawn when the second element pairs with it, in the place where it happened (unit 477's rule).
+- Before any station is found, the trace shows the middle of the passband, and after a station stops it stays on that station's pitch. It is never blank, and it does not jump to the loudest pitch.
+- A steady carrier and plain noise draw a trace and no bars.
+- The tone line keeps its pitch between elements and says "no keying" about a second after the sending stops.
+- A weak station, about 10 to 16 dB over the noise, may show broken bars on long dahs. That is unit 477's named cost and unchanged.
 
 ## 3. What you should see
 
-**The answer this unit was commissioned for.** Bars decide keying on the scope, and the tracker follows the meter within one hop. The three synthetic tests (`ABarIsALevelThatHoldsTests`, seeded audio, no recording) print this:
+**The answer this unit was commissioned for:** the scope now draws exactly the trace, the bars and two lines of words, with 0 threshold lines. `CwScopeControl.Lines` returns Trace "level", Bars "marks", Tone and Mixing, and the test asserts that set closed. On a driven detector (C and Q at 20 wpm, 742 Hz, seeded noise, no recording), the eight keyed elements are eight bars with dahs 2.4 to 3.6 times the dits. The pitch reads "tone 7xx Hz" in a mark and in the gap after it, and "no keying" before and after.
 
-```
-keyed:   CQ at 650 Hz, 20 wpm, noise wandering 12 dB peak to trough, 500 Hz filter
-         key down hops 208, missed 0; key up hops 359, marked 0
-         marks in 4 s 8 (8 keyed), pitch 650 to 650 Hz on every mark
-         bar -13.5 dB, gap -50.2 dB, contrast 35.9 dB
-carrier: 700 Hz steady from 0.8 s: bars 1, gaps 0, keying False, keying seen False, marked hops 0
-noise:   30 s loud (0.5 RMS), rig unknown, 117 bins: keying seen False, 0 of 1500 reads, marked hops 0
-```
+On the CW tab, the light and the pitch strip are gone, and the two buttons sit beside the scope. The verdict row keeps its 26 keys.
 
-The tracker (`TheTrackerObeysTheMeterTests`):
-
-```
-before: 500 Hz, measured False
-after one hop: 600 Hz, measured True, keying True
-meter keying at 375 on 18.6 dB: HasKeying True, 375 Hz
-meter listening: HasKeying False
-survey admits: (nothing); tracker read 600 to 600 Hz against a keyed 750
-```
-
-**The case left red:** unit 476's 15 dB station, 51 of 208 key-down hops unmarked.
-
-**Nothing visible changes in how text is decoded,** apart from the pitch it is decoded at and the keying flag.
+**Nothing changes in what is decoded.** The detector, the meter, the tracker and the decoder are untouched.
 
 ## 4. What's blocking us
 
-Nothing here blocks the unit. Six rulings are wanted, most consequential first.
+Nothing here blocks the unit. Five items want a ruling or an action, most consequential first.
 
-1. **12.1 is ticked, but its text describes the detector this unit removed.**
-   - **Ruling wanted:** rewrite 12.1's criterion text to the bar rule (runs, bars, pairs, measured lines, no floor or margin), or untick it until it is rewritten.
-   - **Reasoning:** the instruction told task 0 to tick 12.1 to 12.3 from unit 476's work. Task 1 then replaced that work, so the tick now stands on text that is false of the tree.
-   - **Rejected:** editing PHASE_PLAN.md's criterion text myself. The plan is the owner's and the web session's, and the instruction said to tick, not to rewrite.
+1. **The trace's fallback is the detector's watched bin, not the loudest bin.**
+   - **Ruling wanted:** accept the watched bin (the passband centre before any keying, the last station's pitch after), or have a unit that may touch `CwEnvelopeDetector` expose the loudest bin's per-hop level for the trace.
+   - **Reasoning:** the instruction lists the fallback as the author's to decide, but names the loudest bin. The detector keeps per-hop history only for the bin it watches, and §6 forbids changing it. The watched bin is never blank and is what the detector actually reads, which is what the trace's hover says it is.
+   - **Rejected:** computing a loudest-bin level in the app from `Bins()`. That summary carries no per-hop levels, and anything built from it would be a line the detector does not compute (§0.0).
 
-2. **The flat tolerance, 1.5 dB, and the weak station it costs.**
-   - **Ruling wanted:** accept 1.5, and rewrite or retire unit 476's 15 dB test to say what the bar rule does with a station that weak. Or go to 2 dB and accept noise reading as keying about once in 136 reads of 20 ms over the whole band.
-   - **Reasoning:** at 2 dB, 30 s of loud noise read as keying in 11 of 1500 reads; at 1.5 dB, in none. A station 15 dB over the noise in a 500 Hz filter loses 51 of 208 key-down hops at 1.5 dB and 35 at 2 dB. §0.0 favours silence over a false station.
-   - **Rejected:** fitting the tolerance to the owner's rows or a recording (R91, HM-DEC-186), and joining short same-level runs back into one bar. That joins noise too.
+2. **Three retired files are emptied, not deleted.**
+   - **Action wanted:** delete `src/Hamlet.App/Controls/CwPitchStripControl.cs`, `tests/Hamlet.App.Tests/ViewModels/TheLightSaysWhatHamletThinksItHearsTests.cs` and `tests/Hamlet.App.Tests/ViewModels/TheStripShowsWhereTheDetectorLooksTests.cs`, then commit.
+   - **Reasoning:** `git rm` was refused in this session, like `rm`. Each file now holds only a comment saying so, and the build and tests are green with them in place.
+   - **Rejected:** deleting them through a script to get past the refusal.
 
-3. **The meter still gates on a 17 dB swing (task 3 dropped).**
-   - **Ruling wanted:** whether the next unit replaces the meter's swing test with the bar test, now that the meter drives the tracker.
-   - **Reasoning:** the instruction's red case (the 18.6 dB profile) already passes at 17. A station swinging under 17 is refused by the meter, so it now also does not move the tracker. The meter's own tests read a recording and cannot run under R88, so the change could not be checked against them here.
-   - **Rejected:** doing it anyway on synthetic evidence alone, in a unit whose precondition for it was not met.
+3. **The button tips and the row's `light` field changed wording.**
+   - **Ruling wanted:** accept these, or restore the old wording:
+     - the tips say "Tells Hamlet the scope is right/wrong…" and "what the bars said";
+     - `light` records "the bars say keying" or "the bars say no keying";
+     - `sinceVerdictMs` counts from that verdict's last change.
+   - **Reasoning:** the instruction keeps the buttons "exactly as they are", but their hover texts named a light that no longer exists, which would be a false sentence on screen (§0.0). It directs that `light` record the detector's keying verdict in words. I worded it unlike 474's "I think I hear CW" so a reader of the rows can tell which picture the owner was judging. `sinceVerdictMs` was "since the light changed", and the bars' verdict is what replaced the light.
+   - **Rejected:**
+     - leaving the tips naming the light;
+     - reusing 474's words for the new verdict, which would make old and new rows indistinguishable.
 
-4. **"The bars clear the gaps' measured wander" is the rule nearest to a margin.**
-   - **Ruling wanted:** whether it stands under "no floor, no margin, no swing threshold".
-   - **Reasoning:** without it, noise's chance flat runs paired into keying in every form I tried. It has no constant; the number is each bin's own gap wander over the last second. For noise that is about 5.6 dB, and for a station it is whatever its gaps measure.
-   - **Rejected:** a fixed decibel figure for how far bars must stand over gaps. That is the margin HM-DEC-186 removed.
+4. **12.2 is not ticked.**
+   - **Ruling wanted:** tick 12.2 once the owner has looked at the scope at the radio, or say what else it waits on.
+   - **Reasoning:** at entry, 12.1 to 12.3 were unticked in both PHASE_PLAN.md copies, even though unit 477 ticked them; the `1b738a76` plan commit changed that. 12.2's text there still says "trace, floor, threshold, marks as bars along the bottom, the tone line as text, the passband edges shaded", which is the picture R92 replaced. The instruction does not say to tick 12.2 or to rewrite its text.
+   - **Rejected:** rewriting or ticking the criterion myself. The plan is the owner's and the web session's.
 
-5. **The tracker moves to the meter's pitch even mid-character.**
-   - **Ruling wanted:** whether HM-DEC-186's "at once" overrides HM-DEC-096's never-switch-mid-character for meter moves.
-   - **Reasoning:** the ruling says "at once". A tracker waiting on the survey is usually mixing an empty bin, where there is no character to protect. HM-DEC-096 still governs every survey move.
-   - **Rejected:** holding the meter's move until the character ends. The decoder's `InsideCharacter` on an empty bin could hold the move for as long as noise looks like a character.
-
-6. **While the meter owns the pitch, `PitchProof` reads Hypothesis.**
-   - **Ruling wanted:** whether a pitch set by the meter's verdict should read Proved.
-   - **Reasoning:** Proved is defined as the survey's keyed verdict matching the reported pitch. While the meter holds the pitch, the survey's verdict is cleared, so the pitch the decoder uses is labelled a hypothesis. That is the less confident claim, and harmless under §0.0, but it undersells the meter.
-   - **Rejected:** redefining Proved in this unit. The instruction said to change only two things.
+5. **The launcher's uncommitted edits to the root phase files were committed with task 0.**
+   - **Ruling wanted:** confirm that the root PHASE_STATUS.md and PHASE_OUTCOME.md should read "STEP: 12 | not started", or correct them. They also gained a `HEARTBEAT:` line, and the launcher had set `CURRENT_STEP: 3`, which task 0 set back to 12.
+   - **Reasoning:** these were in the working tree at entry, not written by this session. The commit script stages those files whole, as unit 477's did. Units 476 to 478 all worked step 12, so "not started" disagrees with the record. The copies under `docs/phase-requirements/` did not carry the change.
+   - **Rejected:** reverting the launcher's edits. They are the launcher's, and a revert would overwrite its state without knowing why it wrote it.

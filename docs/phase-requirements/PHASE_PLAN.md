@@ -170,6 +170,13 @@ controls with something that looks like #2."* The trace, and bars along the bott
 run detector calls a mark. No floor line, no threshold line, no light, no pitch strip. The two
 verdict buttons and the row stay.
 
+**R93 - Tim, 2026-09-28: the tolerance follows the signal.** Unit 477 fixed the run detector's
+flatness tolerance at 1.5 dB so noise never read as keying, and named the cost: a tone 15 dB
+over the noise splits its bars. Four stations the owner heard, 10 to 15 dB weaker than the
+morning's, made no bars and the meter's 17 dB swing gate refused them too. The tolerance
+becomes 477's own wobble formula at the bar's measured contrast, floored at 1.5; the meter's
+swing bar moves to 15, the lowest on a station he heard. *"Just do it."*
+
 ## §3 What is different from the phases before it
 
 1. **A criterion is a requirement id.** A report states the requirement, the condition, the
@@ -440,6 +447,9 @@ scope; the seven rulings of section R, of which the first is answered by R72; th
 sentence outside an owned block.
 
 ## §8 Revision record
+
+- **2026-09-28, night.** R93: the flatness tolerance follows the contrast; ConfidentSwingDb 17
+  to 15; 12.1 to 12.3 restored by unit 479 after the 478 plan delivery erased them.
 
 - **2026-09-28, evening.** R92: the scope drawn as the trace and the bars; the light and the
   strip retired; 12.2 rewritten in place.

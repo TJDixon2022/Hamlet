@@ -1,32 +1,32 @@
 ﻿
-Nothing here blocks the unit. Six rulings are wanted, most consequential first.
+Nothing here blocks the unit. Five items want a ruling or an action, most consequential first.
 
-1. **12.1 is ticked, but its text describes the detector this unit removed.**
-   - **Ruling wanted:** rewrite 12.1's criterion text to the bar rule (runs, bars, pairs, measured lines, no floor or margin), or untick it until it is rewritten.
-   - **Reasoning:** the instruction told task 0 to tick 12.1 to 12.3 from unit 476's work. Task 1 then replaced that work, so the tick now stands on text that is false of the tree.
-   - **Rejected:** editing PHASE_PLAN.md's criterion text myself. The plan is the owner's and the web session's, and the instruction said to tick, not to rewrite.
+1. **The trace's fallback is the detector's watched bin, not the loudest bin.**
+   - **Ruling wanted:** accept the watched bin (the passband centre before any keying, the last station's pitch after), or have a unit that may touch `CwEnvelopeDetector` expose the loudest bin's per-hop level for the trace.
+   - **Reasoning:** the instruction lists the fallback as the author's to decide, but names the loudest bin. The detector keeps per-hop history only for the bin it watches, and Â§6 forbids changing it. The watched bin is never blank and is what the detector actually reads, which is what the trace's hover says it is.
+   - **Rejected:** computing a loudest-bin level in the app from `Bins()`. That summary carries no per-hop levels, and anything built from it would be a line the detector does not compute (Â§0.0).
 
-2. **The flat tolerance, 1.5 dB, and the weak station it costs.**
-   - **Ruling wanted:** accept 1.5, and rewrite or retire unit 476's 15 dB test to say what the bar rule does with a station that weak. Or go to 2 dB and accept noise reading as keying about once in 136 reads of 20 ms over the whole band.
-   - **Reasoning:** at 2 dB, 30 s of loud noise read as keying in 11 of 1500 reads; at 1.5 dB, in none. A station 15 dB over the noise in a 500 Hz filter loses 51 of 208 key-down hops at 1.5 dB and 35 at 2 dB. Â§0.0 favours silence over a false station.
-   - **Rejected:** fitting the tolerance to the owner's rows or a recording (R91, HM-DEC-186), and joining short same-level runs back into one bar. That joins noise too.
+2. **Three retired files are emptied, not deleted.**
+   - **Action wanted:** delete `src/Hamlet.App/Controls/CwPitchStripControl.cs`, `tests/Hamlet.App.Tests/ViewModels/TheLightSaysWhatHamletThinksItHearsTests.cs` and `tests/Hamlet.App.Tests/ViewModels/TheStripShowsWhereTheDetectorLooksTests.cs`, then commit.
+   - **Reasoning:** `git rm` was refused in this session, like `rm`. Each file now holds only a comment saying so, and the build and tests are green with them in place.
+   - **Rejected:** deleting them through a script to get past the refusal.
 
-3. **The meter still gates on a 17 dB swing (task 3 dropped).**
-   - **Ruling wanted:** whether the next unit replaces the meter's swing test with the bar test, now that the meter drives the tracker.
-   - **Reasoning:** the instruction's red case (the 18.6 dB profile) already passes at 17. A station swinging under 17 is refused by the meter, so it now also does not move the tracker. The meter's own tests read a recording and cannot run under R88, so the change could not be checked against them here.
-   - **Rejected:** doing it anyway on synthetic evidence alone, in a unit whose precondition for it was not met.
+3. **The button tips and the row's `light` field changed wording.**
+   - **Ruling wanted:** accept these, or restore the old wording:
+     - the tips say "Tells Hamlet the scope is right/wrongâ€¦" and "what the bars said";
+     - `light` records "the bars say keying" or "the bars say no keying";
+     - `sinceVerdictMs` counts from that verdict's last change.
+   - **Reasoning:** the instruction keeps the buttons "exactly as they are", but their hover texts named a light that no longer exists, which would be a false sentence on screen (Â§0.0). It directs that `light` record the detector's keying verdict in words. I worded it unlike 474's "I think I hear CW" so a reader of the rows can tell which picture the owner was judging. `sinceVerdictMs` was "since the light changed", and the bars' verdict is what replaced the light.
+   - **Rejected:**
+     - leaving the tips naming the light;
+     - reusing 474's words for the new verdict, which would make old and new rows indistinguishable.
 
-4. **"The bars clear the gaps' measured wander" is the rule nearest to a margin.**
-   - **Ruling wanted:** whether it stands under "no floor, no margin, no swing threshold".
-   - **Reasoning:** without it, noise's chance flat runs paired into keying in every form I tried. It has no constant; the number is each bin's own gap wander over the last second. For noise that is about 5.6 dB, and for a station it is whatever its gaps measure.
-   - **Rejected:** a fixed decibel figure for how far bars must stand over gaps. That is the margin HM-DEC-186 removed.
+4. **12.2 is not ticked.**
+   - **Ruling wanted:** tick 12.2 once the owner has looked at the scope at the radio, or say what else it waits on.
+   - **Reasoning:** at entry, 12.1 to 12.3 were unticked in both PHASE_PLAN.md copies, even though unit 477 ticked them; the `1b738a76` plan commit changed that. 12.2's text there still says "trace, floor, threshold, marks as bars along the bottom, the tone line as text, the passband edges shaded", which is the picture R92 replaced. The instruction does not say to tick 12.2 or to rewrite its text.
+   - **Rejected:** rewriting or ticking the criterion myself. The plan is the owner's and the web session's.
 
-5. **The tracker moves to the meter's pitch even mid-character.**
-   - **Ruling wanted:** whether HM-DEC-186's "at once" overrides HM-DEC-096's never-switch-mid-character for meter moves.
-   - **Reasoning:** the ruling says "at once". A tracker waiting on the survey is usually mixing an empty bin, where there is no character to protect. HM-DEC-096 still governs every survey move.
-   - **Rejected:** holding the meter's move until the character ends. The decoder's `InsideCharacter` on an empty bin could hold the move for as long as noise looks like a character.
-
-6. **While the meter owns the pitch, `PitchProof` reads Hypothesis.**
-   - **Ruling wanted:** whether a pitch set by the meter's verdict should read Proved.
-   - **Reasoning:** Proved is defined as the survey's keyed verdict matching the reported pitch. While the meter holds the pitch, the survey's verdict is cleared, so the pitch the decoder uses is labelled a hypothesis. That is the less confident claim, and harmless under Â§0.0, but it undersells the meter.
-   - **Rejected:** redefining Proved in this unit. The instruction said to change only two things.
+5. **The launcher's uncommitted edits to the root phase files were committed with task 0.**
+   - **Ruling wanted:** confirm that the root PHASE_STATUS.md and PHASE_OUTCOME.md should read "STEP: 12 | not started", or correct them. They also gained a `HEARTBEAT:` line, and the launcher had set `CURRENT_STEP: 3`, which task 0 set back to 12.
+   - **Reasoning:** these were in the working tree at entry, not written by this session. The commit script stages those files whole, as unit 477's did. Units 476 to 478 all worked step 12, so "not started" disagrees with the record. The copies under `docs/phase-requirements/` did not carry the change.
+   - **Rejected:** reverting the launcher's edits. They are the launcher's, and a revert would overwrite its state without knowing why it wrote it.

@@ -1153,3 +1153,21 @@ LICENCE: PHASE_PLAN.md R88, R90, R91, R92, section 6, step 12; CLAUDE.md 0.0, 0.
 ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
 ADVANCES: step 12 criterion 2
 RUN: session launched with SESSION.lock already present and an empty STOP at the root, both the launcher's; neither taken, released nor removed by the session.
+
+## UNIT 1 - STEP 12
+
+STEP: 12
+APPROACH: redraw the scope as the level trace with bars along the bottom where the run detector calls a mark, drop the floor and threshold lines, retire the light and the pitch strip, and keep the verdict buttons and row unchanged
+HIT: section 4 asked nothing inside the two stops - author's, overrulable, the loop continued - The five items cover how the trace is drawn, deleting emptied files, the wording of tips and the verdict row field, ticking a plan line and the launcher edits to the phase files, and none of them touches keying or transmit or changes a fact stated to the operator about the radio, a contact or a send.
+MOVE: continue
+WHY: PHASE_PLAN.md step 12 criterion 12.2 asks that the CW tab draw the last four seconds as an oscilloscope with marks as bars along the bottom, fed fast enough that the owner sees dits, and R92 rules that it look like the picture that convinced him - a trace and bars, nothing else
+DECIDED: the trace's fallback bin when nothing is found, the bar's exact drawing, and the placement of the buttons beside the scope are the author's, overrulable
+LICENCE: PHASE_PLAN.md R88, R90, R91, R92, section 6, step 12; CLAUDE.md 0.0, 0.2 and 0.6; HM-DEC-155; FACT-006
+COST: 4.577319599999999
+ACCOMPLISHED: the owner watches the detector see what he hears, in the one picture he said he understood
+FATE: executed
+STATE_AFTER: not started
+STATE_WHY: the checkboxes say not started and the judge said in progress - the checkboxes win. The judge-s reason: The unit rebuilt the scope as R92 asks, a trace and bars with tone and mixing words proved on synthetic audio, but 12.2 as the step states it still names floor, threshold and shaded passband edges, the owner has not yet judged it by ear, the report shows no evidence for 12.1 or 12.3 as criteria, 12.4 has not been started, 12.5 shows 277 of 278 with the failure counted neither way rather than a green line, and no criterion is ticked.
+ADVANCED: no
+ATTEMPT: 12.2 | unit 1 launched 2026-09-28T14:27:38.895Z | no | executed | redraw the scope as the level trace with bars along the bottom where the run detector calls a mark, drop the floor and threshold lines, retire the light and the pitch strip, and keep the verdict buttons and row unchanged
+REASON: 12.2 | unit 1 launched 2026-09-28T14:27:38.895Z | the unit ran to completion and the criterion did not flip from unmet to met

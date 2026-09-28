@@ -393,3 +393,6 @@ the owner reads instead of watching.
 | 1 | 2026-09-28T10:23 | 2026-09-28T10:23 | note | none - not a run | no advance - step 12 criterion 4 was unmet and is unmet |
 | 1 | 2026-09-28T10:23 | 2026-09-28T10:23 | note | none - not a run | parked - criterion 12.4: promise - Item 6 asks the owner whether a pitch set by the meter should be reported as Proved instead of Hypothesis, which changes what the product tells the operator about what was heard.. It is in PARKED.md, that criterion is not authorable this pass, and the loop carries on to the plan-s other work |
 | phase | 2026-09-28T10:23 | 2026-09-28T10:23 | ending | 9.1572 | ENDED - the owner stopped the run. ended: the owner stopped the run - after iteration 1 - his reason: no reason written - the file was empty - the STOP file was deleted |
+| 1 | 2026-09-28T10:27 | 2026-09-28T10:51 | complete | 4.577319599999999 | ran unattended, 123 turns, 8 denied call(s) worked around, report valid |
+| 1 | 2026-09-28T10:52 | 2026-09-28T10:52 | note | none - not a run | no advance - step 12 criterion 2 was unmet and is unmet |
+| phase | 2026-09-28T10:52 | 2026-09-28T10:52 | ending | 4.5773 | ENDED - the owner stopped the run. ended: the owner stopped the run - after iteration 1 - his reason: no reason written - the file was empty - the STOP file was deleted |
