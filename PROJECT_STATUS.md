@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: EXECUTING
-TASK: 2 of 3
+STATE: COMPLETED
+TASK: 3 of 3
 WORK_INSTRUCTION: 475 - the swing bar the owner's ear says is wrong
-BALL: code
-NEXT_PASTE: none
+BALL: tim
+NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-184 (2026-09-27)
-UPDATED: 2026-09-27T22:12:46-04:00
-NOTE: Task 2 - hysteresis paragraph written from the source (6 dB cluster span, likelier gates are the mark-duration tests); committing
+UPDATED: 2026-09-27T22:18:13-04:00
+NOTE: Unit 475 done: swing bar 20 to 17, red at 20 and green at 17 on a synthetic window; 17 sits below the 17.7 empty recording - ruling asked; no recording read; owner STOP file still at the root
 
 ---
 
