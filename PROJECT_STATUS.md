@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-TASK: 3 of 3
-WORK_INSTRUCTION: 480 - the letter sits over the bars that made it
-BALL: tim
-NEXT_PASTE: output.md -> Claude Web
+STATE: EXECUTING
+TASK: 1 of 3
+WORK_INSTRUCTION: 481 - the window holds still when the radio moves the dial
+BALL: code
+NEXT_PASTE: none
 RULES_AT: HM-DEC-188 (2026-09-28)
-UPDATED: 2026-09-28T15:08:17-04:00
-NOTE: Unit 480 (letter over the bars) done: the scope draws the trace and bars live again and each settled letter over its own span; 12.2 waits on the owner's eye; no recording read
+UPDATED: 2026-09-28T15:16:39-04:00
+NOTE: Task 0 committed; task 1 starting: tracing the chosen and announced frequency paths through MainWindowViewModel
 
 ---
 
