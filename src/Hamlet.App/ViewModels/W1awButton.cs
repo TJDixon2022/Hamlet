@@ -69,6 +69,61 @@ public sealed record W1awButton(string Label, long FrequencyHz, string Tip, Priv
         return new W1awButton("W1AW on " + band, row.FrequencyHz, TipFor(row.FrequencyHz, tone), tone);
     }
 
+    /// <summary>What the line under the button and the dot's hover say (work instruction 497).</summary>
+    public const string ScheduleTip =
+        "W1AW's published schedule, in your clock. The ARRL schedules these runs in US Central time and "
+        + "leaves out legal holidays, which Hamlet does not know, so a run shown as scheduled may not be "
+        + "on the air.";
+
+    /// <summary>
+    /// The line under the W1AW button: the run scheduled now, or the next one, in the operator's own
+    /// clock (work instruction 497).
+    /// </summary>
+    /// <param name="state">What the schedule says for the moment.</param>
+    /// <param name="utcNow">The moment, in UTC.</param>
+    /// <param name="zone">The operator's own time zone.</param>
+    /// <returns>"Sending now: code bulletin, 18 WPM, until 8:00 PM", or "Next: ...".</returns>
+    /// <remarks>
+    /// The times are converted from UTC through the zone, never by an offset. "Sending now" is the
+    /// owner's own words for a run the schedule has on now; the hover says it is a schedule.
+    /// </remarks>
+    public static string ScheduleLine(W1awScheduleState state, DateTime utcNow, TimeZoneInfo zone)
+    {
+        ArgumentNullException.ThrowIfNull(state);
+        ArgumentNullException.ThrowIfNull(zone);
+
+        string Clock(DateTime utc) => TimeZoneInfo.ConvertTimeFromUtc(utc, zone).ToString("h:mm tt", CultureInfo.InvariantCulture);
+
+        var what = $"{state.Run.Kind}, {state.Run.Speed}";
+
+        if (state.Scheduled)
+        {
+            return $"Sending now: {what}, until {Clock(state.EndUtc)}";
+        }
+
+        var today = TimeZoneInfo.ConvertTimeFromUtc(utcNow, zone).Date;
+        var startDay = TimeZoneInfo.ConvertTimeFromUtc(state.StartUtc, zone).Date;
+
+        if (startDay == today)
+        {
+            return $"Next: {what}, {Clock(state.StartUtc)} - {Until(state.StartUtc - utcNow)}";
+        }
+
+        return startDay == today.AddDays(1)
+            ? $"Next: {what}, tomorrow {Clock(state.StartUtc)}"
+            : $"Next: {what}, {startDay.DayOfWeek} {Clock(state.StartUtc)}";
+    }
+
+    private static string Until(TimeSpan wait)
+    {
+        var minutes = (int)Math.Ceiling(wait.TotalMinutes);
+
+        return minutes <= 1 ? "in a minute"
+            : minutes < 60 ? $"in {minutes} minutes"
+            : minutes < 90 ? "in about an hour"
+            : $"in about {(int)Math.Round(minutes / 60.0)} hours";
+    }
+
     private static string TipFor(long hz, PrivilegeTone tone)
     {
         var megahertz = (hz / 1_000_000.0).ToString("0.0000", CultureInfo.InvariantCulture);

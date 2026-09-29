@@ -4,6 +4,39 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-201
+date: 2026-09-29
+refs: docs/phase-requirements/PHASE_PLAN.md R107, src/Hamlet.RadioEngine/Cw/CwEnvelopeDetector.cs, tests/Hamlet.RadioEngine.Tests/Cw/ACharacterIsARunOfMarksThatAgreeTests.cs, data/bands/w1aw-morse.json, HM-DEC-199, HM-DEC-200, work instruction 497
+---
+
+**A mark rises and falls like a key; noise drifts.** Tim, 2026-09-29, R107: *"It has a shape we
+recognize. It has a typical duration. It has a typical height."*
+
+**Height, duration and consistency were already used; shape was not.** A bar had to rise clear of
+its gaps and pair with a bar at its level, last a dit or longer, and a letter's marks had to agree on
+pitch and level and be keyed. Nothing tested a bar's edges, so a stretch that drifted up, sat flat
+long enough and drifted back passed every test.
+
+**What is built.** A completed bar is handed out as a mark only if, within four hops of its first
+flat hop, the peak falls at least 6 dB below its top, and again within four hops of its last: two
+hops for the ten millisecond window's own smear of a step and two for a keyer's rise, and half
+amplitude as the depth. It is a new condition on a mark and nothing else - the pairing, the keying
+verdict, the light and the scope see every bar as before - and it can be switched off to count.
+
+**What it did, on synthetic audio only.** Of 1452 bars thirty seconds of loud noise passed every
+existing test, 1069 have edges: the test turns away about a quarter of noise's bars, not most of
+them, because white noise's level jumps from hop to hop rather than drifting. No real mark was
+lost: the clean call keeps all 65, and every read case reads as it did. A tone that fades up and
+stops sharply was a mark and is not.
+
+**Whose words are whose.** The ruling is Tim's; the bound, its depth and the measurements are work
+instruction 497's and the author's, and overrulable.
+
+**Also recorded here, work instruction 497 section 3a:** the W1AW button carries a dot and a line for
+the Morse run scheduled now or next, from the ARRL's schedule in `data/bands/w1aw-morse.json`,
+converted through the named US Central zone into the operator's own clock.
+
+---
 id: HM-DEC-200
 date: 2026-09-29
 refs: src/Hamlet.RadioEngine/Cw/CwEnvelopeDetector.cs, src/Hamlet.RadioEngine/Cw/CwRunReader.cs, tests/Hamlet.RadioEngine.Tests/Cw/ThePitchTheDetectorFoundReachesTheDecoderTests.cs, HM-DEC-193, HM-DEC-198, work instruction 496

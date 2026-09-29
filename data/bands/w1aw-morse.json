@@ -2,6 +2,17 @@
  "_about": "W1AW's Morse code frequencies. W1AW is the ARRL's headquarters station; it sends code practice and CW bulletins on these frequencies on the ARRL's published schedule, the same all year in US Central time. A schedule's frequencies, not a band plan, and not a statement that anything is being sent now.",
  "source": "https://www.arrl.org/w1aw-operating-schedule and the ARRL bulletin archive, as given in work instruction 494, 2026-09-29",
  "speeds": "code practice at 5 to 15 words a minute (slow) or 10 to 35 (fast); CW bulletins at 18",
+ "timeZone": "America/Chicago",
+ "scheduleSource": "https://www.arrl.org/w1aw-operating-schedule, the Morse rows only, in US Central time the same all year, as given in work instruction 497, 2026-09-29. The ARRL leaves out legal holidays, which this file does not list.",
+ "schedule": [
+  { "from": "08:00", "to": "09:00", "kind": "code practice", "days": { "Tue": "fast", "Thu": "fast", "Wed": "slow", "Fri": "slow" } },
+  { "from": "15:00", "to": "16:00", "kind": "code practice", "days": { "Mon": "fast", "Wed": "fast", "Fri": "fast", "Tue": "slow", "Thu": "slow" } },
+  { "from": "16:00", "to": "17:00", "kind": "code bulletin", "days": { "Mon": "18 WPM", "Tue": "18 WPM", "Wed": "18 WPM", "Thu": "18 WPM", "Fri": "18 WPM", "Sat": "18 WPM", "Sun": "18 WPM" } },
+  { "from": "18:00", "to": "19:00", "kind": "code practice", "days": { "Tue": "fast", "Thu": "fast", "Mon": "slow", "Wed": "slow", "Fri": "slow" } },
+  { "from": "19:00", "to": "20:00", "kind": "code bulletin", "days": { "Mon": "18 WPM", "Tue": "18 WPM", "Wed": "18 WPM", "Thu": "18 WPM", "Fri": "18 WPM", "Sat": "18 WPM", "Sun": "18 WPM" } },
+  { "from": "21:00", "to": "22:00", "kind": "code practice", "days": { "Mon": "fast", "Wed": "fast", "Fri": "fast", "Tue": "slow", "Thu": "slow" } },
+  { "from": "22:00", "to": "23:00", "kind": "code bulletin", "days": { "Mon": "18 WPM", "Tue": "18 WPM", "Wed": "18 WPM", "Thu": "18 WPM", "Fri": "18 WPM", "Sat": "18 WPM", "Sun": "18 WPM" } }
+ ],
  "rows": [
   { "band": "160 m", "hz": 1802500 },
   { "band": "80 m", "hz": 3581500 },

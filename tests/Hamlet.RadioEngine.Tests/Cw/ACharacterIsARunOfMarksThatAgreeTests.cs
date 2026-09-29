@@ -411,4 +411,117 @@ public sealed class ACharacterIsARunOfMarksThatAgreeTests
 
         Assert.Empty(read);
     }
+
+    /// <summary>Every mark the detector calls on the audio, with the edge test on or off.</summary>
+    private static IReadOnlyList<CwMark> Marks(float[] samples, bool edges)
+    {
+        var detector = new CwEnvelopeDetector(Rate) { MarksNeedEdges = edges };
+
+        for (var at = 0; at + Chunk <= samples.Length; at += Chunk)
+        {
+            detector.Process(samples.AsSpan(at, Chunk));
+        }
+
+        return detector.MarksSince(0).Marks;
+    }
+
+    /// <remarks>
+    /// Case 1 of work instruction 497, and its reason: thirty seconds of loud noise, the bars that
+    /// pass every test the tree already had - height, duration, flatness, delivered as marks - and
+    /// how many of them rise and fall like a key. Asserts that fewer do.
+    /// </remarks>
+    [Fact]
+    public void MostNoiseBarsHaveNoEdges()
+    {
+        var samples = NoiseAlone();
+        var passing = Marks(samples, edges: false).Count;
+        var edged = Marks(samples, edges: true).Count;
+
+        _output.WriteLine($"thirty seconds of loud noise: bars passing every other test {passing}, of them with edges {edged}");
+
+        Assert.True(edged < passing, "the edge test turned away no noise bar");
+    }
+
+    /// <remarks>
+    /// Answers work instruction 497's question of what a real keyed edge measures: on the clean call,
+    /// for every mark of the call, the hops from its first flat hop back to where the peak sits
+    /// <see cref="CwEnvelopeDetector.EdgeDepthDb"/> below it, and the same after its last. Printed
+    /// with the edge test off, so no mark is missing from the count; asserts nothing.
+    /// </remarks>
+    [Fact]
+    public void WhatARealKeyedEdgeMeasures()
+    {
+        var off = Marks(CleanCall(), edges: false).Where(m => Math.Abs(m.PitchHz - 625) <= 25 && m.LevelDb > -20).ToList();
+        var on = Marks(CleanCall(), edges: true).Where(m => Math.Abs(m.PitchHz - 625) <= 25 && m.LevelDb > -20).ToList();
+
+        _output.WriteLine($"the clean call's marks: {off.Count} with the edge test off, {on.Count} with it on (bound {CwEnvelopeDetector.EdgeHops} hops, {CwEnvelopeDetector.EdgeDepthDb} dB)");
+    }
+
+    /// <remarks>
+    /// Case 4 of work instruction 497: a tone that fades up over 100 ms, holds 200 ms and fades down
+    /// over 100 ms is not a mark - that is fading or a carrier coming up, not a key. With the edge
+    /// test off it is.
+    /// </remarks>
+    [Fact]
+    public void ASlowRisenToneIsNotAMark()
+    {
+        var samples = new float[(int)(2.0 * Rate)];
+        var noise = new Random(497);
+        var from = (int)(0.8 * Rate);
+        var ramp = (int)(0.100 * Rate);
+        var hold = (int)(0.200 * Rate);
+
+        for (var i = 0; i < samples.Length; i++)
+        {
+            var k = i - from;
+            var shape = k < 0 ? 0
+                : k < ramp ? k / (double)ramp
+                : k < ramp + hold ? 1
+                : k < (2 * ramp) + hold ? 1 - ((k - ramp - hold) / (double)ramp)
+                : 0;
+
+            samples[i] = (float)((0.5 * shape * Math.Sin(2 * Math.PI * 625 * i / Rate)) + (0.04 * ((noise.NextDouble() * 2) - 1)));
+        }
+
+        bool Near(CwMark m) => Math.Abs(m.PitchHz - 625) <= 50 && m.LevelDb > -20;
+
+        var off = Marks(samples, edges: false).Count(Near);
+        var on = Marks(samples, edges: true).Count(Near);
+
+        _output.WriteLine($"a tone faded up over 100 ms, held 200 ms, faded down over 100 ms: marks with the edge test off {off}, on {on}");
+
+        Assert.Equal(0, on);
+    }
+
+    /// <remarks>
+    /// Case 4's other half: a tone that fades up over 100 ms, holds 200 ms and is then cut off
+    /// sharply. Unit 492's rule that a mark ends where its tone ends cannot see this one - it does
+    /// end sharply - and only the rising edge can: with the edge test off it is a mark, on it is not.
+    /// </remarks>
+    [Fact]
+    public void AToneThatFadesUpAndStopsSharplyIsNotAMark()
+    {
+        var samples = new float[(int)(2.0 * Rate)];
+        var noise = new Random(4971);
+        var from = (int)(0.8 * Rate);
+        var ramp = (int)(0.100 * Rate);
+        var hold = (int)(0.200 * Rate);
+
+        for (var i = 0; i < samples.Length; i++)
+        {
+            var k = i - from;
+            var shape = k < 0 ? 0 : k < ramp ? k / (double)ramp : k < ramp + hold ? 1 : 0;
+
+            samples[i] = (float)((0.5 * shape * Math.Sin(2 * Math.PI * 625 * i / Rate)) + (0.04 * ((noise.NextDouble() * 2) - 1)));
+        }
+
+        bool Near(CwMark m) => Math.Abs(m.PitchHz - 625) <= 50 && m.LevelDb > -20;
+
+        var off = Marks(samples, edges: false).Count(Near);
+        var on = Marks(samples, edges: true).Count(Near);
+
+        _output.WriteLine($"a tone faded up over 100 ms, held 200 ms, cut off sharply: marks with the edge test off {off}, on {on}");
+
+        Assert.Equal(0, on);
+    }
 }

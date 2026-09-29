@@ -9667,6 +9667,14 @@ public partial class MainWindowViewModel : ObservableObject
             RigSendThrottle, DispatcherPriority.Background, OnRigSendTick);
         _rigSendTimer.Stop();
 
+        // **W1AW'S NEXT RUN, KEPT CURRENT WITHOUT A PRESS** (work instruction 497): the line and the
+        // dot cross a boundary within twenty seconds of it.
+        UpdateW1awSchedule(DateTime.UtcNow, TimeZoneInfo.Local);
+        _w1awScheduleTimer = new DispatcherTimer(
+            TimeSpan.FromSeconds(20),
+            DispatcherPriority.Background,
+            (_, _) => UpdateW1awSchedule(DateTime.UtcNow, TimeZoneInfo.Local));
+
         _modeFollow = ModeFollowState.Armed(settings.ModeFollowsTheMap);
         _modeSettleTimer = new DispatcherTimer(
             ModeSettleDelay, DispatcherPriority.Background, OnModeSettleTick);
@@ -10202,6 +10210,38 @@ public partial class MainWindowViewModel : ObservableObject
     }
 
     private static bool CanTuneToW1aw(W1awButton? button) => button is { CanTune: true };
+
+    private readonly DispatcherTimer _w1awScheduleTimer;
+
+    /// <summary>
+    /// The line under the W1AW button: the Morse run scheduled now or next, in the operator's clock
+    /// (work instruction 497).
+    /// </summary>
+    [ObservableProperty]
+    private string _w1awScheduleLine = "";
+
+    /// <summary>True while the schedule has a Morse run on now: the dot is filled.</summary>
+    [ObservableProperty]
+    private bool _w1awScheduledNow;
+
+    /// <summary>"scheduled" or "quiet", beside the dot, so color is never the only carrier (§0.6).</summary>
+    [ObservableProperty]
+    private string _w1awScheduleWord = "";
+
+    /// <summary>What the line under the W1AW button and the dot say on hover.</summary>
+    public static string W1awScheduleTip => W1awButton.ScheduleTip;
+
+    /// <summary>Recompute the W1AW line and dot for a moment, in a time zone.</summary>
+    /// <param name="utcNow">The moment.</param>
+    /// <param name="zone">The operator's own time zone.</param>
+    internal void UpdateW1awSchedule(DateTime utcNow, TimeZoneInfo zone)
+    {
+        var state = W1awMorseFrequencies.Default.At(utcNow);
+
+        W1awScheduleLine = W1awButton.ScheduleLine(state, utcNow, zone);
+        W1awScheduledNow = state.Scheduled;
+        W1awScheduleWord = state.Scheduled ? "scheduled" : "quiet";
+    }
 
     /// <summary>
     /// Tune to W1AW on the band the dial is on and set the radio to CW (work instructions 494 and 495, HM-DEC-199).

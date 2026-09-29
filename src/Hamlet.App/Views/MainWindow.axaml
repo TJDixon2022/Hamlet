@@ -4226,13 +4226,41 @@
                                  fixed at 320 wide, so it moves and resizes nothing (R101). A press
                                  tunes and sets CW; it never keys. Where W1AW does not send on this
                                  band it says so and cannot be pressed. -->
-                            <Button x:Name="W1awButton"
-                                    HorizontalAlignment="Left"
-                                    Content="{Binding W1awHere.Label}" FontSize="12"
-                                    Padding="12,5" Margin="0,4,0,0"
-                                    Command="{Binding TuneToW1awCommand}"
-                                    CommandParameter="{Binding W1awHere}"
-                                    ToolTip.Tip="{Binding W1awHere.Tip}" />
+                            <!-- **AND WHAT W1AW IS DOING NEXT** (work instruction 497): a dot beside
+                                 the button, filled while the schedule has a Morse run on, with a
+                                 word so color is never the only carrier (§0.6), and one line under
+                                 it. Still the last thing in the column, so nothing moves (R101). -->
+                            <StackPanel x:Name="W1awGroup" Spacing="2" Margin="0,4,0,0">
+                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                    <Button x:Name="W1awButton"
+                                            HorizontalAlignment="Left"
+                                            Content="{Binding W1awHere.Label}" FontSize="12"
+                                            Padding="12,5"
+                                            Command="{Binding TuneToW1awCommand}"
+                                            CommandParameter="{Binding W1awHere}"
+                                            ToolTip.Tip="{Binding W1awHere.Tip}" />
+                                    <StackPanel x:Name="W1awDot" Orientation="Horizontal" Spacing="4"
+                                                VerticalAlignment="Center"
+                                                Background="Transparent"
+                                                ToolTip.Tip="{Binding W1awScheduleLine}">
+                                        <Ellipse Width="9" Height="9" VerticalAlignment="Center"
+                                                 Fill="{StaticResource HmGreenBrush}"
+                                                 IsVisible="{Binding W1awScheduledNow}" />
+                                        <Ellipse Width="9" Height="9" VerticalAlignment="Center"
+                                                 Stroke="{StaticResource HmTextMutedBrush}" StrokeThickness="1.5"
+                                                 IsVisible="{Binding !W1awScheduledNow}" />
+                                        <TextBlock Text="{Binding W1awScheduleWord}" FontSize="11"
+                                                   VerticalAlignment="Center"
+                                                   Foreground="{StaticResource HmTextMutedBrush}" />
+                                    </StackPanel>
+                                </StackPanel>
+                                <TextBlock x:Name="W1awScheduleLine"
+                                           Text="{Binding W1awScheduleLine}" FontSize="11"
+                                           TextWrapping="Wrap"
+                                           Foreground="{StaticResource HmTextMutedBrush}"
+                                           Background="Transparent"
+                                           ToolTip.Tip="{x:Static vm:MainWindowViewModel.W1awScheduleTip}" />
+                            </StackPanel>
                         </StackPanel>
                     </Border>
 

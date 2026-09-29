@@ -1120,7 +1120,9 @@ public sealed class CwEnvelopeDetector
                 // One envelope window after its end, so the key-up can show at the peak.
                 var edgeHops = EnvelopeWindowSamples / HopSamples;
 
-                if (hop < m.End + edgeHops)
+                // With edges asked for, until the hops the falling edge is read over exist (work
+                // instruction 497): four, still inside the three-window bound below.
+                if (hop < m.End + (MarksNeedEdges ? EdgeHops : edgeHops))
                 {
                     continue;
                 }
@@ -1165,6 +1167,12 @@ public sealed class CwEnvelopeDetector
                     level = MeanLevel(_bins[apex], start, m.End);
                 }
 
+                // **A MARK RISES AND FALLS LIKE A KEY** (work instruction 497, R107, HM-DEC-201).
+                if (MarksNeedEdges && !HasEdges(_bins[apex], start, m.End, level))
+                {
+                    continue;
+                }
+
                 var gap = !double.IsNaN(evals[apex].GapDb) ? evals[apex].GapDb : evals[i].GapDb;
                 var from = nowSeconds - ((hop - start + 1) * HopMs / 1000);
                 var to = nowSeconds - ((hop - m.End) * HopMs / 1000);
@@ -1196,6 +1204,50 @@ public sealed class CwEnvelopeDetector
         }
 
         _marks.RemoveAll(k => k.ToSeconds < nowSeconds - CalledSeconds);
+    }
+
+    /// <summary>How many hops a keyed edge may take to cross from gap to top, or from top to gap.</summary>
+    /// <remarks>
+    /// <para>**THE AUTHOR'S, FROM WHAT A KEY AND THIS WINDOW DO** (work instruction 497). The level
+    /// is read through a window two hops long, so a step in the audio is spread across two hops by
+    /// the window alone; a keyer shapes its edge over a few milliseconds more, allowed another two
+    /// hops, ten. Four hops, twenty milliseconds. Not fitted to any recording.</para>
+    /// </remarks>
+    public const int EdgeHops = 4;
+
+    /// <summary>How far below a mark's top its edge must reach within <see cref="EdgeHops"/>, in dB.</summary>
+    /// <remarks>
+    /// Half amplitude, the point a keyed element's edge is conventionally timed at. The author's.
+    /// </remarks>
+    public const double EdgeDepthDb = 6;
+
+    /// <summary>Whether a bar must rise and fall like a key to be handed out as a mark; on by default.</summary>
+    /// <remarks>
+    /// **HEIGHT, DURATION AND CONSISTENCY WERE TESTED; SHAPE WAS NOT** (work instruction 497, R107,
+    /// HM-DEC-201). A bar's top was held to the flatness tolerance and nothing tested its edges, so a
+    /// stretch of noise that drifted up, sat flat long enough, and drifted back passed every test.
+    /// Off, a bar is handed out as before, so the difference can be counted. It gates only the
+    /// marks: the pairing, the keying verdict, the light and the scope see every bar as before.
+    /// </remarks>
+    public bool MarksNeedEdges { get; set; } = true;
+
+    /// <summary>
+    /// Whether the level at the peak falls at least <see cref="EdgeDepthDb"/> below the mark's top
+    /// within <see cref="EdgeHops"/> before its first hop, and again within as many after its last.
+    /// </summary>
+    private static bool HasEdges(Bin peak, long start, long end, double level)
+    {
+        var rose = false;
+        var fell = false;
+
+        for (var k = 1; k <= EdgeHops && !(rose && fell); k++)
+        {
+            // Before the first hop there is no level, so no rise can be seen there.
+            rose |= start - k >= 0 && peak.Level(start - k) <= level - EdgeDepthDb;
+            fell |= peak.Level(end + k) <= level - EdgeDepthDb;
+        }
+
+        return rose && fell;
     }
 
     /// <summary>Whether a mark overlapping this span within one bin of its pitch, at its level, is already called.</summary>

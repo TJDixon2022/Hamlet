@@ -254,6 +254,11 @@ to make it work."* The terminal reads the run reader, the same source as the scr
 the blocks, and what is in the one is what is in the other. The timing-only path leaves the screen
 and stays in the tree, behind `ReadsRuns`, for tests and comparison.
 
+**R107 - Tim, 2026-09-29: height, duration, shape.** *"Our philosophy is CW is predictable signal
+within noise. It has a shape we recognize. It has a typical duration. It has a typical height. It
+has a shape. Are we using all of those factors to identify actual signal? Because I'm still seeing
+a lot of false characters."*
+
 ## §3 What is different from the phases before it
 
 1. **A criterion is a requirement id.** A report states the requirement, the condition, the
