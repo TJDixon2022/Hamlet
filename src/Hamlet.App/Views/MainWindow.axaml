@@ -4219,6 +4219,31 @@
                             <ctl:HintMarkControl Kind="Tip" HorizontalAlignment="Left"
                                 Foreground="{StaticResource HmAmberDeepBrush}"
                                 Text="CQ tells the band you are looking for a conversation and puts your callsign on it. RST is the signal report, which is your honest word on how well you are hearing the other station. 73 is how a contact ends, and it means best wishes. Clear empties the line and sends nothing. Send puts what is on the line on the air." />
+
+                            <!-- **W1AW, ONE BUTTON PER BAND** (work instruction 494, HM-DEC-199).
+                                 The last thing in this column, which is fixed at 320 wide, so it
+                                 moves and resizes nothing (R101). A press tunes and sets CW; it
+                                 never keys. -->
+                            <StackPanel x:Name="W1awRow" Spacing="4" Margin="0,4,0,0">
+                                <TextBlock Text="Listen to W1AW" FontSize="12" FontWeight="SemiBold"
+                                           Foreground="{StaticResource HmTextPrimaryBrush}" />
+                                <ItemsControl ItemsSource="{Binding W1awButtons}">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <WrapPanel />
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate x:DataType="vm:W1awButton">
+                                            <Button Content="{Binding Label}" FontSize="11"
+                                                    Padding="8,3" Margin="0,0,4,4"
+                                                    Command="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).TuneToW1awCommand}"
+                                                    CommandParameter="{Binding}"
+                                                    ToolTip.Tip="{Binding Tip}" />
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
                         </StackPanel>
                     </Border>
 

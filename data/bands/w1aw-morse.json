@@ -1,0 +1,16 @@
+{
+ "_about": "W1AW's Morse code frequencies. W1AW is the ARRL's headquarters station; it sends code practice and CW bulletins on these frequencies on the ARRL's published schedule, the same all year in US Central time. A schedule's frequencies, not a band plan, and not a statement that anything is being sent now.",
+ "source": "https://www.arrl.org/w1aw-operating-schedule and the ARRL bulletin archive, as given in work instruction 494, 2026-09-29",
+ "speeds": "code practice at 5 to 15 words a minute (slow) or 10 to 35 (fast); CW bulletins at 18",
+ "rows": [
+  { "band": "160 m", "hz": 1802500 },
+  { "band": "80 m", "hz": 3581500 },
+  { "band": "40 m", "hz": 7047500 },
+  { "band": "20 m", "hz": 14047500 },
+  { "band": "17 m", "hz": 18097500 },
+  { "band": "15 m", "hz": 21067500 },
+  { "band": "10 m", "hz": 28067500 },
+  { "band": "6 m", "hz": 50350000 },
+  { "band": "2 m", "hz": 147555000 }
+ ]
+}

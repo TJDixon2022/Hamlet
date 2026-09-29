@@ -4,6 +4,35 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-199
+date: 2026-09-29
+refs: data/bands/w1aw-morse.json, src/Hamlet.RadioEngine/Bands/W1awMorseFrequencies.cs, src/Hamlet.App/ViewModels/W1awButton.cs, HM-DEC-029, HM-DEC-056, HM-DEC-087, work instruction 494
+---
+
+**W1AW's Morse frequencies are one button per band on the CW tab.** The owner, 2026-09-29: *"There
+have been no CW activity for hours,"* and *"add a button for each band that supports W1AW."*
+
+**The source is the ARRL's own schedule** (`arrl.org/w1aw-operating-schedule` and the ARRL bulletin
+archive), carried in `data/bands/w1aw-morse.json` with nothing about times, because W1AW's times are
+US Central and a time computed against UTC can be wrong on screen (§0.0).
+
+**What is offered.** 160, 80, 40, 20, 17, 15 and 10 m. **2 m is left out because the IC-7300 cannot
+tune it**; 6 m is left out too, because the spectrum Hamlet knows does not carry it and the card
+would call 50.350 MHz "not an amateur band", which is false.
+
+**What a press does.** It tunes by the path every tune button takes and sets CW with the mode
+write Hamlet already makes, holding mode-follow off until the next band change as the operator's
+own hand does: pressing a CW button is the operator choosing CW, and the map's FT4 and PSK31 blocks
+cover two of the frequencies. Nothing keys.
+
+**Every button is pressable**, where the instruction asked for a band outside the license not to
+be: listening is never restricted (HM-DEC-029) and grey is kept for what cannot be used
+(HM-DEC-087), so the hover says when the license does not cover sending there.
+
+**Whose words are whose.** The request is the owner's; the wording and the two departures from the
+instruction are work instruction 494's, and are overrulable.
+
+---
 id: HM-DEC-198
 date: 2026-09-29
 refs: docs/phase-requirements/PHASE_PLAN.md R106, src/Hamlet.RadioEngine/Cw/CwRunReader.cs, src/Hamlet.RadioEngine/Cw/CwEnvelopeDetector.cs, src/Hamlet.RadioEngine/Cw/CwMark.cs, src/Hamlet.RadioEngine/Cw/CwDecoder.cs, tests/Hamlet.App.Tests/ViewModels/OneDecoderOneTruthTests.cs, HM-DEC-195, work instruction 493

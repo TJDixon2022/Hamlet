@@ -10165,6 +10165,92 @@ public partial class MainWindowViewModel : ObservableObject
         UpdateFavoriteState();
     }
 
+    /// <summary>W1AW's Morse frequencies, one button per band, for the CW tab (work instruction 494).</summary>
+    /// <remarks>
+    /// Built from <c>data/bands/w1aw-morse.json</c> and rebuilt only when the license class changes,
+    /// never per frequency: buttons rebuilt under the pointer are dead buttons (HM-DEC-078).
+    /// </remarks>
+    public IReadOnlyList<W1awButton> W1awButtons
+    {
+        get
+        {
+            var cls = _settings.Operator.LicenseClass;
+
+            if (_w1awButtons is null || _w1awClass != cls)
+            {
+                _w1awButtons = W1awButton.For(W1awMorseFrequencies.Default, _privileges, cls);
+                _w1awClass = cls;
+            }
+
+            return _w1awButtons;
+        }
+    }
+
+    private IReadOnlyList<W1awButton>? _w1awButtons;
+
+    private LicenseClass _w1awClass;
+
+    /// <summary>
+    /// Tune to W1AW on one band and set the radio to CW (work instruction 494, HM-DEC-199).
+    /// </summary>
+    /// <param name="button">The band's button.</param>
+    /// <remarks>
+    /// <para>**THE DIAL GOES BY THE SAME PATH AS EVERY OTHER TUNE BUTTON**, <see cref="TuneTo"/>.
+    /// The mode cannot be left to mode-follow: 7.0475 sits in the map's FT4 block and 3.5815 in its
+    /// PSK31 block, where mode-follow would set the data variant, and 160 m is not a band Hamlet
+    /// maps. So the press sets CW itself, with the same mode write the Olivia tab makes, and holds
+    /// mode-follow off until the next band change exactly as the operator's own hand on the mode
+    /// knob does (HM-DEC-056), because pressing a CW button is the operator choosing CW.</para>
+    /// <para>**NOTHING KEYS.** A frequency and a mode, both writes Hamlet already makes, and
+    /// nothing else: no drive, no keyer, no transmit (CLAUDE.md §0.2).</para>
+    /// </remarks>
+    [RelayCommand]
+    private async Task TuneToW1aw(W1awButton? button)
+    {
+        if (button is null)
+        {
+            return;
+        }
+
+        TuneTo(button.FrequencyHz);
+
+        _modeFollow = _modeFollow.SuspendedByOperator();
+        ModeFollowSuspended = true;
+
+        var where = $"{button.Label}: {Megahertz(button.FrequencyHz)} MHz";
+
+        if (_rig is not { } rig || !IsConnected)
+        {
+            Narrate($"{where}. No radio is connected, so Hamlet has not set CW.");
+
+            return;
+        }
+
+        _settingModeOurselves = true;
+
+        try
+        {
+            var result = await rig.SetModeAsync(CivMode.Cw, false).ConfigureAwait(true);
+
+            _lastKnownMode = result.Worked ? CivMode.Cw : null;
+
+            AppEvents.ModeFollowed(_telemetry, CivMode.Cw.ToString(), false, result.Outcome.ToString());
+
+            Narrate(result.Worked
+                ? $"{where} in CW. Hamlet will leave the mode alone until you next change band."
+                : $"{where}, but the radio did not take CW ("
+                  + (result.Detail.Length > 0 ? result.Detail : result.Source) + ").");
+        }
+        catch (Exception ex)
+        {
+            Narrate($"{where}, but Hamlet could not set CW ({ex.Message}).");
+        }
+        finally
+        {
+            _settingModeOurselves = false;
+        }
+    }
+
     /// <summary>Tune to a saved frequency.</summary>
     [RelayCommand]
     private void TuneToFavorite(Favorite? favorite)
@@ -22291,6 +22377,14 @@ public partial class MainWindowViewModel : ObservableObject
         var cls = _settings.Operator.LicenseClass;
 
         PrivilegeSpans = _privileges.SpansFor(SelectedBand.Band, cls);
+
+        // The W1AW buttons say what the license covers, so a new class rebuilds them (work
+        // instruction 494); a new frequency does not.
+        if (_w1awButtons is not null && _w1awClass != cls)
+        {
+            OnPropertyChanged(nameof(W1awButtons));
+        }
+
         // The card answers two questions at once: what the license allows, and
         // what is actually going on where the dial is pointing (HM-DEC-054).
         var here = Neighborhoods.FirstOrDefault(n => n.Contains(FrequencyHz));
