@@ -139,6 +139,19 @@ public sealed class ACharacterIsARunOfMarksThatAgreeTests
         return detector.MarksSince(0).Marks;
     }
 
+    /// <summary>
+    /// The clean call's own marks: within a bin of 625 Hz and within 6 dB of the loudest there.
+    /// Since work instruction 492 the detector hands out every bar, the noise's too, so the call
+    /// is picked out of all the marks rather than being all of them.
+    /// </summary>
+    private static List<CwMark> CallsOwnMarks()
+    {
+        var near = Marks(CleanCall()).Where(m => Math.Abs(m.PitchHz - 625) <= CwRunReader.PitchToleranceHz).ToList();
+        var loudest = near.Max(m => m.LevelDb);
+
+        return near.Where(m => m.LevelDb >= loudest - 6).ToList();
+    }
+
     private (string Old, string New) Both(string name, float[] samples, string sent)
     {
         var old = Read(samples, runs: false);
@@ -159,7 +172,7 @@ public sealed class ACharacterIsARunOfMarksThatAgreeTests
     /// </summary>
     private int MarksNotTheCalls(float[] samples)
     {
-        var clean = Marks(CleanCall());
+        var clean = CallsOwnMarks();
         var callLevel = clean.Select(m => m.LevelDb).OrderBy(l => l).ElementAt(clean.Count / 2);
         var callContrast = clean.Select(m => m.ContrastDb).Where(c => !double.IsNaN(c)).Average();
         var detector = new CwEnvelopeDetector(Rate);
@@ -290,7 +303,7 @@ public sealed class ACharacterIsARunOfMarksThatAgreeTests
     [Fact]
     public void HowManyOfTheCallsMarksAreCalled()
     {
-        var clean = Marks(CleanCall());
+        var clean = CallsOwnMarks();
         var callLevel = clean.Select(m => m.LevelDb).OrderBy(l => l).ElementAt(clean.Count / 2);
         var callContrast = clean.Select(m => m.ContrastDb).Where(c => !double.IsNaN(c)).Average();
 
@@ -308,6 +321,58 @@ public sealed class ACharacterIsARunOfMarksThatAgreeTests
             var extra = calls.Count(m => !clean.Any(c => Overlap(c, m) >= (c.ToSeconds - c.FromSeconds) / 2));
 
             _output.WriteLine($"{name}: of the clean call's {clean.Count} marks, called {called}; other marks at the call's pitch and level {extra}");
+        }
+    }
+
+    /// <remarks>
+    /// Case 4 of work instruction 492: a lone dit, or a lone dah, alone in silence, prints no letter.
+    /// A lone bar, however clean, is not a character (R105).
+    /// </remarks>
+    /// <param name="text">E for the dit, T for the dah.</param>
+    [Theory]
+    [InlineData("E")]
+    [InlineData("T")]
+    public void ALoneDitOrDahPrintsNothing(string text)
+    {
+        var samples = Station(text, 23, 625, 0.5, 0.04, 3, 492).Samples;
+        var read = ReadCharacters(samples, runs: true).Where(c => !c.IsWordGap).ToList();
+
+        _output.WriteLine($"a lone `{text}`: marks called {Marks(samples).Count}, characters printed {read.Count} `{Text(read)}`");
+
+        Assert.Empty(read);
+    }
+
+    /// <remarks>
+    /// Answers work instruction 492 section 3 and asserts nothing: how long after a mark ends the
+    /// detector hands it out, at worst, on each case - the mark's end against the audio the detector
+    /// had heard when <see cref="CwEnvelopeDetector.MarksSince"/> first returned it.
+    /// </remarks>
+    [Fact]
+    public void HowLateAMarkIsHandedOut()
+    {
+        foreach (var (name, samples) in new[] { ("clean call", CleanCall()), ("call with blips", CallWithBlips()), ("two stations", TwoStations()), ("noise alone", NoiseAlone()) })
+        {
+            var detector = new CwEnvelopeDetector(Rate);
+            var sequence = 0L;
+            var worst = 0.0;
+            var count = 0;
+
+            for (var at = 0; at + Chunk <= samples.Length; at += Chunk)
+            {
+                detector.Process(samples.AsSpan(at, Chunk));
+
+                var batch = detector.MarksSince(sequence);
+
+                foreach (var m in batch.Marks)
+                {
+                    worst = Math.Max(worst, batch.HeardSeconds - m.ToSeconds);
+                    count++;
+                }
+
+                sequence = batch.Marks.Count > 0 ? batch.Marks.Max(m => m.Sequence) : sequence;
+            }
+
+            _output.WriteLine($"{name}: marks {count}, worst delivery {worst * 1000:0} ms after the mark ended");
         }
     }
 }

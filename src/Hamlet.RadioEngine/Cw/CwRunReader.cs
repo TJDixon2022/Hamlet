@@ -45,10 +45,16 @@ public sealed class CwRunReader
     /// </remarks>
     public const double TwoKindsRatio = 2;
 
-    /// <summary>How many runs a sender makes before it is printed.</summary>
+    /// <summary>How many runs of two marks or more a sender makes, with dits and dahs among them, before it is printed.</summary>
     /// <remarks>
-    /// **A SENDER REPEATS HIMSELF; NOISE THAT AGREES WITH ITSELF ONCE IS A COINCIDENCE.** One run
-    /// can be a lone blip; two runs agreeing on pitch and level are somebody keying. Author's.
+    /// <para>**A SENDER REPEATS HIMSELF; NOISE THAT AGREES WITH ITSELF ONCE IS A COINCIDENCE.** One run
+    /// can be a lone blip; two runs agreeing on pitch and level are somebody keying. Author's.</para>
+    /// <para>**AND A RUN MUST EARN ITS LETTERS** (work instruction 492, R105, HM-DEC-197). Marks are now
+    /// handed out the moment they end, unpaired, so the noise guard the pairing gave is here: a run
+    /// of one mark never counts toward a sender - a lone bar, however clean, is not a character - and
+    /// a sender whose marks are all one length, never two kinds at <see cref="TwoKindsRatio"/>, is
+    /// not a sender. Once a sender is printed, a letter of one mark, E or T, is printed with it;
+    /// otherwise every DE would read D.</para>
     /// </remarks>
     public const int QualifyingRuns = 2;
 
@@ -186,9 +192,16 @@ public sealed class CwRunReader
             _station = null;
         }
 
+        // Senders long silent and not printed are forgotten: one that never made two runs of two marks
+        // after the hold, one that did after the minute the detector keeps its marks.
+        if (double.IsFinite(heardSeconds))
+        {
+            _senders.RemoveAll(s => s != _station && s.LastToSeconds < heardSeconds - (s.Ended.Count(r => r.Length >= 2) >= QualifyingRuns ? CwEnvelopeDetector.CalledSeconds : ReleaseSeconds));
+        }
+
         // The sender with the most marks among those that have made two runs, the louder on a tie.
         _station ??= _senders
-            .Where(s => s.Ended.Count >= QualifyingRuns)
+            .Where(s => s.Ended.Count(r => r.Length >= 2) >= QualifyingRuns && s.TwoKindsSeen)
             .OrderByDescending(s => s.Marks)
             .ThenByDescending(s => s.Reference.Level)
             .FirstOrDefault();
@@ -212,9 +225,6 @@ public sealed class CwRunReader
             Raise(station, run);
             _printedThrough = run[^1].ToSeconds;
         }
-
-        // Senders long silent and not printed are forgotten.
-        _senders.RemoveAll(s => s != _station && s.LastToSeconds < heardSeconds - CwEnvelopeDetector.CalledSeconds);
     }
 
     private void Raise(Sender sender, CwMark[] run)

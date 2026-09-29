@@ -1,9 +1,9 @@
-# Work instruction 491 - the bars survive the noise beside them
+# Work instruction 492 - a mark is a mark the moment it ends
 
-**Hand run. One unit.** Unit 490 built the reader the owner asked for and it works: on a clean
-call the new path reads it whole, and on a call with bursts in every gap **not one burst became a
-letter.** What is left is upstream: the detector loses the station's own marks where a burst or a
-second station lands near them. This unit fixes that, and only that.
+**Hand run. One unit.** Unit 491 measured that every mark of a keyed call is already found -
+right pitch, right length, flat top - and that the fault is delivery: a mark can be handed out
+up to a second late, because a pair waits on a second of quiet history. This unit delivers a
+mark when it ends.
 
 **No test against a recording, a fixture, a floor or copied telemetry** (R96). A headless test
 driving synthetic hops written in the test itself is allowed; nothing read from disk. Verify by
@@ -42,7 +42,7 @@ If all five hold, say "Hamlet confirmed" and continue.
 - One `dotnet test` invocation per line, filtered, with a `timeout`. Never background and poll.
   The app line loses names to the dispatcher loop; re-run once, count neither way.
 - Apostrophes in quoted heredocs break; `;`, `rm` and `git rm` are refused; Python cannot run
-  here; `-m` more than once for a multi-line commit. Scripts go in `.run-unit\unit491-<name>.sh`
+  here; `-m` more than once for a multi-line commit. Scripts go in `.run-unit\unit492-<name>.sh`
   and are not committed.
 - Nothing that keys or transmits. Nothing written to the radio.
 - `output.md` at the root, four headings exactly: `## 1. What Claude did`, `## 2. What the owner
@@ -50,92 +50,108 @@ If all five hold, say "Hamlet confirmed" and continue.
 
 ---
 
-## 2. What unit 490 proved, and the one thing in the way
+## 2. What unit 491 measured, and the owner's rule
 
-**The owner's standing rule, R104, 2026-09-28:**
+**Unit 491 refused unit 490's diagnosis and measured the truth.** On the call with bursts in
+every gap, **every one of its 65 marks is called** - the same as on a clean call. Nothing is lost.
+What happens instead: **a mark is handed out late.** The `L`'s third dit ran 10.520 to 10.565 s
+and was handed out at 11.000 s, **435 ms after it ended**, because the check that a paired bar
+stands clear of its gap's wander is measured over the bin's last second, and a burst anywhere in
+that second holds the pair back. By the time the dit arrived, the run reader had closed the `L`'s
+run, and the `L` came out as `E` and `I`.
 
-> *"We need to characterize what a signal looks like in noise and then use that characterization
-> to identify data worth decoding. If we don't see anything in the noise, we don't even bother
-> with the decoder. We focus on looking for those bars of amplitude with the duration that
-> indicate a dot or a dash. We got to get that right."*
+**The owner's rule, R105, 2026-09-28:**
 
-**Unit 490 got the reader right.** Its three cases, from its own report:
+> *"What we need to do is get the dot and dash by frequency, period, and flatness. When we have a
+> dot and a dash isolated, decoding will be easy."*
 
-| case | sent | the run reader read |
-|---|---|---|
-| clean call, one pitch, one level | `CQ CQ DE N0CALL N0CALL K` | **the same, whole** |
-| the call with bursts in every gap | `CQ CQ DE N0CALL N0CALL K` | `CQ CT A K EE N0CAAEI D N0CALL K` |
-| the call at 625 Hz plus another station at 825 Hz | both | the call only, never the answer |
+**So the isolation is done and the delivery is not.** A bar with a flat top, held at one level,
+for a dit's length or longer, at a consistent pitch, **is a dot or a dash the moment it ends.**
+It does not need a partner, and it does not need a second of quiet history, to be what it already
+is.
 
-**And the reader is not what is wrong.** In case 2, **every one of the 65 marks its letters were
-read from was the call's own**; not one of the bursts became a letter. In case 3 it printed one
-station and took in none of the other's marks, where printing every run took in 21.
-
-**The fault is one line in the detector, and unit 490 named it.** A burst landing in a gap lights
-the station's own bin. The gap then fails the detector's check that bars must stand clear of the
-wander in their gaps, so **the bars on either side of that gap are never paired, and the
-station's own marks are never called at all.** Measured on case 2: **none of the first `CQ`'s four
-marks were called.** The wrong letters in case 2 and 3 are not misreadings - they are the
-station's marks going missing.
-
-Two red tests are waiting for exactly this, left red on purpose by unit 490:
-`TheCallReadsWholeThroughTheBlips` and `TheStationPrintedReadsWhole`.
+**Where the noise guard goes instead.** Unit 491 proved the guard does real work: removed
+outright, thirty seconds of loud noise alone called 61 marks and printed `NETMITT`. **But a lone
+mark never becomes a letter anyway** - unit 490's reader needs a run of marks that agree on pitch
+and level, and a sender is printed only after two runs. **The guard belongs where the letters are
+made, not where the marks are found.**
 
 ---
 
-## 3. The change - a noisy gap does not disqualify its bars
+## 3. The change
 
-In `CwEnvelopeDetector`, the pairing check that bars must stand clear of their gaps' wander is
-**the thing that loses the station.** A bar is a bar because of what the bar is: a flat top, held
-at one level, for a dit's length or longer. **What happened in the silence next to it does not
-make it less of a bar.**
+### One - a mark is delivered when it ends
 
-- **A bar is judged on itself**: its own flatness, its own length, its own level. It is not
-  disqualified by the level or the wander of the gap beside it.
-- **A gap is still a gap** - the run reader needs its length to place letters and words - but a
-  noisy gap is a gap that was noisy, not a reason to throw away the marks around it.
-- **Two bars still pair** when they agree with each other, as they do today: within the flatness
-  tolerance of each other, both at least a dit long. **That agreement is between the bars, not
-  between a bar and its gap.**
-- **Do not loosen the flatness tolerance, the shortest-bar length, or the pairing agreement.**
-  The fix is removing a disqualification, not widening a bar.
+In `CwEnvelopeDetector`, a completed bar becomes a `CwMark` **on the hop it ends**, judged on
+itself:
 
-**Name in the report the exact check that was removed or narrowed, by file and line, and what it
-was for.** If it guards against something real - a slowly rising carrier read as one long bar, say
-- then keep that guard and narrow it to the case it was written for, and say which.
+- its top is flat within the flatness tolerance (R93, contrast-following, unchanged);
+- it is at least the shortest bar long (25 ms, unchanged);
+- its pitch is the peak of its own lobe, as unit 490 already finds it;
+- it carries its level, its contrast, its length and its times, as unit 490 already gives it.
 
-**Watch it fail first.** The two reds above are the test:
+**It is not held for a partner, and not held for the wander check's one-second window.** The
+pairing machinery stays in the tree and keeps driving the detector's own `keying` verdict, the
+light and the scope's picture - **do not change what those show.** What changes is that
+`MarksSince` hands out a mark as soon as the bar is complete.
 
-- `TheCallReadsWholeThroughTheBlips`: the call with bursts 8 dB below it, 40 ms long, at 550 to
-  675 Hz, in every gap. **Red today because the call's own marks are not called.** Green when
-  every mark of the call is called and the reader reads the call whole.
-- `TheStationPrintedReadsWhole`: the call plus a second station 200 Hz away. Green when the
-  printed station's letters are read from its own marks and it reads whole.
+**The wander check is not deleted.** It stays exactly where it is for the keying verdict. It
+simply no longer gates delivery.
 
-**And prove noise alone still makes nothing**: a third case, loud noise with no station, asserting
-the reader prints nothing. **Red if the removal lets noise pair into runs.** If it does, the guard
-was doing real work and the report says so instead of forcing the other two green.
+### Two - the guard moves to where letters are made
 
-## 4. If there is time - the panel says the pitch it is reading
+In `CwRunReader`, a run must earn its letters:
 
-The panel reads *decoding at N Hz* from the old path's mixing pitch, which no longer describes
-what the terminal shows: the run reader reads at the printed sender's own pitch. **Make it the
-printed sender's pitch**, and say *no station* when none is printed.
+- **a run of one mark makes no letter.** A lone bar, however clean, is not a character.
+- **a sender is printed only after two runs**, as unit 490 already has it.
+- **add one more, and state it as a rule with its reason:** a run's marks must agree on pitch
+  *and* level *and* fall in a plausible dit-and-dah pattern - the run's own short and long marks
+  at least 2 to 1, as unit 490 has it. A run whose marks are all the same length and which never
+  makes a second run is not a sender.
 
-**If this cannot be done cleanly and quickly, skip it**, commit §3, and say so in section 4.
+**The test of whether this is enough is `NoiseAloneReadsNothing`**, which unit 491 wrote. Loud
+noise, no station, must print nothing. **If delivering marks early lets noise through the reader,
+say so with the count and do not force it green** - then the guard is needed further forward and
+the report says where.
+
+### Three - what must not change
+
+- **Do not touch** the flatness tolerance, the shortest bar, the pitch-peak walk, the pairing
+  agreement, or unit 491's nearest-bar-at-its-own-level change.
+- **Do not touch** the light, the scope's drawing, the layout, the preamp, printed-stays-printed,
+  or the verdict row.
+- **Do not touch** the lattice, the speed grid, the unit estimator or the emission gate.
+- **Unit 489's three switches stay off.**
+
+**Watch it fail first**, with synthetic hops written in the test, and report each case's text and
+the worst delivery delay in milliseconds:
+
+1. **`TheCallReadsWholeThroughTheBlips`** - unit 490's call with bursts in every gap. **Red today
+   because marks arrive after their run has closed.** Green when the call reads whole.
+2. **`NoiseAloneReadsNothing`** - loud noise, no station. Must stay green.
+3. **`TheStationPrintedReadsWhole`** - the call plus a second station 200 Hz away. Report what it
+   reads; green if it reads the printed station whole.
+4. **A lone dit and a lone dah**, each alone in silence. **Neither prints a letter.**
+
+## 4. Also - keep unit 491's pairing change
+
+The owner is asked in 491's report whether to keep the change where a bar pairs with the nearest
+bar at its own level. **Keep it.** It reads the bursts case better, and its only cost is thirty
+extra missed hops on a weak tone's scope picture, not on the letters. Record that as the answer
+in `PARKED.md` and in this unit's report; change nothing.
 
 ---
 
 ## 5. Record
 
-- `PHASE_OUTCOME.md`, both copies: `## UNIT 491 - STEP 12`, one paragraph.
-- `PHASE_STATUS.md`, both copies: names 491.
+- `PHASE_OUTCOME.md`, both copies: `## UNIT 492 - STEP 12`, one paragraph.
+- `PHASE_STATUS.md`, both copies: names 492.
 - Patch-bump `Directory.Build.props`.
-- **Append R104 to the rulings section of both `PHASE_PLAN.md` copies**, in the owner's words
+- **Append R105 to the rulings section of both `PHASE_PLAN.md` copies**, in the owner's words
   above. **Touch no checkbox.**
-- `DECISIONS.md`, newest first, **HM-DEC-196**, headline *A bar is judged on itself, not on the
-  noise in the gap beside it*, naming unit 490's measurement - none of the first CQ's four marks
-  called - as the reason.
+- `DECISIONS.md`, newest first, **HM-DEC-197**, headline *A mark is a dot or a dash the moment it
+  ends; the noise guard belongs where letters are made*, naming unit 491's 435 ms measurement as
+  the reason.
 
 ---
 
@@ -144,12 +160,11 @@ printed sender's pitch**, and say *no station* when none is printed.
 Section 2, for the owner, in plain words:
 
 - rebuild;
-- a station whose gaps have noise in them should now read whole, where before the letters beside
-  the noise went missing;
+- letters no longer split because a dot arrived late - the blocks and the letters should appear
+  within a fraction of a second of the sending;
 - noise with no station still prints nothing;
-- two stations at once still read as one.
+- a single lone dit or dah prints nothing, on purpose.
 
-Section 1: what changed, file by file, **the exact check removed or narrowed and what it was
-for**, and that the build and the app line are green. **Section 3: the three cases' text, sent
-beside read, and the count of the station's marks called before and after.** Section 4: anything
-left, a line each.
+Section 1: what changed, file by file, and that the build and the app line are green.
+**Section 3: the four cases' text, and the worst delivery delay before and after in
+milliseconds.** Section 4: anything left, a line each.

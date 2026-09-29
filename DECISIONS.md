@@ -4,6 +4,36 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-197
+date: 2026-09-28
+refs: docs/phase-requirements/PHASE_PLAN.md R105, src/Hamlet.RadioEngine/Cw/CwEnvelopeDetector.cs, src/Hamlet.RadioEngine/Cw/CwRunReader.cs, HM-DEC-196, work instruction 492
+---
+
+**A mark is a dot or a dash the moment it ends; the noise guard belongs where letters are made.**
+Tim, 2026-09-28, R105: *"What we need to do is get the dot and dash by frequency, period, and
+flatness. When we have a dot and a dash isolated, decoding will be easy."*
+
+**The reason is unit 491's measurement**: the L's third dit, 10.520 to 10.565 s, was handed out at
+11.000 s, 435 ms after it ended, because a mark waited to be paired and pairing waits on the check
+that the bars clear their gaps' wander over the last second; the reader had closed the L's run and
+the L read E and I.
+
+**What is built.** The detector hands out every completed bar, paired or not, one envelope window
+after it ends and no later than three. A mark ends where its tone ends - the peak of its lobe has
+dropped below it a window later - and begins where its tone rose, reaching back over the peak's
+hops at its level; a mark already called stands in for a new one only at the same level. Pairing
+and the wander check are untouched and still drive the keying verdict, the light and the scope.
+The run reader prints a sender only after two runs of two marks or more with dits and dahs among
+them, and never counts a run of one mark toward one.
+
+**What it did.** Worst delivery fell from 85, 445 and 710 ms to 15 ms on the clean call, the call
+with bursts and the two-station case; the call reads whole in all three; loud noise alone hands
+out 1,457 marks and prints nothing; a lone dit or dah prints nothing.
+
+**Whose words are whose.** The ruling is Tim's; the wording, the three delivery rules and the
+measurements are work instruction 492's.
+
+---
 id: HM-DEC-196
 date: 2026-09-28
 refs: docs/phase-requirements/PHASE_PLAN.md R104, src/Hamlet.RadioEngine/Cw/CwEnvelopeDetector.cs, tests/Hamlet.RadioEngine.Tests/Cw/ACharacterIsARunOfMarksThatAgreeTests.cs, HM-DEC-195, work instruction 491

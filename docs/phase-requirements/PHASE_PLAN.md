@@ -245,6 +245,10 @@ worth decoding. If we don't see anything in the noise, we don't even bother with
 focus on looking for those bars of amplitude with the duration that indicate a dot or a dash. We
 got to get that right."*
 
+**R105 - Tim, 2026-09-28: the dot and the dash, by frequency, period and flatness.** *"What we need
+to do is get the dot and dash by frequency, period, and flatness. When we have a dot and a dash
+isolated, decoding will be easy."*
+
 ## §3 What is different from the phases before it
 
 1. **A criterion is a requirement id.** A report states the requirement, the condition, the

@@ -1022,7 +1022,8 @@ public sealed class CwEnvelopeDetector
                 : double.IsFinite(waves.Level) ? waves.Level
                 : gapHops > 0 ? 10 * Math.Log10(gapPower / gapHops) : double.NaN,
             bars.Where(i => runs[i].End > recent).Select(i => runs[i].Mean).DefaultIfEmpty(double.NegativeInfinity).Max(),
-            loudestGap);
+            loudestGap,
+            bars.Select(i => new Span(runs[i].Start, runs[i].End, runs[i].Mean)).ToList());
     }
 
     /// <summary>
@@ -1070,30 +1071,86 @@ public sealed class CwEnvelopeDetector
 
     /// <summary>
     /// Every bar completed in any bin becomes one mark at the peak of its lobe, with its level and
-    /// contrast (work instruction 490, R103).
+    /// contrast (work instruction 490, R103), on the hop it ends (work instruction 492, R105).
     /// </summary>
+    /// <remarks>
+    /// **A MARK IS A DOT OR A DASH THE MOMENT IT ENDS** (work instruction 492, R105, HM-DEC-197). A
+    /// bar - a flat top held within the flatness tolerance, at least the shortest bar long, standing
+    /// above the runs either side - is handed out when it is complete, judged on itself. It used to
+    /// wait to be paired, and pairing waits on the check that the bars clear their gaps' wander over
+    /// the last second, so a burst in that second held a station's dit back 435 ms past its end
+    /// (unit 491) and the reader had closed its letter. Pairing and the wander check are untouched
+    /// and still decide the keying verdict, the light and the scope; they no longer decide
+    /// delivery. The noise guard for letters is in <see cref="CwRunReader"/>.
+    /// </remarks>
     private void CallMarks(Evaluation[] evals, long hop, double nowSeconds)
     {
         for (var i = 0; i < _bins.Length; i++)
         {
             var bin = _bins[i];
 
-            foreach (var m in evals[i].Marked)
+            foreach (var m in evals[i].AllBars)
             {
-                // A bar still running has no end yet; one already taken is not taken again.
-                if (m.End >= hop || !bin.Recorded.Add(m.Start))
+                // A bar still running has no end yet, and one already taken is not taken again.
+                if (m.End >= hop || bin.Recorded.Contains(m.Start))
+                {
+                    continue;
+                }
+
+                // One envelope window after its end, so the key-up can show at the peak.
+                var edgeHops = EnvelopeWindowSamples / HopSamples;
+
+                if (hop < m.End + edgeHops)
+                {
+                    continue;
+                }
+
+                bin.Recorded.Add(m.Start);
+
+                // **HANDED OUT WHEN IT ENDS, OR NOT AT ALL** (work instruction 492): within two
+                // windows of its end. A bar found later, when a bin's history is read again at a
+                // newly measured contrast, was not a bar when it ended, and handing it out seconds
+                // late would split the letter it belongs to.
+                if (hop - m.End > 3 * edgeHops)
                 {
                     continue;
                 }
 
                 var apex = Apex(i, m.Start, m.End);
                 var level = MeanLevel(_bins[apex], m.Start, m.End);
+
+                // **A MARK ENDS WHERE ITS TONE ENDS** (work instruction 492). A bin on the shoulder of
+                // a tone hears it quieter, where the noise can break its top into short bars; climbed
+                // to the peak, a piece that stops while the tone goes on would be handed out first and
+                // the whole dah refused as already called. So one window after the bar ends, the peak
+                // must have dropped below it by more than the flatness tolerance: the key came up.
+                if (_bins[apex].Level(m.End + edgeHops) > level - FlatToleranceDb)
+                {
+                    continue;
+                }
+
+                // **AND IT BEGINS WHERE ITS TONE ROSE.** The key-down edge can join the front of a
+                // dah's top as a run of its own and split it, so the bar that ends with the tone may
+                // be only its back half. The mark reaches back over the hops before it where the peak
+                // stayed at its level, within the flatness tolerance, to the whole flat top.
+                var start = m.Start;
+
+                while (start > m.End - HistoryHops && _bins[apex].Level(start - 1) >= level - FlatToleranceDb)
+                {
+                    start--;
+                }
+
+                if (start < m.Start)
+                {
+                    level = MeanLevel(_bins[apex], start, m.End);
+                }
+
                 var gap = !double.IsNaN(evals[apex].GapDb) ? evals[apex].GapDb : evals[i].GapDb;
-                var from = nowSeconds - ((hop - m.Start + 1) * HopMs / 1000);
+                var from = nowSeconds - ((hop - start + 1) * HopMs / 1000);
                 var to = nowSeconds - ((hop - m.End) * HopMs / 1000);
                 var pitch = _bins[apex].Hz;
 
-                if (AlreadyCalled(from, to, pitch))
+                if (AlreadyCalled(from, to, pitch, level))
                 {
                     continue;
                 }
@@ -1108,8 +1165,8 @@ public sealed class CwEnvelopeDetector
         _marks.RemoveAll(k => k.ToSeconds < nowSeconds - CalledSeconds);
     }
 
-    /// <summary>Whether a mark overlapping this span within one bin of its pitch is already called.</summary>
-    private bool AlreadyCalled(double from, double to, double pitchHz)
+    /// <summary>Whether a mark overlapping this span within one bin of its pitch, at its level, is already called.</summary>
+    private bool AlreadyCalled(double from, double to, double pitchHz, double levelDb)
     {
         for (var k = _marks.Count - 1; k >= 0; k--)
         {
@@ -1120,7 +1177,10 @@ public sealed class CwEnvelopeDetector
                 break;
             }
 
-            if (called.ToSeconds > from && called.FromSeconds < to && Math.Abs(called.PitchHz - pitchHz) <= BinSpacingHz)
+            // At one level too (work instruction 492): a key-edge fragment twenty decibels under a
+            // dah is not the dah, and must not stand in for it.
+            if (called.ToSeconds > from && called.FromSeconds < to && Math.Abs(called.PitchHz - pitchHz) <= BinSpacingHz
+                && Math.Abs(called.LevelDb - levelDb) <= 2 * FlatToleranceDb)
             {
                 return true;
             }
@@ -1182,8 +1242,9 @@ public sealed class CwEnvelopeDetector
     private readonly record struct Span(long Start, long End, double MeanDb);
 
     // LoudestGapDb: the loudest gap hop the bars were held against, while keying; NaN otherwise.
+    // AllBars: every bar in the bin, paired or not, oldest first (work instruction 492).
     private readonly record struct Evaluation(
-        List<Span> Marked, int Bars, int Gaps, int BarsLastSecond, bool Keying, double BarDb, double GapDb, double LoudestBarDb, double LoudestGapDb);
+        List<Span> Marked, int Bars, int Gaps, int BarsLastSecond, bool Keying, double BarDb, double GapDb, double LoudestBarDb, double LoudestGapDb, List<Span> AllBars);
 
     /// <summary>A stretch of hops held at one level.</summary>
     private sealed class Run
