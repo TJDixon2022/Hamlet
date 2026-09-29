@@ -2,12 +2,12 @@ PROTOCOL: 2
 PROJECT: Hamlet
 STATE: COMPLETED
 TASK: TASK 4 of 4
-WORK_INSTRUCTION: 494 - a button for W1AW on every band it sends on (run by hand)
+WORK_INSTRUCTION: 495 - one W1AW button (run by hand)
 BALL: tim
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-29T14:27:14-04:00
-NOTE: Unit 494 done: W1AW buttons 160-10 m on the CW tab tune and set CW; 6 m and 2 m left out, every button pressable
+UPDATED: 2026-09-29T15:55:59-04:00
+NOTE: Unit 495 done: one W1AW button on the CW tab, labelled for the band and following the dial; CW tab text count 597
 
 ---
 

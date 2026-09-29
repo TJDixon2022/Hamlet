@@ -11,109 +11,82 @@ confirmed. Nothing in this report is evidence about the radio.
 - No recording, fixture, floor or telemetry was read.
 - Nothing under `.run-unit\` was committed.
 
-**The changes, file by file** (all in `686f8140`):
-- **`data/bands/w1aw-morse.json`**, new: **where the frequency table lives.**
-  - All nine of the ARRL's rows, 160 m through 2 m, with the ARRL schedule cited as the source and
-    the speeds W1AW sends at.
-  - No times, because W1AW's are US Central and a time computed against UTC can be wrong on
-    screen.
-  - It is beside `us-neighborhoods.json` and `olivia-calling.json`, and embedded in the engine the
-    same way.
-- **`src/Hamlet.RadioEngine/Bands/W1awMorseFrequencies.cs`**, new: reads the file strictly, in the
-  pattern of `OliviaCallingTable`, with no frequency literal in the code.
-- **`src/Hamlet.App/ViewModels/W1awButton.cs`**, new: one button per row Hamlet can honestly take
-  the dial to. The label is "W1AW 40 m"; the hover gives the frequency, that W1AW is the ARRL's
-  headquarters station, what it sends and at what speeds, and that the schedule is the ARRL's and
-  the times are not shown here. It adds whether the license covers sending Morse there, from
-  `PrivilegeStatusLine`, the same call behind the card's line.
+**The changes, file by file** (all in `fd8b917c`):
+- **`src/Hamlet.RadioEngine/Bands/W1awMorseFrequencies.cs`:** two additions.
+  - `AmateurBandFor(hz)` names the amateur band a frequency is in, from the privileges data's
+    Extra allocations, so 160 m, 30 m and 12 m are named as well as the bands Hamlet maps. 75 m is
+    joined to 80 m, as `HfBands` joins them.
+  - `RowForBandOf(hz)` gives W1AW's row for that band.
+  - The table file is untouched, with all nine rows.
+- **`src/Hamlet.App/ViewModels/W1awButton.cs`:** `ForDial` makes the one button for the dial.
+  Unit 494's `For`, which made the seven, is gone. The hover text is unit 494's.
 - **`src/Hamlet.App/ViewModels/MainWindowViewModel.cs`:**
-  - `W1awButtons`, rebuilt only when the license class changes, never per frequency. Buttons
-    rebuilt under the pointer go dead (HM-DEC-078).
-  - `TuneToW1awCommand`.
-- **`src/Hamlet.App/Views/MainWindow.axaml`:** a row, "Listen to W1AW", at the end of the CW tab's
-  send column. That column is fixed at 320 wide and nothing sits below the row in it.
+  - `W1awHere` replaces the list. It is recomputed from the dial and the license class on every
+    privileges update, and raised only when what it says changes.
+  - `TuneToW1awCommand` is kept, now with `CanExecute`: a button with nowhere to go cannot be
+    pressed.
+  - The press path is unit 494's: `TuneTo`, `SetModeAsync` for CW, and the mode-follow hold.
+- **`src/Hamlet.App/Views/MainWindow.axaml`:** the "Listen to W1AW" heading and the seven-button row
+  are replaced by one button, `W1awButton`, in the same place: the end of the CW tab's send column.
 - **Tests.**
-  - `W1awButtonsTests`, new: the four cases.
-  - The hover registry `EveryControlSaysWhatItDoesTests` names the seven new buttons. It fails on
-    any control on the CW tab it does not list.
+  - `W1awButtonsTests` is rewritten for the four cases.
+  - The hover registry `EveryControlSaysWhatItDoesTests` lists `W1awButton` and no longer the
+    seven. It passes, 3 of 3.
 - **Records.**
-  - `DECISIONS.md` has HM-DEC-199.
-  - Both outcome copies have `## UNIT 494 - STEP 11`, and both status copies name 494.
-  - Version 1.13.180 → 1.13.181.
+  - HM-DEC-199 gains a dated note: the owner's one-button ruling, and that the button can't be
+    pressed only where W1AW does not send. The ruling's text is unedited.
+  - Both outcome copies have `## UNIT 495 - STEP 11`, and both status copies name 495.
+  - Version 1.13.181 → 1.13.182.
 
-**What a press does.**
-- **It tunes through `TuneTo`**, the path every tune button takes, the frequency chips included.
-- **It sets CW itself**, with the same `SetModeAsync` write the Olivia tab makes.
-- **It holds mode-follow off until the next band change**, exactly as the operator's own hand on
-  the mode knob does (HM-DEC-056).
+**What the button says, where.**
+- **A band W1AW sends Morse on:** "W1AW on 40 m". A press tunes there and sets CW.
+- **An amateur band W1AW does not send Morse on:** "W1AW not on 30 m", and it cannot be pressed.
+- **Off the spectrum Hamlet knows, as on 6 m:** "W1AW: not a band Hamlet knows", and it cannot be
+  pressed. W1AW does send on 6 m, so "not on 6 m" would be a false label.
+- **The license never disables it.** The hover says when sending Morse there is not covered.
 
-The chips' path alone would not have given CW:
-- 7.0475 MHz sits in the map's FT4 block and 3.5815 in its PSK31 block. Mode-follow would set the
-  data variant there, or, inside the CW segment, leave the radio in whatever mode it was in.
-- 160 m is not a band Hamlet maps, so mode-follow says nothing there at all.
-
-**Two departures from the instruction, stated and overrulable:**
-1. **6 m is not offered.** The IC-7300 tunes 6 m, but the spectrum Hamlet knows does not carry it.
-   At 50.350 MHz the card would say "not an amateur band", which is false (§0.0). 2 m is left out
-   as instructed: the radio cannot tune it.
-2. **A band outside the license is pressable, not greyed.** Listening is never restricted
-   (HM-DEC-029), and grey is kept for what cannot be used (HM-DEC-087). These buttons only tune the
-   receiver, so the hover says when the license does not cover *sending* there. The owner holds
-   General, which covers Morse at all seven frequencies.
-
-**Watched failing first.** At HEAD, the row, the button type and the command do not exist, so
-every case is red by absence. The probe that shaped the design measured what the app knew at each
-frequency beforehand:
-- which bands have mode-follow targets, and the two digital blocks;
-- 6 m reading as not amateur;
-- 160 m being amateur but unmapped.
+**Watched failing first.** At HEAD the window holds seven W1AW buttons, and neither the dial's
+button nor `ForDial` exists. So case 4's "exactly one" and every label case are red by absence.
 
 **Verification.**
 - The build: 0 warnings, 0 errors.
-- **The app carry-forward line: 276 of 278.** The two failures ran in 1 ms each,
-  `TheCarrierHoldsTheButtonsTests` and `TheChipSaysTheChosenModeTests`, and pass alone (8 of 8 and
-  6 of 6).
-- **The app layout, voice, bindings, registry and W1AW types:** the W1AW cases, the registry and
-  `BindingHealthTests` pass. The two top-row trace names that failed in the long run pass alone
-  (15 of 15 and 2 of 2). The British spelling red is from 2026-09-26.
+- **The app carry-forward line: 274 of 278.** The four failures ran in 1 ms each - the Olivia CQ
+  label, the PSK31 offer and two PSK31 card names - and all pass alone (12 of 12, 2 of 2, 8 of 8).
+- **The app layout, voice, bindings and W1AW types: 88 of 89.** The red is the British spelling
+  from 2026-09-26, not this unit.
+- **A first combined run that included the text-count test hit its 590 s timeout.** It had already
+  reported the CW tab's count (section 3). The rerun without that test finished in 46 s.
 
 ## 2. What the owner should expect
 
 1. Rebuild.
-2. Go to the CW tab. At the bottom of the Send column is **Listen to W1AW** and a button for each
-   band.
-3. Press **W1AW 40 m** or **W1AW 20 m**, and the radio tunes there and goes into CW. Hamlet then
-   leaves the mode alone until you change band.
-4. Which band when:
-   - **40 m** after dark.
-   - **20 m** in the day.
-   - **80 m** late at night.
-   - 160 m, 17 m, 15 m and 10 m are there too.
-5. The hover says what W1AW sends and how fast. It does not say when: the times are on the ARRL's
-   schedule, in US Central time, and W1AW is only on the air at those times.
-6. **There is no 6 m button.** Hamlet does not yet know 6 m as amateur spectrum and would have
-   called it "not an amateur band".
+2. Go to the CW tab. At the bottom of the Send column there is one button that says which band it
+   will take you to: **W1AW on 40 m** while you are on 40 m.
+3. Press it, and the radio tunes to W1AW there in CW. Hamlet then leaves the mode alone until you
+   change band.
+4. Change band, and the button changes with it.
+5. On a band W1AW does not send Morse on, such as 30 m, the button says so and cannot be pressed.
 
 ## 3. What you should see
 
 | case | what it checked | result |
 |---|---|---|
-| 1. one button per tunable band, no 2 m | W1AW 160 m, 80 m, 40 m, 20 m, 17 m, 15 m, 10 m, and no 2 m (nor 6 m) | pass |
-| 2. pressing W1AW 20 m | frequency 14.0475 MHz; one mode write, CW without the data variant; no setting written; nothing keyed | pass |
-| 3. a band outside the privileges | a Technician's 20 m button is present and pressable, and says sending Morse is not covered | pass (pressable by HM-DEC-029, see section 1) |
-| 4. the CW tab only, moving nothing | row shown on the CW tab, hidden on Digital. With it the send column is 250 px tall, without it 140, and both fit inside the receive column's 440, so neither panel moves | pass |
+| 1. on 40 m | reads "W1AW on 40 m"; a press asks for 7.0475 MHz and one CW write, no data variant, no setting, nothing keyed | pass |
+| 2. on 20 m | tuned from 40 m to 20 m on the same model, it reads "W1AW on 20 m", and a press asks for 14.0475 MHz | pass |
+| 3. where W1AW is not | on 30 m it reads "W1AW not on 30 m", and at 50.2 MHz "W1AW: not a band Hamlet knows"; neither can be pressed. A Technician's 20 m button can be pressed and says sending is not covered | pass |
+| 4. one button, CW tab only, moving nothing | exactly one W1AW button in the window, on the CW tab only. The send column is 174 px with it and 140 without, inside the receive column's 440, and neither panel moves | pass |
+
+**The CW tab's text count:** 597, against a ceiling of 550. It was 585 before unit 494 and 663
+after it, so this unit gives back 66 of unit 494's 78. `HowMuchTheApplicationSaysTests` has been
+red since before unit 484 and is not this unit's to fix.
 
 ## 4. What's blocking us
 
 Nothing blocks. What is left, a line each:
-- **6 m needs Hamlet's spectrum to know it.** Then its W1AW button, 50.350 MHz, appears on its own:
-  the row offers every row the spectrum calls amateur.
-- **160 m is not one of Hamlet's mapped bands.** A press tunes there and sets CW, but the band row
-  and the map stay on the band you came from.
-- **`HowMuchTheApplicationSaysTests`, red since before unit 484,** now reads 663 for the CW tab,
-  against 585 at HEAD and a ceiling of 550. The row's heading and seven labels are the difference.
-- **Two departures from the instruction** (section 1) are overrulable: 6 m left out, and every
-  button pressable.
+- **160 m** is named and offered, but it is not one of Hamlet's mapped bands. A press tunes there
+  and sets CW, while the band row and the map stay on the band you came from.
+- **6 m needs Hamlet's spectrum to know it.** Then the button offers W1AW on 6 m by itself.
+- **The CW tab's text count is 597 against 550**; the ceiling is not this unit's to move.
 - **Pre-existing reds, not this unit's:**
   - `VoiceTests`' British spelling.
   - `ModeFollowsTheMapAgainTests.NothingButTheModeIsEverWritten`.
@@ -130,7 +103,6 @@ Nothing blocks. What is left, a line each:
   revised, at the cost of seconds of lag. On the run path, now the only path to the screen, the
   terminal shows only settled text. The ask stands only for the timing-only path, which no longer
   reaches the screen; no change for it sits in the tree.
-- **Unit 494, new, 2026-09-29:** whether a band outside the license should be greyed, as the
-  instruction asked, or pressable with its hover saying so, as built under HM-DEC-029 and
-  HM-DEC-087. It waits on the owner, and the change sits in `W1awButton.cs` and
-  `TuneToW1awCommand` in `686f8140`.
+
+Unit 494's ask - greyed or pressable - is settled by the instruction: the button can't be pressed
+only where W1AW does not send, and the license never disables it.
