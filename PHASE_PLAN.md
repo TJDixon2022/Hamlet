@@ -249,6 +249,11 @@ got to get that right."*
 to do is get the dot and dash by frequency, period, and flatness. When we have a dot and a dash
 isolated, decoding will be easy."*
 
+**R106 - Tim, 2026-09-29: one decoder, one truth.** *"I don't want to go back to something. I want
+to make it work."* The terminal reads the run reader, the same source as the scroll's letters over
+the blocks, and what is in the one is what is in the other. The timing-only path leaves the screen
+and stays in the tree, behind `ReadsRuns`, for tests and comparison.
+
 ## §3 What is different from the phases before it
 
 1. **A criterion is a requirement id.** A report states the requirement, the condition, the

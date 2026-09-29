@@ -94,7 +94,7 @@ public sealed class TheScopeIsTheMiddlePictureTests
             "decoding at 750 Hz",
             CwScopeFrame.From(detector.History(), detector.HopMs, detector.Reading, 750, null).MixingLine);
         Assert.Equal(
-            "not mixing",
+            "no station",
             CwScopeFrame.From(detector.History(), detector.HopMs, detector.Reading, double.NaN, null).MixingLine);
     }
 

@@ -25,6 +25,13 @@ public sealed record CwMark(
 {
     /// <summary>How long the key was down, in milliseconds.</summary>
     public double LengthMs => (ToSeconds - FromSeconds) * 1000;
+
+    /// <summary>
+    /// Whether the detector was keying at the mark's peak, or within two bins of it, when it was
+    /// called: bars there had paired and cleared their gaps' wander in the last second (work
+    /// instruction 493). A station's second mark on is keyed; noise never is.
+    /// </summary>
+    public bool Keyed { get; init; }
 }
 
 /// <summary>The marks called since a reader last asked, and how much audio the detector has heard.</summary>

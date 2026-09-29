@@ -1155,8 +1155,21 @@ public sealed class CwEnvelopeDetector
                     continue;
                 }
 
+                // **KEYED: WHETHER THE DETECTOR WAS KEYING AT ITS PEAK** (work instruction 493): the
+                // peak or a bin within two of it - fifty hertz, the shoulders unit 488 measured - had
+                // paired bars clearing their gaps' wander in the last second. Noise never is.
+                var keyed = false;
+
+                for (var k = Math.Max(0, apex - 2); k <= Math.Min(_bins.Length - 1, apex + 2) && !keyed; k++)
+                {
+                    keyed = evals[k].Keying;
+                }
+
                 _marks.Add(new CwMark(
-                    ++_markSequence, from, to, pitch, level, double.IsNaN(gap) ? double.NaN : level - gap));
+                    ++_markSequence, from, to, pitch, level, double.IsNaN(gap) ? double.NaN : level - gap)
+                {
+                    Keyed = keyed,
+                });
             }
 
             bin.Recorded.RemoveWhere(s => s < hop - HistoryHops - _keyingHops);

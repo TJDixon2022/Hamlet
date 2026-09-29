@@ -4,6 +4,34 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-198
+date: 2026-09-29
+refs: docs/phase-requirements/PHASE_PLAN.md R106, src/Hamlet.RadioEngine/Cw/CwRunReader.cs, src/Hamlet.RadioEngine/Cw/CwEnvelopeDetector.cs, src/Hamlet.RadioEngine/Cw/CwMark.cs, src/Hamlet.RadioEngine/Cw/CwDecoder.cs, tests/Hamlet.App.Tests/ViewModels/OneDecoderOneTruthTests.cs, HM-DEC-195, work instruction 493
+---
+
+**One decoder, one truth: the terminal reads the run reader.** Tim, 2026-09-29, R106: *"I don't
+want to go back to something. I want to make it work."*
+
+**What the instruction named, and what the tree showed.** It named two paths feeding two surfaces,
+the terminal on `CwProbabilisticDecoder`'s timing-only path, which had never been given a mark's
+pitch or amplitude. **In the tree since unit 490 the terminal already read the run reader**: with
+the detector's marks given and `ReadsRuns` on, only the run reader's letters reached the terminal
+or the scroll. The two surfaces still differed, because the scroll draws a letter only over the
+blocks and the terminal printed every letter the reader read, and the reader read noise: over three
+minutes of loud noise a noise sender made its two runs by chance, was printed, and never fell
+silent, printing 53 to 81 letters, nearly all E. The timing-only path printed none there.
+
+**What is built.** Each mark carries whether the detector was keying at its peak when it was called,
+the test that decides the blocks, and a sender's two qualifying runs must each hold such a mark, so
+a letter in the terminal is a letter over the blocks; on five synthetic cases the two are equal.
+The panel's second number is the printed sender's pitch, or *no station*. The timing-only path
+reaches no surface and stays in the tree behind `ReadsRuns`; unit 489's three switches gate nothing
+on the screen's path and are left as they are.
+
+**Whose words are whose.** The ruling is Tim's; the wording and the measurements are work
+instruction 493's.
+
+---
 id: HM-DEC-197
 date: 2026-09-28
 refs: docs/phase-requirements/PHASE_PLAN.md R105, src/Hamlet.RadioEngine/Cw/CwEnvelopeDetector.cs, src/Hamlet.RadioEngine/Cw/CwRunReader.cs, HM-DEC-196, work instruction 492

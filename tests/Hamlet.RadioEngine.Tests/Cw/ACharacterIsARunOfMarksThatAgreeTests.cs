@@ -375,4 +375,40 @@ public sealed class ACharacterIsARunOfMarksThatAgreeTests
             _output.WriteLine($"{name}: marks {count}, worst delivery {worst * 1000:0} ms after the mark ended");
         }
     }
+
+    /// <remarks>
+    /// **THE OWNER'S TERMINAL FULL OF E'S** (work instruction 493, R106, HM-DEC-198): three minutes
+    /// of loud noise in a 500 Hz passband at 600, as the radio's CW filter gives it, and the run
+    /// reader prints nothing. Red before the runs that make a sender had to be keyed: a noise
+    /// sender made its two runs by chance, was never silent for a second, and printed 53 letters,
+    /// nearly all E. The old timing-only path prints none here.
+    /// </remarks>
+    [Fact]
+    public void ThreeMinutesOfNoiseReadNothing()
+    {
+        var samples = CwSignal.Generate(new CwSignalRequest(
+            " ", SampleRate: Rate, Amplitude: 0, NoiseAmplitude: 0.3, LeadInSeconds: 90, TailSeconds: 90, Seed: 493)).Samples;
+        var detector = new CwEnvelopeDetector(Rate);
+
+        detector.SetPassband(600, 500);
+
+        var decoder = new CwDecoder(Rate, 600) { DetectorMarks = detector.MarksSince };
+        var settled = new List<CwCharacter>();
+
+        decoder.CharacterSettled += settled.Add;
+
+        for (var at = 0; at + Chunk <= samples.Length; at += Chunk)
+        {
+            decoder.Process(new AudioChunk(at, Rate, samples.AsSpan(at, Chunk)));
+            detector.Process(samples.AsSpan(at, Chunk));
+        }
+
+        decoder.Flush();
+
+        var read = settled.Where(c => !c.IsWordGap).ToList();
+
+        _output.WriteLine($"three minutes of noise: marks called {detector.MarksSince(0).Marks.Count} in the last minute, characters printed {read.Count} `{Text(read)}`");
+
+        Assert.Empty(read);
+    }
 }

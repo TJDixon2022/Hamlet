@@ -12548,7 +12548,7 @@ public partial class MainWindowViewModel : ObservableObject
         CwHearing.ObserveScope(_scopeFeed.Tick(
             envelope,
             reading,
-            IsDecoding && _decoder is { } mixing ? mixing.MixingHz : double.NaN,
+            IsDecoding && _decoder is { } mixing ? mixing.PrintingHz : double.NaN,
             CwHearing.Scope,
             scopeQuiet: plainCw && pointed is null,
             DateTime.UtcNow));

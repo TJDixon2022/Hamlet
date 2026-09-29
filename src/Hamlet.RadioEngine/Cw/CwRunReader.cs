@@ -55,6 +55,13 @@ public sealed class CwRunReader
     /// a sender whose marks are all one length, never two kinds at <see cref="TwoKindsRatio"/>, is
     /// not a sender. Once a sender is printed, a letter of one mark, E or T, is printed with it;
     /// otherwise every DE would read D.</para>
+    /// <para>**AND THE RUNS THAT MAKE A SENDER ARE KEYED** (work instruction 493, R106, HM-DEC-198).
+    /// Measured on three minutes of noise with nothing else guarding, a noise sender made its two
+    /// runs by chance, was printed, and never fell silent for a second, so it printed every noise
+    /// mark at its pitch as an E: 53 to 81 letters, which is the owner's terminal full of E's. Each
+    /// of the two runs must hold a mark the detector called while it was keying there - bars paired
+    /// and clear of their gaps' wander, the same test that decides the blocks the scope draws - so a
+    /// letter in the terminal is a letter over the blocks.</para>
     /// </remarks>
     public const int QualifyingRuns = 2;
 
@@ -178,6 +185,14 @@ public sealed class CwRunReader
 
     // The sender being printed, and where on the clock the last printed run ended.
     private Sender? _station;
+
+    // Written by Print on the audio thread, read by StationPitchHz on any.
+    private double _stationHz = double.NaN;
+
+    /// <summary>The pitch of the sender being printed, or NaN when none is (work instruction 493).</summary>
+    /// <remarks>Safe to read from any thread: one double, written once per batch on the audio thread.</remarks>
+    public double StationPitchHz => Volatile.Read(ref _stationHz);
+
     private double _printedThrough = double.NegativeInfinity;
 
     private void Print(double heardSeconds)
@@ -201,10 +216,14 @@ public sealed class CwRunReader
 
         // The sender with the most marks among those that have made two runs, the louder on a tie.
         _station ??= _senders
-            .Where(s => s.Ended.Count(r => r.Length >= 2) >= QualifyingRuns && s.TwoKindsSeen)
+            .Where(s => s.Ended.Count(r => r.Length >= 2 && r.Any(m => m.Keyed)) >= QualifyingRuns && s.TwoKindsSeen)
             .OrderByDescending(s => s.Marks)
             .ThenByDescending(s => s.Reference.Level)
             .FirstOrDefault();
+
+        // The pitch of the sender being printed, for the panel on the screen's thread (work
+        // instruction 493): one double, written here on the audio thread and read with Volatile.Read.
+        Volatile.Write(ref _stationHz, _station?.Reference.Pitch ?? double.NaN);
 
         if (_station is not { } station)
         {

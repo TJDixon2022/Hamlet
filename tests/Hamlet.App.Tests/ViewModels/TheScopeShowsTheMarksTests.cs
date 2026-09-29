@@ -161,7 +161,7 @@ public sealed class TheScopeShowsTheMarksTests
                 cw.GetVisualDescendants().OfType<TextBlock>(),
                 t => (t.Inlines?.Text ?? t.Text) is { } text
                      && text.StartsWith("tone 7", StringComparison.Ordinal)
-                     && text.Contains("not mixing", StringComparison.Ordinal));
+                     && text.Contains("no station", StringComparison.Ordinal));
 
             window.UpdateLayout();
 

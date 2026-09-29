@@ -84,8 +84,8 @@ public sealed record CwScopeFrame(
     /// </summary>
     public CwTrainingFrame Training { get; init; } = CwTrainingFrame.Empty;
 
-    /// <summary>The tracker's line when nothing is decoding.</summary>
-    public const string NotMixingWords = "not mixing";
+    /// <summary>The line when the run reader is printing no station, or nothing is decoding (work instruction 493).</summary>
+    public const string NotMixingWords = "no station";
 
     /// <summary>Nothing is listening.</summary>
     public static CwScopeFrame Empty { get; } = new(
@@ -107,7 +107,7 @@ public sealed record CwScopeFrame(
         }
     }
 
-    /// <summary>"decoding at 742 Hz", where the decoder is mixing now: its own pitch since R102, honestly a different number from the tone (work instructions 488, 489).</summary>
+    /// <summary>"decoding at 742 Hz": the pitch of the station whose letters the terminal and the scroll show, from the run reader (work instructions 488, 489, 493).</summary>
     public string MixingLine => double.IsNaN(MixingHz)
         ? NotMixingWords
         : string.Create(CultureInfo.InvariantCulture, $"decoding at {MixingHz:0} Hz");
@@ -244,7 +244,8 @@ public sealed partial class CwHearingViewModel : ObservableObject
         + "off the left." + "\n"
         + "Top left: the pitch the detector found while it says keying, or no keying, and when the "
         + "radio's scope has gone quiet it says so; beside it the pitch the decoder is mixing at, "
-        + "which it finds for itself and which can differ from the tone." + "\n"
+        + "which is the pitch of the station whose letters the terminal and this picture show, or no "
+        + "station when neither is showing anybody." + "\n"
         + "Hover a block for its length, or a letter for how sure the decoder was. This shows what "
         + "Hamlet hears and changes nothing about how it decodes.";
 

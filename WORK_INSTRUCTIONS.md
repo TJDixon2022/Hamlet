@@ -1,9 +1,9 @@
-# Work instruction 492 - a mark is a mark the moment it ends
+# Work instruction 493 - one decoder, one truth
 
-**Hand run. One unit.** Unit 491 measured that every mark of a keyed call is already found -
-right pitch, right length, flat top - and that the fault is delivery: a mark can be handed out
-up to a second late, because a pair waits on a second of quiet history. This unit delivers a
-mark when it ends.
+**Hand run. One unit.** There are two decoders printing to two surfaces. The scroll reads the
+run reader and obeys the owner's rule. The terminal reads the old timing-only path and prints
+`E` on noise. **This unit makes the terminal read the run reader, and retires the old path from
+the screen.**
 
 **No test against a recording, a fixture, a floor or copied telemetry** (R96). A headless test
 driving synthetic hops written in the test itself is allowed; nothing read from disk. Verify by
@@ -42,7 +42,7 @@ If all five hold, say "Hamlet confirmed" and continue.
 - One `dotnet test` invocation per line, filtered, with a `timeout`. Never background and poll.
   The app line loses names to the dispatcher loop; re-run once, count neither way.
 - Apostrophes in quoted heredocs break; `;`, `rm` and `git rm` are refused; Python cannot run
-  here; `-m` more than once for a multi-line commit. Scripts go in `.run-unit\unit492-<name>.sh`
+  here; `-m` more than once for a multi-line commit. Scripts go in `.run-unit\unit493-<name>.sh`
   and are not committed.
 - Nothing that keys or transmits. Nothing written to the radio.
 - `output.md` at the root, four headings exactly: `## 1. What Claude did`, `## 2. What the owner
@@ -50,121 +50,120 @@ If all five hold, say "Hamlet confirmed" and continue.
 
 ---
 
-## 2. What unit 491 measured, and the owner's rule
+## 2. What the owner sees, and why
 
-**Unit 491 refused unit 490's diagnosis and measured the truth.** On the call with bursts in
-every gap, **every one of its 65 marks is called** - the same as on a clean call. Nothing is lost.
-What happens instead: **a mark is handed out late.** The `L`'s third dit ran 10.520 to 10.565 s
-and was handed out at 11.000 s, **435 ms after it ended**, because the check that a paired bar
-stands clear of its gap's wander is measured over the bin's last second, and a burst anywhere in
-that second holds the pair back. By the time the dit arrived, the run reader had closed the `L`'s
-run, and the `L` came out as `E` and `I`.
+His screenshot, 2026-09-29 13:35 UTC, 20 m: the panel reads **`no keying · decoding at 352 Hz`**,
+the scroll below is **empty** apart from the word *listening*, and the terminal above is **four
+lines of `E`s**.
 
-**The owner's rule, R105, 2026-09-28:**
+**Both halves are working as built, and that is the bug.**
 
-> *"What we need to do is get the dot and dash by frequency, period, and flatness. When we have a
-> dot and a dash isolated, decoding will be easy."*
+- **The scroll reads the run reader** that units 490 to 492 built. It obeys R103 and R105: a
+  letter needs a run of marks that agree on pitch and level, with a flat top and a dit's
+  duration. On noise it finds nothing, so it shows nothing. **That is why he never sees an `E`
+  down there.**
+- **The terminal reads `CwProbabilisticDecoder`'s original path**, which has never been given a
+  mark's pitch or amplitude. It measures how long the key was down in one mixed stream and fits
+  letters to timing. Noise over a threshold for 40 ms is an `E`. **`decoding at 352 Hz` is that
+  path's mixing pitch**, which unit 492 lists as outstanding.
+- Unit 487 had gated the terminal on the blocks. **Unit 489 switched that gate off** on the
+  author's recommendation, to get a strong W1AW signal reading again while the detector was
+  pointed 50 Hz off the station. Units 490 to 492 fixed that: marks are now placed on the peak of
+  their own lobe, pairing is fixed, and delivery is 15 ms rather than 445.
 
-**So the isolation is done and the delivery is not.** A bar with a flat top, held at one level,
-for a dit's length or longer, at a consistent pitch, **is a dot or a dash the moment it ends.**
-It does not need a partner, and it does not need a second of quiet history, to be what it already
-is.
-
-**Where the noise guard goes instead.** Unit 491 proved the guard does real work: removed
-outright, thirty seconds of loud noise alone called 61 marks and printed `NETMITT`. **But a lone
-mark never becomes a letter anyway** - unit 490's reader needs a run of marks that agree on pitch
-and level, and a sender is printed only after two runs. **The guard belongs where the letters are
-made, not where the marks are found.**
+**The owner's ruling, R106, 2026-09-29:** *"I don't want to go back to something. I want to make
+it work."* **One decoder, one truth.** The terminal reads the run reader - not the old path with a
+gate in front of it. What is in the scroll is what is in the terminal, because they are the same
+source.
 
 ---
 
 ## 3. The change
 
-### One - a mark is delivered when it ends
+### One - the terminal reads the run reader
 
-In `CwEnvelopeDetector`, a completed bar becomes a `CwMark` **on the hop it ends**, judged on
-itself:
+The CW terminal's text comes from `CwRunReader`, the same source the scroll's blocks and letters
+come from.
 
-- its top is flat within the flatness tolerance (R93, contrast-following, unchanged);
-- it is at least the shortest bar long (25 ms, unchanged);
-- its pitch is the peak of its own lobe, as unit 490 already finds it;
-- it carries its level, its contrast, its length and its times, as unit 490 already gives it.
+- **A letter appears in the terminal exactly when it appears over the blocks**, and never
+  otherwise. No gate, no filter, no second opinion - one source.
+- The terminal keeps everything else it has: unit 487's printed-stays-printed, the owner's
+  `Clear`, its scroll-back, its colours and its fonts.
+- **Word gaps** come from the reader's own word-gap rule (unit 490), so the terminal's spacing is
+  the reader's spacing.
+- Unit 485's *no detection, no letters* becomes true by construction: there is no other source.
 
-**It is not held for a partner, and not held for the wander check's one-second window.** The
-pairing machinery stays in the tree and keeps driving the detector's own `keying` verdict, the
-light and the scope's picture - **do not change what those show.** What changes is that
-`MarksSince` hands out a mark as soon as the bar is complete.
+### Two - the old path leaves the screen
 
-**The wander check is not deleted.** It stays exactly where it is for the keying verdict. It
-simply no longer gates delivery.
+`CwProbabilisticDecoder`'s timing-only path **no longer feeds any surface**: not the terminal, not
+the leading edge, not the scope, not the capture sheet's transcript.
 
-### Two - the guard moves to where letters are made
+- **It stays in the tree**, behind unit 489's `ReadsRuns` switch, so it can still be driven by a
+  test and compared. **Nothing is deleted** - not the lattice, the speed grid, the unit estimator
+  or the emission gate.
+- **Unit 489's three switches become dead weight on the screen's path** and the report says so:
+  with one source there is nothing left for them to gate. Leave them as they are; do not delete
+  them.
 
-In `CwRunReader`, a run must earn its letters:
+### Three - the panel says what it is doing
 
-- **a run of one mark makes no letter.** A lone bar, however clean, is not a character.
-- **a sender is printed only after two runs**, as unit 490 already has it.
-- **add one more, and state it as a rule with its reason:** a run's marks must agree on pitch
-  *and* level *and* fall in a plausible dit-and-dah pattern - the run's own short and long marks
-  at least 2 to 1, as unit 490 has it. A run whose marks are all the same length and which never
-  makes a second run is not a sender.
+- **`decoding at N Hz` becomes the printed sender's own pitch**, from the reader. **`no station`
+  when the reader is printing nobody.** This is unit 492's outstanding item, and it must be done
+  here: the old number is the retired path's and would now be a false sentence on screen (§0.0).
+- Unit 491 skipped this for thread safety. **The reader runs on the audio thread and the panel on
+  the screen's**, so hand the pitch across the same way the blocks already cross - the scope
+  already reads the reader's marks, so follow that path and say how.
+- **`tone N Hz heard`** stays as the detector's own, unchanged.
 
-**The test of whether this is enough is `NoiseAloneReadsNothing`**, which unit 491 wrote. Loud
-noise, no station, must print nothing. **If delivering marks early lets noise through the reader,
-say so with the count and do not force it green** - then the guard is needed further forward and
-the report says where.
+### Four - what must not change
 
-### Three - what must not change
+- The detector, the marks, the runs, the two tolerances, the flatness rules, the pairing, unit
+  491's nearest-bar change, unit 492's three mark rules and its three-window bound.
+- The light, the blocks, the letters over the blocks, the one layout, the preamp, the verdict
+  buttons and the verdict row.
 
-- **Do not touch** the flatness tolerance, the shortest bar, the pitch-peak walk, the pairing
-  agreement, or unit 491's nearest-bar-at-its-own-level change.
-- **Do not touch** the light, the scope's drawing, the layout, the preamp, printed-stays-printed,
-  or the verdict row.
-- **Do not touch** the lattice, the speed grid, the unit estimator or the emission gate.
-- **Unit 489's three switches stay off.**
+**Watch it fail first**, with synthetic hops written in the test, and report each case's terminal
+text beside its scroll letters:
 
-**Watch it fail first**, with synthetic hops written in the test, and report each case's text and
-the worst delivery delay in milliseconds:
+1. **The clean call.** Terminal and scroll identical, reading `CQ CQ DE N0CALL N0CALL K`.
+2. **The call with bursts in every gap.** Identical, reading the call whole.
+3. **Loud noise, no station.** **Terminal empty.** Red today - the old path prints `E`s here, which
+   is the owner's complaint - green when nothing prints.
+4. **A lone dit and a lone dah.** Terminal empty.
+5. **The call plus a second station 200 Hz away.** Terminal and scroll both read the printed
+   station, identically.
 
-1. **`TheCallReadsWholeThroughTheBlips`** - unit 490's call with bursts in every gap. **Red today
-   because marks arrive after their run has closed.** Green when the call reads whole.
-2. **`NoiseAloneReadsNothing`** - loud noise, no station. Must stay green.
-3. **`TheStationPrintedReadsWhole`** - the call plus a second station 200 Hz away. Report what it
-   reads; green if it reads the printed station whole.
-4. **A lone dit and a lone dah**, each alone in silence. **Neither prints a letter.**
-
-## 4. Also - keep unit 491's pairing change
-
-The owner is asked in 491's report whether to keep the change where a bar pairs with the nearest
-bar at its own level. **Keep it.** It reads the bursts case better, and its only cost is thirty
-extra missed hops on a weak tone's scope picture, not on the letters. Record that as the answer
-in `PARKED.md` and in this unit's report; change nothing.
+**In every case, assert the terminal's text equals the scroll's letters.** That equality is the
+unit.
 
 ---
 
-## 5. Record
+## 4. Record
 
-- `PHASE_OUTCOME.md`, both copies: `## UNIT 492 - STEP 12`, one paragraph.
-- `PHASE_STATUS.md`, both copies: names 492.
+- `PHASE_OUTCOME.md`, both copies: `## UNIT 493 - STEP 12`, one paragraph.
+- `PHASE_STATUS.md`, both copies: names 493.
 - Patch-bump `Directory.Build.props`.
-- **Append R105 to the rulings section of both `PHASE_PLAN.md` copies**, in the owner's words
-  above. **Touch no checkbox.**
-- `DECISIONS.md`, newest first, **HM-DEC-197**, headline *A mark is a dot or a dash the moment it
-  ends; the noise guard belongs where letters are made*, naming unit 491's 435 ms measurement as
-  the reason.
+- **Append R106 to the rulings section of both `PHASE_PLAN.md` copies**, in the owner's words
+  above: one decoder, one truth; the terminal reads the run reader; the timing-only path leaves
+  the screen and stays in the tree. **Touch no checkbox.**
+- `DECISIONS.md`, newest first, **HM-DEC-198**, headline *One decoder, one truth: the terminal
+  reads the run reader*, naming that two paths fed two surfaces and that the old one had never
+  been given a mark's pitch or amplitude.
 
 ---
 
-## 6. Report
+## 5. Report
 
 Section 2, for the owner, in plain words:
 
 - rebuild;
-- letters no longer split because a dot arrived late - the blocks and the letters should appear
-  within a fraction of a second of the sending;
-- noise with no station still prints nothing;
-- a single lone dit or dah prints nothing, on purpose.
+- on noise: an empty scroll **and an empty terminal**;
+- on a station: the letters in the terminal are the same letters that sit over the blocks, at the
+  same moment, because there is now one decoder;
+- the panel says the pitch of the station it is printing, or *no station*;
+- **if a real station reads nothing, the scroll will be empty too** - that is the diagnosis, and
+  it is the one thing to report back.
 
-Section 1: what changed, file by file, and that the build and the app line are green.
-**Section 3: the four cases' text, and the worst delivery delay before and after in
-milliseconds.** Section 4: anything left, a line each.
+Section 1: what changed, file by file, how the pitch crosses threads, and that the build and the
+app line are green. **Section 3: the five cases, terminal text beside scroll letters, and that
+they are equal in each.** Section 4: anything left, a line each.

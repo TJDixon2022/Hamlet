@@ -140,6 +140,14 @@ public sealed class CwDecoder
             if (RunsRead)
             {
                 Emit(c);
+
+                // And it is what the decoder decoded: the timing-only path, which raised this, now
+                // reaches no surface, and the app times its quiet offer and the evidence that the
+                // operator is working Morse (HM-DEC-149) from it (work instruction 493).
+                if (!c.IsWordGap)
+                {
+                    CharacterDecoded?.Invoke(c);
+                }
             }
         };
 
@@ -503,6 +511,18 @@ public sealed class CwDecoder
     /// 488 on.
     /// </remarks>
     public double MixingHz => _probabilistic.ToneHz;
+
+    /// <summary>
+    /// The pitch of the station whose letters reach the screen: the run reader's printed sender
+    /// while runs are read, NaN when it is printing nobody; the timing-only path's mixing pitch
+    /// otherwise (work instruction 493).
+    /// </summary>
+    /// <remarks>
+    /// **ONE DECODER, ONE TRUTH** (R106, HM-DEC-198). While runs are read, <see cref="MixingHz"/> is
+    /// the pitch of a path whose letters reach no surface, and a panel reading it would say
+    /// something untrue. Safe to read from the screen's thread.
+    /// </remarks>
+    public double PrintingHz => RunsRead ? _runs.StationPitchHz : MixingHz;
 
     /// <summary>
     /// The last half minute of exactly what the decoder was fed (HM-DEC-088).
