@@ -222,12 +222,13 @@ public sealed class ACharacterIsARunOfMarksThatAgreeTests
     }
 
     /// <remarks>
-    /// **RED ON PURPOSE, AND NAMED** (work instruction 490): with the bursts in, the call reads as it
-    /// reads without them. It does not, and not because a burst is read - none is - but because
-    /// the detector calls none of the call's marks beside a burst: a burst in a gap lights the
-    /// call's own bin, and the gap then fails the detector's check that the bars clear their gaps'
-    /// wander, so the bars on either side are not paired. The detector's pairing is not this
-    /// unit's to change.
+    /// **RED ON PURPOSE, AND NAMED** (work instructions 490 and 491): with the bursts in, the call
+    /// reads as it reads without them. It does not, and not because a burst is read - none is. Work
+    /// instruction 491 measured it: every one of the call's 65 marks is called, but some are called
+    /// late, because the detector's check that paired bars clear their gaps' wander is taken over
+    /// the last second and a burst in that second holds the pair back until it leaves; the run
+    /// reader has ended the run by then and the letter splits - an L read as E and I, its third dit
+    /// handed out 435 ms after it ended. The wander check itself refuses noise and stays.
     /// </remarks>
     [Fact]
     public void TheCallReadsWholeThroughTheBlips()
@@ -250,13 +251,63 @@ public sealed class ACharacterIsARunOfMarksThatAgreeTests
     }
 
     /// <remarks>
-    /// **RED ON PURPOSE, AND NAMED** (work instruction 490): the one station printed reads whole.
-    /// It does not, for case 2's reason: where the answer keys inside the call's lobe the detector
-    /// does not pair the call's bars.
+    /// **RED ON PURPOSE, AND NAMED** (work instructions 490 and 491): the one station printed reads
+    /// whole. It does not: where the answer keys inside the call's lobe, the call's marks are
+    /// called late or not at all (61 of 65 called), and the reader ends runs before late marks
+    /// arrive, as in case 2.
     /// </remarks>
     [Fact]
     public void TheStationPrintedReadsWhole()
     {
         Assert.Equal(Call, Read(TwoStations(), runs: true));
+    }
+
+    /// <summary>Thirty seconds of loud noise over the whole band and no station.</summary>
+    private static float[] NoiseAlone() => CwSignal.Generate(new CwSignalRequest(
+        " ", SampleRate: Rate, Amplitude: 0, NoiseAmplitude: 0.3, LeadInSeconds: 15, TailSeconds: 15, Seed: 491)).Samples;
+
+    /// <remarks>
+    /// Noise alone still makes nothing (work instruction 491): loud noise with no station, and the
+    /// new path prints no character. Red if letting a bar pair across a bar at another level lets
+    /// noise pair into runs.
+    /// </remarks>
+    [Fact]
+    public void NoiseAloneReadsNothing()
+    {
+        var samples = NoiseAlone();
+        var read = ReadCharacters(samples, runs: true).Where(c => !c.IsWordGap).ToList();
+
+        _output.WriteLine($"noise alone: marks called {Marks(samples).Count}, characters printed {read.Count} `{Text(read)}`");
+
+        Assert.Empty(read);
+    }
+
+    /// <remarks>
+    /// Answers work instruction 491 section 6 and asserts nothing: how many of the clean call's marks the
+    /// detector calls again - a mark within a bin of 625 Hz and the reader's level tolerance of the clean
+    /// call's level, overlapping at least half of it - on each case, and how many others there are.
+    /// </remarks>
+    [Fact]
+    public void HowManyOfTheCallsMarksAreCalled()
+    {
+        var clean = Marks(CleanCall());
+        var callLevel = clean.Select(m => m.LevelDb).OrderBy(l => l).ElementAt(clean.Count / 2);
+        var callContrast = clean.Select(m => m.ContrastDb).Where(c => !double.IsNaN(c)).Average();
+
+        foreach (var (name, samples) in new[] { ("clean call", CleanCall()), ("call with blips", CallWithBlips()), ("two stations", TwoStations()) })
+        {
+            var calls = Marks(samples).Where(m =>
+                Math.Abs(m.PitchHz - 625) <= CwRunReader.PitchToleranceHz
+                && Math.Abs(m.LevelDb - callLevel) <= CwRunReader.LevelToleranceDb(callContrast)).ToList();
+
+            // A mark of the clean call is called when a mark of the call overlaps at least half of it.
+            static double Overlap(CwMark x, CwMark y)
+                => Math.Max(0, Math.Min(x.ToSeconds, y.ToSeconds) - Math.Max(x.FromSeconds, y.FromSeconds));
+
+            var called = clean.Count(c => calls.Any(m => Overlap(c, m) >= (c.ToSeconds - c.FromSeconds) / 2));
+            var extra = calls.Count(m => !clean.Any(c => Overlap(c, m) >= (c.ToSeconds - c.FromSeconds) / 2));
+
+            _output.WriteLine($"{name}: of the clean call's {clean.Count} marks, called {called}; other marks at the call's pitch and level {extra}");
+        }
     }
 }

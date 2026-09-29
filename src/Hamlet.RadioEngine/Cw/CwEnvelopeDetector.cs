@@ -878,13 +878,12 @@ public sealed class CwEnvelopeDetector
             bars.Add(i);
         }
 
-        // **A GAP**: every run between two consecutive bars wholly below the lower of them -
+        // **A GAP**: every run between two paired bars wholly below the lower of them -
         // it dropped and stayed down - and the two bars at one level, their bands overlapping,
         // because a station holds the same level from one element to the next. A pair further
         // apart than a second is two things heard, not one sender.
         // Measured only where there are two bars to pair: most bins, most hops, have none.
         var waves = bars.Count >= 2 ? Waves(bin, runs, bars, recent, now) : (Level: double.PositiveInfinity, Wander: 0.0);
-        var marked = new List<Span>();
         var gaps = 0;
         var keying = false;
         var barsLastSecond = 0;
@@ -894,20 +893,50 @@ public sealed class CwEnvelopeDetector
         var gapHops = 0;
         var loudestGap = double.NaN;
         var edge = EnvelopeWindowSamples / HopSamples;
-        var lastMarked = -1;
+        var markedBars = new SortedSet<int>();
 
         for (var k = 1; k < bars.Count; k++)
         {
-            var a = runs[bars[k - 1]];
             var b = runs[bars[k]];
+
+            // **A BAR PAIRS WITH THE NEAREST BAR AT ITS OWN LEVEL** (work instruction 491, R104,
+            // HM-DEC-196). It used to be compared only with the bar just before it, so a burst in a
+            // gap that made a short bar of its own in this bin, at another level, stood between two
+            // of a station's bars: each was compared with the burst, the levels disagreed, and the
+            // station's bars were never paired. On unit 490's call with bursts in its gaps that
+            // lost every mark of the first CQ. A bar at another level between two at one level is
+            // part of the gap between them, which still has to have dropped below them both and
+            // clear its own wander; the agreement asked of the pair is unchanged.
+            var p = -1;
+
+            for (var j = k - 1; j >= 0; j--)
+            {
+                var c = runs[bars[j]];
+
+                if (b.Start - c.End > _keyingHops)
+                {
+                    break;
+                }
+
+                if (Math.Abs(c.Mean - b.Mean) <= FlatToleranceDb)
+                {
+                    p = j;
+                    break;
+                }
+            }
+
+            if (p < 0)
+            {
+                continue;
+            }
+
+            var a = runs[bars[p]];
 
             // The space between two elements is a dit at the least, the same shortest dit a bar
             // is held to; and the second bar holds the first one's level.
             var gapLength = b.Start - a.End - 1;
 
-            if (gapLength < _minBarHops
-                || b.Start - a.End > _keyingHops
-                || Math.Abs(a.Mean - b.Mean) > FlatToleranceDb)
+            if (gapLength < _minBarHops)
             {
                 continue;
             }
@@ -916,7 +945,7 @@ public sealed class CwEnvelopeDetector
             var ceiling = lower - FlatToleranceDb;
             var dropped = true;
 
-            for (var i = bars[k - 1] + 1; i < bars[k]; i++)
+            for (var i = bars[p] + 1; i < bars[k]; i++)
             {
                 if (runs[i].Max >= ceiling)
                 {
@@ -941,19 +970,14 @@ public sealed class CwEnvelopeDetector
                 gaps++;
             }
 
-            if (lastMarked != bars[k - 1])
-            {
-                marked.Add(new Span(a.Start, a.End, a.Mean));
-            }
-
-            marked.Add(new Span(b.Start, b.End, b.Mean));
-            lastMarked = bars[k];
+            markedBars.Add(bars[p]);
+            markedBars.Add(bars[k]);
 
             if (b.End > recent)
             {
                 keying = true;
 
-                for (var i = bars[k - 1] + 1; i < bars[k]; i++)
+                for (var i = bars[p] + 1; i < bars[k]; i++)
                 {
                     gapPower += runs[i].PowerSum;
                     gapHops += runs[i].Count;
@@ -972,6 +996,8 @@ public sealed class CwEnvelopeDetector
                 }
             }
         }
+
+        var marked = markedBars.Select(i => new Span(runs[i].Start, runs[i].End, runs[i].Mean)).ToList();
 
         foreach (var m in marked)
         {

@@ -239,6 +239,12 @@ T, if it's a real person doing CW, they will have the same amplitude. They will 
 or frequency. They'll have a different duration. A dot or a dash is the only thing that varies. Why
 aren't we using these things that we're already discovering?"*
 
+**R104 - Tim, 2026-09-28: characterize a signal in noise, and look for the bars.** *"We need to
+characterize what a signal looks like in noise and then use that characterization to identify data
+worth decoding. If we don't see anything in the noise, we don't even bother with the decoder. We
+focus on looking for those bars of amplitude with the duration that indicate a dot or a dash. We
+got to get that right."*
+
 ## §3 What is different from the phases before it
 
 1. **A criterion is a requirement id.** A report states the requirement, the condition, the

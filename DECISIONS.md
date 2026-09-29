@@ -4,6 +4,36 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-196
+date: 2026-09-28
+refs: docs/phase-requirements/PHASE_PLAN.md R104, src/Hamlet.RadioEngine/Cw/CwEnvelopeDetector.cs, tests/Hamlet.RadioEngine.Tests/Cw/ACharacterIsARunOfMarksThatAgreeTests.cs, HM-DEC-195, work instruction 491
+---
+
+**A bar is judged on itself, not on the noise in the gap beside it.** Tim, 2026-09-28, R104: *"We
+focus on looking for those bars of amplitude with the duration that indicate a dot or a dash. We got
+to get that right."*
+
+**The reason given was unit 490's measurement**, that none of the first CQ's four marks were called
+when bursts sat in the call's gaps. **Work instruction 491 did not reproduce it**: on unit 490's
+detector every one of the call's 65 marks is called with the bursts in, as without them. What it
+found instead is that a burst in a gap makes a short bar of its own in the call's bin, and a bar
+was compared only with the bar before it, so the call's bars were compared with the burst and
+rejected on level; and that the check that paired bars clear their gaps' wander, taken over the
+last second, holds pairs back while a burst is in that second, so marks arrive late - up to 435 ms
+after they ended - and the run reader has already ended their run.
+
+**What is built.** A bar pairs with the nearest bar at its own level, and a bar at another level
+between them is part of their gap. The agreement asked of two bars, the check that their gap
+dropped below both, the flatness tolerance and the shortest bar are all unchanged.
+
+**What is kept, and why.** The wander check guards against something real: without it, loud noise
+alone called 61 marks and printed seven letters. Measured over a pair's own gap rather than the last
+second it made the clean call misread. It stands as it was.
+
+**Whose words are whose.** The ruling is Tim's; the wording and the measurements are work
+instruction 491's.
+
+---
 id: HM-DEC-195
 date: 2026-09-28
 refs: docs/phase-requirements/PHASE_PLAN.md R103, src/Hamlet.RadioEngine/Cw/CwMark.cs, src/Hamlet.RadioEngine/Cw/CwRunReader.cs, src/Hamlet.RadioEngine/Cw/CwEnvelopeDetector.cs, src/Hamlet.RadioEngine/Cw/CwDecoder.cs, HM-DEC-194, work instruction 490
