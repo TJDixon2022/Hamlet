@@ -2,12 +2,12 @@ PROTOCOL: 2
 PROJECT: Hamlet
 STATE: COMPLETED
 TASK: TASK 4 of 4
-WORK_INSTRUCTION: 493 - one decoder, one truth (run by hand)
+WORK_INSTRUCTION: 494 - a button for W1AW on every band it sends on (run by hand)
 BALL: tim
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-29T10:57:38-04:00
-NOTE: Unit 493 done: terminal letters equal the scroll's in all five cases; noise prints nothing; panel shows the printed station or no station
+UPDATED: 2026-09-29T14:27:14-04:00
+NOTE: Unit 494 done: W1AW buttons 160-10 m on the CW tab tune and set CW; 6 m and 2 m left out, every button pressable
 
 ---
 
