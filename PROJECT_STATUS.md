@@ -2,12 +2,12 @@ PROTOCOL: 2
 PROJECT: Hamlet
 STATE: COMPLETED
 TASK: TASK 4 of 4
-WORK_INSTRUCTION: 487 - a letter needs blocks, printed stays printed, one layout (run by hand)
+WORK_INSTRUCTION: 488 - the pitch the detector found reaches the decoder (run by hand)
 BALL: tim
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-28T19:26:15-04:00
-NOTE: Unit 487 by hand complete: a letter needs blocks, printed stays printed, one layout; build 0/0, app 276 of 278 with 2 dispatcher losses green alone; the owner verifies at the radio
+UPDATED: 2026-09-28T20:01:44-04:00
+NOTE: Unit 488 done: keying carries a pitch, decoder mixes at it; the pitch is a lobe shoulder, named red
 
 ---
 

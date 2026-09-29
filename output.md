@@ -1,128 +1,126 @@
 ## 1. What Claude did
 
 **Surface and gate.** Claude Code on the development computer at `C:\Source\HamLet`, branch
-`main`. The prompt and `WORK_INSTRUCTIONS.md` both carry `PROJECT: Hamlet`, and all five of
-section 0's checks hold. Hamlet confirmed. Nothing in this report is evidence about the radio.
+`main`. The prompt and `WORK_INSTRUCTIONS.md` both carry `PROJECT: Hamlet`, and the tree agrees.
+Hamlet confirmed. Nothing in this report is evidence about the radio.
 
 **Run by hand, outside the loop.**
 - `SESSION.lock` was taken through `tools\arbiter\lock.bat take` and released the same way.
 - Nothing was written to `RUN_LEDGER.md`, and nothing under `tools\arbiter\` was touched.
-- No box was ticked; the checkbox count is 42 before and after.
-- No recording, fixture or telemetry was read.
-- No scratch log or source copy under `.run-unit\` was committed.
+- No box was ticked in `PHASE_PLAN.md`.
+- No recording, fixture, floor or telemetry file was read. The rows are the instruction's table.
+- Nothing under `.run-unit\` was committed.
 
-**The changes, file by file** (all in `de1de4a4`):
-- **`src/Hamlet.RadioEngine/Cw/CwEnvelopeDetector.cs` - the blocks it called.** The detector now
-  keeps every block it called at the watched pitch. They are kept for 60 seconds, on the audio
-  clock of every sample it was handed, which is the clock the decoder stamps its characters on.
-  `BlocksBetween(from, to)` counts the blocks whose middle falls between two moments.
-- **`src/Hamlet.RadioEngine/Cw/CwDecoder.cs` - a letter needs blocks (R99).** A new
-  `DetectorBlocks` adds a third condition to the gate. A character is let out only if the blocks
-  under its span are exactly as many as its elements, one per dit or dah. None, fewer or more,
-  and it is not emitted at all: not as a letter and not as a placeholder.
-- **The tolerance is 10 ms, `BlockToleranceSeconds`.** The span is widened by two hops at each
-  end, because the detector reads each hop through a window two hops long and can place a block's
-  edge up to one window from where the decoder places the same element. It is derived from the
-  hop, not from any recording.
-- **`CwDecoder.cs` - printed stays printed (R100).**
-  - On the falling edge, the leading edge the screen was showing is settled into the transcript
-    instead of cleared. Anything not yet shown is dropped.
-  - Nothing is offered while keying is false, not even an empty edge.
-  - Nothing promoted is settled a second time.
-- **`src/Hamlet.App/Controls/CwScopeControl.cs` and `CwHearingViewModel.cs`.** The scope no
-  longer blanks when the detector lets go: blocks and letters scroll off the left with time. The
-  hover says so.
-- **`src/Hamlet.App/Controls/BandGovernsTheMapPanel.cs` - one layout (R101).** The card is on the
-  left, the map beside it at the mockup's one size (246 by 134), and the rig face on the right.
-  That holds at every width, dial, mode and block. The row is the rig face's height, and nothing
-  the card says moves a column: its strayed-frequency and licence lines wrap and scroll inside it.
-  Unit 389's width rule is superseded.
-- **Why the map is 246 by 134 and not as tall as the rig face.** At 327 by 178, the size Hamlet
-  opens at (1100 wide) left the card about 181 px, below unit 388's 400 px floor for the green
-  block's words.
-- **`MainWindowViewModel.cs`** sets `DetectorBlocks` to the detector's `BlocksBetween`.
-- **Records.** R99, R100 and R101 are in both copies of `PHASE_PLAN.md`, and `DECISIONS.md` has
-  HM-DEC-192. Both status and outcome copies name 487, and the version went from 1.13.173 to
-  1.13.174.
+**The cause of the null, named.** `CwEnvelopeDetector` set the reading's pitch only on the hop a
+mark was up (`up ? watched.Hz : NaN`). Unit 485's hold keeps keying true through the gaps between
+marks, so most keying readings had no pitch. On a synthetic 625 Hz station at 23 WPM, 1118 of 1408
+keying readings carried none. That is the `scopePitchHz: null` on the owner's rows.
 
-**Unit 389's tests that had to change.** Only their placement and size assertions changed:
-- `TheSunMapStandsWhereItWasLeftTests.ItIs393By214AtTheLeftEdgeAnd327By178BesideTheCard` is now
-  `ItIs246By134BesideTheCardAtEveryWidth`. Every case is beside the card at 246 by 134, and its
-  band-height check is unchanged.
-- In `TheTopRowTests.TheWorldClockIsAtTheCardsRightEndWithOneMarker`, the clock is beside the card
-  in every case, at the map's one height.
-- In `Unit376TheTopBandTests.TheSunMapIsTheSizeItWasAndStillCarriesHisGrid`, the case table is
-  beside the card throughout, and the map is 134 tall at every width.
+**Two more things the tree showed.** The rows don't show what they seemed to:
+- **The tab's rung was never fed null.** Since unit 486 it was fed the detector's watched bin
+  (`WatchedHz`) while keying, which is always a number.
+- **The rows' "mixing" was not where the decoder mixed.** The panel and the verdict row showed
+  the tracker's own pitch (`Report.ToneHz` / `trackerHz`). The 584 was the tracker, not the
+  decoder.
 
-**Watched failing first.**
-- **`NoDetectionNoLettersTests.ALetterReadFromNoiseDoesNotReachTheScreen`**, with a burst of uneven
-  blips inside the open window. With the blocks unasked, which is unit 486's gate, `E`s from the
-  burst reached the screen. With the blocks asked, nothing did.
-- **`PrintedStaysPrintedTests`**, run on HEAD in a worktree: the screen read
-  `<AR>Q CQ EIE N,CALL K` while keying and `<AR>Q CQ EIE N,CALL` after the silence, with the `K`
-  gone. Now the screen after the silence still holds everything shown while keying.
-- **`TheLayoutIsOneLayoutTests`**, run on HEAD in a worktree:
-  - At 1920 wide the map stood at the band's left edge (393 by 214).
-  - At 1100 it stood beside the card (246 by 134).
-  - The three dials did not move anything at either width headless; unit 484's fix holds there.
-  - Now the arrangement and the map are the same across all six cases.
+**The changes, file by file** (all in `ec9ef6d2`):
+- **`src/Hamlet.RadioEngine/Cw/CwEnvelopeDetector.cs`.** The reading's pitch is the watched bin
+  whenever keying is true, and NaN otherwise. Pitch and keying now go together.
+- **`src/Hamlet.RadioEngine/Cw/CwDecoder.cs`.** A new `MixingHz` says where the decoder is
+  actually mixing. The rung order is unchanged: lock, then detector, then tracker.
+- **`src/Hamlet.App/ViewModels/MainWindowViewModel.cs`.**
+  - A new `PitchForTheDecoder(reading)` feeds the rung the reading's pitch while keying and NaN
+    otherwise.
+  - The scope's "mixing" number now reads `MixingHz`.
+- **`src/Hamlet.App/ViewModels/CwHearingViewModel.cs`.** The verdict row gains `mixingHz`, the
+  real mixing pitch. The `trackerHz` doc no longer claims it is where the decoder mixes.
+- **Tests.**
+  - `ThePitchTheDetectorFoundReachesTheDecoderTests` (engine), four tests.
+  - `TheDecoderIsFedTheDetectorsPitchTests` (app), three tests. One asserts that a reading
+    keying at 625 feeds 625.
+- **Records.**
+  - `DECISIONS.md` has HM-DEC-193, "The detector's pitch is what the decoder mixes at".
+  - Both `PHASE_OUTCOME.md` copies have `## UNIT 488 - STEP 12`.
+  - Both `PHASE_STATUS.md` copies name 488.
+  - Version 1.13.174 → 1.13.175.
+
+**Watched failing first.** Before change one, on the same synthetic station:
+- 1118 of 1408 keying readings had no pitch.
+- The decoder fell back to the tracker in the gaps: 305 keyed chunks were not at 625.
+
+**Section 3's green is not met, and nothing was tuned.** Every keying reading now carries a pitch,
+but 1021 of 1408 carry 575 or 675 Hz, not 625:
+
+| pitch carried | readings |
+|---|---|
+| 575 Hz | 536 |
+| 600 Hz | 81 |
+| 625 Hz | 387 |
+| 650 Hz | 2 |
+| 675 Hz | 400 |
+| other | 2 |
+
+- **Why:** on those hops the 625 Hz bin calls no bars of its own. Its gaps measure about −20 dB,
+  where the bins 50 Hz either side measure −42. So the bars are called in the shoulders of the
+  tone's lobe, and the watched bin is a shoulder.
+- **An attempt, reverted.** Choosing the loudest keying bin in the lobe was tried and moved almost
+  nothing (1021 → 1001), because 625 is not keying on those hops. Making it key is a detector
+  decision.
+- `ThatPitchIsTheStationsOwn` is committed red on purpose, to state the defect.
 
 **Verification.**
 - The build: 0 warnings, 0 errors.
-- The app carry-forward line: 276 of 278. The two failures are the dispatcher-loop loss,
-  `TheCarrierHoldsTheButtonsTests` and `TheWindowHoldsBelowItsMinimumTests`, and both pass alone,
-  8 of 8 and 3 of 3.
-- The layout, scope and transcript app types pass. Two clock-dependent names failed once and
-  passed alone: `NothingLeftTheWindow…` and `TheBestBetPill…`.
-- The engine detector and gate types: 16 of 18. The two reds are
-  `AMarkIsTheEnvelopeOverAThresholdTests`' ten and fifteen decibel cases, with the same counts as
-  before (40 and 208).
+- The app carry-forward line: 278 of 278.
+- The app scope, transcript and layout types: 81 of 82. `TheTopRowTests` failed once in the long
+  run and passed alone, 15 of 15.
+- The engine detector and gate types: 19 of 22. The three reds:
+  - `ThatPitchIsTheStationsOwn`, the named red above.
+  - `AMarkIsTheEnvelopeOverAThresholdTests`' 10 and 15 dB cases, at the same counts as before (40
+    and 208).
 
 ## 2. What the owner should expect
 
 1. Rebuild.
-2. On a band with no CW: nothing on the scope and nothing in the terminal.
-3. On a station: blocks, letters over them, and no letter that does not sit over its blocks. A
-   letter the detector did not hear as flat-topped marks, one per dit and dah, is not printed.
-4. Text once printed never vanishes, whatever the detector does. The only thing that clears it is
-   your own Clear.
-5. The window looks the same at 14.069, at 14.070 and at 14.076, in CW and in data, narrow and
-   wide: band row on top, card on the left, the sun map beside it, the radio on the right.
-
-**The cost, measured.** On the test's clean call, `CQ CQ DE N0CALL K` at 9 WPM, the settled text
-went from 14 characters to 11. The three dropped were an `<AR>`, an `E` and a comma, none of which
-the call sent. None of the letters the call did send were lost to this rule. The decoder's own
-misreads on that synthetic signal are unchanged.
+2. On a station, the panel's *mixing* number is now where the decoder really mixes, and it stays
+   put through the gaps between letters.
+3. **The *tone* and *mixing* numbers will often not be the same number, and will sit 50 Hz off
+   the station.** That is the problem this unit found, now visible instead of hidden behind the
+   tracker's pitch.
+4. **Expect the same near-silence as last night** on a strong, clean station. The decoder has
+   been pointed at the detector's bin since unit 486, and that bin is usually beside the station,
+   not on it.
+5. The next verdict row carries `mixingHz` and a `scopePitchHz` that is never null while the bars
+   say keying.
 
 ## 3. What you should see
 
-| | settled text | characters |
-|---|---|---|
-| Clean call, gate alone (unit 486) | `<AR>Q CQ EIE N,CALL K` | 14 |
-| Clean call, a letter needs blocks | `Q CQ IE NCALL K` | 11 |
-| Call with a burst, gate alone | `CQ CQ E IE N9 RALL A` | 14 |
-| Call with a burst, a letter needs blocks | `CQ CQ  IE N RALL A` | 12 |
+**Would the station of 23:38:34 have been decoded with the pitch carried? No.** A synthetic 625 Hz,
+23 WPM station, driven through the detector, the gate and the block rule, with nothing tuned:
 
-- **The scope** keeps what it drew after the station stops, and it scrolls off to the left.
-- **The top of the window** has one arrangement everywhere, and the sun map is always the
-  mockup's size.
+| the rung fed | settled text | characters |
+|---|---|---|
+| sent | `CQ CQ DE N0CALL N0CALL K` | 20 |
+| nothing (what the rows seemed to say) | `CQQ   DEN0CAL 0L K` | 13 |
+| the carried pitch (this unit; what the tab has fed since unit 486) | `RE    N  D   K` | 5 |
+| 625 Hz while keying (the station's own bin) | `RQ DEN0CAL 0L K` | 12 |
+
+- **Before and after this unit, the tab reads the same 5 characters**, because the tab already fed
+  the watched bin, which now equals the carried pitch.
+- **The next thing in the way:** the detector calls the station's bars 50 Hz to one side.
+- Fed the station's own pitch, the same decoder reads 12 characters.
 
 ## 4. What's blocking us
 
 Nothing blocks. What is left, a line each:
-- **The leading edge is still revised while a station is keying.** The decoder decides late and
-  rewrites the tip, so in the test the screen shrank 200 times mid-call (for example `N■` became
-  `N`). R100 is met at the falling edge. Stopping this would mean showing only settled text, which
-  costs seconds of lag, and that is the owner's call.
-- **The detector can call a burst blip a block** when it sits at the station's own level right
-  after a station's mark. The rule then lets it through by design, because the detector heard a
-  flat-topped bar.
-- **An isolated single mark is never called a block**, because the detector pairs bars. A lone
-  `E` or `T` with no neighboring bar in its window is not printed.
-- **The sun map is 246 by 134 everywhere, smaller than the 393 by 214 it had at wide windows.**
-- **Pre-existing app reds, not this unit's:** `HowMuchTheApplicationSaysTests` (the CW tab at 585
-  against 550) and `ModeFollowsTheMapAgainTests.NothingButTheModeIsEverWritten`.
-- **`AMarkIsTheEnvelopeOverAThresholdTests`** has two cases red since before unit 485.
+- **The station's own bin does not call bars on two hops in three.** 625 Hz reads gaps of about
+  −20 dB while the shoulders read −42, so the watched pitch is 575 or 675. That is the next unit's
+  cause to find, in the detector; `ThatPitchIsTheStationsOwn` is the red test waiting for it.
+- **Fed the station's own pitch, the decoder still misses letters** (`RQ DEN0CAL 0L K` against
+  the sent call). That is the decoder's own reading, untouched here as the instruction required.
+- **Pre-existing reds, not this unit's:**
+  - `HowMuchTheApplicationSaysTests` (the CW tab at 585 against 550).
+  - `ModeFollowsTheMapAgainTests.NothingButTheModeIsEverWritten`.
+  - `AMarkIsTheEnvelopeOverAThresholdTests`' two cases.
 
 ### Asks still outstanding
 
@@ -130,9 +128,5 @@ Nothing blocks. What is left, a line each:
   the owner; no change sits in the tree.
 - **Unit 440's item 2:** R72 is cited as HM-DEC-175. Raised 2026-09-25 and scheduled as step 8
   record work under R80.
-- **Unit 487, new, 2026-09-28:** whether the terminal shows only settled text, so nothing on it is
-  ever revised, at the cost of seconds of lag. It is waiting on the owner; no change sits in the
-  tree.
-
-Unit 484's strayed-line question and unit 485's screen 1 question are answered by R101: there is
-one layout, and the strayed line no longer moves anything.
+- **Unit 487, 2026-09-28:** whether the terminal shows only settled text, so nothing on it is ever
+  revised, at the cost of seconds of lag. It is waiting on the owner; no change sits in the tree.
