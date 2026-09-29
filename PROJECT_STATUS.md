@@ -2,12 +2,12 @@ PROTOCOL: 2
 PROJECT: Hamlet
 STATE: COMPLETED
 TASK: TASK 4 of 4
-WORK_INSTRUCTION: 497 - a mark has edges (run by hand)
+WORK_INSTRUCTION: 498 - a mark is narrow, and a lone letter waits to be confirmed (run by hand)
 BALL: tim
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-29T16:55:19-04:00
-NOTE: Unit 497 done: marks need edges (noise 1452 to 1069, call keeps 65); W1AW dot and line from the ARRL schedule
+UPDATED: 2026-09-29T18:23:17-04:00
+NOTE: Unit 498 done: narrow marks (noise 1069 to 146), lone E and T banked until confirmed; TEST reads TEST, stray dit prints nothing
 
 ---
 
