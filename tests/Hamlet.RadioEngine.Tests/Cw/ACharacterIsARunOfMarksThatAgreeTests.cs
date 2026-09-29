@@ -1,0 +1,262 @@
+using Hamlet.RadioEngine.Audio;
+using Hamlet.RadioEngine.Cw;
+using Hamlet.RadioEngine.Training;
+using Xunit;
+using Xunit.Abstractions;
+
+namespace Hamlet.RadioEngine.Tests.Cw;
+
+/// <summary>
+/// A character is a run of marks that agree on pitch and amplitude (work instruction 490, R103,
+/// HM-DEC-195): the timing-only path beside the run path, on three synthetic signals.
+/// </summary>
+/// <remarks>
+/// **SYNTHETIC AUDIO WRITTEN HERE, NOTHING READ FROM DISK** (R96). Each case prints what each path
+/// reads. The old path is the decoder as work instruction 489 left it, unbound; the new path is
+/// the same decoder given the detector's marks.
+/// </remarks>
+public sealed class ACharacterIsARunOfMarksThatAgreeTests
+{
+    private const int Rate = 8000;
+    private const int Chunk = 80;
+    private const string Call = "CQ CQ DE N0CALL N0CALL K";
+    private const string Answer = "TEST DE W1AW K";
+
+    private readonly ITestOutputHelper _output;
+
+    /// <summary>Creates the tests.</summary>
+    /// <param name="output">Where each path's text is printed.</param>
+    public ACharacterIsARunOfMarksThatAgreeTests(ITestOutputHelper output) => _output = output;
+
+    private static MonoAudio Station(string text, int wpm, double hz, double amplitude, double noise, double lead, int seed)
+        => CwSignal.Generate(new CwSignalRequest(
+            text, WordsPerMinute: wpm, ToneHz: hz, SampleRate: Rate, Amplitude: amplitude,
+            NoiseAmplitude: noise, LeadInSeconds: lead, TailSeconds: 3, Seed: seed));
+
+    /// <summary>The clean call: one pitch, one level, 23 words a minute, about 22 dB over the noise.</summary>
+    private static float[] CleanCall() => Station(Call, 23, 625, 0.5, 0.04, 3, 490).Samples;
+
+    /// <summary>
+    /// The clean call with a short burst in the middle of every key-up stretch longer than a
+    /// character gap: 40 ms each, eight decibels under the station, at pitches scattered from
+    /// 550 to 675 Hz, inside the old path's filter.
+    /// </summary>
+    private static float[] CallWithBlips()
+    {
+        var samples = CleanCall();
+        var keyed = Station(Call, 23, 625, 0.5, 0, 3, 490).Samples;
+        var pitches = new[] { 575.0, 650, 600, 675, 550 };
+        var burst = (int)(0.040 * Rate);
+        var quietRun = 0;
+        var placed = 0;
+
+        for (var i = 0; i < keyed.Length; i++)
+        {
+            if (Math.Abs(keyed[i]) > 1e-4)
+            {
+                // A key-up stretch of 150 ms or more, before this mark and after the first mark, is a
+                // gap between letters or words: a burst goes in its middle.
+                if (quietRun >= (int)(0.150 * Rate) && i > (int)(3.2 * Rate))
+                {
+                    var middle = i - (quietRun / 2) - (burst / 2);
+                    var hz = pitches[placed++ % pitches.Length];
+
+                    for (var k = 0; k < burst; k++)
+                    {
+                        var shape = Math.Sin(Math.PI * k / burst);
+                        samples[middle + k] += (float)(0.2 * shape * Math.Sin(2 * Math.PI * hz * k / Rate));
+                    }
+                }
+
+                quietRun = 0;
+            }
+            else
+            {
+                quietRun++;
+            }
+        }
+
+        return samples;
+    }
+
+    /// <summary>Two stations keying at once, 200 Hz apart: the call at 625 Hz and an answer at 825 Hz, quieter.</summary>
+    private static float[] TwoStations()
+    {
+        var a = Station(Call, 23, 625, 0.5, 0.04, 3, 490).Samples;
+        var b = Station(Answer, 18, 825, 0.3, 0, 3.4, 491).Samples;
+        var mixed = new float[Math.Max(a.Length, b.Length)];
+
+        for (var i = 0; i < mixed.Length; i++)
+        {
+            mixed[i] = (i < a.Length ? a[i] : 0) + (i < b.Length ? b[i] : 0);
+        }
+
+        return mixed;
+    }
+
+
+    /// <summary>What a path reads, character by character: the old path unbound, or the new path given the marks.</summary>
+    internal static List<CwCharacter> ReadCharacters(float[] samples, bool runs)
+    {
+        var detector = new CwEnvelopeDetector(Rate);
+        var decoder = new CwDecoder(Rate, 600);
+        var settled = new List<CwCharacter>();
+
+        if (runs)
+        {
+            decoder.DetectorMarks = detector.MarksSince;
+        }
+
+        decoder.CharacterSettled += settled.Add;
+
+        for (var at = 0; at + Chunk <= samples.Length; at += Chunk)
+        {
+            decoder.Process(new AudioChunk(at, Rate, samples.AsSpan(at, Chunk)));
+            detector.Process(samples.AsSpan(at, Chunk));
+        }
+
+        decoder.Flush();
+
+        return settled;
+    }
+
+    /// <summary>What a path reads, as text with single spaces.</summary>
+    internal static string Read(float[] samples, bool runs) => Text(ReadCharacters(samples, runs));
+
+    private static string Text(IEnumerable<CwCharacter> characters)
+        => string.Join(' ', string.Concat(characters.Select(c => c.Text)).Split(' ', StringSplitOptions.RemoveEmptyEntries));
+
+    /// <summary>Every mark the detector calls on the audio.</summary>
+    private static IReadOnlyList<CwMark> Marks(float[] samples)
+    {
+        var detector = new CwEnvelopeDetector(Rate);
+
+        for (var at = 0; at + Chunk <= samples.Length; at += Chunk)
+        {
+            detector.Process(samples.AsSpan(at, Chunk));
+        }
+
+        return detector.MarksSince(0).Marks;
+    }
+
+    private (string Old, string New) Both(string name, float[] samples, string sent)
+    {
+        var old = Read(samples, runs: false);
+        var now = Read(samples, runs: true);
+
+        _output.WriteLine($"{name}");
+        _output.WriteLine($"  sent      `{sent}`");
+        _output.WriteLine($"  old path  `{old}` ({old.Count(c => c != ' ')} characters)");
+        _output.WriteLine($"  new path  `{now}` ({now.Count(c => c != ' ')} characters)");
+
+        return (old, now);
+    }
+
+    /// <summary>
+    /// The marks the run reader's printed letters were read from that are not the call's: at another pitch
+    /// than 625 Hz by more than a bin, or at another level than the clean call's by more than the
+    /// reader's own level tolerance.
+    /// </summary>
+    private int MarksNotTheCalls(float[] samples)
+    {
+        var clean = Marks(CleanCall());
+        var callLevel = clean.Select(m => m.LevelDb).OrderBy(l => l).ElementAt(clean.Count / 2);
+        var callContrast = clean.Select(m => m.ContrastDb).Where(c => !double.IsNaN(c)).Average();
+        var detector = new CwEnvelopeDetector(Rate);
+        var reader = new CwRunReader();
+        var sequence = 0L;
+        var strangers = 0;
+        var used = 0;
+
+        reader.RunRead += (c, run) =>
+        {
+            foreach (var m in run)
+            {
+                used++;
+
+                if (Math.Abs(m.PitchHz - 625) > CwRunReader.PitchToleranceHz
+                    || Math.Abs(m.LevelDb - callLevel) > CwRunReader.LevelToleranceDb(callContrast))
+                {
+                    strangers++;
+                    _output.WriteLine($"  not the call's: {m.FromSeconds:0.000} s, {m.PitchHz:0} Hz, {m.LevelDb:0.0} dB, in `{c.Text}`");
+                }
+            }
+        };
+
+        for (var at = 0; at + Chunk <= samples.Length; at += Chunk)
+        {
+            detector.Process(samples.AsSpan(at, Chunk));
+
+            var batch = detector.MarksSince(sequence);
+
+            sequence = batch.Marks.Count > 0 ? batch.Marks.Max(m => m.Sequence) : sequence;
+            reader.Read(batch);
+        }
+
+        reader.Flush();
+        _output.WriteLine($"  marks the printed letters were read from {used}, not the call's {strangers}");
+
+        return strangers;
+    }
+
+    /// <remarks>Case 1: a clean call at one pitch and one level. The new path reads it as sent.</remarks>
+    [Fact]
+    public void ACleanCallReadsAsSent()
+    {
+        var (_, now) = Both("clean call", CleanCall(), Call);
+
+        Assert.Equal(Call, now);
+    }
+
+    /// <remarks>
+    /// Case 2: the same call with bursts between the letters, at another level and a scatter of
+    /// pitches. They break the agreement, so no letter the new path prints stands on one. Red while
+    /// it prints them - the first reader, which printed every run, printed four.
+    /// </remarks>
+    [Fact]
+    public void BlipsBetweenTheLettersAreNotLetters()
+    {
+        Both("call with blips", CallWithBlips(), Call);
+
+        Assert.Equal(0, MarksNotTheCalls(CallWithBlips()));
+    }
+
+    /// <remarks>
+    /// **RED ON PURPOSE, AND NAMED** (work instruction 490): with the bursts in, the call reads as it
+    /// reads without them. It does not, and not because a burst is read - none is - but because
+    /// the detector calls none of the call's marks beside a burst: a burst in a gap lights the
+    /// call's own bin, and the gap then fails the detector's check that the bars clear their gaps'
+    /// wander, so the bars on either side are not paired. The detector's pairing is not this
+    /// unit's to change.
+    /// </remarks>
+    [Fact]
+    public void TheCallReadsWholeThroughTheBlips()
+    {
+        var clean = Read(CleanCall(), runs: true);
+
+        Assert.Equal(clean, Read(CallWithBlips(), runs: true));
+    }
+
+    /// <remarks>
+    /// Case 3: two stations at once, 200 Hz apart. The new path reads them as two senders and
+    /// prints one of them, not a mixture: every mark under a printed letter is the call's.
+    /// </remarks>
+    [Fact]
+    public void TwoStationsReadAsOneNotAMixture()
+    {
+        Both("two stations", TwoStations(), Call + "  |  " + Answer);
+
+        Assert.Equal(0, MarksNotTheCalls(TwoStations()));
+    }
+
+    /// <remarks>
+    /// **RED ON PURPOSE, AND NAMED** (work instruction 490): the one station printed reads whole.
+    /// It does not, for case 2's reason: where the answer keys inside the call's lobe the detector
+    /// does not pair the call's bars.
+    /// </remarks>
+    [Fact]
+    public void TheStationPrintedReadsWhole()
+    {
+        Assert.Equal(Call, Read(TwoStations(), runs: true));
+    }
+}

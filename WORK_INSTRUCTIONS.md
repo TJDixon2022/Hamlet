@@ -1,7 +1,8 @@
-# Work instruction 489 - the decoder gets its ears back
+# Work instruction 490 - a character is a run of marks that agree
 
-**Hand run. One unit, and it is small on purpose.** The owner has a few hours of usable CW on
-the air tonight. This unit is written to be finished inside them.
+**Hand run. One unit.** The detector already measures each mark's pitch, amplitude and length.
+The decoder has only ever been given length. This unit gives it all three and lets them define
+where a character starts and stops.
 
 **No test against a recording, a fixture, a floor or copied telemetry** (R96). A headless test
 driving synthetic hops written in the test itself is allowed; nothing read from disk. Verify by
@@ -40,114 +41,122 @@ If all five hold, say "Hamlet confirmed" and continue.
 - One `dotnet test` invocation per line, filtered, with a `timeout`. Never background and poll.
   The app line loses names to the dispatcher loop; re-run once, count neither way.
 - Apostrophes in quoted heredocs break; `;`, `rm` and `git rm` are refused; Python cannot run
-  here; `-m` more than once for a multi-line commit. Scripts go in `.run-unit\unit489-<name>.sh`
+  here; `-m` more than once for a multi-line commit. Scripts go in `.run-unit\unit490-<name>.sh`
   and are not committed.
 - Nothing that keys or transmits. Nothing written to the radio.
-- **Time matters.** If a change in §4 cannot be made cleanly, do §3 alone, commit, and say so.
-  §3 is the unit; §4 is what it should also have.
 - `output.md` at the root, four headings exactly: `## 1. What Claude did`, `## 2. What the owner
   should expect`, `## 3. What you should see`, `## 4. What's blocking us`.
 
 ---
 
-## 2. What went wrong, and why this is a rollback
+## 2. The owner's rule, and why it is new
 
-**A week ago W1AW on 7.0475 read mostly clean.** Tonight, on the same station at 38 dB swing,
-score 0.55, dits of 71 ms - the strongest signal in the record - **zero characters.**
+**His words, 2026-09-28, R103:**
 
-Three gates were put in front of the decoder in two days:
+> *"The scrolling tutorial system seems to discover characters a lot more correctly. That's
+> because we're going on frequency, amplitude, and duration. Those define a character. Those
+> should be consistent. An E followed by a T, if it's a real person doing CW, they will have the
+> same amplitude. They will have the same pitch or frequency. They'll have a different duration.
+> A dot or a dash is the only thing that varies. Why aren't we using these things that we're
+> already discovering?"*
 
-- **unit 486:** nothing is emitted unless the detector says keying now;
-- **unit 487:** nothing is emitted unless every element of the character has a block the detector
-  called;
-- **unit 486 and 488:** the decoder mixes at the detector's pitch.
+**Because nothing ever connected them.** `CwProbabilisticDecoder` was built before the detector
+existed. It reads one mixed audio stream, measures how long the key was down and up, and fits
+letters to the timing. **It has never been handed a mark's pitch or a mark's amplitude - only its
+length.** The detector measures all three per mark and hands the decoder nothing but a pitch to
+mix at. Units 486 to 489 bolted gates onto the decoder's output; none of them gave it the
+measurements.
 
-Each is right in principle. Together they hand the whole decode to a detector that **unit 488
-measured calling the station's bars 50 Hz to one side, two hops in three** - at 625 Hz the
-station's own bin reads gaps near −20 dB while the shoulders read −42, so the shoulders get
-called and the watched pitch is 575 or 675. Unit 488's own table, on a synthetic 625 Hz station:
+**What the rule changes.** Today a character ends when the silence is long enough. Under his rule
+**a character is a run of consecutive marks that agree on pitch and on amplitude**, and the gaps
+inside it only say which letter it is. A mark that breaks the agreement is not part of that
+character: it is another station, or noise.
 
-| the decoder fed | settled text | characters |
-|---|---|---|
-| sent | `CQ CQ DE N0CALL N0CALL K` | 20 |
-| the detector's pitch, which is what the app does now | `RE    N  D   K` | 5 |
-| the station's own 625 Hz | `RQ DEN0CAL 0L K` | 12 |
-
-**So the decoder is being pointed at a shoulder and then refused for not matching blocks that are
-not where it is listening.** The detector's pitch is not fit to steer the decoder yet.
-
-**The owner's ruling, R102, 2026-09-28:** get last week's reading back tonight. The detector stops
-steering the decoder and stops gating it. It keeps the scope, the blocks and the light, and it
-keeps teaching, but it no longer decides what the decoder hears or what reaches the screen.
+**Why this is the right place.** The tutorial strip already groups marks exactly this way, and it
+is the part the owner says is usually right. This unit makes the decoder read the same grouping
+instead of guessing from timing alone.
 
 ---
 
-## 3. The rollback - three gates off
+## 3. The change
 
-**One: the decoder mixes where it did before unit 486.** Remove the detector's pitch from the
-mixing rungs. The order returns to the operator's lock, then the tracker. `CwDecoder.MixingHz`
-stays and still reports where the decoder really mixes - it is the owner's window into this and it
-was right to add.
+### One - the marks reach the decoder whole
 
-**Two: the block rule is off.** Unit 487's third condition - the blocks under a character's span
-must equal its elements - no longer decides whether a character is emitted.
+`CwEnvelopeDetector` already calls blocks and keeps them (unit 487). **Each block carries its
+pitch, its level in dB and its length in milliseconds**, and the decoder is given the list, not
+just a pitch to mix at. Name in the report what the detector already exposes and what had to be
+added.
 
-**Three: the keying gate is off.** Unit 486's condition - keying must be true now, and the
-character heard in the open stretch - no longer decides whether a character is emitted.
+### Two - a character is a run of marks that agree
 
-**Keep, all of it:**
-- the scope, the blocks, the letters over the blocks, unit 485's hold, unit 487's
-  printed-stays-printed, the one layout, the two verdict buttons and the verdict row;
-- **the scope still draws only blocks and only letters that sit over blocks.** The screen's rule
-  is unchanged; what changes is that the terminal is no longer bound by it;
-- every constant, every remark, every test. **Nothing is deleted.**
+A new path in the engine, beside the existing one, that reads characters from the block list:
 
-**How to switch them off.** One named switch each, in the engine, defaulting **off**, with a
-remark naming R102, unit 488's measurement, and that the switch exists so they can be turned back
-on when the detector's pitch is fit. **Not a deletion, not a comment-out.** The tests that prove
-each gate stay green by driving its switch on.
+- **A run** is consecutive blocks whose pitch is within one bin of each other and whose level is
+  within a stated tolerance of the run's own mean.
+- **The run ends** at a block that breaks either agreement, or at a gap longer than the run's own
+  character gap.
+- **The letter** comes from the lengths inside the run - short against long, split at the run's
+  own geometric mean - and from the gaps between them.
+- **A word gap** is a gap longer than the run's own word gap, measured from the run's own dit.
+- **A block that breaks the agreement** starts a new run. It is never folded into the one before.
 
-**Watch it fail first**, headless, with synthetic hops written in the test: a clean keyed call at
-a pitch the detector calls 50 Hz off. Red while the call reads fewer characters than the same
-decoder unbound; green when it reads what it read before unit 486.
+**The two tolerances - one bin of pitch, and the level tolerance in dB - are the author's**,
+stated in the report with their reasons, and **derived from what a sender's own marks do**: a
+human's keying holds one pitch and one level, and the wobble is the detector's own measurement
+noise. **Neither is fitted to any recording, and neither is tuned after reading a result.**
 
-## 4. If there is time - the panel stops lying about it
+### Three - the new path is what the terminal shows
 
-The panel says *tone N Hz · mixing N Hz*. With the rungs changed, `mixing` is the tracker's again
-and `tone` is the detector's, and they will often differ. **Say so on the panel**: the words
-become *tone N Hz heard · decoding at N Hz*, so the owner reads two numbers that are honestly two
-different things rather than a disagreement that looks like a bug.
+The terminal and the scope both read the new path.
 
-**If this cannot be done cleanly and quickly, skip it**, commit §3, and say so in section 4.
+- **A letter appears only if the run that made it exists** - so the terminal and the scope agree
+  by construction, not by a gate bolted on top. Unit 487's block rule and unit 486's keying gate
+  become unnecessary for this path; **leave their switches as unit 489 set them and say so.**
+- The old timing-only path stays in the tree, behind a switch, so it can be compared. **Nothing
+  is deleted.**
+- Unit 487's printed-stays-printed holds: nothing shown is ever removed.
+
+### Four - what the decoder is not
+
+**Do not touch the lattice, the speed grid, the unit estimator or the emission gate.** This unit
+does not improve the existing decoder. It builds a second, simpler reader that uses the three
+measurements the detector already makes, and points the screen at it.
+
+**Watch it fail first**, headless, with synthetic hops written in the test, and print the text
+each path reads:
+
+1. **A clean call at one pitch and one level.** Both paths should read it. Say what each reads.
+2. **The same call with noise blips between the letters**, at a different level and a scatter of
+   pitches. The old path folds them in; the new path must drop them, because they break the
+   agreement. **Red while the new path prints them.**
+3. **Two stations at once**, 200 Hz apart, both keying. The old path interleaves them into
+   nonsense. The new path must read them as two runs and print one of them - say which and why.
 
 ---
 
-## 5. Record
+## 4. Record
 
-- `PHASE_OUTCOME.md`, both copies: `## UNIT 489 - STEP 12`, one paragraph.
-- `PHASE_STATUS.md`, both copies: names 489.
+- `PHASE_OUTCOME.md`, both copies: `## UNIT 490 - STEP 12`, one paragraph.
+- `PHASE_STATUS.md`, both copies: names 490.
 - Patch-bump `Directory.Build.props`.
-- **Append R102 to the rulings section of both `PHASE_PLAN.md` copies**, as a paragraph: the
-  detector does not steer or gate the decoder until its pitch is fit; it keeps the scope, the
-  blocks and the light; the switches exist to turn the gates back on. **Touch no checkbox.**
-- `DECISIONS.md`, newest first, **HM-DEC-194**, headline *The detector stops steering the decoder
-  until its pitch is fit*, naming unit 488's measurement as the reason and the switches as the
-  route back.
+- **Append R103 to the rulings section of both `PHASE_PLAN.md` copies**, in the owner's words
+  above. **Touch no checkbox.**
+- `DECISIONS.md`, newest first, **HM-DEC-195**, headline *A character is a run of marks that agree
+  on pitch and amplitude*, quoting him, and naming that the decoder had only ever been given
+  duration.
 
 ---
 
-## 6. Report
+## 5. Report
 
-Section 2, for the owner, in plain words, and short:
+Section 2, for the owner, in plain words:
 
 - rebuild;
-- W1AW and other strong stations should read about as they did a week ago, junk between the words
-  included;
-- the scope still shows blocks and letters over blocks, and still shows nothing when the detector
-  hears nothing - **the scope and the terminal will now disagree, and that is the point: the
-  terminal is free again and the scope shows what the detector can still only partly do**;
-- nothing printed vanishes; the layout is unchanged; the preamp is unchanged.
+- on a station: the letters in the terminal are the letters over the blocks, because both now come
+  from the same run of marks;
+- noise between letters no longer becomes letters, because it does not agree on pitch or level;
+- two stations at once read as one station, not as a mixture.
 
-Section 1: what changed, file by file, the three switch names, and that the build and the app line
-are green. Section 3: the before-and-after character counts on the test's call. Section 4:
-anything left, a line each.
+Section 1: what changed, file by file, the two tolerances and their reasons, and that the build
+and the app line are green. **Section 3: the three tests' text, old path beside new path.**
+Section 4: anything left, a line each.

@@ -4,6 +4,35 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-195
+date: 2026-09-28
+refs: docs/phase-requirements/PHASE_PLAN.md R103, src/Hamlet.RadioEngine/Cw/CwMark.cs, src/Hamlet.RadioEngine/Cw/CwRunReader.cs, src/Hamlet.RadioEngine/Cw/CwEnvelopeDetector.cs, src/Hamlet.RadioEngine/Cw/CwDecoder.cs, HM-DEC-194, work instruction 490
+---
+
+**A character is a run of marks that agree on pitch and amplitude.** Tim, 2026-09-28, R103:
+*"That's because we're going on frequency, amplitude, and duration. Those define a character. Those
+should be consistent. An E followed by a T, if it's a real person doing CW, they will have the same
+amplitude. They will have the same pitch or frequency. They'll have a different duration. A dot or a
+dash is the only thing that varies. Why aren't we using these things that we're already
+discovering?"*
+
+**Because the decoder had only ever been given duration.** `CwProbabilisticDecoder` was built before
+the detector existed and reads one mixed stream by timing alone; the detector measured each mark's
+pitch, level and length and handed the decoder a pitch to mix at and nothing more.
+
+**What is built.** The detector hands out every mark it calls, at any pitch, with all three. A new
+reader, `CwRunReader`, beside the old path rather than in it, reads a character as consecutive marks
+within one bin of pitch and within twice the detector's own flatness tolerance of level, and the
+lengths and gaps inside the run say which letter it is; a mark that breaks the agreement starts its
+own run and is never folded in, and one sender is printed. The terminal and the scope read it, so a
+letter appears only where its run exists. The timing-only path stays behind the decoder's
+`ReadsRuns` switch, and nothing of it was changed.
+
+**Whose words are whose.** The ruling is Tim's; the wording is work instruction 490's record of it.
+The two tolerances are the author's, from what a sender's own marks do, and were not tuned against
+any result.
+
+---
 id: HM-DEC-194
 date: 2026-09-28
 refs: docs/phase-requirements/PHASE_PLAN.md R102 R97 R99, src/Hamlet.RadioEngine/Cw/CwDecoder.cs, HM-DEC-190, HM-DEC-192, HM-DEC-193, work instruction 489

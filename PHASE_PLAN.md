@@ -232,6 +232,13 @@ keeps teaching. The three are switched off in `CwDecoder` rather than deleted -
 `DetectorSteersPitch`, `DetectorGatesKeying`, `DetectorGatesBlocks` - and the switches exist so the
 gates can be turned back on when the detector's pitch is fit.
 
+**R103 - Tim, 2026-09-28: a character is a run of marks that agree.** *"The scrolling tutorial
+system seems to discover characters a lot more correctly. That's because we're going on frequency,
+amplitude, and duration. Those define a character. Those should be consistent. An E followed by a
+T, if it's a real person doing CW, they will have the same amplitude. They will have the same pitch
+or frequency. They'll have a different duration. A dot or a dash is the only thing that varies. Why
+aren't we using these things that we're already discovering?"*
+
 ## §3 What is different from the phases before it
 
 1. **A criterion is a requirement id.** A report states the requirement, the condition, the

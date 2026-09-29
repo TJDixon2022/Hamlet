@@ -11396,6 +11396,12 @@ public partial class MainWindowViewModel : ObservableObject
         // decoder's own switches, DetectorSteersPitch, DetectorGatesKeying and DetectorGatesBlocks,
         // stay off; the scope, the blocks and the light go on as before.
 
+        // **A CHARACTER IS A RUN OF MARKS THAT AGREE** (work instruction 490, R103, HM-DEC-195).
+        // The decoder is given every mark the detector calls, with its pitch, level and length,
+        // and the terminal and the scope show what the run reader reads from them; the gates above
+        // stay off, since a letter appears only where its run exists.
+        _decoder.DetectorMarks = detector.MarksSince;
+
         _audioInput.Start();
 
         AudioInputName = _audioInput.DeviceName;

@@ -212,6 +212,11 @@ public sealed class CwEnvelopeDetector
 
     // The blocks called at the watched pitch, on that clock, in seconds, by where each began.
     private readonly SortedDictionary<long, (double From, double To)> _called = new();
+
+    // Every mark called at any pitch, with its pitch and level, in the order called (work
+    // instruction 490, R103), and the last sequence number handed out.
+    private readonly List<CwMark> _marks = new();
+    private long _markSequence;
     private double _lowHz = double.NaN;
     private double _highHz = double.NaN;
     private bool _fromRig;
@@ -385,6 +390,34 @@ public sealed class CwEnvelopeDetector
         lock (_gate)
         {
             return _called.Values.Count(b => (b.From + b.To) / 2 >= fromSeconds && (b.From + b.To) / 2 <= toSeconds);
+        }
+    }
+
+    /// <summary>
+    /// The marks called since a sequence number, with their pitch, level and length, at every
+    /// pitch in the passband (work instruction 490, R103).
+    /// </summary>
+    /// <param name="sequence">The last sequence number the reader has; nought for all kept.</param>
+    /// <returns>The marks after it, in the order called, and the detector's audio clock now.</returns>
+    /// <remarks>
+    /// <para>**WHAT WAS ALREADY HERE AND WHAT HAD TO BE ADDED.** Every bin already called its own
+    /// bars, paired them only at one level (<see cref="FlatToleranceDb"/>), and kept each hop's
+    /// level for <see cref="HistorySeconds"/>; and <see cref="BlocksBetween"/> kept the watched
+    /// bin's bars on the audio clock (work instruction 487). What was handed out was a count of
+    /// the watched bin's blocks, with no pitch and no level. Added: every completed bar in every
+    /// bin becomes one mark, placed at the peak of its tone's lobe - the neighboring bin with the
+    /// higher mean level over the mark's own hops, climbed until none is higher - so a tone that
+    /// lights bins two hundred hertz either side is one mark at its own pitch, not sixteen. A
+    /// mark overlapping one already called within one bin of its pitch is that mark again and
+    /// is not called twice. Kept for <see cref="CalledSeconds"/>.</para>
+    /// </remarks>
+    public CwMarkBatch MarksSince(long sequence)
+    {
+        lock (_gate)
+        {
+            return new CwMarkBatch(
+                _marks.Where(m => m.Sequence > sequence).ToArray(),
+                _samplesSeen / (double)SampleRate);
         }
     }
 
@@ -736,6 +769,8 @@ public sealed class CwEnvelopeDetector
             _called.Remove(old);
         }
 
+        CallMarks(evals, hop, nowSeconds);
+
         var gapDb = eval.GapDb;
         var barDb = eval.BarDb;
         var midDb = double.IsNaN(gapDb) || double.IsNaN(barDb) ? double.NaN : (gapDb + barDb) / 2;
@@ -1007,6 +1042,114 @@ public sealed class CwEnvelopeDetector
         return (10 * Math.Log10(power / n), Math.Sqrt(Math.Max(0, (sumSq / n) - (mean * mean))));
     }
 
+    /// <summary>
+    /// Every bar completed in any bin becomes one mark at the peak of its lobe, with its level and
+    /// contrast (work instruction 490, R103).
+    /// </summary>
+    private void CallMarks(Evaluation[] evals, long hop, double nowSeconds)
+    {
+        for (var i = 0; i < _bins.Length; i++)
+        {
+            var bin = _bins[i];
+
+            foreach (var m in evals[i].Marked)
+            {
+                // A bar still running has no end yet; one already taken is not taken again.
+                if (m.End >= hop || !bin.Recorded.Add(m.Start))
+                {
+                    continue;
+                }
+
+                var apex = Apex(i, m.Start, m.End);
+                var level = MeanLevel(_bins[apex], m.Start, m.End);
+                var gap = !double.IsNaN(evals[apex].GapDb) ? evals[apex].GapDb : evals[i].GapDb;
+                var from = nowSeconds - ((hop - m.Start + 1) * HopMs / 1000);
+                var to = nowSeconds - ((hop - m.End) * HopMs / 1000);
+                var pitch = _bins[apex].Hz;
+
+                if (AlreadyCalled(from, to, pitch))
+                {
+                    continue;
+                }
+
+                _marks.Add(new CwMark(
+                    ++_markSequence, from, to, pitch, level, double.IsNaN(gap) ? double.NaN : level - gap));
+            }
+
+            bin.Recorded.RemoveWhere(s => s < hop - HistoryHops - _keyingHops);
+        }
+
+        _marks.RemoveAll(k => k.ToSeconds < nowSeconds - CalledSeconds);
+    }
+
+    /// <summary>Whether a mark overlapping this span within one bin of its pitch is already called.</summary>
+    private bool AlreadyCalled(double from, double to, double pitchHz)
+    {
+        for (var k = _marks.Count - 1; k >= 0; k--)
+        {
+            var called = _marks[k];
+
+            if (called.ToSeconds < from - KeyingSeconds)
+            {
+                break;
+            }
+
+            if (called.ToSeconds > from && called.FromSeconds < to && Math.Abs(called.PitchHz - pitchHz) <= BinSpacingHz)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /// <summary>From one bin, climb to the neighbor with the higher mean level over the span until none is higher.</summary>
+    private int Apex(int i, long from, long to)
+    {
+        var at = i;
+        var best = MeanLevel(_bins[i], from, to);
+
+        while (true)
+        {
+            var next = at;
+
+            for (var j = at - 1; j <= at + 1; j += 2)
+            {
+                if (j < 0 || j >= _bins.Length)
+                {
+                    continue;
+                }
+
+                var level = MeanLevel(_bins[j], from, to);
+
+                if (level > best)
+                {
+                    best = level;
+                    next = j;
+                }
+            }
+
+            if (next == at)
+            {
+                return at;
+            }
+
+            at = next;
+        }
+    }
+
+    private static double MeanLevel(Bin bin, long from, long to)
+    {
+        var sum = 0.0;
+
+        for (var h = from; h <= to; h++)
+        {
+            sum += bin.Level(h);
+        }
+
+        return sum / Math.Max(1, to - from + 1);
+    }
+
     private static CwBarBin Summary(Bin bin, Evaluation e)
         => new(bin.Hz, e.Bars, e.Gaps, e.BarsLastSecond, e.Keying, e.BarDb, e.GapDb);
 
@@ -1089,6 +1232,9 @@ public sealed class CwEnvelopeDetector
 
         /// <summary>The runs, oldest first; the last is still open.</summary>
         public List<Run> Runs { get; } = new();
+
+        /// <summary>The first hops of the bars already called as marks (work instruction 490).</summary>
+        public HashSet<long> Recorded { get; } = new();
 
         public Run? Open => Runs.Count > 0 ? Runs[^1] : null;
 

@@ -134,9 +134,24 @@ public sealed class CwDecoder
             }
         };
 
+        // What the runs read is what reaches the screen while they are read (work instruction 490).
+        _runs.CharacterRead += c =>
+        {
+            if (RunsRead)
+            {
+                Emit(c);
+            }
+        };
+
         _probabilistic.LeadingEdgeChanged += e =>
         {
             _lastEdge = e;
+
+            // Nor its leading edge: a letter appears only once its run exists (work instruction 490).
+            if (RunsRead)
+            {
+                return;
+            }
 
             var edge = _second is null ? e : ArbitratedEdge(e);
 
@@ -197,6 +212,13 @@ public sealed class CwDecoder
 
     private void Settle(CwCharacter c)
     {
+        // While runs are read, the timing-only path's letters do not reach the screen (work
+        // instruction 490).
+        if (RunsRead)
+        {
+            return;
+        }
+
         // No detection, no letters (R97); a letter needs blocks (R99); and nothing already
         // promoted from the screen is settled a second time (R100): see KeyingGate.
         if (!Admitted(c) || (KeyingGated && c.At.TotalSeconds <= _promotedThrough))
@@ -890,6 +912,57 @@ public sealed class CwDecoder
     /// </remarks>
     public bool DetectorGatesBlocks { get; set; }
 
+    /// <summary>
+    /// The detector's marks called since a sequence number, with its audio clock; null to read
+    /// by timing alone, as the decoder always has.
+    /// </summary>
+    /// <remarks>
+    /// **A CHARACTER IS A RUN OF MARKS THAT AGREE** (work instruction 490, R103, HM-DEC-195). While
+    /// this is set and <see cref="ReadsRuns"/> is on, what reaches the terminal and the scope is
+    /// what <see cref="CwRunReader"/> reads from the marks - pitch, level and length together -
+    /// and the timing-only path's letters and leading edge are not let out. A letter appears only
+    /// if the run that made it exists, so the terminal and the scope agree by construction; the
+    /// keying gate and the block rule are not needed for this path and their switches stay off
+    /// as work instruction 489 left them.
+    /// </remarks>
+    public Func<long, CwMarkBatch>? DetectorMarks { get; set; }
+
+    /// <summary>Whether the terminal reads runs of marks when <see cref="DetectorMarks"/> is set; on by default.</summary>
+    /// <remarks>
+    /// **THE TIMING-ONLY PATH STAYS, BEHIND THIS** (work instruction 490): off, the decoder lets
+    /// out what <see cref="CwProbabilisticDecoder"/> reads, exactly as before, so the two can be
+    /// compared. Nothing of that path was changed or deleted.
+    /// </remarks>
+    public bool ReadsRuns { get; set; } = true;
+
+    private bool RunsRead => ReadsRuns && DetectorMarks is not null;
+
+    private readonly CwRunReader _runs = new();
+
+    // The last mark sequence number taken from the detector.
+    private long _markSequence;
+
+    /// <summary>Take the marks the detector called since last time; drop them while nothing may be decoded.</summary>
+    private void PullRuns(bool drop)
+    {
+        if (DetectorMarks is not { } marks)
+        {
+            return;
+        }
+
+        var batch = marks(_markSequence);
+
+        if (batch.Marks.Count > 0)
+        {
+            _markSequence = batch.Marks.Max(m => m.Sequence);
+        }
+
+        if (!drop)
+        {
+            _runs.Read(batch);
+        }
+    }
+
     // The gates in force: each needs its switch on and its function set.
     private bool KeyingGated => DetectorGatesKeying && KeyingGate is not null;
 
@@ -978,6 +1051,13 @@ public sealed class CwDecoder
         // of that: a recording that quietly omitted his own sending would be
         // worth less, not more (§0.0.1). What it does not do is reach a decoder.
         Tap.Take(chunk.Samples, chunk.SampleRate);
+
+        // **THE RUNS, FROM THE DETECTOR'S MARKS** (work instruction 490). While the radio is sending
+        // or a digital mode is up the marks are taken and dropped, never read (HM-DEC-147).
+        if (RunsRead)
+        {
+            PullRuns(drop: DecodingSuspended || DigitalMode);
+        }
 
         if (DecodingSuspended || DigitalMode)
         {
@@ -1163,6 +1243,12 @@ public sealed class CwDecoder
         foreach (var c in rest)
         {
             Settle(c);
+        }
+
+        if (RunsRead)
+        {
+            PullRuns(drop: DecodingSuspended || DigitalMode);
+            _runs.Flush();
         }
     }
 
