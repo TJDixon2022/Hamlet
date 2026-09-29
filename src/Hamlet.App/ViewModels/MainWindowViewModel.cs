@@ -11390,6 +11390,12 @@ public partial class MainWindowViewModel : ObservableObject
         // under each dit and dah, or the letter does not reach the screen.
         _decoder.DetectorBlocks = detector.BlocksBetween;
 
+        // **ALL THREE WIRED, NONE IN FORCE** (work instruction 489, R102, HM-DEC-194). The
+        // detector calls a station's bars 50 Hz to one side two hops in three (unit 488), so its
+        // pitch, keying and blocks do not steer or gate the decoder until that pitch is fit. The
+        // decoder's own switches, DetectorSteersPitch, DetectorGatesKeying and DetectorGatesBlocks,
+        // stay off; the scope, the blocks and the light go on as before.
+
         _audioInput.Start();
 
         AudioInputName = _audioInput.DeviceName;

@@ -4,6 +4,32 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-194
+date: 2026-09-28
+refs: docs/phase-requirements/PHASE_PLAN.md R102 R97 R99, src/Hamlet.RadioEngine/Cw/CwDecoder.cs, HM-DEC-190, HM-DEC-192, HM-DEC-193, work instruction 489
+---
+
+**The detector stops steering the decoder until its pitch is fit.** Tim, 2026-09-28, R102: get
+last week's reading back tonight.
+
+**The reason is unit 488's measurement.** The envelope detector calls a 625 Hz station's bars in
+the bins 50 Hz to either side two hops in three, so the decoder was pointed at a shoulder of the
+station and then refused for not matching blocks called where it was not listening. On a clean
+synthetic call at 23 words a minute the decoder wired as the tab wired it read 5 characters where
+the same decoder unbound read 19; on the air, W1AW at a 38 dB swing read nothing.
+
+**What stops, and what stays.** The detector's pitch no longer steers the mixing, and neither its
+keying gate (R97, HM-DEC-190) nor its block rule (R99, HM-DEC-192) decides what is emitted. It
+keeps the scope, the blocks, the letters over them and the light, and the scope's own drawing rule
+is unchanged, so the scope and the terminal may now disagree.
+
+**The route back is three switches in `CwDecoder`**, `DetectorSteersPitch`, `DetectorGatesKeying`
+and `DetectorGatesBlocks`, each off by default. Nothing was deleted, and the tests that prove each
+gate drive its switch on. They are turned back on when the detector's pitch is fit.
+
+**Whose words are whose.** The ruling is Tim's; the wording is work instruction 489's record of it.
+
+---
 id: HM-DEC-193
 date: 2026-09-28
 refs: docs/phase-requirements/PHASE_PLAN.md R97 12.4, src/Hamlet.RadioEngine/Cw/CwEnvelopeDetector.cs, src/Hamlet.RadioEngine/Cw/CwDecoder.cs, src/Hamlet.App/ViewModels/MainWindowViewModel.cs, work instruction 488

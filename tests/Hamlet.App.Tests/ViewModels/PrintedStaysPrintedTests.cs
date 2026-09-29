@@ -45,6 +45,9 @@ public sealed class PrintedStaysPrintedTests
             KeyingGate = () => detector.Reading.Keying,
             DetectorPitch = () => detector.Reading.Keying ? detector.WatchedHz : double.NaN,
             DetectorBlocks = detector.BlocksBetween,
+            DetectorGatesKeying = true,
+            DetectorSteersPitch = true,
+            DetectorGatesBlocks = true,
         };
         var transcript = new CwTranscript();
 

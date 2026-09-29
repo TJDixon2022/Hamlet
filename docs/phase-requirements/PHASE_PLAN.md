@@ -223,6 +223,15 @@ The band row across the top, the neighborhood panel on the left, the map beside 
 rig display on the right, at every frequency, mode, block and window width. It supersedes unit 389's
 width rule, which moved the sun map to the band's left edge above a width and back below it.
 
+**R102 - Tim, 2026-09-28: the detector stops steering the decoder until its pitch is fit.** Get
+last week's reading back tonight. The envelope detector no longer decides what the decoder hears or
+what reaches the terminal: its pitch does not steer the mixing, and neither its keying (R97) nor its
+blocks (R99) gate what is emitted, because unit 488 measured it calling a station's bars 50 Hz to
+one side two hops in three. It keeps the scope, the blocks, the letters over them and the light, and
+keeps teaching. The three are switched off in `CwDecoder` rather than deleted -
+`DetectorSteersPitch`, `DetectorGatesKeying`, `DetectorGatesBlocks` - and the switches exist so the
+gates can be turned back on when the detector's pitch is fit.
+
 ## §3 What is different from the phases before it
 
 1. **A criterion is a requirement id.** A report states the requirement, the condition, the

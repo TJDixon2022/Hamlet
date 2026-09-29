@@ -92,7 +92,7 @@ public sealed record CwScopeFrame(
         Array.Empty<CwScopeHop>(), 5, CwEnvelopeReading.None, double.NaN, double.NaN);
 
     /// <summary>
-    /// "tone 742 Hz" while the detector says keying, "no keying" otherwise; led by
+    /// "tone 742 Hz heard" while the detector says keying, "no keying" otherwise (work instruction 489); led by
     /// "scope quiet, sweeping" while the radio's scope is quiet in CW.
     /// </summary>
     public string ToneLine
@@ -101,16 +101,16 @@ public sealed record CwScopeFrame(
         {
             var tone = double.IsNaN(ToneHz)
                 ? NoKeyingWords
-                : string.Create(CultureInfo.InvariantCulture, $"tone {ToneHz:0} Hz");
+                : string.Create(CultureInfo.InvariantCulture, $"tone {ToneHz:0} Hz heard");
 
             return ScopeQuiet ? ScopeQuietWords + ", " + tone : tone;
         }
     }
 
-    /// <summary>"mixing 742 Hz", where the decoder is mixing now, so the owner sees whether it agrees with the tone (work instruction 488).</summary>
+    /// <summary>"decoding at 742 Hz", where the decoder is mixing now: its own pitch since R102, honestly a different number from the tone (work instructions 488, 489).</summary>
     public string MixingLine => double.IsNaN(MixingHz)
         ? NotMixingWords
-        : string.Create(CultureInfo.InvariantCulture, $"mixing {MixingHz:0} Hz");
+        : string.Create(CultureInfo.InvariantCulture, $"decoding at {MixingHz:0} Hz");
 
     /// <summary>A frame from what the detector holds.</summary>
     /// <param name="hops">Its history, oldest first.</param>
@@ -238,11 +238,12 @@ public sealed partial class CwHearingViewModel : ObservableObject
         + "with a thin line as long as that stretch, and scrolling left with them. A letter is drawn "
         + "only where there are blocks beneath it. Bold is sure, faint and slanted is unsure, and the "
         + "square is heard but unreadable; a prosign is its bracketed name." + "\n"
-        + "While nobody is keying nothing new is drawn and nothing new reaches the terminal, "
-        + "because the decoder lets out only what the detector heard somebody send; what is "
+        + "While nobody is keying nothing new is drawn here. The terminal is not bound by this "
+        + "picture any more and reads what the decoder hears, so the two can disagree; what is "
         + "already drawn stays until it scrolls off the left." + "\n"
         + "Top left: the pitch the detector found while it says keying, or no keying, and when the "
-        + "radio's scope has gone quiet it says so; beside it the pitch the decoder is mixing at." + "\n"
+        + "radio's scope has gone quiet it says so; beside it the pitch the decoder is mixing at, "
+        + "which it finds for itself and which can differ from the tone." + "\n"
         + "Hover a block for its length, or a letter for how sure the decoder was. This shows what "
         + "Hamlet hears and changes nothing about how it decodes.";
 

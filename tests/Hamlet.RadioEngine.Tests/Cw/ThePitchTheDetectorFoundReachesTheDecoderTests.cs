@@ -107,6 +107,7 @@ public sealed class ThePitchTheDetectorFoundReachesTheDecoderTests
         var decoder = new CwDecoder(Rate, 584)
         {
             DetectorPitch = () => detector.Reading is { Keying: true } r ? r.PitchHz : double.NaN,
+            DetectorSteersPitch = true,
         };
         int keyedHops = 0, notFed = 0;
 
@@ -154,6 +155,9 @@ public sealed class ThePitchTheDetectorFoundReachesTheDecoderTests
                 KeyingGate = () => detector.Reading.Keying,
                 DetectorPitch = () => rung(detector),
                 DetectorBlocks = detector.BlocksBetween,
+                DetectorGatesKeying = true,
+                DetectorSteersPitch = true,
+                DetectorGatesBlocks = true,
             };
             var settled = new List<CwCharacter>();
 

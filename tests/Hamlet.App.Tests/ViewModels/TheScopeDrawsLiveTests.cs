@@ -75,8 +75,9 @@ public sealed class TheScopeDrawsLiveTests
         var decoder = new CwDecoder(source.SampleRate, 600, secondReader: true);
         var envelope = new CwEnvelopeDetector(source.SampleRate);
 
-        // Gated as the tab gates it: no detection, no letters (R97).
+        // Gated as the tab gated it before R102 (work instruction 489): no detection, no letters (R97).
         decoder.KeyingGate = () => envelope.Reading.Keying;
+        decoder.DetectorGatesKeying = true;
         var feed = new CwScopeFeed();
         var start = new DateTime(2026, 9, 28, 18, 30, 0, DateTimeKind.Utc);
         var settled = new List<(CwCharacter, TimeSpan)>();

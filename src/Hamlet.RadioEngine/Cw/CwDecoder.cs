@@ -143,7 +143,7 @@ public sealed class CwDecoder
             // No detection, no letters (R97), and a letter needs blocks (R99): see KeyingGate.
             // **PRINTED STAYS PRINTED** (R100): while keying is false nothing is offered, not even
             // an empty edge, because an empty offer takes the tip already on the screen away.
-            if (KeyingGate is not null)
+            if (KeyingGated)
             {
                 if (!_gateOpen)
                 {
@@ -152,6 +152,10 @@ public sealed class CwDecoder
 
                 edge = edge.Where(Admitted).ToList();
                 _shownEdge = edge;
+            }
+            else if (BlocksGated)
+            {
+                edge = edge.Where(Admitted).ToList();
             }
 
             LeadingEdge?.Invoke(edge);
@@ -195,7 +199,7 @@ public sealed class CwDecoder
     {
         // No detection, no letters (R97); a letter needs blocks (R99); and nothing already
         // promoted from the screen is settled a second time (R100): see KeyingGate.
-        if (!Admitted(c) || (KeyingGate is not null && c.At.TotalSeconds <= _promotedThrough))
+        if (!Admitted(c) || (KeyingGated && c.At.TotalSeconds <= _promotedThrough))
         {
             return;
         }
@@ -468,7 +472,7 @@ public sealed class CwDecoder
 
     /// <summary>
     /// The pitch the decoder is mixing at now: the operator's lock, the detector's pitch while it
-    /// says keying, or the tracker's, in that order (work instruction 488).
+    /// says keying while DetectorSteersPitch is on, or the tracker's, in that order (work instructions 488, 489).
     /// </summary>
     /// <remarks>
     /// **NOT <see cref="CwDecodeReport.ToneHz"/>**, which is the tracker's own pitch. The panel's
@@ -856,6 +860,41 @@ public sealed class CwDecoder
     /// <summary>How far a character's span is widened at each end when its blocks are counted, in seconds.</summary>
     public const double BlockToleranceSeconds = 2 * CwProbabilisticDecoder.HopMilliseconds / 1000;
 
+    /// <summary>Whether <see cref="DetectorPitch"/> steers where the decoder mixes; off by default.</summary>
+    /// <remarks>
+    /// **THE DETECTOR STOPS STEERING THE DECODER UNTIL ITS PITCH IS FIT** (work instruction 489,
+    /// R102, HM-DEC-194). Unit 488 measured the detector calling a 625 Hz station's bars in the bins
+    /// 50 Hz to either side two hops in three, so the decoder was pointed at a shoulder: a clean call
+    /// read 5 characters where the same decoder unbound read 19. Off, the rung is the operator's lock
+    /// and then the tracker, as before work instruction 486. The switch exists so it can be turned
+    /// back on when the detector's pitch is fit; nothing it steered was deleted.
+    /// </remarks>
+    public bool DetectorSteersPitch { get; set; }
+
+    /// <summary>Whether <see cref="KeyingGate"/> decides what is let out; off by default.</summary>
+    /// <remarks>
+    /// **THE DETECTOR STOPS GATING THE DECODER UNTIL ITS PITCH IS FIT** (work instruction 489, R102,
+    /// HM-DEC-194): unit 486's keying gate and unit 487's promotion on its falling edge. Off, the
+    /// decoder emits as it always has. Unit 488's measurement is the reason, and the switch is the
+    /// route back.
+    /// </remarks>
+    public bool DetectorGatesKeying { get; set; }
+
+    /// <summary>Whether <see cref="DetectorBlocks"/> decides what is let out; off by default.</summary>
+    /// <remarks>
+    /// **A LETTER NO LONGER NEEDS BLOCKS TO REACH THE TERMINAL** (work instruction 489, R102,
+    /// HM-DEC-194). Unit 487's block rule counts blocks the detector called where it was watching,
+    /// and unit 488 measured that at a shoulder of the station, so a decoder reading the station
+    /// was refused for not matching them. The scope's own drawing rule is untouched. The switch is
+    /// the route back when the detector's pitch is fit.
+    /// </remarks>
+    public bool DetectorGatesBlocks { get; set; }
+
+    // The gates in force: each needs its switch on and its function set.
+    private bool KeyingGated => DetectorGatesKeying && KeyingGate is not null;
+
+    private bool BlocksGated => DetectorGatesBlocks && DetectorBlocks is not null;
+
     // Where on the audio clock the stretch that is keying now began, in seconds.
     private double _openFrom = double.PositiveInfinity;
 
@@ -870,7 +909,8 @@ public sealed class CwDecoder
 
     /// <summary>Whether a character may reach a surface now: keying now, heard in this stretch, and standing on blocks.</summary>
     private bool Admitted(CwCharacter c)
-        => KeyingGate is null || (_gateOpen && c.At.TotalSeconds >= _openFrom && StandsOnBlocks(c));
+        => (!KeyingGated || (_gateOpen && c.At.TotalSeconds >= _openFrom))
+            && (!BlocksGated || StandsOnBlocks(c));
 
     /// <summary>Whether the detector called one block for each of the character's elements.</summary>
     private bool StandsOnBlocks(CwCharacter c)
@@ -890,7 +930,7 @@ public sealed class CwDecoder
     /// <summary>Reads the gate once per chunk, on the clock the characters are stamped on.</summary>
     private void ReadTheGate()
     {
-        if (KeyingGate is not { } gate)
+        if (!KeyingGated || KeyingGate is not { } gate)
         {
             return;
         }
@@ -1062,8 +1102,9 @@ public sealed class CwDecoder
         // is task 3's scope: the answer is the last thing actually measured
         // rather than the middle of a bank.
         // **THEN THE DETECTOR'S PITCH, WHILE IT SAYS KEYING** (work instruction 486): the decoder
-        // listens where the detector hears, from this hop, behind only the operator's lock.
-        var heard = DetectorPitch?.Invoke() ?? double.NaN;
+        // listens where the detector hears, from this hop, behind only the operator's lock -
+        // **ONLY WHILE DetectorSteersPitch IS ON**, which it is not by default (work instruction 489, R102).
+        var heard = DetectorSteersPitch ? DetectorPitch?.Invoke() ?? double.NaN : double.NaN;
 
         _probabilistic.ToneHz = !double.IsNaN(_lockedToneHz)
             ? _lockedToneHz

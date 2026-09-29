@@ -80,7 +80,7 @@ public sealed class TheScopeShowsTheMarksTests
         hearing.ObserveScope(CwScopeFrame.From(mid.History(), mid.HopMs, mid.Reading));
 
         Assert.True(hearing.Scope.Reading.Mark);
-        Assert.Matches(@"^tone 7[3-5]\d Hz$", hearing.Scope.ToneLine);
+        Assert.Matches(@"^tone 7[3-5]\d Hz heard$", hearing.Scope.ToneLine);
 
         var quiet = Keyed(742, 500, 0.7);
         hearing.ObserveScope(CwScopeFrame.From(quiet.History(), quiet.HopMs, quiet.Reading));

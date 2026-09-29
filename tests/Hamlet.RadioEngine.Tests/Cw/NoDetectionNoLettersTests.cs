@@ -91,7 +91,7 @@ public sealed class NoDetectionNoLettersTests
     {
         var audio = Call();
         var detector = new CwEnvelopeDetector(Rate);
-        var decoder = new CwDecoder(Rate, 600) { KeyingGate = () => detector.Reading.Keying };
+        var decoder = new CwDecoder(Rate, 600) { KeyingGate = () => detector.Reading.Keying, DetectorGatesKeying = true };
         var arrived = new List<(CwCharacter Character, bool Keying)>();
 
         // What the leading edge showed while keying: kept on the screen when keying drops (R100).
@@ -178,6 +178,9 @@ public sealed class NoDetectionNoLettersTests
             KeyingGate = () => detector.Reading.Keying,
             DetectorPitch = () => detector.Reading.Keying ? detector.WatchedHz : double.NaN,
             DetectorBlocks = blocks ? detector.BlocksBetween : null,
+            DetectorGatesKeying = true,
+            DetectorSteersPitch = true,
+            DetectorGatesBlocks = true,
         };
         var reached = new List<CwCharacter>();
         var settled = new List<CwCharacter>();
@@ -235,7 +238,7 @@ public sealed class NoDetectionNoLettersTests
     [Fact]
     public void TheDecoderMixesWhereTheDetectorHears()
     {
-        var decoder = new CwDecoder(Rate, 536) { DetectorPitch = () => 675 };
+        var decoder = new CwDecoder(Rate, 536) { DetectorPitch = () => 675, DetectorSteersPitch = true };
         var noise = CwSignal.Generate(new CwSignalRequest(
             " ", SampleRate: Rate, Amplitude: 0, NoiseAmplitude: 0.05, LeadInSeconds: 0.1, TailSeconds: 0.1, Seed: 486));
 
@@ -255,7 +258,7 @@ public sealed class NoDetectionNoLettersTests
     {
         var audio = Call();
         var detector = new CwEnvelopeDetector(Rate);
-        var decoder = new CwDecoder(Rate, 600) { KeyingGate = () => detector.Reading.Keying };
+        var decoder = new CwDecoder(Rate, 600) { KeyingGate = () => detector.Reading.Keying, DetectorGatesKeying = true };
         var settled = new List<CwCharacter>();
         var edged = new List<CwCharacter>();
 

@@ -51,7 +51,7 @@ public sealed class TheScopeIsTheMiddlePictureTests
     }
 
     /// <remarks>
-    /// Proves the pitch reads "tone 742 Hz" while keying - in a mark and in the gap after it -
+    /// Proves the pitch reads "tone 742 Hz heard" while keying - in a mark and in the gap after it -
     /// and "no keying" before the keying and after it has stopped.
     /// </remarks>
     [Fact]
@@ -66,7 +66,7 @@ public sealed class TheScopeIsTheMiddlePictureTests
         var mark = Keyed(742, 500, 1.73);
         var inMark = CwScopeFrame.From(mark.History(), mark.HopMs, mark.Reading, 742, before);
 
-        Assert.Matches(@"^tone 7[3-5]\d Hz$", inMark.ToneLine);
+        Assert.Matches(@"^tone 7[3-5]\d Hz heard$", inMark.ToneLine);
 
         // 40 ms into the gap after it: still keying, so the pitch holds.
         var gap = Keyed(742, 500, 1.86);
@@ -84,14 +84,14 @@ public sealed class TheScopeIsTheMiddlePictureTests
         Assert.Equal("no keying", CwScopeFrame.From(after.History(), after.HopMs, after.Reading, 742, inGap).ToneLine);
     }
 
-    /// <remarks>Proves the tracker's pitch is shown beside the detector's, in words.</remarks>
+    /// <remarks>Proves where the decoder mixes is shown beside the detector's pitch, as "decoding at" (work instruction 489).</remarks>
     [Fact]
-    public void TheMixingLineSaysWhereTheTrackerIs()
+    public void TheMixingLineSaysWhereTheDecoderIs()
     {
         var detector = Keyed(742, 500, 1.73);
 
         Assert.Equal(
-            "mixing 750 Hz",
+            "decoding at 750 Hz",
             CwScopeFrame.From(detector.History(), detector.HopMs, detector.Reading, 750, null).MixingLine);
         Assert.Equal(
             "not mixing",
