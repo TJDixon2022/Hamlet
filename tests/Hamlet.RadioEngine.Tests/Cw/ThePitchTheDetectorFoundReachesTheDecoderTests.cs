@@ -77,20 +77,60 @@ public sealed class ThePitchTheDetectorFoundReachesTheDecoderTests
     }
 
     /// <remarks>
-    /// **RED ON PURPOSE, AND NAMED** (work instruction 488 section 3's green, not met): the pitch a
-    /// keying reading carries is the station's own, 625 Hz. It is not: two readings in three carry
-    /// 575 or 675, the shoulders of the tone's lobe, because on those hops the 625 Hz bin itself
-    /// calls no bars - its gaps measure about -20 dB where the shoulders' measure -42 - so the bin
-    /// the bars were called in is a shoulder. The section forbids tuning; this states the defect.
+    /// <para>Proves the pitch a keying reading carries is the station's own, 625 Hz, while the
+    /// station is sending (work instruction 496, HM-DEC-200). **Red from unit 488 to unit 495**: two
+    /// readings in three carried 575 or 675 - 1024 of 1408 - the shoulders of the tone's lobe,
+    /// because the watched bin is the one with the most bars and the station's own bin, whose gaps
+    /// the tone's leakage fills, calls fewer. The pitch is now the top of the lobe over the watched
+    /// bin's latest bar.</para>
+    /// <para>**JUDGED WHILE THE STATION CAN BE KEYING**, from the end of its second element, when a
+    /// first pair is complete, to its last key-down and the hold after it; the generator places the
+    /// call three seconds in and three from the end. A reading outside that stretch is the detector
+    /// keying on something else - at 3.230 s its hold on a noise pair at 1550 Hz, a real pitch for
+    /// what it heard and not this station's - and is printed rather than counted.</para>
     /// </remarks>
     [Fact]
     public void ThatPitchIsTheStationsOwn()
     {
-        var pitches = KeyingPitches(out var keying);
-        var elsewhere = pitches.Where(p => Math.Abs(p.Key - StationHz) > 0.5).Sum(p => p.Value);
+        var audio = Station();
+        var detector = new CwEnvelopeDetector(Rate);
+        var last = (audio.Samples.Length / (double)Rate) - 3;
 
-        _output.WriteLine($"readings saying keying {keying}, of them at a pitch other than {StationHz:0} Hz {elsewhere}: {Line(pitches)}");
+        // The station can first be keying when its second element ends: C is a dah, a gap and a
+        // dit, five units of 1.2 / 23 seconds, three seconds in.
+        const double FirstPairSeconds = 3 + (5 * 1.2 / 23);
+        int keying = 0, elsewhere = 0;
 
+        for (var at = 0; at + Chunk <= audio.Samples.Length; at += Chunk)
+        {
+            detector.Process(audio.Samples.AsSpan(at, Chunk));
+
+            var r = detector.Reading;
+            var seconds = (at + Chunk) / (double)Rate;
+
+            if (!r.Keying)
+            {
+                continue;
+            }
+
+            if (seconds < FirstPairSeconds || seconds > last + CwEnvelopeDetector.HoldSeconds)
+            {
+                _output.WriteLine($"keying outside the station's sending at {seconds:0.000} s, {r.PitchHz:0} Hz");
+                continue;
+            }
+
+            keying++;
+
+            if (double.IsNaN(r.PitchHz) || Math.Abs(r.PitchHz - StationHz) > 0.5)
+            {
+                elsewhere++;
+                _output.WriteLine($"at {seconds:0.000} s the reading says {r.PitchHz:0} Hz");
+            }
+        }
+
+        _output.WriteLine($"readings saying keying while the station sends {keying}, of them at a pitch other than {StationHz:0} Hz {elsewhere}");
+
+        Assert.True(keying > 0, "the detector never said keying");
         Assert.Equal(0, elsewhere);
     }
 

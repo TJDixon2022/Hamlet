@@ -4,6 +4,36 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-200
+date: 2026-09-29
+refs: src/Hamlet.RadioEngine/Cw/CwEnvelopeDetector.cs, src/Hamlet.RadioEngine/Cw/CwRunReader.cs, tests/Hamlet.RadioEngine.Tests/Cw/ThePitchTheDetectorFoundReachesTheDecoderTests.cs, HM-DEC-193, HM-DEC-198, work instruction 496
+---
+
+**A station's bin is the loudest while the key is down, not the one with the quietest gaps.**
+
+**The reasons.** Unit 488 measured a 625 Hz station's own bin calling no bars two hops in three,
+its gaps near -20 dB where the bins 50 Hz off read -42: the loudness that makes it the station
+fills its gaps, so the bins that call the most bars are its shoulders. And the owner's W1AW screen
+on 7.0475 read *tone 600 heard, decoding at 666*.
+
+**What was measured before anything changed.** The marks were already on the station's bin: unit
+490's walk to the top of the lobe put 65 of 66 marks of the 625 Hz station at 625, and the run reader
+printed it whole there. The number that was wrong was the detector's watched bin - the bin with the
+most bars, which gives the scope its blocks and the panel its *tone heard* - at a shoulder on 1024
+of 1408 keying readings. The owner's 666 was the reader's mean over marks landing either side of a
+tone between two bins.
+
+**What is built.** One estimator for the station's bin: from the apex the walk reaches, a parabola
+through the levels two bins either side, over the mark's own hops, and the nearest bin to its top.
+Every mark's pitch and the detector's reported pitch use it, and the reader's printing pitch sits on
+the same bin grid. The watched bin still gives the scope its blocks; the flatness tolerance, the
+shortest bar, the pairing and the wander check are untouched. `ThatPitchIsTheStationsOwn` went from
+1024 of 1408 readings off the station to none of 1404.
+
+**Whose words are whose.** The instruction and the ruling's headline are work instruction 496's; the
+measurements and the estimator are the author's, derived from the window's shape, and overrulable.
+
+---
 id: HM-DEC-199
 date: 2026-09-29
 refs: data/bands/w1aw-morse.json, src/Hamlet.RadioEngine/Bands/W1awMorseFrequencies.cs, src/Hamlet.App/ViewModels/W1awButton.cs, HM-DEC-029, HM-DEC-056, HM-DEC-087, work instruction 494

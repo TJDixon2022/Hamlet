@@ -27,7 +27,7 @@ public sealed record CwBarBin(
 /// <param name="ThresholdDb">Midway between the gap level and the bar level; drawn, and decides nothing.</param>
 /// <param name="Mark">Whether a paired bar is up in that bin now.</param>
 /// <param name="RunMs">How long the current mark or gap has lasted.</param>
-/// <param name="PitchHz">While keying, the bin the bars were called in - the one the hold follows; NaN otherwise (work instruction 488).</param>
+/// <param name="PitchHz">While keying, the station's own bin: the top of the lobe over the watched bin's latest bar, held through the gaps; NaN otherwise (work instructions 488, 496).</param>
 /// <param name="ContrastDb">While a mark is up, that bin's bar level over its gap level; NaN otherwise.</param>
 /// <param name="PassbandLowHz">The lowest bin's edge of the sweep.</param>
 /// <param name="PassbandHighHz">The highest.</param>
@@ -229,6 +229,9 @@ public sealed class CwEnvelopeDetector
     private int _holdBin = -1;
     private long _holdLastMarkHop;
     private double _holdBarDb = double.NaN;
+
+    // The station's bin while keying, held through the gaps (work instruction 496); NaN otherwise.
+    private double _stationHz = double.NaN;
 
     private IAudioSource? _attached;
 
@@ -787,6 +790,23 @@ public sealed class CwEnvelopeDetector
             runMs = Math.Min(hop - lastEnd, HistoryHops) * HopMs;
         }
 
+        // **THE PITCH IS THE STATION'S OWN BIN** (work instruction 496, HM-DEC-200). The watched bin
+        // is the one with the most bars, and that is often a shoulder of the tone: unit 488 measured
+        // a 625 Hz station's own bin calling no bars two hops in three, its gaps near -20 dB where
+        // the bins 50 Hz off read -42, because the loudness that makes it the station also fills its
+        // gaps. The watched bin still gives the scope its blocks; the pitch reported is the top of
+        // the lobe over the watched bin's latest bar, held through the gaps while keying.
+        if (!keying)
+        {
+            _stationHz = double.NaN;
+        }
+        else if (eval.Marked.Count > 0)
+        {
+            var last = eval.Marked[^1];
+
+            _stationHz = _bins[StationBin(_watched, last.Start, last.End)].Hz;
+        }
+
         _reading = new CwEnvelopeReading(
             watched.Level(hop),
             gapDb,
@@ -799,7 +819,7 @@ public sealed class CwEnvelopeDetector
             // marks (work instruction 485), so four readings in five said keying with no pitch:
             // the owner's verdict rows of 2026-09-28 carried a null pitch on every row. Keying and
             // its pitch now go together: the bin the bars were called in, which the hold follows.
-            keying ? watched.Hz : double.NaN,
+            keying ? (double.IsNaN(_stationHz) ? watched.Hz : _stationHz) : double.NaN,
             up && !double.IsNaN(gapDb) ? barDb - gapDb : double.NaN,
             _lowHz,
             _highHz,
@@ -1148,7 +1168,7 @@ public sealed class CwEnvelopeDetector
                 var gap = !double.IsNaN(evals[apex].GapDb) ? evals[apex].GapDb : evals[i].GapDb;
                 var from = nowSeconds - ((hop - start + 1) * HopMs / 1000);
                 var to = nowSeconds - ((hop - m.End) * HopMs / 1000);
-                var pitch = _bins[apex].Hz;
+                var pitch = _bins[StationBin(apex, start, m.End)].Hz;
 
                 if (AlreadyCalled(from, to, pitch, level))
                 {
@@ -1200,6 +1220,47 @@ public sealed class CwEnvelopeDetector
         }
 
         return false;
+    }
+
+    /// <summary>
+    /// The station's bin for a mark: the bin nearest the top of its tone's lobe, over the mark's own
+    /// hops (work instruction 496, HM-DEC-200).
+    /// </summary>
+    /// <remarks>
+    /// <para>**THE LOUDEST WHILE THE KEY IS DOWN, NOT THE QUIETEST GAPS.** The walk to the apex
+    /// (<see cref="Apex"/>) lands on the loudest bin, and the lobe of a ten millisecond window is
+    /// four hundred hertz wide, so its top is nearly flat across a few bins and noise can tip the
+    /// walk one bin either way. The top is placed between bins by a parabola through the levels, in
+    /// dB, two bins either side of the apex - fifty hertz, where the lobe has fallen by a decibel or
+    /// so and the curve is well defined, and where a second station two hundred hertz away adds
+    /// almost nothing - and the nearest bin to that top is the station's.</para>
+    /// <para>**AT THE SAME TIME** means over the same hops: every level compared is the mean over the
+    /// mark's own span, so a bin is judged by what it did while this key was down and by nothing
+    /// else. Nothing here is fitted to a recording.</para>
+    /// </remarks>
+    private int StationBin(int from, long start, long end)
+    {
+        var apex = Apex(from, start, end);
+
+        if (apex < 2 || apex > _bins.Length - 3)
+        {
+            return apex;
+        }
+
+        var below = MeanLevel(_bins[apex - 2], start, end);
+        var top = MeanLevel(_bins[apex], start, end);
+        var above = MeanLevel(_bins[apex + 2], start, end);
+        var curve = below - (2 * top) + above;
+
+        if (!(curve < 0))
+        {
+            return apex;
+        }
+
+        // The vertex, in bins from the apex: two bins per unit of the parabola's own step.
+        var offset = Math.Clamp(2 * 0.5 * (below - above) / curve, -2, 2);
+
+        return Math.Clamp(apex + (int)Math.Round(offset), 0, _bins.Length - 1);
     }
 
     /// <summary>From one bin, climb to the neighbor with the higher mean level over the span until none is higher.</summary>

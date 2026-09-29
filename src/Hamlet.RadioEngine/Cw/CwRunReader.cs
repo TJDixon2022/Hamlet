@@ -223,7 +223,14 @@ public sealed class CwRunReader
 
         // The pitch of the sender being printed, for the panel on the screen's thread (work
         // instruction 493): one double, written here on the audio thread and read with Volatile.Read.
-        Volatile.Write(ref _stationHz, _station?.Reference.Pitch ?? double.NaN);
+        // On the bin grid, as each mark's pitch is (work instruction 496): a mean over marks that
+        // sit either side of a tone between bins would otherwise name no bin at all, 666 for 650
+        // and 675, and never match the tone the panel reports beside it.
+        Volatile.Write(
+            ref _stationHz,
+            _station is { } printed
+                ? Math.Round(printed.Reference.Pitch / CwEnvelopeDetector.BinSpacingHz) * CwEnvelopeDetector.BinSpacingHz
+                : double.NaN);
 
         if (_station is not { } station)
         {
