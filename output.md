@@ -11,126 +11,142 @@ confirmed. Nothing in this report is evidence about the radio.
 - No recording, fixture, floor or telemetry was read.
 - Nothing under `.run-unit\` was committed.
 
-**Measured at HEAD, before any change: the marks were already on the station's bin, and the
-watched bin was not.** Synthetic stations at four pitches:
+**Task 0.** Unit 496 is in the tree: `ThatPitchIsTheStationsOwn` is green at HEAD, 0 of 1404.
 
-| tone | detector's reading ("tone heard") | loud marks' pitch | reader's printing pitch |
-|---|---|---|---|
-| 625 Hz | 575 ×539, 675 ×400, 625 ×384 | 625 ×65 of 66 | 625 |
-| 640 Hz | 650 ×705, 600 ×504 | 650 ×65 | 650 |
-| 612 Hz | 650 ×512, 575 ×449, 600 ×438 | 600 ×66 | 600 |
-
-- **Unit 490's walk to the lobe's top reaches the peak and does not stop early.** It lands on the
-  bin nearest the tone.
-- **The run reader was already grouping and printing at the station's bin.** It read the 625 Hz
-  call whole.
-- **The wrong number was the detector's watched bin**, the one with the most bars. It gives the
-  scope its blocks and the panel its "tone N heard", and on the shoulders it wins on bar count.
-- **The owner's `tone 600 heard · decoding at 666` is both halves.** 600 is the watched shoulder.
-  666 is the reader's *mean* over marks landing on 650 and 675, for a tone that sits between them.
-
-**The changes, file by file** (all in `a71853e5`):
-- **`src/Hamlet.RadioEngine/Cw/CwEnvelopeDetector.cs`:**
-  - **`StationBin`, one estimator for the station's bin.** From the apex the walk reaches, a
-    parabola through the levels in dB two bins either side places the top of the lobe, and the
-    nearest bin is the station's.
-  - **Each mark's pitch** uses it.
-  - **The reading's pitch** ("tone heard") uses it for the watched bin's latest bar, held through
-    the gaps while keying. The watched bin still gives the scope its blocks.
-- **`src/Hamlet.RadioEngine/Cw/CwRunReader.cs`:** the printing pitch ("decoding at") is rounded to
-  the bin grid, so a mean over marks either side of a tone can't name a pitch that is no bin.
-- **`tests/Hamlet.RadioEngine.Tests/Cw/ThePitchTheDetectorFoundReachesTheDecoderTests.cs`:**
-  `ThatPitchIsTheStationsOwn` now judges readings from the end of the station's first pair. That
-  is C's dah, gap and dit, five units at 23 WPM, three seconds in. Readings before that are
-  printed, not counted, with the reason in its remarks.
+**The changes, file by file** (all in `bda95c42`):
+- **`src/Hamlet.RadioEngine/Cw/CwEnvelopeDetector.cs` - a mark rises and falls like a key.**
+  - **The rule:** a completed bar is handed out as a mark only if the peak's level falls at least
+    `EdgeDepthDb` (6 dB) below the mark's top within `EdgeHops` (4) hops before its first flat hop,
+    and again within four hops after its last.
+  - **The switch:** `MarksNeedEdges`, on, so the difference can be counted.
+  - **What it gates:** only the marks. The pairing, the keying verdict, the light and the scope see
+    every bar as before.
+  - **Nothing loosened or re-weighted:** the flatness tolerance, the shortest bar, the pairing, the
+    wander check, unit 491's and 492's rules and unit 496's bin choice are all untouched.
+  - **The one cost:** a bar is handed out four hops after its end rather than two, so the falling
+    edge's hops exist. That is still inside unit 492's three-window bound.
+- **`src/Hamlet.RadioEngine/Bands/W1awMorseFrequencies.cs`:**
+  - Reads the schedule and its named zone from the data file.
+  - `At(utcNow)` gives the Morse run scheduled now or next, converting each run's start and end
+    from US Central on its own date through the time zone database.
+  - `FindZone` takes the IANA name, falling back through the Windows name.
+- **`data/bands/w1aw-morse.json`:** the seven Morse rows of the ARRL schedule, the zone named as
+  `America/Chicago`, and the ARRL cited. The file notes that legal holidays are not listed.
+- **`src/Hamlet.App/ViewModels/W1awButton.cs`:** `ScheduleLine` formats the line in the operator's
+  own clock, and `ScheduleTip` is the hover.
+- **`src/Hamlet.App/ViewModels/MainWindowViewModel.cs`:**
+  - `W1awScheduleLine`, `W1awScheduledNow` and `W1awScheduleWord`, kept current by a twenty-second
+    timer.
+  - `UpdateW1awSchedule`, which the tests drive with a chosen moment and zone.
+- **`src/Hamlet.App/Views/MainWindow.axaml`:** a dot beside the W1AW button, filled or hollow, with
+  the word *scheduled* or *quiet* beside it, and one line under the button. All of it is still the
+  last thing in the send column.
+- **Tests.**
+  - The run-reader file gains four: the noise count, the real edge, and the two faded tones.
+  - `W1awScheduleLineTests`, new, has four.
 - **Records.**
-  - `DECISIONS.md` has HM-DEC-200.
-  - Both outcome copies have `## UNIT 496 - STEP 12`, and both status copies name 496.
-  - Version 1.13.182 → 1.13.183.
-- **Not touched:** the flatness tolerance, the shortest bar, the pairing agreement and the wander
-  check.
+  - R107 is in both `PHASE_PLAN.md` copies, and `DECISIONS.md` has HM-DEC-201.
+  - Both outcome copies have `## UNIT 497 - STEP 12`, and both status copies name 497.
+  - Version 1.13.183 → 1.13.184.
 
-**How the peak is found, and what "at the same time" means - the author's, overrulable.**
-- **Where the parabola's points sit.** A ten millisecond window's lobe is about 400 Hz wide, so its
-  top is nearly flat and noise can tip the walk a bin either way. So the top is placed by a parabola
-  through the levels two bins (50 Hz) either side of the apex. There the lobe has fallen a decibel
-  or so, and the curve is well defined.
-- **Why not wider.** A second station 200 Hz away adds almost nothing at ±50 Hz. A wider window
-  would take in its lobe.
-- **"At the same time" means over the same hops.** Every level compared is the mean over the mark's
-  own span, so a bin is judged by what it did while that key was down. There is no separate
-  tolerance.
-- Nothing was fitted to a recording or tuned after a result.
+**The rise and fall bound, and its reason - the author's, overrulable, not fitted or tuned.**
+- **Four hops, twenty milliseconds.** The level is read through a window two hops long, so the
+  window alone spreads a keyed step across two hops. A keyer shapes its edge over a few
+  milliseconds more, allowed another two hops.
+- **6 dB deep.** Half amplitude, the point a keyed element's edge is conventionally timed at.
+- **What a real keyed edge measures here:** on the clean call, every one of the call's 65 marks
+  clears the bound. All 65 with the test off, all 65 with it on.
 
-**Two tries that measured nothing and were taken back:**
-- a fallback for when the watched bin has no bar yet;
-- choosing the loudest keying bin when no bin wins the usual choice.
-
-Both were aimed at the one reading at 3.230 s. That reading turned out to be the detector's hold on
-a noise pair at 1550 Hz, before the station could be keying. That is a real pitch for what the
-detector heard, and neither change moved it.
+**Watched failing first.**
+- The noise count and the faded tone were measured with the test off and on, in the same run.
+- At HEAD, the W1AW line and dot and the schedule in the data file do not exist, so their cases
+  are red by absence.
 
 **Verification.**
 - The build: 0 warnings, 0 errors.
-- **The app carry-forward line: 277 of 278.** The one failure ran in 1 ms,
-  `TheTestsStayOffTheNetworkTests`, and passes alone (5 of 5).
-- **The app one-truth, scope, layout and voice types: 96 of 97.** The red is the British spelling
-  from 2026-09-26, not this unit.
-- **The engine run, gate and detector types: 32 of 34.** The reds are
+- **The app carry-forward line: 278 of 278.**
+- **The app one-truth, layout, voice, bindings, hover registry and W1AW types: 96 of 99.** Two
+  top-row names failed in the long run and pass alone (15 of 15). The British spelling red is from
+  2026-09-26, not this unit.
+- **The engine run, gate and detector types: 36 of 38.** The reds are
   `AMarkIsTheEnvelopeOverAThresholdTests`' two cases, at 70 and 208, unchanged.
 
 ## 2. What the owner should expect
 
 1. Rebuild.
-2. On a station, the panel's two numbers - **tone N heard** and **decoding at N** - should now be
-   the same number.
-   - A station between two of Hamlet's 25 Hz steps shows the nearer step in both: W1AW near 660
-     should read 650 in both.
-3. W1AW should read.
-4. **If the two numbers are still different on a station**, that pair of numbers is the fault, and
-   it is the one thing to report back.
+2. **Somewhat fewer false letters.** A stretch of noise that was flat and long enough to count as a
+   dot or a dash now also has to rise and fall like a key.
+   - On the test's loud noise this turned away about a quarter of such stretches, not most of them.
+     That noise jumps from moment to moment rather than drifting, so much of it still has edges.
+   - Real band noise that drifts should be turned away more often.
+3. **A real station is unaffected.** Its keyer's edges sit well inside the bound, and no mark of the
+   test call was lost.
+4. **If real letters go missing, that is the bound being too tight**, and it is the one thing to
+   report back.
+5. **Beside the W1AW button there is now a dot and a line.**
+   - The dot is filled with the word *scheduled* while the ARRL's schedule has a Morse run on, and
+     hollow with *quiet* otherwise.
+   - The line says what is on until when, or what is next and when, in your own clock.
+   - It is the ARRL's schedule, not a sign that W1AW is on the air: the ARRL leaves out legal
+     holidays, and the hover says so.
 
 ## 3. What you should see
 
-**`ThatPitchIsTheStationsOwn`:**
+**The noise counts** (case 1, thirty seconds of loud noise):
 
-| | before | after |
-|---|---|---|
-| keying readings off 625 Hz | 1024 of 1408 | 0 of 1404 |
-
-- **A 640 Hz tone** now reads 650 on every keying reading, where it was 600 or 650.
-- **A 660 Hz tone** reads 650.
-- **A 612 Hz tone**, almost midway between two steps, reads 600 on 1354 and 625 on 53.
-
-**The five cases** - identical in the terminal and the scroll:
-
-| case | terminal and scroll |
+| | count |
 |---|---|
-| clean call | `CQ CQ DE N0CALL N0CALL K` |
-| call with bursts in every gap | `CQ CQ DE N0CALL N0CALL K` |
-| loud noise alone (and three minutes of noise) | nothing |
-| a lone dit; a lone dah | nothing |
-| the call at 625 Hz plus `TEST DE W1AW K` at 825 Hz | `CQ CQ DE N0CALL N0CALL K` |
+| bars passing every existing test - height, duration, flatness | 1452 |
+| of those, with edges | 1069 |
+| turned away by the edge test | 383 |
 
-**The two-station case stays two stations.** It prints the 625 Hz call. All 65 of the call's marks
-are called, and every mark its letters were read from is the call's; none are the answer's.
+- **Marks handed out on noise:** about 48 a second before, about 36 after.
+- **Three minutes of noise:** 477 marks in the last minute before, 341 after.
+- **Both noise tests stay green:** nothing printed, before or after.
 
-**The 625 Hz station's text, before and after:** the run reader printed
-`CQ CQ DE N0CALL N0CALL K` before this change and prints it after. Unit 488's 5 against 12
-characters came from the timing-only path, fed a shoulder pitch or the station's own. That path no
-longer reaches the screen, and its figures are unchanged (13, 5 and 12).
+**The five cases**, identical in the terminal and the scroll, before and after:
+
+| case | before (HEAD) | after |
+|---|---|---|
+| clean call | `CQ CQ DE N0CALL N0CALL K` | `CQ CQ DE N0CALL N0CALL K` |
+| call with bursts in every gap | `CQ CQ DE N0CALL N0CALL K` | `CQ CQ DE N0CALL N0CALL K` |
+| the call plus a second station 200 Hz away | `CQ CQ DE N0CALL N0CALL K` | `CQ CQ DE N0CALL N0CALL K` |
+| a lone dit | nothing | nothing |
+| a lone dah | nothing | nothing |
+
+**Case 4, the faded tones:**
+- **Faded up 100 ms, held 200 ms, faded down 100 ms:** no mark with the edge test on. It was
+  already no mark with the test off, because unit 492's rule that a mark ends where its tone ends
+  turns away the slow fall.
+- **Faded up 100 ms, held 200 ms, cut off sharply:** one mark with the test off, none with it on.
+  Only the rising edge catches this one.
+
+**The W1AW schedule, driven headless in named zones:**
+- **Inside a bulletin**, 7:30 PM Central read in Eastern: `Sending now: code bulletin, 18 WPM, until
+  9:00 PM`, dot filled, *scheduled*.
+- **At a quiet time**, Wednesday 8:38 PM Central: `Next: code practice, fast, 9:00 PM - in 22
+  minutes`, dot hollow, *quiet*.
+- **Past the last run of a day**, Tuesday 11:30 PM Central: `Next: code practice, slow, tomorrow
+  8:00 AM`.
+- **Daylight saving:** the 7 PM Central bulletin starts 00:00 UTC in October and 01:00 UTC in
+  December.
+
+**The CW tab's text count:** 653, against a ceiling of 550. It was 597 after unit 495.
 
 ## 4. What's blocking us
 
 Nothing blocks. What is left, a line each:
-- **The scope's trace and blocks still come from the watched bin**, which can be a shoulder. Its
-  bars keep the same timing as the station's, so the blocks line up, but the trace's level is the
-  shoulder's.
-- **The detector's hold can report a noise pair's pitch** for a hop before a station is found: once
-  at 3.230 s on the synthetic call, at 1550 Hz.
+- **The edge test turns away a quarter of white noise's bars, not most.** The rest have edges by
+  this bound. What still keeps noise off the screen is the run reader's keyed-mark and two-run
+  rules.
+- **A mark is now handed out 25 ms after it ends at worst**, from 15, to read its falling edge.
+- **At the time of this run** (20:54 UTC, Tuesday, this machine on Eastern): `Sending now: code
+  practice, slow, until 5:00 PM`, dot *scheduled*. **The schedule lives in
+  `data/bands/w1aw-morse.json`**, beside the frequencies, cited to the ARRL.
+- **The CW tab's text count is 653 against 550**; the ceiling is not this unit's to move.
 - **Pre-existing reds, not this unit's:**
   - `VoiceTests`' British spelling.
-  - `HowMuchTheApplicationSaysTests` (the CW tab at 597 against 550).
+  - `HowMuchTheApplicationSaysTests`.
   - `ModeFollowsTheMapAgainTests.NothingButTheModeIsEverWritten`.
   - `AMarkIsTheEnvelopeOverAThresholdTests`' two cases.
 
