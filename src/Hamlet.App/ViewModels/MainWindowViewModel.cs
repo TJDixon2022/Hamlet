@@ -11381,9 +11381,10 @@ public partial class MainWindowViewModel : ObservableObject
         var detector = _envelope;
         _decoder.KeyingGate = () => detector.Reading.Keying;
 
-        // **AND IT LISTENS WHERE THE DETECTOR HEARS** (work instruction 486): while the detector
-        // says keying, the decoder mixes at the pitch it watches, so tone and mixing agree.
-        _decoder.DetectorPitch = () => detector.Reading.Keying ? detector.WatchedHz : double.NaN;
+        // **AND IT LISTENS WHERE THE DETECTOR HEARS** (work instruction 486; 488, HM-DEC-193):
+        // while the detector says keying, the decoder mixes at the pitch the reading carries - the
+        // bin its bars were called in, carried through the gaps - and is fed nothing otherwise.
+        _decoder.DetectorPitch = () => PitchForTheDecoder(detector.Reading);
 
         // **AND A LETTER NEEDS BLOCKS** (work instruction 487, R99): one block the detector called
         // under each dit and dah, or the letter does not reach the screen.
@@ -12535,7 +12536,7 @@ public partial class MainWindowViewModel : ObservableObject
         CwHearing.ObserveScope(_scopeFeed.Tick(
             envelope,
             reading,
-            IsDecoding ? DecodeReport.ToneHz : double.NaN,
+            IsDecoding && _decoder is { } mixing ? mixing.MixingHz : double.NaN,
             CwHearing.Scope,
             scopeQuiet: plainCw && pointed is null,
             DateTime.UtcNow));
@@ -12543,6 +12544,15 @@ public partial class MainWindowViewModel : ObservableObject
 
     /// <summary>What the scope is handed: the detector's hops and the settled letters (work instruction 480).</summary>
     private readonly CwScopeFeed _scopeFeed = new();
+
+    /// <summary>
+    /// The pitch the decoder's second rung is fed: the reading's own pitch while it says keying, and
+    /// NaN otherwise, so the tracker takes over only when nobody is keying (work instruction 488).
+    /// </summary>
+    /// <param name="reading">The detector's last reading.</param>
+    /// <returns>A pitch in hertz, or NaN.</returns>
+    internal static double PitchForTheDecoder(CwEnvelopeReading reading) =>
+        reading.Keying && double.IsFinite(reading.PitchHz) && reading.PitchHz > 0 ? reading.PitchHz : double.NaN;
 
     /// <summary>
     /// Put a settled character on the scope, over the span the decoder gave it

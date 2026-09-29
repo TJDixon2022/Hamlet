@@ -4,6 +4,34 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-193
+date: 2026-09-28
+refs: docs/phase-requirements/PHASE_PLAN.md R97 12.4, src/Hamlet.RadioEngine/Cw/CwEnvelopeDetector.cs, src/Hamlet.RadioEngine/Cw/CwDecoder.cs, src/Hamlet.App/ViewModels/MainWindowViewModel.cs, work instruction 488
+---
+
+**The detector's pitch is what the decoder mixes at.** No new ruling: R97 and 12.4 already say
+this, and work instruction 488 records how it failed.
+
+**The reading carried keying with a null pitch.** `CwEnvelopeDetector` set the reading's pitch only
+on the hop a mark was up, while unit 485's hold keeps keying true through the gaps between marks.
+So the owner's verdict rows of 2026-09-28, 23:38 to 23:39 UTC, showed `scopePitchHz` null on every
+row where the bars said keying; on a synthetic 625 Hz station at 23 words a minute, 1118 of 1408
+keying readings had no pitch. **Unit 486's rung was therefore fed nothing, as the instruction read
+the rows**, and the tracker's own guess won.
+
+**Unit 487's block rule turned the resulting wrong-bin decode from junk letters into silence.** A
+decoder reading a bin beside the station reads elements that line up with no block the detector
+called, and a character with no blocks under it is not emitted.
+
+**What the tree showed besides, and records rather than rules.** The view model's rung was in fact
+fed the detector's watched bin while keying, not the reading's pitch, so it was never null; and the
+rows' mixing column was the tracker's pitch, not where the decoder mixed. The decoder now exposes
+`MixingHz`, and the scope and the verdict row read it. **The watched bin is often not the
+station's**: 1021 of the 1408 keying readings carry 575 or 675 Hz, the shoulders of the tone's
+lobe, because on those hops the 625 Hz bin calls no bars of its own. That is left red and named,
+not tuned.
+
+---
 id: HM-DEC-192
 date: 2026-09-28
 supersedes: work instruction 389's width rule (section 6 ruling 2)

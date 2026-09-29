@@ -467,6 +467,18 @@ public sealed class CwDecoder
     public CwProbabilisticStream Stream => _probabilistic;
 
     /// <summary>
+    /// The pitch the decoder is mixing at now: the operator's lock, the detector's pitch while it
+    /// says keying, or the tracker's, in that order (work instruction 488).
+    /// </summary>
+    /// <remarks>
+    /// **NOT <see cref="CwDecodeReport.ToneHz"/>**, which is the tracker's own pitch. The panel's
+    /// *mixing* number was fed that, so on 2026-09-28 it said *mixing 584* while the decoder may
+    /// have been mixing somewhere else; the number beside *tone* is this one from work instruction
+    /// 488 on.
+    /// </remarks>
+    public double MixingHz => _probabilistic.ToneHz;
+
+    /// <summary>
     /// The last half minute of exactly what the decoder was fed (HM-DEC-088).
     /// </summary>
     /// <remarks>

@@ -8,7 +8,7 @@ namespace Hamlet.App.ViewModels;
 
 /// <summary>What the detector already says, read once a second on the decode tick.</summary>
 /// <param name="Meter">The keying meter's last reading.</param>
-/// <param name="TrackerHz">The pitch the decoder is mixing at.</param>
+/// <param name="TrackerHz">The tracker's own pitch - not where the decoder mixes while the detector says keying (work instruction 488).</param>
 /// <param name="TrackerHasPitch">Whether that pitch was measured rather than assumed.</param>
 /// <param name="TrackerHasKeying">Whether the tracker's survey verdict holds keying.</param>
 /// <param name="Survey">Every bin the coarse survey admits as keying.</param>
@@ -107,7 +107,7 @@ public sealed record CwScopeFrame(
         }
     }
 
-    /// <summary>"mixing 742 Hz" from the tracker, so the owner sees whether the two agree.</summary>
+    /// <summary>"mixing 742 Hz", where the decoder is mixing now, so the owner sees whether it agrees with the tone (work instruction 488).</summary>
     public string MixingLine => double.IsNaN(MixingHz)
         ? NotMixingWords
         : string.Create(CultureInfo.InvariantCulture, $"mixing {MixingHz:0} Hz");
@@ -334,6 +334,10 @@ public sealed partial class CwHearingViewModel : ObservableObject
             ["scopeMark"] = scope.Mark,
             ["scopeRunMs"] = scope.RunMs,
             ["scopePitchHz"] = Measured(scope.PitchHz),
+
+            // **WHERE THE DECODER WAS MIXING** (work instruction 488): trackerHz is the tracker's own
+            // pitch, and while the detector says keying the decoder mixes elsewhere.
+            ["mixingHz"] = Measured(Scope.MixingHz),
             ["scopeContrastDb"] = Measured(scope.ContrastDb),
             ["scopeMarksLast4s"] = scope.MarksLast4s,
 

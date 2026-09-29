@@ -27,7 +27,7 @@ public sealed record CwBarBin(
 /// <param name="ThresholdDb">Midway between the gap level and the bar level; drawn, and decides nothing.</param>
 /// <param name="Mark">Whether a paired bar is up in that bin now.</param>
 /// <param name="RunMs">How long the current mark or gap has lasted.</param>
-/// <param name="PitchHz">While a mark is up, the bin with the most bars in the last second; NaN otherwise.</param>
+/// <param name="PitchHz">While keying, the bin the bars were called in - the one the hold follows; NaN otherwise (work instruction 488).</param>
 /// <param name="ContrastDb">While a mark is up, that bin's bar level over its gap level; NaN otherwise.</param>
 /// <param name="PassbandLowHz">The lowest bin's edge of the sweep.</param>
 /// <param name="PassbandHighHz">The highest.</param>
@@ -758,7 +758,13 @@ public sealed class CwEnvelopeDetector
             midDb,
             up,
             runMs,
-            up ? watched.Hz : double.NaN,
+
+            // **KEYING ALWAYS COMES WITH A PITCH** (work instruction 488, HM-DEC-193). The pitch
+            // was set only on the hop a mark was up, while keying is held through the gaps between
+            // marks (work instruction 485), so four readings in five said keying with no pitch:
+            // the owner's verdict rows of 2026-09-28 carried a null pitch on every row. Keying and
+            // its pitch now go together: the bin the bars were called in, which the hold follows.
+            keying ? watched.Hz : double.NaN,
             up && !double.IsNaN(gapDb) ? barDb - gapDb : double.NaN,
             _lowHz,
             _highHz,
