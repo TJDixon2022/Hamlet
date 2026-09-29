@@ -11,139 +11,120 @@ confirmed. Nothing in this report is evidence about the radio.
 - No recording, fixture, floor or telemetry was read.
 - Nothing under `.run-unit\` was committed.
 
-**What the detector already exposed, and what had to be added.**
-- **Already there:**
-  - Every bin called its own bars, and paired two only when they were within 1.5 dB of each
-    other.
-  - Each hop's level was kept for four seconds.
-  - Unit 487's `BlocksBetween` counted the watched bin's blocks.
-- **What the decoder got:** a count and a pitch to mix at. It never got a mark's pitch or level.
-- **Added:** every completed bar in every bin becomes one `CwMark` with its pitch, level in dB,
-  contrast and times.
-  - The pitch is the peak of the tone's lobe: from the bar's bin, step to the neighbor with the
-    higher mean level over the mark's own hops until none is higher.
-  - So a tone that lights bins 200 Hz either side is one mark at its own pitch, not sixteen.
+**The two reds are still red, and the cause is not the one section 2 named.**
 
-**The changes, file by file** (all in `af6687e0`):
-- **`src/Hamlet.RadioEngine/Cw/CwMark.cs`**, new: the mark record, and a batch of marks with the
-  detector's clock.
-- **`src/Hamlet.RadioEngine/Cw/CwEnvelopeDetector.cs`:** calls the marks and hands them out through
-  `MarksSince(sequence)`. What it already did is unchanged.
-- **`src/Hamlet.RadioEngine/Cw/CwRunReader.cs`**, new: the second, simpler reader.
-  - **A run** is consecutive marks within one bin of pitch and within the level tolerance of the
-    run's own mean.
-  - **A run ends** at a gap longer than the sender's character gap.
-  - **A mark that breaks the agreement** starts its own run and is never folded in, while the run
-    it didn't join goes on.
-  - **The letter:** dits and dahs split at the geometric mean of the sender's own short and long
-    marks. A word gap is placed at the geometric mean of three dits and seven.
-  - **One sender is printed:** the first to make two runs, the one with the most marks if several
-    have. It is held until it has been silent for a second.
-  - **Nothing printed is taken back.**
-  - Each letter is also raised with the marks it was read from.
-- **`src/Hamlet.RadioEngine/Cw/CwDecoder.cs`:**
-  - `DetectorMarks` takes the marks. With `ReadsRuns` on, which is the default, only what the runs
-    read reaches the terminal and the scope.
-  - The timing-only path stays behind `ReadsRuns`, unchanged.
-  - While transmitting, or in a digital mode, the marks are taken and dropped (HM-DEC-147).
-  - **Unit 489's three switches stay off as it left them.** The keying gate and the block rule
-    aren't needed on this path, since a letter appears only where its run exists.
-  - The lattice, speed grid, unit estimator and emission gate were not touched.
-- **`src/Hamlet.App/ViewModels/MainWindowViewModel.cs`** gives the decoder the detector's marks.
-- **`src/Hamlet.App/ViewModels/CwHearingViewModel.cs`:** the scope's hover says the terminal and
-  the scope read the same marks. Unit 489's "the two can disagree" is no longer true.
+- **Unit 490's finding did not reproduce.** On unit 490's own detector, the call with bursts in its
+  gaps has **every one of its 65 marks called**, the same as the clean call. This is measured by
+  matching each of the clean call's marks to an overlapping mark in the case.
+- **Where the letters go wrong: marks arrive late.** The L's third dit (10.520 to 10.565 s) was
+  handed out at 11.000 s, 435 ms after it ended. By then the run reader had ended the L's run, so
+  the L split into `E` and `I`.
+- **Why they arrive late:** the check that paired bars stand clear of their gaps' wander is
+  measured over the bin's last second. A burst anywhere in that second holds pairs back until it
+  leaves the window.
+
+**The check section 3 asked me to remove stays, because it does real work.**
+- It lives in `src/Hamlet.RadioEngine/Cw/CwEnvelopeDetector.cs`, in `Evaluate`:
+  `if (!dropped || lower - waves.Level <= waves.Wander)`, at line 963 now.
+- It is there to refuse noise's chance flat runs, which stand no clearer of their gaps than those
+  gaps wander.
+- **Removed:** thirty seconds of loud noise alone called 61 marks and printed `NETMITT`, and the
+  clean call misread (`N0DEALL`).
+- **Narrowed to each pair's own gap** instead of the last second: the clean call still misread,
+  and the second station put more marks at the call's pitch (11, where the unchanged detector puts
+  3 or 4).
+- **Both were reverted.** The instruction said that if the guard does real work, the report says
+  so rather than forcing the other two green.
+
+**What changed** (in `016131ae`):
+- **`src/Hamlet.RadioEngine/Cw/CwEnvelopeDetector.cs` - a bar pairs with the nearest bar at its own
+  level.**
+  - Counters on the pairing, at the call's bin, showed the bursts multiplying one rejection tenfold:
+    bars refused for disagreeing on level went from 2,391 to 23,901.
+  - The cause: a burst makes a short bar of its own in the call's bin. A bar used to be compared
+    only with the bar just before it, so each of the call's bars was compared with the burst and
+    refused.
+  - Now a bar looks back to the nearest bar at its own level, within the same second as before. A
+    bar at another level between them is part of their gap.
+  - **Unchanged:** the agreement asked of two bars (within 1.5 dB, each at least a dit long), the
+    check that their gap dropped below both, the wander check, the flatness tolerance and the
+    shortest bar.
+- **`tests/Hamlet.RadioEngine.Tests/Cw/ACharacterIsARunOfMarksThatAgreeTests.cs`:**
+  - `NoiseAloneReadsNothing`, new: loud noise with no station prints nothing.
+  - `HowManyOfTheCallsMarksAreCalled`, new: prints how many of the clean call's marks each case
+    calls. It asserts nothing.
+  - The two reds' remarks now give the measured cause.
 - **Records.**
-  - R103 is in both `PHASE_PLAN.md` copies, in the owner's words, and `DECISIONS.md` has
-    HM-DEC-195.
-  - Both outcome and status copies name 490.
-  - Version 1.13.176 → 1.13.177.
-
-**The two tolerances, the author's, chosen before any result and not tuned after:**
-- **Pitch: one bin, 25 Hz.** A human's keying holds one pitch, and the detector puts each mark on
-  the bin at its lobe's peak, so a tone between two bins lands on either one. One bin is that
-  rounding.
-- **Level: twice the detector's own flatness tolerance at the run's contrast** (R93: at least
-  1.5 dB, more for weaker signals). A sender holds one level, and every hop of a mark sits within
-  one tolerance of the mark's mean. A mark's mean and the run's mean, each measured that way, can
-  differ by twice it.
-
-**The other rules, also the author's:**
-- **Dits and dahs are two kinds only when the widest step between sorted lengths is at least 2 to
-  1.** Every fist measured here sends a dah at least 2.7 times a dit (HM-DEC-144, HM-DEC-145).
-- **A sender is printed after two runs.** One agreeing run can be a lone blip.
-
-**Watched failing first.** The reader was first built to print every run. Against that version:
-- **Case 2 was red:** 3 of the marks under its letters weren't the call's.
-- **Case 3 was red:** 21 weren't.
-- **With the one-sender rule, both are 0.**
-
-**Case 3's answering station was shortened to `TEST DE W1AW K`, before the one-sender rule was
-run.** That way it ends while the call is still going, and the case asks only what happens while
-both key at once.
+  - R104 is in both `PHASE_PLAN.md` copies, in the owner's words.
+  - `DECISIONS.md` has HM-DEC-196 under the instruction's headline. It records that unit 490's
+    finding did not reproduce, and what was measured instead.
+  - Both outcome and status copies name 491.
+  - Version 1.13.177 → 1.13.178.
+- **Section 4, the panel's pitch, was not done.** The reader runs on the audio thread, and reading
+  its printed sender from the screen's thread cleanly needs locking. That is more than "clean and
+  quick".
 
 **Verification.**
-- **The build:** 0 warnings, 0 errors.
-- **The app carry-forward line: 276 of 278.** The two failures are dispatcher-loop losses at 1 ms,
-  `TheWindowHoldsBelowItsMinimumTests` and `TheCarrierHoldsTheButtonsTests`, and both pass alone (3
-  of 3 and 8 of 8).
-- **The app scope, layout and voice types: 86 of 87.** The red is `VoiceTests`' British spelling,
-  "centre" in two lines from 2026-09-26, which is not from this unit.
-- **The engine run, gate and detector types: 23 of 28.** The five reds:
-  - `TheCallReadsWholeThroughTheBlips` and `TheStationPrintedReadsWhole`, both new and red on
-    purpose (section 4 says why).
+- The build: 0 warnings, 0 errors.
+- **The app carry-forward line: 275 of 278.** The three failures ran in 1 ms each, the
+  dispatcher-loop loss: `TheRstIsYoursToCorrectTests` and two in `TheFavoritesAreUnderTheGreenZoneTests`.
+  All pass alone (4 of 4 and 3 of 3).
+- **The app scope, layout and voice types: 84 of 87.**
+  - Two `TheTopRowTests` names failed in the long run and pass alone, 15 of 15.
+  - The British spelling red is from 2026-09-26, not this unit.
+- **The engine run, gate and detector types: 25 of 30.** The reds:
+  - `TheCallReadsWholeThroughTheBlips` and `TheStationPrintedReadsWhole`.
   - `ThatPitchIsTheStationsOwn`.
-  - `AMarkIsTheEnvelopeOverAThresholdTests`' two cases, at the same counts as before (40 and 208).
+  - `AMarkIsTheEnvelopeOverAThresholdTests`: 70 and 208, where it was 40 and 208 (see section 2).
 
 ## 2. What the owner should expect
 
 1. Rebuild.
-2. On a station, the letters in the terminal are the letters over the blocks, because both now come
-   from the same run of marks.
-3. Noise between letters no longer becomes letters, because it doesn't match the station's pitch or
-   loudness.
-4. Two stations at once read as one station, not as a mixture.
-5. **What will look wrong but is expected.** The terminal waits until a letter's run has ended, so
-   it runs about a letter behind, and the tip no longer changes while you watch.
-6. **What is still wrong.** Right beside a burst of noise, or where a second station keys close by,
-   the detector can miss the station's own marks. You then get a wrong or missing letter there
-   rather than the noise's letter.
+2. **A station whose gaps have noise in them reads better than yesterday, but not yet whole.**
+   Where a burst of noise sits in a gap, the letters beside it are right more often. A letter can
+   still split in two when the noise delays one of its dots.
+3. Noise with no station still prints nothing.
+4. Two stations at once still read as one.
+5. **One cost.** On a weak station, about 15 dB over the noise, the scope can now switch to a
+   neighboring frequency and miss a dash there. On the test tone, 70 hops of key-down were missed
+   where 40 were before. This is the scope's picture, not the terminal's letters.
 
 ## 3. What you should see
 
-Three synthetic cases. The old path is the decoder as unit 489 left it; the new path is the same
-decoder reading runs.
-
-| case | sent | old path | new path |
+| case | sent | read before (unit 490) | read now |
 |---|---|---|---|
-| 1. clean call, one pitch, one level | `CQ CQ DE N0CALL N0CALL K` | `CQ CQ DE N0CALL N0CALL K` | `CQ CQ DE N0CALL N0CALL K` |
-| 2. the call with bursts between the letters | `CQ CQ DE N0CALL N0CALL K` | `CQ■DEN0CALL N0CALL K` | `CQ CT A K EE N0CAAEI D N0CALL K` |
-| 3. the call at 625 Hz with `TEST DE W1AW K` at 825 Hz | both | `CQ CQ DE N0W DL N0CALL K` | `CGE CEN K EE N0 FALL N0CALL K` |
+| clean call | `CQ CQ DE N0CALL N0CALL K` | `CQ CQ DE N0CALL N0CALL K` | `CQ CQ DE N0CALL N0CALL K` |
+| the call with bursts in every gap | `CQ CQ DE N0CALL N0CALL K` | `CQ CT A K EE N0CAAEI D N0CALL K` | `CQ CQ DE N0CAAEI D N0CALAI K` |
+| the call plus `TEST DE W1AW K` 200 Hz away | the call, one station | `CGE CEN K EE N0 FALL N0CALL K` | `C RE CENT DE N0 FALL N0CALL K` |
+| loud noise, no station | nothing | nothing | nothing |
 
-- **Case 2:** every one of the 65 marks the new path's letters were read from is the call's.
-  - The bursts sit 8 dB below the station, at 550 to 675 Hz, 40 ms long, in every gap between
-    letters. None of them became a letter.
-  - The wrong letters come from the call's own marks going missing beside each burst.
-- **Case 3:** the new path prints the call and never the answer.
-  - The call is louder, faster and started first, so it made two runs first and holds the terminal
-    while it keeps sending.
-  - Every mark its letters were read from is the call's, where printing every run took in 21 of
-    the answer's.
+**The call's marks called, of the clean call's 65:**
+
+| case | before | after |
+|---|---|---|
+| clean call | 65 | 65 |
+| the call with bursts | 65 | 65 |
+| two stations | 62 (and 3 others at the call's pitch and level) | 61 (and 4 others) |
+
+In the two-station case, every mark the printed letters were read from is the call's, before and
+after.
 
 ## 4. What's blocking us
 
 Nothing blocks. What is left, a line each:
-- **The detector loses a station's marks beside a burst or a second station.**
-  - A burst in a gap lights the station's own bin.
-  - The gap then fails the detector's check that bars stand clear of their gaps' wander, so the
-    bars on either side are never paired.
-  - Measured on case 2: none of the first CQ's four marks were called.
-  - `TheCallReadsWholeThroughTheBlips` and `TheStationPrintedReadsWhole` are the reds waiting for
-    it. The detector's pairing wasn't this unit's to change.
-- **The panel's "decoding at N Hz" is the old path's mixing pitch.** The terminal now reads runs at
-  the sender's own pitch, so that number no longer describes what the terminal reads. The next
-  unit should show the printed sender's pitch there.
-- **The first station to make two runs holds the terminal until it is silent for a second.** A
-  louder station arriving later waits.
+- **The run reader ends a run before all its marks have arrived.**
+  - The detector can call a mark up to about a second late, because a pair waits on the wander
+    check and on its partner.
+  - The reader waits only a character gap plus its longest mark. It should hold a run open until
+    the detector can no longer add a mark to it, and put a late mark in its place.
+  - That is in the reader, which this unit was told not to touch. It is what turns
+    `TheCallReadsWholeThroughTheBlips` green.
+- **In the two-station case, 4 of the call's marks are not called at all**, where the answer keys
+  inside the call's lobe.
+- **The weak-tone cost:** on the 15 dB case, 70 key-down hops missed on the scope against 40,
+  because a second bin now counts as keying.
+- **Section 4 is not done:** "decoding at N Hz" is still the old path's mixing pitch, and needs the
+  printed sender's pitch read across threads.
 - **Pre-existing reds, not this unit's:**
   - `VoiceTests`' British spelling.
   - `HowMuchTheApplicationSaysTests`.
@@ -158,6 +139,9 @@ Nothing blocks. What is left, a line each:
 - **Unit 440's item 2:** R72 is cited as HM-DEC-175. Raised 2026-09-25 and scheduled as step 8
   record work under R80.
 - **Unit 487, 2026-09-28:** whether the terminal shows only settled text, so nothing on it is ever
-  revised, at the cost of seconds of lag. On the run path the terminal now does show only settled
+  revised, at the cost of seconds of lag. On the run path the terminal already shows only settled
   text. The ask is still the owner's for the timing-only path, and no change for it sits in the
   tree.
+- **Unit 491, new, 2026-09-28:** whether to keep the change to how bars pair. It reads the call
+  with bursts better and costs the 15 dB tone's scope picture 30 missed hops. The change sits in
+  `CwEnvelopeDetector.Evaluate` in `016131ae`. Reverting it restores yesterday's detector exactly.
