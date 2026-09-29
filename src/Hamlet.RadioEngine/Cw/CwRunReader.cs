@@ -53,8 +53,8 @@ public sealed class CwRunReader
     /// handed out the moment they end, unpaired, so the noise guard the pairing gave is here: a run
     /// of one mark never counts toward a sender - a lone bar, however clean, is not a character - and
     /// a sender whose marks are all one length, never two kinds at <see cref="TwoKindsRatio"/>, is
-    /// not a sender. Once a sender is printed, a letter of one mark, E or T, is printed with it;
-    /// otherwise every DE would read D.</para>
+    /// not a sender. A letter of one mark, E or T, is banked until the same sender confirms it
+    /// with another letter (work instruction 498).</para>
     /// <para>**AND THE RUNS THAT MAKE A SENDER ARE KEYED** (work instruction 493, R106, HM-DEC-198).
     /// Measured on three minutes of noise with nothing else guarding, a noise sender made its two
     /// runs by chance, was printed, and never fell silent for a second, so it printed every noise
@@ -237,8 +237,51 @@ public sealed class CwRunReader
             return;
         }
 
-        foreach (var run in station.Ended.Skip(station.PrintedRuns).ToList())
+        // **THE UNPRINTED RUNS ARE READ AGAIN AT THE DIT THE SENDER HAS NOW SHOWN** (work instruction
+        // 498). A sender's first runs were closed before its dit was known - on TEST, the T's dah was
+        // taken as a dit, the gap after it as inside a letter, and T and E became N. By the time a
+        // sender is printed it has shown dits and dahs, so what is still unprinted is split again.
+        station.Resplit(station.PrintedRuns);
+
+        while (station.PrintedRuns < station.Ended.Count)
         {
+            var run = station.Ended[station.PrintedRuns];
+
+            // **A LONE LETTER WAITS TO BE CONFIRMED** (work instruction 498, R108, HM-DEC-202). A
+            // letter of one mark, E or T, is banked until the same sender sends another letter
+            // within ConfirmSeconds of it, and then released in its own place; if nothing follows
+            // inside that, it is dropped and never printed. It replaces unit 493's rule that once a
+            // sender was printed its one-mark letters printed with it, which printed a stray mark
+            // at the sender's pitch as an E whenever one came.
+            if (run.Length == 1)
+            {
+                var window = ConfirmSeconds(station);
+                var follows = station.PrintedRuns + 1 < station.Ended.Count
+                    ? station.Ended[station.PrintedRuns + 1][0].FromSeconds
+                    : station.Open.Count > 0 ? station.Open[0].FromSeconds : double.NaN;
+
+                if (double.IsNaN(follows))
+                {
+                    // Nothing yet: wait while the window is open, and drop it once it has closed or
+                    // the audio has ended, since nothing can follow then.
+                    // The follower's first mark reaches the reader only once it has ended, so the wait
+                    // covers the window, the sender's longest mark and the lag in calling it.
+                    if (heardSeconds - run[^1].ToSeconds <= window + station.LongestMarkSeconds + CallingLagSeconds)
+                    {
+                        break;
+                    }
+
+                    station.PrintedRuns++;
+                    continue;
+                }
+
+                if (follows - run[^1].ToSeconds > window)
+                {
+                    station.PrintedRuns++;
+                    continue;
+                }
+            }
+
             station.PrintedRuns++;
 
             // What another sender was printed over is not printed afterward: the terminal runs
@@ -252,6 +295,26 @@ public sealed class CwRunReader
             _printedThrough = run[^1].ToSeconds;
         }
     }
+
+    /// <summary>
+    /// How long after a one-mark letter the same sender must send another for it to be printed, in
+    /// seconds: twice the sender's word gap, measured on the gaps inside its letters (work
+    /// instruction 498).
+    /// </summary>
+    /// <remarks>
+    /// <para>**FROM THE SENDER'S OWN SPACING, NOT FROM ANY RECORDING.** A lone E or T inside a word
+    /// is followed within a character gap, and one at the end of a word, like the E of DE, within a
+    /// word gap; twice the sender's word-gap threshold, about nine dits, holds both with room for a
+    /// sender who stretches his word gaps. The author's, overrulable.</para>
+    /// <para>**THE DIT IS THE GAP INSIDE A LETTER, NOT THE MARK.** The detector reads a mark short
+    /// and the gap after it long, each by about the window's smear: on a synthetic 23 WPM TEST the
+    /// dits read 35 to 45 ms against 52 and the word gap 370 ms against 365, so a window built on
+    /// the marks came out at about 385 ms and dropped the last T of TEST. The gap inside a letter is
+    /// one dit and the same smear, the unit the gaps between letters are measured in; where the
+    /// sender has shown none yet, the marks' dit stands in.</para>
+    /// </remarks>
+    private static double ConfirmSeconds(Sender sender)
+        => 2 * Math.Sqrt(21) * (double.IsNaN(sender.ElementGapSeconds) ? sender.DitSeconds : sender.ElementGapSeconds);
 
     private void Raise(Sender sender, CwMark[] run)
     {
@@ -316,6 +379,36 @@ public sealed class CwRunReader
 
         public List<CwMark[]> Ended { get; } = new();
 
+        /// <summary>Split the ended runs from one index on again, at the sender's character gap now.</summary>
+        /// <param name="from">The first run not yet printed.</param>
+        public void Resplit(int from)
+        {
+            if (from >= Ended.Count)
+            {
+                return;
+            }
+
+            var gap = CharacterGapSeconds;
+            var marks = Ended.Skip(from).SelectMany(r => r).OrderBy(m => m.FromSeconds).ToList();
+            var runs = new List<CwMark[]>();
+            var current = new List<CwMark> { marks[0] };
+
+            foreach (var mark in marks.Skip(1))
+            {
+                if (mark.FromSeconds - current[^1].ToSeconds > gap)
+                {
+                    runs.Add(current.ToArray());
+                    current = new List<CwMark>();
+                }
+
+                current.Add(mark);
+            }
+
+            runs.Add(current.ToArray());
+            Ended.RemoveRange(from, Ended.Count - from);
+            Ended.AddRange(runs);
+        }
+
         public int PrintedRuns { get; set; }
 
         public int Marks { get; private set; }
@@ -365,6 +458,9 @@ public sealed class CwRunReader
 
         /// <summary>Between a gap between letters, three dits, and one between words, seven.</summary>
         public double WordGapSeconds => DitSeconds * Math.Sqrt(21);
+
+        /// <summary>The median gap inside the sender's letters, in seconds; NaN before it has shown one.</summary>
+        public double ElementGapSeconds => _elementGaps.Count > 0 ? Median(_elementGaps) : double.NaN;
 
         public double LongestMarkSeconds => _recent.Count > 0 ? _recent.Max(m => m.ToSeconds - m.FromSeconds) : 0;
 

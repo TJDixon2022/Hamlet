@@ -413,9 +413,9 @@ public sealed class ACharacterIsARunOfMarksThatAgreeTests
     }
 
     /// <summary>Every mark the detector calls on the audio, with the edge test on or off.</summary>
-    private static IReadOnlyList<CwMark> Marks(float[] samples, bool edges)
+    private static IReadOnlyList<CwMark> Marks(float[] samples, bool edges, bool narrow = true)
     {
-        var detector = new CwEnvelopeDetector(Rate) { MarksNeedEdges = edges };
+        var detector = new CwEnvelopeDetector(Rate) { MarksNeedEdges = edges, MarksNeedNarrowness = narrow };
 
         for (var at = 0; at + Chunk <= samples.Length; at += Chunk)
         {
@@ -434,8 +434,8 @@ public sealed class ACharacterIsARunOfMarksThatAgreeTests
     public void MostNoiseBarsHaveNoEdges()
     {
         var samples = NoiseAlone();
-        var passing = Marks(samples, edges: false).Count;
-        var edged = Marks(samples, edges: true).Count;
+        var passing = Marks(samples, edges: false, narrow: false).Count;
+        var edged = Marks(samples, edges: true, narrow: false).Count;
 
         _output.WriteLine($"thirty seconds of loud noise: bars passing every other test {passing}, of them with edges {edged}");
 
@@ -523,5 +523,60 @@ public sealed class ACharacterIsARunOfMarksThatAgreeTests
         _output.WriteLine($"a tone faded up over 100 ms, held 200 ms, cut off sharply: marks with the edge test off {off}, on {on}");
 
         Assert.Equal(0, on);
+    }
+
+    /// <remarks>
+    /// Case 1 of work instruction 498, and its reason: of the loud-noise bars that pass every test
+    /// the tree had before, and unit 497's edges, how many are narrow - standing clear of the band
+    /// three hundred hertz either side. Asserts that fewer are.
+    /// </remarks>
+    [Fact]
+    public void MostEdgedNoiseBarsAreNotNarrow()
+    {
+        var samples = NoiseAlone();
+        var passing = Marks(samples, edges: false, narrow: false).Count;
+        var edged = Marks(samples, edges: true, narrow: false).Count;
+        var narrow = Marks(samples, edges: true, narrow: true).Count;
+
+        _output.WriteLine($"thirty seconds of loud noise: passing every older test {passing}, with edges {edged}, of those narrow {narrow}");
+
+        Assert.True(narrow < edged, "the narrowness test turned away no noise bar");
+    }
+
+    /// <remarks>
+    /// Case 4 of work instruction 498: TEST DE W1AW K prints every letter, the T, the E and the
+    /// final K included - the case that proves banking a lone letter does not eat real text.
+    /// </remarks>
+    [Fact]
+    public void TestDeW1awKPrintsEveryLetter()
+    {
+        const string Sent = "TEST DE W1AW K";
+        var samples = Station(Sent, 23, 625, 0.5, 0.04, 3, 498).Samples;
+        var now = Read(samples, runs: true);
+
+        _output.WriteLine($"sent `{Sent}`, read `{now}`");
+
+        Assert.Equal(Sent, now);
+    }
+
+    /// <remarks>
+    /// Case 5 of work instruction 498: the call, then two seconds of silence, then one stray dit at
+    /// the sender's pitch and level. The call prints whole and nothing prints for the stray.
+    /// </remarks>
+    [Fact]
+    public void AStrayMarkAfterTheSenderStopsPrintsNothing()
+    {
+        var call = CleanCall();
+        var stray = Station("E", 23, 625, 0.5, 0.04, 2, 4981).Samples;
+        var samples = new float[call.Length + stray.Length];
+
+        call.CopyTo(samples, 0);
+        stray.CopyTo(samples, call.Length);
+
+        var now = Read(samples, runs: true);
+
+        _output.WriteLine($"the call, silence, one stray dit: read `{now}`");
+
+        Assert.Equal(Call, now);
     }
 }

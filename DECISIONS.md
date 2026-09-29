@@ -4,6 +4,32 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-202
+date: 2026-09-29
+refs: docs/phase-requirements/PHASE_PLAN.md R108, src/Hamlet.RadioEngine/Cw/CwEnvelopeDetector.cs, src/Hamlet.RadioEngine/Cw/CwRunReader.cs, tests/Hamlet.RadioEngine.Tests/Cw/ACharacterIsARunOfMarksThatAgreeTests.cs, HM-DEC-198, HM-DEC-201, work instruction 498
+---
+
+**A mark is narrow, and a lone letter waits to be confirmed.** Tim, 2026-09-29, R108: *"I want you
+banking potential words until you confirm them, especially T's and E's. Treat them with deep
+suspicion."*
+
+**The reason.** Unit 497's edge test left 1069 of 1452 loud-noise bars standing: it tests for a
+change of level, and noise that jumps has fast edges. **Nothing had checked narrowness** - that a
+keyed tone's energy is in its own bin while the band beside it is quiet, where noise is as loud
+beside it as in it.
+
+**What is built.** A completed bar is handed out as a mark only if its bin stands at least 6 dB
+above the bins 300 Hz either side over the mark's own hops; of the 1069, 146 are narrow, and a real
+call loses none of its marks. In the run reader a one-mark letter is banked until the same sender
+sends another letter within twice its word gap, measured on the gaps inside its letters, and is then
+printed in its own place, or dropped unprinted if nothing follows. This replaces unit 493's rule that
+once a sender was printed its one-mark letters printed with it. A sender's unprinted runs are split
+again at the dit it has shown by the time it is printed.
+
+**Whose words are whose.** The ruling is Tim's; the distance, the depth, the window and the
+measurements are work instruction 498's and the author's, and overrulable.
+
+---
 id: HM-DEC-201
 date: 2026-09-29
 refs: docs/phase-requirements/PHASE_PLAN.md R107, src/Hamlet.RadioEngine/Cw/CwEnvelopeDetector.cs, tests/Hamlet.RadioEngine.Tests/Cw/ACharacterIsARunOfMarksThatAgreeTests.cs, data/bands/w1aw-morse.json, HM-DEC-199, HM-DEC-200, work instruction 497

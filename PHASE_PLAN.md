@@ -259,6 +259,11 @@ within noise. It has a shape we recognize. It has a typical duration. It has a t
 has a shape. Are we using all of those factors to identify actual signal? Because I'm still seeing
 a lot of false characters."*
 
+**R108 - Tim, 2026-09-29: bank the lone letters until they are confirmed.** *"Basically, I want you
+banking potential words until you confirm them, especially T's and E's. Treat them with deep
+suspicion. I still think our shape isn't right. If we had our shape right, we wouldn't be seeing
+this. I don't think the T's and the E's are producing the shape."*
+
 ## §3 What is different from the phases before it
 
 1. **A criterion is a requirement id.** A report states the requirement, the condition, the

@@ -1173,6 +1173,12 @@ public sealed class CwEnvelopeDetector
                     continue;
                 }
 
+                // **AND IT IS NARROW** (work instruction 498, R108, HM-DEC-202).
+                if (MarksNeedNarrowness && !IsNarrow(apex, start, m.End, level))
+                {
+                    continue;
+                }
+
                 var gap = !double.IsNaN(evals[apex].GapDb) ? evals[apex].GapDb : evals[i].GapDb;
                 var from = nowSeconds - ((hop - start + 1) * HopMs / 1000);
                 var to = nowSeconds - ((hop - m.End) * HopMs / 1000);
@@ -1248,6 +1254,53 @@ public sealed class CwEnvelopeDetector
         }
 
         return rose && fell;
+    }
+
+    /// <summary>How far either side of a mark's bin its neighbours are read for narrowness, in bins.</summary>
+    /// <remarks>
+    /// **THREE HUNDRED HERTZ: OUTSIDE THE TONE'S OWN LOBE AND ITS KEYING** (work instruction 498).
+    /// The ten millisecond window's main lobe reaches two hundred hertz either side of a tone, and a
+    /// keyed tone's necessary bandwidth at the 45 WPM ceiling of `CW_SPEC.md` §7 is about 190 Hz,
+    /// 95 either side. Three hundred is past both, so what is read there is the band beside the tone
+    /// and not the tone itself. The author's; not fitted to any recording.
+    /// </remarks>
+    public const int NarrowBins = 12;
+
+    /// <summary>How far a mark must stand above the bins <see cref="NarrowBins"/> either side, in dB.</summary>
+    /// <remarks>Half amplitude, as for the edges (<see cref="EdgeDepthDb"/>). The author's.</remarks>
+    public const double NarrowDepthDb = EdgeDepthDb;
+
+    /// <summary>Whether a bar must be narrow to be handed out as a mark; on by default.</summary>
+    /// <remarks>
+    /// **NOTHING CHECKED THAT A MARK'S ENERGY IS IN ONE BIN** (work instruction 498, R108,
+    /// HM-DEC-202). A keyed tone stands well above the band beside it while it is up; noise is
+    /// everywhere, so the band beside a noise bar is as loud as the bar. Off, a bar is handed out as
+    /// before, so the difference can be counted. It gates only the marks.
+    /// </remarks>
+    public bool MarksNeedNarrowness { get; set; } = true;
+
+    /// <summary>
+    /// Whether the mark's bin stands at least <see cref="NarrowDepthDb"/> above the bins
+    /// <see cref="NarrowBins"/> either side, over the mark's own hops; a side off the bins is not read.
+    /// </summary>
+    private bool IsNarrow(int bin, long start, long end, double level)
+    {
+        foreach (var side in new[] { bin - NarrowBins, bin + NarrowBins })
+        {
+            if (side < 0 || side >= _bins.Length)
+            {
+                continue;
+            }
+
+            if (MeanLevel(_bins[side], start, end) > level - NarrowDepthDb)
+            {
+                return false;
+            }
+        }
+
+        // With no neighbour to read at all - a passband narrower than six hundred hertz - nothing
+        // here can say a mark is broad, and it is not turned away on a test that was not taken.
+        return true;
     }
 
     /// <summary>Whether a mark overlapping this span within one bin of its pitch, at its level, is already called.</summary>
