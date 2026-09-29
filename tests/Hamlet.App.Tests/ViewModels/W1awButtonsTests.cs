@@ -20,60 +20,45 @@ using Xunit.Abstractions;
 namespace Hamlet.App.Tests.ViewModels;
 
 /// <summary>
-/// W1AW's Morse frequencies are one button per band on the CW tab (work instruction 494,
-/// HM-DEC-199). Nothing here reads from disk but the table the build embeds.
+/// One W1AW button on the CW tab, for the band the radio is on (work instructions 494 and 495,
+/// HM-DEC-199). The owner: *"We only need one button - it turns to the current band."*
 /// </summary>
 public sealed class W1awButtonsTests
 {
     private readonly ITestOutputHelper _output;
 
     /// <summary>Creates the tests.</summary>
-    /// <param name="output">Where the buttons are printed.</param>
+    /// <param name="output">Where the button's words are printed.</param>
     public W1awButtonsTests(ITestOutputHelper output) => _output = output;
 
-    /// <remarks>
-    /// Case 1: one button per band Hamlet can honestly take the dial to, 160 m through 10 m, and no
-    /// 2 m button - the IC-7300 cannot tune it. **No 6 m button either**: the radio tunes 6 m, but
-    /// the spectrum Hamlet knows does not carry it, so the card would say "not an amateur band"
-    /// there, which is false (§0.0); the report says so.
-    /// </remarks>
-    [Fact]
-    public void OneButtonPerBandAndNo2m()
-    {
-        var buttons = W1awButton.For(W1awMorseFrequencies.Default, new PrivilegePlan(), LicenseClass.General);
-
-        foreach (var b in buttons)
-        {
-            _output.WriteLine($"{b.Label} {b.FrequencyHz} {b.Tone}");
-        }
-
-        Assert.Equal(
-            new[] { "W1AW 160 m", "W1AW 80 m", "W1AW 40 m", "W1AW 20 m", "W1AW 17 m", "W1AW 15 m", "W1AW 10 m" },
-            buttons.Select(b => b.Label));
-        Assert.DoesNotContain(buttons, b => b.Label.EndsWith(" 2 m", StringComparison.Ordinal));
-        Assert.All(buttons, b => Assert.Equal(PrivilegeTone.Yours, b.Tone));
-    }
-
-    /// <remarks>
-    /// Case 2: pressing W1AW 20 m asks for 14.0475 MHz and CW, and for nothing else - one mode
-    /// write, CW without the data variant, no setting written, and nothing keyed (the rig throws if
-    /// anything tries).
-    /// </remarks>
-    [Fact]
-    public async Task Pressing20mAsksFor140475AndCwAndNothingElse()
+    private static MainWindowViewModel On(long dialHz, out RecordingRig rig)
     {
         var model = new MainWindowViewModel(new AppSettings { ReconnectOnStartup = false }, null);
-        var rig = new RecordingRig();
 
+        rig = new RecordingRig();
         model.UseRigForTests(rig);
+        // Tuned as a press tunes, which takes the band with it: set directly, the dial stops at the
+        // edge of the band on screen.
+        model.TuneToCommand.Execute(dialHz);
 
-        var button = model.W1awButtons.Single(b => b.Label == "W1AW 20 m");
+        return model;
+    }
+
+    private async Task PressesTo(long dialHz, string label, long wantHz)
+    {
+        var model = On(dialHz, out var rig);
+        var button = model.W1awHere;
+
+        _output.WriteLine($"dial {dialHz}: `{button.Label}`, can press {model.TuneToW1awCommand.CanExecute(button)}");
+
+        Assert.Equal(label, button.Label);
+        Assert.True(model.TuneToW1awCommand.CanExecute(button));
 
         await model.TuneToW1awCommand.ExecuteAsync(button);
 
-        _output.WriteLine($"frequency {model.FrequencyHz}, mode writes {rig.ModeSets} {rig.LastMode} data {rig.LastData}, settings {rig.SettingWrites}, direct frequency writes {rig.FrequencySets}");
+        _output.WriteLine($"  asked for {model.FrequencyHz}, mode writes {rig.ModeSets} {rig.LastMode} data {rig.LastData}, settings {rig.SettingWrites}");
 
-        Assert.Equal(14_047_500, model.FrequencyHz);
+        Assert.Equal(wantHz, model.FrequencyHz);
         Assert.Equal(1, rig.ModeSets);
         Assert.Equal(CivMode.Cw, rig.LastMode);
         Assert.False(rig.LastData);
@@ -82,60 +67,94 @@ public sealed class W1awButtonsTests
     }
 
     /// <remarks>
-    /// Case 3: a band outside the operator's CW privileges is present. **It is pressable**, and its
-    /// hover says the license does not cover sending there: listening is never restricted
-    /// (HM-DEC-029), and grey is kept for what cannot be used (HM-DEC-087). A Technician has no
-    /// Morse on 20 m.
+    /// Case 1: on 40 m the button reads "W1AW on 40 m", and a press asks for 7.0475 MHz and CW - one
+    /// mode write, no setting written, nothing keyed (the rig throws if anything tries).
     /// </remarks>
     [Fact]
-    public void ABandOutsideThePrivilegesIsPresentAndSaysSo()
+    public Task On40m() => PressesTo(7_030_000, "W1AW on 40 m", 7_047_500);
+
+    /// <remarks>
+    /// Case 2: on 20 m the same button reads "W1AW on 20 m" and asks for 14.0475 MHz; the label
+    /// follows the dial from 40 m to 20 m on one model.
+    /// </remarks>
+    [Fact]
+    public async Task On20mAndItFollowsTheDial()
     {
-        var model = new MainWindowViewModel(new AppSettings { ReconnectOnStartup = false }, null);
-        var buttons = W1awButton.For(W1awMorseFrequencies.Default, new PrivilegePlan(), LicenseClass.Technician);
-        var twenty = buttons.Single(b => b.Label == "W1AW 20 m");
+        var model = On(7_030_000, out _);
 
-        _output.WriteLine($"{twenty.Label} {twenty.Tone}: {twenty.Tip}");
+        Assert.Equal("W1AW on 40 m", model.W1awHere.Label);
 
-        Assert.Equal(PrivilegeTone.ListenOnly, twenty.Tone);
-        Assert.Contains("does not cover sending Morse here", twenty.Tip, StringComparison.Ordinal);
-        Assert.Contains("listening is never restricted", twenty.Tip, StringComparison.Ordinal);
-        Assert.True(model.TuneToW1awCommand.CanExecute(twenty));
+        model.TuneToCommand.Execute(14_030_000L);
+
+        Assert.Equal("W1AW on 20 m", model.W1awHere.Label);
+
+        await PressesTo(14_030_000, "W1AW on 20 m", 14_047_500);
     }
 
     /// <remarks>
-    /// Case 4: the row is on the CW tab and nowhere else, and it moves no panel: with the row taken
-    /// out, the send and receive panels stand exactly where they stood.
+    /// Case 3: on a band W1AW does not send Morse on, the button says so and cannot be pressed; off
+    /// the spectrum Hamlet knows, as on 6 m, it says Hamlet does not know the band rather than that
+    /// W1AW is not there. The license never disables it: a Technician on 20 m can press it, and the
+    /// tip says sending Morse there is not covered (HM-DEC-029).
+    /// </remarks>
+    [Fact]
+    public void WhereW1awIsNotItSaysSoAndCannotBePressed()
+    {
+        var thirty = On(10_120_000, out _);
+        var six = W1awButton.ForDial(W1awMorseFrequencies.Default, new PrivilegePlan(), LicenseClass.General, 50_200_000);
+
+        _output.WriteLine($"30 m: `{thirty.W1awHere.Label}`; 6 m: `{six.Label}`");
+
+        Assert.Equal("W1AW not on 30 m", thirty.W1awHere.Label);
+        Assert.False(thirty.TuneToW1awCommand.CanExecute(thirty.W1awHere));
+        Assert.Equal("W1AW: not a band Hamlet knows", six.Label);
+        Assert.False(thirty.TuneToW1awCommand.CanExecute(six));
+
+        var tech = W1awButton.ForDial(W1awMorseFrequencies.Default, new PrivilegePlan(), LicenseClass.Technician, 14_030_000);
+
+        Assert.True(tech.CanTune);
+        Assert.Equal(PrivilegeTone.ListenOnly, tech.Tone);
+        Assert.Contains("does not cover sending Morse here", tech.Tip, StringComparison.Ordinal);
+    }
+
+    /// <remarks>
+    /// Case 4: the button is on the CW tab and nowhere else, there is exactly one W1AW button, and
+    /// with and without it the send and receive panels stand where they stood.
     /// </remarks>
     [AvaloniaFact]
-    public void TheRowIsOnTheCwTabAndMovesNothing()
+    public void OneButtonOnTheCwTabMovingNothing()
     {
         var (window, _) = TheTopRowTuned.Open(1400, 900, LicenseClass.General, "CW");
 
         try
         {
-            var row = Named(window, "W1awRow");
+            var button = Named(window, "W1awButton");
             var workspace = Named(window, "CwWorkspace");
             var send = Named(window, "SendPanel");
             var receive = Named(window, "ReceivePanel");
+            var w1awButtons = window.GetVisualDescendants().OfType<Button>()
+                .Count(b => b.Content is string s && s.StartsWith("W1AW", StringComparison.Ordinal));
 
-            Assert.True(row.IsEffectivelyVisible, "the W1AW row is not showing on the CW tab");
-            Assert.Contains(workspace, row.GetVisualAncestors());
-            Assert.Equal(7, row.GetVisualDescendants().OfType<Button>().Count());
+            _output.WriteLine($"W1AW buttons in the window: {w1awButtons}, this one reads `{((Button)button).Content}`");
 
-            var withRow = (send.Bounds, receive.Bounds, workspace.Bounds);
+            Assert.True(button.IsEffectivelyVisible, "the W1AW button is not showing on the CW tab");
+            Assert.Contains(workspace, button.GetVisualAncestors());
+            Assert.Equal(1, w1awButtons);
 
-            row.IsVisible = false;
+            var with = (send.Bounds, receive.Bounds, workspace.Bounds);
+
+            button.IsVisible = false;
             TheTopRowTuned.Settle(window);
 
-            var withoutRow = (send.Bounds, receive.Bounds, workspace.Bounds);
+            var without = (send.Bounds, receive.Bounds, workspace.Bounds);
 
-            _output.WriteLine($"with the row: send {withRow.Item1}, receive {withRow.Item2}, workspace {withRow.Item3}");
-            _output.WriteLine($"without it:   send {withoutRow.Item1}, receive {withoutRow.Item2}, workspace {withoutRow.Item3}");
+            _output.WriteLine($"with it:    send {with.Item1}, receive {with.Item2}, workspace {with.Item3}");
+            _output.WriteLine($"without it: send {without.Item1}, receive {without.Item2}, workspace {without.Item3}");
 
-            Assert.Equal(withoutRow.Item1.Position, withRow.Item1.Position);
-            Assert.Equal(withoutRow.Item1.Width, withRow.Item1.Width);
-            Assert.Equal(withoutRow.Item2, withRow.Item2);
-            Assert.Equal(withoutRow.Item3, withRow.Item3);
+            Assert.Equal(without.Item1.Position, with.Item1.Position);
+            Assert.Equal(without.Item1.Width, with.Item1.Width);
+            Assert.Equal(without.Item2, with.Item2);
+            Assert.Equal(without.Item3, with.Item3);
         }
         finally
         {
@@ -146,7 +165,7 @@ public sealed class W1awButtonsTests
 
         try
         {
-            Assert.False(Named(digital, "W1awRow").IsEffectivelyVisible, "the W1AW row shows off the CW tab");
+            Assert.False(Named(digital, "W1awButton").IsEffectivelyVisible, "the W1AW button shows off the CW tab");
         }
         finally
         {

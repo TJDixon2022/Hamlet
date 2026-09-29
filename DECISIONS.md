@@ -32,6 +32,16 @@ be: listening is never restricted (HM-DEC-029) and grey is kept for what cannot 
 **Whose words are whose.** The request is the owner's; the wording and the two departures from the
 instruction are work instruction 494's, and are overrulable.
 
+**Note, 2026-09-29, work instruction 495.** The owner ruled one button, not seven: *"Ugly. We only
+need one button - it turns to the current band."* The CW tab now carries one W1AW button whose label
+names the band the radio is on and follows the dial; a press tunes to W1AW's Morse frequency on that
+band and sets CW, by the same path and with the same mode-follow hold. **It cannot be pressed only
+where W1AW does not send Morse on the band**, which is a fact about W1AW; the license never disables
+it (HM-DEC-029), and the hover says when sending Morse there is not covered. Off the spectrum Hamlet
+knows, as on 6 m, it says Hamlet does not know the band rather than that W1AW is not there. The table,
+its loader and the command are kept; the seven buttons and their heading are gone. This note adds to
+the record above and edits none of it.
+
 ---
 id: HM-DEC-198
 date: 2026-09-29

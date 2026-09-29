@@ -10165,35 +10165,48 @@ public partial class MainWindowViewModel : ObservableObject
         UpdateFavoriteState();
     }
 
-    /// <summary>W1AW's Morse frequencies, one button per band, for the CW tab (work instruction 494).</summary>
+    /// <summary>
+    /// The one W1AW button, for the band the dial is on (work instructions 494 and 495).
+    /// </summary>
     /// <remarks>
-    /// Built from <c>data/bands/w1aw-morse.json</c> and rebuilt only when the license class changes,
-    /// never per frequency: buttons rebuilt under the pointer are dead buttons (HM-DEC-078).
+    /// Recomputed from the dial and the license class; raised only when what it says changes, so
+    /// one button's words change and no button is rebuilt under the pointer (HM-DEC-078).
     /// </remarks>
-    public IReadOnlyList<W1awButton> W1awButtons
+    public W1awButton W1awHere
     {
         get
         {
-            var cls = _settings.Operator.LicenseClass;
+            _w1awHere ??= W1awButton.ForDial(
+                W1awMorseFrequencies.Default, _privileges, _settings.Operator.LicenseClass, FrequencyHz);
 
-            if (_w1awButtons is null || _w1awClass != cls)
-            {
-                _w1awButtons = W1awButton.For(W1awMorseFrequencies.Default, _privileges, cls);
-                _w1awClass = cls;
-            }
-
-            return _w1awButtons;
+            return _w1awHere;
         }
     }
 
-    private IReadOnlyList<W1awButton>? _w1awButtons;
+    private W1awButton? _w1awHere;
 
-    private LicenseClass _w1awClass;
+    /// <summary>Recompute the W1AW button for where the dial is now, raising it only if it changed.</summary>
+    private void UpdateW1aw()
+    {
+        var now = W1awButton.ForDial(
+            W1awMorseFrequencies.Default, _privileges, _settings.Operator.LicenseClass, FrequencyHz);
+
+        if (now == _w1awHere)
+        {
+            return;
+        }
+
+        _w1awHere = now;
+        OnPropertyChanged(nameof(W1awHere));
+        TuneToW1awCommand.NotifyCanExecuteChanged();
+    }
+
+    private static bool CanTuneToW1aw(W1awButton? button) => button is { CanTune: true };
 
     /// <summary>
-    /// Tune to W1AW on one band and set the radio to CW (work instruction 494, HM-DEC-199).
+    /// Tune to W1AW on the band the dial is on and set the radio to CW (work instructions 494 and 495, HM-DEC-199).
     /// </summary>
-    /// <param name="button">The band's button.</param>
+    /// <param name="button">The button for the band the dial is on.</param>
     /// <remarks>
     /// <para>**THE DIAL GOES BY THE SAME PATH AS EVERY OTHER TUNE BUTTON**, <see cref="TuneTo"/>.
     /// The mode cannot be left to mode-follow: 7.0475 sits in the map's FT4 block and 3.5815 in its
@@ -10204,10 +10217,10 @@ public partial class MainWindowViewModel : ObservableObject
     /// <para>**NOTHING KEYS.** A frequency and a mode, both writes Hamlet already makes, and
     /// nothing else: no drive, no keyer, no transmit (CLAUDE.md §0.2).</para>
     /// </remarks>
-    [RelayCommand]
+    [RelayCommand(CanExecute = nameof(CanTuneToW1aw))]
     private async Task TuneToW1aw(W1awButton? button)
     {
-        if (button is null)
+        if (button is not { CanTune: true })
         {
             return;
         }
@@ -22378,12 +22391,10 @@ public partial class MainWindowViewModel : ObservableObject
 
         PrivilegeSpans = _privileges.SpansFor(SelectedBand.Band, cls);
 
-        // The W1AW buttons say what the license covers, so a new class rebuilds them (work
-        // instruction 494); a new frequency does not.
-        if (_w1awButtons is not null && _w1awClass != cls)
-        {
-            OnPropertyChanged(nameof(W1awButtons));
-        }
+        // The W1AW button follows the dial and says what the license covers, so both a new frequency
+        // and a new class recompute it; it is raised only when what it says changed (work
+        // instruction 495).
+        UpdateW1aw();
 
         // The card answers two questions at once: what the license allows, and
         // what is actually going on where the dial is pointing (HM-DEC-054).

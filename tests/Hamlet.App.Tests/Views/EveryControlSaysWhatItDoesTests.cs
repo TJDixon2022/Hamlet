@@ -38,14 +38,8 @@ public sealed class EveryControlSaysWhatItDoesTests
         "\"73\"",
         "mark ? \"CQ tells the band you are looking for a …\"",
 
-        // W1AW, one button per band (work instruction 494).
-        "\"W1AW 160 m\"",
-        "\"W1AW 80 m\"",
-        "\"W1AW 40 m\"",
-        "\"W1AW 20 m\"",
-        "\"W1AW 17 m\"",
-        "\"W1AW 15 m\"",
-        "\"W1AW 10 m\"",
+        // W1AW, one button for the band the radio is on (work instructions 494 and 495).
+        "W1awButton",
         "send line",
         "header of CW terminal",
         "\"Clear\" (ClearTerminalCommand)",

@@ -51,6 +51,43 @@ public sealed class W1awMorseFrequencies
     /// <summary>Every row, lowest band first, as the file gives them.</summary>
     public IReadOnlyList<W1awMorseRow> Rows { get; }
 
+    /// <summary>
+    /// The amateur band a frequency is in, named as Hamlet names it, or null where it is in none the
+    /// privileges data carries (work instruction 495).
+    /// </summary>
+    /// <param name="frequencyHz">A frequency.</param>
+    /// <returns>"40 m", or null.</returns>
+    /// <remarks>
+    /// Read from the Extra class's allocations in the privileges data, the widest there are, so every
+    /// amateur band is named whether Hamlet maps it or not. The regulation's 75 m is the top of 80 m,
+    /// joined as <see cref="HfBands"/> joins them.
+    /// </remarks>
+    public static string? AmateurBandFor(long frequencyHz)
+    {
+        if (!Licensing.PrivilegeData.Current.ClassBands.TryGetValue(Licensing.LicenseClass.Extra, out var ranges))
+        {
+            return null;
+        }
+
+        foreach (var range in ranges)
+        {
+            if (frequencyHz >= range.LowHz && frequencyHz <= range.HighHz)
+            {
+                return range.Band == "75 m" ? "80 m" : range.Band;
+            }
+        }
+
+        return null;
+    }
+
+    /// <summary>W1AW's row for the band a frequency is in, or null where it has none there.</summary>
+    /// <param name="frequencyHz">Where the dial is.</param>
+    /// <returns>The row, or null.</returns>
+    public W1awMorseRow? RowForBandOf(long frequencyHz)
+        => AmateurBandFor(frequencyHz) is { } band
+            ? Rows.FirstOrDefault(r => string.Equals(r.Band, band, StringComparison.Ordinal))
+            : null;
+
     /// <summary>Parse the table from the file's text.</summary>
     /// <param name="json">The file's contents.</param>
     /// <returns>The table.</returns>
