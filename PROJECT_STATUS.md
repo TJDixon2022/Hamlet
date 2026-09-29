@@ -2,12 +2,12 @@ PROTOCOL: 2
 PROJECT: Hamlet
 STATE: COMPLETED
 TASK: TASK 4 of 4
-WORK_INSTRUCTION: 491 - the bars survive the noise beside them (run by hand)
+WORK_INSTRUCTION: 492 - a mark is a mark the moment it ends (run by hand)
 BALL: tim
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-28T22:06:38-04:00
-NOTE: Unit 491 done: bars pair across a bar at another level; wander check kept (noise pairs without it); reds remain - late marks split letters in the reader
+UPDATED: 2026-09-28T23:37:16-04:00
+NOTE: Unit 492 done: marks handed out at their end (worst 15 ms); the call reads whole through bursts and beside a second station; noise alone prints nothing
 
 ---
 
