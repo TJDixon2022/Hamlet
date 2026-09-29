@@ -2,12 +2,12 @@ PROTOCOL: 2
 PROJECT: Hamlet
 STATE: COMPLETED
 TASK: TASK 4 of 4
-WORK_INSTRUCTION: 492 - a mark is a mark the moment it ends (run by hand)
+WORK_INSTRUCTION: 493 - one decoder, one truth (run by hand)
 BALL: tim
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-28T23:37:16-04:00
-NOTE: Unit 492 done: marks handed out at their end (worst 15 ms); the call reads whole through bursts and beside a second station; noise alone prints nothing
+UPDATED: 2026-09-29T10:57:38-04:00
+NOTE: Unit 493 done: terminal letters equal the scroll's in all five cases; noise prints nothing; panel shows the printed station or no station
 
 ---
 

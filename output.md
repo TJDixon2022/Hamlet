@@ -11,125 +11,113 @@ confirmed. Nothing in this report is evidence about the radio.
 - No recording, fixture, floor or telemetry was read.
 - Nothing under `.run-unit\` was committed.
 
-**The changes, file by file** (all in `f73dce1b`):
+**What the tree showed, before anything changed: the terminal already read the run reader.**
+- Since unit 490 the tab has given the decoder the detector's marks. With `ReadsRuns` on, the only
+  letters that reach `Transcript.Settle`, or the scroll through the same event, are
+  `CwRunReader`'s. The timing-only path's settles and leading edge return early.
+- **So the `E`s in the owner's terminal were the run reader's.**
+- Measured on three minutes of loud noise:
+  - The run reader printed 53 to 81 letters, nearly all `E`. The timing-only path printed none;
+    its emission gate refuses noise.
+  - The mechanism: a noise "sender" made its two qualifying runs by chance and was printed. Noise
+    keeps arriving at its pitch, so it was never silent for a second and was never released. It
+    printed every noise mark there, mostly as `E`.
+  - The scroll draws a letter only over its blocks, so it showed none of them. That is why the two
+    surfaces disagreed.
+- If the owner's build predates unit 490, his `E`s came from the old path instead. The fix below
+  covers both.
 
-- **`src/Hamlet.RadioEngine/Cw/CwEnvelopeDetector.cs` - a mark is handed out when it ends.**
-  - Every completed bar in every bin, paired or not, is a mark one envelope window (10 ms) after
-    it ends. It used to wait to be paired, and pairing waited on a second of gap history.
-  - Pairing, the wander check and unit 491's nearest-bar-at-its-own-level change are untouched.
-    They still drive the keying verdict, the light and the scope, whose test counts did not move.
-  - Handing out bars unpaired exposed three things the pairing had been hiding. Each is now a rule,
-    stated in the code:
-    - **A mark ends where its tone ends.** One window after the bar, the peak of its lobe must have
-      dropped below it by more than the flatness floor (1.5 dB). Without this, a shoulder bin's
-      piece of a dah that stops while the tone goes on was handed out first, and the whole dah was
-      refused as already called. The clean call's first dah came out as two 20 ms marks.
-    - **A mark begins where its tone rose.** The key-down edge can join the front of a dah's top
-      as a run of its own and split it, so the bar that ends with the tone may be only its back
-      half. The mark reaches back over the peak's hops at its level, within the flatness floor.
-      Traced on Q's first dah: its rising-edge hop at −11.0 dB split the top at hop 750.
-    - **A mark already called stands in for a new one only at the same level**, within twice the
-      flatness floor. An edge fragment 20 dB under a dah is not the dah.
-  - **A bar is handed out no later than three windows after it ends.** A bar found later, when a
-    bin's history is re-read at a newly measured contrast, was not a bar when it ended. Without
-    this bound, marks arrived up to 4.9 s late.
-  - **Not touched:** the flatness tolerance, the shortest bar, the pitch-peak walk and the pairing
-    agreement. The flatness floor is used as a threshold; its value is unchanged.
-- **`src/Hamlet.RadioEngine/Cw/CwRunReader.cs` - the noise guard moves to where letters are made.**
-  - A sender is printed only after two runs of **two marks or more**, with dits and dahs among
-    them (at least 2 to 1).
-  - A run of one mark never counts toward a sender.
-  - A sender that never gets there is forgotten after a second of silence. Before that, loud noise
-    alone would pile up senders forever.
-  - **Once a sender is printed, its one-mark letters print with it.** I read "a run of one mark
-    makes no letter" that way because the literal reading would print every `DE` as `D`, and case
-    1 requires the call to read whole.
-- **`tests/Hamlet.RadioEngine.Tests/Cw/ACharacterIsARunOfMarksThatAgreeTests.cs`:**
-  - `ALoneDitOrDahPrintsNothing`, new.
-  - `HowLateAMarkIsHandedOut`, new; a printer that asserts nothing.
-  - The call's reference marks are now picked out of all the marks, within a bin of 625 Hz and
-    6 dB of the loudest. The noise now hands out marks too, and the old reference, the median of
-    all marks, landed at the noise level. That is a test-reference fix, not a tolerance change.
-- **`PARKED.md`:** the owner's answer to unit 491's ask - **keep the pairing change** - is one
-  `RESOLVED` line.
-  - The file's header says sessions never write to it. The order asked for it, so I followed the
-    order.
-  - Only that line was staged. The loop's own uncommitted line (11.6) was left as it was.
+**The changes, file by file** (all in `d4fbcdf7`):
+- **`src/Hamlet.RadioEngine/Cw/CwMark.cs`:** a mark carries `Keyed` - whether the detector was
+  keying at its peak, or within two bins of it, when the mark was called. Keying means bars paired
+  and clear of their gaps' wander in the last second: the same test that decides the blocks the
+  scroll draws. A station's second mark on is keyed; noise never is.
+- **`src/Hamlet.RadioEngine/Cw/CwEnvelopeDetector.cs`:** sets `Keyed` when it calls a mark. Nothing
+  else changed: the marks, the tolerances, the flatness rules, the pairing, and unit 492's three
+  rules and three-window bound are all as they were.
+- **`src/Hamlet.RadioEngine/Cw/CwRunReader.cs`:**
+  - **A sender's two qualifying runs must each hold a keyed mark.** So a letter in the terminal is
+    a letter over the blocks.
+  - `StationPitchHz`: the printed sender's pitch, NaN when none.
+- **`src/Hamlet.RadioEngine/Cw/CwDecoder.cs`:**
+  - `PrintingHz`: the printed sender's pitch while runs are read.
+  - The run reader's letters also raise `CharacterDecoded`. The app times its quiet offer and its
+    evidence that the operator is working Morse (HM-DEC-149) from that event, and it had not fired
+    since unit 490.
+- **`src/Hamlet.App/ViewModels/MainWindowViewModel.cs`:** the scope tick passes `PrintingHz`, not
+  the retired path's mixing pitch.
+- **`src/Hamlet.App/ViewModels/CwHearingViewModel.cs`:** the empty case reads **"no station"**, and
+  the hover says the number is the pitch of the station whose letters are shown.
+- **Tests.**
+  - New in the engine: `ThreeMinutesOfNoiseReadNothing`.
+  - New in the app: `OneDecoderOneTruthTests`, the five cases.
+  - Two tests had their pinned "not mixing" changed to "no station".
 - **Records.**
-  - R105 is in both `PHASE_PLAN.md` copies, and `DECISIONS.md` has HM-DEC-197.
-  - Both outcome and status copies name 492.
-  - Version 1.13.178 → 1.13.179.
+  - R106 is in both `PHASE_PLAN.md` copies, and `DECISIONS.md` has HM-DEC-198. It records what the
+    instruction named and what the tree showed.
+  - Both outcome and status copies name 493.
+  - Version 1.13.179 → 1.13.180.
 
-**Watched failing first.** On the detector as unit 491 left it:
-- `TheCallReadsWholeThroughTheBlips` and `TheStationPrintedReadsWhole` were red.
-- Noise alone and the lone dit and dah were green.
-- Worst delays: 85, 445 and 710 ms.
+**How the pitch crosses threads.** The reader writes the printed sender's pitch into one `double`
+with `Volatile.Write` on the audio thread, once per batch of marks. The panel's scope tick reads it
+with `Volatile.Read` through `CwDecoder.PrintingHz`. That is the pattern the decoder already uses
+for `Heard`, which is read with `Interlocked.Read`. The scope's blocks cross differently, as a copy
+taken under the detector's lock, but one number needs no lock.
 
-The intermediate versions and what each did are in section 3.
+**The old path and unit 489's switches.**
+- The timing-only path reaches no surface: not the terminal, the leading edge, the scope, or the
+  capture sheet's transcript, which is the terminal's.
+- It stays in the tree behind `ReadsRuns`, and nothing was deleted.
+- Unit 489's three switches gate nothing on the screen's path now. They were left as they are.
+
+**Watched failing first:** three minutes of loud noise, in the radio's 500 Hz CW passband and
+across the whole band.
+- **Before:** the run reader printed 53 and 81 letters, all but a handful `E`.
+- **After:** it prints none.
 
 **Verification.**
 - The build: 0 warnings, 0 errors.
-- **The app carry-forward line: 276 of 278.** The two failures ran in 1 ms each, both in
-  `ThePowerIsOfferedTests`, and pass alone (3 of 3).
-- **The app scope, layout and voice types: 86 of 87.** The red is the British spelling from
-  2026-09-26, not this unit.
-- **The engine run, gate and detector types: 30 of 33.** The reds are unchanged:
-  - `ThatPitchIsTheStationsOwn` at 1024.
-  - `AMarkIsTheEnvelopeOverAThresholdTests` at 70 and 208.
+- **The app carry-forward line: 278 of 278.**
+- **The app scope, layout, voice and one-truth types: 91 of 93.**
+  - A `TheTopRowTests` name failed in the long run and passes alone, 15 of 15.
+  - The British spelling red is from 2026-09-26, not this unit.
+- **The engine run, gate and detector types: 31 of 34.** The reds are unchanged:
+  `ThatPitchIsTheStationsOwn` at 1024, and `AMarkIsTheEnvelopeOverAThresholdTests` at 70 and 208.
 
 ## 2. What the owner should expect
 
 1. Rebuild.
-2. Letters no longer split because a dot arrived late. The blocks and the letters should appear
-   within a fraction of a second of the sending, and a letter prints once the gap after it has
-   passed.
-3. Noise with no station still prints nothing.
-4. A single lone dit or dah prints nothing, on purpose. A station has to send at least two
-   letters of two or more elements, dits and dahs both, before anything prints. Its first letters
-   then appear together.
-5. Two stations at once still read as one.
-6. **Unchanged:** the light, the scope, the layout, the preamp, and text that stays printed.
+2. On noise, the scroll is empty and **so is the terminal**.
+3. On a station, the letters in the terminal are the same letters that sit over the blocks, at the
+   same moment. Both come from one decoder, and a station has to be keying, bars paired where the
+   blocks are drawn, before anything prints.
+4. The panel shows the pitch of the station it is printing, or **no station**.
+5. **If a real station reads nothing, the scroll will be empty too.** That is the diagnosis, and it
+   is the one thing to report back.
 
 ## 3. What you should see
 
-| case | sent | unit 491 | now |
-|---|---|---|---|
-| 1. the call with bursts in every gap | `CQ CQ DE N0CALL N0CALL K` | `CQ CQ DE N0CAAEI D N0CALAI K` | `CQ CQ DE N0CALL N0CALL K` |
-| 2. loud noise, no station | nothing | nothing | nothing (1,457 marks handed out, none printed) |
-| 3. the call plus `TEST DE W1AW K` 200 Hz away | the call | `C RE CENT DE N0 FALL N0CALL K` | `CQ CQ DE N0CALL N0CALL K` |
-| 4. a lone dit; a lone dah | nothing | nothing | nothing |
-| clean call | `CQ CQ DE N0CALL N0CALL K` | the same | the same |
+The terminal's letters beside the scroll's, on the five cases. **They are equal in each.**
 
-**Worst delivery delay, from a mark's end to when it is handed out:**
+| case | terminal | terminal letters | scroll letters | equal |
+|---|---|---|---|---|
+| 1. the clean call | `CQ CQ DE N0CALL N0CALL K` | `CQCQDEN0CALLN0CALLK` | `CQCQDEN0CALLN0CALLK` | yes |
+| 2. the call with bursts in every gap | `CQ CQ DE N0CALL N0CALL K` | `CQCQDEN0CALLN0CALLK` | `CQCQDEN0CALLN0CALLK` | yes |
+| 3. loud noise, no station | empty | empty | empty | yes |
+| 4. a lone dit; a lone dah | empty; empty | empty; empty | empty; empty | yes |
+| 5. the call plus `TEST DE W1AW K` 200 Hz away | `CQ CQ DE N0CALL N0CALL K` | `CQCQDEN0CALLN0CALLK` | `CQCQDEN0CALLN0CALLK` | yes |
 
-| case | unit 491 | now |
-|---|---|---|
-| clean call | 85 ms | 15 ms |
-| the call with bursts | 445 ms | 15 ms |
-| two stations | 710 ms | 15 ms |
-| noise alone | none handed out | 15 ms |
-
-**The call's own marks called, of 65:** 65, 65 and 65 on the three call cases (unit 491: 65, 65
-and 61). Every mark the printed letters were read from is the call's.
-
-**The intermediate versions, in order:**
-1. **Every bar handed out, nothing else changed:** noise alone printed 52 letters, and marks
-   arrived up to 4.9 s late.
-2. **Plus the reader's guard and the three-window bound:** noise printed nothing, but the clean
-   call read `EEETE THE TETE…` because shoulder pieces stood in for dahs.
-3. **Peak bars only:** the whole dahs from the shoulder bins were lost.
-4. **The key-up check instead:** `…N0CALL NE`, the last K split at a dah's rising edge.
-5. **Plus the reach-back start:** the version committed.
+- The scroll has no word gaps, so the comparison is letter for letter.
+- **Three minutes of noise:** 53 to 81 letters before, none after (engine test).
 
 ## 4. What's blocking us
 
 Nothing blocks. What is left, a line each:
-- **A station now needs two multi-element letters with dits and dahs both before anything
-  prints.** A call like `EEEE`, or one letter alone, will not print.
-- **The detector now hands out many noise marks:** about 50 a second on loud noise across the
-  whole band. The reader forgets them after a second, but on a slow machine the cost is worth
-  watching.
-- **The panel's "decoding at N Hz"** is still the old path's mixing pitch.
+- **A station must be keying to print.** Its bars must pair and clear their gaps' wander within
+  two bins of its peak, and its first two multi-element letters must each hold such a mark. A very
+  weak station the detector never pairs will print nothing, and the scroll will show why.
+- **Whether the owner's screenshot came from a build before unit 490** isn't known here. Either
+  way, the terminal now prints only what the scroll draws.
 - **Pre-existing reds, not this unit's:**
   - `VoiceTests`' British spelling.
   - `HowMuchTheApplicationSaysTests`.
@@ -144,8 +132,6 @@ Nothing blocks. What is left, a line each:
 - **Unit 440's item 2:** R72 is cited as HM-DEC-175. Raised 2026-09-25 and scheduled as step 8
   record work under R80.
 - **Unit 487, 2026-09-28:** whether the terminal shows only settled text, so nothing on it is ever
-  revised, at the cost of seconds of lag. On the run path the terminal already shows only settled
-  text. The ask is still the owner's for the timing-only path, and no change for it sits in the
-  tree.
-
-Unit 491's ask - keep the pairing change - is answered: keep it (`PARKED.md`).
+  revised, at the cost of seconds of lag. On the run path, which is now the only path to the
+  screen, the terminal shows only settled text. The ask stands only for the timing-only path,
+  which no longer reaches the screen; no change for it sits in the tree.
