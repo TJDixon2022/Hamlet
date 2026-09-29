@@ -1,123 +1,97 @@
 ## 1. What Claude did
 
 **Surface and gate.** Claude Code on the development computer at `C:\Source\HamLet`, branch
-`main`. The prompt and `WORK_INSTRUCTIONS.md` both carry `PROJECT: Hamlet`, and the tree agrees.
-Hamlet confirmed. Nothing in this report is evidence about the radio.
+`main`. The prompt carries `PROJECT: Hamlet`, and all five of section 0's checks hold. Hamlet
+confirmed. Nothing in this report is evidence about the radio.
 
 **Run by hand, outside the loop.**
 - `SESSION.lock` was taken through `tools\arbiter\lock.bat take` and released the same way.
 - Nothing was written to `RUN_LEDGER.md`, and nothing under `tools\arbiter\` was touched.
-- No box was ticked in `PHASE_PLAN.md`.
-- No recording, fixture, floor or telemetry file was read. The rows are the instruction's table.
+- No box was ticked; `PHASE_PLAN.md` has 69 before and after.
+- No recording, fixture, floor or telemetry was read.
 - Nothing under `.run-unit\` was committed.
 
-**The cause of the null, named.** `CwEnvelopeDetector` set the reading's pitch only on the hop a
-mark was up (`up ? watched.Hz : NaN`). Unit 485's hold keeps keying true through the gaps between
-marks, so most keying readings had no pitch. On a synthetic 625 Hz station at 23 WPM, 1118 of 1408
-keying readings carried none. That is the `scopePitchHz: null` on the owner's rows.
+**Section 3, the rollback, is done, and section 4 is done too** (all in `f270dfda`).
 
-**Two more things the tree showed.** The rows don't show what they seemed to:
-- **The tab's rung was never fed null.** Since unit 486 it was fed the detector's watched bin
-  (`WatchedHz`) while keying, which is always a number.
-- **The rows' "mixing" was not where the decoder mixed.** The panel and the verdict row showed
-  the tracker's own pitch (`Report.ToneHz` / `trackerHz`). The 584 was the tracker, not the
-  decoder.
+**The three switches**, in `src/Hamlet.RadioEngine/Cw/CwDecoder.cs`. Each defaults off and carries
+a remark naming R102, unit 488's measurement, and that it exists to turn the gate back on:
+- **`DetectorSteersPitch`.** Off, the mixing rung is the operator's lock and then the tracker, as
+  before unit 486. `MixingHz` stays and still reports where the decoder really mixes.
+- **`DetectorGatesKeying`.** Off, unit 486's keying gate and unit 487's promotion on its falling
+  edge decide nothing.
+- **`DetectorGatesBlocks`.** Off, unit 487's block rule decides nothing.
 
-**The changes, file by file** (all in `ec9ef6d2`):
-- **`src/Hamlet.RadioEngine/Cw/CwEnvelopeDetector.cs`.** The reading's pitch is the watched bin
-  whenever keying is true, and NaN otherwise. Pitch and keying now go together.
-- **`src/Hamlet.RadioEngine/Cw/CwDecoder.cs`.** A new `MixingHz` says where the decoder is
-  actually mixing. The rung order is unchanged: lock, then detector, then tracker.
-- **`src/Hamlet.App/ViewModels/MainWindowViewModel.cs`.**
-  - A new `PitchForTheDecoder(reading)` feeds the rung the reading's pitch while keying and NaN
-    otherwise.
-  - The scope's "mixing" number now reads `MixingHz`.
-- **`src/Hamlet.App/ViewModels/CwHearingViewModel.cs`.** The verdict row gains `mixingHz`, the
-  real mixing pitch. The `trackerHz` doc no longer claims it is where the decoder mixes.
+**The other files:**
+- **`src/Hamlet.App/ViewModels/MainWindowViewModel.cs`.** The tab still wires the detector's
+  pitch, keying and blocks to the decoder, and leaves the switches off, with a remark saying so.
+- **`src/Hamlet.App/ViewModels/CwHearingViewModel.cs`**, section 4:
+  - The scope's lines read *tone N Hz heard* and *decoding at N Hz*.
+  - The hover no longer says the terminal waits on the detector. It says the two can disagree, and
+    that the decoder finds its pitch for itself.
+  - "not mixing" is unchanged.
 - **Tests.**
-  - `ThePitchTheDetectorFoundReachesTheDecoderTests` (engine), four tests.
-  - `TheDecoderIsFedTheDetectorsPitchTests` (app), three tests. One asserts that a reading
-    keying at 625 feeds 625.
+  - New: `TheDecoderGetsItsEarsBackTests`.
+  - The gate tests now drive their switches on, and nothing else in them changed:
+    `NoDetectionNoLettersTests`, `ThePitchTheDetectorFoundReachesTheDecoderTests`,
+    `PrintedStaysPrintedTests` and `TheScopeDrawsLiveTests`.
+  - Three test lines pin the new panel words: two in `TheScopeIsTheMiddlePictureTests`, one in
+    `TheScopeShowsTheMarksTests`.
 - **Records.**
-  - `DECISIONS.md` has HM-DEC-193, "The detector's pitch is what the decoder mixes at".
-  - Both `PHASE_OUTCOME.md` copies have `## UNIT 488 - STEP 12`.
-  - Both `PHASE_STATUS.md` copies name 488.
-  - Version 1.13.174 → 1.13.175.
+  - R102 is in both `PHASE_PLAN.md` copies, and `DECISIONS.md` has HM-DEC-194.
+  - Both outcome and status copies name 489.
+  - Version 1.13.175 → 1.13.176.
+- **Nothing was deleted.** Every constant, remark and test is still there.
 
-**Watched failing first.** Before change one, on the same synthetic station:
-- 1118 of 1408 keying readings had no pitch.
-- The decoder fell back to the tracker in the gaps: 305 keyed chunks were not at 625.
-
-**Section 3's green is not met, and nothing was tuned.** Every keying reading now carries a pitch,
-but 1021 of 1408 carry 575 or 675 Hz, not 625:
-
-| pitch carried | readings |
-|---|---|
-| 575 Hz | 536 |
-| 600 Hz | 81 |
-| 625 Hz | 387 |
-| 650 Hz | 2 |
-| 675 Hz | 400 |
-| other | 2 |
-
-- **Why:** on those hops the 625 Hz bin calls no bars of its own. Its gaps measure about −20 dB,
-  where the bins 50 Hz either side measure −42. So the bars are called in the shoulders of the
-  tone's lobe, and the watched bin is a shoulder.
-- **An attempt, reverted.** Choosing the loudest keying bin in the lobe was tried and moved almost
-  nothing (1021 → 1001), because 625 is not keying on those hops. Making it key is a detector
-  decision.
-- `ThatPitchIsTheStationsOwn` is committed red on purpose, to state the defect.
+**Watched failing first.** Before the switches, the wired decoder read 5 characters where the
+unbound one read 19 (section 3 below). After, both read 19.
 
 **Verification.**
 - The build: 0 warnings, 0 errors.
-- The app carry-forward line: 278 of 278.
-- The app scope, transcript and layout types: 81 of 82. `TheTopRowTests` failed once in the long
-  run and passed alone, 15 of 15.
-- The engine detector and gate types: 19 of 22. The three reds:
-  - `ThatPitchIsTheStationsOwn`, the named red above.
-  - `AMarkIsTheEnvelopeOverAThresholdTests`' 10 and 15 dB cases, at the same counts as before (40
-    and 208).
+- **The app carry-forward line: 276 of 278.** The two failures are dispatcher-loop losses at 1 ms
+  each, `ThePsk31OfferTests` and `TheChipSaysTheChosenModeTests`, and both pass alone (2 of 2 and
+  6 of 6).
+- **The engine gate and detector types: 20 of 23.** The reds are unit 488's named
+  `ThatPitchIsTheStationsOwn` and `AMarkIsTheEnvelopeOverAThresholdTests`' two cases, at the same
+  counts as before (40 and 208).
+- **The app scope, transcript, layout and voice types: 86 of 87.** The red is
+  `VoiceTests.NoOperatorFacingStringUsesABritishSpelling`: "centre" at two lines of
+  `MainWindowViewModel.cs`, from `734f72fd2` on 2026-09-26. It is not from this unit and was left
+  alone.
 
 ## 2. What the owner should expect
 
 1. Rebuild.
-2. On a station, the panel's *mixing* number is now where the decoder really mixes, and it stays
-   put through the gaps between letters.
-3. **The *tone* and *mixing* numbers will often not be the same number, and will sit 50 Hz off
-   the station.** That is the problem this unit found, now visible instead of hidden behind the
-   tracker's pitch.
-4. **Expect the same near-silence as last night** on a strong, clean station. The decoder has
-   been pointed at the detector's bin since unit 486, and that bin is usually beside the station,
-   not on it.
-5. The next verdict row carries `mixingHz` and a `scopePitchHz` that is never null while the bars
-   say keying.
+2. W1AW and other strong stations should read about as they did a week ago, junk between the words
+   included.
+3. The scope still shows blocks, letters only over blocks, and nothing when the detector hears
+   nothing.
+   - **The scope and the terminal will now disagree, and that is the point.** The terminal is free
+     again; the scope shows what the detector can still only partly do.
+4. The panel reads *tone N Hz heard · decoding at N Hz*. These are two different numbers on
+   purpose: the detector's pitch and the decoder's own.
+5. Nothing printed vanishes, and the layout and the preamp are unchanged.
 
 ## 3. What you should see
 
-**Would the station of 23:38:34 have been decoded with the pitch carried? No.** A synthetic 625 Hz,
-23 WPM station, driven through the detector, the gate and the block rule, with nothing tuned:
+The test's call, unit 488's synthetic station at 625 Hz and 23 WPM, sending
+`CQ CQ DE N0CALL N0CALL K`:
 
-| the rung fed | settled text | characters |
+| decoder | settled text | characters |
 |---|---|---|
-| sent | `CQ CQ DE N0CALL N0CALL K` | 20 |
-| nothing (what the rows seemed to say) | `CQQ   DEN0CAL 0L K` | 13 |
-| the carried pitch (this unit; what the tab has fed since unit 486) | `RE    N  D   K` | 5 |
-| 625 Hz while keying (the station's own bin) | `RQ DEN0CAL 0L K` | 12 |
-
-- **Before and after this unit, the tab reads the same 5 characters**, because the tab already fed
-  the watched bin, which now equals the carried pitch.
-- **The next thing in the way:** the detector calls the station's bars 50 Hz to one side.
-- Fed the station's own pitch, the same decoder reads 12 characters.
+| wired as the tab wired it, before this unit | `RE    N  D   K` | 5 |
+| the same decoder, unbound | `CQQ   QDEN0CALL N0CALL K` | 19 |
+| wired as the tab wires it now | `CQQ   QDEN0CALL N0CALL K` | 19 |
 
 ## 4. What's blocking us
 
 Nothing blocks. What is left, a line each:
-- **The station's own bin does not call bars on two hops in three.** 625 Hz reads gaps of about
-  −20 dB while the shoulders read −42, so the watched pitch is 575 or 675. That is the next unit's
-  cause to find, in the detector; `ThatPitchIsTheStationsOwn` is the red test waiting for it.
-- **Fed the station's own pitch, the decoder still misses letters** (`RQ DEN0CAL 0L K` against
-  the sent call). That is the decoder's own reading, untouched here as the instruction required.
+- **The detector's pitch is still a shoulder two hops in three.** The 625 Hz bin calls no bars of
+  its own on those hops. Fixing that is what turns the switches back on;
+  `ThatPitchIsTheStationsOwn` is the red test waiting for it.
+- **The terminal's text is the decoder's own again, junk included.** That is last week's
+  behavior, by R102.
 - **Pre-existing reds, not this unit's:**
+  - `VoiceTests`' British spelling ("centre", two lines, since 2026-09-26).
   - `HowMuchTheApplicationSaysTests` (the CW tab at 585 against 550).
   - `ModeFollowsTheMapAgainTests.NothingButTheModeIsEverWritten`.
   - `AMarkIsTheEnvelopeOverAThresholdTests`' two cases.
