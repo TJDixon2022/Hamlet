@@ -4281,6 +4281,32 @@
                                            Foreground="{StaticResource HmTextMutedBrush}"
                                            Background="Transparent"
                                            ToolTip.Tip="{x:Static vm:MainWindowViewModel.W1awScheduleTip}" />
+
+                                <!-- **HAMLET SCORES ITSELF AGAINST W1AW** (work instruction numbered
+                                     509, run as unit 510, task 3, HM-DEC-214). He pastes the ARRL's
+                                     published text and presses Score; the line says how much of it
+                                     the terminal read. Nothing is fetched. Still the last thing in
+                                     the column, so nothing above it moves (R101), and the line has
+                                     its own reserved height (HM-DEC-080). -->
+                                <TextBox x:Name="W1awPasteBox"
+                                         Text="{Binding W1awPasted}"
+                                         AcceptsReturn="True" TextWrapping="Wrap"
+                                         Height="56" FontSize="11" Margin="0,4,0,0"
+                                         Watermark="paste the ARRL's text for the run here"
+                                         ToolTip.Tip="{x:Static vm:MainWindowViewModel.W1awPasteTip}"
+                                         ToolTip.ShowDelay="300" />
+                                <Grid ColumnDefinitions="Auto,*" Margin="0,2,0,0">
+                                    <Button x:Name="W1awScoreButton"
+                                            Content="Score" FontSize="11" Padding="10,2"
+                                            VerticalAlignment="Top"
+                                            Command="{Binding ScoreW1awCommand}"
+                                            ToolTip.Tip="{x:Static vm:MainWindowViewModel.W1awScoreTip}"
+                                            ToolTip.ShowDelay="300" />
+                                    <TextBlock Grid.Column="1" x:Name="W1awScoreLine"
+                                               Text="{Binding W1awScoreLine}" FontSize="11"
+                                               TextWrapping="Wrap" MinHeight="30" Margin="8,0,0,0"
+                                               Foreground="{StaticResource HmTextMutedBrush}" />
+                                </Grid>
                             </StackPanel>
                         </StackPanel>
                     </Border>

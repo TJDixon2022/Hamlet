@@ -1,3 +1,4 @@
+using Hamlet.RadioEngine.Cw;
 using Xunit;
 
 namespace Hamlet.RadioEngine.Tests.Cw;

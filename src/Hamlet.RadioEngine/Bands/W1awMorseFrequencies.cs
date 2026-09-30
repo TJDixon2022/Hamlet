@@ -112,6 +112,37 @@ public sealed class W1awMorseFrequencies
         return next ?? throw new InvalidOperationException("W1AW's schedule has no Morse run in the coming week");
     }
 
+    /// <summary>
+    /// The run scheduled now, or the last one that started before now: what a score taken after a
+    /// bulletin is a score of (work instruction numbered 509, run as unit 510, task 3).
+    /// </summary>
+    /// <param name="utcNow">The moment, in UTC.</param>
+    /// <returns>The run, with its times in UTC, or null where none started in the week before.</returns>
+    public W1awScheduleState? Latest(DateTime utcNow)
+    {
+        var zone = FindZone(TimeZoneId);
+        var here = TimeZoneInfo.ConvertTimeFromUtc(DateTime.SpecifyKind(utcNow, DateTimeKind.Utc), zone);
+        W1awScheduleState? latest = null;
+
+        for (var day = -8; day <= 1; day++)
+        {
+            var date = here.Date.AddDays(day);
+
+            foreach (var run in Schedule.Where(r => r.Day == date.DayOfWeek))
+            {
+                var start = TimeZoneInfo.ConvertTimeToUtc(DateTime.SpecifyKind(date + run.From, DateTimeKind.Unspecified), zone);
+                var end = TimeZoneInfo.ConvertTimeToUtc(DateTime.SpecifyKind(date + run.To, DateTimeKind.Unspecified), zone);
+
+                if (start <= utcNow && (latest is null || start > latest.StartUtc))
+                {
+                    latest = new W1awScheduleState(utcNow < end, run, start, end);
+                }
+            }
+        }
+
+        return latest;
+    }
+
     /// <summary>A time zone by its IANA name, through the Windows name where the system needs it.</summary>
     /// <param name="id">"America/Chicago".</param>
     /// <returns>The zone.</returns>

@@ -10258,6 +10258,89 @@ public partial class MainWindowViewModel : ObservableObject
     /// <summary>What the line under the W1AW button and the dot say on hover.</summary>
     public static string W1awScheduleTip => W1awButton.ScheduleTip;
 
+    /// <summary>The text the owner pasted from the ARRL, to score the terminal against (work instruction numbered 509, run as unit 510, task 3).</summary>
+    [ObservableProperty]
+    private string _w1awPasted = "";
+
+    /// <summary>The score line: empty until a score has been taken.</summary>
+    [ObservableProperty]
+    private string _w1awScoreLine = "";
+
+    /// <summary>The telemetry event a score writes.</summary>
+    public const string W1awScoreEvent = "w1aw_score";
+
+    /// <summary>What the paste box says on hover.</summary>
+    public const string W1awPasteTip =
+        "After a W1AW run, paste the ARRL's published text for it here and press Score. Hamlet lines "
+        + "it up with what the terminal read and counts every character, spaces and punctuation "
+        + "included, while capitals and small letters count the same.";
+
+    /// <summary>What the Score button says on hover.</summary>
+    public const string W1awScoreTip =
+        "Scores what the terminal read against the text in the box and writes the figure to Hamlet's "
+        + "own record, so every bulletin you score is kept. It fetches nothing and sends nothing.";
+
+    /// <summary>
+    /// Score the terminal against the text the owner pasted from the ARRL (work instruction numbered
+    /// 509, run as unit 510, task 3, HM-DEC-214).
+    /// </summary>
+    /// <remarks>
+    /// <para>**THE YARDSTICK THIS PROJECT HAS NEVER HAD: REAL AIR, REAL KEY.** The comparison is
+    /// <see cref="CwTextScore.Of"/>, the scorer's edit distance over the stretch of the terminal the
+    /// pasted text aligns to best.</para>
+    /// <para>**ONE ROW PER SCORE**, `cw` / `w1aw_score`, with the schedule slot, the percentage and
+    /// the three counts, and never the text itself (HM-DEC-018). **Nothing is fetched**: the owner
+    /// pastes.</para>
+    /// </remarks>
+    [RelayCommand]
+    private void ScoreW1aw()
+    {
+        var score = CwTextScore.Of(Transcript.PlainText, W1awPasted);
+
+        if (score is null)
+        {
+            W1awScoreLine = string.IsNullOrWhiteSpace(W1awPasted)
+                ? "Paste the ARRL's text for the run into the box first, and then press Score."
+                : "The terminal is empty, so there is nothing to score yet.";
+            return;
+        }
+
+        var now = DateTime.UtcNow;
+        var run = W1awMorseFrequencies.Default.Latest(now);
+
+        W1awScoreLine = score.Line(W1awSlot(run, TimeZoneInfo.Local));
+
+        _telemetry?.Write(TelemetryCategory.Cw, W1awScoreEvent, new Dictionary<string, object?>
+        {
+            ["slotStartUtc"] = run?.StartUtc.ToString("o", CultureInfo.InvariantCulture),
+            ["slotKind"] = run?.Run.Kind,
+            ["slotSpeed"] = run?.Run.Speed,
+            ["percent"] = score.Percent,
+            ["wrong"] = score.Wrong,
+            ["missing"] = score.Missing,
+            ["extra"] = score.Extra,
+            ["sentLength"] = score.SentLength,
+        });
+    }
+
+    /// <summary>"W1AW 7 PM bulletin": the run, by its start in the operator's clock and its kind.</summary>
+    /// <param name="run">The run scored, or null where the schedule has none behind now.</param>
+    /// <param name="zone">The operator's time zone.</param>
+    /// <returns>The words.</returns>
+    internal static string W1awSlot(W1awScheduleState? run, TimeZoneInfo zone)
+    {
+        if (run is null)
+        {
+            return "W1AW";
+        }
+
+        var start = TimeZoneInfo.ConvertTimeFromUtc(DateTime.SpecifyKind(run.StartUtc, DateTimeKind.Utc), zone);
+        var clock = start.ToString(start.Minute == 0 ? "h tt" : "h:mm tt", CultureInfo.InvariantCulture);
+        var kind = run.Run.Kind.StartsWith("code ", StringComparison.Ordinal) ? run.Run.Kind[5..] : run.Run.Kind;
+
+        return $"W1AW {clock} {kind}";
+    }
+
     /// <summary>Recompute the W1AW line and dot for a moment, in a time zone.</summary>
     /// <param name="utcNow">The moment.</param>
     /// <param name="zone">The operator's own time zone.</param>

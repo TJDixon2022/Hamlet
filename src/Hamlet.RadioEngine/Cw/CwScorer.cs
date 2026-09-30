@@ -1,7 +1,6 @@
 using System.Text;
-using Hamlet.RadioEngine.Cw;
 
-namespace Hamlet.RadioEngine.Tests.Cw;
+namespace Hamlet.RadioEngine.Cw;
 
 /// <summary>
 /// A decode with, for each character of its text, whether the decoder was unsure of
@@ -152,7 +151,7 @@ public readonly record struct CwErrorKinds(
 /// missing or added only where no equally short alignment reads it right. Where
 /// that still ties, it takes a character in place, then a key character missing,
 /// then a decoded character added, reading back from the end. The breakdown into
-/// kinds and the edges of a <see cref="Within"/> region follow this rule, and
+/// kinds and the edges of a <see cref="Within(string, string, CwKeyKind)"/> region follow this rule, and
 /// <see cref="LettersOnly"/> is the view that follows none.</para>
 /// <para>The first rule written took a character in place before anything else
 /// and nothing more; it split `DEW B 6 RE D` against `DE WB6RED` into a letter

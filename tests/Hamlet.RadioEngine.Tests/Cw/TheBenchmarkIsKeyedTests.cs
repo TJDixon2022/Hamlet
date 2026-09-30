@@ -1,4 +1,5 @@
 using System.Text.RegularExpressions;
+using Hamlet.RadioEngine.Cw;
 using Xunit;
 using Xunit.Abstractions;
 

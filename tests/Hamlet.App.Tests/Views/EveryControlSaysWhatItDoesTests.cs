@@ -40,6 +40,10 @@ public sealed class EveryControlSaysWhatItDoesTests
 
         // W1AW, one button for the band the radio is on (work instructions 494 and 495).
         "W1awButton",
+
+        // The W1AW score, under the button (work instruction numbered 509, run as unit 510, task 3).
+        "W1awPasteBox",
+        "W1awScoreButton",
         "send line",
         "header of CW terminal",
 

@@ -249,6 +249,12 @@ internal static class TheControlsTimCanPress
                     "TransmitDrivePercent (the value)", TipOf(c), on);
                 yield break;
 
+            // The W1AW paste box is the one named text box (work instruction numbered 509, run as unit 510).
+            case TextBox { Name: "W1awPasteBox" }:
+                yield return new PressableControl(
+                    region, "W1awPasteBox", "W1awPasted (the text)", TipOf(c), on);
+                yield break;
+
             case TextBox:
                 yield return new PressableControl(
                     region, "send line", "Transmit.OwnWords.Message (the text)", TipOf(c), on);
@@ -408,6 +414,8 @@ public sealed class WhatEveryControlSaysOnHoverTests
         ["Transmit.OwnWords.Message (the text)"] = "the line Send puts on the air; typing changes it and sends nothing",
         ["ClearTerminalCommand"] = "wipes the transcript on screen; the decoder keeps listening with the speed and noise floor it has",
         ["CopyTerminalCommand"] = "puts the transcript's text on the clipboard of the window it is in; sends nothing, changes nothing",
+        ["W1awPasted (the text)"] = "holds the ARRL text he pasted for Score to compare against; sends nothing, fetches nothing",
+        ["ScoreW1awCommand"] = "scores the terminal against the pasted text, shows the line and writes one cw w1aw_score row; sends nothing, fetches nothing",
         ["IsExpanded (folds the panel)"] = "folds the panel away, or opens it again",
         ["CaptureAudioCommand"] = "keeps the last half minute of audio as a file with its sheet and adds a row to tonight's list",
         ["OpenReceiveHelpCommand"] = "cannot run (CanExecute is false): would expand a panel that is on no screen (HM-OPEN-087)",
@@ -445,6 +453,8 @@ public sealed class WhatEveryControlSaysOnHoverTests
     {
         ["\"Clear\" (ClearTerminalCommand)"] = "true, kept",
         ["\"Copy\""] = "true (unit 510)",
+        ["W1awPasteBox"] = "true (unit 510)",
+        ["W1awScoreButton"] = "true (unit 510)",
         ["\"I hear a station\""] = "true, kept",
         ["\"I agree with you\""] = "true (unit 474): writes one owner_verdict row, keeps no audio",
         ["\"You're an idiot\""] = "true (unit 474): writes one owner_verdict row, keeps no audio",
