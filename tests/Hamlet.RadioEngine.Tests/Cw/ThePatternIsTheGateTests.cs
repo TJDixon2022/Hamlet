@@ -131,112 +131,55 @@ public sealed class ThePatternIsTheGateTests
         return r.Text;
     }
 
+    /// <remarks>
+    /// Case 6, the verdict row on a driven station: the detector follows the pitch the reader prints, as
+    /// the application hands it on every scope tick, and while the reader prints and the bars say keying
+    /// the reading's pitch - the row's `scopePitchHz` - is the printed pitch, and its mark count - the row's
+    /// `scopeMarksLast4s` - is the marks that stood there in the last four seconds.
+    /// </remarks>
     [Fact]
-    public void DiagTwoStations()
+    public void TheRowDescribesTheSenderBeingPrinted()
     {
-        var loud = Standard(Call, 20, 24, 5110);
-        var quiet = Standard("TEST DE W1AW K TEST DE W1AW K", 20, 10, 5111, pitch: Pitch + 200, noise: 0);
-        var mixed = new float[Math.Max(loud.Length, quiet.Length)];
-
-        for (var i = 0; i < mixed.Length; i++)
-        {
-            mixed[i] = (i < loud.Length ? loud[i] : 0) + (i < quiet.Length ? quiet[i] : 0);
-        }
-
+        var samples = Standard(Call, 20, 16, 5086);
         var detector = new CwEnvelopeDetector(Rate);
-
-        for (var at = 0; at + Chunk <= mixed.Length; at += Chunk)
-        {
-            detector.Process(mixed.AsSpan(at, Chunk));
-        }
-
-        var stood = detector.MarksSince(0).Marks.Where(m => Math.Abs(m.PitchHz - Pitch) <= 50).OrderBy(m => m.FromSeconds).ToList();
-        var kept = detector.CandidatesKept.Where(m => Math.Abs(m.PitchHz - Pitch) <= 50).OrderBy(m => m.FromSeconds).ToList();
-
-        foreach (var m in kept.Where(m => m.FromSeconds > 14 && m.FromSeconds < 19.5))
-        {
-            _output.WriteLine((stood.Any(s => s.FromSeconds == m.FromSeconds && s.PitchHz == m.PitchHz) ? "STOOD   " : "DROPPED ")
-                + m.FromSeconds.ToString("0.000") + " " + m.LengthMs.ToString("0") + " ms " + m.PitchHz + " Hz level " + m.LevelDb.ToString("0.0") + " own " + m.OwnContrastDb.ToString("0.0") + " " + m.Shape);
-        }
-    }
-
-    [Theory]
-    [InlineData(8.0, true)]
-    [InlineData(8.0, false)]
-    [InlineData(16.0, true)]
-    [InlineData(16.0, false)]
-    public void DiagWhatHappensToEachMark(double db, bool gates)
-    {
-        var samples = Standard(Call, 20, db, 5070 + (int)db);
-        var detector = new CwEnvelopeDetector(Rate) { MarksNeedEdges = gates, MarksNeedNarrowness = gates, MarksNeedShape = false };
+        var reader = new CwRunReader();
+        var sequence = 0L;
+        var checkedHops = 0;
+        var mostMarks = 0;
 
         for (var at = 0; at + Chunk <= samples.Length; at += Chunk)
         {
+            var printing = reader.StationPitchHz;
+
+            detector.Follow(double.IsFinite(printing) ? printing : null);
             detector.Process(samples.AsSpan(at, Chunk));
-        }
 
-        var marks = detector.MarksSince(0).Marks.Where(m => Math.Abs(m.PitchHz - Pitch) <= CwRunReader.PitchToleranceHz).OrderBy(m => m.FromSeconds).ToList();
-        var pattern = MorseCode.KeyPattern(Call);
-        var dit = MorseCode.Dit(20).TotalSeconds;
-        var t = 3.0;
-        var truth = new List<(double From, double To)>();
+            var batch = detector.MarksSince(sequence);
 
-        for (var i = 0; i < pattern.Count; i++)
-        {
-            if (i % 2 == 0)
+            sequence = batch.Marks.Count > 0 ? batch.Marks.Max(m => m.Sequence) : sequence;
+            reader.Read(batch);
+
+            var reading = detector.Reading;
+
+            if (!double.IsFinite(printing) || !reading.Keying)
             {
-                truth.Add((t, t + (pattern[i] * dit)));
+                continue;
             }
 
-            t += pattern[i] * dit;
+            var stoodThere = detector.MarksSince(0).Marks
+                .Count(m => m.ToSeconds > batch.HeardSeconds - CwEnvelopeDetector.HistorySeconds && Math.Abs(m.PitchHz - printing) <= CwEnvelopeDetector.BinSpacingHz);
+
+            Assert.Equal(printing, reading.PitchHz);
+            Assert.Equal(stoodThere, reading.MarksLast4s);
+
+            checkedHops++;
+            mostMarks = Math.Max(mostMarks, reading.MarksLast4s);
         }
 
-        var used = new HashSet<CwMark>();
-        var lost = 0;
-        var split = 0;
+        _output.WriteLine("printing and keying on " + checkedHops + " readings; scopePitchHz was the printed pitch on all of them; marks4s up to " + mostMarks);
 
-        foreach (var (from, to) in truth)
-        {
-            var over = marks.Where(m => m.FromSeconds < to && m.ToSeconds > from).ToList();
-
-            used.UnionWith(over);
-
-            if (over.Count == 0)
-            {
-                lost++;
-                _output.WriteLine("LOST  " + from.ToString("0.000") + " " + ((to - from) * 1000).ToString("0") + " ms");
-            }
-            else if (over.Count > 1)
-            {
-                split++;
-                _output.WriteLine("SPLIT " + from.ToString("0.000") + " " + ((to - from) * 1000).ToString("0") + " ms into " + string.Join(", ", over.Select(m => m.LengthMs.ToString("0") + " ms " + m.Shape)));
-            }
-            else
-            {
-                var m = over[0];
-                var off = m.LengthMs - ((to - from) * 1000);
-
-                if (Math.Abs(off) > 25)
-                {
-                    _output.WriteLine("LONG/SHORT " + from.ToString("0.000") + " true " + ((to - from) * 1000).ToString("0") + " read " + m.LengthMs.ToString("0") + " " + m.Shape + " keyed " + m.Keyed);
-                }
-            }
-        }
-
-        var realScores = marks.Where(used.Contains).Select(m => m.Shape?.Score ?? double.NaN).OrderBy(s => s).ToList();
-
-        _output.WriteLine(db + " dB gates " + gates + " real mark scores: lowest " + realScores.FirstOrDefault().ToString("0.000")
-            + ", tenth " + realScores.ElementAtOrDefault(realScores.Count / 10).ToString("0.000") + ", median " + realScores.ElementAtOrDefault(realScores.Count / 2).ToString("0.000"));
-
-        var extra = marks.Where(m => !used.Contains(m)).ToList();
-
-        foreach (var m in extra)
-        {
-            _output.WriteLine("EXTRA " + m.FromSeconds.ToString("0.000") + " " + m.LengthMs.ToString("0") + " ms " + m.Shape);
-        }
-
-        _output.WriteLine(db + " dB gates " + gates + ": " + truth.Count + " true, " + marks.Count + " at pitch, lost " + lost + ", split " + split + ", extra " + extra.Count
-            + "; contrast median " + marks.Select(m => m.ContrastDb).Where(c => !double.IsNaN(c)).OrderBy(c => c).ElementAtOrDefault(marks.Count / 2).ToString("0.0"));
+        Assert.True(checkedHops > 0, "the reader never printed while the bars said keying");
+        Assert.True(mostMarks > 0, "no mark stood at the printed pitch");
     }
 
     /// <remarks>

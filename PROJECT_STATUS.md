@@ -6,8 +6,8 @@ WORK_INSTRUCTION: 507 - the pattern is the gate (run by hand)
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-30T11:55:24-04:00
-NOTE: Unit 507 - task 3 committed, the pattern gate stands 0 of 635 noise candidates in 30 s and reads 16 dB whole; now the watched bin and marks4s
+UPDATED: 2026-09-30T12:06:22-04:00
+NOTE: Unit 507 - task 4 green, the row describes the printed sender on all 1,322 readings; committing and writing output.md
 
 ---
 

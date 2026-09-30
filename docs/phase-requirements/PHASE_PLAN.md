@@ -279,6 +279,11 @@ I'm on the data tab, we have data settings. I've made the decision that I'm chas
 data by being on the tab, and the settings should follow that. Right now, I'm spending a lot of time
 trying to figure out if the decoding isn't working or if the radio has been set to something else."*
 
+**R112 - Tim, 2026-09-30: the pattern is the gate.** *"You're still focused on dB. We need to be
+focused on the shapes in the noise. They're predictable. They're full of good patterns. Chaos and
+noise have no patterns. All we have to do is clearly identify when we have a pattern, a shape, and
+the translation is easy."*
+
 ## §3 What is different from the phases before it
 
 1. **A criterion is a requirement id.** A report states the requirement, the condition, the

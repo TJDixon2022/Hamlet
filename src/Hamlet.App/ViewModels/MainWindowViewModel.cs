@@ -12656,6 +12656,11 @@ public partial class MainWindowViewModel : ObservableObject
         var pointed = plainCw ? _scopePointer.Pointing(DateTime.UtcNow) : null;
         envelope.PointAt(pointed?.PitchHz);
 
+        // **THE SEQUENCE BEING READ, FIRST** (work instruction 507): while the reader prints a sender, the
+        // detector watches its bin, so the light, the blocks and the verdict row's mark count describe the
+        // station on the screen; printing nobody, the pointer or the sweep decide as before.
+        envelope.Follow(IsDecoding && _decoder is { } printing && double.IsFinite(printing.PrintingHz) ? printing.PrintingHz : null);
+
         var reading = envelope.Reading;
         _decoder?.Tracker.FollowScope(reading is { Pointed: true, Keying: true } ? pointed?.PitchHz : null);
 

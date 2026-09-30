@@ -36,7 +36,7 @@ public sealed record CwBarBin(
 /// <param name="PassbandLowHz">The lowest bin's edge of the sweep.</param>
 /// <param name="PassbandHighHz">The highest.</param>
 /// <param name="PassbandFromRig">Whether the edges came from the radio's pitch and filter.</param>
-/// <param name="MarksLast4s">How many marks the last four seconds hold.</param>
+/// <param name="MarksLast4s">How many marks that stood in a sequence the last four seconds hold at the watched pitch (work instruction 507: the watched bin's paired bars before).</param>
 /// <param name="Keying">Whether any bin in the passband made two bars and a gap in the last second.</param>
 /// <param name="Pointed">Whether the watched bin is the one the radio's scope points at, not the sweep's.</param>
 public sealed record CwEnvelopeReading(
@@ -232,6 +232,7 @@ public sealed class CwEnvelopeDetector
     private bool _fromRig;
     private double _loudestGapDb = double.NaN;
     private double _pointedHz = double.NaN;
+    private double _followHz = double.NaN;
     private CwEnvelopeReading _reading = CwEnvelopeReading.None;
 
     // The station being held (work instruction 485): its bin, the last hop a mark arrived there,
@@ -671,7 +672,11 @@ public sealed class CwEnvelopeDetector
 
         // **THE RADIO POINTS; THE SWEEP IS THE FALLBACK** (work instruction 480, R94). While the
         // scope names a pitch inside the bins, that bin is watched and nothing is searched.
-        var pointed = Pointed();
+        // **THE SENDER BEING PRINTED FIRST** (work instruction 507): while the reader prints a sequence, its
+        // bin is watched, over the radio's pointer and the sweep, so the light, the blocks and the mark
+        // count describe the station on the screen.
+        var followed = Followed();
+        var pointed = followed >= 0 ? followed : Pointed();
 
         for (var i = 0; pointed < 0 && i < _bins.Length; i++)
         {
@@ -851,14 +856,55 @@ public sealed class CwEnvelopeDetector
             // marks (work instruction 485), so four readings in five said keying with no pitch:
             // the owner's verdict rows of 2026-09-28 carried a null pitch on every row. Keying and
             // its pitch now go together: the bin the bars were called in, which the hold follows.
-            keying ? (double.IsNaN(_stationHz) ? watched.Hz : _stationHz) : double.NaN,
+            keying ? (followed >= 0 ? _bins[followed].Hz : double.IsNaN(_stationHz) ? watched.Hz : _stationHz) : double.NaN,
             up && !double.IsNaN(gapDb) ? barDb - gapDb : double.NaN,
             _lowHz,
             _highHz,
             _fromRig,
-            eval.Marked.Count(m => m.End > hop - HistoryHops),
+            _marks.Count(k => k.ToSeconds > nowSeconds - HistorySeconds && Math.Abs(k.PitchHz - watched.Hz) <= BinSpacingHz),
             keying,
-            pointed >= 0);
+            pointed >= 0 && followed < 0);
+    }
+
+    /// <summary>The bin nearest the followed pitch, or -1 where nothing is followed or it is off the bins.</summary>
+    private int Followed()
+    {
+        if (double.IsNaN(_followHz) || _bins.Length == 0)
+        {
+            return -1;
+        }
+
+        var nearest = 0;
+
+        for (var i = 1; i < _bins.Length; i++)
+        {
+            if (Math.Abs(_bins[i].Hz - _followHz) < Math.Abs(_bins[nearest].Hz - _followHz))
+            {
+                nearest = i;
+            }
+        }
+
+        return Math.Abs(_bins[nearest].Hz - _followHz) <= BinSpacingHz / 2 ? nearest : -1;
+    }
+
+    /// <summary>
+    /// **THE SEQUENCE BEING READ** (work instruction 507, R112): watch the bin of the sender the reader is
+    /// printing, over the radio's pointer and the sweep, or let them decide again when it prints nobody.
+    /// </summary>
+    /// <param name="pitchHz">The printed sender's pitch, <see cref="CwDecoder.PrintingHz"/>, or null.</param>
+    /// <remarks>
+    /// <para>**UNIT 504 NAMED IT; THE OWNER'S ROWS SHOWED IT.** On 14.0529 the reader printed at 500 Hz
+    /// while the watched bin sat at 350 and then 700, so the light, the blocks and the mark count
+    /// described a bin nobody was reading. The printed pitch was right on every row.</para>
+    /// <para>A pitch outside the bins, beyond the passband's edge by more than half a bin, is not one the
+    /// detector hears, and the pointer or the sweep decide as if nothing were followed.</para>
+    /// </remarks>
+    public void Follow(double? pitchHz)
+    {
+        lock (_gate)
+        {
+            _followHz = pitchHz is > 0 and var hz && double.IsFinite(hz) ? hz : double.NaN;
+        }
     }
 
     /// <summary>The bin nearest the pointed pitch, or -1 where nothing points or it is off the bins.</summary>

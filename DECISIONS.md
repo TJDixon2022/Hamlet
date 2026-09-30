@@ -4,6 +4,41 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-210
+date: 2026-09-30
+refs: work instruction 507 (which named HM-DEC-209, already used by unit 505), docs/phase-requirements/PHASE_PLAN.md R112, src/Hamlet.RadioEngine/Cw/CwPatternGate.cs, src/Hamlet.RadioEngine/Cw/CwEnvelopeDetector.cs, src/Hamlet.App/ViewModels/MainWindowViewModel.cs, tests/Hamlet.RadioEngine.Tests/Cw/ThePatternIsTheGateTests.cs
+---
+
+**The pattern across marks is the gate; a single-mark test is proportional, never a decibel
+figure.** Tim, 2026-09-30, R112: *"You're still focused on dB. We need to be focused on the shapes
+in the noise. They're predictable. They're full of good patterns. Chaos and noise have no patterns.
+All we have to do is clearly identify when we have a pattern, a shape, and the translation is
+easy."*
+
+**What it answers.** Every gate on a single mark since unit 497 was a decibel figure: 6 dB of edge,
+6 dB of narrowness, and a shape score over a fixed 15 dB whose threshold was set on a call 22 dB over
+the noise. Every synthetic case ever built was 20 dB or more over the noise, and the gates were set
+with those in front of them. On 14.053 the owner heard a station clearly that read nothing.
+
+**What is built.** Each mark is judged against its own height over the gap beside it. Its edge must
+fall half that height within four hops; it is broad only where the bins 300 Hz away both rise with
+it by more than half its height; and the shape score is built from those ratios. A candidate stands
+only in a sequence of five marks at one pitch and one height, in two lengths at two to one or wider,
+none crowding the one before. A candidate that fits no sequence is dropped and never reaches the
+reader, the scope or the mark count. The detector watches the pitch the reader prints, and the mark
+count is the marks that stood there.
+
+**What it did, on synthetic audio.** A call 16 dB over the noise that read `CQ TNQ DE N0CALR N0CALL K`
+reads whole. Thirty seconds of loud noise passed 635 candidates and none stood. A call at 8 or
+12 dB, and at 10 dB at 35 WPM or 5 WPM Farnsworth, still does not read whole; at 8 dB the bars
+themselves break before any gate sees them.
+
+**Whose words are whose.** The ruling is Tim's. The shares, a half of the mark's own height for the
+edge and for the neighbours; the neighbours' rise in place of their level; five marks to stand; half a
+dit as the least gap; and the shape threshold of 0.003 are the author's under work instruction 507,
+and overrulable.
+
+---
 id: HM-DEC-209
 date: 2026-09-30
 supersedes: R22 and work instruction 342 rulings 11 and 16, as the trading card
