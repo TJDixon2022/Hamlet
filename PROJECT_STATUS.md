@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 2 of 3
+TASK: 3 of 3
 WORK_INSTRUCTION: 511 - the blocks stay, the senders own dits count, the old decoder retires (run by hand)
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-30T17:11:34-04:00
-NOTE: Unit 511 - task 1 committed, blocks kept from stood marks; task 2, the senders own dits inside a letter
+UPDATED: 2026-09-30T17:23:59-04:00
+NOTE: Unit 511 - task 2 committed, the senders quieter marks inside a letter stand; task 3, tagging HEAD and tracing what the old decoder still reaches
 
 ---
 

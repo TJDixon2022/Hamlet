@@ -158,9 +158,14 @@ public sealed class CwRunReader
             var (pitch, level, contrast) = sender.Reference;
             var pitchOff = Math.Abs(mark.PitchHz - pitch);
             var levelOff = Math.Abs(mark.LevelDb - level);
+            // **A MARK THAT STOOD BY ITS SENDER'S PATTERN IS MATCHED ON PITCH ALONE** (work instruction
+            // 511, task 2, HM-DEC-215). The gate judged its level already, against that sender's own
+            // marks of its kind and within twice the tolerance; judged again here against dits and dahs
+            // mixed, a dit 6 dB down read a hair past it and began a sender of its own. No other mark
+            // is matched this way.
             var levelTolerance = LevelToleranceDb(contrast);
 
-            if (pitchOff > PitchToleranceHz || levelOff > levelTolerance)
+            if (pitchOff > PitchToleranceHz || (!mark.BySendersPattern && levelOff > levelTolerance))
             {
                 continue;
             }
@@ -493,7 +498,13 @@ public sealed class CwRunReader
         {
             get
             {
-                var over = Open.Count > 0 ? (IReadOnlyList<CwMark>)Open : _recent.TakeLast(8).ToList();
+                // A quieter mark taken by the sender's pattern is the sender's, and not its level: it would
+                // drag the reference under the sender's next mark (work instruction 511, task 2).
+                var open = Open.Where(m => !m.BySendersPattern).ToList();
+                var recent = _recent.Where(m => !m.BySendersPattern).TakeLast(8).ToList();
+                var over = open.Count > 0 ? open
+                    : recent.Count > 0 ? recent
+                    : Open.Count > 0 ? (IReadOnlyList<CwMark>)Open : _recent.TakeLast(8).ToList();
                 var contrasts = over.Select(m => m.ContrastDb).Where(c => !double.IsNaN(c)).ToList();
 
                 return (over.Average(m => m.PitchHz), over.Average(m => m.LevelDb), contrasts.Count > 0 ? contrasts.Average() : double.NaN);

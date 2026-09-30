@@ -85,10 +85,36 @@ internal sealed class CwPatternGate
 
         if (home is null)
         {
+            // **THE SENDER'S OWN QUIETER MARK, HELD** (work instruction 511, task 2, HM-DEC-215): a
+            // candidate at a standing sender's pitch and of its lengths, quieter than it by more than the
+            // tolerance and no more than twice it, waits for the sender's next mark to say whether it
+            // sits inside one of its letters.
+            var sender = _sequences
+                .Where(s => s.Standing && s.TakesQuieter(candidate))
+                .OrderByDescending(s => s.Count)
+                .FirstOrDefault();
+
+            if (sender is not null)
+            {
+                // Inside a letter already by the gap before it, it stands now; the first mark of a
+                // letter waits for the next, since only that gap can place it inside one.
+                if (sender.AdmitNow(candidate) is { } now)
+                {
+                    Stood++;
+                    return new[] { now };
+                }
+
+                sender.Hold(candidate);
+                return Array.Empty<CwMark>();
+            }
+
             home = new Sequence();
             _sequences.Add(home);
         }
-        else if (home.Crowds(candidate))
+
+        var admitted = home.Resolve(candidate);
+
+        if (admitted is null && home.Crowds(candidate))
         {
             // **THE SAME TONE READ TWICE, OR A PIECE OF IT**: dropped, not begun again elsewhere.
             return Array.Empty<CwMark>();
@@ -96,10 +122,38 @@ internal sealed class CwPatternGate
 
         var standing = home.Add(candidate);
 
+        if (admitted is not null)
+        {
+            standing = standing.Prepend(admitted).ToArray();
+        }
+
         Stood += standing.Count;
 
         return standing;
     }
+
+    /// <summary>
+    /// How far under a standing sender's level its own mark may sit inside one of its letters, as a
+    /// multiple of the level tolerance: two (work instruction 511, task 2, HM-DEC-215).
+    /// </summary>
+    /// <remarks>
+    /// Unit 510 measured a strong sender's dit 6 dB down inside a letter found by the blind stage and
+    /// dropped here, 6 dB being outside the 3 dB tolerance at that contrast, so `SEPTEMBER` read
+    /// `SINHSPMBR`. Twice the tolerance, and only for a mark at the sender's pitch, of its lengths,
+    /// inside its letter; between letters, between senders and at any other pitch the tolerance
+    /// stands.
+    /// </remarks>
+    public const double QuieterShare = 2;
+
+    /// <summary>
+    /// How far a gap inside a letter may run, as a share of the sender's dit: two, between Morse's one
+    /// dit inside a letter and three between letters, with the detector's smear on the long side (work
+    /// instruction 511). The author's, overrulable.
+    /// </summary>
+    public const double InsideLetterShare = 2;
+
+    /// <summary>How far a quieter mark's length may be from the sender's dit or dah, as a ratio: √2. The author's.</summary>
+    public static readonly double LengthRatio = Math.Sqrt(2);
 
     /// <summary>Forget sequences silent past <see cref="SilenceSeconds"/>.</summary>
     /// <param name="nowSeconds">The detector's audio clock.</param>
@@ -135,6 +189,125 @@ internal sealed class CwPatternGate
 
             return Math.Abs(m.PitchHz - pitch) <= CwEnvelopeDetector.BinSpacingHz
                 && Math.Abs(m.LevelDb - level) <= CwRunReader.LevelToleranceDb(height);
+        }
+
+        // A quieter mark of this sender's, waiting for its next mark (work instruction 511, task 2).
+        private CwMark? _quieter;
+
+        /// <summary>
+        /// Whether a candidate that does not agree is this standing sender's quieter mark: within a bin
+        /// of its pitch, under its level by more than the tolerance and no more than twice it, within
+        /// √2 of its dit or its dah, and not sitting on its last mark (work instruction 511, task 2).
+        /// </summary>
+        public bool TakesQuieter(CwMark m)
+        {
+            if (_recent.Count == 0 || m.FromSeconds - LastToSeconds > SilenceSeconds || Crowds(m))
+            {
+                return false;
+            }
+
+            var pitch = _recent.Average(r => r.PitchHz);
+
+            if (Math.Abs(m.PitchHz - pitch) > CwEnvelopeDetector.BinSpacingHz)
+            {
+                return false;
+            }
+
+            var dit = Dit(m);
+            var dahs = _recent.Where(r => r.ToSeconds - r.FromSeconds >= CwRunReader.TwoKindsRatio * dit).ToList();
+            var dits = _recent.Where(r => r.ToSeconds - r.FromSeconds < CwRunReader.TwoKindsRatio * dit).ToList();
+            var length = m.ToSeconds - m.FromSeconds;
+
+            bool Near(double of) => length >= of / LengthRatio && length <= of * LengthRatio;
+
+            // **AGAINST THE SENDER'S OWN MARKS OF ITS KIND.** The detector reads a short mark a little
+            // under a long one, a dit a tenth or two of a decibel under a dah here, so a dit is held to
+            // the sender's dits and a dah to its dahs.
+            var kind = Near(dit) && dits.Count > 0 ? dits
+                : dahs.Count > 0 && Near(dahs.Average(r => r.ToSeconds - r.FromSeconds)) ? dahs
+                : null;
+
+            if (kind is null)
+            {
+                return false;
+            }
+
+            var level = kind.TakeLast(8).Average(r => r.LevelDb);
+            var heights = _recent.Select(r => r.OwnContrastDb).Where(double.IsFinite).OrderBy(c => c).ToList();
+            var tolerance = CwRunReader.LevelToleranceDb(heights.Count > 0 ? heights[heights.Count / 2] : double.NaN);
+            var under = level - m.LevelDb;
+
+            return under > tolerance && under <= QuieterShare * tolerance;
+        }
+
+        /// <summary>
+        /// Take a quieter mark now where the gap from the sender's last mark already places it inside a
+        /// letter: under two dits and not under half of one. Null where it does not.
+        /// </summary>
+        public CwMark? AdmitNow(CwMark m)
+        {
+            if (Last is not { } before)
+            {
+                return null;
+            }
+
+            var dit = Dit(m);
+            var gap = m.FromSeconds - before.ToSeconds;
+
+            if (gap < LeastGapShare * dit || gap >= InsideLetterShare * dit)
+            {
+                return null;
+            }
+
+            _quieter = null;
+
+            return Take(m with { BySendersPattern = true });
+        }
+
+        /// <summary>Hold a quieter mark until the sender's next mark; a later one replaces it.</summary>
+        public void Hold(CwMark m) => _quieter = m;
+
+        /// <summary>
+        /// The sender's next mark has come: the held quieter mark stands if it sits inside one of the
+        /// sender's letters - a gap under two dits to the mark before it or to this one, and neither gap
+        /// under half a dit. Taken into the sequence and returned, or dropped and null.
+        /// </summary>
+        public CwMark? Resolve(CwMark next)
+        {
+            if (_quieter is not { } q || !Standing || Last is not { } before)
+            {
+                _quieter = null;
+                return null;
+            }
+
+            _quieter = null;
+
+            var dit = Dit(next);
+            var gapBefore = q.FromSeconds - before.ToSeconds;
+            var gapAfter = next.FromSeconds - q.ToSeconds;
+
+            if (gapBefore < LeastGapShare * dit || gapAfter < LeastGapShare * dit
+                || Math.Min(gapBefore, gapAfter) >= InsideLetterShare * dit)
+            {
+                return null;
+            }
+
+            return Take(q with { BySendersPattern = true });
+        }
+
+        /// <summary>Take a quieter mark into the sequence as one of its own.</summary>
+        private CwMark Take(CwMark admitted)
+        {
+            _recent.Add(admitted);
+            Count++;
+            LastToSeconds = Math.Max(LastToSeconds, admitted.ToSeconds);
+
+            if (_recent.Count > RecentMarks)
+            {
+                _recent.RemoveAt(0);
+            }
+
+            return admitted;
         }
 
         /// <summary>Whether the mark sits on the last one, closer than half the sender's dit.</summary>

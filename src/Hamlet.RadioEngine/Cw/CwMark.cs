@@ -50,6 +50,14 @@ public sealed record CwMark(
     /// its edges (work instruction 507); NaN where neither side could be read.
     /// </summary>
     public double OwnContrastDb { get; init; } = double.NaN;
+
+    /// <summary>
+    /// Whether the mark stood by its sender's pattern alone: at a standing sender's pitch, of its dit or
+    /// dah length, inside one of its letters, and quieter than the sender by more than the level
+    /// tolerance and no more than twice it (work instruction 511, task 2, HM-DEC-215). The reader
+    /// gives such a mark the same doubled tolerance, and nothing else does.
+    /// </summary>
+    public bool BySendersPattern { get; init; }
 }
 
 /// <summary>
