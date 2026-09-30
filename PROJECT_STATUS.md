@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-TASK: 3 of 3
-WORK_INSTRUCTION: 513 - a fist is read by which cluster is nearer (run by hand)
-BALL: tim
-NEXT_PASTE: output.md -> Claude Web
+STATE: EXECUTING
+TASK: 2 of 3
+WORK_INSTRUCTION: 514 - any pitch in the filter (run by hand)
+BALL: code
+NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-30T18:25:48-04:00
-NOTE: Unit 513 - a fist is read by the nearer cluster; five fist cases whole, existing readings as at HEAD but one red row
+UPDATED: 2026-09-30T19:11:54-04:00
+NOTE: Unit 514 - task 1 committed, the detector follows the meter; task 2, narrowness within the passband
 
 ---
 

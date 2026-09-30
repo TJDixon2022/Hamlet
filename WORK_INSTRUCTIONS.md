@@ -1,15 +1,15 @@
-# Work instruction 513 - a fist is read by which cluster is nearer
+# Work instruction 514 - any pitch in the filter
 
-**Hand run. One unit.** The detector and the pattern gate hand the reader a clean stream of marks
-from a real station, and the reader sorts them into the wrong letters. The station is hand-sent
-at 27 WPM. No case on the bench was ever both fast and human.
+**Hand run. One unit, three tasks, commit per task.** Every station that has read well was near
+600 Hz. Stations at 350, 500 and 700 keep ending with the detector on a different bin from the
+station. Three causes, all measured tonight, all in this unit.
 
 **No test against a recording, a fixture, a floor or copied telemetry** (R96). A headless test
 driving synthetic hops written in the test itself is allowed; nothing read from disk. Verify by
-building `Hamlet.sln` with warnings as errors and running the app carry-forward line. **The
-owner's report at the radio is the test.**
+building `Hamlet.sln` with warnings as errors and running the app carry-forward line. **Every
+existing reading case reads exactly as at HEAD**, or the report says what changed and why.
 
-**Numbering.** This is unit 513, ruling HM-DEC-217. If taken, use the next free and say so.
+**Numbering.** This is unit 514, ruling HM-DEC-218. If taken, use the next free and say so.
 
 ---
 
@@ -41,119 +41,126 @@ If all five hold, say "Hamlet confirmed" and continue.
 - Take `SESSION.lock` through `tools\arbiter\lock.bat take`, release it at the end. Write nothing
   to `RUN_LEDGER.md`. Touch nothing under `tools\arbiter\`. Tick nothing in `PHASE_PLAN.md`.
 - One `dotnet test` invocation per line, filtered, with a `timeout`. Never background and poll.
-  The app line loses names to the dispatcher loop; re-run once, count neither way.
 - Apostrophes in quoted heredocs break; `;` is refused; Python cannot run here; `-m` more than
-  once for a multi-line commit. Scripts go in `.run-unit\unit513-<name>.sh`, not committed.
-- Nothing that keys or transmits. Nothing written to the radio.
-- **Only `CwRunReader` changes.** The detector, the pattern gate, the scope, the terminal, the
-  layout, the tab, the buttons and the row are untouched.
+  once for a multi-line commit. Scripts go in `.run-unit\unit514-<name>.sh`, not committed.
+- **Nothing that keys or transmits. Nothing written to the radio** - task 3 reads the filter
+  width and says a sentence; it does not change the filter.
 - `output.md` at the root, four headings exactly: `## 1. What Claude did`, `## 2. What the owner
   should expect`, `## 3. What you should see`, `## 4. What's blocking us`.
 
 ---
 
-## 2. What the owner saw, and what the rows say
+## 2. What the rows showed tonight, 2026-09-30
 
-**2026-09-30 21:44 UTC, 7.0299, CW, a hand-sent station.** Six presses, all *agree*: pitch 500 Hz
-found, **18 to 22 marks in four seconds, a 45 ms dit, score 0.3 to 0.4, swing 20 to 28 dB.** The
-detector and the pattern gate handed the reader a clean stream of a real station at about 27
-WPM. **The reader printed:**
+**22:59, 7.0249.** Meter at **500 Hz, 49 ms dit, score 0.28** - a station. Detector: *no keying*,
+no pitch. Reader: **printing at 600.** Two rows in a row. The reader had nobody, so `PrintingHz`
+was stale; unit 507's `Follow(PrintingHz)` pointed the detector at the stale bin; the meter's
+fresh find at 500 went nowhere.
 
-```
-T 25I E NSIE SE THAT AKSN S M N VTGNURING DAYTEMEHEEN N ENFBATELLITISSUREA KI
-ENNICENTTKTHEE<BT> EA <BT> WELL TNXFER THE EKS RICKES CE TCHULA I TBVTATE DL OEVAE S
-```
+**23:02, W1AW at 7.0475.** Swing **41.9 dB, 0 marks.** Four of five rows `printing None`. The
+same bulletin read `APPEARS IN THE SEPTEMBER ISSUE OF QST ON PAGE 28` this morning, when the
+reader happened to already be on 600 as the bulletin began. Tonight it was not, and read
+`TESLWHLTT J26 IISUE OF QST ON AEA`.
 
-Real words survive - `THAT`, `WELL`, `TNX`, `THE`, `<BT>` - inside wrong letters. **Not a spacing
-collapse, not noise. The marks are right and they are sorted into the wrong letters.**
+**Across the week:** 350, 500, 550, 700 Hz stations all reached the reader with the detector on
+another bin. 600 Hz stations read. **The owner:** *"It seems like CW out in the wild has
+varieties of pitch, and you just aren't getting any of that."*
 
-**Why.** Every fast case on the bench is machine-sent: dahs exactly 3 dits, gaps exactly 1, 3
-and 7. **A human at 27 WPM does not do that.** His dahs run 2.5 to 3.5 dits and his gaps wander;
-unit 504 measured that a fist scattered by a third misreads on letter boundaries and said it was
-not in any test. Two things in `CwRunReader` are brittle to a fist:
+**Three causes:**
 
-- **The dit-or-dah split is one hard line** at the geometric mean of the sender's short and long
-  marks. A fist whose dits and dahs overlap in length has elements fall on the wrong side.
-- **The gap boundaries are hard lines too** - √3 dits between element and letter, the measured
-  word gap above. At 27 WPM the element gap is 45 ms and the letter gap 130; a fist's element gaps
-  drift toward 80 and its letter gaps toward 100, and the √3 boundary at 78 ms lands inside both.
-
-**The owner's ruling, R113:** a fist is read the way an ear reads it - **by which of the sender's
-own clusters each mark or gap is nearer**, not by a fixed line.
-
----
-
-## 3. The change - nearest cluster, not a hard line
-
-In `CwRunReader`:
-
-- **Elements.** The sender's marks are two clusters, dit and dah, each with a centre and a spread
-  measured from the sender's own marks. **A mark is the kind whose centre it is nearer, in
-  log-length.** Where the two clusters are wide enough to overlap, the mark is the kind whose
-  cluster it is more likely from - the spread decides, not the midpoint.
-- **Gaps.** The sender's gaps are three clusters - element, letter, word - each with a centre and
-  a spread, from the sender's own gaps as units 500, 501 and 504 measure them. **A gap is the kind
-  whose centre it is nearer, in log-length**, the same way.
-- **The clusters follow the fist.** Centres and spreads are running measures over the sender's
-  recent marks and gaps, as the dit already is, so a sender who tightens or loosens up is
-  followed.
-- **A machine sender reads exactly as now.** With clusters that do not overlap, nearest-centre and
-  the geometric mean give the same answer. **Every existing case must read as at HEAD.**
-- **The lone-letter banking, the pattern gate's rules and the sender's-own-dit rule (unit 511)**
-  are unchanged; they read the element kinds this gives them.
-
-**The spread and how it is measured are the author's**, stated in the report with their reasons,
-derived from what a hand does - **not from any recording, and not tuned after a result.**
+1. **The wire.** When the reader prints nobody, the detector has nothing live to follow and sits
+   on a stale pitch.
+2. **Narrowness reads the filter skirt.** Unit 498's test wants the mark's bin to stand above the
+   bins **300 Hz either side**. The owner runs FIL2 at 500 Hz, centred on his 600 Hz pitch: the
+   passband is about 350 to 850. A station at 500 has 150 Hz of band below it; the probe at 200
+   reads the filter's skirt, not the band, and the comparison is wrong. **It works at 600 and
+   fails off-centre**, which is exactly the pattern.
+3. **The filter itself.** A station at 380 or 820 arrives attenuated before Hamlet hears it. Not
+   fixable in code; the app should say so.
 
 ---
 
-## 4. What to measure
+## 3. Task 1 - the wire: when the reader has nobody, follow the meter
 
-**Watch it fail first**, with synthetic hops written in the test. **The fist is the point.** Build
-a fist generator in the test: each element's length drawn from a spread around the ideal, each
-gap likewise, with a stated scatter.
+In `MainWindowViewModel`'s scope tick, where the detector is told to `Follow(PrintingHz)`:
 
-1. **`CQ CQ DE N0CALL N0CALL K` at 27 WPM with a fist scattered by 20%** - dahs 2.4 to 3.6 dits,
-   gaps likewise. Report what it reads before and after. **Red today, or say so with the text.**
-2. **The same at 30% scatter**, unit 504's case: `NICELY FTO ■TOYOK PRIUSBOTH■...` at HEAD.
-   Report before and after.
-3. **The same at 20% at 12 WPM and at 35 WPM.**
-4. **A fist that tightens mid-transmission**, 30% scatter for ten letters then 10%.
-5. **Every existing case reads exactly as at HEAD** - the calls at every speed, the Farnsworth
-   cases, the speed change, the bursts, the hesitation, `TEST DE W1AW K`, `DE DE`, the lone and
-   stray marks, both noise tests, the two-station case, the strength table. **If any changes, say
-   so with its text; do not force it.**
+- **While the reader is printing a sender**, follow `PrintingHz`, as now.
+- **While it is not**, follow the keying meter's best pitch **when the meter's reading says a
+  station** - its verdict is keying, its score is at least its own `KeyingScore` bar and its median
+  element is inside its own element bounds. A meter reading of score 0.06 with a 4 ms median is
+  noise and is not followed.
+- **When neither**, follow the radio's pointer, as before unit 507.
+- **Never a stale `PrintingHz`.** A sender released a second ago is not a sender.
 
-**Report, for each fist case, the sender's cluster centres and spreads as measured** beside the
-generator's true values.
+**Watch it fail first**, headless on the live path: the detector watching 600, a driven meter
+reading keying at 500 with a 49 ms median and score 0.28, the reader printing nobody. **Red
+today**: the detector stays at 600. Green when it moves to 500 within a tick. Then the same with
+score 0.06 and a 4 ms median: it does not move.
+
+## 4. Task 2 - narrowness reads the band the filter gives it
+
+In `CwEnvelopeDetector`'s narrowness test:
+
+- **The probe distance follows the passband**, not a fixed 300 Hz. The probe sits outside the
+  tone's lobe - unit 490's peak walk knows the lobe's width - and **inside the filter's passband**,
+  from the rig state's `CwPitch` and `FilterBandwidth`. Where the passband gives less than the
+  lobe's width on one side, that side is not read.
+- **A mark is judged on the side or sides that can be read.** One readable side is enough; the
+  comparison is the same ratio unit 507 set (`NarrowShare`).
+- **Where the passband is unknown**, the whole band, as now.
+
+**Watch it fail first**, synthetic: the call at 20 WPM at **425, 500, 600, 700 and 775 Hz**, each
+through a 500 Hz passband centred on 600. Report, for each pitch, how many of the 65 marks pass
+narrowness and what reads, **before and after**. Red today at the off-centre pitches, or say so
+with the counts. The two-station case and both noise tests must still hold; report the counts.
+
+## 5. Task 3 - the app says when a station is at the filter's edge
+
+On the CW tab, beside *tone N Hz heard*, when the printed sender's pitch is **within 75 Hz of the
+passband's edge** as the rig state gives it: **`near the filter's edge - the radio is attenuating
+it`**, in words, with a hover saying the filter's width and centre and that widening it or
+retuning would help. **Nothing is written to the radio.** When the pitch is inside, nothing is
+shown.
+
+**Watch it fail first**, headless: a printed sender at 380 Hz with a 500 Hz filter on 600 shows
+the sentence; one at 600 does not.
 
 ---
 
-## 5. Record
+## 6. What must not change
 
-- `PHASE_OUTCOME.md`, both copies: `## UNIT 513 - STEP 12`, one paragraph.
-- `PHASE_STATUS.md`, both copies: names 513.
+`CwRunReader` (unit 513's clusters), the pattern gate, the scope, the terminal, the layout, the
+tab-is-the-mode, the preamp, the buttons. **Every reading case as at HEAD, and both noise tests
+print nothing.**
+
+---
+
+## 7. Record
+
+- `PHASE_OUTCOME.md`, both copies: `## UNIT 514 - STEP 12`, one paragraph.
+- `PHASE_STATUS.md`, both copies: names 514.
 - Patch-bump `Directory.Build.props`.
 - `CLAUDE.md` §1 index row.
-- **Append R113 to the rulings section of both `PHASE_PLAN.md` copies**: a fist is read by which
-  of the sender's own clusters each mark or gap is nearer. **Touch no checkbox.**
-- `DECISIONS.md`, newest first, **HM-DEC-217**, headline *A fist is read by the nearer cluster,
-  not a hard line*, naming the 21:44 station and that no bench case had been both fast and
-  human.
+- `DECISIONS.md`, newest first, **HM-DEC-218**, headline *Any pitch in the filter: the detector
+  follows the meter when the reader has nobody, narrowness reads the band the filter gives it,
+  and the app says when a station is at the edge*, naming tonight's rows.
+- **Touch no checkbox in `PHASE_PLAN.md`**, and add no ruling.
 
 ---
 
-## 6. Report
+## 8. Report
 
 Section 2, for the owner, in plain words:
 
 - rebuild;
-- **hand-sent stations at speed should read** - the reader now sorts each dit, dah and gap by which
-  of the sender's own clusters it is nearer, the way an ear does with a rough fist;
-- machine-sent and slow senders are unchanged;
-- **if a fist still reads wrong, section 3's cluster table beside the generator's truth says
-  whether the measurement or the sorting was at fault.**
+- **a station anywhere inside the filter should now be found and read**, not only ones near 600;
+- when the reader has nobody, the detector goes where the meter hears a station instead of sitting
+  on the last pitch it had;
+- a station at the filter's edge is named as such, so you know it is the radio and not Hamlet;
+- **if a station inside the filter still reads nothing, the pitch table in section 3 says which
+  pitches the bench reads, and that is the number to report against.**
 
-Section 1: what changed in `CwRunReader`, the spread and its reason, and that the build and the
-app line are green. **Section 3: the fist cases' text before and after, with the measured
-clusters beside the true ones, then the existing cases.** Section 4: anything left, a line each.
+Section 1: what changed, file by file, per task, and that the build and the app line are green.
+**Section 3: the pitch table at the top - marks passing and text at 425, 500, 600, 700, 775
+before and after - then the wire cases, then the existing cases.** Section 4: anything left, a
+line each.

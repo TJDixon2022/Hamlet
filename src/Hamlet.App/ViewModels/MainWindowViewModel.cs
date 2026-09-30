@@ -12801,7 +12801,10 @@ public partial class MainWindowViewModel : ObservableObject
         // **THE SEQUENCE BEING READ, FIRST** (work instruction 507): while the reader prints a sender, the
         // detector watches its bin, so the light, the blocks and the verdict row's mark count describe the
         // station on the screen; printing nobody, the pointer or the sweep decide as before.
-        envelope.Follow(IsDecoding && _decoder is { } printing && double.IsFinite(printing.PrintingHz) ? printing.PrintingHz : null);
+        envelope.Follow(FollowPitch(
+            IsDecoding && _decoder is { } printing ? printing.PrintingHz : double.NaN,
+            envelope.MarksSince(0),
+            _keyingReading));
 
         var reading = envelope.Reading;
         _decoder?.Tracker.FollowScope(reading is { Pointed: true, Keying: true } ? pointed?.PitchHz : null);
@@ -12821,6 +12824,46 @@ public partial class MainWindowViewModel : ObservableObject
 
     /// <summary>What the scope is handed: the detector's hops and the settled letters (work instruction 480).</summary>
     private readonly CwScopeFeed _scopeFeed = new();
+
+    /// <summary>
+    /// The pitch the detector follows: the sender being printed while it is being heard, else the pitch
+    /// the keying meter hears a station at, else none (work instruction 514, task 1, HM-DEC-218).
+    /// </summary>
+    /// <param name="printingHz">The pitch the reader prints, or NaN.</param>
+    /// <param name="marks">The marks that stood, on the detector's clock.</param>
+    /// <param name="meter">The keying meter's latest reading.</param>
+    /// <returns>The pitch to follow, or null so the radio's pointer or the sweep decides.</returns>
+    /// <remarks>
+    /// <para>**22:59, 7.0249**: the meter read a station at 500 Hz, a 49 ms dit, score 0.28, while the
+    /// reader printed nobody new and the detector was told to follow 600, the last pitch it had
+    /// printed, so the meter's find went nowhere.</para>
+    /// <para>**A SENDER IS BEING PRINTED ONLY WHILE IT IS BEING HEARD**: a mark stood at its pitch within
+    /// the detector's own hold, <see cref="CwEnvelopeDetector.HoldSeconds"/>. A pitch the reader has
+    /// not let go of but nothing has stood at for a second is not followed.</para>
+    /// <para>**THE METER'S PITCH ONLY WHERE THE METER SAYS A STATION** by its own bars: its verdict
+    /// keying, its score at least <see cref="CwKeyingThresholds.KeyingScore"/>, and its median element
+    /// inside <see cref="CwKeyingThresholds.SlowestChatterMs"/> to
+    /// <see cref="CwKeyingThresholds.LongestElementMs"/>. A score of 0.06 over a 4 ms median is noise.</para>
+    /// </remarks>
+    internal static double? FollowPitch(double printingHz, CwMarkBatch marks, KeyingReading meter)
+    {
+        ArgumentNullException.ThrowIfNull(marks);
+
+        if (double.IsFinite(printingHz)
+            && marks.Marks.Any(m => Math.Abs(m.PitchHz - printingHz) <= CwRunReader.PitchToleranceHz
+                                    && marks.HeardSeconds - m.ToSeconds <= CwEnvelopeDetector.HoldSeconds))
+        {
+            return printingHz;
+        }
+
+        var station = meter.Verdict == KeyingVerdict.Keying
+            && meter.ToneHz > 0
+            && meter.Score >= CwKeyingThresholds.KeyingScore
+            && meter.ElementMedianMs >= CwKeyingThresholds.SlowestChatterMs
+            && meter.ElementMedianMs <= CwKeyingThresholds.LongestElementMs;
+
+        return station ? meter.ToneHz : null;
+    }
 
     /// <summary>
     /// The pitch the decoder's second rung is fed: the reading's own pitch while it says keying, and
