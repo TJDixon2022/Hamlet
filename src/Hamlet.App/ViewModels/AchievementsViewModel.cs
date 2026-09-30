@@ -224,14 +224,33 @@ public sealed partial class AchievementsViewModel : ObservableObject
     /// </remarks>
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(OpenedMapCallsign))]
+    [NotifyPropertyChangedFor(nameof(OpenedMapHeading))]
     private Ft8GlobePlot? _openedMap;
 
     /// <summary>True while a card's map is open in its popup.</summary>
     [ObservableProperty]
     private bool _mapIsOpen;
 
-    /// <summary>The station the open map is of, for the popup's title, or "".</summary>
+    /// <summary>The station the open map is of, or "".</summary>
     public string OpenedMapCallsign => OpenedMap?.Callsign ?? "";
+
+    /// <summary>
+    /// **The row whose map is open, or null** (work instruction 505), kept beside
+    /// <see cref="OpenedMap"/> so the popup can say where as well as who.
+    /// </summary>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(OpenedMapHeading))]
+    private AchievementCategoryCard? _openedCard;
+
+    /// <summary>
+    /// **The popup's heading: the place and the station** - `Chile · CE3XYZ` - joined as the rows
+    /// join two facts, because his question is *where is that* and a callsign alone does not answer
+    /// it (work instruction 505, HM-DEC-209); the callsign alone where the row has no title.
+    /// </summary>
+    public string OpenedMapHeading
+        => OpenedCard is { Title.Length: > 0 } card && OpenedMapCallsign.Length > 0 ? card.Title + " · " + OpenedMapCallsign
+            : OpenedCard?.Title is { Length: > 0 } title ? title
+            : OpenedMapCallsign;
 
     /// <summary>A click on a card's map: its path opens in the popup.</summary>
     /// <param name="card">The card whose map was clicked.</param>
@@ -247,6 +266,7 @@ public sealed partial class AchievementsViewModel : ObservableObject
             return;
         }
 
+        OpenedCard = card;
         OpenedMap = globe;
         MapIsOpen = true;
     }

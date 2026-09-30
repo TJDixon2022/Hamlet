@@ -249,6 +249,88 @@ public sealed class TheCategoryPagesAreListsTests
         }
     }
 
+    /// <summary>
+    /// **Task 2: pressing a row opens that row's path in the popup, headed by the place and the
+    /// station; the X and a click outside close it; another row shows its own; a row with no map
+    /// opens nothing.** Real clicks on the window, at the row's own place.
+    /// </summary>
+    [AvaloniaFact]
+    public void ARowPressOpensItsPathAndThePopupSaysWhere()
+    {
+        var window = Realized(FiveContacts(), 1040);
+        var screen = (AchievementsViewModel)window.DataContext!;
+
+        List<Popup> Open() => window.GetVisualDescendants().OfType<Popup>().Where(p => p.IsOpen).ToList();
+
+        void Click(Control control)
+        {
+            var at = control.TranslatePoint(new Point(control.Bounds.Width / 2, control.Bounds.Height / 2), window)!.Value;
+
+            window.MouseMove(at);
+            window.MouseDown(at, MouseButton.Left);
+            window.MouseUp(at, MouseButton.Left);
+            Settle(window);
+        }
+
+        try
+        {
+            OpenOnWindow(window, screen, AchievementKinds.Countries);
+
+            Border Row(string callsign)
+                => CategoryCards(window).Single(b => b.DataContext is AchievementCategoryCard c && c.Callsign == callsign);
+
+            foreach (var callsign in new[] { "LA1ZZZ", "G0MNO" })
+            {
+                var row = Row(callsign);
+                var card = (AchievementCategoryCard)row.DataContext!;
+
+                Assert.Empty(Open());
+
+                Click(row);
+
+                var open = Open();
+
+                Assert.True(open.Count == 1, card.Title + ": a press on the row opened " + open.Count + " popups");
+
+                var globe = open[0].Child!.GetVisualDescendants().OfType<Ft8GlobeControl>().Single();
+                var heading = VisibleText((Control)open[0].Child!).ToList();
+
+                _output.WriteLine("[" + card.Title + "] opened " + globe.Plot?.Callsign + ", heading " + string.Join(" | ", heading));
+
+                Assert.Same(card.Globe, globe.Plot);
+                Assert.Contains(heading, h => h.Contains(card.Title, StringComparison.Ordinal) && h.Contains(card.Callsign, StringComparison.Ordinal));
+
+                // **THE X CLOSES THE FIRST, AND A CLICK OUTSIDE THE SECOND.**
+                if (callsign == "LA1ZZZ")
+                {
+                    screen.CloseTheMapCommand.Execute(null);
+                    Settle(window);
+                }
+                else
+                {
+                    var outside = new Point(window.Bounds.Width / 2, 6);
+
+                    window.MouseMove(outside);
+                    window.MouseDown(outside, MouseButton.Left);
+                    window.MouseUp(outside, MouseButton.Left);
+                    Settle(window);
+                }
+
+                Assert.Empty(Open());
+            }
+
+            // **A ROW WITH NO MAP OPENS NOTHING.**
+            Click(Row("VE3PQR"));
+
+            Assert.Empty(Open());
+            Assert.False(screen.MapIsOpen);
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
     /// <summary>The rows and panels the open category draws in its list, top to bottom.</summary>
     private static List<Border> CategoryCards(Window window)
         => Named<ItemsControl>(window, "AchievementsCategoryCards").GetVisualDescendants().OfType<Border>()

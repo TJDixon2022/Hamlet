@@ -706,7 +706,8 @@
                     Padding="12">
                 <Grid RowDefinitions="Auto,Auto">
                     <TextBlock Grid.Row="0"
-                               Text="{Binding OpenedMapCallsign}"
+                               x:Name="AchievementsMapHeading"
+                               Text="{Binding OpenedMapHeading}"
                                FontWeight="SemiBold"
                                VerticalAlignment="Center"
                                Foreground="{StaticResource HmTextPrimaryBrush}" />
