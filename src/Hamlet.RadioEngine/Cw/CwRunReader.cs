@@ -219,6 +219,16 @@ public sealed class CwRunReader
     /// <summary>The printed sender's measured letter and word gaps, in seconds, or nulls: for the tests' report (work instruction 501).</summary>
     internal (double? Letter, double? Word) StationGaps => _station?.LetterAndWordGaps() ?? (null, null);
 
+    /// <summary>
+    /// The printed sender's clusters as last measured on this thread, in words: for the tests' report
+    /// (work instruction 513).
+    /// </summary>
+    [ThreadStatic]
+    private static string? _lastClusters;
+
+    /// <summary>The printed sender's clusters as last measured on this thread: for the tests' report (work instruction 513).</summary>
+    internal static string LastClusters => _lastClusters ?? "not measured";
+
     private double _printedThrough = double.NegativeInfinity;
 
     private void Print(double heardSeconds)
@@ -436,6 +446,8 @@ public sealed class CwRunReader
             SpanHops = (int)Math.Round((at - run[0].FromSeconds) * 1000 / CwProbabilisticDecoder.HopMilliseconds),
         };
 
+        _lastClusters = sender.Describe();
+
         CharacterRead?.Invoke(character);
         RunRead?.Invoke(character, run);
 
@@ -485,6 +497,33 @@ public sealed class CwRunReader
             runs.Add(current.ToArray());
             Ended.RemoveRange(from, Ended.Count - from);
             Ended.AddRange(runs);
+        }
+
+        /// <summary>The clusters as measured, in words: for the tests' report (work instruction 513).</summary>
+        public string Describe()
+        {
+            static string Of(IReadOnlyCollection<double>? lengths)
+            {
+                if (lengths is null || lengths.Count == 0)
+                {
+                    return "none";
+                }
+
+                var logs = lengths.Select(l => Math.Log(l)).ToList();
+                var mu = logs.Average();
+                var sd = Math.Sqrt(logs.Sum(l => (l - mu) * (l - mu)) / logs.Count);
+
+                return string.Create(System.Globalization.CultureInfo.InvariantCulture, $"{Math.Exp(mu) * 1000:0} ms ±{sd:0.00}");
+            }
+
+            var (shorts, split) = Kinds();
+            var longs = split is { } s ? _recent.Select(m => m.ToSeconds - m.FromSeconds).Where(l => l >= s).ToList() : null;
+            var (letter, word) = GapClusters();
+            var inside = _elementGaps.Where(g => g < ElementLetterLineSeconds).ToList();
+
+            return string.Create(
+                System.Globalization.CultureInfo.InvariantCulture,
+                $"dit {Of(split is null ? null : shorts)}, dah {Of(longs)}, split {SplitSeconds * 1000:0} ms; gaps element {Of(inside)}, letter {Of(letter)}, word {Of(word)}; boundaries {CharacterGapSeconds * 1000:0} and {WordGapSeconds * 1000:0} ms");
         }
 
         public int PrintedRuns { get; set; }
@@ -557,8 +596,31 @@ public sealed class CwRunReader
         /// </remarks>
         public double GapDitSeconds => DitSeconds + (_gapOverDit.Count > 0 ? Math.Max(0, Median(_gapOverDit)) : 0);
 
-        /// <summary>Between a gap inside a letter, one dit, and one between letters, three: the geometric mean.</summary>
-        public double CharacterGapSeconds => GapDitSeconds * Math.Sqrt(3);
+        /// <summary>
+        /// Between a gap inside a letter and one between letters, in seconds: once the sender has shown
+        /// its letter gaps and <see cref="MeasuredRunGaps"/> gaps inside letters, the boundary between
+        /// those two clusters of its own; until then, gap dits times √3, one and three at their
+        /// geometric mean (work instructions 500 and 513).
+        /// </summary>
+        /// <remarks>
+        /// **A FIST'S GAPS WANDER** (work instruction 513, R113, HM-DEC-217). At 27 WPM a hand's gaps
+        /// inside a letter drift toward 80 ms and its letter gaps toward 100, and a line at √3 gap dits
+        /// lands inside both; the sender's own two clusters, each with its spread, say which a gap is
+        /// nearer. A machine sender's clusters sit far from either line, so it reads as it did.
+        /// </remarks>
+        public double CharacterGapSeconds
+        {
+            get
+            {
+                var line = ElementLetterLineSeconds;
+                var letter = GapClusters().Letter;
+                var inside = _elementGaps.Where(g => g < line).ToList();
+
+                return letter is null || inside.Count < MeasuredRunGaps
+                    ? line
+                    : Boundary(LogStats(inside), LogStats(letter));
+            }
+        }
 
         /// <summary>
         /// Between a gap between letters and one between words, in seconds: the sender's own letter
@@ -577,6 +639,12 @@ public sealed class CwRunReader
         /// evenly, so a letter gap and a word gap are still three and seven of one stretched unit.
         /// So the boundary is the sender's own letter gap times √(7/3), their geometric mean in
         /// stretched units, exactly as the dit is the unit of the gaps inside a letter.</para>
+        /// <para>**THE LETTER GAPS ARE THE SENDER'S NEARER CLUSTER; THE WORD LINE STAYS ON THEM** (work
+        /// instruction 513, R113). The letter gaps are settled by the nearer centre against the word
+        /// gaps, and the line is their centre times √(7/3), which for a regular sender is the boundary
+        /// between the two clusters. Measured from the word gaps' own cluster instead, it moved unit
+        /// 507's 8 dB call from `NTJCE AEL K` to `NTJCEAELK`, the word cluster being pulled by garbled
+        /// letters, and no fist case needed it; it is not taken.</para>
         /// </remarks>
         public double WordGapSeconds => LetterGapSeconds is { } letter
             ? letter * Math.Sqrt(7.0 / 3)
@@ -612,19 +680,46 @@ public sealed class CwRunReader
         /// <summary>The sender's measured letter gap and, where it has shown one, word gap: for the tests' report.</summary>
         public (double? Letter, double? Word) LetterAndWordGaps()
         {
-            // **A GAP UNDER THE SENDER'S OWN LETTER BOUNDARY IS NOT A LETTER GAP** (work instruction
-            // numbered 509, run as unit 510, task 7, HM-DEC-214). Runs closed before the sender's dit
-            // was known can end at a gap inside a letter; at 35 WPM and 10 dB three of those, 46 ms,
-            // were the lowest cluster, the letter gap was measured as the gap inside a letter, and every
-            // 110 ms letter gap read as a word. What sits under the boundary between a gap inside a
-            // letter and one between letters, gap dits times √3, measured now, measures neither.
-            var boundary = CharacterGapSeconds;
-            var sorted = _runGaps.Where(g => !(g < boundary)).OrderBy(g => g).ToList();
+            var (letter, word) = GapClusters();
+
+            return (letter?.Average(), word?.Average());
+        }
+
+        /// <summary>
+        /// The line between a gap inside a letter and one between letters before the sender's own gaps
+        /// are measured: gap dits times √3, the geometric mean of one and three (work instruction 500).
+        /// </summary>
+        private double ElementLetterLineSeconds => GapDitSeconds * Math.Sqrt(3);
+
+        /// <summary>
+        /// The sender's letter gaps and word gaps as two clusters, or nulls before it has shown
+        /// <see cref="MeasuredRunGaps"/> gaps between runs (work instructions 501, 504, 510 and 513).
+        /// </summary>
+        /// <remarks>
+        /// <para>**A GAP UNDER THE SENDER'S OWN LETTER LINE IS NOT A LETTER GAP** (work instruction
+        /// numbered 509, run as unit 510, task 7, HM-DEC-214). Runs closed before the sender's dit was
+        /// known can end at a gap inside a letter; at 35 WPM and 10 dB three of those, 46 ms, were the
+        /// lowest cluster, the letter gap was measured as the gap inside a letter, and every 110 ms
+        /// letter gap read as a word. What sits under gap dits times √3 measures neither.</para>
+        /// <para>**THE LOWEST CLUSTER OF AT LEAST THREE, THEN THE NEXT** (work instruction 504): sorted,
+        /// the gaps are walked up and split where two neighbors differ by √(7/3), and the letter gaps
+        /// are the lowest cluster holding <see cref="MeasuredRunGaps"/> or more, the word gaps the next
+        /// one up; a pause between two calls is above them.</para>
+        /// <para>**THEN SETTLED BY THE NEARER CLUSTER** (work instruction 513, R113, HM-DEC-217). A
+        /// fist's letter and word gaps overlap where a walk finds no clean jump, and the walk put a
+        /// hand's long letter gaps among its words; the two clusters are settled so each gap is the
+        /// kind it sits fewer spreads from.</para>
+        /// </remarks>
+        private (List<double>? Letter, List<double>? Word) GapClusters()
+        {
+            var line = ElementLetterLineSeconds;
+            var sorted = _runGaps.Where(g => !(g < line)).OrderBy(g => g).ToList();
 
             if (sorted.Count < MeasuredRunGaps)
             {
                 return (null, null);
             }
+
             var jump = Math.Sqrt(7.0 / 3);
             var clusters = new List<List<double>> { new() { sorted[0] } };
 
@@ -645,7 +740,16 @@ public sealed class CwRunReader
 
             at = at < 0 ? 0 : at;
 
-            return (clusters[at].Average(), at + 1 < clusters.Count ? clusters[at + 1].Average() : null);
+            if (at + 1 >= clusters.Count)
+            {
+                return (clusters[at], null);
+            }
+
+            var (letter, word) = Refine(clusters[at], clusters[at + 1]);
+
+            return letter.Count == 0 ? (clusters[at], clusters[at + 1])
+                : word.Count == 0 ? (letter, null)
+                : (letter, word);
         }
 
         /// <summary>
@@ -728,8 +832,99 @@ public sealed class CwRunReader
             return sorted.Count == 0 ? double.NaN : sorted[sorted.Count / 2];
         }
 
-        // Sorted lengths split at the widest ratio between neighbors, where that ratio is two
-        // kinds; the short side, and the geometric mean of the two sides' means.
+        /// <summary>
+        /// The least spread a cluster is given, as the standard deviation of its lengths' logarithm: a
+        /// tenth (work instruction 513, R113, HM-DEC-217).
+        /// </summary>
+        /// <remarks>
+        /// **THE DETECTOR'S OWN READING ERROR, NOT A FIST'S.** A mark or a gap is read to one five
+        /// millisecond hop, smeared by the ten millisecond window, which is a tenth to a fifth of a dit
+        /// from 12 to 35 WPM. A machine sender's clusters measure narrower than that on a handful of
+        /// marks only by chance, and a cluster ruled that narrow would pull every boundary against it.
+        /// A hand's scatter, tens of percent, is wider and is measured as it is. The author's.
+        /// </remarks>
+        public const double SpreadFloor = 0.1;
+
+        /// <summary>
+        /// How many of their spreads two clusters' centres must stand apart to be two kinds: two each
+        /// side of the boundary (work instruction 513). The author's.
+        /// </summary>
+        /// <remarks>
+        /// Two spreads each side put the boundary where nineteen in twenty of either cluster fall on its
+        /// own side, which a fist a third either way still clears; noise's lengths, spread evenly, split
+        /// into two halves whose centres stand about three of their spreads apart, and fail it.
+        /// </remarks>
+        public const double SeparationSpreads = 2;
+
+        /// <summary>
+        /// The widest a cluster of one kind can be, as the standard deviation of its lengths' logarithm:
+        /// a quarter (work instruction 513). The author's.
+        /// </summary>
+        /// <remarks>
+        /// **WHAT A HAND DOES, AND NO MORE.** The widest fist the order names scatters a third either way
+        /// (unit 504), a spread of about 0.19 in log-length, and the detector's own reading error of 0.1
+        /// adds to it to about 0.22; a quarter holds that. A cluster wider than any hand makes is two
+        /// speeds, not one kind: a sender who goes from 10 to 20 WPM leaves dits of 120 and 60 ms and
+        /// dahs of 360 and 180 among its recent marks, and 60, 120 and 180 together are 0.45 wide. It
+        /// is not taken as two kinds, and the dit is read from the gaps inside letters, which follow a
+        /// change of speed at once, as before this unit. The speed-change case turning red is what showed
+        /// the need; the figure is the hand's.
+        /// </remarks>
+        public const double HandSpread = 0.25;
+
+        /// <summary>The centre and spread of some lengths, in log-length, the spread floored.</summary>
+        private static (double Mu, double Sd) LogStats(IReadOnlyCollection<double> lengths)
+        {
+            var logs = lengths.Select(l => Math.Log(l)).ToList();
+            var mu = logs.Average();
+            var sd = Math.Sqrt(logs.Sum(l => (l - mu) * (l - mu)) / logs.Count);
+
+            return (mu, Math.Max(SpreadFloor, sd));
+        }
+
+        /// <summary>
+        /// Where a length is as many of one cluster's spreads from its centre as of the other's from its
+        /// own: the boundary between two kinds, in seconds (work instruction 513, R113).
+        /// </summary>
+        /// <remarks>
+        /// **THE SPREAD DECIDES, NOT THE MIDPOINT.** With equal spreads it is the geometric mean of the
+        /// two centres, the old line; where one cluster is wider, a length is the kind it sits fewer of
+        /// that kind's spreads from, which is the ear's reading of a fist whose dahs wander more than
+        /// its dits.
+        /// </remarks>
+        private static double Boundary((double Mu, double Sd) low, (double Mu, double Sd) high)
+            => Math.Exp(((low.Mu * high.Sd) + (high.Mu * low.Sd)) / (low.Sd + high.Sd));
+
+        /// <summary>
+        /// Two clusters settled: each length goes to the side of the boundary between the two it falls
+        /// on, and the boundary is measured again, until nothing moves (work instruction 513).
+        /// </summary>
+        private static (List<double> Low, List<double> High) Refine(List<double> low, List<double> high)
+        {
+            var all = low.Concat(high).OrderBy(l => l).ToList();
+
+            for (var i = 0; i < 8 && low.Count > 0 && high.Count > 0; i++)
+            {
+                var boundary = Boundary(LogStats(low), LogStats(high));
+                var nextLow = all.Where(l => l < boundary).ToList();
+
+                if (nextLow.Count == low.Count)
+                {
+                    break;
+                }
+
+                low = nextLow;
+                high = all.Skip(nextLow.Count).ToList();
+            }
+
+            return (low, high);
+        }
+
+        // **THE SENDER'S MARKS ARE TWO CLUSTERS, DIT AND DAH** (work instruction 513, R113, HM-DEC-217).
+        // Sorted lengths are first split at the widest ratio between neighbors, then settled as two
+        // clusters in log-length, each mark on the side of the boundary it sits fewer spreads from. They
+        // are two kinds when their centres stand at least TwoKindsRatio apart and SeparationSpreads of
+        // their spreads each side of the boundary. The short side, and the boundary.
         private (List<double> Shorts, double? Split) Kinds()
         {
             var lengths = _recent.Select(m => m.ToSeconds - m.FromSeconds).OrderBy(l => l).ToList();
@@ -747,15 +942,44 @@ public sealed class CwRunReader
                 }
             }
 
-            if (at < 0 || widest < TwoKindsRatio)
+            if (at < 0)
             {
                 return (lengths, null);
             }
 
-            var shorts = lengths.Take(at).ToList();
-            var longs = lengths.Skip(at).ToList();
+            // **A CLEAN GAP BETWEEN THE LENGTHS IS TWO KINDS, AS BEFORE.** Where two neighbors differ by
+            // TwoKindsRatio, the marks fall into two kinds there, as they have since unit 490; only the
+            // line between them moves, to where a mark sits as many spreads from either centre.
+            if (widest >= TwoKindsRatio)
+            {
+                var shortSide = lengths.Take(at).ToList();
+                var longSide = lengths.Skip(at).ToList();
 
-            return (shorts, Math.Sqrt(shorts.Average() * longs.Average()));
+                return (shortSide, Boundary(LogStats(shortSide), LogStats(longSide)));
+            }
+
+            // **A FIST'S LENGTHS OVERLAP, AND NO CLEAN GAP IS LEFT** (work instruction 513, R113). Its
+            // dits run long and its dahs short until no two neighbors differ by two, so the two kinds are
+            // found as two clusters settled by the nearer centre, and taken only where they are what a
+            // hand makes: centres TwoKindsRatio apart, SeparationSpreads each side of the boundary, and
+            // neither wider than HandSpread. A mix of two speeds is wider, and is not taken.
+            var (shorts, longs) = Refine(lengths.Take(at).ToList(), lengths.Skip(at).ToList());
+
+            if (shorts.Count == 0 || longs.Count == 0)
+            {
+                return (lengths, null);
+            }
+
+            var dit = LogStats(shorts);
+            var dah = LogStats(longs);
+
+            if (Math.Exp(dah.Mu - dit.Mu) < TwoKindsRatio || dah.Mu - dit.Mu < SeparationSpreads * (dit.Sd + dah.Sd)
+                || dit.Sd > HandSpread || dah.Sd > HandSpread)
+            {
+                return (lengths, null);
+            }
+
+            return (shorts, Boundary(dit, dah));
         }
     }
 }

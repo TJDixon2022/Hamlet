@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-TASK: 3 of 3
-WORK_INSTRUCTION: 511 - the blocks stay, the senders own dits count, the old decoder retires (run by hand)
-BALL: tim
-NEXT_PASTE: output.md -> Claude Web
+STATE: EXECUTING
+TASK: 2 of 3
+WORK_INSTRUCTION: 513 - a fist is read by which cluster is nearer (run by hand)
+BALL: code
+NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-30T17:31:06-04:00
-NOTE: Unit 511 - blocks stay and quieter dits count; the old decoder tagged, nothing removed while live code calls it
+UPDATED: 2026-09-30T18:21:16-04:00
+NOTE: Unit 513 - the reader change committed; building and the app carry-forward line
 
 ---
 
