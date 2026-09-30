@@ -4,6 +4,33 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-213
+date: 2026-09-30
+refs: work instruction numbered 508 (run as unit 509; it named HM-DEC-211, already used by unit 506), PHASE_PLAN.md R100 and R106, src/Hamlet.App/Controls/CwScopeControl.cs, src/Hamlet.App/ViewModels/MainWindowViewModel.cs, tests/Hamlet.App.Tests/ViewModels/TheScrollKeepsItsLettersTests.cs
+---
+
+**A letter on the scroll stays on the scroll.** Tim, 2026-09-30, on W1AW fast code practice: *"I
+don't like how the scrolling letters seem to blink in and out depending on your confidence."*
+
+**What was wrong.** It was not confidence; it was the redraw. The terminal has kept what it printed
+since unit 487 (R100). The scroll kept its letters too, in the training graph, appended on the same
+`CharacterSettled` event the terminal prints from, but every frame rebuilt which of them to draw: only
+the letters with a block beneath them on that frame. The detector rebuilds its last four seconds of
+blocks every tick, so a letter whose blocks moved or came late went out, drew late, or never drew.
+
+**What is built.** The scroll draws every letter the terminal printed, from that one event, on the
+frame it prints, over the span it was read from, and it stays until time carries it off the left.
+Nothing removes it but the edge and the owner's Clear, which now clears the scroll with the terminal.
+A letter the terminal did not print is never drawn. Word gaps draw nothing, and the blocks are as unit
+507 left them.
+
+**What it supersedes.** The scroll's rule from work instruction 485 under R97, that a letter with no
+block beneath it is not drawn. R102 had already taken the detector's keying and blocks off what is
+emitted, and R106 makes the scroll's letters the terminal's. So a letter the terminal printed now
+draws even where the detector drew no block under it; at 5 WPM Farnsworth one E does. The order
+directed this; it is Tim's to overrule.
+
+---
 id: HM-DEC-212
 date: 2026-09-30
 supersedes: work instruction 285's small mark as the window and taskbar icon, and its run-time raster with no .ico
