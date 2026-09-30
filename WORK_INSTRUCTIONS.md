@@ -1,13 +1,15 @@
-# Work instruction 509 - the next things, in the order they pay
+# Work instruction 511 - the blocks stay, the sender's own dits count, and the old decoder retires
 
-**Hand run. One unit, seven tasks, drop from the back.** Commit per task. If time runs out, the
-later tasks are dropped and the report says which. **Tasks 1 and 2 are the owner's asks and are
-not dropped.**
+**Hand run. One unit, three tasks, drop from the back.** Commit per task. Task 1 is the owner's
+report and is not dropped.
 
 **No test against a recording, a fixture, a floor or copied telemetry** (R96). A headless test
 driving synthetic hops written in the test itself is allowed; nothing read from disk. Verify by
 building `Hamlet.sln` with warnings as errors and running the app carry-forward line. **The
 owner's report at the radio is the test.**
+
+**Numbering.** This is unit 511 and its ruling id is HM-DEC-215. If either is taken, use the next
+free one and say so.
 
 ---
 
@@ -41,147 +43,121 @@ If all five hold, say "Hamlet confirmed" and continue.
 - One `dotnet test` invocation per line, filtered, with a `timeout`. Never background and poll.
   The app line loses names to the dispatcher loop; re-run once, count neither way.
 - Apostrophes in quoted heredocs break; `;`, `rm` and `git rm` are refused; Python cannot run
-  here; `-m` more than once for a multi-line commit. Scripts go in `.run-unit\unit509-<name>.sh`
+  here; `-m` more than once for a multi-line commit. Scripts go in `.run-unit\unit511-<name>.sh`
   and are not committed.
-- Nothing that keys or transmits. Nothing written to the radio. **Nothing reaches the network
-  from the app or a test** - `TheTestsStayOffTheNetworkTests` stays green.
-- **Every existing case reads exactly as at HEAD after every task**, or the report says what
-  changed and why. Nothing is forced.
+- Nothing that keys or transmits. Nothing written to the radio.
+- **Every existing reading case reads exactly as at HEAD after every task**, or the report says
+  what changed and why. Nothing is forced.
 - `output.md` at the root, four headings exactly: `## 1. What Claude did`, `## 2. What the owner
   should expect`, `## 3. What you should see`, `## 4. What's blocking us`.
 
 ---
 
-## 2. Where CW stands, so the tasks are aimed
+## 2. Task 1 - a block on the scroll stays on the scroll (the owner's report)
 
-**Reading, on the air, 2026-09-30.** A 34 WPM W1AW bulletin: `AN INCLUDED WOOD FIXTURE MADE
-POSITIONING AND SOLDERING THE BRASS TUBE EASY`. A hand-sent 40 m QSO: `NICELY INTO MK TOYOTA PRIUS
-BOTH WITH AND WITHOUT THE HYBRID ENGINE RUNNING`. 5 WPM Farnsworth practice as words. Near zero junk
-on noise. **The turnaround was the owner's rule: a signal is a shape, and noise cannot make the
-pattern** (R110, R112).
+**The owner, 2026-09-30, on the scroll after unit 509:** *"The letters are solid, but the bars,
+the dashes and dots bars, tend to come and go."*
 
-**Where it is short, measured.** The bench reads a call whole from 16 dB over the noise; below that
-dahs break in the envelope before any gate sees them (unit 507). Inside a strong bulletin a dit is
-still sometimes lost - `SEPTEMBER` read `SINHSPMBR`. At 35 WPM on a weak signal every letter prints
-as a word. A second station that stands as a sequence is found and never printed.
+**Same fault as the letters, one layer down.** Unit 509 fixed the letters by drawing from a kept
+list appended on the print event. The blocks are still asked of the detector every frame, and
+the detector re-derives its last four seconds from its current state - which unit 507's pattern
+gate keeps revising as marks stand or drop. A block there on one frame is not there on the next.
 
----
+**The rule:** **a block that was drawn stays drawn** until time carries it off the left. The graph
+keeps a list of blocks, appended when a mark stands, trimmed only by time, never re-derived from
+the detector's live state. Same shape as unit 509's letters. **Display only; the engine does not
+change.**
 
-## 3. The tasks
+**Watch it fail first**, headless on the live path with synthetic hops: `CQ CQ DE N0CALL N0CALL K`
+at 20 WPM, sampled every 50 ms - once a block appears it is present on every later frame until it
+scrolls off. **Red today.** Then the 5 WPM Farnsworth call, the same. Then loud noise: no block.
 
-### Task 1 - a vertical scroll bar on the terminal (the owner's ask)
+## 3. Task 2 - the sender's own dits count (unit 510's question, answered)
 
-The CW terminal fills and the oldest text goes out of reach. **Give it a vertical scroll bar** that
-appears when the text exceeds the box, follows new text as it arrives, and stops following when
-the owner scrolls up to read - resuming when he scrolls back to the bottom. Hover text on the bar
-says so (§0.6). The terminal's height and the one layout do not change (R101).
+Unit 510 measured why `SEPTEMBER` reads `SINHSPMBR`: a dit 6 dB down inside a letter of a strong
+sender is found by the blind stage and **dropped by the pattern gate**, because 6 dB is outside the
+sender's 3 dB level tolerance at that contrast. Its proposed ruling is adopted here, **as a CW
+question answered from the pattern (R85), not raised to the owner:**
 
-**Watch it fail first**, headless: forty lines into the terminal, the bar is present, the newest
-line is in view; scroll up, add ten more lines, the view holds; scroll to the bottom, it follows.
+**Once a sender stands, a candidate at its pitch, of its dit or dah length within tolerance,
+sitting inside one of its letters - between two of its marks, closer than a letter gap - is
+admitted as its mark down to 6 dB under its level.** Twice the present tolerance, and only there.
+Nowhere else does the tolerance change: between letters, between senders, and for a candidate at
+another pitch, 3 dB stands. A second station's marks cannot join the first this way, because they
+are at another pitch.
 
-### Task 2 - copy to clipboard (the owner's ask)
+**Watch it fail first**: unit 510's case, the 24 dB call with the first dit of the first `L` 6 dB
+down. **Red today**, `N0CAE IL`. Green when it reads `N0CALL`. Then unit 507's two-station case
+must read as at HEAD - the quiet station's marks must not join the loud one - and both noise tests
+must print nothing; report the counts.
 
-**A `Copy` button beside `Clear`** that puts the terminal's whole text on the clipboard as plain
-text, with the line breaks as shown and prosigns as their bracketed names. Hover says what it
-copies. It is in the hover registry with the rest of the CW tab's controls.
+## 4. Task 3 - the old decoder retires
 
-**Watch it fail first**, headless: after a call, the clipboard holds the terminal's text.
+**The owner, 2026-09-30:** *"We're running two decoders. We really don't need them both. Is there
+a lot of dead code in the one we were developing? Seems like we're doing a lot of the work in the
+shape shifting."*
 
-### Task 3 - Hamlet scores itself against W1AW
+**Yes.** Since unit 493 only `CwRunReader` reaches the screen. The work is in three files:
+`CwEnvelopeDetector` finds bars, `CwPatternGate` decides which are marks, `CwRunReader` turns marks
+into letters. Everything the shape approach replaced is still in the tree, behind switches,
+feeding nothing:
 
-**The yardstick this project has never had: real air, real key.** After a bulletin, the owner
-pastes the ARRL's published text and Hamlet says how much of it was read.
+- `CwProbabilisticDecoder`'s timing-only path - the lattice, the speed grid, the emission gate -
+  behind `ReadsRuns`;
+- `CwUnitEstimator`;
+- `CwToneTracker` and `CwToneSurvey`, superseded by units 496 and 507;
+- `CwKeyingMeter`'s swing test and `ConfidentSwingDb`;
+- unit 489's three switches, gating nothing since 493;
+- the second decoder of step 9 - `FldigiCwDecoder` under `Cw/Second/`, its calibration and
+  arbitration (units 456 to 467) - which never votes;
+- the mixdown path the tracker fed.
 
-- **A `Score` control on the CW tab**, near the W1AW button: a box to paste the sent text into, and
-  a line that reads **`W1AW 7 PM bulletin: 94% of characters, 3 wrong, 2 missing, 1 extra`** once
-  both sides exist.
-- **The comparison** is the edit distance `CwScorer` already computes (unit 439), over the stretch
-  of the terminal that aligns with the pasted text - the alignment is the author's, and the
-  report says how the stretch is found. Punctuation and prosigns count; case does not.
-- **The number is written to telemetry** as a row - `cw`, `w1aw_score` - with the schedule slot,
-  the percentage and the three counts, so the record keeps every day's figure.
-- **No fetching.** The owner pastes. If the app already has an outbound HTTP path that the network
-  test permits, say so in section 4; do not add one.
+**Retire it:**
 
-**Watch it fail first**, headless: a driven decode of the clean call scored against its own text
-reads 100%; against the same text with one letter changed reads one wrong.
+1. **First, tag HEAD** as `before-cw-cleanup`, so all of it stays in history, reachable by name.
+2. **Then remove** what no longer reaches the screen or a kept test. For each file or type
+   removed, one line in the report: what it was, which unit built it, which unit superseded it.
+3. **Keep** whatever the surviving three files, the scope, the terminal, the capture sheet or the
+   verdict row still call. If a retired piece is still called by something live, **say so and leave
+   it** - do not refactor around it on the way past.
+4. **Tests that only exercised retired code retire with it**, listed by name. **Tests that assert
+   a reading stay**, and every one reads as at HEAD.
+5. **`CW_REQUIREMENTS.md` section M** - the two-decoder rules, HM-REQ-120 to 129 - is marked
+   **superseded** at its head with one paragraph saying why: the second decoder measured worse than
+   ours on every real condition (unit 466), never voted, and the shape approach made the question
+   moot. **The rows themselves are not deleted.**
 
-### Task 4 - integrate over a dit, not a hop
+**The build is green with warnings as errors, the app line is green, and every reading case reads
+as at HEAD.** If removing something changes a reading, it was not dead: put it back and say so.
 
-**The biggest lever on weak signals.** A mark is judged hop by hop on a 10 ms window; a dit is 35
-to 240 ms. **Integrating the bin's energy over a dit's length before deciding is the textbook
-detector for a keyed tone in noise**, and it is the shape rule carried through: look for a block
-of the expected width, not a tall enough point.
-
-- **When the sender's dit is known** - the reader has it after two runs - the detector judges each
-  candidate bar's level as the mean over a dit-length window centred on it, at the sender's pitch.
-- **When it is not known**, judge as now.
-- **Nothing else in the detector changes.** The proportional gates and the pattern gate read the
-  integrated level in place of the hop level.
-
-**Watch it fail first**, synthetic: unit 507's strength table - the call at 8, 12, 16 and 24 dB -
-before and after. **The reason for the task is the 8 and 12 dB rows.** Report how many of the 65
-marks stand at each, and what reads. Both noise tests must still print nothing; report the counts.
-
-### Task 5 - once the sender is known, look for its marks
-
-**Marks are found blind, then grouped. After a sequence stands, the sender's pitch, dit and level
-are known.** Search for its marks with that knowledge: at its pitch, blocks of its dit or its dah,
-at its level. This is what an ear does once it has the rhythm - it fills in the weak dits.
-
-- A candidate that the blind stage missed but that fits the sender's pattern at the sender's pitch
-  is a mark of that sender.
-- It never invents a mark where the level is flat: the block must be there, at the sender's level
-  within the tolerance, for the sender's length within the tolerance.
-
-**Watch it fail first**, synthetic: a strong call with one dit attenuated 6 dB inside a letter.
-**Red today** - report the letter it breaks; green when the dit is found by the sender's pattern
-and the letter reads whole. And the strength table again.
-
-### Task 6 - print every sequence that stands
-
-Unit 507's pattern gate finds a second station as a second sequence; the reader prints one. **Each
-sequence that stands gets its own line in the terminal, headed by its pitch** - `625 Hz:` and
-`825 Hz:` - and the scroll draws each sender's blocks in its own row. The louder sender is first.
-
-**Watch it fail first**, synthetic: unit 507's two-station case prints both stations, each whole,
-each under its pitch.
-
-### Task 7 - the word gaps at speed
-
-At 35 WPM on a weak signal every letter prints as a word (unit 507's report). The reader's
-word-gap arithmetic from units 500, 501 and 504 was set on stronger signals. **Find why the
-between-letter gap reads as a word gap at 35 WPM and 10 dB** - most likely the gap-dit's smear
-term outgrowing the dit at that speed - and fix it in the reader's arithmetic.
-
-**Watch it fail first**: unit 507's 35 WPM at 10 dB, `C Q C Q D E N 0 C A L L`. Green when it reads
-`CQ CQ DE N0CALL N0CALL K`. Every other speed case reads as at HEAD.
+**Drop candidate:** this whole task, if time runs out, with the list of what would go stated in
+section 4.
 
 ---
 
-## 4. Record
+## 5. Record
 
-- `PHASE_OUTCOME.md`, both copies: `## UNIT 509 - STEP 12`, one paragraph naming which tasks
+- `PHASE_OUTCOME.md`, both copies: `## UNIT 511 - STEP 12`, one paragraph naming which tasks
   landed.
-- `PHASE_STATUS.md`, both copies: names 509.
+- `PHASE_STATUS.md`, both copies: names 511.
 - Patch-bump `Directory.Build.props`.
-- `DECISIONS.md`, newest first, **HM-DEC-212**, headline *Hamlet scores itself against W1AW, and a
-  mark is judged over a dit's width*, naming the tasks that landed.
+- `CLAUDE.md` §1 index row.
+- `DECISIONS.md`, newest first, **HM-DEC-215**, headline *The blocks stay, the sender's own dits
+  count, and the old decoder retires*, naming the tag and what was removed.
 - **Touch no checkbox in `PHASE_PLAN.md`**, and add no ruling.
 
 ---
 
-## 5. Report
+## 6. Report
 
-Section 2, for the owner, in plain words, task by task, saying which landed and which were
-dropped:
+Section 2, for the owner, in plain words:
 
-- the scroll bar and the copy button;
-- how to score a bulletin: press the W1AW button, let it run, paste the ARRL text into the box,
-  read the number;
-- what weak stations should now do, with the bench's floor before and after;
-- whether a second station now prints on its own line.
+- rebuild;
+- the blocks on the scroll no longer come and go;
+- a strong station's quieter dits inside a letter are kept, so `SEPTEMBER` reads `SEPTEMBER`;
+- the old decoder is gone from the tree and kept at the tag `before-cw-cleanup`; nothing about
+  what reads changed.
 
-Section 1: what changed, file by file, per task, and that the build, the app line and the network
-test are green. **Section 3: the strength table before and after tasks 4 and 5 at the top, then
-each task's cases.** Section 4: anything left, a line each, and every dropped task by name.
+Section 1: what changed, file by file, per task; the retired list with its one-line reasons; and
+that the build, the app line and every reading case are as at HEAD. Section 3: the cases.
+Section 4: anything left, a line each, and any task dropped by name.

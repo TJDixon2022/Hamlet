@@ -137,6 +137,66 @@ public sealed class CwTrainingGraph
         }
     }
 
+    /// <summary>
+    /// Take a mark that stood, as a block that stays (work instruction 511, task 1, HM-DEC-215).
+    /// </summary>
+    /// <param name="mark">The mark, on the detector's audio clock.</param>
+    /// <param name="heardSeconds">How much audio the detector had heard when it was handed over.</param>
+    /// <param name="nowUtc">Now.</param>
+    /// <remarks>
+    /// <para>**A BLOCK THAT WAS DRAWN STAYS DRAWN** until time carries it off the left. Tim,
+    /// 2026-09-30: *"The letters are solid, but the bars, the dashes and dots bars, tend to come and
+    /// go."* <see cref="Update"/> reworks the last four seconds of blocks from the watched bin's
+    /// paired bars on every tick, and the watched bin and its pairing move, so a block there on one
+    /// frame was gone on the next. This keeps each mark that stood once, by its sequence, the way
+    /// <see cref="Settle"/> keeps each printed letter.</para>
+    /// </remarks>
+    public void Stand(CwMark mark, double heardSeconds, DateTime nowUtc)
+    {
+        ArgumentNullException.ThrowIfNull(mark);
+
+        lock (_gate)
+        {
+            if (_stood.ContainsKey(mark.Sequence))
+            {
+                return;
+            }
+
+            var end = nowUtc - TimeSpan.FromSeconds(Math.Max(0, heardSeconds - mark.ToSeconds));
+            var start = end - TimeSpan.FromSeconds(mark.ToSeconds - mark.FromSeconds);
+
+            _stood[mark.Sequence] = end;
+
+            if (end < nowUtc.AddSeconds(-WindowSeconds))
+            {
+                return;
+            }
+
+            _bars.Add((start, end, mark.Shape?.Score ?? double.NaN));
+            _bars.Sort((a, b) => a.Start.CompareTo(b.Start));
+        }
+    }
+
+    /// <summary>Forget what time has carried off the left: the blocks and the letters, and nothing else.</summary>
+    /// <param name="nowUtc">Now.</param>
+    public void Trim(DateTime nowUtc)
+    {
+        lock (_gate)
+        {
+            _bars.RemoveAll(b => b.End < nowUtc.AddSeconds(-WindowSeconds));
+            _letters.RemoveAll(l => l.EndUtc < nowUtc.AddSeconds(-WindowSeconds));
+
+            foreach (var old in _stood.Where(s => s.Value < nowUtc.AddSeconds(-2 * WindowSeconds)).Select(s => s.Key).ToList())
+            {
+                _stood.Remove(old);
+            }
+        }
+    }
+
+    // The marks already kept, by sequence, with when each ended: one handed over again is not kept
+    // twice, and one cleared by the owner does not come back while it is still inside the window.
+    private readonly Dictionary<long, DateTime> _stood = new();
+
     /// <summary>Take a character the decoder settled.</summary>
     /// <param name="character">The character.</param>
     /// <param name="heard">How much audio the decoder had heard when it settled.</param>

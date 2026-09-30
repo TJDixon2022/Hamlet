@@ -40,7 +40,27 @@ public sealed class CwScopeFeed
         ArgumentNullException.ThrowIfNull(envelope);
 
         var history = envelope.History();
-        _graph.Update(history, envelope.HopMs, nowUtc);
+
+        // **THE BLOCKS ARE THE MARKS THAT STOOD AT THE PITCH BEING PRINTED, KEPT ONCE** (work
+        // instruction 511, task 1, HM-DEC-215). Every mark still inside the window at that pitch is
+        // offered each tick, so a sender's first marks, which stood before the reader printed it, are
+        // drawn the moment it prints; the graph keeps each by its sequence and lets time alone take it.
+        // Nobody printed, nothing is drawn: noise stands marks now and then and prints nothing.
+        if (double.IsFinite(mixingHz))
+        {
+            var batch = envelope.MarksSince(0);
+
+            foreach (var mark in batch.Marks)
+            {
+                if (Math.Abs(mark.PitchHz - mixingHz) <= CwRunReader.PitchToleranceHz
+                    && batch.HeardSeconds - mark.ToSeconds <= CwTrainingGraph.WindowSeconds)
+                {
+                    _graph.Stand(mark, batch.HeardSeconds, nowUtc);
+                }
+            }
+        }
+
+        _graph.Trim(nowUtc);
 
         return CwScopeFrame.From(history, envelope.HopMs, reading, mixingHz, previous, scopeQuiet) with
         {
