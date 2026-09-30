@@ -55,6 +55,16 @@
         <Style Selector="Button.category-row:pointerover Border.category-card">
             <Setter Property="BorderBrush" Value="{StaticResource HmAmberEdgeBrush}" />
         </Style>
+
+        <!-- **THE WORD `map` IS SAID ONLY BY A ROW THAT OPENS ONE WHEN PRESSED.** A continent's row
+             opens its countries, and its map is the separate button beside it (task 4), so the
+             word is set by where the row sits rather than by what the row holds. -->
+        <Style Selector="TextBlock.card-open">
+            <Setter Property="IsVisible" Value="False" />
+        </Style>
+        <Style Selector="Button.category-row TextBlock.card-open">
+            <Setter Property="IsVisible" Value="True" />
+        </Style>
     </Window.Styles>
 
     <Window.Resources>
@@ -298,7 +308,6 @@
                                     VerticalAlignment="Center">
                             <TextBlock Classes="card-open"
                                        Text="{x:Static vm:AchievementCategoryCard.MapWord}"
-                                       IsVisible="{Binding HasMap}"
                                        FontSize="12"
                                        Foreground="{StaticResource HmTextMutedBrush}" />
 
@@ -625,20 +634,38 @@
                 <ItemsControl x:Name="AchievementsSubBadges"
                               ItemsSource="{Binding SubBadges}">
                     <ItemsControl.ItemTemplate>
+                        <!-- **TWO PRESSABLE THINGS, SIDE BY SIDE AND NEVER ONE INSIDE THE OTHER**
+                             (work instruction 505 task 4). The row opens the continent's countries,
+                             as it did; the small `map` beside it opens the path of the contact that
+                             opened the continent. An unearned continent has no path and no map
+                             button. -->
                         <DataTemplate x:DataType="vm:AchievementBadge">
-                            <Button Classes="hm-badge"
-                                    Margin="0,0,0,8"
-                                    Background="Transparent"
-                                    BorderThickness="0"
-                                    HorizontalAlignment="Stretch"
-                                    HorizontalContentAlignment="Stretch"
-                                    VerticalContentAlignment="Stretch"
-                                    Command="{Binding $parent[Window].((vm:AchievementsViewModel)DataContext).OpenCategoryCommand}"
-                                    CommandParameter="{Binding Kind}"
-                                    ToolTip.Tip="{Binding ScoreTip}">
-                                <ContentControl Content="{Binding Card}"
-                                                ContentTemplate="{StaticResource HmCategoryItemTemplate}" />
-                            </Button>
+                            <Grid ColumnDefinitions="*,Auto" Margin="0,0,0,8">
+                                <Button Classes="hm-badge"
+                                        Background="Transparent"
+                                        BorderThickness="0"
+                                        HorizontalAlignment="Stretch"
+                                        HorizontalContentAlignment="Stretch"
+                                        VerticalContentAlignment="Stretch"
+                                        Command="{Binding $parent[Window].((vm:AchievementsViewModel)DataContext).OpenCategoryCommand}"
+                                        CommandParameter="{Binding Kind}"
+                                        ToolTip.Tip="{Binding ScoreTip}">
+                                    <ContentControl Content="{Binding Card}"
+                                                    ContentTemplate="{StaticResource HmCategoryItemTemplate}" />
+                                </Button>
+
+                                <Button Grid.Column="1"
+                                        Classes="category-map"
+                                        IsVisible="{Binding Card.OpensAMap, FallbackValue=False}"
+                                        Content="{x:Static vm:AchievementCategoryCard.MapWord}"
+                                        Command="{Binding $parent[Window].((vm:AchievementsViewModel)DataContext).OpenTheMapCommand}"
+                                        CommandParameter="{Binding Card}"
+                                        Margin="8,0,0,0"
+                                        Padding="12,6"
+                                        VerticalAlignment="Center"
+                                        Cursor="Hand"
+                                        ToolTip.Tip="Open the path of the contact that opened it." />
+                            </Grid>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>

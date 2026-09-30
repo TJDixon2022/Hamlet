@@ -820,6 +820,92 @@ public sealed class TheCategoryPagesAreListsTests
         }
     }
 
+    /// <summary>
+    /// **Task 4: an earned continent's row carries two pressable things side by side** - the row,
+    /// which opens its countries, and a small `map` beside it, not inside it, which opens the path of
+    /// the contact that opened the continent. An unearned continent has no map button, and no button
+    /// in the window sits inside another.
+    /// </summary>
+    [AvaloniaFact]
+    public void AnEarnedContinentOpensItsCountriesAndItsMapSeparately()
+    {
+        var window = Realized(TheAchievementsPageTests.TwelveContacts(), 1040, Calling());
+        var screen = (AchievementsViewModel)window.DataContext!;
+
+        try
+        {
+            OpenOnWindow(window, screen, AchievementKinds.Continents);
+
+            var seven = screen.Category!.SubBadges;
+            var list = Named<ItemsControl>(window, "AchievementsSubBadges");
+            var earnedSeen = 0;
+
+            foreach (var badge in seven)
+            {
+                var card = badge.Card!;
+                var opens = list.GetVisualDescendants().OfType<Button>()
+                    .Single(b => b.IsEffectivelyVisible && b.Classes.Contains("hm-badge") && (b.CommandParameter as string) == badge.Kind);
+                var map = list.GetVisualDescendants().OfType<Button>()
+                    .Where(b => b.IsEffectivelyVisible && b.Classes.Contains("category-map") && ReferenceEquals(b.CommandParameter, card))
+                    .ToList();
+
+                _output.WriteLine(badge.Name.PadRight(15) + (card.Earned ? "earned" : "unearned") + ", map buttons " + map.Count);
+
+                Assert.Same(screen.OpenCategoryCommand, opens.Command);
+
+                // **THE ROW THAT OPENS THE COUNTRIES DOES NOT SAY `map`**; the button beside it does.
+                Assert.DoesNotContain(AchievementCategoryCard.MapWord, VisibleText(opens));
+
+                if (!card.OpensAMap)
+                {
+                    Assert.Empty(map);
+                    continue;
+                }
+
+                earnedSeen++;
+
+                Assert.Single(map);
+                Assert.Same(screen.OpenTheMapCommand, map[0].Command);
+                Assert.Contains(AchievementCategoryCard.MapWord, map[0].Content as string ?? "", StringComparison.Ordinal);
+                Assert.DoesNotContain(map[0], opens.GetVisualDescendants().OfType<Button>());
+                Assert.True(
+                    map[0].TranslatePoint(new Point(0, 0), window)!.Value.X >= opens.TranslatePoint(new Point(opens.Bounds.Width, 0), window)!.Value.X - 0.5,
+                    badge.Name + ": the map button is not beside the row");
+
+                // **THE MAP BUTTON OPENS THIS CONTINENT'S FIRST PATH, AND THE CATEGORY STAYS.**
+                map[0].Command!.Execute(map[0].CommandParameter);
+                Settle(window);
+
+                Assert.True(screen.MapIsOpen);
+                Assert.Same(card.Globe, screen.OpenedMap);
+                Assert.Equal(AchievementKinds.Continents, screen.Category!.Kind);
+                Assert.Contains(card.Title, screen.OpenedMapHeading, StringComparison.Ordinal);
+
+                screen.CloseTheMapCommand.Execute(null);
+                Settle(window);
+            }
+
+            Assert.True(earnedSeen > 0, "no earned continent on the fixture");
+
+            // **A BUTTON INSIDE A BUTTON IS NOT BUILT**, on this page or any other.
+            foreach (var kind in AchievementKinds.All.Concat(ContinentKinds()))
+            {
+                ToThePage(window, screen);
+                OpenOnWindow(window, screen, kind);
+
+                var nested = window.GetVisualDescendants().OfType<Button>()
+                    .Where(b => b.GetVisualAncestors().OfType<Button>().Any())
+                    .ToList();
+
+                Assert.True(nested.Count == 0, kind + ": " + nested.Count + " buttons inside a button");
+            }
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
     /// <summary>The rows and panels the open category draws in its list, top to bottom.</summary>
     private static List<Border> CategoryCards(Window window)
         => Named<ItemsControl>(window, "AchievementsCategoryCards").GetVisualDescendants().OfType<Border>()
