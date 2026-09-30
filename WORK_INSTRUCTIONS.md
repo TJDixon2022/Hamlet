@@ -1,8 +1,9 @@
-# Work instruction 500 - the gaps belong to the sender's own dit
+# Work instruction 501 - Farnsworth spacing, and a lone letter must belong to something
 
-**Hand run. One unit.** Unit 499 put the chain right: CW, the 500 Hz filter, the card saying
-Morse. The first honest look at a real signal followed, and the reader cuts every letter into
-single marks.
+**Hand run. One unit.** Unit 500 measured the reader right on standard timing at every speed and
+could not reproduce the owner's wall of `E`s and `T`s. It named why: W1AW's slow code practice is
+sent Farnsworth-style, and no case had ever been built that way. This unit builds that case and
+makes the reader read it, and it gives single-element letters the suspicion the owner asked for.
 
 **No test against a recording, a fixture, a floor or copied telemetry** (R96). A headless test
 driving synthetic hops written in the test itself is allowed; nothing read from disk. Verify by
@@ -41,7 +42,7 @@ If all five hold, say "Hamlet confirmed" and continue.
 - One `dotnet test` invocation per line, filtered, with a `timeout`. Never background and poll.
   The app line loses names to the dispatcher loop; re-run once, count neither way.
 - Apostrophes in quoted heredocs break; `;`, `rm` and `git rm` are refused; Python cannot run
-  here; `-m` more than once for a multi-line commit. Scripts go in `.run-unit\unit500-<name>.sh`
+  here; `-m` more than once for a multi-line commit. Scripts go in `.run-unit\unit501-<name>.sh`
   and are not committed.
 - Nothing that keys or transmits. Nothing written to the radio.
 - `output.md` at the root, four headings exactly: `## 1. What Claude did`, `## 2. What the owner
@@ -49,100 +50,113 @@ If all five hold, say "Hamlet confirmed" and continue.
 
 ---
 
-## 2. What the owner saw, and what it says
+## 2. What is known, and what the owner ruled
 
-**W1AW on 7.0475, 2026-09-30 02:09 UTC, and this time the chain is right:** CW, FIL2 at 500 Hz,
-the card reading `40 m 7.048 MHz Morse · yours to use`, the button holding, the panel's own line
-saying **`Sending now: code practice, slow, until 11:00 PM`**.
+**Farnsworth.** The ARRL sends its slow code practice with the **characters at 18 WPM** and the
+**spaces between characters and words stretched** so the overall speed comes out at 5, 7½, 10, 13
+or 15 WPM. Inside a letter the dit is 67 ms and the gaps are 67 ms. Between letters the gap is
+whatever makes the speed - at 5 WPM overall it can be over a second. **Morse's 1:3:7 does not hold
+between letters on a Farnsworth sender.** Unit 500 built every case with the gaps scaled to the
+dit, which is why it read 5 WPM whole on the bench and the owner saw `ST ST TIE TETBA TE TE T TN`
+on the air.
 
-**The terminal read:**
+**The owner's ruling, R109, 2026-09-30:**
 
-```
-ST ST TIE TETBA TE TE T TN ETET T TNI ET TI TETB ETE D TNTR T STE E E E E E E E E E I E
-E E E E E E T E E E E E E E E E E E E E E E E E E E E E E I E E E E E E E E E T
-```
+> *"I want to work on the E's and the T's. They very rarely, almost never, will stand on their own.
+> They need to be part of something. And T, T, T, T, T or E, E, E, E, E is not part of something.
+> We can put a little brains behind this and make sure they're part of something else."*
 
-**Almost every character is one or two marks.** That is not noise getting through - noise is what
-units 497 and 498 cut from 36 marks a second to 5. **That is the sender's own marks being cut into
-single-element letters**: the reader is reading the gaps *inside* a letter as gaps *between*
-letters, so every dit and dah becomes its own `E` or `T`.
-
-**Why it shows now and not in any test.** The panel says **slow code practice** - the ARRL sends
-that at **5 to 15 WPM**. At 10 WPM a dit is 120 ms and the gap inside a letter is 120 ms; at 5 WPM
-they are 240 ms. **Every synthetic case from unit 490 to unit 498 was built between 9 and 23 WPM**,
-and the reader derives its character and word gaps from what it has measured. On a genuinely slow
-sender those thresholds land short, and every intra-character gap reads as a character gap.
-
-**It also explains why the banking did not save him.** A lone `T` is confirmed by the lone `E` that
-follows it inside the window, so they all release. The banking is working; it is being fed letters
-that were never letters.
+**Where the banking falls short today.** Unit 498 banks a single-element letter until the same
+sender sends another letter within the window. **Another single-element letter counts.** So a
+lone `T` is confirmed by a lone `E`, which is confirmed by the next lone `T`, and the whole string
+releases. The banking is right in shape and wrong in what counts as confirmation.
 
 ---
 
-## 3. The change - the gaps scale with the sender
+## 3. Change one - the gaps between letters are the sender's own
 
 In `CwRunReader`:
 
-- **The sender's dit is measured from its own short marks**, and the three gaps follow it as Morse
-  defines them: **one dit between elements, three between letters, seven between words.**
-- **A gap of about one dit ends nothing.** It is the gap inside a letter, and the marks either side
-  belong to the same character.
-- **A gap of about three dits ends a letter.** A gap of about seven ends a word.
-- **The boundaries between the three are the author's** - the geometric means are the obvious
-  choice and unit 490 already uses them for the word gap - stated in the report with their reasons,
-  and **derived from Morse's own 1:3:7, not from any recording and not tuned after a result.**
-- **Until the sender's dit is known**, the reader must not guess short. Say in the report what it
-  does before it has measured a dit, and what that costs on the first letter or two.
-- **The dit must track a sender who changes speed**, since code practice runs from 5 to 35 WPM and
-  the ARRL steps the speed within a session. Say how, and over how many marks.
+- **The gap inside a letter** stays as unit 500 left it: the sender's gap dit, boundary at √3.
+- **The gap between letters and the gap between words are measured from the sender's own gaps
+  between runs**, not derived from the dit. A Farnsworth sender shows two populations of gap
+  outside its letters - between-letter and between-word - and the boundary between them is found
+  from those gaps, the way the dit and dah are found from the marks.
+- **Until the sender has shown enough gaps between runs**, fall back to 1:3:7 on the dit, and say
+  in the report how many gaps that takes.
+- **A standard-timing sender must read exactly as it does now.** On standard timing the measured
+  gaps land at 3 and 7 dits and nothing changes.
+- **The silence span** unit 500 built - how long a sender may be quiet before it is forgotten -
+  must follow the measured word gap, not the dit, so a 5 WPM Farnsworth sender is not forgotten
+  between its words.
+
+## 4. Change two - a lone letter must belong to something
+
+In `CwRunReader`, two rules on single-element letters - `E` and `T`:
+
+1. **A single-element letter is confirmed only by a multi-element letter** from the same sender,
+   before or after it within the window. Another single-element letter does not confirm it.
+   `TEST` still reads whole: its `T` and `E` are confirmed by the `S`. `DE` reads whole: the `E` is
+   confirmed by the `D`. A `T` followed by an `E` followed by a `T`, with nothing else, prints
+   nothing.
+2. **Three or more single-element letters in a row from one sender is not sending.** The run is
+   dropped and the sender is not printed on its account. **Real text does not do it** - the ARRL
+   practice text is English, and English does not put `EEE` or `TTT` or `TET` in a row.
+
+**Printed-stays-printed holds** (R100): a banked letter has not been printed, so dropping it
+removes nothing from the screen.
 
 **Do not change** the detector, the marks, the narrowness, the edges, unit 496's bin choice, the
-banking's rule, the keyed-mark rule, the two-run rule, the scope, the terminal, the layout, the
-preamp or the buttons. **This is the reader's gap arithmetic and nothing else.**
+keyed-mark rule, the two-run rule, the scope, the terminal, the layout, the preamp or the buttons.
 
 ---
 
-## 4. What to measure
+## 5. What to measure
 
-**Watch it fail first**, with synthetic hops written in the test. **The speeds are the point:**
+**Watch it fail first**, with synthetic hops written in the test:
 
-1. **`CQ CQ DE N0CALL N0CALL K` at 5, 10, 18 and 35 WPM.** Every one must read whole.
-   **Red today at 5 and 10** - report what each reads before and after.
-2. **`TEST DE W1AW K` at 5 and 10 WPM**, the case unit 498 proved at 23.
-3. **A sender that changes speed mid-transmission**, 10 WPM to 20 WPM, as code practice does.
-   Report what it reads.
-4. **The existing cases stay exactly as they are**: the clean call, the call with bursts, the
-   two-station case, the lone dit, the lone dah, the stray dit after the call, and both noise
-   tests. **If any changes, say so with its text; do not force it.**
+1. **Farnsworth: characters at 18 WPM, spacing for 5 WPM overall**, sending
+   `CQ CQ DE N0CALL N0CALL K`. **Red today** - report what it reads before, and that it reads
+   whole after. Then the same at 10 and 13 WPM overall.
+2. **Farnsworth `TEST DE W1AW K`** at 5 WPM overall.
+3. **A string of lone marks**, `T E T T E` at a station's pitch and level with nothing else,
+   **prints nothing**.
+4. **`TEST DE W1AW K` and `DE` read whole** at standard timing - the `T`, `E` and `E` confirmed by
+   multi-element neighbours.
+5. **Every existing case reads exactly as it does at HEAD**: the calls at 5, 10, 18 and 35 WPM,
+   the speed change, the bursts, the two stations, the lone dit, the lone dah, the stray dit, both
+   noise tests. **If any changes, say so with its text; do not force it.**
 
-**Report, for each speed, the sender's true dit and the dit the reader measured**, so the owner can
-see whether the measurement or the arithmetic was at fault.
+**Report, for each Farnsworth case, the sender's true between-letter and between-word gaps beside
+what the reader measured.**
 
 ---
 
-## 5. Record
+## 6. Record
 
-- `PHASE_OUTCOME.md`, both copies: `## UNIT 500 - STEP 12`, one paragraph.
-- `PHASE_STATUS.md`, both copies: names 500.
+- `PHASE_OUTCOME.md`, both copies: `## UNIT 501 - STEP 12`, one paragraph.
+- `PHASE_STATUS.md`, both copies: names 501.
 - Patch-bump `Directory.Build.props`.
-- `DECISIONS.md`, newest first, **HM-DEC-204**, headline *A sender's gaps are its own dit times one,
-  three and seven*, naming that every synthetic case had been built between 9 and 23 WPM and that
-  W1AW's slow code practice at 5 to 15 WPM was read as single-element letters.
-- **Touch no checkbox in `PHASE_PLAN.md`**, and add no ruling.
+- **Append R109 to the rulings section of both `PHASE_PLAN.md` copies**, in the owner's words
+  above. **Touch no checkbox.**
+- `DECISIONS.md`, newest first, **HM-DEC-205**, headline *Farnsworth gaps are the sender's own, and
+  a lone letter must belong to something*, naming that no case had been built Farnsworth-style
+  and that a lone letter had been confirming a lone letter.
 
 ---
 
-## 6. Report
+## 7. Report
 
 Section 2, for the owner, in plain words:
 
 - rebuild;
-- W1AW's slow code practice should read as words rather than as strings of `E` and `T`;
-- fast sending is unaffected;
-- **if it still comes out as single letters, the dit the reader measures is the thing to look at**,
-  and section 3's table names it.
+- **W1AW's slow code practice should read as words** - the letters are sent at 18 WPM with long
+  spaces, and the reader now measures those spaces from the sender rather than assuming them;
+- **strings of `E` and `T` should be gone**: a lone letter now needs a real letter beside it, and
+  three lone letters in a row are thrown out;
+- `TEST`, `DE` and every real `E` and `T` inside a word still print;
+- **if it still comes out wrong, section 3's gap table is the thing to compare against.**
 
-Section 1: what changed, file by file, the three gap boundaries and their reasons, what the reader
-does before it knows the dit, and that the build and the app line are green. **Section 3: the four
-speeds' text before and after, with the true dit beside the measured dit.** Section 4: anything
-left, a line each.
+Section 1: what changed, file by file, how the between-letter and between-word boundary is found,
+and that the build and the app line are green. **Section 3: the Farnsworth cases' text before and
+after, with the true gaps beside the measured ones.** Section 4: anything left, a line each.

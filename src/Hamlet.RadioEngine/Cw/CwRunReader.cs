@@ -76,6 +76,18 @@ public sealed class CwRunReader
     // The marks a sender's length and gap figures are read over.
     private const int RecentMarks = 40;
 
+    /// <summary>
+    /// The word gap of the slowest Farnsworth sending the ARRL's code practice uses, 18 WPM letters at
+    /// 5 WPM overall, in seconds: 3.66 (work instruction 501).
+    /// </summary>
+    /// <remarks>
+    /// **FROM PARIS, NOT FROM ANY RECORDING.** PARIS is fifty units: thirty-one in its letters and the
+    /// gaps inside them, sent at the letter speed, and nineteen in its spaces, four letter gaps of
+    /// three and one word gap of seven, stretched so the word takes 60/5 seconds. So one stretched
+    /// unit is (60/5 - 31 × 1.2/18) / 19 seconds, and a word gap is seven of them.
+    /// </remarks>
+    internal const double SlowestFarnsworthWordGapSeconds = 7 * ((60.0 / 5) - (31 * 1.2 / 18)) / 19;
+
     private readonly List<Sender> _senders = new();
 
     /// <summary>Raised once for each character read, in time order, and never revised.</summary>
@@ -199,6 +211,9 @@ public sealed class CwRunReader
     /// <summary>The printed sender's dit of gap, in seconds, or NaN: for the tests' report (work instruction 500).</summary>
     internal double StationGapDitSeconds => _station?.GapDitSeconds ?? double.NaN;
 
+    /// <summary>The printed sender's measured letter and word gaps, in seconds, or nulls: for the tests' report (work instruction 501).</summary>
+    internal (double? Letter, double? Word) StationGaps => _station?.LetterAndWordGaps() ?? (null, null);
+
     private double _printedThrough = double.NegativeInfinity;
 
     private void Print(double heardSeconds)
@@ -214,15 +229,18 @@ public sealed class CwRunReader
         }
 
         // Senders long silent and not printed are forgotten: one that never made two runs of two marks
-        // after its own silence, one that did after the minute the detector keeps its marks.
+        // after its own silence (work instruction 501: at least the slowest Farnsworth word gap until
+        // it has shown its own gaps), one that did after the minute the detector keeps its marks.
         if (double.IsFinite(heardSeconds))
         {
-            _senders.RemoveAll(s => s != _station && s.LastToSeconds < heardSeconds - (s.Ended.Count(r => r.Length >= 2) >= QualifyingRuns ? CwEnvelopeDetector.CalledSeconds : s.SilenceSeconds));
+            _senders.RemoveAll(s => s != _station && s.LastToSeconds < heardSeconds - (s.Ended.Count(r => r.Length >= 2) >= QualifyingRuns ? CwEnvelopeDetector.CalledSeconds : s.ForgetSeconds));
         }
 
         // The sender with the most marks among those that have made two runs, the louder on a tie.
+        // And that has shown its own gaps between letters (work instruction 501): printed before, a
+        // Farnsworth sender's first two letters were spaced by a boundary built on its dit and read C Q.
         _station ??= _senders
-            .Where(s => s.Ended.Count(r => r.Length >= 2 && r.Any(m => m.Keyed)) >= QualifyingRuns && s.TwoKindsSeen)
+            .Where(s => s.Ended.Count(r => r.Length >= 2 && r.Any(m => m.Keyed)) >= QualifyingRuns && s.TwoKindsSeen && s.LetterGapSeconds is not null)
             .OrderByDescending(s => s.Marks)
             .ThenByDescending(s => s.Reference.Level)
             .FirstOrDefault();
@@ -253,35 +271,24 @@ public sealed class CwRunReader
         {
             var run = station.Ended[station.PrintedRuns];
 
-            // **A LONE LETTER WAITS TO BE CONFIRMED** (work instruction 498, R108, HM-DEC-202). A
-            // letter of one mark, E or T, is banked until the same sender sends another letter
-            // within ConfirmSeconds of it, and then released in its own place; if nothing follows
-            // inside that, it is dropped and never printed. It replaces unit 493's rule that once a
-            // sender was printed its one-mark letters printed with it, which printed a stray mark
-            // at the sender's pitch as an E whenever one came.
+            // **A LONE LETTER MUST BELONG TO SOMETHING** (work instruction 501, R109, HM-DEC-205). A
+            // letter of one mark, E or T, is banked until it is known whether a letter of two marks or
+            // more from the same sender stands beside it, before or after, within ConfirmSeconds; if
+            // one does it is released in its own place, and if none does it is dropped and never
+            // printed. Another lone letter does not confirm it, and three or more lone letters in a
+            // row are not sending and are dropped together. It replaces unit 498's rule, under which
+            // any following letter confirmed it, so a T confirmed an E confirmed a T and the whole
+            // string printed.
             if (run.Length == 1)
             {
-                var window = ConfirmSeconds(station);
-                var follows = station.PrintedRuns + 1 < station.Ended.Count
-                    ? station.Ended[station.PrintedRuns + 1][0].FromSeconds
-                    : station.Open.Count > 0 ? station.Open[0].FromSeconds : double.NaN;
+                var belongs = LoneLetterBelongs(station, station.PrintedRuns, heardSeconds);
 
-                if (double.IsNaN(follows))
+                if (belongs is null)
                 {
-                    // Nothing yet: wait while the window is open, and drop it once it has closed or
-                    // the audio has ended, since nothing can follow then.
-                    // The follower's first mark reaches the reader only once it has ended, so the wait
-                    // covers the window, the sender's longest mark and the lag in calling it.
-                    if (heardSeconds - run[^1].ToSeconds <= window + station.LongestMarkSeconds + CallingLagSeconds)
-                    {
-                        break;
-                    }
-
-                    station.PrintedRuns++;
-                    continue;
+                    break;
                 }
 
-                if (follows - run[^1].ToSeconds > window)
+                if (belongs == false)
                 {
                     station.PrintedRuns++;
                     continue;
@@ -303,24 +310,80 @@ public sealed class CwRunReader
     }
 
     /// <summary>
-    /// How long after a one-mark letter the same sender must send another for it to be printed, in
-    /// seconds: twice the sender's word gap, measured on the gaps inside its letters (work
-    /// instruction 498).
+    /// How far from a one-mark letter a letter of two marks or more from the same sender may stand
+    /// and still confirm it, in seconds: twice the sender's word-gap boundary (work instructions 498
+    /// and 501).
     /// </summary>
     /// <remarks>
     /// <para>**FROM THE SENDER'S OWN SPACING, NOT FROM ANY RECORDING.** A lone E or T inside a word
-    /// is followed within a character gap, and one at the end of a word, like the E of DE, within a
-    /// word gap; twice the sender's word-gap threshold, about nine dits, holds both with room for a
-    /// sender who stretches his word gaps. The author's, overrulable.</para>
-    /// <para>**THE DIT IS THE GAP INSIDE A LETTER, NOT THE MARK.** The detector reads a mark short
-    /// and the gap after it long, each by about the window's smear: on a synthetic 23 WPM TEST the
-    /// dits read 35 to 45 ms against 52 and the word gap 370 ms against 365, so a window built on
-    /// the marks came out at about 385 ms and dropped the last T of TEST. The gap inside a letter is
-    /// one dit and the same smear, the unit the gaps between letters are measured in; where the
-    /// sender has shown none yet, the marks' dit stands in.</para>
+    /// has a neighbor a character gap away, and one at the end of a word, like the E of DE, one a
+    /// character gap before it; twice the sender's word-gap boundary holds both with room for a
+    /// sender who stretches his gaps. The author's, overrulable.</para>
+    /// <para>**THE BOUNDARY IS THE SENDER'S OWN** (work instruction 501): measured on its gaps between
+    /// letters once it has shown them, so a Farnsworth sender's second and a half between letters
+    /// is inside the window, and on the gaps inside its letters until then.</para>
     /// </remarks>
-    private static double ConfirmSeconds(Sender sender)
-        => 2 * Math.Sqrt(21) * (double.IsNaN(sender.ElementGapSeconds) ? sender.DitSeconds : sender.ElementGapSeconds);
+    private static double ConfirmSeconds(Sender sender) => 2 * sender.WordGapSeconds;
+
+    /// <summary>
+    /// Whether the one-mark letter at <paramref name="index"/> belongs to something: true to print
+    /// it, false to drop it, null to wait (work instruction 501, R109).
+    /// </summary>
+    /// <param name="sender">The sender.</param>
+    /// <param name="index">The run, a letter of one mark, among the sender's ended runs.</param>
+    /// <param name="heardSeconds">The detector's clock.</param>
+    /// <returns>The verdict, or null while what follows is still to come.</returns>
+    /// <remarks>
+    /// <para>**THE OWNER, R109**: *"They very rarely, almost never, will stand on their own. They need
+    /// to be part of something. And T, T, T, T, T or E, E, E, E, E is not part of something."*</para>
+    /// <para>**THE BLOCK** is the lone letters in a row around this one, up to the letters of two marks
+    /// or more either side. It is settled once a letter of two marks or more follows it, the run in
+    /// progress already holds two marks, or nothing has come within the window, the sender's longest
+    /// mark and the lag in calling it, since a mark reaches the reader only once it has ended.</para>
+    /// <para>**THREE OR MORE LONE LETTERS IN A ROW ARE DROPPED TOGETHER**: English does not put EEE,
+    /// TTT or TET in a row. **FEWER ARE PRINTED WHEN A LETTER OF TWO MARKS OR MORE STANDS WITHIN THE
+    /// WINDOW** of this one, before or after - the S of TEST for its T and E, the D of DE for its E.
+    /// Nothing printed is taken back (R100): a banked letter has not been printed.</para>
+    /// </remarks>
+    private static bool? LoneLetterBelongs(Sender sender, int index, double heardSeconds)
+    {
+        var runs = sender.Ended;
+        var run = runs[index];
+        var window = ConfirmSeconds(sender);
+        var first = index;
+        var last = index;
+
+        while (first > 0 && runs[first - 1].Length == 1)
+        {
+            first--;
+        }
+
+        while (last + 1 < runs.Count && runs[last + 1].Length == 1)
+        {
+            last++;
+        }
+
+        double? nextFrom = last + 1 < runs.Count ? runs[last + 1][0].FromSeconds
+            : sender.Open.Count >= 2 ? sender.Open[0].FromSeconds
+            : null;
+
+        if (nextFrom is null
+            && (sender.Open.Count > 0
+                || heardSeconds - runs[last][^1].ToSeconds <= window + sender.LongestMarkSeconds + CallingLagSeconds))
+        {
+            return null;
+        }
+
+        if (last - first + 1 >= 3)
+        {
+            return false;
+        }
+
+        var before = first > 0 && run[0].FromSeconds - runs[first - 1][^1].ToSeconds <= window;
+        var after = nextFrom is { } from && from - run[^1].ToSeconds <= window;
+
+        return before || after;
+    }
 
     private void Raise(Sender sender, CwMark[] run)
     {
@@ -486,8 +549,73 @@ public sealed class CwRunReader
         /// <summary>Between a gap inside a letter, one dit, and one between letters, three: the geometric mean.</summary>
         public double CharacterGapSeconds => GapDitSeconds * Math.Sqrt(3);
 
-        /// <summary>Between a gap between letters, three dits, and one between words, seven: the geometric mean.</summary>
-        public double WordGapSeconds => GapDitSeconds * Math.Sqrt(21);
+        /// <summary>
+        /// Between a gap between letters and one between words, in seconds: the sender's own letter
+        /// gap times the square root of seven thirds once it has shown <see cref="MeasuredRunGaps"/>
+        /// gaps between runs, and three and seven of its gap dit, at their geometric mean, until then
+        /// (work instruction 501).
+        /// </summary>
+        /// <remarks>
+        /// <para>**A FARNSWORTH SENDER'S LETTERS ARE FAST AND ITS SPACES SLOW.** The ARRL's slow code
+        /// practice sends the letters at 18 WPM and stretches the spaces to make 5 to 15 WPM overall,
+        /// so inside a letter the gap is a dit and between letters it can be over a second: Morse's
+        /// 1:3:7 on the dit holds inside a letter and nowhere else. Every case before this unit had
+        /// its spaces scaled to its dit.</para>
+        /// <para>**THE SPACES KEEP THREE TO SEVEN AMONG THEMSELVES.** Stretching spreads PARIS's nineteen
+        /// spacing units - four gaps of three between its letters, one of seven after the word -
+        /// evenly, so a letter gap and a word gap are still three and seven of one stretched unit.
+        /// So the boundary is the sender's own letter gap times √(7/3), their geometric mean in
+        /// stretched units, exactly as the dit is the unit of the gaps inside a letter.</para>
+        /// </remarks>
+        public double WordGapSeconds => LetterGapSeconds is { } letter
+            ? letter * Math.Sqrt(7.0 / 3)
+            : GapDitSeconds * Math.Sqrt(21);
+
+        /// <summary>How many gaps between runs a sender shows before its own letter gap is used.</summary>
+        /// <remarks>Author's: three, so no single gap sets the boundary alone.</remarks>
+        public const int MeasuredRunGaps = 3;
+
+        /// <summary>
+        /// The mean of the sender's gaps between letters, in seconds, or null before it has shown
+        /// <see cref="MeasuredRunGaps"/> gaps between runs (work instruction 501).
+        /// </summary>
+        /// <remarks>
+        /// **THE LOWEST CLUSTER OF THE GAPS BETWEEN RUNS.** Sorted, they are walked up from the
+        /// shortest until two neighbors differ by √(7/3) or more, half of three-to-seven in log
+        /// length; what is below is the letter gaps. The word gaps are the next cluster up, and
+        /// anything longer - a pause between two calls - is above them, so it cannot pull the letter
+        /// gap the way a split at the widest ratio would.
+        /// </remarks>
+        public double? LetterGapSeconds => LetterAndWordGaps().Letter;
+
+        /// <summary>The sender's measured letter gap and, where it has shown one, word gap: for the tests' report.</summary>
+        public (double? Letter, double? Word) LetterAndWordGaps()
+        {
+            if (_runGaps.Count < MeasuredRunGaps)
+            {
+                return (null, null);
+            }
+
+            var sorted = _runGaps.OrderBy(g => g).ToList();
+            var jump = Math.Sqrt(7.0 / 3);
+            var top = 1;
+
+            while (top < sorted.Count && sorted[top] / sorted[top - 1] < jump)
+            {
+                top++;
+            }
+
+            var letters = sorted.Take(top).ToList();
+            var above = sorted.Skip(top).ToList();
+            var next = 1;
+
+            while (next < above.Count && above[next] / above[next - 1] < jump)
+            {
+                next++;
+            }
+
+            return (letters.Average(), above.Count > 0 ? above.Take(next).Average() : null);
+        }
 
         /// <summary>
         /// How long this sender may be silent and still be sending, in seconds: the detector's hold,
@@ -505,6 +633,20 @@ public sealed class CwRunReader
         /// forgotten at 1.15 s took that T with it.</para>
         /// </remarks>
         public double SilenceSeconds => Math.Max(ReleaseSeconds, (2 * WordGapSeconds) + LongestMarkSeconds + CallingLagSeconds);
+
+        /// <summary>
+        /// How long a sender not yet printed may be silent before it is forgotten, in seconds: its
+        /// <see cref="SilenceSeconds"/>, and before it has shown its own gaps between runs, at least
+        /// the slowest Farnsworth word gap and the wait for its next mark (work instruction 501).
+        /// </summary>
+        /// <remarks>
+        /// **A SENDER CANNOT MEASURE GAPS IT IS FORGOTTEN IN.** A 5 WPM Farnsworth sender leaves a
+        /// second and a half between letters and 3.66 s between words, and a sender forgotten at its
+        /// dit's silence, about a second, began again at every letter and never made two runs.
+        /// </remarks>
+        public double ForgetSeconds => LetterGapSeconds is null
+            ? Math.Max(SilenceSeconds, SlowestFarnsworthWordGapSeconds + LongestMarkSeconds + CallingLagSeconds)
+            : SilenceSeconds;
 
         /// <summary>The median gap inside the sender's letters, in seconds; NaN before it has shown one.</summary>
         public double ElementGapSeconds => _elementGaps.Count > 0 ? Median(_elementGaps) : double.NaN;

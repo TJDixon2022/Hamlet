@@ -4,6 +4,30 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-205
+date: 2026-09-30
+refs: work instruction 501, docs/phase-requirements/PHASE_PLAN.md R109, src/Hamlet.RadioEngine/Cw/CwRunReader.cs, tests/Hamlet.RadioEngine.Tests/Cw/FarnsworthAndLoneLettersTests.cs
+---
+
+**Farnsworth gaps are the sender's own, and a lone letter must belong to something.** No case had
+been built Farnsworth-style, the way the ARRL sends its slow code practice - letters at 18 WPM,
+spaces stretched to 5 to 15 WPM overall - and a lone letter had been confirming a lone letter, so a
+T confirmed an E confirmed a T and the whole string printed. Tim, 2026-09-30, R109: *"They need to
+be part of something. And T, T, T, T, T or E, E, E, E, E is not part of something."*
+
+**What is built.** The gap inside a letter stays the gap dit, boundary at √3. The letter gap is the
+sender's own: the lowest cluster of its gaps between runs, walked up from the shortest until two
+differ by √(7/3); the word boundary is that letter gap times √(7/3), since stretching keeps three to
+seven among the spaces. Before three gaps between runs the reader keeps 1:3:7 on the gap dit, and a
+sender is not printed until it has shown them. A sender not yet measured is kept at least the
+slowest Farnsworth word gap, 3.66 s from PARIS at 18 and 5 WPM, before it is forgotten. A one-mark
+letter prints only where a letter of two marks or more from the same sender stands within twice the
+word boundary before or after it, and three or more one-mark letters in a row are dropped together.
+
+**Whose words are whose.** The ruling is Tim's; the cluster walk, the three gaps, the forgetting
+floor and the measurements are work instruction 501's and the author's, and overrulable.
+
+---
 id: HM-DEC-204
 date: 2026-09-29
 refs: work instruction 500, src/Hamlet.RadioEngine/Cw/CwRunReader.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheGapsBelongToTheSendersOwnDitTests.cs

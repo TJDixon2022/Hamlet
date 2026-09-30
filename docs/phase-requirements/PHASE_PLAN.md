@@ -264,6 +264,11 @@ banking potential words until you confirm them, especially T's and E's. Treat th
 suspicion. I still think our shape isn't right. If we had our shape right, we wouldn't be seeing
 this. I don't think the T's and the E's are producing the shape."*
 
+**R109 - Tim, 2026-09-30: a lone letter must belong to something.** *"I want to work on the E's and
+the T's. They very rarely, almost never, will stand on their own. They need to be part of something.
+And T, T, T, T, T or E, E, E, E, E is not part of something. We can put a little brains behind this
+and make sure they're part of something else."*
+
 ## §3 What is different from the phases before it
 
 1. **A criterion is a requirement id.** A report states the requirement, the condition, the
