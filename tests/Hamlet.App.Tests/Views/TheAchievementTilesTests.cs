@@ -216,6 +216,26 @@ public sealed class TheAchievementTilesTests
         }
     }
 
+    /// <summary>
+    /// **A sentence on an unearned card that wraps between words and breaks none** (work instruction 506 task
+    /// 4): the next stamp stands in a column the picture draws its sentences over two lines in, so there a run
+    /// may wrap, but only where it is on a card not yet earned, and every word it holds fits the run's width
+    /// on its own. Anything else that wraps is still a fault.
+    /// </summary>
+    internal static bool WrapsBetweenWordsInAStamp(TextBlock text)
+    {
+        if (text.TextWrapping == Avalonia.Media.TextWrapping.NoWrap
+            || !text.GetVisualAncestors().OfType<Border>().Any(b => b.Classes.Contains("category-card") && b.DataContext is AchievementCategoryCard { Earned: false }))
+        {
+            return false;
+        }
+
+        var typeface = new Avalonia.Media.Typeface(text.FontFamily, text.FontStyle, text.FontWeight);
+
+        return (text.Text ?? "").Split(' ', StringSplitOptions.RemoveEmptyEntries)
+            .All(word => new Avalonia.Media.TextFormatting.TextLayout(word, typeface, text.FontSize, null).Width <= text.Bounds.Width + 0.5);
+    }
+
     /// <summary>Every visible run that would clip or wrap, in the page-wide test's words.</summary>
     internal static List<string> Clips(Window window)
     {

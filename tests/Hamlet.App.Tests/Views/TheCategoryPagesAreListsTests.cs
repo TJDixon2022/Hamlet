@@ -57,7 +57,7 @@ public sealed class TheCategoryPagesAreListsTests
             (FiveContacts(), "five contacts"),
         })
         {
-            var window = Realized(records, 1040);
+            var window = Realized(records, 1280);
             var screen = (AchievementsViewModel)window.DataContext!;
 
             try
@@ -91,7 +91,7 @@ public sealed class TheCategoryPagesAreListsTests
 
     /// <summary>
     /// **Task 1: every earned row shows its title, call line, distance, band and mode, date and points**,
-    /// with the distance the largest thing on it after the title; and how many rows show at 1040 x 720.
+    /// with the distance the largest thing on it after the title; and how many rows show at 1280 x 860.
     /// </summary>
     [AvaloniaFact]
     public void EveryEarnedRowShowsItsFacts()
@@ -102,7 +102,7 @@ public sealed class TheCategoryPagesAreListsTests
             (FiveContacts(), "five contacts"),
         })
         {
-            var window = Realized(records, 1040);
+            var window = Realized(records, 1280);
             var screen = (AchievementsViewModel)window.DataContext!;
 
             try
@@ -145,7 +145,7 @@ public sealed class TheCategoryPagesAreListsTests
                 var viewport = CardsScroller(window);
                 var whole = rows.Count(r => Inside(r, viewport));
 
-                _output.WriteLine(label + ": " + whole + " earned rows show whole at 1040 x " + F(window.Bounds.Height) + " without scrolling, of " + rows.Count);
+                _output.WriteLine(label + ": " + whole + " earned rows show whole at 1280 x " + F(window.Bounds.Height) + " without scrolling, of " + rows.Count);
             }
             finally
             {
@@ -161,7 +161,7 @@ public sealed class TheCategoryPagesAreListsTests
     [AvaloniaFact]
     public void ARowWithAMapIsAButtonAndOneWithoutSaysWhy()
     {
-        var window = Realized(FiveContacts(), 1040);
+        var window = Realized(FiveContacts(), 1280);
         var screen = (AchievementsViewModel)window.DataContext!;
 
         try
@@ -210,13 +210,13 @@ public sealed class TheCategoryPagesAreListsTests
     }
 
     /// <summary>
-    /// **Task 1: no string on any row or panel clips or wraps at 1040, 1400 and 1920 wide**, on the eight
+    /// **Task 1: no string on any row or panel clips or wraps at 1280, 1400 and 1920 wide**, on the eight
     /// kinds and the seven continent pages.
     /// </summary>
     [AvaloniaFact]
     public void NoStringOnARowClipsAtThreeWidths()
     {
-        foreach (var width in new[] { 1040.0, 1400.0, 1920.0 })
+        foreach (var width in new[] { 1280.0, 1400.0, 1920.0 })
         {
             var window = Realized(TheAchievementsPageTests.TwelveContacts(), width, Calling(), new BandBet("17 m", "best bet now"));
             var screen = (AchievementsViewModel)window.DataContext!;
@@ -257,7 +257,7 @@ public sealed class TheCategoryPagesAreListsTests
     [AvaloniaFact]
     public void ARowPressOpensItsPathAndThePopupSaysWhere()
     {
-        var window = Realized(FiveContacts(), 1040);
+        var window = Realized(FiveContacts(), 1280);
         var screen = (AchievementsViewModel)window.DataContext!;
 
         List<Popup> Open() => window.GetVisualDescendants().OfType<Popup>().Where(p => p.IsOpen).ToList();
@@ -332,13 +332,19 @@ public sealed class TheCategoryPagesAreListsTests
     }
 
     /// <summary>
-    /// **Task 3: the one to earn next is drawn first, above the earned rows, as a panel** - on every
-    /// kind that holds both, with its wants line and its callers drawn on it.
+    /// **The next stamp stands in the column beside the list, not in it** (work instruction 506 task 4,
+    /// superseding unit 505's drawn-first-above-the-rows): on every kind that holds both, it is right of the
+    /// list, carries its wants line and callers, is not a button, and the earned rows run newest first.
     /// </summary>
+    /// <remarks>
+    /// **CARRIED FROM `TheOneToEarnNextIsDrawnAboveTheEarnedRows`**, whose substance changed: the picture
+    /// puts the next stamp in a column at the right, where it is always seen, so *first in the list* became
+    /// *beside the list*.
+    /// </remarks>
     [AvaloniaFact]
-    public void TheOneToEarnNextIsDrawnAboveTheEarnedRows()
+    public void TheNextStampStandsBesideTheList()
     {
-        var window = Realized(TheAchievementsPageTests.TwelveContacts(), 1040, Calling(), new BandBet("17 m", "best bet now"));
+        var window = Realized(TheAchievementsPageTests.TwelveContacts(), 1280, Calling(), new BandBet("17 m", "best bet now"));
         var screen = (AchievementsViewModel)window.DataContext!;
         var checkedKinds = 0;
 
@@ -348,30 +354,45 @@ public sealed class TheCategoryPagesAreListsTests
             {
                 OpenOnWindow(window, screen, kind);
 
-                // **CONTINENTS DRAWS ITS SEVEN, NOT THIS LIST** (task 4).
-                if (!screen.Category!.HasCards)
+                var category = screen.Category!;
+
+                if (!category.HasCards)
                 {
                     ToThePage(window, screen);
                     continue;
                 }
 
-                var drawn = CategoryCards(window);
-                var next = drawn.Where(b => b.DataContext is AchievementCategoryCard { Earned: false }).ToList();
-                var earned = drawn.Where(b => b.DataContext is AchievementCategoryCard { Earned: true }).ToList();
+                var list = Named<ItemsControl>(window, "AchievementsCategoryCards");
+                var rows = CategoryCards(window);
 
-                _output.WriteLine(kind.PadRight(14) + string.Join(" / ", drawn.Select(b => (((AchievementCategoryCard)b.DataContext!).Earned ? "" : "next: ") + ((AchievementCategoryCard)b.DataContext!).Title)));
+                _output.WriteLine(kind.PadRight(14) + "next [" + category.NextStamp?.Title + "]; rows " + string.Join(" / ", rows.Select(b => ((AchievementCategoryCard)b.DataContext!).Title)));
 
-                if (next.Count == 1 && earned.Count > 0)
+                // **NO UNEARNED ONE IN THE LIST, AND THE ROWS NEWEST FIRST.**
+                Assert.DoesNotContain(rows, b => b.DataContext is AchievementCategoryCard { Earned: false });
+                Assert.Equal(category.DrawnCards, rows.Select(b => (AchievementCategoryCard)b.DataContext!));
+
+                if (category.NextStamp is not { } next)
+                {
+                    ToThePage(window, screen);
+                    continue;
+                }
+
+                var panel = Named<Control>(window, "AchievementsNextCard");
+                var card = panel.GetVisualDescendants().OfType<Border>().Single(b => b.IsEffectivelyVisible && b.Classes.Contains("category-card"));
+
+                Assert.Same(next, card.DataContext);
+                Assert.DoesNotContain(panel, list.GetVisualDescendants());
+                Assert.Null(NextCardMiss(card, next));
+                Assert.Null(RowButton(card));
+
+                if (rows.Count > 0)
                 {
                     checkedKinds++;
 
-                    Assert.True(
-                        Top(next[0], window) < earned.Min(e => Top(e, window)),
-                        kind + ": the one to earn next is at y " + F(Top(next[0], window)) + ", not above the first earned row at " + F(earned.Min(e => Top(e, window))));
-                    Assert.Null(NextCardMiss(next[0], (AchievementCategoryCard)next[0].DataContext!));
+                    var listRight = list.TranslatePoint(new Point(list.Bounds.Width, 0), window)!.Value.X;
+                    var panelLeft = panel.TranslatePoint(new Point(0, 0), window)!.Value.X;
 
-                    // **A PANEL AND NOT A ROW**: it is not a button and opens nothing.
-                    Assert.Null(RowButton(next[0]));
+                    Assert.True(panelLeft >= listRight - 0.5, kind + ": the next stamp starts at x " + F(panelLeft) + ", inside the list ending at " + F(listRight));
                 }
 
                 ToThePage(window, screen);
@@ -383,6 +404,80 @@ public sealed class TheCategoryPagesAreListsTests
         }
 
         Assert.True(checkedKinds >= 4, "only " + checkedKinds + " kinds hold both a next one and an earned one");
+    }
+
+    /// <summary>
+    /// **Every earned row carries its seal, with a code that is not empty** (work instruction 506 task 4), on
+    /// the eight kinds, the Continents page and every continent's own page.
+    /// </summary>
+    [AvaloniaFact]
+    public void EveryEarnedRowCarriesASeal()
+    {
+        var window = Realized(TheAchievementsPageTests.TwelveContacts(), 1280);
+        var screen = (AchievementsViewModel)window.DataContext!;
+        var sealed_ = 0;
+
+        try
+        {
+            foreach (var kind in AchievementKinds.All.Concat(ContinentKinds()))
+            {
+                OpenOnWindow(window, screen, kind);
+
+                var rows = Named<Control>(window, "AchievementsCategory").GetVisualDescendants().OfType<Border>()
+                    .Where(b => b.IsEffectivelyVisible && b.Classes.Contains("category-card") && b.DataContext is AchievementCategoryCard { Earned: true })
+                    .ToList();
+
+                foreach (var row in rows)
+                {
+                    var card = (AchievementCategoryCard)row.DataContext!;
+                    var seal = row.GetVisualDescendants().OfType<AchievementSealControl>().SingleOrDefault(s => s.IsEffectivelyVisible);
+
+                    Assert.True(seal is not null, kind + " [" + card.Title + "] has no seal");
+                    Assert.False(string.IsNullOrEmpty(seal!.Code), kind + " [" + card.Title + "]'s seal is empty");
+                    Assert.Equal(card.SealCode, seal.Code);
+
+                    sealed_++;
+                }
+
+                _output.WriteLine(kind.PadRight(14) + string.Join(", ", rows.Select(r => ((AchievementCategoryCard)r.DataContext!).Title + " [" + ((AchievementCategoryCard)r.DataContext!).SealCode + "]")));
+
+                ToThePage(window, screen);
+            }
+        }
+        finally
+        {
+            window.Close();
+        }
+
+        Assert.True(sealed_ > 20, "only " + sealed_ + " sealed rows across the kinds");
+    }
+
+    /// <summary>**Your reach: the farthest is the greatest distance among the cards, and it is drawn** (work instruction 506 task 4).</summary>
+    [AvaloniaFact]
+    public void YourReachSaysTheFarthest()
+    {
+        var window = Realized(TheAchievementsPageTests.TwelveContacts(), 1280);
+        var screen = (AchievementsViewModel)window.DataContext!;
+
+        try
+        {
+            OpenOnWindow(window, screen, AchievementKinds.Countries);
+
+            var category = screen.Category!;
+            var farthest = category.Cards.Where(c => c.Earned && c.Miles is not null).MaxBy(c => c.Miles)!;
+            var said = VisibleText(Named<Control>(window, "AchievementsReach")).ToList();
+
+            _output.WriteLine("reach: " + string.Join(" | ", said));
+
+            Assert.Equal(farthest.Title + ", " + farthest.DistanceLine, category.ReachFarthest);
+            Assert.Contains(category.ReachFarthest, said);
+            Assert.Contains(category.ReachNewest, said);
+            Assert.Equal(category.DrawnCards.First(c => c.EarnedUtc is not null).Title, category.ReachNewest);
+        }
+        finally
+        {
+            window.Close();
+        }
     }
 
     /// <summary>
@@ -596,7 +691,7 @@ public sealed class TheCategoryPagesAreListsTests
             ((AchievementsViewModel)quillWindow.DataContext!).OpenCategoryCommand.Execute(AchievementKinds.Countries);
             Settle(quillWindow);
 
-            var drawn = Named<ItemsControl>(quillWindow, "AchievementsCategoryCards").GetVisualDescendants().OfType<TextBlock>()
+            var drawn = Named<Control>(quillWindow, "AchievementsNextCard").GetVisualDescendants().OfType<TextBlock>()
                 .Where(t => t.IsEffectivelyVisible)
                 .ToList();
             var wants = drawn.Single(t => t.Text == "Any country you have not worked");
@@ -612,7 +707,7 @@ public sealed class TheCategoryPagesAreListsTests
         }
 
         // **ON THE WINDOW: THE HEADING AND EACH CALLER ARE DRAWN ON THE NEXT CARD.**
-        var window = Realized(records, 1040, calling);
+        var window = Realized(records, 1280, calling);
         var shown = (AchievementsViewModel)window.DataContext!;
 
         try
@@ -620,7 +715,7 @@ public sealed class TheCategoryPagesAreListsTests
             shown.OpenCategoryCommand.Execute(AchievementKinds.Countries);
             Settle(window);
 
-            var said = VisibleText(Named<ItemsControl>(window, "AchievementsCategoryCards")).ToList();
+            var said = VisibleText(Named<Control>(window, "AchievementsNextCard")).ToList();
 
             Assert.Contains("calling CQ at 21:41 UTC, unworked", said);
 
@@ -829,7 +924,7 @@ public sealed class TheCategoryPagesAreListsTests
     [AvaloniaFact]
     public void AnEarnedContinentOpensItsCountriesAndItsMapSeparately()
     {
-        var window = Realized(TheAchievementsPageTests.TwelveContacts(), 1040, Calling());
+        var window = Realized(TheAchievementsPageTests.TwelveContacts(), 1280, Calling());
         var screen = (AchievementsViewModel)window.DataContext!;
 
         try
@@ -913,7 +1008,7 @@ public sealed class TheCategoryPagesAreListsTests
     [AvaloniaFact]
     public void EveryKindsBandCarriesCountScoreLevelAndABar()
     {
-        var window = Realized(TheAchievementsPageTests.TwelveContacts(), 1040);
+        var window = Realized(TheAchievementsPageTests.TwelveContacts(), 1280);
         var screen = (AchievementsViewModel)window.DataContext!;
 
         try
@@ -1183,7 +1278,7 @@ public sealed class TheCategoryPagesAreListsTests
 
         // **ON THE WINDOW: EVERY ROW THAT HAS A MAP IS THE BUTTON THAT OPENS IT, AND THE ONE THAT DOES
         // NOT SAYS WHY IN A WORD** (work instruction 505, carried from the card's map on every card).
-        var window = Realized(records, 1040);
+        var window = Realized(records, 1280);
         var shown = (AchievementsViewModel)window.DataContext!;
 
         try
@@ -1920,7 +2015,8 @@ public sealed class TheCategoryPagesAreListsTests
                                     .First();
                                 var needs = Unit342Needs(line, line.Text ?? "");
 
-                                line.MaxWidth = needs - 10;
+                                // **UNDER ITS LONGEST WORD SINCE WORK INSTRUCTION 506**: the line may wrap between words.
+                                line.MaxWidth = LongestWord(line) - 10;
                                 Settle(window);
 
                                 var narrowed = Unit346Fit(window).Clips;
@@ -2171,7 +2267,9 @@ public sealed class TheCategoryPagesAreListsTests
 
                 // **WATCHED RED, BUILT IN (ruling 19), ON THE TEST WINDOW ONLY**: the same line held to half the
                 // width it needs is caught by the page's clip measure, and then let go again.
-                line.MaxWidth = Unit342Needs(line, thousandsLine) / 2;
+                // **SINCE WORK INSTRUCTION 506 THE LINE MAY WRAP BETWEEN WORDS** in the next stamp, so it is held
+                // under its longest word, which is the one thing it may never do.
+                line.MaxWidth = LongestWord(line) - 10;
                 Settle(window);
 
                 var caught = Unit346Fit(window).Clips.Where(c => c.Contains(thousandsLine, StringComparison.Ordinal)).ToList();
@@ -2263,14 +2361,14 @@ public sealed class TheCategoryPagesAreListsTests
             || (control is TextBlock t && new[] { "card-callgrid", "card-distance", "card-facts", "card-count", "card-nomap", "card-open" }.Any(t.Classes.Contains));
 
     /// <summary>
-    /// **Task 5: Countries, Continents and Total Miles at 1040, 1400 and 1920 wide, described as
+    /// **Task 5: Countries, Continents and Total Miles at 1280, 1400 and 1920 wide, described as
     /// computed** - how many rows show whole, how many rows of that height the list's viewport holds
     /// below the panel, and what clips. It asserts only that nothing clips.
     /// </summary>
     [AvaloniaFact]
     public void ThreePagesAtThreeWidthsDescribed()
     {
-        foreach (var width in new[] { 1040.0, 1400.0, 1920.0 })
+        foreach (var width in new[] { 1280.0, 1400.0, 1920.0 })
         {
             var window = Realized(TheAchievementsPageTests.TwelveContacts(), width, Calling(), new BandBet("17 m", "best bet now"));
             var screen = (AchievementsViewModel)window.DataContext!;
@@ -2334,6 +2432,10 @@ public sealed class TheCategoryPagesAreListsTests
         return top >= -0.5 && top + control.Bounds.Height <= viewport.Bounds.Height + 0.5;
     }
 
+    /// <summary>The width the widest single word of a run needs (work instruction 506).</summary>
+    private static double LongestWord(TextBlock text)
+        => (text.Text ?? "").Split(' ', StringSplitOptions.RemoveEmptyEntries).Max(w => Unit342Needs(text, w));
+
     private static double Unit342Needs(TextBlock text, string what)
         => new Avalonia.Media.TextFormatting.TextLayout(
             what,
@@ -2377,6 +2479,12 @@ public sealed class TheCategoryPagesAreListsTests
         foreach (var text in window.GetVisualDescendants().OfType<TextBlock>()
             .Where(t => t.IsEffectivelyVisible && (t.Text ?? "").Trim().Length > 0))
         {
+            if (TheAchievementTilesTests.WrapsBetweenWordsInAStamp(text))
+            {
+                fit++;
+                continue;
+            }
+
             var needs = Unit342Needs(text, text.Text ?? "");
             var clip = text.TextWrapping != Avalonia.Media.TextWrapping.NoWrap ? "[" + text.Text + "] is allowed to wrap"
                 : needs > text.Bounds.Width + 0.5 ? "[" + text.Text + "] needs " + F(needs) + " px and its slot is " + F(text.Bounds.Width)
@@ -2652,9 +2760,9 @@ public sealed class TheCategoryPagesAreListsTests
         return null;
     }
 
-    /// <summary>The rows and panels the open category draws in its card list, top to bottom.</summary>
+    /// <summary>The rows and the next stamp the open category draws, top to bottom and left to right (work instruction 506: the next stamp stands in its own column).</summary>
     private static List<Border> TradingCards(Window window)
-        => Named<ItemsControl>(window, "AchievementsCategoryCards").GetVisualDescendants().OfType<Border>()
+        => Named<Control>(window, "AchievementsCategory").GetVisualDescendants().OfType<Border>()
             .Where(b => b.IsEffectivelyVisible && b.Classes.Contains("category-card"))
             .OrderBy(b => Math.Round(Top(b, window)))
             .ThenBy(b => b.TranslatePoint(new Point(0, 0), window)?.X ?? 0)
@@ -2863,6 +2971,13 @@ public sealed class TheCategoryPagesAreListsTests
         foreach (var text in window.GetVisualDescendants().OfType<TextBlock>()
             .Where(t => t.IsEffectivelyVisible && (t.Text ?? "").Trim().Length > 0))
         {
+            // **A STAMP'S SENTENCE MAY WRAP BETWEEN WORDS** (work instruction 506 task 4), and nowhere else.
+            if (TheAchievementTilesTests.WrapsBetweenWordsInAStamp(text))
+            {
+                count++;
+                continue;
+            }
+
             var needs = new Avalonia.Media.TextFormatting.TextLayout(
                 text.Text ?? "",
                 new Avalonia.Media.Typeface(text.FontFamily, text.FontStyle, text.FontWeight),

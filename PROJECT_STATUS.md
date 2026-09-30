@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: TASK 4 of 6
+TASK: TASK 5 of 6
 WORK_INSTRUCTION: 506 - achievements worth opening (run by hand)
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-30T14:00:09-04:00
-NOTE: Unit 506 - task 3 committed, the strip draws ZL1ABC opens Oceania ringed; now the category page's seals and the next panel at the right
+UPDATED: 2026-09-30T14:09:20-04:00
+NOTE: Unit 506 - task 4 committed, rows sealed and newest first with the next stamp beside; now the unlock panel at the log write
 
 ---
 

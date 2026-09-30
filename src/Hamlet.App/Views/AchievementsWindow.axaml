@@ -304,11 +304,26 @@
                             Background="#C9C5BA" />
 
                     <!-- ============ EARNED: ONE ROW ============ -->
+                    <!-- **ITS SEAL AT THE LEFT** (work instruction 506 task 4): a double-ruled ring in the kind's
+                         color, turned a few degrees, holding the short code of what was earned. **Band, mode and
+                         date sit on a third line under the call line**, where the picture draws them in a column
+                         of their own, so the row fits beside the next-stamp column at the window's own 1280 on
+                         the test host's measure (§6). -->
                     <Grid Grid.Column="1"
                           IsVisible="{Binding Earned}"
                           Margin="14,8,14,8"
-                          ColumnDefinitions="340,*,Auto,Auto,Auto,Auto">
-                        <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                          ColumnDefinitions="Auto,340,*,Auto,Auto,Auto">
+                        <ctl:AchievementSealControl Grid.Column="0"
+                                                    Classes="row-seal"
+                                                    IsVisible="{Binding HasSeal}"
+                                                    Code="{Binding SealCode}"
+                                                    Ink="{Binding SealColor}"
+                                                    Width="46" Height="46"
+                                                    CodeSize="14"
+                                                    Margin="0,0,18,0"
+                                                    VerticalAlignment="Center" />
+
+                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
                             <TextBlock Classes="card-title"
                                        Text="{Binding Title}"
                                        FontSize="16" FontWeight="Bold"
@@ -317,8 +332,23 @@
                             <TextBlock Classes="card-callgrid"
                                        Text="{Binding CallGridLine}"
                                        IsVisible="{Binding HasCallGridLine}"
+                                       FontFamily="Consolas, Menlo, monospace"
                                        FontSize="12"
                                        Foreground="{StaticResource HmTextMutedBrush}" />
+
+                            <StackPanel Orientation="Horizontal" Spacing="12">
+                                <TextBlock Classes="card-facts"
+                                           Text="{Binding BandModeLine}"
+                                           IsVisible="{Binding HasBandMode}"
+                                           FontSize="12"
+                                           Foreground="{StaticResource HmTextMutedBrush}" />
+
+                                <TextBlock Classes="card-facts"
+                                           Text="{Binding DateLine}"
+                                           IsVisible="{Binding HasDate}"
+                                           FontSize="12"
+                                           Foreground="{StaticResource HmTextMutedBrush}" />
+                            </StackPanel>
 
                             <TextBlock Classes="card-figure"
                                        Text="{Binding Figure}"
@@ -333,10 +363,9 @@
                                        Foreground="{StaticResource HmTextPrimaryBrush}" />
                         </StackPanel>
 
-                        <!-- **A TIER'S BAR** (work instruction 335 task 4): Total Miles' tiers
-                             and a distance first, with both figures in words above it so the bar
-                             is never a bare fraction. -->
-                        <StackPanel Grid.Column="1"
+                        <!-- **A TIER'S BAR** (work instruction 335 task 4): Total Miles' tiers and a distance
+                             first, with both figures in words above it so the bar is never a bare fraction. -->
+                        <StackPanel Grid.Column="2"
                                     IsVisible="{Binding HasTierBar}"
                                     Spacing="4"
                                     Margin="20,0,0,0"
@@ -353,7 +382,7 @@
                                                       Foreground="{Binding $parent[ItemsControl].((vm:AchievementCategory)DataContext).Band}" />
                         </StackPanel>
 
-                        <TextBlock Grid.Column="2"
+                        <TextBlock Grid.Column="3"
                                    Classes="card-distance"
                                    Text="{Binding DistanceLine}"
                                    IsVisible="{Binding HasDistance}"
@@ -361,22 +390,6 @@
                                    VerticalAlignment="Center"
                                    FontSize="22" FontWeight="Bold"
                                    Foreground="{StaticResource HmTextPrimaryBrush}" />
-
-                        <StackPanel Grid.Column="3"
-                                    Margin="20,0,0,0"
-                                    VerticalAlignment="Center">
-                            <TextBlock Classes="card-facts"
-                                       Text="{Binding BandModeLine}"
-                                       IsVisible="{Binding HasBandMode}"
-                                       FontSize="12"
-                                       Foreground="{StaticResource HmTextMutedBrush}" />
-
-                            <TextBlock Classes="card-facts"
-                                       Text="{Binding DateLine}"
-                                       IsVisible="{Binding HasDate}"
-                                       FontSize="12"
-                                       Foreground="{StaticResource HmTextMutedBrush}" />
-                        </StackPanel>
 
                         <TextBlock Grid.Column="4"
                                    Classes="card-points"
@@ -392,8 +405,8 @@
                                     VerticalAlignment="Center">
                             <TextBlock Classes="card-open"
                                        Text="{x:Static vm:AchievementCategoryCard.MapWord}"
-                                       FontSize="12"
-                                       Foreground="{StaticResource HmTextMutedBrush}" />
+                                       FontSize="12" FontWeight="SemiBold"
+                                       Foreground="#3B6D11" />
 
                             <TextBlock Classes="card-nomap"
                                        Text="{Binding NoMapWord}"
@@ -429,7 +442,7 @@
                                    FontSize="12"
                                    Foreground="{StaticResource HmTextMutedBrush}" />
 
-                        <TextBlock Classes="card-count"
+                        <TextBlock Classes="card-count" TextWrapping="Wrap"
                                    Text="{Binding CountLine}"
                                    IsVisible="{Binding HasCountLine}"
                                    FontSize="12" FontWeight="SemiBold"
@@ -438,7 +451,7 @@
                         <StackPanel IsVisible="{Binding HasTierBar}"
                                     Spacing="4"
                                     Margin="0,2,0,2">
-                            <TextBlock Classes="card-tier"
+                            <TextBlock Classes="card-tier" TextWrapping="Wrap"
                                        Text="{Binding TierLine}"
                                        FontSize="12"
                                        Foreground="{StaticResource HmTextPrimaryBrush}" />
@@ -455,13 +468,13 @@
                              read; each caller carries the quill his row on the decoded list
                              wears, and the place is said in words, so the mark is never alone
                              (§0.6). **The callers open no map**: a caller has no path. -->
-                        <TextBlock Classes="card-wants"
+                        <TextBlock Classes="card-wants" TextWrapping="Wrap"
                                    Text="{Binding WantsLine}"
                                    IsVisible="{Binding HasWants}"
                                    FontSize="12"
                                    Foreground="{StaticResource HmTextMutedBrush}" />
 
-                        <TextBlock Classes="card-quill"
+                        <TextBlock Classes="card-quill" TextWrapping="Wrap"
                                    Text="{Binding QuillLine}"
                                    IsVisible="{Binding HasQuillLine}"
                                    FontSize="12"
@@ -475,7 +488,7 @@
                                 CornerRadius="6"
                                 Padding="12,10">
                             <StackPanel Spacing="4">
-                                <TextBlock Classes="card-callers-heading"
+                                <TextBlock Classes="card-callers-heading" TextWrapping="Wrap"
                                            Text="{Binding CallersHeading}"
                                            IsVisible="{Binding HasCallersHeading}"
                                            FontSize="12"
@@ -484,7 +497,7 @@
                                 <ItemsControl ItemsSource="{Binding Callers}">
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate x:DataType="vm:NextCaller">
-                                            <Grid ColumnDefinitions="Auto,*,Auto" Margin="0,2,0,0">
+                                            <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto" Margin="0,2,0,0">
                                                 <ctl:AchievementMarkControl
                                                     Form="Door"
                                                     IsNew="True"
@@ -510,10 +523,10 @@
                                                            FontSize="14"
                                                            Foreground="{StaticResource HmTextPrimaryBrush}" />
 
-                                                <TextBlock Grid.Column="2"
+                                                <TextBlock Grid.Column="1" Grid.Row="1" TextWrapping="Wrap"
                                                            Classes="card-caller-call"
                                                            Text="{Binding CallLine}"
-                                                           Margin="12,0,0,0"
+                                                           Margin="0,1,0,0"
                                                            VerticalAlignment="Center"
                                                            FontSize="12"
                                                            Foreground="{StaticResource HmTextMutedBrush}" />
@@ -522,13 +535,13 @@
                                     </ItemsControl.ItemTemplate>
                                 </ItemsControl>
 
-                                <TextBlock Classes="card-more-callers"
+                                <TextBlock Classes="card-more-callers" TextWrapping="Wrap"
                                            Text="{Binding MoreCallersLine}"
                                            IsVisible="{Binding HasMoreCallers}"
                                            FontSize="12"
                                            Foreground="{StaticResource HmTextMutedBrush}" />
 
-                                <TextBlock Classes="card-nocaller"
+                                <TextBlock Classes="card-nocaller" TextWrapping="Wrap"
                                            Text="{Binding NoCallerLine}"
                                            IsVisible="{Binding HasNoCaller}"
                                            FontSize="13"
@@ -918,11 +931,25 @@
                                             Margin="0,0,12,0"
                                             VerticalAlignment="Center" />
 
-                    <TextBlock x:Name="AchievementsCategoryName"
-                               Grid.Column="1"
-                               Text="{Binding Name}"
-                               FontSize="22" FontWeight="Bold"
-                               Foreground="{Binding BandInk}" />
+                    <!-- **THE NAME AND ITS LEVEL IN WORDS** (work instruction 506 task 4): the chip is the
+                         file's level, and there is none below the first. -->
+                    <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="12">
+                        <TextBlock x:Name="AchievementsCategoryName"
+                                   Text="{Binding Name}"
+                                   FontSize="26" FontWeight="Bold"
+                                   Foreground="{Binding BandInk}" />
+
+                        <Border IsVisible="{Binding HasLevelChip}"
+                                Background="#47000000"
+                                CornerRadius="999"
+                                Padding="10,2"
+                                VerticalAlignment="Center">
+                            <TextBlock x:Name="AchievementsCategoryLevel"
+                                       Text="{Binding LevelChip}"
+                                       FontSize="12" FontWeight="SemiBold"
+                                       Foreground="{Binding BandInk}" />
+                        </Border>
+                    </StackPanel>
 
                     <TextBlock x:Name="AchievementsCategoryBandLine"
                                Grid.Column="1" Grid.Row="1"
@@ -1009,44 +1036,111 @@
                 </ItemsControl>
             </ScrollViewer>
 
-            <!-- **THE LIST: THE NEAREST UNEARNED ONE FIRST, THEN THE EARNED, NOTHING BEYOND** (§3.1),
-                 one column, full width (work instruction 505, HM-DEC-209, replacing unit 335's
-                 two-column trading cards). A kind can hold a hundred countries, so the list
-                 scrolls inside the category; the page itself never does. -->
-            <ScrollViewer Grid.Row="3"
-                          IsVisible="{Binding HasCards}"
-                          VerticalScrollBarVisibility="Auto">
-                <ItemsControl x:Name="AchievementsCategoryCards"
-                              ItemsSource="{Binding DrawnCards}">
-                    <!-- **THE ROW IS THE THING HE PRESSES** (work instruction 505). Where the
-                         contact has a map the whole row is a button on `OpenTheMapCommand`, with a
-                         hand cursor, reachable from the keyboard, and it says `map` in words at its
-                         right end, so it reads as pressable at rest and never on a hover (§0.5.1,
-                         §0.6). **Where there is no map it is not a button**: it says why in a word,
-                         and the contacts the card used to list sit in its tooltip. -->
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate x:DataType="vm:AchievementCategoryCard">
-                            <Panel Margin="0,0,0,8">
-                                <Button Classes="category-row"
-                                        IsVisible="{Binding OpensAMap}"
-                                        Command="{Binding $parent[Window].((vm:AchievementsViewModel)DataContext).OpenTheMapCommand}"
-                                        CommandParameter="{Binding}"
-                                        Cursor="Hand"
-                                        HorizontalAlignment="Stretch"
-                                        HorizontalContentAlignment="Stretch">
-                                    <ContentControl Content="{Binding}"
-                                                    ContentTemplate="{StaticResource HmCategoryItemTemplate}" />
-                                </Button>
+            <!-- **THE STAMPS, NEWEST FIRST, AND THE NEXT ONE IN ITS OWN COLUMN** (work instruction 506 task
+                 4, `assets/achievements-look/countries-page.html`, replacing unit 505's next-first list).
+                 The list is the earned rows, newest first, one column; the one unearned card of §3.1 stands
+                 at the right as the next stamp, dashed and muted with a padlock, where it is always seen, and
+                 `Your reach` under it says the farthest and the newest. A kind can hold a hundred countries,
+                 so the list scrolls inside the category; the page itself never does. -->
+            <Grid Grid.Row="3"
+                  IsVisible="{Binding HasCards}"
+                  ColumnDefinitions="*,330"
+                  ColumnSpacing="20">
+                <DockPanel Grid.Column="0">
+                    <Grid DockPanel.Dock="Top" ColumnDefinitions="*,Auto" Margin="0,0,0,8">
+                        <TextBlock Text="YOUR STAMPS, NEWEST FIRST"
+                                   IsVisible="{Binding HasEarnedRows}"
+                                   FontSize="12" FontWeight="SemiBold"
+                                   Foreground="#5F5C53" />
+                        <TextBlock Grid.Column="1"
+                                   Text="Click a row to see where it is."
+                                   IsVisible="{Binding HasEarnedRows}"
+                                   FontSize="13"
+                                   Foreground="#5F5C53" />
+                    </Grid>
 
-                                <ContentControl IsVisible="{Binding !OpensAMap}"
-                                                Content="{Binding}"
-                                                ContentTemplate="{StaticResource HmCategoryItemTemplate}"
-                                                ToolTip.Tip="{Binding ContactTip}" />
-                            </Panel>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-            </ScrollViewer>
+                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+                        <ItemsControl x:Name="AchievementsCategoryCards"
+                                      ItemsSource="{Binding DrawnCards}">
+                            <!-- **THE ROW IS THE THING HE PRESSES** (work instruction 505). Where the
+                                 contact has a map the whole row is a button on `OpenTheMapCommand`, with a
+                                 hand cursor, reachable from the keyboard, and it says `map` in words at its
+                                 right end, so it reads as pressable at rest and never on a hover (§0.5.1,
+                                 §0.6). **Where there is no map it is not a button**: it says why in a word,
+                                 and the contacts the card used to list sit in its tooltip. -->
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate x:DataType="vm:AchievementCategoryCard">
+                                    <Panel Margin="0,0,0,8">
+                                        <Button Classes="category-row"
+                                                IsVisible="{Binding OpensAMap}"
+                                                Command="{Binding $parent[Window].((vm:AchievementsViewModel)DataContext).OpenTheMapCommand}"
+                                                CommandParameter="{Binding}"
+                                                Cursor="Hand"
+                                                HorizontalAlignment="Stretch"
+                                                HorizontalContentAlignment="Stretch">
+                                            <ContentControl Content="{Binding}"
+                                                            ContentTemplate="{StaticResource HmCategoryItemTemplate}" />
+                                        </Button>
+
+                                        <ContentControl IsVisible="{Binding !OpensAMap}"
+                                                        Content="{Binding}"
+                                                        ContentTemplate="{StaticResource HmCategoryItemTemplate}"
+                                                        ToolTip.Tip="{Binding ContactTip}" />
+                                    </Panel>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+                </DockPanel>
+
+                <StackPanel Grid.Column="1" Spacing="14">
+                    <!-- **THE NEXT STAMP** (§3.1): the one nearest unearned card, drawn as the card draws it,
+                         inside a dashed, muted frame with a padlock and `Next stamp` in words (§0.6). Its
+                         sentences may run to a second line between words, as the picture draws them in a
+                         column this narrow; no word is ever broken. **Its callers open no map.** -->
+                    <Panel IsVisible="{Binding HasNextStamp}">
+                        <Rectangle Fill="#EFEBE1" Stroke="#8F8877" StrokeThickness="2" StrokeDashArray="3,2" RadiusX="14" RadiusY="14" />
+
+                        <StackPanel Margin="14" Spacing="10">
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <Path Data="M5 11 h14 v9 h-14 z M8 11 V8 a4 4 0 0 1 8 0 v3" Stroke="#5F5C53" StrokeThickness="1.8" Width="14" Height="14" Stretch="Uniform" VerticalAlignment="Center" />
+                                <TextBlock Text="NEXT STAMP" FontSize="12" FontWeight="SemiBold" Foreground="#5F5C53" VerticalAlignment="Center" />
+                            </StackPanel>
+
+                            <ItemsControl x:Name="AchievementsNextCard"
+                                          Classes="next-stamp"
+                                          ItemsSource="{Binding NextStamps}"
+                                          ItemTemplate="{StaticResource HmCategoryItemTemplate}" />
+                        </StackPanel>
+                    </Panel>
+
+                    <!-- **YOUR REACH**: the farthest of the stamps and the newest, both from the cards
+                         already built. -->
+                    <Border x:Name="AchievementsReach"
+                            IsVisible="{Binding HasReach}"
+                            Background="#14202B"
+                            CornerRadius="14"
+                            Padding="18">
+                        <StackPanel Spacing="10">
+                            <TextBlock Text="YOUR REACH" FontSize="12" FontWeight="SemiBold" Foreground="#C9D3DB" />
+
+                            <StackPanel IsVisible="{Binding HasReachFarthest}">
+                                <TextBlock Text="Farthest" FontSize="13" Foreground="#C9D3DB" />
+                                <Viewbox StretchDirection="DownOnly" HorizontalAlignment="Left">
+                                    <TextBlock Text="{Binding ReachFarthest}" FontSize="16" FontWeight="Bold" Foreground="White" />
+                                </Viewbox>
+                            </StackPanel>
+
+                            <StackPanel IsVisible="{Binding HasReachNewest}">
+                                <TextBlock Text="Newest" FontSize="13" Foreground="#C9D3DB" />
+                                <Viewbox StretchDirection="DownOnly" HorizontalAlignment="Left">
+                                    <TextBlock Text="{Binding ReachNewest}" FontSize="16" FontWeight="Bold" Foreground="White" />
+                                </Viewbox>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </Grid>
         </Grid>
                 </DataTemplate>
             </ContentControl.ContentTemplate>

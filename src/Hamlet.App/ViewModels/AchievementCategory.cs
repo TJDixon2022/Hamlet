@@ -65,8 +65,8 @@ public sealed record AchievementCategoryCard(
     /// </summary>
     public string SealCode { get; init; } = "";
 
-    /// <summary>The seal's ink, the kind's own color, or "" (work instruction 506).</summary>
-    public string SealColor { get; init; } = "";
+    /// <summary>The seal's ink, the kind's own color; a muted ink until the category stamps it (work instruction 506).</summary>
+    public string SealColor { get; init; } = "#5F5C53";
 
     /// <summary>True where the row draws a seal.</summary>
     public bool HasSeal => SealCode.Length > 0;
@@ -462,16 +462,67 @@ public sealed class AchievementCategory
     public IReadOnlyList<AchievementCategoryCard> Cards { get; }
 
     /// <summary>
-    /// **The cards in the order the list draws them: the one to earn next first, then the earned in
-    /// the order they were earned** (work instruction 505 task 3, HM-DEC-209).
+    /// **The earned rows in the order the list draws them: newest first** (work instruction 506 task 4,
+    /// HM-DEC-211, superseding unit 505's one-to-earn-next-first order, which moved to its own column).
     /// </summary>
     /// <remarks>
-    /// §3.1 stands - the earned, and the one nearest unearned, and nothing beyond it - but in a list of
-    /// a hundred countries the one at the bottom is never seen. **The order is changed here, for the
-    /// view, and not in <see cref="Cards"/>**, which a dozen builders fill and every count reads; this
-    /// is the smaller change.
+    /// By the date of the contact that earned each; a card with no date comes after every dated one, and on
+    /// a tie the order <see cref="Cards"/> holds them in stands. **The order is the view's**, and
+    /// <see cref="Cards"/>, which a dozen builders fill and every count reads, is untouched, as in 505.
     /// </remarks>
-    public IReadOnlyList<AchievementCategoryCard> DrawnCards => Cards.Where(c => !c.Earned).Concat(Cards.Where(c => c.Earned)).ToList();
+    public IReadOnlyList<AchievementCategoryCard> DrawnCards
+        => Cards.Where(c => c.Earned)
+            .Select((c, i) => (Card: c, At: i))
+            .OrderByDescending(x => x.Card.EarnedUtc ?? DateTime.MinValue)
+            .ThenBy(x => x.At)
+            .Select(x => x.Card)
+            .ToList();
+
+    /// <summary>
+    /// **The one nearest unearned card** (§3.1), drawn in the column at the right as the next stamp (work
+    /// instruction 506 task 4), or null where every card is earned.
+    /// </summary>
+    public AchievementCategoryCard? NextStamp => Cards.FirstOrDefault(c => !c.Earned);
+
+    /// <summary>True where there is a next stamp to draw.</summary>
+    public bool HasNextStamp => NextStamp is not null;
+
+    /// <summary>
+    /// The next stamp as a list of none or one, for the column's own list: the card's template takes the
+    /// category's band from its list, as the rows' does.
+    /// </summary>
+    public IReadOnlyList<AchievementCategoryCard> NextStamps
+        => NextStamp is { } next ? new[] { next } : Array.Empty<AchievementCategoryCard>();
+
+    /// <summary>True where the page has earned rows to list.</summary>
+    public bool HasEarnedRows => Cards.Any(c => c.Earned);
+
+    /// <summary>
+    /// **Your reach: the farthest** of the earned cards by their contacts' miles, `South Africa, 8,105 mi`,
+    /// or "" where none has a distance (work instruction 506 task 4).
+    /// </summary>
+    public string ReachFarthest
+        => Cards.Where(c => c.Earned && c.Miles is not null).OrderByDescending(c => c.Miles).FirstOrDefault() is { } far
+            ? far.Title + ", " + far.DistanceLine
+            : "";
+
+    /// <summary>**Your reach: the newest** earned card's name, or "".</summary>
+    public string ReachNewest => DrawnCards.FirstOrDefault(c => c.EarnedUtc is not null)?.Title ?? "";
+
+    /// <summary>True where there is a farthest to say.</summary>
+    public bool HasReachFarthest => ReachFarthest.Length > 0;
+
+    /// <summary>True where there is a newest to say.</summary>
+    public bool HasReachNewest => ReachNewest.Length > 0;
+
+    /// <summary>True where `Your reach` has anything to say.</summary>
+    public bool HasReach => HasReachFarthest || HasReachNewest;
+
+    /// <summary>The level in words on the header band, `Bronze`; "" below the first level or with no file.</summary>
+    public string LevelChip => LevelName is "" or "unranked" ? "" : LevelName;
+
+    /// <summary>True where the header band draws its level.</summary>
+    public bool HasLevelChip => LevelChip.Length > 0;
 
     /// <summary>True where there are cards to draw.</summary>
     public bool HasCards => Cards.Count > 0;

@@ -205,14 +205,14 @@ public sealed class TheAchievementsPageClicksInTests
     }
 
     /// <summary>
-    /// **Inside a category: the one to earn next first, then the earned, and every one shows its
-    /// points** (work instruction 505 task 3, renamed from
-    /// `InsideACategoryTheEarnedCardsComeFirstThenOneUnearned`). §3.1 stands - the earned, and the
-    /// one nearest unearned, and nothing beyond it - and in a list of a hundred countries the one at
-    /// the bottom is never seen, so it is drawn first.
+    /// **Inside a category: the earned rows newest first, the one to earn next apart from them, and every
+    /// one shows its points** (work instruction 506 task 4, renamed from
+    /// `InsideACategoryTheOneToEarnNextComesFirstThenTheEarned`, whose substance changed). §3.1 stands - the
+    /// earned, and the one nearest unearned, and nothing beyond it - and the one unearned is the next stamp
+    /// in its own column, where it is always seen.
     /// </summary>
     [AvaloniaFact]
-    public void InsideACategoryTheOneToEarnNextComesFirstThenTheEarned()
+    public void InsideACategoryTheEarnedAreNewestFirstAndTheNextStandsApart()
     {
         var screen = Screen(TheAchievementsPageTests.TwelveContacts());
 
@@ -228,46 +228,44 @@ public sealed class TheAchievementsPageClicksInTests
 
             foreach (var card in category.DrawnCards)
             {
-                _output.WriteLine(
-                    "   " + (card.Earned ? "earned " : "next   ") + card.Title.PadRight(24)
-                    + card.Figure.PadRight(12) + card.PointsLine);
+                _output.WriteLine("   earned " + card.Title.PadRight(24) + (card.EarnedUtc?.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture) ?? "no date").PadRight(12) + card.PointsLine);
             }
 
-            var unearned = category.DrawnCards.Where(c => !c.Earned).ToList();
+            _output.WriteLine("   next   " + category.NextStamp?.Title);
 
-            Assert.True(unearned.Count <= 1, kind + " shows " + unearned.Count + " unearned cards");
+            Assert.True(category.Cards.Count(c => !c.Earned) <= 1, kind + " shows more than one unearned card");
+            Assert.Same(category.Cards.FirstOrDefault(c => !c.Earned), category.NextStamp);
 
-            if (unearned.Count == 1)
-            {
-                Assert.Same(unearned[0], category.DrawnCards[0]);
-            }
+            // **THE EARNED, NEWEST FIRST, AND NONE LOST OR ADDED.**
+            Assert.DoesNotContain(category.DrawnCards, c => !c.Earned);
+            Assert.Equal(category.Cards.Count(c => c.Earned), category.DrawnCards.Count);
 
-            // **THE EARNED AFTER IT, IN THE ORDER THEY WERE EARNED**, and none lost or added.
-            Assert.Equal(category.Cards.Where(c => c.Earned), category.DrawnCards.Where(c => c.Earned));
-            Assert.Equal(category.Cards.Count, category.DrawnCards.Count);
+            var dates = category.DrawnCards.Select(c => c.EarnedUtc ?? DateTime.MinValue).ToList();
 
-            Assert.All(category.DrawnCards, c => Assert.True(c.HasPoints, c.Title + " shows no points"));
+            Assert.Equal(dates.OrderByDescending(d => d), dates);
+
+            Assert.All(category.Cards, c => Assert.True(c.HasPoints, c.Title + " shows no points"));
 
             screen.BackCommand.Execute(null);
 
             Assert.Null(screen.Category);
         }
 
-        // **THE FIXTURE, KIND BY KIND**: eight countries worked and one more to go, drawn first.
+        // **THE FIXTURE, KIND BY KIND**: eight countries worked and one more to go, as the next stamp.
         screen.OpenCategoryCommand.Execute(AchievementKinds.Countries);
 
-        Assert.Equal(8, screen.Category!.DrawnCards.Count(c => c.Earned));
-        Assert.Equal("One more country", screen.Category.DrawnCards[0].Title);
-        Assert.Equal("5 pts", screen.Category.DrawnCards[0].PointsLine);
+        Assert.Equal(8, screen.Category!.DrawnCards.Count);
+        Assert.Equal("One more country", screen.Category.NextStamp!.Title);
+        Assert.Equal("5 pts", screen.Category.NextStamp.PointsLine);
 
         screen.BackCommand.Execute(null);
 
-        // **HALL OF FAME: five firsts held, and the 10,000-mile one next at 100, drawn first.**
+        // **HALL OF FAME: five firsts held, and the 10,000-mile one next at 100.**
         screen.OpenCategoryCommand.Execute(AchievementKinds.HallOfFame);
 
-        Assert.Equal(5, screen.Category!.DrawnCards.Count(c => c.Earned));
-        Assert.Equal("Over 10,000 miles", screen.Category.DrawnCards[0].Title);
-        Assert.Equal("100 pts", screen.Category.DrawnCards[0].PointsLine);
+        Assert.Equal(5, screen.Category!.DrawnCards.Count);
+        Assert.Equal("Over 10,000 miles", screen.Category.NextStamp!.Title);
+        Assert.Equal("100 pts", screen.Category.NextStamp.PointsLine);
 
         screen.BackCommand.Execute(null);
 
@@ -701,6 +699,13 @@ public sealed class TheAchievementsPageClicksInTests
 
         foreach (var text in VisibleText(window))
         {
+            // **A STAMP'S SENTENCE MAY WRAP BETWEEN WORDS** (work instruction 506 task 4), and nowhere else.
+            if (TheAchievementTilesTests.WrapsBetweenWordsInAStamp(text))
+            {
+                checkedCount++;
+                continue;
+            }
+
             var needs = Natural(text);
             var has = text.Bounds.Width;
 
