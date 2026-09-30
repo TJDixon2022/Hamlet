@@ -532,8 +532,10 @@ public sealed class TheAchievementsPageTests
 
             Assert.Equal(8, badges!.ItemCount);
 
+            // **EFFECTIVELY VISIBLE SINCE WORK INSTRUCTION 506**: a tile holds an opened face and a locked
+            // face, one of them hidden, and each carries the kind's emblem.
             var emblems = badges.GetVisualDescendants().OfType<BadgeEmblemControl>()
-                .Where(e => e.IsVisible)
+                .Where(e => e.IsEffectivelyVisible)
                 .ToList();
 
             _output.WriteLine(
@@ -544,18 +546,22 @@ public sealed class TheAchievementsPageTests
             Assert.Equal(8, emblems.Count);
             Assert.Equal(8, emblems.Select(e => e.Emblem).Distinct().Count());
 
-            var total = window.GetVisualDescendants().OfType<TextBlock>()
-                .First(t => t.Name == "AchievementsTotalLine");
+            // **THE RUNNING TOTAL IS IN THE STANDING RING SINCE WORK INSTRUCTION 506**, where the line under
+            // the title said it before: the points, drawn.
+            var standing = window.GetVisualDescendants().OfType<Control>().First(c => c.Name == "AchievementsStanding");
+            var screen = (AchievementsViewModel)window.DataContext!;
+            var points = AchievementStanding.Points(screen.Page!.Scores.Total!.Value);
 
-            _output.WriteLine("total line: " + total.Text);
+            _output.WriteLine("standing: " + string.Join(" | ", standing.GetVisualDescendants().OfType<TextBlock>().Where(t => t.IsEffectivelyVisible).Select(t => t.Text)));
 
-            Assert.True(total.IsVisible, "the running total is not drawn");
-            Assert.False(string.IsNullOrWhiteSpace(total.Text));
+            Assert.Contains(
+                standing.GetVisualDescendants().OfType<TextBlock>(),
+                t => t.IsEffectivelyVisible && t.Text == points);
 
             // **AND NOTHING IS CLIPPED** (the task's own *text sized to fit, never
             // clipped*). Every visible run in the badges gets at least what it asks for.
             foreach (var text in badges.GetVisualDescendants().OfType<TextBlock>()
-                .Where(t => t.IsVisible && (t.Text ?? "").Trim().Length > 0))
+                .Where(t => t.IsEffectivelyVisible && (t.Text ?? "").Trim().Length > 0))
             {
                 Assert.True(
                     text.Bounds.Height + 0.51 >= text.DesiredSize.Height,

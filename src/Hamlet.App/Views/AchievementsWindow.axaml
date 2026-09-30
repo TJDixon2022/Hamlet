@@ -41,6 +41,26 @@
             <Setter Property="Padding" Value="0" />
         </Style>
 
+        <!-- **A TILE IS PRESSED TO OPEN ITS KIND** (work instruction 506): the face is the tile, the button
+             draws nothing of its own, and under the pointer the face's edge goes amber (§0.5.1). -->
+        <Style Selector="Button.achievement-tile">
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+        </Style>
+        <Style Selector="Button.achievement-tile /template/ ContentPresenter">
+            <Setter Property="Background" Value="Transparent" />
+        </Style>
+        <Style Selector="Button.achievement-tile:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="Transparent" />
+        </Style>
+        <Style Selector="Button.achievement-tile:pointerover Border.tile-face">
+            <Setter Property="BorderBrush" Value="{StaticResource HmAmberEdgeBrush}" />
+        </Style>
+        <Style Selector="Button.achievement-tile:pointerover Rectangle.tile-locked-edge">
+            <Setter Property="Stroke" Value="{StaticResource HmAmberEdgeBrush}" />
+        </Style>
+
         <!-- **JUST UNLOCKED READS AS PRESSABLE ON THE DARK PANEL** (work instruction 506, §0.5.1): a pale
              frame and a lighter ground at rest, lighter still under the pointer. -->
         <Style Selector="Button.standing-unlocked">
@@ -86,121 +106,167 @@
     </Window.Styles>
 
     <Window.Resources>
-        <!-- **ONE BADGE, DRAWN ONCE** - the eight on the page and the seven inside
-             Continents are the same shape, so they are the same template. -->
-        <DataTemplate x:Key="HmBadgeTemplate" x:DataType="vm:AchievementBadge">
-            <Button Classes="hm-chip hm-badge"
-                    Margin="0,0,10,10"
+        <!-- **THE TILE, ONE PER KIND** (work instruction 506 task 2, HM-DEC-211, replacing unit 331's
+             badge): still the button that opens its kind. **Opened**, it carries a header in the kind's
+             color with its emblem and name, its level in words, the count large and what it counts, a bar
+             to the next level of his file with the gap in words, and what is next - `Opens a set:` in the
+             amber ring for a door (R19), `Next:` otherwise. **Locked**, where nothing in the kind is earned,
+             it is dashed and muted with a padlock, `Locked`, and what opens it. The words carry every state;
+             the color only decorates them (§0.6). **No denominator of the world** (§3.7). -->
+        <DataTemplate x:Key="HmTileTemplate" x:DataType="vm:AchievementBadge">
+            <Button Classes="hm-badge achievement-tile"
+                    Margin="0,0,14,14"
+                    MinHeight="196"
                     HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"
                     HorizontalContentAlignment="Stretch"
                     VerticalContentAlignment="Stretch"
                     Command="{Binding $parent[Window].((vm:AchievementsViewModel)DataContext).OpenCategoryCommand}"
                     CommandParameter="{Binding Kind}"
                     ToolTip.Tip="{Binding ScoreTip}">
-                <Border Background="White"
-                        BorderBrush="{StaticResource HmSlateEdgeBrush}"
-                        BorderThickness="1"
-                        CornerRadius="8"
-                        ClipToBounds="True">
-                    <StackPanel>
-                        <!-- **THE COLOR BAND, WITH THE EMBLEM AND THE NAME ON IT.** The
-                             hue is the badge's own and claims no mode family (§0.5); the
-                             name is on it in words, so the hue carries nothing by itself
-                             (§0.6). -->
-                        <Border Background="{Binding Band}" Padding="8,7">
-                            <Grid ColumnDefinitions="Auto,*">
-                                <ctl:BadgeEmblemControl Grid.Column="0"
-                                                        Emblem="{Binding Emblem}"
-                                                        Ink="White"
-                                                        Width="22" Height="22"
-                                                        Margin="0,0,6,0"
-                                                        VerticalAlignment="Center" />
-
-                                <TextBlock Grid.Column="1"
-                                           Classes="badge-name"
-                                           Text="{Binding Name}"
-                                           FontSize="13" FontWeight="Bold"
-                                           VerticalAlignment="Center"
-                                           Foreground="White" />
-                            </Grid>
-                        </Border>
-
-                        <StackPanel Margin="8,6,8,8" Spacing="4">
-                            <TextBlock Classes="badge-meaning"
-                                       Text="{Binding Meaning}"
-                                       FontSize="11"
-                                       Foreground="{StaticResource HmTextMutedBrush}" />
-
-                            <!-- **THE ONE CARD HE COULD EARN NEXT**, with the two forms
-                                 of the mark: the ringed amber quill for a door and the
-                                 still green one for a counter (§R16, §0.6). -->
-                            <Border BorderBrush="{StaticResource HmSlateEdgeBrush}"
-                                    BorderThickness="1"
-                                    CornerRadius="6"
-                                    Background="{StaticResource HmBackgroundBrush}"
-                                    Padding="6,4"
-                                    IsVisible="{Binding HasNextCard}">
-                                <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto">
-                                    <ctl:AchievementMarkControl
-                                        Grid.RowSpan="2"
-                                        Form="Door"
-                                        IsNew="True"
-                                        IsVisible="{Binding NextIsDoor}"
-                                        Width="{x:Static ctl:AchievementMarkControl.RowSide}"
-                                        Height="{x:Static ctl:AchievementMarkControl.RowSide}"
-                                        Margin="0,0,6,0"
-                                        VerticalAlignment="Center" />
-
-                                    <ctl:AchievementMarkControl
-                                        Grid.RowSpan="2"
-                                        Form="Counter"
-                                        IsNew="True"
-                                        IsVisible="{Binding !NextIsDoor}"
-                                        Width="{x:Static ctl:AchievementMarkControl.RowSide}"
-                                        Height="{x:Static ctl:AchievementMarkControl.RowSide}"
-                                        Margin="0,0,6,0"
-                                        VerticalAlignment="Center" />
-
-                                    <TextBlock Grid.Column="1"
-                                               Text="next"
-                                               FontSize="10"
-                                               Foreground="{StaticResource HmTextMutedBrush}" />
-
-                                    <TextBlock Grid.Column="1" Grid.Row="1"
-                                               Classes="badge-next"
-                                               Text="{Binding NextCard}"
-                                               FontSize="12"
-                                               Foreground="{StaticResource HmTextPrimaryBrush}" />
+                <Panel>
+                    <!-- ============ OPENED ============ -->
+                    <Border Classes="tile-face"
+                            IsVisible="{Binding IsOpened}"
+                            Background="White"
+                            BorderBrush="#D8D3C6"
+                            BorderThickness="1"
+                            CornerRadius="14"
+                            ClipToBounds="True">
+                        <DockPanel>
+                            <Border DockPanel.Dock="Top" Background="{Binding TileBand}" Padding="12,10">
+                                <Grid ColumnDefinitions="Auto,*" ColumnSpacing="8">
+                                    <ctl:BadgeEmblemControl Emblem="{Binding Emblem}" Ink="White" Width="20" Height="20" VerticalAlignment="Center" />
+                                    <TextBlock Grid.Column="1" Classes="tile-name" Text="{Binding Name}" FontSize="13" FontWeight="Bold" Foreground="White" VerticalAlignment="Center" />
                                 </Grid>
                             </Border>
 
-                            <!-- **THE CORNER, IN THREE SHORT LINES.** What he has - `0
-                                 worked`, never `0 of 340` (§3.7) - then the points and
-                                 level, then the gap. Absent rather than nought where the
-                                 points file could not be read. -->
-                            <TextBlock Classes="badge-corner"
-                                       Text="{Binding Standing}"
-                                       TextAlignment="Right"
-                                       FontSize="11"
-                                       Foreground="{StaticResource HmTextMutedBrush}" />
+                            <StackPanel Margin="8,10,8,12" Spacing="6">
+                                <Border IsVisible="{Binding HasLevelChip}"
+                                        HorizontalAlignment="Left"
+                                        Background="{Binding TileBand}"
+                                        CornerRadius="999"
+                                        Padding="8,1">
+                                    <TextBlock Classes="tile-level" Text="{Binding LevelChip}" FontSize="11" FontWeight="SemiBold" Foreground="White" />
+                                </Border>
 
-                            <TextBlock Classes="badge-corner"
-                                       Text="{Binding PointsLine}"
-                                       IsVisible="{Binding HasPointsLine}"
-                                       TextAlignment="Right"
-                                       FontSize="11" FontWeight="SemiBold"
-                                       Foreground="{StaticResource HmGreenBrush}" />
+                                <Viewbox StretchDirection="DownOnly" HorizontalAlignment="Left">
+                                    <TextBlock Classes="tile-count" Text="{Binding CountText}" FontSize="26" FontWeight="Bold" Foreground="{StaticResource HmTextPrimaryBrush}" />
+                                </Viewbox>
+                                <TextBlock Classes="tile-words" Text="{Binding CountWords}" FontSize="12" Foreground="#5F5C53" />
 
-                            <TextBlock Classes="badge-corner"
-                                       Text="{Binding GapLine}"
-                                       IsVisible="{Binding HasGapLine}"
-                                       TextAlignment="Right"
-                                       FontSize="11"
-                                       Foreground="{StaticResource HmTextMutedBrush}" />
+                                <ctl:BadgeProgressControl IsVisible="{Binding HasBar}"
+                                                          Fraction="{Binding BarFraction}"
+                                                          Length="160"
+                                                          Thickness="8"
+                                                          Track="#E6E1D5"
+                                                          Foreground="{Binding TileBand}"
+                                                          HorizontalAlignment="Left" />
+
+                                <!-- **A GAP OR A COUNT IN MILES CAN OUTGROW THE TILE** (`9,000,000 mi to Platinum`), so each
+                                     shrinks to it rather than clipping (§6), and draws full size wherever it fits. -->
+                                <Viewbox IsVisible="{Binding HasBar}" StretchDirection="DownOnly" HorizontalAlignment="Left">
+                                    <TextBlock Classes="tile-gap" Text="{Binding BarGapLine}" FontSize="12" Foreground="#5F5C53" />
+                                </Viewbox>
+
+                                <Panel IsVisible="{Binding HasNextCard}">
+                                    <Border IsVisible="{Binding !NextIsDoor}" Background="#F4F1EA" BorderBrush="#D8D3C6" BorderThickness="1" CornerRadius="10" Padding="6,5">
+                                        <StackPanel>
+                                            <TextBlock Classes="tile-next-label" Text="{Binding NextLabel}" FontSize="11" FontWeight="SemiBold" Foreground="#3B6D11" />
+                                            <TextBlock Classes="tile-next" Text="{Binding NextCard}" FontSize="11" Foreground="{StaticResource HmTextPrimaryBrush}" />
+                                        </StackPanel>
+                                    </Border>
+
+                                    <Border IsVisible="{Binding NextIsDoor}" Background="#F4F1EA" BorderBrush="#9A5B00" BorderThickness="2" CornerRadius="10" Padding="4,4">
+                                        <StackPanel>
+                                            <TextBlock Classes="tile-next-label" Text="{Binding NextLabel}" FontSize="11" FontWeight="SemiBold" Foreground="#9A5B00" />
+                                            <TextBlock Classes="tile-next" Text="{Binding NextCard}" FontSize="11" Foreground="{StaticResource HmTextPrimaryBrush}" />
+                                        </StackPanel>
+                                    </Border>
+                                </Panel>
+                            </StackPanel>
+                        </DockPanel>
+                    </Border>
+
+                    <!-- ============ LOCKED ============ -->
+                    <Panel IsVisible="{Binding IsLocked}">
+                        <Rectangle Classes="tile-locked-edge"
+                                   Fill="#EFEBE1"
+                                   Stroke="#B9B2A1"
+                                   StrokeThickness="2"
+                                   StrokeDashArray="3,2"
+                                   RadiusX="14" RadiusY="14" />
+
+                        <StackPanel Margin="12" Spacing="8">
+                            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="8">
+                                <ctl:BadgeEmblemControl Emblem="{Binding Emblem}" Ink="#5F5C53" Width="20" Height="20" VerticalAlignment="Center" />
+                                <TextBlock Grid.Column="1" Classes="tile-name" Text="{Binding Name}" FontSize="13" FontWeight="Bold" Foreground="#5F5C53" VerticalAlignment="Center" />
+                            </Grid>
+
+                            <StackPanel Orientation="Horizontal" Spacing="6">
+                                <Path Classes="padlock"
+                                      Data="M5 11 h14 v9 h-14 z M8 11 V8 a4 4 0 0 1 8 0 v3"
+                                      Stroke="#5F5C53" StrokeThickness="1.8"
+                                      Width="14" Height="14" Stretch="Uniform"
+                                      VerticalAlignment="Center" />
+                                <TextBlock Text="Locked" FontSize="11" FontWeight="SemiBold" Foreground="#5F5C53" VerticalAlignment="Center" />
+                            </StackPanel>
+
+                            <TextBlock Classes="tile-none" Text="{Binding NoneYetLine}" FontSize="12" Foreground="#5F5C53" />
+
+                            <Border Background="White" BorderBrush="#D8D3C6" BorderThickness="1" CornerRadius="10" Padding="6,5">
+                                <StackPanel>
+                                    <TextBlock Text="To open it:" FontSize="11" FontWeight="SemiBold" Foreground="{StaticResource HmTextPrimaryBrush}" />
+                                    <TextBlock Classes="tile-open" Text="{Binding ToOpenLine}" FontSize="11" Foreground="{StaticResource HmTextPrimaryBrush}" />
+                                </StackPanel>
+                            </Border>
                         </StackPanel>
-                    </StackPanel>
-                </Border>
+                    </Panel>
+                </Panel>
             </Button>
+        </DataTemplate>
+
+        <!-- **ONE RANK ON THE TRAIL** (work instruction 506 task 2): the line into it and out of it, a circle
+             checked for a rank passed, ringed with a dot for the one he holds, dashed with a padlock for the
+             next, and its name and line under it. The words say which, not the circle alone (§0.6). -->
+        <DataTemplate x:Key="HmRankStepTemplate" x:DataType="vm:AchievementRankStep">
+            <StackPanel Spacing="4" MinWidth="90">
+                <Grid ColumnDefinitions="*,34,*" Height="34">
+                    <Border Grid.Column="0" Height="3" VerticalAlignment="Center" Background="#3B6D11" IsVisible="{Binding LineBeforeSolid}" />
+                    <UniformGrid Grid.Column="0" Rows="1" Columns="4" VerticalAlignment="Center" IsVisible="{Binding LineBeforeDashed}">
+                        <Border Height="3" Margin="2,0" Background="#B9B2A1" />
+                        <Border Height="3" Margin="2,0" Background="#B9B2A1" />
+                        <Border Height="3" Margin="2,0" Background="#B9B2A1" />
+                        <Border Height="3" Margin="2,0" Background="#B9B2A1" />
+                    </UniformGrid>
+
+                    <Border Grid.Column="2" Height="3" VerticalAlignment="Center" Background="#3B6D11" IsVisible="{Binding RightSolid}" />
+                    <UniformGrid Grid.Column="2" Rows="1" Columns="4" VerticalAlignment="Center" IsVisible="{Binding RightDashed}">
+                        <Border Height="3" Margin="2,0" Background="#B9B2A1" />
+                        <Border Height="3" Margin="2,0" Background="#B9B2A1" />
+                        <Border Height="3" Margin="2,0" Background="#B9B2A1" />
+                        <Border Height="3" Margin="2,0" Background="#B9B2A1" />
+                    </UniformGrid>
+
+                    <Panel Grid.Column="1" Classes="rank-passed" IsVisible="{Binding IsPassed}">
+                        <Ellipse Fill="#3B6D11" />
+                        <Path Data="M5 12.5 L9.5 17 L19 7.5" Stroke="White" StrokeThickness="2.4" Width="16" Height="16" Stretch="Uniform" />
+                    </Panel>
+
+                    <Panel Grid.Column="1" Classes="rank-here" IsVisible="{Binding IsHere}">
+                        <Ellipse Fill="White" Stroke="#3B6D11" StrokeThickness="3" />
+                        <Ellipse Fill="#3B6D11" Width="12" Height="12" />
+                    </Panel>
+
+                    <Panel Grid.Column="1" Classes="rank-locked" IsVisible="{Binding IsLocked}">
+                        <Ellipse Fill="#EFEBE1" Stroke="#8F8877" StrokeThickness="2" StrokeDashArray="2,2" />
+                        <Path Data="M5 11 h14 v9 h-14 z M8 11 V8 a4 4 0 0 1 8 0 v3" Stroke="#5F5C53" StrokeThickness="1.8" Width="14" Height="14" Stretch="Uniform" />
+                    </Panel>
+                </Grid>
+
+                <TextBlock Classes="rank-name" Text="{Binding Name}" HorizontalAlignment="Center" FontSize="13" FontWeight="SemiBold" Foreground="{StaticResource HmTextPrimaryBrush}" />
+                <TextBlock Classes="rank-under" Text="{Binding Under}" HorizontalAlignment="Center" FontSize="11" Foreground="#5F5C53" />
+            </StackPanel>
         </DataTemplate>
 
         <!-- **ONE ITEM OF A CATEGORY, DRAWN ONCE** (work instruction 505, HM-DEC-209). It replaces
@@ -636,10 +702,14 @@
                                             ContentTemplate="{StaticResource HmJustUnlockedFace}" />
                         </Border>
 
-                        <TextBlock Text="{Binding Standing.NothingYetLine, FallbackValue=''}"
-                                   IsVisible="{Binding Standing.HasNothingYet, FallbackValue=False}"
-                                   FontSize="14"
-                                   Foreground="White" />
+                        <StackPanel IsVisible="{Binding Standing.HasNothingYet, FallbackValue=False}">
+                            <TextBlock Text="{Binding Standing.NothingYetLine, FallbackValue=''}"
+                                       FontSize="14"
+                                       Foreground="White" />
+                            <TextBlock Text="{Binding Standing.NothingYetWorth, FallbackValue=''}"
+                                       FontSize="14" FontWeight="SemiBold"
+                                       Foreground="#9AD05F" />
+                        </StackPanel>
                     </StackPanel>
 
                     <Panel />
@@ -647,52 +717,77 @@
             </Border>
 
             <!-- ============ THE RIGHT SIDE ============ -->
-            <StackPanel Grid.Column="1" Spacing="10">
-            <StackPanel Spacing="2">
-                <TextBlock x:Name="AchievementsPageTitle"
-                           Text="Achievements"
-                           FontSize="20" FontWeight="Bold"
-                           Foreground="{StaticResource HmTextPrimaryBrush}" />
+            <StackPanel Grid.Column="1" Spacing="16">
+                <StackPanel Spacing="2">
+                    <TextBlock x:Name="AchievementsPageTitle"
+                               Text="Achievements"
+                               FontSize="30" FontWeight="Bold"
+                               Foreground="{StaticResource HmTextPrimaryBrush}" />
 
-                <TextBlock x:Name="AchievementsPageSubtitle"
-                           Text="{Binding Page.Subtitle}"
-                           FontSize="12"
-                           Foreground="{StaticResource HmTextMutedBrush}" />
+                    <TextBlock x:Name="AchievementsPageSubtitle"
+                               Text="What you have done on the air, and what is one contact away."
+                               FontSize="13"
+                               Foreground="#5F5C53" />
 
-                <!-- **THE RUNNING TOTAL, ON THE PAGE, ALWAYS.** -->
-                <TextBlock x:Name="AchievementsTotalLine"
-                           Text="{Binding Page.TotalLine}"
-                           IsVisible="{Binding Page.HasTotal}"
-                           Margin="0,4,0,0"
-                           FontSize="14" FontWeight="SemiBold"
-                           Foreground="{StaticResource HmGreenBrush}" />
+                    <!-- **WHERE THE FILE COULD NOT BE READ, THE SENTENCE.** Amber rather than red
+                         (HM-DEC-029's tone rule), and the one line here allowed to wrap, because it
+                         carries a path Hamlet does not choose the length of. -->
+                    <TextBlock x:Name="AchievementsPointsProblem"
+                               Text="{Binding Page.Problem}"
+                               IsVisible="{Binding Page.HasProblem}"
+                               Margin="0,4,0,0"
+                               FontSize="12" TextWrapping="Wrap"
+                               Foreground="{StaticResource HmAmberBrush}" />
+                </StackPanel>
 
-                <!-- **AND WHERE THE FILE COULD NOT BE READ, THE SENTENCE.** Amber
-                     rather than red (HM-DEC-029's tone rule). **THE ONE LINE HERE
-                     ALLOWED TO WRAP**, because it carries a path Hamlet does not
-                     choose the length of. -->
-                <TextBlock x:Name="AchievementsPointsProblem"
-                           Text="{Binding Page.Problem}"
-                           IsVisible="{Binding Page.HasProblem}"
-                           Margin="0,4,0,0"
-                           FontSize="12" TextWrapping="Wrap"
-                           Foreground="{StaticResource HmAmberBrush}" />
-            </StackPanel>
+                <!-- **THE RANK TRAIL** (work instruction 506 task 2): each rank passed, checked; the one he
+                     holds, `you are here`; the next one locked, with a padlock and where it opens; nothing
+                     after it (§2: one locked rank, never the ladder). A solid line joins what is done and a
+                     dashed one leads to the locked rank. Past four passed ranks the last three are drawn and
+                     the rest are counted in words. The locked rank takes a cell of its own width, so its
+                     line is never clipped. -->
+                <Border x:Name="AchievementsRankTrail"
+                        IsVisible="{Binding Page.Trail.HasSteps, FallbackValue=False}"
+                        Background="White"
+                        BorderBrush="#D8D3C6"
+                        BorderThickness="1"
+                        CornerRadius="14"
+                        Padding="18,12">
+                    <DockPanel>
+                        <TextBlock DockPanel.Dock="Left"
+                                   Text="{Binding Page.Trail.EarlierLine, FallbackValue=''}"
+                                   IsVisible="{Binding Page.Trail.HasEarlierLine, FallbackValue=False}"
+                                   VerticalAlignment="Top"
+                                   Margin="0,8,12,0"
+                                   FontSize="12"
+                                   Foreground="#5F5C53" />
 
-            <ItemsControl x:Name="AchievementsBadges"
-                          ItemsSource="{Binding Page.Badges}"
-                          ItemTemplate="{StaticResource HmBadgeTemplate}">
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <UniformGrid Columns="4" />
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-            </ItemsControl>
+                        <ContentControl DockPanel.Dock="Right"
+                                        Content="{Binding Page.Trail.Locked, FallbackValue={x:Null}}"
+                                        IsVisible="{Binding Page.Trail.HasLocked, FallbackValue=False}"
+                                        ContentTemplate="{StaticResource HmRankStepTemplate}" />
 
-            <TextBlock x:Name="AchievementsLegend"
-                       Text="Click a badge to open it. Orange ring: a door that opens a set. Green quill: a counter."
-                       FontSize="11"
-                       Foreground="{StaticResource HmTextMutedBrush}" />
+                        <ItemsControl ItemsSource="{Binding Page.Trail.Drawn, FallbackValue={x:Null}}"
+                                      ItemTemplate="{StaticResource HmRankStepTemplate}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <UniformGrid Rows="1" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                        </ItemsControl>
+                    </DockPanel>
+                </Border>
+
+                <ItemsControl x:Name="AchievementsBadges"
+                              ItemsSource="{Binding Page.Badges}"
+                              ItemTemplate="{StaticResource HmTileTemplate}"
+                              Margin="0,0,-14,-14">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <UniformGrid Columns="4" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ItemsControl>
             </StackPanel>
         </Grid>
 

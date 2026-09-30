@@ -127,6 +127,239 @@ public sealed record AchievementBadge(
 
     /// <summary>True where there is a gap line to draw.</summary>
     public bool HasGapLine => GapLine.Length > 0;
+
+    // ------------------------------------------------------------------------------------------
+    // **THE TILE** (work instruction 506 task 2, `assets/achievements-look/opening-page.html`).
+    // ------------------------------------------------------------------------------------------
+
+    /// <summary>
+    /// **Nothing earned in this kind, so the tile is drawn locked** and says what opens it (work instruction
+    /// 506). §2 stands: a locked tile appears only where nothing in the kind is earned, one per kind, and
+    /// never a wall of blanks.
+    /// </summary>
+    public bool IsLocked => Score.Worked == 0;
+
+    /// <summary>True where the kind has something earned.</summary>
+    public bool IsOpened => !IsLocked;
+
+    /// <summary>
+    /// The header's fill: the kind's color, but `#8A6A10` for the Hall of Fame, since white on its `#A8811A`
+    /// does not reach 4.5 to 1 (§0.6). The author's, overrulable; the kind's color elsewhere is unchanged.
+    /// </summary>
+    public string TileBand => Kind == AchievementKinds.HallOfFame ? HallOfFameHeader : Band;
+
+    /// <summary>The Hall of Fame header's fill.</summary>
+    public const string HallOfFameHeader = "#8A6A10";
+
+    /// <summary>The level in words, `Bronze`, from his file's `levels`; "" below the first level or with no file.</summary>
+    public string LevelChip => Score.Points is not null && Score.Level >= 1 ? Score.LevelName : "";
+
+    /// <summary>True where the tile draws its level.</summary>
+    public bool HasLevelChip => LevelChip.Length > 0;
+
+    /// <summary>The count, large: `8`, or `31,400` miles.</summary>
+    public string CountText => Score.Worked.ToString("#,0", CultureInfo.InvariantCulture);
+
+    /// <summary>What the count counts: `countries worked`. **Never a denominator** (§3.7).</summary>
+    public string CountWords => Words.TryGetValue(Kind, out var said) ? (Score.Worked == 1 ? said.One : said.Many) : "";
+
+    /// <summary>
+    /// True where a bar to the next level is drawn: the file was read and names a level for this kind, the
+    /// next one or the top one.
+    /// </summary>
+    public bool HasBar => Score.Points is not null && (Score.NextLevelAt is not null || Score.Level >= 1);
+
+    /// <summary>
+    /// **How far to the next level of his file**, nought to one: the count over the count the next level
+    /// starts at, and full at the top level. A bar is never a fraction of the world (§3.7).
+    /// </summary>
+    public double BarFraction => Score.NextLevelAt is { } next && next > 0
+        ? Math.Clamp((double)Score.Worked / next, 0, 1)
+        : 1;
+
+    /// <summary>`2 more to Silver`, `18,600 mi to Gold`, or `the top level`; "" where no bar is drawn.</summary>
+    public string BarGapLine => !HasBar ? ""
+        : Score.ToNextLevel is { } gap && Score.NextLevelName.Length > 0
+            ? (Kind == AchievementKinds.TotalMiles
+                ? gap.ToString("#,0", CultureInfo.InvariantCulture) + " mi to "
+                : gap.ToString("#,0", CultureInfo.InvariantCulture) + " more to ") + Score.NextLevelName
+            : "the top level";
+
+    /// <summary>`Next:`, or `Opens a set:` where the next card is a door (R19): the word carries it, the ring decorates it (§0.6).</summary>
+    public string NextLabel => NextIsDoor ? "Opens a set:" : "Next:";
+
+    /// <summary>What a locked tile says under its name: `No states worked yet.`</summary>
+    public string NoneYetLine => NoneYet.TryGetValue(Kind, out var said) ? said : "";
+
+    /// <summary>What the first one in a locked kind takes, after `To open it:`. The author's words.</summary>
+    public string ToOpenLine => ToOpen.TryGetValue(Kind, out var said) ? said : "";
+
+    private static readonly Dictionary<string, (string One, string Many)> Words = new(StringComparer.Ordinal)
+    {
+        [AchievementKinds.HallOfFame] = ("once-only first", "once-only firsts"),
+        [AchievementKinds.Continents] = ("continent reached", "continents reached"),
+        [AchievementKinds.Countries] = ("country worked", "countries worked"),
+        [AchievementKinds.States] = ("state, from STATE", "states, from STATE"),
+        [AchievementKinds.Grids] = ("grid square", "grid squares"),
+        [AchievementKinds.TotalMiles] = ("mile, added up", "miles, added up"),
+        [AchievementKinds.Bands] = ("band opened", "bands opened"),
+        [AchievementKinds.Modes] = ("mode worked", "modes worked"),
+    };
+
+    /// <remarks>
+    /// **SHORT BECAUSE THE TILE IS NARROW** (§6): a quarter of the page's right side holds about sixteen
+    /// characters at the tile's size on the test host's measure, which is wider than any face on the glass.
+    /// The kind's name is on the tile above it, so the line need not repeat it.
+    /// </remarks>
+    private static readonly Dictionary<string, string> NoneYet = AchievementKinds.All.ToDictionary(k => k, _ => "Nothing here yet.", StringComparer.Ordinal);
+
+    /// <remarks>
+    /// **WHAT THE FIRST ONE TAKES, IN SIXTEEN CHARACTERS OR FEWER** (§6), after `To open it:`. Any contact
+    /// opens a continent, a country, a band and a mode; a state wants the log's `STATE` field on a US record,
+    /// and a grid and a mile want the station's grid. The author's words, overrulable.
+    /// </remarks>
+    private static readonly Dictionary<string, string> ToOpen = new(StringComparer.Ordinal)
+    {
+        [AchievementKinds.HallOfFame] = "a first contact.",
+        [AchievementKinds.Continents] = "any contact.",
+        [AchievementKinds.Countries] = "any contact.",
+        [AchievementKinds.States] = "a US state.",
+        [AchievementKinds.Grids] = "a logged grid.",
+        [AchievementKinds.TotalMiles] = "a logged grid.",
+        [AchievementKinds.Bands] = "any contact.",
+        [AchievementKinds.Modes] = "any contact.",
+    };
+}
+
+/// <summary>
+/// **One rank on the trail across the top of the page** (work instruction 506 task 2): a passed rank, the
+/// one he holds, or the next one, locked.
+/// </summary>
+/// <param name="Name">The rank's name from his file, or `Rank n`.</param>
+/// <param name="Under">The line under it: where it began, `you are here`, or `opens at 500 points`.</param>
+/// <param name="State">`passed`, `here` or `locked`.</param>
+public sealed record AchievementRankStep(string Name, string Under, string State)
+{
+    /// <summary>True for a rank he has passed: checked, and a solid line after it.</summary>
+    public bool IsPassed => State == "passed";
+
+    /// <summary>True for the rank he holds.</summary>
+    public bool IsHere => State == "here";
+
+    /// <summary>True for the next rank: a padlock, and a dashed line leading to it.</summary>
+    public bool IsLocked => State == "locked";
+
+    /// <summary>True for every step but the first, which has no line before it.</summary>
+    public bool HasLineBefore { get; init; }
+
+    /// <summary>True where the line before it is dashed: the one leading to the locked rank.</summary>
+    public bool LineBeforeDashed => IsLocked;
+
+    /// <summary>True where the line before it is solid.</summary>
+    public bool LineBeforeSolid => HasLineBefore && !IsLocked;
+
+    /// <summary>True where a solid half-line runs from it to a step that is not locked.</summary>
+    public bool RightSolid { get; init; }
+
+    /// <summary>True where a dashed half-line runs from it to the locked rank.</summary>
+    public bool RightDashed { get; init; }
+}
+
+/// <summary>
+/// **The rank trail** (work instruction 506 task 2): each rank passed, checked; the one he holds; the next one
+/// locked with where it opens; and nothing after it. §2 stands: **one locked rank, never the ladder.**
+/// </summary>
+public sealed class AchievementRankTrail
+{
+    /// <summary>How many passed ranks are drawn before the older ones are counted in words instead.</summary>
+    public const int PassedDrawn = 3;
+
+    /// <summary>More passed ranks than this and only the last <see cref="PassedDrawn"/> are drawn.</summary>
+    public const int PassedMost = 4;
+
+    /// <summary>Build the trail from the scores; empty where the file could not be read.</summary>
+    /// <param name="scores">The scores.</param>
+    public AchievementRankTrail(AchievementScores scores)
+    {
+        ArgumentNullException.ThrowIfNull(scores);
+
+        if (scores.Total is null)
+        {
+            return;
+        }
+
+        var ranks = scores.Points.Ranks;
+        var passed = Enumerable.Range(1, scores.Rank - 1).ToList();
+        var shown = passed.Count > PassedMost ? passed.Skip(passed.Count - PassedDrawn).ToList() : passed;
+        var steps = new List<AchievementRankStep>();
+
+        if (shown.Count < passed.Count)
+        {
+            var earlier = passed.Count - shown.Count;
+
+            EarlierLine = Spelled(earlier) + (earlier == 1 ? " rank before" : " ranks before");
+        }
+
+        foreach (var rank in shown)
+        {
+            steps.Add(new AchievementRankStep(scores.Points.RankName(rank), BeganAt(rank, ranks), "passed"));
+        }
+
+        steps.Add(new AchievementRankStep(scores.RankName, "you are here", "here"));
+
+        if (scores.NextRankAt is { } next)
+        {
+            steps.Add(new AchievementRankStep(
+                scores.NextRankName, "opens at " + next.ToString("#,0", CultureInfo.InvariantCulture) + " points", "locked"));
+        }
+
+        Steps = steps.Select((s, i) => s with
+        {
+            HasLineBefore = i > 0 || EarlierLine.Length > 0,
+            RightSolid = i + 1 < steps.Count && !steps[i + 1].IsLocked,
+            RightDashed = i + 1 < steps.Count && steps[i + 1].IsLocked,
+        }).ToList();
+    }
+
+    /// <summary>The steps, left to right.</summary>
+    public IReadOnlyList<AchievementRankStep> Steps { get; } = Array.Empty<AchievementRankStep>();
+
+    /// <summary>True where there is a trail to draw.</summary>
+    public bool HasSteps => Steps.Count > 0;
+
+    /// <summary>The passed ranks and the one he holds, drawn in equal cells.</summary>
+    public IReadOnlyList<AchievementRankStep> Drawn => Steps.Where(s => !s.IsLocked).ToList();
+
+    /// <summary>The next rank, locked, drawn in its own cell at the right; null at the top rank.</summary>
+    public AchievementRankStep? Locked => Steps.FirstOrDefault(s => s.IsLocked);
+
+    /// <summary>True where there is a locked rank to draw.</summary>
+    public bool HasLocked => Locked is not null;
+
+    /// <summary>`two ranks before`, where more passed ranks exist than are drawn; otherwise "".</summary>
+    public string EarlierLine { get; } = "";
+
+    /// <summary>True where the earlier ranks are counted in words.</summary>
+    public bool HasEarlierLine => EarlierLine.Length > 0;
+
+    private static string BeganAt(int rank, IReadOnlyList<long> ranks)
+        => rank <= 1 || rank - 2 >= ranks.Count
+            ? "the start"
+            : ranks[rank - 2].ToString("#,0", CultureInfo.InvariantCulture) + " points";
+
+    private static string Spelled(int count) => count switch
+    {
+        1 => "one",
+        2 => "two",
+        3 => "three",
+        4 => "four",
+        5 => "five",
+        6 => "six",
+        7 => "seven",
+        8 => "eight",
+        9 => "nine",
+        _ => count.ToString(CultureInfo.InvariantCulture),
+    };
 }
 
 /// <summary>
@@ -270,6 +503,11 @@ public sealed class AchievementBadgePage
 
     /// <summary>What went wrong with the points file, in one line, or "".</summary>
     public string Problem => Scores.Points.Problem;
+
+    private AchievementRankTrail? _trail;
+
+    /// <summary>**The rank trail** across the top of the page (work instruction 506 task 2).</summary>
+    public AchievementRankTrail Trail => _trail ??= new AchievementRankTrail(Scores);
 
     /// <summary>True where the page has to say the file could not be read.</summary>
     public bool HasProblem => Problem.Length > 0;

@@ -78,9 +78,12 @@ public sealed class AchievementStanding
         }
         else
         {
-            NothingYetLine = firstContactPoints.Length > 0
-                ? "Your first contact earns " + firstContactPoints.Replace(" pts", " points", StringComparison.Ordinal) + "."
-                : "Your first contact opens the Hall of Fame.";
+            // **TWO LINES, EACH WHOLE** (§6): the sentence is wider than the panel on the test host's measure,
+            // so it is said in two runs rather than wrapped.
+            NothingYetLine = "Your first contact earns";
+            NothingYetWorth = firstContactPoints.Length > 0
+                ? PointsAdded(firstContactPoints).TrimStart('+') + "."
+                : "a place in the Hall of Fame.";
         }
     }
 
@@ -159,6 +162,9 @@ public sealed class AchievementStanding
 
     /// <summary>What the first contact earns, where nothing is earned yet; otherwise "".</summary>
     public string NothingYetLine { get; } = "";
+
+    /// <summary>What the first contact is worth, the second line: `10 points.`</summary>
+    public string NothingYetWorth { get; } = "";
 
     /// <summary>True where nothing is earned yet.</summary>
     public bool HasNothingYet => NothingYetLine.Length > 0;

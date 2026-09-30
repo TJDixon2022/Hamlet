@@ -316,7 +316,7 @@ public sealed class ThePsk31RecordsAppearTests : IDisposable
             return new Psk31Placed(
                 where,
                 words,
-                chain.OfType<Border>().FirstOrDefault(b => b.Classes.Contains("trading-card"))?.DataContext as AchievementCategoryCard,
+                chain.OfType<Border>().FirstOrDefault(b => b.Classes.Contains("category-card"))?.DataContext as AchievementCategoryCard,
                 on.Classes.Contains("card-caller-place") || on.Classes.Contains("card-caller-call"),
                 chain.Any(c => c is TabItem),
                 chain.OfType<Button>().Any(b => b.Classes.Contains("hm-badge")),

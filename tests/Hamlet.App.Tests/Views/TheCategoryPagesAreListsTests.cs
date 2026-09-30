@@ -2109,7 +2109,11 @@ public sealed class TheCategoryPagesAreListsTests
                 var drawnBadge = Named<ItemsControl>(window, "AchievementsBadges").GetVisualDescendants().OfType<Button>()
                     .First(b => b.DataContext is AchievementBadge { Kind: AchievementKinds.States });
 
-                Assert.Contains(counted, VisibleText(drawnBadge));
+                // **CARRIED BY WORK INSTRUCTION 506**: the tile draws the count large and what it counts
+                // beside it, so ruling 35's words are split across the two - `2` and `states, from STATE` -
+                // and still say the count is read from the log's STATE field.
+                Assert.Contains("2", VisibleText(drawnBadge));
+                Assert.Contains("states, from STATE", VisibleText(drawnBadge));
 
                 shown.OpenCategoryCommand.Execute(AchievementKinds.States);
                 Settle(window);

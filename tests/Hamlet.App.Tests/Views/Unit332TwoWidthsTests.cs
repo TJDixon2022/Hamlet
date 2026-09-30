@@ -172,17 +172,19 @@ public sealed class Unit332TwoWidthsTests
         {
             _output.WriteLine("ACHIEVEMENTS WINDOW " + F(window.Bounds.Width) + " x " + F(window.Bounds.Height));
 
-            var legend = Named<TextBlock>(window, "AchievementsLegend");
-            var bottom = (legend.TranslatePoint(new Point(0, 0), window)?.Y ?? 0) + legend.Bounds.Height;
+            // **CARRIED BY WORK INSTRUCTION 506**: the legend is gone and the tiles are the lowest thing on
+            // the page's right side, so the page runs past its window if the tiles do. The badge's slots
+            // are the tile's.
+            var tiles = Named<ItemsControl>(window, "AchievementsBadges");
+            var bottom = (tiles.TranslatePoint(new Point(0, 0), window)?.Y ?? 0) + tiles.Bounds.Height;
 
-            _output.WriteLine("  page: legend ends at " + F(bottom) + " of " + F(window.Bounds.Height));
+            _output.WriteLine("  page: the tiles end at " + F(bottom) + " of " + F(window.Bounds.Height));
 
-            var badge = Named<ItemsControl>(window, "AchievementsBadges")
-                .GetVisualDescendants().OfType<Button>().First();
+            var badge = tiles.GetVisualDescendants().OfType<Button>().First();
 
-            _output.WriteLine("  badge " + F(badge.Bounds.Width) + " x " + F(badge.Bounds.Height));
+            _output.WriteLine("  tile " + F(badge.Bounds.Width) + " x " + F(badge.Bounds.Height));
 
-            foreach (var slot in new[] { "badge-name", "badge-meaning", "badge-next", "badge-corner" })
+            foreach (var slot in new[] { "tile-name", "tile-words", "tile-next" })
             {
                 var text = window.GetVisualDescendants().OfType<TextBlock>()
                     .First(t => t.IsEffectivelyVisible && t.Classes.Contains(slot));

@@ -48,10 +48,15 @@ public sealed class TheAchievementsPageClicksInTests
     public TheAchievementsPageClicksInTests(ITestOutputHelper output) => _output = output;
 
     /// <summary>
-    /// **The page has no scroller, and nothing sits below the legend.**
+    /// **The page has no scroller, and nothing runs below the window.**
     /// </summary>
+    /// <remarks>
+    /// **CARRIED BY WORK INSTRUCTION 506** from `ThePageHasNoScrollerAndNothingBelowTheLegend`: the legend went
+    /// when the tiles began saying in words what it explained, and the page is two columns, so the line
+    /// nothing may pass is the window's own bottom edge rather than the legend's.
+    /// </remarks>
     [AvaloniaFact]
-    public void ThePageHasNoScrollerAndNothingBelowTheLegend()
+    public void ThePageHasNoScrollerAndNothingBelowTheWindow()
     {
         var window = Realized(TheAchievementsPageTests.TwelveContacts());
 
@@ -70,20 +75,18 @@ public sealed class TheAchievementsPageClicksInTests
 
             Assert.True(scrollers.Count == 0, "the page has " + scrollers.Count + " scroller(s)");
 
-            var legend = Named<TextBlock>(window, "AchievementsLegend");
-            var legendBottom = Top(legend, window) + legend.Bounds.Height;
+            var windowBottom = window.ClientSize.Height;
 
-            _output.WriteLine("legend  : " + legend.Text);
-            _output.WriteLine("bottom  : " + F(legendBottom));
+            _output.WriteLine("bottom  : " + F(windowBottom));
 
             foreach (var text in VisibleText(window))
             {
-                var top = Top(text, window);
+                var bottom = Top(text, window) + text.Bounds.Height;
 
                 Assert.True(
-                    top < legendBottom + 0.5,
-                    "[" + text.Text + "] starts at " + F(top) + ", below the legend at "
-                    + F(legendBottom));
+                    bottom <= windowBottom + 0.5,
+                    "[" + text.Text + "] ends at " + F(bottom) + ", below the window's bottom edge at "
+                    + F(windowBottom));
             }
 
             // **THE OLD SCREEN IS GONE FROM THIS PAGE**: the card view, the belt, Your
@@ -464,13 +467,16 @@ public sealed class TheAchievementsPageClicksInTests
         {
             Fits(window, "the page");
 
-            // **THE LONGEST STRING EACH BADGE SLOT CAN CARRY**, against the slot, whether or
-            // not the fixture reaches it.
+            // **THE LONGEST STRING EACH TILE SLOT CAN CARRY**, against the slot, whether or not the
+            // fixture reaches it (carried by work instruction 506 from the badge's slots to the tile's).
+            // The badge's corner is gone - the points are in the standing ring - and the tile's count and
+            // gap shrink to the tile where they outgrow it, so they are not held to a longest string.
             var badges = Named<ItemsControl>(window, "AchievementsBadges");
 
-            SlotHolds(badges, "badge-next", AchievementBadgePage.EveryNextCard);
-            SlotHolds(badges, "badge-name", new[] { "Hall of Fame", "North America", "South America" });
-            SlotHolds(badges, "badge-corner", new[] { "0 pts · unranked", "9,999,999 to Platinum", "1,000 pts · Platinum", "9,999,999 mi so far" });
+            SlotHolds(badges, "tile-next", AchievementBadgePage.EveryNextCard);
+            SlotHolds(badges, "tile-name", new[] { "Hall of Fame", "Total Miles", "Continents" });
+            SlotHolds(badges, "tile-words", screen.Page!.Badges.SelectMany(b => new[] { b with { Score = b.Score with { Worked = 1 } }, b with { Score = b.Score with { Worked = 2 } } })
+                .Select(b => b.CountWords).Distinct().ToList());
 
             foreach (var kind in AchievementKinds.All)
             {
