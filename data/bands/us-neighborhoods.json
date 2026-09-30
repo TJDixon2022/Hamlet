@@ -86,11 +86,35 @@
       "url": "https://www.qrparci.org/qrp-update/qrp-frequency",
       "retrievedUtc": "2026-08-14",
       "note": "Explicitly centers of activity rather than calling frequencies: 'places where QRPers are likely to be found.'"
+    },
+    {
+      "id": "arrl-bandplan",
+      "authority": "convention",
+      "title": "ARRL Band Plan",
+      "publisher": "ARRL",
+      "url": "https://www.arrl.org/band-plan",
+      "retrievedUtc": "2026-09-29",
+      "note": "The ARRL's band plan page, quoted line for line in each band's arrlBandPlan below (work instruction 499). Where it gives a range, the range is drawn; where it gives one frequency, a calling or activity frequency, it is a convention and is listed rather than drawn, except the rows this file already drew under its own editorial rule before this source was added."
+    },
+    {
+      "id": "w1aw-schedule",
+      "authority": "convention",
+      "title": "W1AW operating schedule, the Morse frequencies",
+      "publisher": "ARRL",
+      "url": "https://www.arrl.org/w1aw-operating-schedule",
+      "retrievedUtc": "2026-09-29",
+      "note": "The same frequencies as data/bands/w1aw-morse.json, which a test holds this file to (HM-DEC-203). W1AW sends Morse on each of them on a published schedule, so each is drawn as Morse, 250 Hz either side, even where a data watering hole's editorial three kilohertz would otherwise cover it. The width is the author's, overrulable: it is past the 95 Hz a keyed tone spreads either side at the 45 WPM ceiling of CW_SPEC.md section 7."
     }
   ],
   "bands": [
     {
       "band": "80 m",
+      "arrlBandPlan": {
+        "cite": "arrl-bandplan",
+        "ranges": ["3.570-3.600 RTTY/Data"],
+        "conventions": ["3.590 RTTY/Data DX", "3.790-3.800 DX window", "3.845 SSTV", "3.885 AM calling frequency"],
+        "note": "Quoted line for line from https://www.arrl.org/band-plan on 2026-09-29. Each range is drawn as its family; each single frequency is a convention, listed here rather than drawn, except where this file already drew it as a block under its own editorial rule."
+      },
       "neighborhoods": [
         {
           "name": "CW fast lane",
@@ -181,12 +205,46 @@
           "name": "PSK31 ribbons",
           "shortName": "PSK31",
           "lowHz": 3580000,
-          "highHz": 3583000,
+          "highHz": 3581250,
           "jumpHz": 3580000,
           "family": "digital",
           "vibe": "Whispered ribbons",
           "blurb": "PSK31 is a typed conversation in a signal thirty-one hertz wide, which is narrower than a Morse note, so a dozen of them fit in the space of one voice contact. On the waterfall they look like thin ribbons. People hold real conversations here rather than trading signal reports, which makes it the friendliest of the digital modes.",
           "cite": "podxs070",
+          "caution": "This block is where the digital modes gather, and the software listening here cannot hear Morse at all. A CW call lands on top of contacts that will never know it arrived."
+        },
+        {
+          "name": "W1AW",
+          "shortName": "CW",
+          "lowHz": 3581250,
+          "highHz": 3581750,
+          "jumpHz": 3581500,
+          "family": "cw",
+          "vibe": "Scheduled Morse from headquarters",
+          "blurb": "W1AW, the ARRL's headquarters station, sends code practice and bulletins in Morse on this exact frequency on a published schedule, so this spot is Morse whatever the modes around it are doing. Outside the schedule it is often quiet, and anybody sitting here in CW will hear it start on the hour.",
+          "cite": "w1aw-schedule"
+        },
+        {
+          "name": "PSK31 ribbons",
+          "shortName": "PSK31",
+          "lowHz": 3581750,
+          "highHz": 3583000,
+          "jumpHz": 3581750,
+          "family": "digital",
+          "vibe": "Whispered ribbons",
+          "blurb": "PSK31 is a typed conversation in a signal thirty-one hertz wide, which is narrower than a Morse note, so a dozen of them fit in the space of one voice contact. On the waterfall they look like thin ribbons. People hold real conversations here rather than trading signal reports, which makes it the friendliest of the digital modes.",
+          "cite": "podxs070",
+          "caution": "This block is where the digital modes gather, and the software listening here cannot hear Morse at all. A CW call lands on top of contacts that will never know it arrived."
+        },
+        {
+          "name": "RTTY and data",
+          "shortName": "Data",
+          "lowHz": 3583000,
+          "highHz": 3585000,
+          "family": "digital",
+          "vibe": "Keyboards and computers",
+          "blurb": "The ARRL band plan gives this stretch to RTTY and the other data modes, so what you hear here is the chirp and warble of keyboards and computers rather than a hand on a key. Nobody has published a narrower spot inside it, so it belongs to whoever wanted the space that day.",
+          "cite": "arrl-bandplan",
           "caution": "This block is where the digital modes gather, and the software listening here cannot hear Morse at all. A CW call lands on top of contacts that will never know it arrived."
         },
         {
@@ -241,6 +299,12 @@
     },
     {
       "band": "40 m",
+      "arrlBandPlan": {
+        "cite": "arrl-bandplan",
+        "ranges": ["7.080-7.125 RTTY/Data"],
+        "conventions": ["7.040 RTTY/Data DX", "7.171 SSTV", "7.290 AM calling frequency"],
+        "note": "Quoted line for line from https://www.arrl.org/band-plan on 2026-09-29. Each range is drawn as its family; each single frequency is a convention, listed here rather than drawn, except where this file already drew it as a block under its own editorial rule."
+      },
       "neighborhoods": [
         {
           "name": "CW fast lane",
@@ -279,7 +343,7 @@
           "name": "RTTY row",
           "shortName": "RTTY",
           "lowHz": 7040000,
-          "highHz": 7047000,
+          "highHz": 7047250,
           "jumpHz": 7040000,
           "family": "digital",
           "vibe": "Twin rails, chattering",
@@ -288,11 +352,23 @@
           "caution": "This block is where the digital modes gather, and the software listening here cannot hear Morse at all. A CW call lands on top of contacts that will never know it arrived."
         },
         {
+          "name": "W1AW",
+          "shortName": "CW",
+          "lowHz": 7047250,
+          "highHz": 7047750,
+          "jumpHz": 7047500,
+          "family": "cw",
+          "vibe": "Scheduled Morse from headquarters",
+          "blurb": "W1AW, the ARRL's headquarters station, sends code practice and bulletins in Morse on this exact frequency on a published schedule, so this spot is Morse whatever the modes around it are doing. Outside the schedule it is often quiet, and anybody sitting here in CW will hear it start on the hour.",
+          "cite": "w1aw-schedule"
+        },
+        {
           "name": "FT4 sprint",
           "shortName": "FT4",
-          "lowHz": 7047000,
+          "lowHz": 7047750,
           "highHz": 7050000,
-          "jumpHz": 7047000,
+          "jumpHz": 7047750,
+          "dialNote": "WSJT-X's own 40 m FT4 dial frequency is 7.0475 MHz, which is W1AW's Morse frequency on 40 m. This block starts above W1AW's row instead (work instruction 499); it started at 7.047, 500 Hz below WSJT-X's figure, from 2026-08-14 to 2026-09-29.",
           "family": "digital",
           "vibe": "FT8 in a hurry",
           "blurb": "The same idea as FT8 with the clock wound on: bursts of seven and a half seconds instead of fifteen, built for contest weekends when the point is how many rather than how far. It sounds like FT8 played at double speed, and it lives just up the band from it so the two do not tread on each other.",
@@ -351,6 +427,18 @@
           "caution": "This block is where the digital modes gather, and the software listening here cannot hear Morse at all. A CW call lands on top of contacts that will never know it arrived."
         },
         {
+          "name": "RTTY and data",
+          "shortName": "Data",
+          "lowHz": 7081000,
+          "highHz": 7100000,
+          "jumpHz": 7081000,
+          "family": "digital",
+          "vibe": "Keyboards and computers",
+          "blurb": "The ARRL band plan gives this stretch to RTTY and the other data modes, so what you hear here is the chirp and warble of keyboards and computers rather than a hand on a key. Nobody has published a narrower spot inside it, so it belongs to whoever wanted the space that day.",
+          "cite": "arrl-bandplan",
+          "caution": "This block is where the digital modes gather, and the software listening here cannot hear Morse at all. A CW call lands on top of contacts that will never know it arrived."
+        },
+        {
           "name": "Automatic stations",
           "shortName": "auto",
           "lowHz": 7100000,
@@ -360,6 +448,18 @@
           "vibe": "Machines talking to machines",
           "blurb": "Automatically controlled stations live here, which means gateways and mailbox stations that answer without anybody sitting at them. Worth knowing about mostly so that a burst of data arriving out of nowhere does not surprise you.",
           "cite": "arrl-conop",
+          "caution": "This block is where the digital modes gather, and the software listening here cannot hear Morse at all. A CW call lands on top of contacts that will never know it arrived."
+        },
+        {
+          "name": "RTTY and data",
+          "shortName": "Data",
+          "lowHz": 7105000,
+          "highHz": 7125000,
+          "jumpHz": 7105000,
+          "family": "digital",
+          "vibe": "Keyboards and computers",
+          "blurb": "The ARRL band plan gives this stretch to RTTY and the other data modes, so what you hear here is the chirp and warble of keyboards and computers rather than a hand on a key. Nobody has published a narrower spot inside it, so it belongs to whoever wanted the space that day.",
+          "cite": "arrl-bandplan",
           "caution": "This block is where the digital modes gather, and the software listening here cannot hear Morse at all. A CW call lands on top of contacts that will never know it arrived."
         },
         {
@@ -414,6 +514,12 @@
     },
     {
       "band": "30 m",
+      "arrlBandPlan": {
+        "cite": "arrl-bandplan",
+        "ranges": ["10.130-10.140 RTTY", "10.140-10.150 Packet"],
+        "conventions": [],
+        "note": "Quoted line for line from https://www.arrl.org/band-plan on 2026-09-29. Each range is drawn as its family; each single frequency is a convention, listed here rather than drawn, except where this file already drew it as a block under its own editorial rule."
+      },
       "neighborhoods": [
         {
           "name": "CW main street",
@@ -502,6 +608,12 @@
     },
     {
       "band": "20 m",
+      "arrlBandPlan": {
+        "cite": "arrl-bandplan",
+        "ranges": ["14.070-14.095 RTTY", "14.095-14.0995 Packet", "14.1005-14.112 Packet"],
+        "conventions": ["14.100 NCDXF Beacons", "14.230 SSTV", "14.286 AM calling frequency"],
+        "note": "Quoted line for line from https://www.arrl.org/band-plan on 2026-09-29. Each range is drawn as its family; each single frequency is a convention, listed here rather than drawn, except where this file already drew it as a block under its own editorial rule."
+      },
       "neighborhoods": [
         {
           "name": "CW fast lane",
@@ -561,6 +673,18 @@
           "caution": "This block is where the digital modes gather, and the software listening here cannot hear Morse at all. A CW call lands on top of contacts that will never know it arrived.",
           "signalsAreAudioOffsets": true,
           "passbandWhy": "Every signal in this block is an audio tone above the dial, so the receiver has to pass the whole block to hear all of it. The requirement is the block's own width and is not written down again here: on 80 m this block is two kilohertz and on 20 m it is three, and a number typed beside the row would have claimed three on both."
+        },
+        {
+          "name": "RTTY and data",
+          "shortName": "Data",
+          "lowHz": 14077000,
+          "highHz": 14078000,
+          "jumpHz": 14077000,
+          "family": "digital",
+          "vibe": "Keyboards and computers",
+          "blurb": "The ARRL band plan gives this stretch to RTTY and the other data modes, so what you hear here is the chirp and warble of keyboards and computers rather than a hand on a key. Nobody has published a narrower spot inside it, so it belongs to whoever wanted the space that day.",
+          "cite": "arrl-bandplan",
+          "caution": "This block is where the digital modes gather, and the software listening here cannot hear Morse at all. A CW call lands on top of contacts that will never know it arrived."
         },
         {
           "name": "JS8 keyboard corner",
@@ -676,6 +800,12 @@
     },
     {
       "band": "17 m",
+      "arrlBandPlan": {
+        "cite": "arrl-bandplan",
+        "ranges": ["18.100-18.105 RTTY", "18.105-18.110 Packet"],
+        "conventions": [],
+        "note": "Quoted line for line from https://www.arrl.org/band-plan on 2026-09-29. Each range is drawn as its family; each single frequency is a convention, listed here rather than drawn, except where this file already drew it as a block under its own editorial rule."
+      },
       "neighborhoods": [
         {
           "name": "CW main street",
@@ -712,6 +842,18 @@
           "caution": "This block is where the digital modes gather, and the software listening here cannot hear Morse at all. A CW call lands on top of contacts that will never know it arrived.",
           "signalsAreAudioOffsets": true,
           "passbandWhy": "Every signal in this block is an audio tone above the dial, so the receiver has to pass the whole block to hear all of it. The requirement is the block's own width and is not written down again here: on 80 m this block is two kilohertz and on 20 m it is three, and a number typed beside the row would have claimed three on both."
+        },
+        {
+          "name": "RTTY and data",
+          "shortName": "Data",
+          "lowHz": 18102000,
+          "highHz": 18104000,
+          "jumpHz": 18102000,
+          "family": "digital",
+          "vibe": "Keyboards and computers",
+          "blurb": "The ARRL band plan gives this stretch to RTTY and the other data modes, so what you hear here is the chirp and warble of keyboards and computers rather than a hand on a key. Nobody has published a narrower spot inside it, so it belongs to whoever wanted the space that day.",
+          "cite": "arrl-bandplan",
+          "caution": "This block is where the digital modes gather, and the software listening here cannot hear Morse at all. A CW call lands on top of contacts that will never know it arrived."
         },
         {
           "name": "JS8 keyboard corner",
@@ -777,6 +919,12 @@
     },
     {
       "band": "15 m",
+      "arrlBandPlan": {
+        "cite": "arrl-bandplan",
+        "ranges": ["21.070-21.110 RTTY/Data"],
+        "conventions": ["21.340 SSTV"],
+        "note": "Quoted line for line from https://www.arrl.org/band-plan on 2026-09-29. Each range is drawn as its family; each single frequency is a convention, listed here rather than drawn, except where this file already drew it as a block under its own editorial rule."
+      },
       "neighborhoods": [
         {
           "name": "CW fast lane",
@@ -812,6 +960,18 @@
           "cite": "qrp-arci"
         },
         {
+          "name": "RTTY and data",
+          "shortName": "Data",
+          "lowHz": 21070000,
+          "highHz": 21074000,
+          "jumpHz": 21070000,
+          "family": "digital",
+          "vibe": "Keyboards and computers",
+          "blurb": "The ARRL band plan gives this stretch to RTTY and the other data modes, so what you hear here is the chirp and warble of keyboards and computers rather than a hand on a key. Nobody has published a narrower spot inside it, so it belongs to whoever wanted the space that day.",
+          "cite": "arrl-bandplan",
+          "caution": "This block is where the digital modes gather, and the software listening here cannot hear Morse at all. A CW call lands on top of contacts that will never know it arrived."
+        },
+        {
           "name": "FT8 city",
           "shortName": "FT8",
           "lowHz": 21074000,
@@ -826,6 +986,18 @@
           "passbandWhy": "Every signal in this block is an audio tone above the dial, so the receiver has to pass the whole block to hear all of it. The requirement is the block's own width and is not written down again here: on 80 m this block is two kilohertz and on 20 m it is three, and a number typed beside the row would have claimed three on both."
         },
         {
+          "name": "RTTY and data",
+          "shortName": "Data",
+          "lowHz": 21076000,
+          "highHz": 21078000,
+          "jumpHz": 21076000,
+          "family": "digital",
+          "vibe": "Keyboards and computers",
+          "blurb": "The ARRL band plan gives this stretch to RTTY and the other data modes, so what you hear here is the chirp and warble of keyboards and computers rather than a hand on a key. Nobody has published a narrower spot inside it, so it belongs to whoever wanted the space that day.",
+          "cite": "arrl-bandplan",
+          "caution": "This block is where the digital modes gather, and the software listening here cannot hear Morse at all. A CW call lands on top of contacts that will never know it arrived."
+        },
+        {
           "name": "JS8 keyboard corner",
           "shortName": "JS8",
           "lowHz": 21078000,
@@ -835,6 +1007,18 @@
           "vibe": "Keyboard chat, weak signals",
           "blurb": "JS8 takes the part of FT8 that digs a signal out of the noise and puts free typing on top of it, so you can hold an actual conversation at signal levels where voice would be hopeless. It is slow, a sentence takes a while, and the people who use it are usually the ones interested in getting a message through when nothing else would.",
           "cite": "js8call-guide",
+          "caution": "This block is where the digital modes gather, and the software listening here cannot hear Morse at all. A CW call lands on top of contacts that will never know it arrived."
+        },
+        {
+          "name": "RTTY and data",
+          "shortName": "Data",
+          "lowHz": 21081000,
+          "highHz": 21090000,
+          "jumpHz": 21081000,
+          "family": "digital",
+          "vibe": "Keyboards and computers",
+          "blurb": "The ARRL band plan gives this stretch to RTTY and the other data modes, so what you hear here is the chirp and warble of keyboards and computers rather than a hand on a key. Nobody has published a narrower spot inside it, so it belongs to whoever wanted the space that day.",
+          "cite": "arrl-bandplan",
           "caution": "This block is where the digital modes gather, and the software listening here cannot hear Morse at all. A CW call lands on top of contacts that will never know it arrived."
         },
         {
@@ -927,6 +1111,12 @@
     },
     {
       "band": "10 m",
+      "arrlBandPlan": {
+        "cite": "arrl-bandplan",
+        "ranges": ["28.000-28.070 CW", "28.070-28.150 RTTY", "28.150-28.190 CW", "28.200-28.300 Beacons", "28.300-29.300 Phone", "29.000-29.200 AM", "29.300-29.510 Satellite Uplinks or Downlinks", "29.520-29.590 Repeater Inputs", "29.610-29.700 Repeater Outputs"],
+        "conventions": ["28.680 SSTV", "29.600 FM Simplex"],
+        "note": "Quoted line for line from https://www.arrl.org/band-plan on 2026-09-29. Each range is drawn as its family; each single frequency is a convention, listed here rather than drawn, except where this file already drew it as a block under its own editorial rule."
+      },
       "neighborhoods": [
         {
           "name": "CW main street",
@@ -951,6 +1141,18 @@
           "cite": "qrp-arci"
         },
         {
+          "name": "RTTY and data",
+          "shortName": "Data",
+          "lowHz": 28070000,
+          "highHz": 28074000,
+          "jumpHz": 28070000,
+          "family": "digital",
+          "vibe": "Keyboards and computers",
+          "blurb": "The ARRL band plan gives this stretch to RTTY and the other data modes, so what you hear here is the chirp and warble of keyboards and computers rather than a hand on a key. Nobody has published a narrower spot inside it, so it belongs to whoever wanted the space that day.",
+          "cite": "arrl-bandplan",
+          "caution": "This block is where the digital modes gather, and the software listening here cannot hear Morse at all. A CW call lands on top of contacts that will never know it arrived."
+        },
+        {
           "name": "FT8 city",
           "shortName": "FT8",
           "lowHz": 28074000,
@@ -963,6 +1165,18 @@
           "caution": "This block is where the digital modes gather, and the software listening here cannot hear Morse at all. A CW call lands on top of contacts that will never know it arrived.",
           "signalsAreAudioOffsets": true,
           "passbandWhy": "Every signal in this block is an audio tone above the dial, so the receiver has to pass the whole block to hear all of it. The requirement is the block's own width and is not written down again here: on 80 m this block is two kilohertz and on 20 m it is three, and a number typed beside the row would have claimed three on both."
+        },
+        {
+          "name": "RTTY and data",
+          "shortName": "Data",
+          "lowHz": 28077000,
+          "highHz": 28078000,
+          "jumpHz": 28077000,
+          "family": "digital",
+          "vibe": "Keyboards and computers",
+          "blurb": "The ARRL band plan gives this stretch to RTTY and the other data modes, so what you hear here is the chirp and warble of keyboards and computers rather than a hand on a key. Nobody has published a narrower spot inside it, so it belongs to whoever wanted the space that day.",
+          "cite": "arrl-bandplan",
+          "caution": "This block is where the digital modes gather, and the software listening here cannot hear Morse at all. A CW call lands on top of contacts that will never know it arrived."
         },
         {
           "name": "JS8 keyboard corner",
@@ -992,13 +1206,24 @@
           "name": "Automatic stations",
           "shortName": "auto",
           "lowHz": 28120000,
-          "highHz": 28180000,
+          "highHz": 28150000,
           "jumpHz": 28130000,
           "family": "digital",
           "vibe": "Machines talking to machines",
           "blurb": "Automatically controlled stations live here, which means gateways and mailbox stations that answer without anybody sitting at them. Worth knowing about mostly so that a burst of data arriving out of nowhere does not surprise you.",
           "cite": "arrl-conop",
           "caution": "This block is where the digital modes gather, and the software listening here cannot hear Morse at all. A CW call lands on top of contacts that will never know it arrived."
+        },
+        {
+          "name": "CW above the data",
+          "shortName": "CW",
+          "lowHz": 28150000,
+          "highHz": 28180000,
+          "jumpHz": 28150000,
+          "family": "cw",
+          "vibe": "Quiet Morse",
+          "blurb": "The ARRL band plan gives this stretch back to Morse after the data modes, and it is usually a quiet place to listen for one station at a time. On a good day on ten meters that is a station a long way off with a small signal and a lot to say.",
+          "cite": "arrl-bandplan"
         },
         {
           "name": "FT4 sprint",
@@ -1013,6 +1238,17 @@
           "caution": "This block is where the digital modes gather, and the software listening here cannot hear Morse at all. A CW call lands on top of contacts that will never know it arrived.",
           "signalsAreAudioOffsets": true,
           "passbandWhy": "Every signal in this block is an audio tone above the dial, so the receiver has to pass the whole block to hear all of it. The requirement is the block's own width and is not written down again here: on 80 m this block is two kilohertz and on 20 m it is three, and a number typed beside the row would have claimed three on both."
+        },
+        {
+          "name": "CW above the data",
+          "shortName": "CW",
+          "lowHz": 28183000,
+          "highHz": 28190000,
+          "jumpHz": 28183000,
+          "family": "cw",
+          "vibe": "Quiet Morse",
+          "blurb": "The ARRL band plan gives this stretch back to Morse after the data modes, and it is usually a quiet place to listen for one station at a time. On a good day on ten meters that is a station a long way off with a small signal and a lot to say.",
+          "cite": "arrl-bandplan"
         },
         {
           "name": "Beacon block",

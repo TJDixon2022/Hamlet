@@ -4,6 +4,33 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-203
+date: 2026-09-29
+refs: work instruction 499, data/bands/us-neighborhoods.json, data/bands/w1aw-morse.json, src/Hamlet.App/ViewModels/MainWindowViewModel.cs, tests/Hamlet.RadioEngine.Tests/Explore/TheBandPlanSaysWhereTheModesAreTests.cs, tests/Hamlet.App.Tests/ViewModels/TheW1awPressStaysInCwTests.cs
+---
+
+**The band plan is checked against the app's own frequencies.** One wrong block put the radio in
+USB-D at 3 kHz and filled the CW terminal with junk, and the app's own W1AW table held the right
+answer. The owner pressed `W1AW on 40 m`; the map called 7.0475 MHz a data frequency, mode-follow
+wrote the data variant over the button's CW, USB-D took the wide filter, and the CW detector was
+handed the whole 3 kHz passband.
+
+**What the block was.** Not a PSK31 block drawn 22 kHz low: 7.0475 lay in the 40 m FT4 block, cited
+to WSJT-X's default frequency table, whose own 40 m FT4 dial frequency is 7.0475 - the same
+frequency W1AW sends Morse on. Two published conventions claimed one frequency and nothing held the
+map to `w1aw-morse.json`.
+
+**What is built.** Each W1AW Morse frequency the map would otherwise call something else is drawn
+as a Morse row 250 Hz either side, cited to the W1AW schedule; 40 m FT4 starts above it, at 7.04775.
+The ARRL band plan is a cited source, quoted per band: its ranges are drawn, and its single
+frequencies are listed as conventions. A test holds the nine W1AW frequencies to the map, and a
+second holds every drawn band's blocks to the plan's ranges. The W1AW press holds mode-follow off
+before it moves the dial, and a band change onto the held frequency's band keeps the hold.
+
+**Whose words are whose.** The headline and the cascade are work instruction 499's; the 250 Hz, the
+FT4 dial at 7.04775 and the reading of the ARRL page are the author's, and overrulable.
+
+---
 id: HM-DEC-202
 date: 2026-09-29
 refs: docs/phase-requirements/PHASE_PLAN.md R108, src/Hamlet.RadioEngine/Cw/CwEnvelopeDetector.cs, src/Hamlet.RadioEngine/Cw/CwRunReader.cs, tests/Hamlet.RadioEngine.Tests/Cw/ACharacterIsARunOfMarksThatAgreeTests.cs, HM-DEC-198, HM-DEC-201, work instruction 498

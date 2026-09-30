@@ -328,6 +328,17 @@ public partial class MainWindowViewModel : ObservableObject
     private bool _rigSendPending;
     private ModeFollowState _modeFollow = ModeFollowState.Armed(false);
 
+    /// <summary>
+    /// Where a W1AW press set CW and holds mode-follow off, or null (work instruction 499).
+    /// </summary>
+    /// <remarks>
+    /// **THE PRESS IS THE OPERATOR CHOOSING CW, AND ONLY HE ENDS IT.** A band change re-arms
+    /// mode-follow, and a band change that lands on the band holding this frequency is the press's
+    /// own arrival or the radio reporting it back, not his hand. It ends when the band moves to one
+    /// that does not hold it, or when he tunes anywhere else.
+    /// </remarks>
+    private long? _cwHeldAtHz;
+
     /// <summary>Whether the dial has come to rest where it is (work instruction 050).</summary>
     private ModeDwell _modeDwell = ModeDwell.Nowhere;
 
@@ -10249,9 +10260,8 @@ public partial class MainWindowViewModel : ObservableObject
     /// <param name="button">The button for the band the dial is on.</param>
     /// <remarks>
     /// <para>**THE DIAL GOES BY THE SAME PATH AS EVERY OTHER TUNE BUTTON**, <see cref="TuneTo"/>.
-    /// The mode cannot be left to mode-follow: 7.0475 sits in the map's FT4 block and 3.5815 in its
-    /// PSK31 block, where mode-follow would set the data variant, and 160 m is not a band Hamlet
-    /// maps. So the press sets CW itself, with the same mode write the Olivia tab makes, and holds
+    /// The mode is not left to mode-follow: the map now draws each W1AW frequency as Morse (work
+    /// instruction 499), but 160 m is not a band Hamlet maps. So the press sets CW itself, with the same mode write the Olivia tab makes, and holds
     /// mode-follow off until the next band change exactly as the operator's own hand on the mode
     /// knob does (HM-DEC-056), because pressing a CW button is the operator choosing CW.</para>
     /// <para>**NOTHING KEYS.** A frequency and a mode, both writes Hamlet already makes, and
@@ -10265,10 +10275,14 @@ public partial class MainWindowViewModel : ObservableObject
             return;
         }
 
-        TuneTo(button.FrequencyHz);
-
+        // **HELD BEFORE THE DIAL MOVES, NOT AFTER** (work instruction 499). Suspended after the
+        // tune, the move had already started mode-follow's settle timer and a band change had
+        // already re-armed it; held first, the move schedules nothing and the band change keeps it.
+        _cwHeldAtHz = button.FrequencyHz;
         _modeFollow = _modeFollow.SuspendedByOperator();
         ModeFollowSuspended = true;
+
+        TuneTo(button.FrequencyHz);
 
         var where = $"{button.Label}: {Megahertz(button.FrequencyHz)} MHz";
 
@@ -10459,6 +10473,13 @@ public partial class MainWindowViewModel : ObservableObject
     private void TuneTo(long hz)
     {
         AppEvents.TuneRequested(_telemetry, hz, "story_or_spot");
+
+        // A tune anywhere but the held W1AW frequency is the operator moving on (work instruction 499).
+        if (_cwHeldAtHz != hz)
+        {
+            _cwHeldAtHz = null;
+        }
+
         var arrivedOn = MarkActedOn(hz);
         var band = HfBands.BandFor(hz);
         if (band is not null && band.Name != SelectedBand.Band.Name)
@@ -10484,7 +10505,18 @@ public partial class MainWindowViewModel : ObservableObject
         // A band change is a fresh start rather than a continuation, and
         // somebody who took the wheel on 40 m did not mean to keep it forever
         // (HM-DEC-056).
-        _modeFollow = _modeFollow.Rearmed();
+        //
+        // **EXCEPT WHERE A W1AW PRESS HOLDS CW ON THIS BAND** (work instruction 499). The press's
+        // own band change, or a report of it, is not the operator changing band.
+        var held = _cwHeldAtHz is { } heldHz
+                   && heldHz >= value.Band.LowHz && heldHz <= value.Band.HighHz;
+
+        if (!held)
+        {
+            _cwHeldAtHz = null;
+        }
+
+        _modeFollow = held ? _modeFollow.SuspendedByOperator() : _modeFollow.Rearmed();
 
         // The receive side is re-armed with it, for the same reason: a band
         // change is a fresh start, and the noise blanker he switched on to get
@@ -10492,7 +10524,7 @@ public partial class MainWindowViewModel : ObservableObject
         _receiverMemory = _receiverMemory.Rearmed();
         _conditionsSetForBlockHz = null;
 
-        ModeFollowSuspended = false;
+        ModeFollowSuspended = held;
         ScheduleModeFollow();
 
         _settings.LastBand = value.Band.Name;
@@ -13859,6 +13891,8 @@ public partial class MainWindowViewModel : ObservableObject
     [RelayCommand]
     private void SelectBand(BandButtonViewModel band)
     {
+        // His own band press ends a W1AW hold, on its own band too (work instruction 499).
+        _cwHeldAtHz = null;
         SelectedBand = band;
         FrequencyHz = band.Band.JumpHz;
     }

@@ -98,7 +98,8 @@ public sealed class ArrivingAnywhereOnTheMapFollowsItTests
             _output.WriteLine($"  REFUSED: {row}");
         }
 
-        Assert.Equal(28, digital);
+        // 29 since work instruction 499: 80 m PSK31 is two rows either side of W1AW's.
+        Assert.Equal(29, digital);
         Assert.Equal(digital, wrote);
     }
 
@@ -141,7 +142,8 @@ public sealed class ArrivingAnywhereOnTheMapFollowsItTests
             _output.WriteLine($"  WRONG: {row}");
         }
 
-        Assert.Equal(20, morse);
+        // 24 since work instruction 499: W1AW's rows on 80 m and 40 m and two ARRL CW rows on 10 m.
+        Assert.Equal(24, morse);
         Assert.Empty(wrong);
     }
 
@@ -190,7 +192,8 @@ public sealed class ArrivingAnywhereOnTheMapFollowsItTests
             _output.WriteLine($"  WROTE ANYWAY: {row}");
         }
 
-        Assert.Equal(28, digital);
+        // 29 since work instruction 499: 80 m PSK31 is two rows either side of W1AW's.
+        Assert.Equal(29, digital);
         Assert.Empty(stillWrote);
     }
 

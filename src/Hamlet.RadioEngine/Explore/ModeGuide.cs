@@ -69,10 +69,12 @@ public static class ModeGuide
         // guide stating either would be answering it. *Half-length* is true on
         // both readings and is what the operator needs to know anyway.
         //
-        // **THE FREQUENCY IS READ AND NOT RECALLED** (§0, §0.2.1). 7.047 MHz is
+        // **THE FREQUENCY IS READ AND NOT RECALLED** (§0, §0.2.1). 7.04775 MHz is
         // the `jumpHz` of the `FT4 sprint` row for 40 m in
         // `data/bands/us-neighborhoods.json`, which cites the WSJT-X default
-        // frequency table. `TheFieldGuideRowsMatchTheConventionData` asserts this
+        // frequency table; WSJT-X's own 7.0475 is W1AW's Morse frequency, so the
+        // row starts just above it (work instruction 499).
+        // `TheFieldGuideRowsMatchTheConventionData` asserts this
         // literal against that row rather than trusting this comment, because a
         // wrong frequency in a field guide is the same class of fault as a wrong
         // ADIF tag name.
@@ -83,7 +85,7 @@ public static class ModeGuide
             + "than how far. It lives just up the band from FT8 so the two do "
             + "not tread on each other, and everything you learn on one you "
             + "already know on the other.",
-            7_047_000, ModeFamily.Digital),
+            7_047_750, ModeFamily.Digital),
         new ModeInfo("SSB", "Voice", "Duck talk until tuned",
             SignatureKind.Smear, "Easy",
             "Actual conversation with actual humans, no infrastructure "
