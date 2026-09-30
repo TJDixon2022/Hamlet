@@ -19,7 +19,7 @@ namespace Hamlet.App.Controls;
 /// `Assets/hamlet-logo.svg` at run time, so the file Tim approved is the file that
 /// renders.</para>
 /// <para>**IT IS NOT AN SVG RENDERER AND DOES NOT PRETEND TO BE.** It handles the
-/// seven things these two files use — a viewBox, a translate on a group, rect,
+/// seven things the full mark uses — a viewBox, a translate on a group, rect,
 /// circle, line, path and their fill and stroke — and **throws on anything else**
 /// rather than drawing an approximation. A mark that silently loses an element is
 /// worse than one that fails to load, because nobody would know (§0.0).</para>
@@ -36,14 +36,8 @@ public static class SvgMark
     /// <summary>Where the full mark lives.</summary>
     public const string FullMarkUri = "avares://Hamlet.App/Assets/hamlet-logo.svg";
 
-    /// <summary>Where the small mark lives.</summary>
-    public const string SmallMarkUri = "avares://Hamlet.App/Assets/hamlet-mark-small.svg";
-
     private static readonly Lazy<DrawingImage> FullImage =
         new(() => new DrawingImage(Load(FullMarkUri)));
-
-    private static readonly Lazy<DrawingImage> SmallImage =
-        new(() => new DrawingImage(Load(SmallMarkUri)));
 
     /// <summary>The full mark, for an `Image` to bind to.</summary>
     /// <remarks>
@@ -52,9 +46,6 @@ public static class SvgMark
     /// yet — a designer, a unit test of something else entirely.
     /// </remarks>
     public static DrawingImage Full => FullImage.Value;
-
-    /// <summary>The small mark, for an `Image` to bind to.</summary>
-    public static DrawingImage Small => SmallImage.Value;
 
     /// <summary>Load one of the marks as something Avalonia can draw.</summary>
     /// <param name="uri">An `avares://` URI naming an SVG in this assembly.</param>

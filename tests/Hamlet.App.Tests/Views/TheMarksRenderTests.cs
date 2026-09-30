@@ -35,11 +35,11 @@ public sealed class TheMarksRenderTests
     /// <param name="output">Where the extents and the pixel counts are printed.</param>
     public TheMarksRenderTests(ITestOutputHelper output) => _output = output;
 
-    /// <summary>**Both marks load, and both draw something.**</summary>
+    /// <summary>**The full mark loads and draws something** (the small mark retired by work instruction 508).</summary>
     [AvaloniaFact]
     public void BothMarksLoadAndDraw()
     {
-        foreach (var uri in new[] { SvgMark.FullMarkUri, SvgMark.SmallMarkUri })
+        foreach (var uri in new[] { SvgMark.FullMarkUri })
         {
             var drawing = SvgMark.Load(uri);
 
@@ -54,7 +54,7 @@ public sealed class TheMarksRenderTests
         }
     }
 
-    /// <summary>**How much of each mark falls outside its own viewBox.**</summary>
+    /// <summary>**How much of the full mark falls outside its own viewBox** (the small mark retired by work instruction 508).</summary>
     /// <remarks>
     /// <para>**MEASURED, NOT ARGUED.** SVG clips to the viewBox, so ink outside it is
     /// ink nobody sees — in a browser, in this application, and in an icon.</para>
@@ -66,7 +66,7 @@ public sealed class TheMarksRenderTests
     [AvaloniaFact]
     public void EachMarkIsMeasuredAgainstItsOwnViewBox()
     {
-        foreach (var uri in new[] { SvgMark.FullMarkUri, SvgMark.SmallMarkUri })
+        foreach (var uri in new[] { SvgMark.FullMarkUri })
         {
             var extent = SvgMark.Extent(uri);
             var box = Box(uri);
@@ -99,7 +99,7 @@ public sealed class TheMarksRenderTests
         // the property, and the property is that a mark stays inside the box it
         // declares. Measured: the full mark's ink is 18, 5.75 to 358.25, 348 in a
         // 380 x 360 box, and the small mark's fills its 64 x 64 exactly.
-        foreach (var uri in new[] { SvgMark.FullMarkUri, SvgMark.SmallMarkUri })
+        foreach (var uri in new[] { SvgMark.FullMarkUri })
         {
             var ink = SvgMark.Extent(uri);
             var box = Box(uri);
@@ -171,7 +171,6 @@ public sealed class TheMarksRenderTests
         foreach (var (name, uri) in new[]
         {
             ("full", SvgMark.FullMarkUri),
-            ("small", SvgMark.SmallMarkUri),
         })
         {
             var shapes = SvgMark.Shapes(uri);
@@ -198,88 +197,12 @@ public sealed class TheMarksRenderTests
         }
     }
 
-    /// <summary>**What survives of the small mark at icon sizes.**</summary>
-    /// <remarks>
-    /// <para>**NOTHING LOOKED AT THESE AND THIS DOES NOT PRETEND OTHERWISE.** The
-    /// harness cannot rasterise — Avalonia's headless drawing backend composes a
-    /// visual tree and draws nothing, and `CopyPixels` throws — so this reports the
-    /// arithmetic instead: how many device pixels each stroke of the mark is given.
-    /// A stroke under one pixel is a grey smear rather than a line, and that is a
-    /// statement about the drawing that can be made without seeing it.</para>
-    /// <para>**THE FIGURES ARE THE NEW MARK'S** (work instruction 286). Unit 285's
-    /// version of this test described a 68-unit drawing with 3.4, 4.0 and 3.0 strokes.
-    /// That drawing is gone, and a test carrying its numbers would have gone on
-    /// passing while describing something no longer in the tree — which is worth
-    /// naming, because a stale fact that stays green is the harder kind to catch.</para>
-    /// <para>**AND THE NEW MARK IS A SIBLING RATHER THAN A SHRINK**: it leans on
-    /// filled shapes where the old one leaned on outlines, so most of it has no
-    /// stroke to lose at all.</para>
-    /// </remarks>
-    [AvaloniaFact]
-    public void WhatSurvivesOfTheSmallMarkAtIconSizes()
-    {
-        // Every stroke the file states, in its own units. The tile, the faceplate,
-        // the display, the knob and the vane are filled and carry none.
-        var strokes = new (string What, double Units)[]
-        {
-            ("whip", 5.5),
-            ("quill spine", 2.2),
-            ("quill barbs", 1.8),
-        };
-
-        const double Across = 64.0;
-
-        foreach (var side in new[] { 16, 32, 48, 256 })
-        {
-            var scale = side / Across;
-
-            _output.WriteLine(side + " px  (one pixel is "
-                + (Across / side).ToString("0.0") + " units)");
-
-            foreach (var (what, units) in strokes)
-            {
-                var px = units * scale;
-
-                _output.WriteLine(
-                    "   " + what.PadRight(14) + px.ToString("0.00").PadLeft(6)
-                    + " px" + (px < 1 ? "   sub-pixel" : ""));
-            }
-
-            _output.WriteLine("");
-        }
-
-        // **AT 16 PX THE WHIP SURVIVES AND THE BARBS DO NOT**, which is the useful
-        // thing to know about this drawing: the shape reads because it is mostly
-        // filled, and the fine detail inside the vane does not.
-        var at16 = 16 / Across;
-
-        Assert.True(
-            5.5 * at16 >= 1.0,
-            "the whip is sub-pixel at 16 px, so the mark has no antenna at icon size");
-
-        Assert.True(
-            1.8 * at16 < 1.0,
-            "the barbs are at least a pixel at 16 px; the report's account of what "
-            + "survives there needs re-taking");
-    }
-
-    /// <summary>**The icon builds, at the size it says it does.**</summary>
-    /// <remarks>
-    /// It cannot assert what the icon looks like — the harness has no rasteriser —
-    /// only that the path from the file to a bitmap runs and produces the size it
-    /// claims.
-    /// </remarks>
-    [AvaloniaFact]
-    public void TheIconBuildsAtTheSizeItClaims()
-    {
-        using var raster = AppIcon.Raster(AppIcon.RenderedAt);
-
-        _output.WriteLine(
-            "rendered " + raster.PixelSize.Width + " x " + raster.PixelSize.Height);
-
-        Assert.Equal(AppIcon.RenderedAt, raster.PixelSize.Width);
-        Assert.Equal(AppIcon.RenderedAt, raster.PixelSize.Height);
-    }
+    // **TWO TESTS RETIRED BY WORK INSTRUCTION 508 (HM-DEC-212)**, because what they
+    // measured is no longer in the application. `WhatSurvivesOfTheSmallMarkAtIconSizes`
+    // did the stroke arithmetic of `Assets/hamlet-mark-small.svg` at icon sizes, and
+    // `TheIconBuildsAtTheSizeItClaims` rasterised that mark into the window icon. The
+    // icon is now `Assets/hamlet.ico`, eight frames each drawn for its size, and
+    // `TheIconTests` holds what is true of it.
 
     /// <summary>One mark's viewBox.</summary>
     /// <param name="uri">Which mark.</param>

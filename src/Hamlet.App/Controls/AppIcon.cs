@@ -1,9 +1,6 @@
 using System;
 using System.IO;
-using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Media;
-using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 
 namespace Hamlet.App.Controls;
@@ -18,6 +15,9 @@ namespace Hamlet.App.Controls;
 /// drawn for the size it wants. Nothing here scales one frame to make another.</para>
 /// <para>**EVERY WINDOW TAKES IT FROM ONE PLACE**: a style in `App.axaml` sets
 /// `Window.Icon` to <see cref="Current"/> for every window the application opens.</para>
+/// <para>**IT REPLACES THE SMALL MARK** that work instruction 285 rasterised here at run
+/// time from `Assets/hamlet-mark-small.svg`, one 256-pixel render scaled down to every
+/// size, with no `.ico` in the tree. Tim, 2026-09-30: *"It looks terrible."*</para>
 /// </remarks>
 public static class AppIcon
 {
@@ -33,12 +33,6 @@ public static class AppIcon
     /// trade (§8, never-throw).
     /// </remarks>
     public static WindowIcon? Current => Shared.Value;
-
-    /// <summary>The small mark, rendered, which task 3 of work instruction 508 retires.</summary>
-    public static WindowIcon? Small => Current;
-
-    /// <summary>How large the retiring raster was rendered.</summary>
-    public const int RenderedAt = 256;
 
     /// <summary>Load an icon file among the shell's resources.</summary>
     /// <param name="uri">The `avares://` address of the file.</param>
@@ -64,29 +58,5 @@ public static class AppIcon
         {
             return null;
         }
-    }
-
-    /// <summary>The small mark as a bitmap, which task 3 of work instruction 508 retires.</summary>
-    /// <param name="side">The square, in pixels.</param>
-    /// <returns>The bitmap.</returns>
-    public static RenderTargetBitmap Raster(int side)
-    {
-        var image = new Image
-        {
-            Source = SvgMark.Small,
-            Width = side,
-            Height = side,
-            Stretch = Stretch.Uniform,
-        };
-
-        image.Measure(new Size(side, side));
-        image.Arrange(new Rect(0, 0, side, side));
-
-        var target = new RenderTargetBitmap(
-            new PixelSize(side, side), new Vector(96, 96));
-
-        target.Render(image);
-
-        return target;
     }
 }
