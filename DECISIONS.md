@@ -4,6 +4,34 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-214
+date: 2026-09-30
+refs: work instruction numbered 509 (run as unit 510; it named HM-DEC-212, already used by the icon unit), src/Hamlet.RadioEngine/Cw/CwScorer.cs, src/Hamlet.RadioEngine/Cw/CwTextScore.cs, src/Hamlet.RadioEngine/Cw/CwRunReader.cs, src/Hamlet.App/Views/MainWindow.axaml, src/Hamlet.App/ViewModels/MainWindowViewModel.cs
+---
+
+**Hamlet scores itself against W1AW, and the word gap holds at speed.** The order named the headline
+*Hamlet scores itself against W1AW, and a mark is judged over a dit's width*; the second half did not
+land, so the headline says what did. Tim, 2026-09-30, the order's tasks; tasks 1 and 2 are his own
+asks.
+
+**What landed.** The CW terminal's scroll bar stays shown past the box and says what it does; it
+already followed new text unless scrolled up, and Fluent's bar had hidden itself until the pointer
+found it (task 1). Copy beside Clear puts the transcript's text on the clipboard (task 2). Under the
+W1AW line he pastes the ARRL's published text and presses Score, and the line says how much of it
+the terminal read, `W1AW 7 PM bulletin: 94% of characters, 3 wrong, 2 missing, 1 extra`: the
+scorer's edit distance over the stretch of the terminal the text aligns to best, case folded and every
+run of whitespace one space, with one `cw` / `w1aw_score` row of the slot, the percentage and the
+counts, and never the text (task 3). `CwScorer` moved from the engine tests into the engine for it,
+so the app and the tests score with one instrument. At 35 WPM and 10 dB a gap under the sender's own
+letter boundary no longer measures its letter gap, and the call reads in words (task 7).
+
+**What did not.** Integrating the sender's bins over half its dit made every row of the strength table
+worse, and the variants either cost the 12 and 16 dB rows or broke every row, so the detector is
+unchanged (task 4). A dit 6 dB down inside a letter is dropped by the pattern gate for sitting outside
+the sender's level tolerance, which the order's own condition keeps it outside (task 5, a question for
+Tim). Printing every sequence that stands was dropped (task 6).
+
+---
 id: HM-DEC-213
 date: 2026-09-30
 refs: work instruction numbered 508 (run as unit 509; it named HM-DEC-211, already used by unit 506), PHASE_PLAN.md R100 and R106, src/Hamlet.App/Controls/CwScopeControl.cs, src/Hamlet.App/ViewModels/MainWindowViewModel.cs, tests/Hamlet.App.Tests/ViewModels/TheScrollKeepsItsLettersTests.cs
