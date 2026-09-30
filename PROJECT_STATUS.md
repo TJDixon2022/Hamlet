@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-TASK: TASK 4 of 4
-WORK_INSTRUCTION: 504 - the crash, the W1AW gates, the letter gap (run by hand)
-BALL: tim
-NEXT_PASTE: OUTPUT.md -> Claude Web
+STATE: EXECUTING
+TASK: TASK 1 of 5
+WORK_INSTRUCTION: 505 - the category pages are lists, and the map opens on a click (run by hand)
+BALL: code
+NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-30T10:14:16-04:00
-NOTE: Unit 504 done - crash guarded, no gate turns W1AW away, one odd gap no longer spaces out a sender
+UPDATED: 2026-09-30T10:54:45-04:00
+NOTE: Unit 505 - task 0 measured, Countries draws 8 maps at rest; list tests red on the cards, rebuilding the template as rows
 
 ---
 
