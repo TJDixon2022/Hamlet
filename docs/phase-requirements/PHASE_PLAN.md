@@ -284,6 +284,12 @@ focused on the shapes in the noise. They're predictable. They're full of good pa
 noise have no patterns. All we have to do is clearly identify when we have a pattern, a shape, and
 the translation is easy."*
 
+**R113 - Tim, 2026-09-30: a fist is read by the nearer cluster.** A hand-sent station at about 27
+WPM on 7.0299, a clean stream of marks, printed in the wrong letters: a fist's dahs run 2.5 to 3.5
+dits and its gaps wander, and the reader's lines between dit and dah, and between a gap inside a
+letter and one between letters, were hard lines. A fist is read the way an ear reads it: each mark
+and each gap is the kind of the sender's own cluster it is nearer, not the side of a fixed line.
+
 ## §3 What is different from the phases before it
 
 1. **A criterion is a requirement id.** A report states the requirement, the condition, the

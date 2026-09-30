@@ -4,6 +4,40 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-217
+date: 2026-09-30
+refs: work instruction 513, PHASE_PLAN.md R113, src/Hamlet.RadioEngine/Cw/CwRunReader.cs, tests/Hamlet.RadioEngine.Tests/Cw/AFistIsReadByTheNearerClusterTests.cs
+---
+
+**A fist is read by the nearer cluster, not a hard line.** Tim, 2026-09-30, R113. At 21:44 UTC on
+7.0299 a station hand-sent at about 27 WPM reached the reader as a clean stream of marks - 18 to 22
+in four seconds, a 45 ms dit, every press *agree* - and printed real words inside wrong letters. No
+case on the bench had been both fast and human: every fast case was machine-sent.
+
+**What is built, in `CwRunReader` alone.** Where the sender's sorted mark lengths show a clean gap,
+two neighbors twice apart, the dits and dahs split there as before, the line moved to the boundary
+weighted by each side's spread. Where a fist leaves no clean gap, the two kinds are found as two
+clusters settled by the nearer centre in log-length, and taken only when their centres stand twice
+apart, two spreads each side of the boundary, and neither is wider than a hand makes. The line between
+a gap inside a letter and one between letters is the boundary between the sender's own two clusters
+once both are measured; the letter gaps are settled against the word gaps, and the word line stays at
+the letter centre times √(7/3). Before the clusters are measured, the old lines stand.
+
+**The figures and why, the author's, overrulable.** A spread is never under 0.1 in log-length, the
+detector's own reading error of one hop and its window. Two kinds stand two spreads each side of their
+boundary, where nineteen in twenty of each fall on their own side. A cluster is one kind only up to
+0.25: the widest fist named, a third either way, is about 0.19 and the detector adds 0.1 in
+quadrature. That last was found needed when a sender going from 10 to 20 WPM read `TEST DE` as `■H`:
+its mixed history is 0.45 wide, two speeds rather than one fist.
+
+**What was measured and not taken.** The word line from the word gaps' own cluster moved unit 507's
+8 dB call from `NTJCE AEL K` to `NTJCEAELK` and no fist case needed it.
+
+**What moved.** Every synthetic reading is as at HEAD but the red 5 WPM Farnsworth row at 10 dB,
+`CK C TA DE E■CAEIL N0RALL N` to `CK CK DE E■CASL N0RALL N`, and three rows of unit 504's
+all-gates-off diagnostic.
+
+---
 id: HM-DEC-215
 date: 2026-09-30
 refs: work instruction 511, tag before-cw-cleanup (3b6329bc), src/Hamlet.App/ViewModels/CwTrainingGraph.cs, src/Hamlet.App/ViewModels/CwScopeFeed.cs, src/Hamlet.RadioEngine/Cw/CwPatternGate.cs, src/Hamlet.RadioEngine/Cw/CwRunReader.cs, src/Hamlet.RadioEngine/Cw/CwMark.cs, CW_REQUIREMENTS.md section M

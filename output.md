@@ -1,135 +1,123 @@
 ```
-UNIT: 511 - complete at task 3 of 3, none dropped; task 3 removed nothing - 2026-09-30
-UNIT GOAL: the blocks stay, the sender's own dits count, and the old decoder retires
-LANDED: 1, 2, and 3 as far as its own rules allow (tag and section M; no file removed)
+UNIT: 513 - complete - 2026-09-30
+UNIT GOAL: a fist is read by which cluster is nearer, not a hard line
+NUMBER: fist cases whole: 5 of 5 (2 red at HEAD); existing readings moved: 1 red case and 3 diagnostic rows
 ```
 
 ## 1. What Claude did
 
-Claude Code on the development machine, branch `main`. The prompt claimed `PROJECT: Hamlet`; the order's gate held: `SHACK_FACTS.md`, `CwProbabilisticDecoder.cs` and `CW_REQUIREMENTS.md` exist, there is no `CoreHMI.sln` or `MURC.sln`, the root is `C:\Source\HamLet`, and `PROJECT_CARD.md` says Hamlet. Nothing in this report is evidence about the radio. Unit 511 and HM-DEC-215 were both free.
+Claude Code on the development machine, branch `main`. The prompt claimed `PROJECT: Hamlet`; the order's gate held: `SHACK_FACTS.md`, `CwRunReader.cs` and `CW_REQUIREMENTS.md` exist, there is no `CoreHMI.sln` or `MURC.sln`, the root is `C:\Source\HamLet`, and `PROJECT_CARD.md` says Hamlet. Nothing in this report is evidence about the radio.
 
-SESSION.lock was taken through `tools\arbiter\lock.bat take` and released at the end. Nothing was written to `RUN_LEDGER.md`, nothing under `tools\arbiter\` was touched, no box was ticked, and no ruling was added to either plan. Scratch probes are under `.run-unit\` and not committed.
+**Numbering.** Unit 513 and HM-DEC-217 were free. Unit 512 and HM-DEC-216 were never used, because the order numbered itself past them.
 
-**Task 1: a block on the scroll stays on the scroll** (`e58435b1`).
-- **Before.** The scroll's blocks were the watched bin's paired bars. `CwTrainingGraph.Update` threw away and rebuilt the last four seconds of them on every tick, and the watched bin and its pairing move. So a block drawn on one frame could be gone on the next.
-- **`ViewModels/CwTrainingGraph.cs`.**
-  - New `Stand(mark, heard, now)` keeps a mark as a block once, by its sequence number.
-  - New `Trim(now)` takes blocks and letters away only by time.
-  - The kept sequence numbers outlive a Clear, so a cleared block does not come back while it is still inside the window.
-- **`ViewModels/CwScopeFeed.cs`.** Each tick offers every mark that stood at the pitch the decoder is printing and is still inside the window. So a sender's first marks, which stood before the reader started printing it, appear the moment it prints. When nobody is printed, nothing is drawn. `Update` stays for the control-level tests that build frames with it, but the live path no longer calls it.
-- **`Hamlet.App.Tests/ViewModels/TheScrollKeepsItsBlocksTests.cs`**, sampled every 50 ms, with a block counted as still present when a later frame covers any of its time:
-  - The 20 WPM call was already whole before the change (the order expected it red): 0 blocks went early.
-  - The 5 WPM Farnsworth call was red: 10 blocks went before the edge. Now 0.
-  - Loud noise draws no block.
-- **Side effect.** In unit 509's Farnsworth case, every letter now sits over a block. The letters with no block under them that 509 reported are gone.
-- The scope tests beside it pass, 25 of 25.
+SESSION.lock was taken through `tools\arbiter\lock.bat take` and released at the end. Nothing was written to `RUN_LEDGER.md`, nothing under `tools\arbiter\` was touched, no box was ticked, and R113 was appended to both plans. **Only `CwRunReader.cs` changed under `src`.** Scratch variants and probes are under `.run-unit\` and not committed.
 
-**Task 2: the sender's own dits count** (`3b6329bc`).
-- **`Cw/CwPatternGate.cs`.** Once a sender stands, a candidate at its pitch passes if all of these hold:
-  - its length is within √2 of the sender's dit or dah;
-  - it is quieter than the sender's marks of the same kind (dits against dits, dahs against dahs) by more than the level tolerance and no more than twice it;
-  - a gap to the mark before it or after it is inside a letter: under two dits and not under half a dit.
-- **Timing.** Where the gap before already places it inside a letter, it stands at once. The first mark of a letter waits for the next mark.
-- **Constants.** `QuieterShare` = 2 (the order's figure). `InsideLetterShare` = 2 and `LengthRatio` = √2 are the author's, overrulable.
-- **Why "of the same kind".** This detector reads a dit a tenth or two of a decibel under a dah. The order's case measures 6.0x dB under against dits and dahs mixed, and 5.9 dB against dits.
-- **`Cw/CwMark.cs`.** New `BySendersPattern` flag on a mark admitted this way.
-- **`Cw/CwRunReader.cs`.** A mark with the flag is matched to its sender by pitch alone, because the gate has already judged its level against that sender. The sender's reference level leaves such marks out. Otherwise the quiet mark pulled the reference about 3 dB down, the sender's next ordinary mark missed it, and a new sender took over, which stopped the printing at `N0CAA`.
-- **Correction to unit 510's measurement.** Its test helper started `quietRun` at `int.MaxValue`, so the counter overflowed on the first element and counted it as none. Its "first dit of the first L" was in fact the L's dah. Fixed.
-- **`Cw/TheSendersPatternFindsItsMarksTests.cs`**, measured red first:
-  - first dit of the first L 6 dB down: `CQ CQ DE N0CA DL N0CALL K`, now the call whole;
-  - the L's dah 6 dB down (what unit 510 actually measured): `N0CAE IL`, now whole.
-- **Every reading case against HEAD.** Eight synthetic reader classes: 51 of 54, the same three reds as HEAD (unit 507's 8 dB, 12 dB and 10 dB rows). Their printed readings match HEAD's except one: unit 502's weak call, `CGE N EQ DE N0CALL NT ON EAE IL A` → `... NT ON EALL A`, where one more mark stands (61 against 60). The two-station case and both noise cases are unchanged (section 3).
-- The app cases through the reader pass, 16 of 16.
+**What changed in `CwRunReader`** (`0627c6c7`).
 
-**Task 3: the old decoder retires** (`6ad21ceb`).
-- **The tag.** HEAD is tagged **`before-cw-cleanup`** at `3b6329bc` and pushed.
-- **Section M.** `CW_REQUIREMENTS.md` section M is marked superseded at its head, in one paragraph. The rows HM-REQ-120 to 129 are kept. No test parses the file.
-- **Nothing was removed.** Rule 3 of the order is "if a retired piece is still called by something live, say so and leave it — do not refactor around it", and every piece the order names is still called:
+- **Dit or dah (`Kinds`).**
+  - Where the sender's sorted mark lengths have a clean gap, two neighbours 2× apart, the kinds split there as before. Only the line between them moves, from the geometric mean of the two sides' means to the point that is as many spreads from one centre as from the other (`Boundary`).
+  - Where a fist leaves no clean gap, which HEAD read as "one kind", the two kinds are found as two clusters. They're settled by the nearer centre in log-length (`Refine`), starting from the widest-ratio cut.
+  - Those clusters are taken only when three things hold: their centres are 2× apart; each centre is two spreads from the boundary; and neither cluster is wider than **0.25** in log-length. Otherwise the fallback is as at HEAD.
+- **Gaps.**
+  - The line between a gap inside a letter and one between letters (`CharacterGapSeconds`) is the boundary between the sender's own two clusters once both are measured: its gaps inside letters, at least three, and its letter gaps. Until then it's HEAD's √3 gap dits.
+  - The letter gaps are settled against the word gaps by the nearer centre (`GapClusters`). The word line stays at the letter centre × √(7/3), which for a regular sender is the boundary between the two clusters.
+- **Diagnostics.** `LastClusters` and `Describe` report the printed sender's clusters, for the test's report only.
 
-| Piece | Built by | Superseded by | Still called by |
-|---|---|---|---|
-| `CwProbabilisticDecoder` (lattice, speed grid, emission gate), and `CwProbabilisticStream` around it | 1xx and after; the stream by the second-pass design (HM-DEC-096) | 493 (`ReadsRuns`) | `CwDecoder` builds and feeds it on every hop; `CwTrainingGraph`, `CwRunReader`, `CwCharacter` and `MainWindowViewModel` read its constants and members |
-| `CwUnitEstimator` | the streaming estimator, before 493 | 493 | `CwProbabilisticStream` |
-| `CwToneTracker` | 48 and after | 496, 507 | `CwDecoder`'s hop loop is driven by it (`Process`, `HopSamples`); the verdict row reads `trackerHz`; the decode report and capture sheet read its pitch and proof |
-| `CwToneSurvey` | 95 and after | 496, 507 | `CwToneTracker`, `CwEnvelopeDetector` (its `ShortestDitMs` sets the shortest bar), `CwCompetitor` |
-| `CwKeyingMeter` swing test, `ConfidentSwingDb` | 474 to 479 | 485 to 507 | `MainWindowViewModel` builds it and publishes its reading to the verdict row and the tracker |
-| Unit 489's three switches (`DetectorSteersPitch`, `DetectorGatesKeying`, `DetectorGatesBlocks`) | 489 | 493 | `CwDecoder`; `TheScopeDrawsLiveTests` sets `DetectorGatesKeying` |
-| The second decoder, `Cw/Second/Fldigi*`, `CwSecondReader`, `CwSecondReading`, `FldigiConfidence` | 456 to 461 | the shape approach (493) | **it runs live**: the app builds `CwDecoder` with `secondReader: true` (`MainWindowViewModel.cs` line 11571) |
-| `CwArbiter`, `CwVoteTable`, `CwSwitchTable` (arbitration and calibration) | 462 to 467 | the same | `CwDecoder`; the capture sheet's `arbiter` line reads `CwArbitrationCase` |
-| The mixdown path the tracker fed | before 496 | 496 | inside `CwDecoder`'s hop loop |
+**The figures and their reasons** (the author's, overrulable, derived from what a hand does):
 
-- **What could go but can't be deleted here.** `CwInterferenceNotes` (with `InterferenceFix`) is the one CW type that no source file calls. It came from `2fdfb349`, "name what is sitting in the passband", under HM-DEC-096 phase 5. It and `CwInterferenceNotesTests.cs` are listed for you to delete, because this session's `rm` and `git rm` are refused.
+| Figure | Value | Reason |
+|---|---|---|
+| `SpreadFloor` | 0.1 in log-length | The detector reads a length to one 5 ms hop, smeared by its 10 ms window: a tenth to a fifth of a dit from 12 to 35 WPM. |
+| `SeparationSpreads` | 2 each side | The boundary then has about nineteen in twenty of each cluster on its own side. A fist a third either way clears it; evenly spread noise lengths do not. |
+| `HandSpread` | 0.25 in log-length | The widest fist named (unit 504's third either way) is about 0.19, plus the detector's 0.1 in quadrature, about 0.22. |
 
-**Build and records.**
+**How the figures were reached, stated plainly.**
+- **The hand-spread limit was added after a failure.** It became necessary when the first build turned the speed-change case red: `... K TEST DE W1AW K` read `... K ■HW1AW K`. A sender going from 10 to 20 WPM leaves 60, 120 and 180 ms marks together in its history, 0.45 wide: two speeds, not one fist. The value comes from the hand, not from that case.
+- **Measured and not taken.**
+  - Using the measured word-gap cluster for the word line moved the 8 dB row from `NTJCE AEL K` to `NTJCEAELK`, and no fist case needed it.
+  - Settling clusters even where HEAD found a clean gap is what broke the speed change, so the clean-gap path is kept as at HEAD.
+
+**Commit mistake.** `0627c6c7`'s message quotes the tightening fist's red reading as `CQ CQ DE DEN■CALL N0CALL K`. What was measured is `CQ CQ DEN■CALL N0CALL K`.
+
+**Tests.**
+- New file: `tests/Hamlet.RadioEngine.Tests/Cw/AFistIsReadByTheNearerClusterTests.cs`. Its fist keyer is written in the test: a 625 Hz tone with 4 ms raised-cosine edges, 24 dB over seeded Gaussian noise, every element and gap its ideal length × (1 + u), with u drawn uniformly from −s to +s.
 - Build `Hamlet.sln` with warnings as errors: RC=0.
-- App carry-forward line: 278 of 278.
-- Version 1.13.197 to 1.13.198.
-- `PHASE_OUTCOME.md` (both copies): `## UNIT 511 - STEP 12`.
-- `PHASE_STATUS.md` (both copies) names 511.
-- `CLAUDE.md` §1 index row.
-- `DECISIONS.md` HM-DEC-215, in full below. Its headline says the old decoder is *tagged for retirement* rather than *retires*, because nothing was removed; the entry says so.
+- App carry-forward line: **278 of 278**.
+- Eight synthetic reader classes plus the fist cases: 57 of 60. The three reds are unit 507's, as at HEAD.
+- The app cases through the reader: 16 of 16.
 
-> **The blocks stay, the sender's own dits count, and the old decoder is tagged for retirement.** The order named the headline *...and the old decoder retires*; nothing was removed, so the headline says what was done. Tim, 2026-09-30: *"The letters are solid, but the bars, the dashes and dots bars, tend to come and go."* And: *"We're running two decoders. We really don't need them both."* Task 2 answers unit 510's question from the pattern (R85), as the order directs.
+**Records.**
+- Version 1.13.198 to 1.13.199.
+- `PHASE_OUTCOME.md` (both copies): `## UNIT 513 - STEP 12`.
+- `PHASE_STATUS.md` (both copies) names 513.
+- R113 appended to both `PHASE_PLAN.md` copies, with no checkbox touched.
+- `CLAUDE.md` §1 index row.
+- `DECISIONS.md` HM-DEC-217, in full:
+
+> **A fist is read by the nearer cluster, not a hard line.** Tim, 2026-09-30, R113. At 21:44 UTC on 7.0299 a station hand-sent at about 27 WPM reached the reader as a clean stream of marks - 18 to 22 in four seconds, a 45 ms dit, every press *agree* - and printed real words inside wrong letters. No case on the bench had been both fast and human: every fast case was machine-sent.
 >
-> **The blocks.** A block that was drawn stays drawn until time carries it off the left. The scroll's blocks are the marks that stood at the pitch being printed, each kept once by its sequence, never reworked from the detector's live state; nobody printed, nothing is drawn.
+> **What is built, in `CwRunReader` alone.** Where the sender's sorted mark lengths show a clean gap, two neighbors twice apart, the dits and dahs split there as before, the line moved to the boundary weighted by each side's spread. Where a fist leaves no clean gap, the two kinds are found as two clusters settled by the nearer centre in log-length, and taken only when their centres stand twice apart, two spreads each side of the boundary, and neither is wider than a hand makes. The line between a gap inside a letter and one between letters is the boundary between the sender's own two clusters once both are measured; the letter gaps are settled against the word gaps, and the word line stays at the letter centre times √(7/3). Before the clusters are measured, the old lines stand.
 >
-> **The sender's own dits.** Once a sender stands, a candidate at its pitch, of its dit or dah length within √2, quieter than its marks of that kind by more than the level tolerance and no more than twice it, stands as its mark where a gap to the mark before or after it is inside a letter, under two dits; a letter's first mark waits for the next. The reader matches such a mark on pitch and leaves it out of its reference level. Between letters, between senders and at any other pitch the tolerance stands. The √2, the two dits and the kind-by-kind comparison are the author's, overrulable.
+> **The figures and why, the author's, overrulable.** A spread is never under 0.1 in log-length, the detector's own reading error of one hop and its window. Two kinds stand two spreads each side of their boundary, where nineteen in twenty of each fall on their own side. A cluster is one kind only up to 0.25: the widest fist named, a third either way, is about 0.19 and the detector adds 0.1 in quadrature. That last was found needed when a sender going from 10 to 20 WPM read `TEST DE` as `■H`: its mixed history is 0.45 wide, two speeds rather than one fist.
 >
-> **The old decoder.** HEAD is tagged `before-cw-cleanup` and section M of `CW_REQUIREMENTS.md` is superseded, its rows kept. **Nothing was removed**: every piece the order names is still called by live code - the decoder's hop loop runs on `CwToneTracker` and feeds `CwProbabilisticStream`, the app builds its decoder with the second reader on, the verdict row reads the tracker, and the capture sheet's arbiter line reads the arbitration types - and the order says to leave such pieces rather than refactor around them. Retiring them is a refactor of `CwDecoder` and its callers, and waits on an order that says so.
+> **What was measured and not taken.** The word line from the word gaps' own cluster moved unit 507's 8 dB call from `NTJCE AEL K` to `NTJCEAELK` and no fist case needed it.
+>
+> **What moved.** Every synthetic reading is as at HEAD but the red 5 WPM Farnsworth row at 10 dB, `CK C TA DE E■CAEIL N0RALL N` to `CK CK DE E■CASL N0RALL N`, and three rows of unit 504's all-gates-off diagnostic.
 
 ## 2. What the owner should expect
 
 - **Rebuild.**
-- **The scroll's bars.** The dots and dashes on the scroll no longer come and go. A block stays until it slides off the left, as the letters already did.
-  - The bars now start at the moment the terminal starts printing a station. Its first few dits and dahs appear then, all at once, in their right places.
-  - While nobody is being printed, the scroll draws no bars.
-- **Quieter dits.** A strong station's quieter dit or dah inside a letter is now kept. On the bench a dit 6 dB down inside `N0CALL`'s L reads right, where it read `N0CA DL`, so `SEPTEMBER` should read `SEPTEMBER`. Nothing else about what reads changed on the bench, except one weak test call that now reads one more letter right.
-- **The old decoder** is still in the tree. It is tagged `before-cw-cleanup`, so it can be reached by name once it goes. Nothing about what reads changed because of it.
-  - It couldn't come out under this order's rules: the running decoder still passes its audio through the old tracker, the app still runs the fldigi second decoder in the background, and the verdict row and the capture sheet still read pieces of it.
-  - Taking it out means rebuilding `CwDecoder` around the new path, which needs an order that allows that refactor.
-- **Two files to delete by hand:** `src\Hamlet.RadioEngine\Cw\CwInterferenceNotes.cs` and `tests\Hamlet.RadioEngine.Tests\Cw\CwInterferenceNotesTests.cs`. Nothing else uses them.
+- **Hand-sent stations at speed should read.** The reader now sorts each dit, dah and gap by which of the sender's own clusters it's nearer, the way an ear copes with a rough fist, instead of by a fixed line. On the bench, a 27 WPM fist whose elements wander by 30% now reads `CQ CQ DE N0CALL N0CALL K`, where it read `CQ CQ DE N0CALL N0■LL D`.
+- **Machine-sent and slow senders are unchanged.** Every existing bench case reads as before, apart from one already-wrong slow Farnsworth case, whose wrong text changed.
+- **If a fist still reads wrong at the radio,** the cluster table in section 3 sets what the reader measured beside the truth. If the measured centres are near the truth, the sorting was at fault. If they're far off, the measurement was.
+- **One thing this bench cannot show:** my fist scatters evenly around the ideal. A real hand's gaps can drift as a whole, element gaps toward 80 ms and letter gaps toward 100, and only the owner's station tests that.
 - **Still red, as before:**
-  - `DecisionLogOrderTests.EveryRulingAppearsOnceAndTheGapsAreTheKnownOnes`, on the index gaps 166, 182 and 189 to 210;
+  - `DecisionLogOrderTests.EveryRulingAppearsOnceAndTheGapsAreTheKnownOnes`, whose gaps now also include the unused 216;
   - `VoiceTests.NoOperatorFacingStringUsesABritishSpelling`, on unit 450's two "centre"s;
   - unit 507's three strength reds.
 
 ## 3. What you should see
 
-Task 1, every frame at 50 ms:
+**The fist cases.** "True" is the generator's; "reader" is what the reader measured by the end. Centres are geometric means; ± is the spread as the SD of the log. The reader measures marks slightly short and gaps slightly long, which is the detector's known smear.
 
-| Case | Before | After |
+| Case | Before (HEAD) | After | True: dit / dah; gaps element / letter / word | Reader after: dit / dah (split); gaps element / letter / word (element-letter line, word line) |
+|---|---|---|---|---|
+| 27 WPM, 20% | `CQ CQ DE N0CALL N0CALL K` | the same | 45±.11 / 131±.12; 44±.11 / 131±.11 / 346±.02 | 38±.12 / 123±.14 (66); 50±.13 / 136±.11 / 352±.02 (86, 224 ms) |
+| 27 WPM, 30% | `CQ CQ DE N0CALL N0■LL D` | **`CQ CQ DE N0CALL N0CALL K`** | 42±.17 / 132±.16; 44±.16 / 131±.18 / 338±.14 | 35±.16 / 126±.19 (62); 50±.15 / 136±.17 / 344±.14 (80, 226 ms) |
+| 12 WPM, 20% | `CQ CQ DE N0CALL N0CALL K` | the same | 100±.11 / 290±.12; 101±.12 / 292±.13 / 698±.07 | 94±.12 / 284±.12 (162); 108±.12 / 298±.12 / 703±.07 (178, 477 ms) |
+| 35 WPM, 20% | `CQ CQ DE N0CALL N0CALL K` | the same | 35±.10 / 99±.13; 33±.11 / 103±.13 / 262±.07 | 29±.13 / 93±.13 (52); 39±.11 / 110±.12 / 268±.07 (65, 178 ms) |
+| 27 WPM, 30% then 10% | `CQ CQ DEN■CALL N0CALL K` | **`CQ CQ DE N0CALL N0CALL K`** | 44±.11 / 130±.15; 45±.11 / 134±.13 / 287±.12 | 38±.12 / 121±.10 (71); 50±.10 / **171±.36 / none** (66, 280 ms) |
+
+HEAD's reader on the 30% fist, for comparison: dit 55 ms, split 95 ms, letter line 113 ms. On the tightening fist: letter gap 183 ms, word line 280 ms.
+
+**In the tightening fist, the letter and word gaps ended up as one cluster** (171 ms ±0.36, no word cluster). It reads whole anyway, but the measurement is imperfect there.
+
+**The existing cases**, eight synthetic reader classes: every printed reading identical to HEAD, including these:
+- the speed change, 10 then 20 WPM: `... TEST DE W1AW K`;
+- the strength table: 16 and 24 dB whole; 8 dB `N ET A EI A DE N0CALL NTJCE AEL K`; 12 dB `CT A CQ DE N0CALL N0CALL K`;
+- 35 WPM at 10 dB whole;
+- the bursts, the hesitation, `TEST DE W1AW K`, `DE DE`, the lone and stray marks;
+- both noise cases: 635 candidates, 0 stood, and 3,932, 80 stood, nothing printed;
+- the two-station case: loud one whole, quiet one 12 stood;
+- unit 511's quieter dit and dah: whole.
+
+Except:
+
+| Case | HEAD | Now |
 |---|---|---|
-| `CQ CQ DE N0CALL N0CALL K` at 20 WPM | 0 blocks went before the edge (up to 37 on a frame) | 0 |
-| The call at 5 WPM Farnsworth | **10** went before the edge (e.g. 03.275–03.330 on frame 143, gone on 144) | 0 |
-| Loud noise, 30 s | no block | no block |
-
-Task 2:
-
-| Case | Before | After |
-|---|---|---|
-| The call at 24 dB, as sent | 72 candidates, 65 stood, 65 printed, whole | the same |
-| First dit of the first L 6 dB down | 73 / 64 / 64, `CQ CQ DE N0CA DL N0CALL K` | 73 / 65 / 65, whole |
-| The L's dah 6 dB down (unit 510's actual case) | `CQ CQ DE N0CAE IL N0CALL K` | whole |
-| Two stations, the loud one at 625 Hz | 67 candidates, 65 stood, whole | the same |
-| Two stations, the quiet one at 825 Hz | 20 candidates, 12 stood | the same: its marks don't join the loud one |
-| 30 s of loud noise | 635 candidates, 0 stood, nothing printed | the same |
-| 180 s of loud noise | 3,932 candidates, 80 stood, nothing printed | the same |
-| Unit 502's weak call | 60 marks, `... NT ON EAE IL A` | 61 marks, `... NT ON EALL A` |
-| 35 WPM at 10 dB (unit 510's task 7) | `CQ CQ DE N0CALL N0CALL K` | the same |
+| 5 WPM Farnsworth at 10 dB (red at HEAD) | `CK C TA DE E■CAEIL N0RALL N` | `CK CK DE E■CASL N0RALL N` |
+| `WhichGateTurnsAwayW1aw`, all gates off, 600/500 | `MTN OTN IIL K` | `N CI IIL K` |
+| the same, pointed 725 | `MTN OTN IIL K` | `N CI IIL K` |
+| the same, whole band | `CALII N/ CI IIL D` | `CALII N N CI IIL D` |
 
 ## 4. What's blocking us
 
 Nothing blocks. The items:
 
-1. **Retiring the old decoder needs an order that allows refactoring `CwDecoder`.** The work would be:
-   - drive its hop loop from the envelope detector rather than `CwToneTracker`;
-   - stop building the second reader in the app;
-   - drop the capture sheet's `arbiter` line and the tracker fields of the verdict row, or re-source them.
-
-   The table in section 1 lists every piece and what still holds it.
-2. **Two files to delete by hand:** `CwInterferenceNotes.cs` and `CwInterferenceNotesTests.cs`.
-3. **Unit 510's weak-dit figure was measured on the dah, not the dit.** Its report's `N0CAE IL` is the dah case, and its test helper is corrected here.
-4. **The 20 WPM case of task 1 was already whole before the change**, so the owner's flicker at the radio is more likely the Farnsworth kind: the watched bin moving or re-pairing on a slow or weak sender. Your report at the radio is the test.
+1. **Letter and word gaps can merge on a tightening fist.** The letter and word clusters of the fist that tightens ended as one (171 ms ±0.36). It reads whole here; a longer transmission might not.
+2. **A drifting fist is not on the bench.** The generator scatters around the ideal. A hand whose element and letter gaps drift toward each other as a whole, which is the owner's 21:44 description, is not tested; your report at the radio is.
+3. **Unit 512 and HM-DEC-216 were skipped** by the order's numbering. The next order should be 514 or later, with ruling id HM-DEC-218 or later.
+4. **Commit message slip.** `0627c6c7` quotes the tightening fist's red reading wrongly; section 3 has the measured text.
 
 ### Asks still outstanding
 
