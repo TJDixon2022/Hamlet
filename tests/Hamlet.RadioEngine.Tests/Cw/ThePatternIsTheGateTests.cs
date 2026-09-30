@@ -114,8 +114,9 @@ public sealed class ThePatternIsTheGateTests
         reader.Flush();
 
         var all = detector.MarksSince(0).Marks;
-        var candidates = all.Count(m => Math.Abs(m.PitchHz - pitch) <= CwRunReader.PitchToleranceHz);
-        var stood = all.Count(m => Math.Abs(m.PitchHz - pitch) <= CwRunReader.PitchToleranceHz && m.Stood);
+        var kept = detector.CandidatesKept;
+        var candidates = kept.Count(m => Math.Abs(m.PitchHz - pitch) <= CwRunReader.PitchToleranceHz);
+        var stood = all.Count(m => Math.Abs(m.PitchHz - pitch) <= CwRunReader.PitchToleranceHz);
         var text = string.Join(' ', string.Concat(characters.Select(c => c.Text)).Split(' ', StringSplitOptions.RemoveEmptyEntries));
 
         return new Reading(text, candidates, stood, printedMarks, characters, most);
@@ -130,6 +131,35 @@ public sealed class ThePatternIsTheGateTests
         return r.Text;
     }
 
+    [Fact]
+    public void DiagTwoStations()
+    {
+        var loud = Standard(Call, 20, 24, 5110);
+        var quiet = Standard("TEST DE W1AW K TEST DE W1AW K", 20, 10, 5111, pitch: Pitch + 200, noise: 0);
+        var mixed = new float[Math.Max(loud.Length, quiet.Length)];
+
+        for (var i = 0; i < mixed.Length; i++)
+        {
+            mixed[i] = (i < loud.Length ? loud[i] : 0) + (i < quiet.Length ? quiet[i] : 0);
+        }
+
+        var detector = new CwEnvelopeDetector(Rate);
+
+        for (var at = 0; at + Chunk <= mixed.Length; at += Chunk)
+        {
+            detector.Process(mixed.AsSpan(at, Chunk));
+        }
+
+        var stood = detector.MarksSince(0).Marks.Where(m => Math.Abs(m.PitchHz - Pitch) <= 50).OrderBy(m => m.FromSeconds).ToList();
+        var kept = detector.CandidatesKept.Where(m => Math.Abs(m.PitchHz - Pitch) <= 50).OrderBy(m => m.FromSeconds).ToList();
+
+        foreach (var m in kept.Where(m => m.FromSeconds > 14 && m.FromSeconds < 19.5))
+        {
+            _output.WriteLine((stood.Any(s => s.FromSeconds == m.FromSeconds && s.PitchHz == m.PitchHz) ? "STOOD   " : "DROPPED ")
+                + m.FromSeconds.ToString("0.000") + " " + m.LengthMs.ToString("0") + " ms " + m.PitchHz + " Hz level " + m.LevelDb.ToString("0.0") + " own " + m.OwnContrastDb.ToString("0.0") + " " + m.Shape);
+        }
+    }
+
     [Theory]
     [InlineData(8.0, true)]
     [InlineData(8.0, false)]
@@ -138,7 +168,7 @@ public sealed class ThePatternIsTheGateTests
     public void DiagWhatHappensToEachMark(double db, bool gates)
     {
         var samples = Standard(Call, 20, db, 5070 + (int)db);
-        var detector = new CwEnvelopeDetector(Rate) { MarksNeedEdges = gates, MarksNeedNarrowness = gates, MarksNeedShape = gates };
+        var detector = new CwEnvelopeDetector(Rate) { MarksNeedEdges = gates, MarksNeedNarrowness = gates, MarksNeedShape = false };
 
         for (var at = 0; at + Chunk <= samples.Length; at += Chunk)
         {
@@ -192,6 +222,11 @@ public sealed class ThePatternIsTheGateTests
                 }
             }
         }
+
+        var realScores = marks.Where(used.Contains).Select(m => m.Shape?.Score ?? double.NaN).OrderBy(s => s).ToList();
+
+        _output.WriteLine(db + " dB gates " + gates + " real mark scores: lowest " + realScores.FirstOrDefault().ToString("0.000")
+            + ", tenth " + realScores.ElementAtOrDefault(realScores.Count / 10).ToString("0.000") + ", median " + realScores.ElementAtOrDefault(realScores.Count / 2).ToString("0.000"));
 
         var extra = marks.Where(m => !used.Contains(m)).ToList();
 
@@ -254,13 +289,14 @@ public sealed class ThePatternIsTheGateTests
             var batch = detector.MarksSince(sequence);
 
             sequence = batch.Marks.Count > 0 ? batch.Marks.Max(m => m.Sequence) : sequence;
-            candidates += batch.Marks.Count;
+
             reader.Read(batch);
         }
 
         reader.Flush();
 
         // Every mark kept still says whether it stood; the ones dropped from the minute kept are counted as they came.
+        candidates = detector.CandidateCount;
         stood = detector.StoodCount;
 
         _output.WriteLine(seconds + " s of loud noise: " + candidates + " candidates passed the single-mark gates, " + stood + " stood in a pattern; printed `" + string.Concat(printed.Select(c => c.Text)) + "`");

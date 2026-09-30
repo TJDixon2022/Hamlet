@@ -44,6 +44,12 @@ public sealed record CwMark(
     /// instruction 507, R112). Every mark a reader is handed has stood.
     /// </summary>
     public bool Stood { get; init; } = true;
+
+    /// <summary>
+    /// Its own height over the gap beside it, in dB, read on the mark alone from the hops just outside
+    /// its edges (work instruction 507); NaN where neither side could be read.
+    /// </summary>
+    public double OwnContrastDb { get; init; } = double.NaN;
 }
 
 /// <summary>
