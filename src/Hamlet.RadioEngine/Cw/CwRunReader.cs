@@ -193,6 +193,12 @@ public sealed class CwRunReader
     /// <remarks>Safe to read from any thread: one double, written once per batch on the audio thread.</remarks>
     public double StationPitchHz => Volatile.Read(ref _stationHz);
 
+    /// <summary>The dit of the sender being printed, in seconds, or NaN when none is: for the tests' report (work instruction 500).</summary>
+    internal double StationDitSeconds => _station?.DitSeconds ?? double.NaN;
+
+    /// <summary>The printed sender's dit of gap, in seconds, or NaN: for the tests' report (work instruction 500).</summary>
+    internal double StationGapDitSeconds => _station?.GapDitSeconds ?? double.NaN;
+
     private double _printedThrough = double.NegativeInfinity;
 
     private void Print(double heardSeconds)
@@ -202,16 +208,16 @@ public sealed class CwRunReader
         if (_station is not null
             && double.IsFinite(heardSeconds)
             && _station.Open.Count == 0
-            && heardSeconds - _station.LastToSeconds > ReleaseSeconds)
+            && heardSeconds - _station.LastToSeconds > _station.SilenceSeconds)
         {
             _station = null;
         }
 
         // Senders long silent and not printed are forgotten: one that never made two runs of two marks
-        // after the hold, one that did after the minute the detector keeps its marks.
+        // after its own silence, one that did after the minute the detector keeps its marks.
         if (double.IsFinite(heardSeconds))
         {
-            _senders.RemoveAll(s => s != _station && s.LastToSeconds < heardSeconds - (s.Ended.Count(r => r.Length >= 2) >= QualifyingRuns ? CwEnvelopeDetector.CalledSeconds : ReleaseSeconds));
+            _senders.RemoveAll(s => s != _station && s.LastToSeconds < heardSeconds - (s.Ended.Count(r => r.Length >= 2) >= QualifyingRuns ? CwEnvelopeDetector.CalledSeconds : s.SilenceSeconds));
         }
 
         // The sender with the most marks among those that have made two runs, the louder on a tie.
@@ -375,6 +381,10 @@ public sealed class CwRunReader
         private readonly List<double> _elementGaps = new();
         private readonly List<double> _runGaps = new();
 
+        // How much longer each gap inside a letter read than the dit of the marks at the time, once
+        // the sender has shown two kinds (work instruction 500).
+        private readonly List<double> _gapOverDit = new();
+
         public List<CwMark> Open { get; } = new();
 
         public List<CwMark[]> Ended { get; } = new();
@@ -453,11 +463,48 @@ public sealed class CwRunReader
         /// <summary>Short against long: the geometric mean of the sender's short and long marks.</summary>
         public double SplitSeconds => Kinds().Split ?? (DitSeconds * Math.Sqrt(3));
 
-        /// <summary>Between a gap inside a letter, one dit, and one between letters, three.</summary>
-        public double CharacterGapSeconds => DitSeconds * Math.Sqrt(3);
+        /// <summary>
+        /// One dit of gap, in seconds: the dit of the sender's marks, plus how much longer the
+        /// detector reads a gap inside a letter than that dit (work instruction 500).
+        /// </summary>
+        /// <remarks>
+        /// <para>**A GAP IS COUNTED IN DITS OF GAP.** Morse makes the gap inside a letter one dit, and the
+        /// detector reads a mark short and the gap after it long, each by about its window's smear
+        /// (work instruction 498). At 35 WPM that is a fifth of a dit: a boundary built on the marks'
+        /// dit of 28 ms against a true 34 landed at 48 ms, inside the 50 ms gaps inside a C, which
+        /// read as K and E. A gap between letters or words carries the same smear, so the unit they
+        /// are counted in is a gap inside a letter.</para>
+        /// <para>**THE SMEAR IS FIXED; THE DIT IS NOT.** The smear is the detector's and does not move
+        /// with the sender's speed - measured here at 10 to 16 ms from 5 to 35 WPM - while the dit
+        /// follows the sender's latest marks. So the unit is the marks' dit plus the median of what
+        /// the sender's gaps inside letters have run over it, which follows a sender who speeds up
+        /// as fast as its marks do, where a median of the gaps themselves held a 10 WPM unit through
+        /// a 20 WPM answer. Before the sender has shown dits and dahs the marks' dit stands alone.</para>
+        /// </remarks>
+        public double GapDitSeconds => DitSeconds + (_gapOverDit.Count > 0 ? Math.Max(0, Median(_gapOverDit)) : 0);
 
-        /// <summary>Between a gap between letters, three dits, and one between words, seven.</summary>
-        public double WordGapSeconds => DitSeconds * Math.Sqrt(21);
+        /// <summary>Between a gap inside a letter, one dit, and one between letters, three: the geometric mean.</summary>
+        public double CharacterGapSeconds => GapDitSeconds * Math.Sqrt(3);
+
+        /// <summary>Between a gap between letters, three dits, and one between words, seven: the geometric mean.</summary>
+        public double WordGapSeconds => GapDitSeconds * Math.Sqrt(21);
+
+        /// <summary>
+        /// How long this sender may be silent and still be sending, in seconds: the detector's hold,
+        /// or twice its word-gap boundary and the wait for its next mark where that is longer (work
+        /// instruction 500).
+        /// </summary>
+        /// <remarks>
+        /// <para>**A SLOW SENDER'S WORD GAP IS LONGER THAN THE HOLD.** Seven dits is 840 ms at 10 WPM and
+        /// 1.68 s at 5, and a one-second hold forgot a 5 WPM sender between every word before it had
+        /// made its two runs, so the call's first words were never printed. Twice the word-gap
+        /// boundary, about nine dits, is the same span a lone letter waits for its confirmation in.</para>
+        /// <para>**AND THE NEXT MARK IS SEEN ONLY ONCE IT HAS ENDED**, so the silence also covers the
+        /// sender's longest mark and the lag in calling it, as the banking's wait does: at 10 WPM the D
+        /// after TEST began 845 ms after the last T and reached the reader 1.2 s after it, and a sender
+        /// forgotten at 1.15 s took that T with it.</para>
+        /// </remarks>
+        public double SilenceSeconds => Math.Max(ReleaseSeconds, (2 * WordGapSeconds) + LongestMarkSeconds + CallingLagSeconds);
 
         /// <summary>The median gap inside the sender's letters, in seconds; NaN before it has shown one.</summary>
         public double ElementGapSeconds => _elementGaps.Count > 0 ? Median(_elementGaps) : double.NaN;
@@ -468,7 +515,14 @@ public sealed class CwRunReader
         {
             if (Open.Count > 0)
             {
-                _elementGaps.Add(mark.FromSeconds - Open[^1].ToSeconds);
+                var gap = mark.FromSeconds - Open[^1].ToSeconds;
+
+                _elementGaps.Add(gap);
+
+                if (TwoKindsSeen)
+                {
+                    _gapOverDit.Add(gap - DitSeconds);
+                }
             }
             else if (!double.IsNegativeInfinity(LastToSeconds))
             {
@@ -483,6 +537,7 @@ public sealed class CwRunReader
             Trim(_recent);
             Trim(_elementGaps);
             Trim(_runGaps);
+            Trim(_gapOverDit);
         }
 
         private static void Trim<T>(List<T> list)

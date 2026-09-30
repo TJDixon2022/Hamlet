@@ -4,6 +4,31 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-204
+date: 2026-09-29
+refs: work instruction 500, src/Hamlet.RadioEngine/Cw/CwRunReader.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheGapsBelongToTheSendersOwnDitTests.cs
+---
+
+**A sender's gaps are its own dit times one, three and seven.** Every synthetic case from unit 490
+to unit 498 was built between 9 and 23 WPM, and W1AW's slow code practice at 5 to 15 WPM was read
+as single-element letters.
+
+**What was measured.** The reader's dit was right on the marks at 5, 10, 18 and 35 WPM, and its
+boundaries were already the geometric means of Morse's 1:3:7, at 1.73 and 4.58 dits. What failed was
+around them: a sender was forgotten after the detector's one-second hold, shorter than a 5 WPM word
+gap and than the wait for the next mark at 10, so the start of a slow call never printed; and the
+gaps were counted in the marks' dit, which the detector reads short while it reads the gaps long, so
+at 35 WPM the character boundary fell inside a C.
+
+**What is built.** A sender keeps its place for twice its word-gap boundary plus its longest mark
+and the calling lag, or the hold where that is longer. A gap is counted in the marks' dit plus the
+median of what the sender's gaps inside letters have run over it, which follows a change of speed as
+fast as the marks do.
+
+**Whose words are whose.** The headline and the premise are work instruction 500's; the silence span,
+the gap unit and the measurements are the author's, and overrulable.
+
+---
 id: HM-DEC-203
 date: 2026-09-29
 refs: work instruction 499, data/bands/us-neighborhoods.json, data/bands/w1aw-morse.json, src/Hamlet.App/ViewModels/MainWindowViewModel.cs, tests/Hamlet.RadioEngine.Tests/Explore/TheBandPlanSaysWhereTheModesAreTests.cs, tests/Hamlet.App.Tests/ViewModels/TheW1awPressStaysInCwTests.cs
