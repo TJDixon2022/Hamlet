@@ -6,8 +6,8 @@ WORK_INSTRUCTION: 505 - the category pages are lists, and the map opens on a cli
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-30T11:03:23-04:00
-NOTE: Unit 505 - task 4 committed, continents carry a map button beside the row; now the old tests, comments and widths
+UPDATED: 2026-09-30T11:10:56-04:00
+NOTE: Unit 505 - task 5 green, old card tests carried or retired, maps at rest 8 to 0; committing and writing output.md
 
 ---
 

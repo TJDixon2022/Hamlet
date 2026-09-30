@@ -4,6 +4,40 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-209
+date: 2026-09-30
+supersedes: R22 and work instruction 342 rulings 11 and 16, as the trading card
+refs: work instruction 505, src/Hamlet.App/Views/AchievementsWindow.axaml, src/Hamlet.App/ViewModels/AchievementCategory.cs, src/Hamlet.App/ViewModels/AchievementsViewModel.cs, tests/Hamlet.App.Tests/Views/TheCategoryPagesAreListsTests.cs
+---
+
+**A category is a list, and the map opens on a click.** Tim, 2026-09-30: *"I like where they are,
+but we're just so map centric. How about we change it so that we list continents, countries,
+whatever, and you can click on it and it'll pop up the map. So we still store the map that shows,
+hey, I connected with Chile. And if I click on that, I see me to Chile, so I know where it is in the
+world. But we're just overdoing it on maps."*
+
+**What it supersedes.** R22 and rulings 11 and 16 of work instructions 335 and 342: the trading card
+with the path map across it at 231 px. The later ruling wins. Ruling 16's popup stands exactly as
+built and is now the only place a map is drawn in the achievements window.
+
+**What is built.** Each category draws its earned items as rows, one column, full width: the
+category's color at the left edge, the title bold, the call line, the distance the largest thing
+after the title, band and mode, the date, a count where there is one, the points at the right. No map
+is drawn on a row. Where the contact has a map the whole row is a button that opens its path in the
+popup and says `map` at its right end; where it has none the row is not a button, says why in a word,
+and lists its contacts in its tooltip. The popup's heading names the place and the station,
+`Norway · LA1ZZZ`. The one to earn next is drawn first, above the rows, as a panel with its wants
+line, quill line and callers; the callers open no map. A continent's row opens its countries, and a
+small `map` beside it, never inside it, opens the path of the contact that opened the continent. On
+the fixture log the Countries page went from 8 maps at rest to none.
+
+**What it does not touch.** The opening page of eight badges, the conversation card's map, the green
+zone's map, what is earned, counted or scored, and `ACHIEVEMENTS_PHILOSOPHY.md` §2, §3.1 and §4.
+
+**Whose words are whose.** The ruling is Tim's; the row's layout, the word `map`, the next card first,
+and the continent's second button are the author's under work instruction 505, and overrulable.
+
+---
 id: HM-DEC-208
 date: 2026-09-30
 refs: work instruction 504 (issued headed 502), src/Hamlet.RadioEngine/Cw/CwRunReader.cs, src/Hamlet.RadioEngine/Cw/CwEnvelopeDetector.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheLetterGapHoldsTests.cs, tests/Hamlet.RadioEngine.Tests/Cw/WhichGateTurnsAwayW1awTests.cs

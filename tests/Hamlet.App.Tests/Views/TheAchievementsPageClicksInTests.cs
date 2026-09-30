@@ -554,7 +554,7 @@ public sealed class TheAchievementsPageClicksInTests
     public void OpeningTheWindowWritesHowManyStatesScoredAndNoCode()
     {
         var sink = new Recording();
-        var screen = Screen(TheCategoryPagesAreTradingCardsTests.StateContacts());
+        var screen = Screen(TheCategoryPagesAreListsTests.StateContacts());
 
         AppEvents.AchievementsOpened(
             sink, screen.Page!.Badges.Count, screen.Page.Scores.For(AchievementKinds.States).Worked);

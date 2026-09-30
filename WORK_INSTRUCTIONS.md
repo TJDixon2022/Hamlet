@@ -1,12 +1,11 @@
-# Work instruction 502 - one shape, one score
+# Work instruction 505 - the category pages are lists, and the map opens on a click
 
-**Hand run. One unit, after 501.** Seven independent tests each let some chaos through. A keyed
-tone is one shape. This unit judges a mark by that shape as a whole.
+**Hand run. One unit, outside the CW phase.** The achievements category pages draw a map on every
+card. This unit makes each category a list of what was earned, and the map something he opens by
+clicking a row. **The opening page, the popup and every record behind the screen are untouched.**
 
-**No test against a recording, a fixture, a floor or copied telemetry** (R96). A headless test
-driving synthetic hops written in the test itself is allowed; nothing read from disk. Verify by
-building `Hamlet.sln` with warnings as errors and running the app carry-forward line. **The
-owner's report at the radio is the test.**
+Verify by building `Hamlet.sln` with warnings as errors and running the app carry-forward line
+before the first change and after the last. **The owner's look at the window is the test.**
 
 ---
 
@@ -35,184 +34,270 @@ If all five hold, say "Hamlet confirmed" and continue.
 
 ## 1. Rules
 
-- **Unit 501 must be in the tree.** If its Farnsworth test is absent, stop at task 0 and say so.
 - Take `SESSION.lock` through `tools\arbiter\lock.bat take`, release it at the end. Write nothing
-  to `RUN_LEDGER.md`. Touch nothing under `tools\arbiter\`. Tick nothing in `PHASE_PLAN.md`.
+  to `RUN_LEDGER.md`. Touch nothing under `tools\arbiter\`.
+- **This unit is not a step of the CW phase.** Touch no copy of `PHASE_PLAN.md`, `PHASE_OUTCOME.md`
+  or `PHASE_STATUS.md`. Tick nothing. `PROJECT_STATUS.md` follows the cadence in the prompt and
+  names 505.
 - One `dotnet test` invocation per line, filtered, with a `timeout`. Never background and poll.
-  The app line loses names to the dispatcher loop; re-run once, count neither way.
+  Never run `Hamlet.App.Tests` unfiltered. The app line loses names to the dispatcher loop; re-run
+  once, count neither way.
 - Apostrophes in quoted heredocs break; `;`, `rm` and `git rm` are refused; Python cannot run
-  here; `-m` more than once for a multi-line commit. Scripts go in `.run-unit\unit502-<name>.sh`
+  here; `-m` more than once for a multi-line commit. Scripts go in `.run-unit\unit505-<name>.sh`
   and are not committed.
-- Nothing that keys or transmits. Nothing written to the radio.
-- `output.md` at the root, four headings exactly: `## 1. What Claude did`, `## 2. What the owner
-  should expect`, `## 3. What you should see`, `## 4. What's blocking us`.
+- **A file that has to go cannot be deleted here.** Empty it to one comment saying which unit
+  retired it and why, and list it once in section 2 for the owner to delete by hand.
+- Nothing that keys or transmits. Nothing written to the radio. Nothing written to the log. **No
+  package. No image asset.** Touch nothing under `src\Hamlet.RadioEngine\`.
+- The tree is dirty by 368 files at `57b9759`. **Commit only what this unit changed**, by path.
+- American spelling. `output.md` at the root, four headings exactly: `## 1. What Claude did`,
+  `## 2. What the owner should expect`, `## 3. What you should see`, `## 4. What's blocking us`.
 
 ---
 
-## 2. The owner's principle
+## 2. The owner's ruling
 
-**His words, 2026-09-30, R110:**
+**His words, 2026-09-30:**
 
-> *"Shape is the key to us getting really good CW. Noise is chaos. It can be anything. And you've
-> been randomly trying to extract order from that chaos. But we know that CW is not any order.
-> It's a particular shape and size and width. And we need to focus just on that."*
+> *"I like where they are, but we're just so map centric. How about we change it so that we list
+> continents, countries, whatever, and you can click on it and it'll pop up the map. So we still
+> store the map that shows, hey, I connected with Chile. And if I click on that, I see me to Chile,
+> so I know where it is in the world. But we're just overdoing it on maps."*
 
-**What the code has, and what it lacks.** A bar becomes a mark by passing a row of independent
-yes-or-no tests: it stands clear of its gaps (the wander check), it is a dit or longer (25 ms), its
-top is flat (R93), it has edges (unit 497, 6 dB within four hops), and it is narrow (unit 498,
-6 dB above the bins 300 Hz either side). **Each test lets through the noise that happens to pass
-it.** A spike passes the edge test; a flat wobble passes the flatness test; a broadband thump
-long enough passes the length test. What survives all five - 146 of 1452 noise bars in unit 498's
-count, about 5 a second - is noise that happened to pass each one narrowly.
+**What it supersedes.** R22 and rulings 11 and 16 of work instructions 335 and 342, as the comments
+in `AchievementsWindow.axaml` cite them: the trading card with the path map across it at 231 px.
+**The later ruling wins.** Ruling 16's popup stands exactly as built; it is now the only place a
+map is drawn in this window.
 
-**A keyed tone is one shape**, and a real mark does not pass each test narrowly. It passes every
-test by a wide margin at once: its top is flat to a fraction of a decibel, its edges are a few
-milliseconds, it stands 15 to 30 dB above the band beside it, and it is exactly a dit or exactly
-a dah. **Noise that squeaks past five gates does not look like that.** One score that measures
-how far a bar sits inside the shape - not whether it crossed each line - separates the two.
+**What it does not touch.** The opening page of eight badges. The conversation card's map. The
+green zone's map. `ACHIEVEMENTS_PHILOSOPHY.md` - §2 no wall of blanks, §3.1 earned and then the
+one nearest unearned and nothing beyond it, §4 worked and never confirmed - all in force.
 
 ---
 
-## 3. First, the crash unit 501 found
+## 3. Verify this instruction against the tree
 
-`CwEnvelopeDetector.cs` line 1160 walks a mark back to where its tone rose and can step to hop −1
-in the first seconds of audio, where `Level(-1)` throws `IndexOutOfRangeException`. Unit 501 hit it
-on seed 5035 and moved its test to seed 5036 rather than touch the detector out of scope. **Guard
-it here**: the walk stops at hop zero. One line. Then restore that test to seed 5035 and show it
-passes. **This is the owner's go-ahead.**
+Read from a harvest of `57b9759`, 2026-09-30. **Check each; report every mismatch in section 1; do
+not repair this instruction; do not stop over a mismatch** unless a task is impossible.
 
-## 3b. Second, which gate is killing W1AW - measured, not guessed
-
-The owner's verdict rows on W1AW, 2026-09-30 12:09 UTC, CW, 7.0475: **meter at 725 Hz, dit 90 ms,
-score 0.39** - W1AW's 18 WPM letters, plainly - **bars say keying, and `marks4s` is 0.** Zero
-marks in four seconds on a strong, clean, correctly tuned station. It was 6 to 15 on stations
-earlier in the week. **One of the mark gates added since is turning away every real mark.**
-
-**Measure it before building anything else:**
-
-- A synthetic 18 WPM call through the detector, **with each mark gate switched off in turn**:
-  unit 492's three mark rules, unit 497's edges (`MarksNeedEdges`), unit 498's narrowness
-  (`MarksNeedNarrowness`), and the pairing. For each: how many of the 65 marks are handed out.
-- **Do the same with the passband set to the owner's: `CwPitch` 600, `FilterBandwidth` 500.**
-  Unit 498's narrowness wants 6 dB above the bins 300 Hz either side, and in a 500 Hz passband
-  there is room to read one side at most. **Report what the narrowness test reads on a 725 Hz
-  tone in a 500 Hz filter centred on 600.**
-- **Name the gate**, and fix it: if it is narrowness, the probe distance follows the passband -
-  outside the lobe but inside the filter - and reads whichever side is available; if it is
-  another, say what and why.
-- **Report the table** in section 3, above the noise table.
-
-**If no gate turns away the synthetic marks, say so** - then the fault is in what the app hands
-the detector on the air, and the report names what differs between the test's audio and the
-tab's.
-
-## 3c. Third, the reader's gaps do not collapse mid-sender
-
-**The owner's screen, 2026-09-30, a hand-sent QSO on 40 m:** `NICELY INTO MK TOYOTA PRIUS BOTH WITH
-AND WI` - twenty letters of clean English - and then `N 1 3 L K A N N N I 2 M / 4 4`, every mark its
-own letter. The bulletin did the same: `QST DE W1AW ... PRACTICE AT 5 7.5 10 13` and then
-`I C M T S T E I E 2 N C D B Y`. **The reader reads the sender well, then loses its gap measurement
-and spaces every letter.**
-
-**Unit 501's cluster walk re-measures the letter gap from the sender's recent gaps between runs.**
-One odd gap - a sender pausing to think, a burst of noise splitting a letter, a missed dit that
-turns one gap into two - can move the lowest cluster, and once the letter gap is wrong every gap
-inside a letter reads as a gap between letters.
-
-**The rule:** once a sender's letter gap has been measured on real letters, **one gap does not move
-it.** A sustained change over several letters does - a sender genuinely speeding up or slowing
-down. A single gap that does not fit the measurement is read against the measurement that stands,
-not used to re-measure it.
-
-- **How many letters make a sustained change, and how far a gap may sit from the measurement before
-  it is odd rather than new, are the author's**, stated with their reasons, derived from what a
-  hand on a key does - a sender's own gaps scatter by tens of percent - and not from a recording.
-- **The 10-to-20 WPM case must still follow the change.** That is the difference between a sustained
-  change and one odd gap, and the report says where the line is.
-
-**Watch it fail first**, synthetic: a 20 WPM sender sending `NICELY INTO MK TOYOTA PRIUS` with one
-gap in the middle stretched to a word gap and a half, then continuing. **Red today** - report what it
-reads before and that it reads whole after. Then the same with a dit dropped from one letter.
-
-## 3a. The change - a shape score
-
-In `CwEnvelopeDetector`, every completed bar gets **one score, from all of its properties
-together**, and it becomes a mark only above a threshold on that score.
-
-**The properties, each as a distance from the ideal rather than a pass or fail:**
-
-- **Flatness** - how far the top wanders from its own mean, in dB, over the whole top. An ideal
-  mark wanders a fraction of a decibel.
-- **Edges** - how many hops the rise and the fall each take, from the gap level to the top and
-  back. An ideal mark takes one or two, the window's own spread.
-- **Narrowness** - how far the bar's bin stands above the band either side, in dB. An ideal mark
-  stands 15 dB or more.
-- **Contrast** - how far the top stands above the gaps either side of it, in dB.
-- **Length** - how close the bar's length is to a dit or to a dah of the sender it belongs to, if
-  a sender is known; how close to any plausible dit if not. A bar that is neither is far from the
-  shape.
-
-**How they combine is the author's**, stated in the report with its reason. **The reason must be
-about the shape of a keyed tone, not about a result.** A product of per-property scores, each from
-0 to 1, is the obvious choice: a bar that is perfect on four and bad on one is bad. **Do not weight
-them by looking at what makes the tests pass.**
-
-**The threshold is the author's**, derived from what a real keyed mark scores on the synthetic
-cases - **the lowest score any real mark of the clean call earns is the floor the threshold sits
-under**, with a margin the report states. It is not set by looking at what turns noise away.
-
-**The five existing tests stay in the tree** and stay on: they are cheap and they are the floor.
-The score is a sixth condition, on bars that passed all five. **Nothing is loosened.**
-
-**The mark carries its score**, so the run reader, the scope and the verdict row can see it. The
-scope's hover on a block says its score.
+- `src\Hamlet.App\Views\AchievementsWindow.axaml`, 716 lines, window 1040 by 720. One
+  `ContentControl` named `AchievementsCategory` whose template holds: the back link, the band
+  `AchievementsCategoryBand`, a scroller over `AchievementsSubBadges` (Continents, a two-column
+  `UniformGrid`, each item a button on `OpenCategoryCommand` wrapping the card template), and a
+  scroller over `AchievementsCategoryCards` (two-column `UniformGrid`, the trading-card template).
+- Inside the card template: a `Button` with class `card-map` on `OpenTheMapCommand` holding an
+  `Ft8GlobeControl` at `Height="231"` with `FillsBox="True"`; a `card-list` border of the same
+  height for a card with no map, showing `NoMapWord` and `ContactLines`; the tier bar; the next
+  card's wants line, quill line and callers panel; the distance at 28 px with band, mode and date.
+- The popup `AchievementsMapPopup`: light dismiss, the X on `CloseTheMapCommand`, an
+  `Ft8GlobeControl` named `AchievementsOpenedGlobe` at most 720 by 400, titled by
+  `OpenedMapCallsign` alone.
+- `src\Hamlet.App\ViewModels\AchievementsViewModel.cs`: `OpenedMap`, `MapIsOpen`,
+  `OpenedMapCallsign`, `OpenTheMap(AchievementCategoryCard?)` which opens only where
+  `card.Globe` has `Opens` true, `CloseTheMap`.
+- `src\Hamlet.App\ViewModels\AchievementCategory.cs`, 1415 lines: the record
+  `AchievementCategoryCard` with `Title`, `Figure`, `PointsLine`, `Earned`, `Callsign`, `Grid`,
+  `CallGridLine`, `Globe`, `HasMap`, `HasNoMap`, `NoMapWord`, `ContactLines`, `DistanceLine`,
+  `BandModeLine`, `DateLine`, `CountLine`, `TierLine`, `TierFraction`, `WantsLine`, `QuillLine`,
+  `Callers`; and the class `AchievementCategory` with `Cards` in the order earned first, then the
+  one unearned, and `SubBadges`.
+- `NextCaller` in `CqSnapshot.cs` carries a place, a call line and `OpensContinent`. **It carries
+  no grid and no path.**
+- Tests: `TheCategoryPagesAreTradingCardsTests` (seven tests and seven unit traces by this instruction's count;
+  it pins the card and the 231 px map), `TheAchievementsPageClicksInTests`
+  (`InsideACategoryTheEarnedCardsComeFirstThenOneUnearned`,
+  `ContinentsOpensToSevenAndEachToItsCountries`, `NoStringInAnySlotIsClippedAtTheWindowsSize`),
+  `TheAchievementsPageTests`, `TheAchievementsScreenTests`, `TheMapOpensTests`,
+  `TheGlobeOnTheCardFaceTests`, `BindingHealthTests`.
+- `docs\carry-forward-tests.txt` names none of `TheCategoryPagesAreTradingCardsTests`.
+- The newest decision is `HM-DEC-208`.
 
 ---
 
-## 4. What to measure
+## 4. The tasks
 
-**Watch it fail first**, with synthetic hops written in the test:
+### Task 0 - before anything changes
 
-1. **Thirty seconds of loud noise.** Unit 498's table, extended: passing the older tests, with
-   edges, narrow, **and above the shape threshold**. That last number is the unit's reason.
-   Report the marks handed out per second before and after; unit 498 measured 5.
-2. **The distribution of scores** on the clean call's 65 marks, and on the noise bars that passed
-   all five tests: the lowest real score, the highest noise score, and whether they overlap.
-   **If they overlap, say so and by how much**, and do not move the threshold into the overlap.
-3. **Every existing case reads exactly as it does at HEAD**: the calls at 5, 10, 18 and 35 WPM,
-   the Farnsworth cases, the speed change, the bursts, the two stations, `TEST DE W1AW K`, the
-   lone dit, the lone dah, the stray dit, the string of lone marks, both noise tests. **If a real
-   mark is lost, the threshold is too high - say so with the count and set it under the real
-   floor**, never to what makes a noise case pass.
-4. **A weak station, 10 dB over the noise.** Report what it reads before and after, and the scores
-   its marks earn. This is the case the score must not break: a weak mark is still the shape,
-   smaller.
+Run the app carry-forward line. Then run, filtered, one line each:
+`TheCategoryPagesAreTradingCardsTests`, `TheAchievementsPageClicksInTests`,
+`TheAchievementsPageTests`, `TheMapOpensTests`. **Report each green or red by name. A red here is
+inherited and is not chased.**
+
+Stand the window up headless on the fixture log and **count the `Ft8GlobeControl` instances
+realized on the Countries page with the popup closed.** That number is the unit's reason.
+
+### Task 1 - an earned item is a row
+
+In `AchievementsWindow.axaml`, the card template becomes a row template and the items panel one
+column, full width.
+
+**An earned row carries, on one line where it fits:**
+
+- the category's color at its left edge, as the card has now;
+- the title, bold - `Chile`;
+- the callsign and grid line;
+- **the distance, the largest thing on the row after the title.** It was 28 px on the card; it
+  does not shrink to a column of small grey figures;
+- band and mode, and the date;
+- the count line where the card had one;
+- the points at the right.
+
+**No map is drawn on a row.** The `card-map` button, its `Ft8GlobeControl` and the 231 px
+`card-list` border leave the template.
+
+**The row is the thing he presses.** Where `HasMap` is true the whole row is a `Button` on
+`OpenTheMapCommand` with the row's card as its parameter: hand cursor, keyboard reachable, and
+**the row says in a word that it opens a map** - a muted `map` at its right end is the author's
+default, overrulable - so that it reads as pressable without relying on a hover (§0.5.1, §0.6).
+Never on a hover.
+
+**Where there is no map the row is not a button** and says `NoMapWord` where the word `map` would
+have been. `ContactLines` move to the row's tooltip; say in the report if that loses anything.
+
+**Total Miles' tiers and the distance firsts keep their bar on the row**, with `TierLine` in words
+above it as now.
+
+**Row height is the author's**, stated with its reason. At 1040 by 720 report how many earned rows
+show without scrolling. The scroller stays; the page itself still never scrolls.
+
+**Test watched failing first**, a new `TheCategoryPagesAreListsTests`:
+
+- with the popup closed, **no `Ft8GlobeControl` is realized anywhere in a category**, for each of
+  the eight kinds;
+- every earned row shows its title, call line, distance, band and mode, date and points;
+- a row with a map is a button and a row without one is not, and says why in a word;
+- no string on any row clips at 1040, 1400 and 1920 wide.
+
+**Drop candidate:** none.
+
+### Task 2 - the click opens the path, and the popup says where
+
+The popup is ruling 16's and is not rebuilt. Two things:
+
+- **Pressing a row opens that row's path** in `AchievementsMapPopup`; the X and a click outside
+  close it; pressing another row after shows the other path.
+- **The popup's heading names the place as well as the station** - `Chile - CE3XYZ` in whatever
+  form the application already joins two facts - because his question is *where is that*, and the
+  callsign alone does not answer it. Keep which row was opened on the view model beside
+  `OpenedMap`; `OpenedMapCallsign` may stay for what already binds it.
+
+**Test watched failing first:** in `TheCategoryPagesAreListsTests`, a row press opens the popup
+with that row's plot and a heading holding both the title and the callsign; a no-map row opens
+nothing. `TheMapOpensTests` stays green and unedited.
+
+**Drop candidate:** the heading. The row press is not droppable.
+
+### Task 3 - the next card goes first
+
+`ACHIEVEMENTS_PHILOSOPHY.md` §3.1 stands: the earned, and the one nearest unearned, and nothing
+beyond it. **In a list of a hundred countries the one at the bottom is never seen**, so the
+unearned one is drawn first, above the earned rows, as a panel and not a row: `next` in words, the
+grey edge, the wants line, the quill line, and the callers panel exactly as the card draws them.
+
+**The callers do not open a map.** `NextCaller` has no path and this unit does not give it one.
+
+Change the order in `AchievementCategory.Cards` or in the view, whichever is smaller; say which.
+
+**Test watched failing first:** `InsideACategoryTheEarnedCardsComeFirstThenOneUnearned` is
+rewritten, and renamed, to assert the unearned one first and the earned after; the callers panel
+assertions of `TheNextCardKnowsWhoIsCalling` move to the new test class unchanged in substance.
+
+**Drop candidate:** the whole task. If dropped the unearned one stays last and the report says so.
+
+### Task 4 - Continents
+
+Seven rows of the same template. **A continent's row still opens its countries** - that is what
+`ContinentsOpensToSevenAndEachToItsCountries` holds and it stays green. The path of the contact
+that opened the continent is a **second, small button on the row, beside the first and not inside
+it**, saying `map`, on `OpenTheMapCommand`. A button inside a button is not built.
+
+An unearned continent has no map button.
+
+**Test watched failing first:** an earned continent's row carries two pressable things, one opens
+its countries and the other opens the popup with that continent's first path.
+
+**Drop candidate:** the map button. The rows are not droppable.
+
+### Task 5 - the old tests, the comments, and two widths
+
+- **`TheCategoryPagesAreTradingCardsTests`:** every test in it is either carried into
+  `TheCategoryPagesAreListsTests` in substance or retired. **Name each one in the report with
+  which happened and why.** `EveryKindsBandCarriesCountScoreLevelAndABar` and
+  `StatesCountWhatTheLogsStateFieldSays` do not depend on the card and are carried whole. The
+  seven `Unit3xxTrace...` tests measured a layout that no longer exists and are retired. The file
+  is emptied to a comment per section 1.
+- **The comments in `AchievementsWindow.axaml`** that cite R22, the 231 px map and rulings 11 and
+  16 are rewritten to cite this unit and HM-DEC-209, and say in a line what they replaced.
+- **`assets\category-page-countries.png` is the superseded picture.** Do not edit it; say so in
+  section 2.
+- Stand the window up at 1040, 1400 and 1920 wide and **describe, computed**, the Countries page,
+  Continents and Total Miles at each: rows visible, what clips if anything.
+- Repeat task 0's count of `Ft8GlobeControl` instances with the popup closed. **It is zero.**
+
+**Drop candidate:** the three-width description.
 
 ---
 
 ## 5. Record
 
-- `PHASE_OUTCOME.md`, both copies: `## UNIT 502 - STEP 12`, one paragraph.
-- `PHASE_STATUS.md`, both copies: names 502.
+- `DECISIONS.md`, newest first, **HM-DEC-209**, headline *A category is a list, and the map opens
+  on a click*, quoting him from section 2, naming what it supersedes, and saying whose words are
+  whose: the ruling is Tim's; the row's layout, the word `map`, the next card first, and the
+  continent's second button are the author's under work instruction 505, and overrulable.
+- The index row for it in `CLAUDE.md` §1, in the shape of the rows above it.
 - Patch-bump `Directory.Build.props`.
-- **Append R110 to the rulings section of both `PHASE_PLAN.md` copies**, in the owner's words
-  above. **Touch no checkbox.**
-- `DECISIONS.md`, newest first, **HM-DEC-206**, headline *A mark is judged by its whole shape, not
-  by crossing five lines*, quoting him.
+- **No phase file.** See section 1.
 
 ---
 
-## 6. Report
+## 6. What not to do
+
+- **Do not draw a map on a row, in a tooltip, or on a hover.** One map in this window, in the
+  popup, on a click.
+- **Do not touch the opening page**, `HmBadgeTemplate`, or what a badge press does.
+- **Do not rebuild the popup** or change `Ft8GlobeControl`, `Ft8GlobePlot`, the frame or the zoom.
+- **Do not give the callers a path.**
+- **Do not change what is earned, counted or scored.** This unit changes how a category is drawn.
+- **Do not clip or wrap a word on a row.**
+- **Do not nest a button in a button.**
+- **Report mismatches; repair nothing else on the way past** (`CLAUDE.md` §12.6).
+
+---
+
+## 7. Committing and pushing
+
+Commit per task on `main`, by path, each with its red quoted. Push at the end and say whether it
+succeeded.
+
+---
+
+## 8. Report
+
+`output.md` at the root, above the four headings:
+
+```
+READ IN THIS ORDER.
+
+A. Maps drawn on a category page with the popup closed, before and after.
+B. Whether a row press opens its path, and what the popup's heading says.
+C. The rest. Section 4 raises <n> items, none blocking.
+```
+
+```
+UNIT:       505 - <complete|stopped> at task N of 5, <dropped or none dropped> - <date time>
+UNIT GOAL:  <in your own words>
+NUMBER:     maps on the Countries page at rest: <n> -> 0; earned rows visible at 1040 x 720: <n>
+```
 
 Section 2, for the owner, in plain words:
 
 - rebuild;
-- fewer false marks still: a mark now has to look like a keyed tone as a whole, not just clear
-  five separate bars;
-- a real station, strong or weak, is unaffected - its marks score far inside the shape;
-- **if real letters go missing, that is the threshold, and section 3's score table names the
-  floor.**
+- open Achievements and click Countries: a list, no maps;
+- click a row: the map of that contact opens, you to there, and closes on the X or a click away;
+- the one to earn next is at the top, with who is calling;
+- Continents: a row opens its countries, the small `map` beside it opens the path;
+- the files emptied for him to delete by hand.
 
-Section 1: what changed, file by file, how the score is built and why, the threshold and its
-reason, and that the build and the app line are green. **Section 3: the noise table at the top,
-then the score distributions, then the cases.** Section 4: anything left, a line each.
+Section 1: what changed, file by file; every mismatch against section 3; the old tests and what
+became of each; that the build and the app line are green. **Section 3: the three widths,
+computed.** Section 4: anything left, a line each.

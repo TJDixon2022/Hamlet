@@ -558,8 +558,9 @@
                 </Button.Styles>
             </Button>
 
-            <!-- **THE BAND, AS `assets/category-page-countries.png` DRAWS IT** (work
-                 instruction 335 task 1, R22): the emblem and the name; under the name what
+            <!-- **THE BAND, UNCHANGED BY WORK INSTRUCTION 505** (HM-DEC-209), which replaced the
+                 trading cards under it with rows and left the band as unit 335 drew it from a
+                 picture since superseded: the emblem and the name; under the name what
                  the kind is, the count, the score and the level; on the right a bar to the
                  next level with what it is of in words above it. **Where there is no next
                  level the words say so and no bar is drawn**, because a bar is a fraction
@@ -714,13 +715,17 @@
             </ContentControl.ContentTemplate>
         </ContentControl>
 
-        <!-- ============ A CARD'S MAP, OPENED ============ -->
-        <!-- **THE CONVERSATION CARD'S ENLARGED MAP, AGAIN** (work instruction 342, ruling 16):
-             the same light-dismiss popup centred on the window, the same dismiss X and the same
-             control opened to the path with the same ceiling, so a click outside closes it and
-             nothing here is a second mechanism. **One popup for the window**, holding whichever
-             card's map was clicked (`OpenedMap`). Centred on a 720 px window it starts well below
-             the back control, so it never covers it. **It writes nothing and transmits nothing.** -->
+        <!-- ============ A ROW'S MAP, OPENED ============ -->
+        <!-- **THE ONE MAP IN THIS WINDOW, ON A CLICK** (work instruction 505, HM-DEC-209). It was
+             the card's map enlarged (work instruction 342, ruling 16) and it is built exactly as
+             that ruling built it; what changed is that it is now the only place a map is drawn
+             here, since no row carries one. The conversation card's light-dismiss popup centred on
+             the window, the same dismiss X and the same control opened to the path with the same
+             ceiling, so a click outside closes it and nothing here is a second mechanism. **One
+             popup for the window**, holding whichever row was pressed (`OpenedMap`, `OpenedCard`).
+             **Its heading says where as well as who**, `Norway · LA1ZZZ`, because his question is
+             where that is. Centred on a 720 px window it starts well below the back control, so it
+             never covers it. **It writes nothing and transmits nothing.** -->
         <Popup x:Name="AchievementsMapPopup"
                IsOpen="{Binding MapIsOpen, Mode=TwoWay}"
                Placement="Center"
