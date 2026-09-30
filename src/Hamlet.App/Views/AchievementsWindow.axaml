@@ -40,6 +40,21 @@
             <Setter Property="Cursor" Value="Hand" />
             <Setter Property="Padding" Value="0" />
         </Style>
+
+        <!-- **A ROW THAT OPENS A MAP LOOKS PRESSABLE AT REST** (work instruction 505, §0.5.1):
+             the hand cursor, the word `map` at its right end, and on the pointer its edge goes
+             amber. The button draws no fill of its own; the row inside it is the face. -->
+        <Style Selector="Button.category-row">
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+        </Style>
+        <Style Selector="Button.category-row /template/ ContentPresenter">
+            <Setter Property="Background" Value="Transparent" />
+        </Style>
+        <Style Selector="Button.category-row:pointerover Border.category-card">
+            <Setter Property="BorderBrush" Value="{StaticResource HmAmberEdgeBrush}" />
+        </Style>
     </Window.Styles>
 
     <Window.Resources>
@@ -158,6 +173,278 @@
                     </StackPanel>
                 </Border>
             </Button>
+        </DataTemplate>
+
+        <!-- **ONE ITEM OF A CATEGORY, DRAWN ONCE** (work instruction 505, HM-DEC-209). It replaces
+             unit 335's trading card, which carried the path map across it at 231 px (R22, work
+             instruction 342 rulings 11 and 16): Tim, 2026-09-30, *"we're just overdoing it on
+             maps."* **No map is drawn here.** The one map in this window is the popup, on a click.
+
+             **AN EARNED ONE IS A ROW**: the category's color at its left edge, the title bold,
+             the call line under it, then the distance - the largest thing after the title, as
+             it was on the card - band and mode over the date, the points, and at the right end
+             the word that says what pressing it does. **Its height is the content's**, two lines
+             of text and their padding, about sixty pixels: enough to read at arm's length, and
+             small enough that a page of countries shows seven or eight at once. **The title's
+             column is 340 px**, the longest entity name, Sovereign Military Order of Malta, at
+             330 on the test host with room to spare, so no title clips and the distances down
+             the page stand in one column. The author's, overrulable.
+
+             **THE ONE UNEARNED ONE IS A PANEL**: the grey edge and `next` in words, what it
+             wants, the quill line and the callers, exactly as the card drew them (§3.1, §0.6). -->
+        <DataTemplate x:Key="HmCategoryItemTemplate" x:DataType="vm:AchievementCategoryCard">
+            <Border Classes="category-card"
+                    Background="White"
+                    BorderBrush="{StaticResource HmSlateEdgeBrush}"
+                    BorderThickness="1"
+                    CornerRadius="8"
+                    ClipToBounds="True"
+                    Opacity="{Binding CardOpacity}">
+                <Grid ColumnDefinitions="6,*">
+                    <Border Grid.Column="0"
+                            IsVisible="{Binding Earned}"
+                            Background="{Binding $parent[ItemsControl].((vm:AchievementCategory)DataContext).Band}" />
+
+                    <Border Grid.Column="0"
+                            IsVisible="{Binding !Earned}"
+                            Background="#C9C5BA" />
+
+                    <!-- ============ EARNED: ONE ROW ============ -->
+                    <Grid Grid.Column="1"
+                          IsVisible="{Binding Earned}"
+                          Margin="14,8,14,8"
+                          ColumnDefinitions="340,*,Auto,Auto,Auto,Auto">
+                        <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                            <TextBlock Classes="card-title"
+                                       Text="{Binding Title}"
+                                       FontSize="16" FontWeight="Bold"
+                                       Foreground="{StaticResource HmTextPrimaryBrush}" />
+
+                            <TextBlock Classes="card-callgrid"
+                                       Text="{Binding CallGridLine}"
+                                       IsVisible="{Binding HasCallGridLine}"
+                                       FontSize="12"
+                                       Foreground="{StaticResource HmTextMutedBrush}" />
+
+                            <TextBlock Classes="card-figure"
+                                       Text="{Binding Figure}"
+                                       IsVisible="{Binding ShowsFigure}"
+                                       FontSize="12"
+                                       Foreground="{StaticResource HmTextMutedBrush}" />
+
+                            <TextBlock Classes="card-count"
+                                       Text="{Binding CountLine}"
+                                       IsVisible="{Binding HasCountLine}"
+                                       FontSize="12" FontWeight="SemiBold"
+                                       Foreground="{StaticResource HmTextPrimaryBrush}" />
+                        </StackPanel>
+
+                        <!-- **A TIER'S BAR** (work instruction 335 task 4): Total Miles' tiers
+                             and a distance first, with both figures in words above it so the bar
+                             is never a bare fraction. -->
+                        <StackPanel Grid.Column="1"
+                                    IsVisible="{Binding HasTierBar}"
+                                    Spacing="4"
+                                    Margin="20,0,0,0"
+                                    VerticalAlignment="Center">
+                            <TextBlock Classes="card-tier"
+                                       Text="{Binding TierLine}"
+                                       FontSize="12"
+                                       Foreground="{StaticResource HmTextPrimaryBrush}" />
+
+                            <ctl:BadgeProgressControl Fraction="{Binding TierFraction}"
+                                                      Length="200"
+                                                      Thickness="8"
+                                                      HorizontalAlignment="Left"
+                                                      Foreground="{Binding $parent[ItemsControl].((vm:AchievementCategory)DataContext).Band}" />
+                        </StackPanel>
+
+                        <TextBlock Grid.Column="2"
+                                   Classes="card-distance"
+                                   Text="{Binding DistanceLine}"
+                                   IsVisible="{Binding HasDistance}"
+                                   Margin="20,0,0,0"
+                                   VerticalAlignment="Center"
+                                   FontSize="22" FontWeight="Bold"
+                                   Foreground="{StaticResource HmTextPrimaryBrush}" />
+
+                        <StackPanel Grid.Column="3"
+                                    Margin="20,0,0,0"
+                                    VerticalAlignment="Center">
+                            <TextBlock Classes="card-facts"
+                                       Text="{Binding BandModeLine}"
+                                       IsVisible="{Binding HasBandMode}"
+                                       FontSize="12"
+                                       Foreground="{StaticResource HmTextMutedBrush}" />
+
+                            <TextBlock Classes="card-facts"
+                                       Text="{Binding DateLine}"
+                                       IsVisible="{Binding HasDate}"
+                                       FontSize="12"
+                                       Foreground="{StaticResource HmTextMutedBrush}" />
+                        </StackPanel>
+
+                        <TextBlock Grid.Column="4"
+                                   Classes="card-points"
+                                   Text="{Binding PointsLine}"
+                                   IsVisible="{Binding HasPoints}"
+                                   Margin="20,0,0,0"
+                                   VerticalAlignment="Center"
+                                   FontSize="13" FontWeight="SemiBold"
+                                   Foreground="{StaticResource HmGreenBrush}" />
+
+                        <StackPanel Grid.Column="5"
+                                    Margin="20,0,0,0"
+                                    VerticalAlignment="Center">
+                            <TextBlock Classes="card-open"
+                                       Text="{x:Static vm:AchievementCategoryCard.MapWord}"
+                                       IsVisible="{Binding HasMap}"
+                                       FontSize="12"
+                                       Foreground="{StaticResource HmTextMutedBrush}" />
+
+                            <TextBlock Classes="card-nomap"
+                                       Text="{Binding NoMapWord}"
+                                       IsVisible="{Binding HasNoMap}"
+                                       FontSize="12"
+                                       Foreground="{StaticResource HmTextMutedBrush}" />
+                        </StackPanel>
+                    </Grid>
+
+                    <!-- ============ THE ONE TO EARN NEXT: A PANEL ============ -->
+                    <StackPanel Grid.Column="1"
+                                IsVisible="{Binding !Earned}"
+                                Margin="16,12,16,14"
+                                Spacing="6">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <TextBlock Classes="card-title"
+                                       Text="{Binding Title}"
+                                       FontSize="18" FontWeight="Bold"
+                                       Foreground="{StaticResource HmTextPrimaryBrush}" />
+
+                            <TextBlock Grid.Column="1"
+                                       Classes="card-points"
+                                       Text="{Binding PointsLine}"
+                                       IsVisible="{Binding HasPoints}"
+                                       Margin="12,0,0,0"
+                                       FontSize="13" FontWeight="SemiBold"
+                                       Foreground="{StaticResource HmGreenBrush}" />
+                        </Grid>
+
+                        <TextBlock Classes="card-figure"
+                                   Text="{Binding Figure}"
+                                   IsVisible="{Binding ShowsFigure}"
+                                   FontSize="12"
+                                   Foreground="{StaticResource HmTextMutedBrush}" />
+
+                        <TextBlock Classes="card-count"
+                                   Text="{Binding CountLine}"
+                                   IsVisible="{Binding HasCountLine}"
+                                   FontSize="12" FontWeight="SemiBold"
+                                   Foreground="{StaticResource HmTextPrimaryBrush}" />
+
+                        <StackPanel IsVisible="{Binding HasTierBar}"
+                                    Spacing="4"
+                                    Margin="0,2,0,2">
+                            <TextBlock Classes="card-tier"
+                                       Text="{Binding TierLine}"
+                                       FontSize="12"
+                                       Foreground="{StaticResource HmTextPrimaryBrush}" />
+
+                            <ctl:BadgeProgressControl Fraction="{Binding TierFraction}"
+                                                      Length="300"
+                                                      Thickness="10"
+                                                      HorizontalAlignment="Left"
+                                                      Foreground="{Binding $parent[ItemsControl].((vm:AchievementCategory)DataContext).Band}" />
+                        </StackPanel>
+
+                        <!-- **WHAT IT WANTS, AND WHO ON THE CQ LIST WOULD EARN IT** (work
+                             instruction 335 task 3). The heading carries the time the list was
+                             read; each caller carries the quill his row on the decoded list
+                             wears, and the place is said in words, so the mark is never alone
+                             (§0.6). **The callers open no map**: a caller has no path. -->
+                        <TextBlock Classes="card-wants"
+                                   Text="{Binding WantsLine}"
+                                   IsVisible="{Binding HasWants}"
+                                   FontSize="12"
+                                   Foreground="{StaticResource HmTextMutedBrush}" />
+
+                        <TextBlock Classes="card-quill"
+                                   Text="{Binding QuillLine}"
+                                   IsVisible="{Binding HasQuillLine}"
+                                   FontSize="12"
+                                   Foreground="{StaticResource HmTextMutedBrush}" />
+
+                        <Border Classes="card-list"
+                                IsVisible="{Binding HasCallersPanel}"
+                                Background="{StaticResource HmBackgroundBrush}"
+                                BorderBrush="{StaticResource HmSlateEdgeBrush}"
+                                BorderThickness="1"
+                                CornerRadius="6"
+                                Padding="12,10">
+                            <StackPanel Spacing="4">
+                                <TextBlock Classes="card-callers-heading"
+                                           Text="{Binding CallersHeading}"
+                                           IsVisible="{Binding HasCallersHeading}"
+                                           FontSize="12"
+                                           Foreground="{StaticResource HmTextMutedBrush}" />
+
+                                <ItemsControl ItemsSource="{Binding Callers}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate x:DataType="vm:NextCaller">
+                                            <Grid ColumnDefinitions="Auto,*,Auto" Margin="0,2,0,0">
+                                                <ctl:AchievementMarkControl
+                                                    Form="Door"
+                                                    IsNew="True"
+                                                    IsVisible="{Binding OpensContinent}"
+                                                    Width="{x:Static ctl:AchievementMarkControl.RowSide}"
+                                                    Height="{x:Static ctl:AchievementMarkControl.RowSide}"
+                                                    Margin="0,0,8,0"
+                                                    VerticalAlignment="Center" />
+
+                                                <ctl:AchievementMarkControl
+                                                    Form="Counter"
+                                                    IsNew="True"
+                                                    IsVisible="{Binding IsCounter}"
+                                                    Width="{x:Static ctl:AchievementMarkControl.RowSide}"
+                                                    Height="{x:Static ctl:AchievementMarkControl.RowSide}"
+                                                    Margin="0,0,8,0"
+                                                    VerticalAlignment="Center" />
+
+                                                <TextBlock Grid.Column="1"
+                                                           Classes="card-caller-place"
+                                                           Text="{Binding Place}"
+                                                           VerticalAlignment="Center"
+                                                           FontSize="14"
+                                                           Foreground="{StaticResource HmTextPrimaryBrush}" />
+
+                                                <TextBlock Grid.Column="2"
+                                                           Classes="card-caller-call"
+                                                           Text="{Binding CallLine}"
+                                                           Margin="12,0,0,0"
+                                                           VerticalAlignment="Center"
+                                                           FontSize="12"
+                                                           Foreground="{StaticResource HmTextMutedBrush}" />
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+
+                                <TextBlock Classes="card-more-callers"
+                                           Text="{Binding MoreCallersLine}"
+                                           IsVisible="{Binding HasMoreCallers}"
+                                           FontSize="12"
+                                           Foreground="{StaticResource HmTextMutedBrush}" />
+
+                                <TextBlock Classes="card-nocaller"
+                                           Text="{Binding NoCallerLine}"
+                                           IsVisible="{Binding HasNoCaller}"
+                                           FontSize="13"
+                                           Foreground="{StaticResource HmTextPrimaryBrush}" />
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </Grid>
+            </Border>
         </DataTemplate>
     </Window.Resources>
 
@@ -326,27 +613,21 @@
             </Border>
 
             <!-- **TOTAL MILES' OWN BAR ROW IS GONE** (work instruction 335 task 4): each tier
-                 card carries its bar, and the band carries the level bar. -->
+                 row carries its bar, and the band carries the level bar. -->
 
-            <!-- **CONTINENTS: SEVEN TRADING CARDS, EACH PRESSABLE INTO ITS COUNTRIES** (work
-                 instruction 335 task 4, R22). Each is the same card every kind draws - the
-                 first contact that opened it, or the continent and who is calling from it -
-                 inside a button that opens its countries. **They scroll inside the category**,
-                 as every kind's cards do; the page itself still never scrolls. -->
+            <!-- **CONTINENTS: SEVEN ROWS, EACH PRESSABLE INTO ITS COUNTRIES** (work instruction
+                 505, HM-DEC-209, replacing unit 335's seven trading cards). Each is the same row
+                 every kind draws, inside the button that opens its countries. **They scroll inside
+                 the category**, as every kind's rows do; the page itself still never scrolls. -->
             <ScrollViewer Grid.Row="3"
                           IsVisible="{Binding HasSubBadges}"
                           VerticalScrollBarVisibility="Auto">
                 <ItemsControl x:Name="AchievementsSubBadges"
                               ItemsSource="{Binding SubBadges}">
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <UniformGrid Columns="2" />
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-
                     <ItemsControl.ItemTemplate>
                         <DataTemplate x:DataType="vm:AchievementBadge">
                             <Button Classes="hm-badge"
+                                    Margin="0,0,0,8"
                                     Background="Transparent"
                                     BorderThickness="0"
                                     HorizontalAlignment="Stretch"
@@ -356,302 +637,47 @@
                                     CommandParameter="{Binding Kind}"
                                     ToolTip.Tip="{Binding ScoreTip}">
                                 <ContentControl Content="{Binding Card}"
-                                                ContentTemplate="{Binding #AchievementsCategoryCards.ItemTemplate}" />
+                                                ContentTemplate="{StaticResource HmCategoryItemTemplate}" />
                             </Button>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
             </ScrollViewer>
 
-            <!-- **THE CARDS: EARNED, THEN THE NEAREST UNEARNED ONE, NOTHING BEYOND IT**
-                 (§3.1). A kind can hold a hundred countries, so the cards scroll inside
-                 the category; the page itself never does. -->
+            <!-- **THE LIST: EARNED, AND THE NEAREST UNEARNED ONE, NOTHING BEYOND IT** (§3.1),
+                 one column, full width (work instruction 505, HM-DEC-209, replacing unit 335's
+                 two-column trading cards). A kind can hold a hundred countries, so the list
+                 scrolls inside the category; the page itself never does. -->
             <ScrollViewer Grid.Row="3"
                           IsVisible="{Binding HasCards}"
                           VerticalScrollBarVisibility="Auto">
                 <ItemsControl x:Name="AchievementsCategoryCards"
                               ItemsSource="{Binding Cards}">
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <UniformGrid Columns="2" />
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-
-                    <!-- **THE TRADING CARD, AS `assets/category-page-countries.png` DRAWS IT**
-                         (work instruction 335 task 2, R22). An earned card is the contact that
-                         earned it: the place large with its points, the callsign and grid, the
-                         path map, and the distance large beside band, mode and date. **The map
-                         is the conversation card's own `Ft8GlobeControl` over the same plot,
-                         framed to the path** - the popup's path-fitted frame, which is what
-                         crops it to the two stations - so no second map exists to disagree.
-                         **Where there is no map the card says why in a word and lists the
-                         contacts in its place**, so nothing is a white rectangle. The edge takes
-                         the category's color; the unearned card's edge is grey and it says
-                         `next` in words (§0.6). -->
+                    <!-- **THE ROW IS THE THING HE PRESSES** (work instruction 505). Where the
+                         contact has a map the whole row is a button on `OpenTheMapCommand`, with a
+                         hand cursor, reachable from the keyboard, and it says `map` in words at its
+                         right end, so it reads as pressable at rest and never on a hover (§0.5.1,
+                         §0.6). **Where there is no map it is not a button**: it says why in a word,
+                         and the contacts the card used to list sit in its tooltip. -->
                     <ItemsControl.ItemTemplate>
                         <DataTemplate x:DataType="vm:AchievementCategoryCard">
-                            <Border Classes="trading-card"
-                                    Margin="0,0,12,12"
-                                    Background="White"
-                                    BorderBrush="{StaticResource HmSlateEdgeBrush}"
-                                    BorderThickness="1"
-                                    CornerRadius="10"
-                                    ClipToBounds="True"
-                                    Opacity="{Binding CardOpacity}">
-                                <Grid ColumnDefinitions="6,*">
-                                    <Border Grid.Column="0"
-                                            IsVisible="{Binding Earned}"
-                                            Background="{Binding $parent[ItemsControl].((vm:AchievementCategory)DataContext).Band}" />
+                            <Panel Margin="0,0,0,8">
+                                <Button Classes="category-row"
+                                        IsVisible="{Binding OpensAMap}"
+                                        Command="{Binding $parent[Window].((vm:AchievementsViewModel)DataContext).OpenTheMapCommand}"
+                                        CommandParameter="{Binding}"
+                                        Cursor="Hand"
+                                        HorizontalAlignment="Stretch"
+                                        HorizontalContentAlignment="Stretch">
+                                    <ContentControl Content="{Binding}"
+                                                    ContentTemplate="{StaticResource HmCategoryItemTemplate}" />
+                                </Button>
 
-                                    <Border Grid.Column="0"
-                                            IsVisible="{Binding !Earned}"
-                                            Background="#C9C5BA" />
-
-                                    <StackPanel Grid.Column="1" Margin="16,12,16,14" Spacing="6">
-                                        <Grid ColumnDefinitions="*,Auto">
-                                            <TextBlock Classes="card-title"
-                                                       Text="{Binding Title}"
-                                                       FontSize="18" FontWeight="Bold"
-                                                       Foreground="{StaticResource HmTextPrimaryBrush}" />
-
-                                            <TextBlock Grid.Column="1"
-                                                       Classes="card-points"
-                                                       Text="{Binding PointsLine}"
-                                                       IsVisible="{Binding HasPoints}"
-                                                       Margin="12,0,0,0"
-                                                       FontSize="13" FontWeight="SemiBold"
-                                                       Foreground="{StaticResource HmGreenBrush}" />
-                                        </Grid>
-
-                                        <TextBlock Classes="card-figure"
-                                                   Text="{Binding Figure}"
-                                                   IsVisible="{Binding ShowsFigure}"
-                                                   FontSize="12"
-                                                   Foreground="{StaticResource HmTextMutedBrush}" />
-
-                                        <TextBlock Classes="card-callgrid"
-                                                   Text="{Binding CallGridLine}"
-                                                   IsVisible="{Binding HasCallGridLine}"
-                                                   FontSize="12"
-                                                   Foreground="{StaticResource HmTextMutedBrush}" />
-
-                                        <TextBlock Classes="card-count"
-                                                   Text="{Binding CountLine}"
-                                                   IsVisible="{Binding HasCountLine}"
-                                                   FontSize="12" FontWeight="SemiBold"
-                                                   Foreground="{StaticResource HmTextPrimaryBrush}" />
-
-                                        <!-- **THE MAP ACROSS THE CARD** (work instruction 342,
-                                             ruling 11), as the picture draws it: the border
-                                             stretches to the card's inner width and the control
-                                             fills it (`FillsBox`), its frame the popup's rule
-                                             grown to the card's shape (`CardFrameFor`).
-                                             **231 PX IS THE UNIT'S OWN NUMBER**, overrulable. The
-                                             picture's map is about 596 by 195, 3.06:1; the card
-                                             is 632 px inside at 1400 (2.74:1 at 231) and 892 at
-                                             1920 (3.86:1). 231 is the least whole height at which
-                                             every fixture card's frame reaches that shape inside
-                                             the file at 1920: South Africa's path needs 180.5 of
-                                             the file's 381 rows, and 180.5 x 3.86 is 697 of its
-                                             698 columns. At 170 and left-aligned it was drawn
-                                             564 x 170 at 1400 and 796 x 170 at 1920 (task 0).
-                                             **The no-map list takes the same height**, so earned
-                                             cards in a row line up. -->
-                                        <!-- **AND IT OPENS ON A CLICK** (work instruction 342,
-                                             ruling 16), as the conversation card's does: a
-                                             button rather than a pointer handler, so it answers
-                                             the keyboard as well, stretched so the map keeps the
-                                             card's width. **Never on a hover**; the tooltip is
-                                             the conversation card's own words. -->
-                                        <Button Classes="card-map"
-                                                IsVisible="{Binding HasMap}"
-                                                Command="{Binding $parent[Window].((vm:AchievementsViewModel)DataContext).OpenTheMapCommand}"
-                                                CommandParameter="{Binding}"
-                                                Background="Transparent"
-                                                BorderThickness="0"
-                                                Padding="0"
-                                                Cursor="Hand"
-                                                HorizontalAlignment="Stretch"
-                                                HorizontalContentAlignment="Stretch"
-                                                ToolTip.Tip="Open it up.">
-                                            <Border CornerRadius="6"
-                                                    ClipToBounds="True">
-                                                <ctl:Ft8GlobeControl Opened="True"
-                                                                     FillsBox="True"
-                                                                     Height="231"
-                                                                     Plot="{Binding Globe}" />
-                                            </Border>
-                                        </Button>
-
-                                        <Border Classes="card-list"
-                                                IsVisible="{Binding HasNoMap}"
-                                                Height="231"
-                                                Background="{StaticResource HmBackgroundBrush}"
-                                                BorderBrush="{StaticResource HmSlateEdgeBrush}"
-                                                BorderThickness="1"
-                                                CornerRadius="6"
-                                                Padding="12,10">
-                                            <StackPanel Spacing="4">
-                                                <TextBlock Classes="card-nomap"
-                                                           Text="{Binding NoMapWord}"
-                                                           FontSize="12"
-                                                           Foreground="{StaticResource HmTextMutedBrush}" />
-
-                                                <ItemsControl ItemsSource="{Binding ContactLines}">
-                                                    <ItemsControl.ItemTemplate>
-                                                        <DataTemplate x:DataType="sys:String">
-                                                            <TextBlock Classes="card-listed"
-                                                                       Text="{Binding}"
-                                                                       FontSize="13"
-                                                                       Foreground="{StaticResource HmTextPrimaryBrush}" />
-                                                        </DataTemplate>
-                                                    </ItemsControl.ItemTemplate>
-                                                </ItemsControl>
-                                            </StackPanel>
-                                        </Border>
-
-                                        <!-- **A TIER'S BAR** (work instruction 335 task 4): Total
-                                             Miles' tiers and a distance first, filling toward
-                                             the line, with both figures in words above it so
-                                             the bar is never a bare fraction. -->
-                                        <StackPanel IsVisible="{Binding HasTierBar}"
-                                                    Spacing="4"
-                                                    Margin="0,2,0,2">
-                                            <TextBlock Classes="card-tier"
-                                                       Text="{Binding TierLine}"
-                                                       FontSize="12"
-                                                       Foreground="{StaticResource HmTextPrimaryBrush}" />
-
-                                            <ctl:BadgeProgressControl Fraction="{Binding TierFraction}"
-                                                                      Length="300"
-                                                                      Thickness="10"
-                                                                      HorizontalAlignment="Left"
-                                                                      Foreground="{Binding $parent[ItemsControl].((vm:AchievementCategory)DataContext).Band}" />
-                                        </StackPanel>
-
-                                        <!-- **THE NEXT CARD: WHAT IT WANTS, AND WHO ON THE CQ
-                                             LIST WOULD EARN IT** (work instruction 335 task 3).
-                                             The heading carries the time the list was read;
-                                             each caller carries the quill his row on the
-                                             decoded list wears - the ring where he would open
-                                             a continent - and the place is said in words, so
-                                             the mark is never alone (§0.6). -->
-                                        <TextBlock Classes="card-wants"
-                                                   Text="{Binding WantsLine}"
-                                                   IsVisible="{Binding HasWants}"
-                                                   FontSize="12"
-                                                   Foreground="{StaticResource HmTextMutedBrush}" />
-
-                                        <!-- **WHICH MARK THOSE CALLERS CARRY ON THE CQ LIST** (work
-                                             instruction 342, ruling 14): the picture's sentence
-                                             only where the list draws the green quill, the ringed
-                                             or either where it does not, and nothing on a kind the
-                                             list never marks. **On its own line under the wants
-                                             line**, the unit's own choice: joined to the wants line
-                                             it needs 750 px on the test host and the card has 632
-                                             inside at 1400, so one line would clip (§6). -->
-                                        <TextBlock Classes="card-quill"
-                                                   Text="{Binding QuillLine}"
-                                                   IsVisible="{Binding HasQuillLine}"
-                                                   FontSize="12"
-                                                   Foreground="{StaticResource HmTextMutedBrush}" />
-
-                                        <Border Classes="card-list"
-                                                IsVisible="{Binding HasCallersPanel}"
-                                                MinHeight="120"
-                                                Background="{StaticResource HmBackgroundBrush}"
-                                                BorderBrush="{StaticResource HmSlateEdgeBrush}"
-                                                BorderThickness="1"
-                                                CornerRadius="6"
-                                                Padding="12,10">
-                                            <StackPanel Spacing="4">
-                                                <TextBlock Classes="card-callers-heading"
-                                                           Text="{Binding CallersHeading}"
-                                                           IsVisible="{Binding HasCallersHeading}"
-                                                           FontSize="12"
-                                                           Foreground="{StaticResource HmTextMutedBrush}" />
-
-                                                <ItemsControl ItemsSource="{Binding Callers}">
-                                                    <ItemsControl.ItemTemplate>
-                                                        <DataTemplate x:DataType="vm:NextCaller">
-                                                            <Grid ColumnDefinitions="Auto,*,Auto" Margin="0,2,0,0">
-                                                                <ctl:AchievementMarkControl
-                                                                    Form="Door"
-                                                                    IsNew="True"
-                                                                    IsVisible="{Binding OpensContinent}"
-                                                                    Width="{x:Static ctl:AchievementMarkControl.RowSide}"
-                                                                    Height="{x:Static ctl:AchievementMarkControl.RowSide}"
-                                                                    Margin="0,0,8,0"
-                                                                    VerticalAlignment="Center" />
-
-                                                                <ctl:AchievementMarkControl
-                                                                    Form="Counter"
-                                                                    IsNew="True"
-                                                                    IsVisible="{Binding IsCounter}"
-                                                                    Width="{x:Static ctl:AchievementMarkControl.RowSide}"
-                                                                    Height="{x:Static ctl:AchievementMarkControl.RowSide}"
-                                                                    Margin="0,0,8,0"
-                                                                    VerticalAlignment="Center" />
-
-                                                                <TextBlock Grid.Column="1"
-                                                                           Classes="card-caller-place"
-                                                                           Text="{Binding Place}"
-                                                                           VerticalAlignment="Center"
-                                                                           FontSize="14"
-                                                                           Foreground="{StaticResource HmTextPrimaryBrush}" />
-
-                                                                <TextBlock Grid.Column="2"
-                                                                           Classes="card-caller-call"
-                                                                           Text="{Binding CallLine}"
-                                                                           Margin="12,0,0,0"
-                                                                           VerticalAlignment="Center"
-                                                                           FontSize="12"
-                                                                           Foreground="{StaticResource HmTextMutedBrush}" />
-                                                            </Grid>
-                                                        </DataTemplate>
-                                                    </ItemsControl.ItemTemplate>
-                                                </ItemsControl>
-
-                                                <TextBlock Classes="card-more-callers"
-                                                           Text="{Binding MoreCallersLine}"
-                                                           IsVisible="{Binding HasMoreCallers}"
-                                                           FontSize="12"
-                                                           Foreground="{StaticResource HmTextMutedBrush}" />
-
-                                                <TextBlock Classes="card-nocaller"
-                                                           Text="{Binding NoCallerLine}"
-                                                           IsVisible="{Binding HasNoCaller}"
-                                                           FontSize="13"
-                                                           Foreground="{StaticResource HmTextPrimaryBrush}" />
-                                            </StackPanel>
-                                        </Border>
-
-                                        <Grid ColumnDefinitions="Auto,*" IsVisible="{Binding Earned}">
-                                            <TextBlock Classes="card-distance"
-                                                       Text="{Binding DistanceLine}"
-                                                       IsVisible="{Binding HasDistance}"
-                                                       Margin="0,0,24,0"
-                                                       VerticalAlignment="Center"
-                                                       FontSize="28" FontWeight="Bold"
-                                                       Foreground="{StaticResource HmTextPrimaryBrush}" />
-
-                                            <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                                <TextBlock Classes="card-facts"
-                                                           Text="{Binding BandModeLine}"
-                                                           IsVisible="{Binding HasBandMode}"
-                                                           FontSize="12"
-                                                           Foreground="{StaticResource HmTextMutedBrush}" />
-
-                                                <TextBlock Classes="card-facts"
-                                                           Text="{Binding DateLine}"
-                                                           IsVisible="{Binding HasDate}"
-                                                           FontSize="12"
-                                                           Foreground="{StaticResource HmTextMutedBrush}" />
-                                            </StackPanel>
-                                        </Grid>
-                                    </StackPanel>
-                                </Grid>
-                            </Border>
+                                <ContentControl IsVisible="{Binding !OpensAMap}"
+                                                Content="{Binding}"
+                                                ContentTemplate="{StaticResource HmCategoryItemTemplate}"
+                                                ToolTip.Tip="{Binding ContactTip}" />
+                            </Panel>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>

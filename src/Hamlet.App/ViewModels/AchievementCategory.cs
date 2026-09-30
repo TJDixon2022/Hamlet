@@ -52,6 +52,21 @@ public sealed record AchievementCategoryCard(
     /// <summary>True where the card draws a map.</summary>
     public bool HasMap => Globe is not null;
 
+    /// <summary>
+    /// **The word at a row's right end that says pressing it opens a map** (work instruction 505,
+    /// HM-DEC-209), so the row reads as pressable without a hover (§0.5.1). The author's, overrulable.
+    /// </summary>
+    public const string MapWord = "map";
+
+    /// <summary>True where the row is earned and has a map, so pressing it opens the path.</summary>
+    public bool OpensAMap => Earned && HasMap;
+
+    /// <summary>
+    /// The contacts a no-map row lists, one to a line, for its tooltip; null where it lists none
+    /// (work instruction 505: the list moved off the card face with the map).
+    /// </summary>
+    public string? ContactTip => ContactLines.Count > 0 ? string.Join(Environment.NewLine, ContactLines) : null;
+
     /// <summary>What the card says where it has no map, or "".</summary>
     public string NoMapWord { get; init; } = "";
 

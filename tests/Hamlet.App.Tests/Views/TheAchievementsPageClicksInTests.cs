@@ -395,10 +395,10 @@ public sealed class TheAchievementsPageClicksInTests
             .Where(b => b.IsEffectivelyVisible && b.Classes.Contains("hm-badge"))
             .ToList();
 
-    /// <summary>The trading cards the open category draws, by their view model.</summary>
+    /// <summary>The rows and the panel the open category draws, by their view model (work instruction 505: rows, no longer trading cards).</summary>
     private static List<AchievementCategoryCard> DrawnCards(Window window)
         => Named<ItemsControl>(window, "AchievementsCategoryCards").GetVisualDescendants().OfType<Border>()
-            .Where(b => b.IsEffectivelyVisible && b.Classes.Contains("trading-card") && b.DataContext is AchievementCategoryCard)
+            .Where(b => b.IsEffectivelyVisible && b.Classes.Contains("category-card") && b.DataContext is AchievementCategoryCard)
             .Select(b => (AchievementCategoryCard)b.DataContext!)
             .ToList();
 
