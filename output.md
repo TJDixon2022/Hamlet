@@ -5,7 +5,7 @@ B. Whether a row press opens its path, and what the popup's heading says.
 C. The rest. Section 4 raises 6 items, none blocking.
 
 ```
-UNIT:       505 - complete at task 5 of 5, none dropped - 2026-09-30 11:40 -04:00
+UNIT:       505 - complete at task 5 of 5, none dropped - 2026-09-30 11:11 -04:00
 UNIT GOAL:  Draw each achievements category as a list of what he earned, with no map on it, and open the one map on a click.
 NUMBER:     maps on the Countries page at rest: 8 -> 0; earned rows visible at 1040 x 720: 8 of 8 on the fixture, below the next panel
 ```
