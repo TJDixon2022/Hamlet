@@ -4,6 +4,34 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-212
+date: 2026-09-30
+supersedes: work instruction 285's small mark as the window and taskbar icon, and its run-time raster with no .ico
+refs: work instruction 508, src/Hamlet.App/Assets/hamlet.ico, src/Hamlet.App/Assets/hamlet-icon.svg, src/Hamlet.App/Assets/hamlet-icon-small.svg, src/Hamlet.App/Hamlet.App.csproj, src/Hamlet.App/Controls/AppIcon.cs, src/Hamlet.App/App.axaml, tests/Hamlet.App.Tests/Views/TheIconTests.cs
+---
+
+**The icon is the amber quill on night, shipped as an icon file.** Tim, 2026-09-30: *"Now I want to
+talk about our icon. It looks terrible. Compare it to the other icons. Ours looks like an eight-year-old
+did it."* Offered drawings, he chose the first: *"option 1"*.
+
+**What is built.** `Hamlet.exe` carries `Assets\hamlet.ico` as its `ApplicationIcon`, so Explorer, a
+shortcut and a pinned taskbar entry show it. The file holds eight frames, 16, 20, 24, 32, 40, 48, 64
+and 256 pixels, each drawn for its size. Every window the application opens carries the same icon from
+one style in `App.axaml`, and the file is handed to the platform whole so Windows picks the frame drawn
+for the size it wants; nothing scales one frame to make another. A missing or unreadable file loads as
+no icon and the window opens without it (§8, never-throw).
+
+**What it supersedes.** Work instruction 285 made `Assets\hamlet-mark-small.svg` the window and taskbar
+icon and chose to rasterise it at run time, one 256-pixel render scaled down, rather than ship an `.ico`.
+Both go. The small mark is no longer drawn anywhere; its two tests are retired and the file is left for
+the owner to delete by hand. The full logo, `hamlet-logo.svg`, and the About window that draws it are
+unchanged.
+
+**Whose is whose.** The choice of the amber quill on night is Tim's. The drawing, the separate small
+drawing without the dots for the smallest frames, and shipping it as an `.ico` are the author's under
+work instruction 508, and each is Tim's to overrule.
+
+---
 id: HM-DEC-211
 date: 2026-09-30
 refs: work instruction 506 (which named HM-DEC-210, already used by unit 507), assets/achievements-look/opening-page.html, assets/achievements-look/countries-page.html, assets/achievements-look/unlock-moment.html, src/Hamlet.App/Views/AchievementsWindow.axaml, src/Hamlet.App/Views/MainWindow.axaml, src/Hamlet.App/ViewModels/UnlockMoment.cs

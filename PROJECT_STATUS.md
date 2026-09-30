@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: EXECUTING
+STATE: COMPLETED
 TASK: 3 of 3
 WORK_INSTRUCTION: 508 - the icon (run by hand)
-BALL: code
-NEXT_PASTE: none
+BALL: tim
+NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-30T15:55:53-04:00
-NOTE: Unit 508 - task 3 committed, small mark gone from the code and two tests retired; now the ruling, the version and the carry-forward line
+UPDATED: 2026-09-30T16:01:18-04:00
+NOTE: Unit 508 complete - Hamlet.exe and ten of ten windows carry the amber quill; the small mark is left for the owner to delete
 
 ---
 
