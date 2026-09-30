@@ -415,7 +415,8 @@ public sealed class ACharacterIsARunOfMarksThatAgreeTests
     /// <summary>Every mark the detector calls on the audio, with the edge test on or off.</summary>
     private static IReadOnlyList<CwMark> Marks(float[] samples, bool edges, bool narrow = true)
     {
-        var detector = new CwEnvelopeDetector(Rate) { MarksNeedEdges = edges, MarksNeedNarrowness = narrow };
+        // The shape (work instruction 502) is a later gate and is off here, so these counts stay what unit 498 measured.
+        var detector = new CwEnvelopeDetector(Rate) { MarksNeedEdges = edges, MarksNeedNarrowness = narrow, MarksNeedShape = false };
 
         for (var at = 0; at + Chunk <= samples.Length; at += Chunk)
         {

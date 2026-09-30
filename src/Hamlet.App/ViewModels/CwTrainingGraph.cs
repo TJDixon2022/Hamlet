@@ -7,7 +7,11 @@ namespace Hamlet.App.ViewModels;
 /// <param name="EndUtc">When it ended.</param>
 /// <param name="LengthMs">Its length.</param>
 /// <param name="Dah">Whether it reads as a dah beside the other bars in the window.</param>
-public sealed record CwGraphBar(DateTime StartUtc, DateTime EndUtc, double LengthMs, bool Dah);
+/// <param name="ShapeScore">
+/// The highest shape score of a mark the detector called under it, or NaN where it called none
+/// (work instruction 502): the bar was drawn, and not handed out as a mark.
+/// </param>
+public sealed record CwGraphBar(DateTime StartUtc, DateTime EndUtc, double LengthMs, bool Dah, double ShapeScore = double.NaN);
 
 /// <summary>One settled character the training graph writes above its bars.</summary>
 /// <param name="StartUtc">When its span started; its end where it carried no span.</param>
@@ -68,7 +72,7 @@ public sealed class CwTrainingGraph
     public const double WindowSeconds = 8;
 
     private readonly object _gate = new();
-    private readonly List<(DateTime Start, DateTime End)> _bars = new();
+    private readonly List<(DateTime Start, DateTime End, double Score)> _bars = new();
     private readonly List<CwGraphLetter> _letters = new();
 
     /// <summary>How many settled characters carried no span and were drawn at their end.</summary>
@@ -108,7 +112,7 @@ public sealed class CwTrainingGraph
                 }
                 else if (!mark && start >= 0)
                 {
-                    var bar = (Start: At(start), End: At(i));
+                    var bar = (Start: At(start), End: At(i), Score: Best(hops, start, i));
 
                     // A bar the window's old edge cut through is the kept one carrying on.
                     var carried = start == 0
@@ -117,7 +121,7 @@ public sealed class CwTrainingGraph
 
                     if (carried >= 0)
                     {
-                        _bars[carried] = (_bars[carried].Start, bar.End);
+                        _bars[carried] = (_bars[carried].Start, bar.End, Best(_bars[carried].Score, bar.Score));
                     }
                     else
                     {
@@ -174,6 +178,22 @@ public sealed class CwTrainingGraph
         }
     }
 
+    /// <summary>The highest shape score over hops from one index to before another, or NaN where none was called.</summary>
+    private static double Best(IReadOnlyList<CwScopeHop> hops, int from, int to)
+    {
+        var best = double.NaN;
+
+        for (var k = from; k < to; k++)
+        {
+            best = Best(best, hops[k].ShapeScore);
+        }
+
+        return best;
+    }
+
+    /// <summary>The higher of two shape scores, NaN standing for none.</summary>
+    private static double Best(double a, double b) => double.IsNaN(a) ? b : double.IsNaN(b) ? a : Math.Max(a, b);
+
     /// <summary>What to draw now.</summary>
     /// <param name="nowUtc">Now, the right-hand edge.</param>
     /// <returns>The frame.</returns>
@@ -190,7 +210,7 @@ public sealed class CwTrainingGraph
                 bars.Select(b =>
                 {
                     var ms = (b.End - b.Start).TotalMilliseconds;
-                    return new CwGraphBar(b.Start, b.End, ms, ms > 2 * shortest);
+                    return new CwGraphBar(b.Start, b.End, ms, ms > 2 * shortest, b.Score);
                 }).ToList(),
                 _letters.Where(l => l.EndUtc >= from).OrderBy(l => l.StartUtc).ToList());
         }

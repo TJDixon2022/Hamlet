@@ -8,7 +8,11 @@ namespace Hamlet.RadioEngine.Cw;
 /// <param name="FloorDb">That bin's gap level, measured over the last second; NaN when it has no gaps.</param>
 /// <param name="ThresholdDb">Midway between its gap level and its bar level, measured; NaN when either is.</param>
 /// <param name="Mark">Whether this hop sat inside a bar that has a partner across a gap.</param>
-public readonly record struct CwScopeHop(double EnvelopeDb, double FloorDb, double ThresholdDb, bool Mark);
+/// <param name="ShapeScore">
+/// The shape score of the mark called over this hop within two bins of the watched pitch, or NaN
+/// where no mark was called there (work instruction 502): what the scope's hover says of a block.
+/// </param>
+public readonly record struct CwScopeHop(double EnvelopeDb, double FloorDb, double ThresholdDb, bool Mark, double ShapeScore = double.NaN);
 
 /// <summary>What one bin shows of bars.</summary>
 /// <param name="Hz">The bin's pitch.</param>
@@ -523,6 +527,7 @@ public sealed class CwEnvelopeDetector
             var bin = _bins[_watched];
             var bars = Evaluate(bin).Marked;
             var oldest = _hop - fill;
+            var nowSeconds = _samplesSeen / (double)SampleRate;
             var b = 0;
 
             for (var i = 0; i < fill; i++)
@@ -536,7 +541,15 @@ public sealed class CwEnvelopeDetector
 
                 var mark = b < bars.Count && bars[b].Start <= hop;
 
-                copy[i] = new CwScopeHop(bin.Level(hop), _reading.FloorDb, _reading.ThresholdDb, mark);
+                // The shape score of a mark called over this hop near the watched pitch (work
+                // instruction 502), on the clock the mark was called on: a hop's middle, seconds back
+                // from now as many hops as it is old.
+                var middle = nowSeconds - ((_hop - 1 - hop + 0.5) * HopMs / 1000);
+                var called = mark
+                    ? _marks.LastOrDefault(k => k.FromSeconds <= middle && k.ToSeconds >= middle && Math.Abs(k.PitchHz - bin.Hz) <= 2 * BinSpacingHz)
+                    : null;
+
+                copy[i] = new CwScopeHop(bin.Level(hop), _reading.FloorDb, _reading.ThresholdDb, mark, called?.Shape?.Score ?? double.NaN);
             }
 
             return copy;
@@ -1180,6 +1193,16 @@ public sealed class CwEnvelopeDetector
                 }
 
                 var gap = !double.IsNaN(evals[apex].GapDb) ? evals[apex].GapDb : evals[i].GapDb;
+
+                // **ONE SHAPE, ONE SCORE** (work instruction 502, R110, HM-DEC-206): how far the bar
+                // sits inside the shape of a keyed tone, from all its properties together.
+                var shape = Shape(apex, start, m.End, level, double.IsNaN(gap) ? double.NaN : level - gap);
+
+                if (MarksNeedShape && shape.Score < ShapeThreshold)
+                {
+                    continue;
+                }
+
                 var from = nowSeconds - ((hop - start + 1) * HopMs / 1000);
                 var to = nowSeconds - ((hop - m.End) * HopMs / 1000);
                 var pitch = _bins[StationBin(apex, start, m.End)].Hz;
@@ -1203,6 +1226,7 @@ public sealed class CwEnvelopeDetector
                     ++_markSequence, from, to, pitch, level, double.IsNaN(gap) ? double.NaN : level - gap)
                 {
                     Keyed = keyed,
+                    Shape = shape,
                 });
             }
 
@@ -1301,6 +1325,139 @@ public sealed class CwEnvelopeDetector
         // With no neighbour to read at all - a passband narrower than six hundred hertz - nothing
         // here can say a mark is broad, and it is not turned away on a test that was not taken.
         return true;
+    }
+
+    /// <summary>Whether a bar must score inside the shape of a keyed tone to be handed out as a mark; on by default.</summary>
+    /// <remarks>
+    /// **FIVE LINES, EACH CROSSED NARROWLY, IS NOT THE SHAPE** (work instruction 502, R110,
+    /// HM-DEC-206). The wander check, the shortest bar, the flat top, the edges and the narrowness
+    /// each let through the noise that happens to pass it; what survived all five was noise that
+    /// passed each by a little. Off, a bar that passed the five is handed out as before, so the
+    /// difference can be counted. It gates only the marks.
+    /// </remarks>
+    public bool MarksNeedShape { get; set; } = true;
+
+    /// <summary>How far above the band beside it, and above its own gaps, a keyed tone ideally stands, in dB.</summary>
+    /// <remarks>
+    /// **FROM THE OWNER'S PRINCIPLE, R110, AS WORK INSTRUCTION 502 STATES IT**: a real mark stands
+    /// fifteen to thirty decibels above the band beside it. Fifteen, the low end, is where a bar
+    /// scores the whole of narrowness and of contrast; below it the score falls in proportion.
+    /// </remarks>
+    public const double ShapeStandsDb = 15;
+
+    /// <summary>The longest bar that is plausibly a dah, in ms: a dah at 5 WPM, three dits of 240 ms.</summary>
+    /// <remarks>
+    /// The slowest code practice the ARRL sends is 5 WPM (work instruction 500), and no sender this
+    /// reads sends a longer element. The detector knows no sender, so every length from the
+    /// shortest bar to this is a plausible dit or dah, and longer is out of the shape in proportion.
+    /// </remarks>
+    public const double LongestDahMs = 3 * 1200.0 / 5;
+
+    /// <summary>
+    /// The lowest shape score a bar may have and be handed out as a mark (work instruction 502).
+    /// </summary>
+    /// <remarks>
+    /// <para>**UNDER THE LOWEST SCORE A REAL MARK EARNS, WITH A QUARTER TO SPARE.** On unit 498's
+    /// synthetic clean call, about 22 dB over the noise, the lowest of its 65 marks scores 0.621; on
+    /// the same call twelve decibels weaker, about 10 dB over, the lowest of its 61 scores 0.334. The
+    /// threshold sits a quarter under the lower, 0.25, room for a real mark rougher than a
+    /// synthetic one.</para>
+    /// <para>**NOT SET BY WHAT TURNS NOISE AWAY**, and it does not: of the 146 loud-noise bars that
+    /// passed all five tests, 42 score at or above 0.334, so the two populations overlap and the
+    /// threshold is under the overlap, not in it (work instruction 502).</para>
+    /// </remarks>
+    public const double ShapeThreshold = 0.25;
+
+    /// <summary>
+    /// How far a bar sits inside the shape of a keyed tone: five properties, each scored from nought
+    /// to one as a distance from the ideal, and their product (work instruction 502, R110).
+    /// </summary>
+    /// <param name="apex">The bar's bin.</param>
+    /// <param name="start">Its first hop.</param>
+    /// <param name="end">Its last hop.</param>
+    /// <param name="level">Its mean level over its hops, in dB.</param>
+    /// <param name="contrastDb">Its level over its gaps, in dB; NaN when the bin has none.</param>
+    /// <returns>The five and the score.</returns>
+    /// <remarks>
+    /// <para>**THE PRODUCT, BECAUSE A KEYED TONE IS ALL FIVE AT ONCE.** A key down is a steady tone:
+    /// flat on top, stepping up and down within the window's own spread, standing above the band
+    /// beside it and above its own gaps, a dit or a dah long. A bar that is perfect on four and bad
+    /// on one is not that shape, and a product says so where a sum or a mean would let four good
+    /// properties carry a bad one. Each property is weighed the same; none was weighted by what
+    /// makes a test pass.</para>
+    /// <para>**FLATNESS**: one less the top's RMS wander from its own mean over the flatness tolerance
+    /// at the bar's contrast (R93) - nought at the tolerance a bar may just pass, one when flat.
+    /// **EDGES**: for the rise and for the fall, the hops taken to reach half amplitude below the
+    /// top; two hops is the window's own spread and scores one, and each hop more is slower than a
+    /// key, two over the hops taken; a rise before the first hop cannot be read and is not scored.
+    /// **NARROWNESS**: the bar's bin over the louder of the bins <see cref="NarrowBins"/> either
+    /// side, over <see cref="ShapeStandsDb"/>, at most one; no bin either side is not scored.
+    /// **CONTRAST**: its level over its gaps, over the same; not scored where there are no gaps.
+    /// **LENGTH**: one up to <see cref="LongestDahMs"/>, and that over the length beyond it.</para>
+    /// </remarks>
+    private CwMarkShape Shape(int apex, long start, long end, double level, double contrastDb)
+    {
+        var peak = _bins[apex];
+        var hops = end - start + 1;
+        var tolerance = ToleranceDb(contrastDb);
+
+        // **THE TOP, WITHOUT ITS EDGES.** The window spreads a key's step over its hops, so a bar can
+        // carry one hop of its own rise or fall at an end, 12 dB under its top; that hop is the edge,
+        // which the edge score judges, and counted in the top's wander it made a real dah read as
+        // unflat. The top runs from the first hop within the tolerance of the bar's median to the last.
+        var levels = new List<double>();
+
+        for (var h = start; h <= end; h++)
+        {
+            levels.Add(peak.Level(h));
+        }
+
+        var median = levels.OrderBy(l => l).ElementAt(levels.Count / 2);
+        var first = levels.FindIndex(l => Math.Abs(l - median) <= tolerance);
+        var last = levels.FindLastIndex(l => Math.Abs(l - median) <= tolerance);
+        var top = levels.GetRange(first, last - first + 1);
+        var mean = top.Average();
+        var wander = Math.Sqrt(top.Average(l => (l - mean) * (l - mean)));
+        var flat = Math.Clamp(1 - (wander / tolerance), 0, 1);
+
+        double EdgeScore(Func<int, long> at, bool readable)
+        {
+            if (!readable)
+            {
+                return 1;
+            }
+
+            for (var k = 1; k <= EdgeHops; k++)
+            {
+                var h = at(k);
+
+                if (h >= 0 && peak.Level(h) <= level - EdgeDepthDb)
+                {
+                    return Math.Min(1, 2.0 / k);
+                }
+            }
+
+            return 0;
+        }
+
+        var edges = EdgeScore(k => start - k, start - 1 >= 0) * EdgeScore(k => end + k, true);
+
+        var beside = double.NegativeInfinity;
+
+        foreach (var side in new[] { apex - NarrowBins, apex + NarrowBins })
+        {
+            if (side >= 0 && side < _bins.Length)
+            {
+                beside = Math.Max(beside, MeanLevel(_bins[side], start, end));
+            }
+        }
+
+        var narrow = double.IsNegativeInfinity(beside) ? 1 : Math.Clamp((level - beside) / ShapeStandsDb, 0, 1);
+        var contrast = double.IsNaN(contrastDb) ? 1 : Math.Clamp(contrastDb / ShapeStandsDb, 0, 1);
+        var lengthMs = hops * HopMs;
+        var length = lengthMs <= LongestDahMs ? 1 : LongestDahMs / lengthMs;
+
+        return new CwMarkShape(flat, edges, narrow, contrast, length);
     }
 
     /// <summary>Whether a mark overlapping this span within one bin of its pitch, at its level, is already called.</summary>

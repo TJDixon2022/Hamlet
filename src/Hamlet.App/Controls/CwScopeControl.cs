@@ -257,7 +257,7 @@ public sealed class CwScopeControl : Control
                 CwScopeItemKind.Bar,
                 XOfTime(bar.StartUtc, training.NowUtc, width),
                 XOfTime(bar.EndUtc, training.NowUtc, width),
-                string.Create(CultureInfo.InvariantCulture, $"{(bar.Dah ? "dah" : "dit")}, {bar.LengthMs:0} ms")));
+                BarTip(bar)));
         }
 
         foreach (var letter in DrawnLetters(frame))
@@ -331,6 +331,21 @@ public sealed class CwScopeControl : Control
         var fraction = 1 - ((nowUtc - atUtc).TotalSeconds / CwTrainingGraph.WindowSeconds);
 
         return Pad + (Math.Clamp(fraction, 0, 1) * Math.Max(0, width - (2 * Pad)));
+    }
+
+    /// <summary>
+    /// What a block's hover says: dit or dah, its length, and how far inside the shape of a keyed tone
+    /// the mark under it scored, or that none was handed out there (work instruction 502, R110).
+    /// </summary>
+    /// <param name="bar">The block.</param>
+    /// <returns><c>dah, 150 ms, shape 0.87 of 1</c>, or <c>dit, 20 ms, not handed out as a mark</c>.</returns>
+    public static string BarTip(CwGraphBar bar)
+    {
+        ArgumentNullException.ThrowIfNull(bar);
+
+        return string.Create(
+            CultureInfo.InvariantCulture,
+            $"{(bar.Dah ? "dah" : "dit")}, {bar.LengthMs:0} ms, {(double.IsNaN(bar.ShapeScore) ? "not handed out as a mark" : $"shape {bar.ShapeScore:0.00} of 1")}");
     }
 
     /// <summary>What the hover says at a point: a block's words over a block, a letter's over a letter.</summary>

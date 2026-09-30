@@ -269,6 +269,11 @@ the T's. They very rarely, almost never, will stand on their own. They need to b
 And T, T, T, T, T or E, E, E, E, E is not part of something. We can put a little brains behind this
 and make sure they're part of something else."*
 
+**R110 - Tim, 2026-09-30: one shape, one score.** *"Shape is the key to us getting really good CW.
+Noise is chaos. It can be anything. And you've been randomly trying to extract order from that
+chaos. But we know that CW is not any order. It's a particular shape and size and width. And we
+need to focus just on that."*
+
 ## §3 What is different from the phases before it
 
 1. **A criterion is a requirement id.** A report states the requirement, the condition, the

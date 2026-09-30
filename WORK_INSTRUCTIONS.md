@@ -1,9 +1,7 @@
-# Work instruction 501 - Farnsworth spacing, and a lone letter must belong to something
+# Work instruction 502 - one shape, one score
 
-**Hand run. One unit.** Unit 500 measured the reader right on standard timing at every speed and
-could not reproduce the owner's wall of `E`s and `T`s. It named why: W1AW's slow code practice is
-sent Farnsworth-style, and no case had ever been built that way. This unit builds that case and
-makes the reader read it, and it gives single-element letters the suspicion the owner asked for.
+**Hand run. One unit, after 501.** Seven independent tests each let some chaos through. A keyed
+tone is one shape. This unit judges a mark by that shape as a whole.
 
 **No test against a recording, a fixture, a floor or copied telemetry** (R96). A headless test
 driving synthetic hops written in the test itself is allowed; nothing read from disk. Verify by
@@ -37,12 +35,13 @@ If all five hold, say "Hamlet confirmed" and continue.
 
 ## 1. Rules
 
+- **Unit 501 must be in the tree.** If its Farnsworth test is absent, stop at task 0 and say so.
 - Take `SESSION.lock` through `tools\arbiter\lock.bat take`, release it at the end. Write nothing
   to `RUN_LEDGER.md`. Touch nothing under `tools\arbiter\`. Tick nothing in `PHASE_PLAN.md`.
 - One `dotnet test` invocation per line, filtered, with a `timeout`. Never background and poll.
   The app line loses names to the dispatcher loop; re-run once, count neither way.
 - Apostrophes in quoted heredocs break; `;`, `rm` and `git rm` are refused; Python cannot run
-  here; `-m` more than once for a multi-line commit. Scripts go in `.run-unit\unit501-<name>.sh`
+  here; `-m` more than once for a multi-line commit. Scripts go in `.run-unit\unit502-<name>.sh`
   and are not committed.
 - Nothing that keys or transmits. Nothing written to the radio.
 - `output.md` at the root, four headings exactly: `## 1. What Claude did`, `## 2. What the owner
@@ -50,113 +49,109 @@ If all five hold, say "Hamlet confirmed" and continue.
 
 ---
 
-## 2. What is known, and what the owner ruled
+## 2. The owner's principle
 
-**Farnsworth.** The ARRL sends its slow code practice with the **characters at 18 WPM** and the
-**spaces between characters and words stretched** so the overall speed comes out at 5, 7½, 10, 13
-or 15 WPM. Inside a letter the dit is 67 ms and the gaps are 67 ms. Between letters the gap is
-whatever makes the speed - at 5 WPM overall it can be over a second. **Morse's 1:3:7 does not hold
-between letters on a Farnsworth sender.** Unit 500 built every case with the gaps scaled to the
-dit, which is why it read 5 WPM whole on the bench and the owner saw `ST ST TIE TETBA TE TE T TN`
-on the air.
+**His words, 2026-09-30, R110:**
 
-**The owner's ruling, R109, 2026-09-30:**
+> *"Shape is the key to us getting really good CW. Noise is chaos. It can be anything. And you've
+> been randomly trying to extract order from that chaos. But we know that CW is not any order.
+> It's a particular shape and size and width. And we need to focus just on that."*
 
-> *"I want to work on the E's and the T's. They very rarely, almost never, will stand on their own.
-> They need to be part of something. And T, T, T, T, T or E, E, E, E, E is not part of something.
-> We can put a little brains behind this and make sure they're part of something else."*
+**What the code has, and what it lacks.** A bar becomes a mark by passing a row of independent
+yes-or-no tests: it stands clear of its gaps (the wander check), it is a dit or longer (25 ms), its
+top is flat (R93), it has edges (unit 497, 6 dB within four hops), and it is narrow (unit 498,
+6 dB above the bins 300 Hz either side). **Each test lets through the noise that happens to pass
+it.** A spike passes the edge test; a flat wobble passes the flatness test; a broadband thump
+long enough passes the length test. What survives all five - 146 of 1452 noise bars in unit 498's
+count, about 5 a second - is noise that happened to pass each one narrowly.
 
-**Where the banking falls short today.** Unit 498 banks a single-element letter until the same
-sender sends another letter within the window. **Another single-element letter counts.** So a
-lone `T` is confirmed by a lone `E`, which is confirmed by the next lone `T`, and the whole string
-releases. The banking is right in shape and wrong in what counts as confirmation.
-
----
-
-## 3. Change one - the gaps between letters are the sender's own
-
-In `CwRunReader`:
-
-- **The gap inside a letter** stays as unit 500 left it: the sender's gap dit, boundary at √3.
-- **The gap between letters and the gap between words are measured from the sender's own gaps
-  between runs**, not derived from the dit. A Farnsworth sender shows two populations of gap
-  outside its letters - between-letter and between-word - and the boundary between them is found
-  from those gaps, the way the dit and dah are found from the marks.
-- **Until the sender has shown enough gaps between runs**, fall back to 1:3:7 on the dit, and say
-  in the report how many gaps that takes.
-- **A standard-timing sender must read exactly as it does now.** On standard timing the measured
-  gaps land at 3 and 7 dits and nothing changes.
-- **The silence span** unit 500 built - how long a sender may be quiet before it is forgotten -
-  must follow the measured word gap, not the dit, so a 5 WPM Farnsworth sender is not forgotten
-  between its words.
-
-## 4. Change two - a lone letter must belong to something
-
-In `CwRunReader`, two rules on single-element letters - `E` and `T`:
-
-1. **A single-element letter is confirmed only by a multi-element letter** from the same sender,
-   before or after it within the window. Another single-element letter does not confirm it.
-   `TEST` still reads whole: its `T` and `E` are confirmed by the `S`. `DE` reads whole: the `E` is
-   confirmed by the `D`. A `T` followed by an `E` followed by a `T`, with nothing else, prints
-   nothing.
-2. **Three or more single-element letters in a row from one sender is not sending.** The run is
-   dropped and the sender is not printed on its account. **Real text does not do it** - the ARRL
-   practice text is English, and English does not put `EEE` or `TTT` or `TET` in a row.
-
-**Printed-stays-printed holds** (R100): a banked letter has not been printed, so dropping it
-removes nothing from the screen.
-
-**Do not change** the detector, the marks, the narrowness, the edges, unit 496's bin choice, the
-keyed-mark rule, the two-run rule, the scope, the terminal, the layout, the preamp or the buttons.
+**A keyed tone is one shape**, and a real mark does not pass each test narrowly. It passes every
+test by a wide margin at once: its top is flat to a fraction of a decibel, its edges are a few
+milliseconds, it stands 15 to 30 dB above the band beside it, and it is exactly a dit or exactly
+a dah. **Noise that squeaks past five gates does not look like that.** One score that measures
+how far a bar sits inside the shape - not whether it crossed each line - separates the two.
 
 ---
 
-## 5. What to measure
+## 3. The change - a shape score
+
+In `CwEnvelopeDetector`, every completed bar gets **one score, from all of its properties
+together**, and it becomes a mark only above a threshold on that score.
+
+**The properties, each as a distance from the ideal rather than a pass or fail:**
+
+- **Flatness** - how far the top wanders from its own mean, in dB, over the whole top. An ideal
+  mark wanders a fraction of a decibel.
+- **Edges** - how many hops the rise and the fall each take, from the gap level to the top and
+  back. An ideal mark takes one or two, the window's own spread.
+- **Narrowness** - how far the bar's bin stands above the band either side, in dB. An ideal mark
+  stands 15 dB or more.
+- **Contrast** - how far the top stands above the gaps either side of it, in dB.
+- **Length** - how close the bar's length is to a dit or to a dah of the sender it belongs to, if
+  a sender is known; how close to any plausible dit if not. A bar that is neither is far from the
+  shape.
+
+**How they combine is the author's**, stated in the report with its reason. **The reason must be
+about the shape of a keyed tone, not about a result.** A product of per-property scores, each from
+0 to 1, is the obvious choice: a bar that is perfect on four and bad on one is bad. **Do not weight
+them by looking at what makes the tests pass.**
+
+**The threshold is the author's**, derived from what a real keyed mark scores on the synthetic
+cases - **the lowest score any real mark of the clean call earns is the floor the threshold sits
+under**, with a margin the report states. It is not set by looking at what turns noise away.
+
+**The five existing tests stay in the tree** and stay on: they are cheap and they are the floor.
+The score is a sixth condition, on bars that passed all five. **Nothing is loosened.**
+
+**The mark carries its score**, so the run reader, the scope and the verdict row can see it. The
+scope's hover on a block says its score.
+
+---
+
+## 4. What to measure
 
 **Watch it fail first**, with synthetic hops written in the test:
 
-1. **Farnsworth: characters at 18 WPM, spacing for 5 WPM overall**, sending
-   `CQ CQ DE N0CALL N0CALL K`. **Red today** - report what it reads before, and that it reads
-   whole after. Then the same at 10 and 13 WPM overall.
-2. **Farnsworth `TEST DE W1AW K`** at 5 WPM overall.
-3. **A string of lone marks**, `T E T T E` at a station's pitch and level with nothing else,
-   **prints nothing**.
-4. **`TEST DE W1AW K` and `DE` read whole** at standard timing - the `T`, `E` and `E` confirmed by
-   multi-element neighbours.
-5. **Every existing case reads exactly as it does at HEAD**: the calls at 5, 10, 18 and 35 WPM,
-   the speed change, the bursts, the two stations, the lone dit, the lone dah, the stray dit, both
-   noise tests. **If any changes, say so with its text; do not force it.**
-
-**Report, for each Farnsworth case, the sender's true between-letter and between-word gaps beside
-what the reader measured.**
+1. **Thirty seconds of loud noise.** Unit 498's table, extended: passing the older tests, with
+   edges, narrow, **and above the shape threshold**. That last number is the unit's reason.
+   Report the marks handed out per second before and after; unit 498 measured 5.
+2. **The distribution of scores** on the clean call's 65 marks, and on the noise bars that passed
+   all five tests: the lowest real score, the highest noise score, and whether they overlap.
+   **If they overlap, say so and by how much**, and do not move the threshold into the overlap.
+3. **Every existing case reads exactly as it does at HEAD**: the calls at 5, 10, 18 and 35 WPM,
+   the Farnsworth cases, the speed change, the bursts, the two stations, `TEST DE W1AW K`, the
+   lone dit, the lone dah, the stray dit, the string of lone marks, both noise tests. **If a real
+   mark is lost, the threshold is too high - say so with the count and set it under the real
+   floor**, never to what makes a noise case pass.
+4. **A weak station, 10 dB over the noise.** Report what it reads before and after, and the scores
+   its marks earn. This is the case the score must not break: a weak mark is still the shape,
+   smaller.
 
 ---
 
-## 6. Record
+## 5. Record
 
-- `PHASE_OUTCOME.md`, both copies: `## UNIT 501 - STEP 12`, one paragraph.
-- `PHASE_STATUS.md`, both copies: names 501.
+- `PHASE_OUTCOME.md`, both copies: `## UNIT 502 - STEP 12`, one paragraph.
+- `PHASE_STATUS.md`, both copies: names 502.
 - Patch-bump `Directory.Build.props`.
-- **Append R109 to the rulings section of both `PHASE_PLAN.md` copies**, in the owner's words
+- **Append R110 to the rulings section of both `PHASE_PLAN.md` copies**, in the owner's words
   above. **Touch no checkbox.**
-- `DECISIONS.md`, newest first, **HM-DEC-205**, headline *Farnsworth gaps are the sender's own, and
-  a lone letter must belong to something*, naming that no case had been built Farnsworth-style
-  and that a lone letter had been confirming a lone letter.
+- `DECISIONS.md`, newest first, **HM-DEC-206**, headline *A mark is judged by its whole shape, not
+  by crossing five lines*, quoting him.
 
 ---
 
-## 7. Report
+## 6. Report
 
 Section 2, for the owner, in plain words:
 
 - rebuild;
-- **W1AW's slow code practice should read as words** - the letters are sent at 18 WPM with long
-  spaces, and the reader now measures those spaces from the sender rather than assuming them;
-- **strings of `E` and `T` should be gone**: a lone letter now needs a real letter beside it, and
-  three lone letters in a row are thrown out;
-- `TEST`, `DE` and every real `E` and `T` inside a word still print;
-- **if it still comes out wrong, section 3's gap table is the thing to compare against.**
+- fewer false marks still: a mark now has to look like a keyed tone as a whole, not just clear
+  five separate bars;
+- a real station, strong or weak, is unaffected - its marks score far inside the shape;
+- **if real letters go missing, that is the threshold, and section 3's score table names the
+  floor.**
 
-Section 1: what changed, file by file, how the between-letter and between-word boundary is found,
-and that the build and the app line are green. **Section 3: the Farnsworth cases' text before and
-after, with the true gaps beside the measured ones.** Section 4: anything left, a line each.
+Section 1: what changed, file by file, how the score is built and why, the threshold and its
+reason, and that the build and the app line are green. **Section 3: the noise table at the top,
+then the score distributions, then the cases.** Section 4: anything left, a line each.

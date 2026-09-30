@@ -117,7 +117,8 @@ public sealed class TheBarsCarryTheirLettersTests
         _output.WriteLine($"bar: {barTip}; plot: {plotTip}; letter: {letterTip}");
 
         Assert.StartsWith("dah, ", barTip, StringComparison.Ordinal);
-        Assert.EndsWith(" ms", barTip, StringComparison.Ordinal);
+        // Since work instruction 502 the length is followed by the shape score, or by the words for none.
+        Assert.Matches(@" ms, (shape \d\.\d\d of 1|not handed out as a mark)$", barTip);
         Assert.Equal(CwHearingViewModel.ScopeTip, plotTip);
         Assert.Equal("C: " + CwScopeControl.LetterTipWords + "; sure, 93% likely right", letterTip);
     }

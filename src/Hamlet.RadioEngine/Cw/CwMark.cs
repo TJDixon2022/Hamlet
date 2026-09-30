@@ -32,6 +32,33 @@ public sealed record CwMark(
     /// instruction 493). A station's second mark on is keyed; noise never is.
     /// </summary>
     public bool Keyed { get; init; }
+
+    /// <summary>
+    /// How far the bar sat inside the shape of a keyed tone when it was called: its five properties
+    /// and their product (work instruction 502, R110). Null for a mark not built by the detector.
+    /// </summary>
+    public CwMarkShape? Shape { get; init; }
+}
+
+/// <summary>
+/// How far one bar sits inside the shape of a keyed tone: five properties, each from nought to one
+/// as a distance from the ideal, and their product (work instruction 502, R110, HM-DEC-206).
+/// </summary>
+/// <param name="Flatness">One less the top's RMS wander over the flatness tolerance at its contrast.</param>
+/// <param name="Edges">For the rise and the fall, two over the hops each took to half amplitude, at most one; multiplied.</param>
+/// <param name="Narrowness">Its bin over the louder of the bins 300 Hz either side, over 15 dB, at most one.</param>
+/// <param name="Contrast">Its level over its gaps, over 15 dB, at most one.</param>
+/// <param name="Length">One up to a 5 WPM dah, and that over its length beyond.</param>
+public sealed record CwMarkShape(double Flatness, double Edges, double Narrowness, double Contrast, double Length)
+{
+    /// <summary>The product of the five: how far inside the shape the bar sits, nought to one.</summary>
+    public double Score => Flatness * Edges * Narrowness * Contrast * Length;
+
+    /// <summary>The five and the score, as the hover and the report print them.</summary>
+    public override string ToString()
+        => string.Create(
+            System.Globalization.CultureInfo.InvariantCulture,
+            $"shape {Score:0.00} (flat {Flatness:0.00}, edges {Edges:0.00}, narrow {Narrowness:0.00}, contrast {Contrast:0.00}, length {Length:0.00})");
 }
 
 /// <summary>The marks called since a reader last asked, and how much audio the detector has heard.</summary>

@@ -4,6 +4,32 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-206
+date: 2026-09-30
+refs: work instruction 502, docs/phase-requirements/PHASE_PLAN.md R110, src/Hamlet.RadioEngine/Cw/CwEnvelopeDetector.cs, src/Hamlet.RadioEngine/Cw/CwMark.cs, src/Hamlet.App/Controls/CwScopeControl.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheShapeOfAKeyedToneTests.cs
+---
+
+**A mark is judged by its whole shape, not by crossing five lines.** Tim, 2026-09-30, R110: *"Shape
+is the key to us getting really good CW. Noise is chaos. It can be anything. And you've been randomly
+trying to extract order from that chaos. But we know that CW is not any order. It's a particular
+shape and size and width. And we need to focus just on that."*
+
+**What is built.** The five existing tests stay, on. A bar that passes them gets one shape score:
+the product of flatness, edges, narrowness, contrast and length, each from nought to one as a
+distance from the ideal of a keyed tone, and it becomes a mark only at 0.25 or more. A product,
+because a key down is all five at once and a bar bad on one is not the shape; each is weighed the
+same. The mark carries its score, and a block's hover on the scope says it.
+
+**The threshold and what it rests on.** On the synthetic clean call the lowest real mark scores
+0.621, and on the same call twelve decibels weaker 0.334; 0.25 is a quarter under that. The 146
+loud-noise bars that passed all five score up to 0.800 and 42 of them at or above 0.334, so the two
+overlap, and the threshold is under the overlap rather than in it. Thirty seconds of loud noise now
+hands out 66 marks where it handed out 146.
+
+**Whose words are whose.** The ruling is Tim's; the five scores, the product, the 15 dB ideal from
+work instruction 502, the threshold and its margin are the author's, and overrulable.
+
+---
 id: HM-DEC-205
 date: 2026-09-30
 refs: work instruction 501, docs/phase-requirements/PHASE_PLAN.md R109, src/Hamlet.RadioEngine/Cw/CwRunReader.cs, tests/Hamlet.RadioEngine.Tests/Cw/FarnsworthAndLoneLettersTests.cs

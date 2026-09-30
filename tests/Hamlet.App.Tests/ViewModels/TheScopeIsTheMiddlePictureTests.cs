@@ -120,7 +120,7 @@ public sealed class TheScopeIsTheMiddlePictureTests
         var bar = CwScopeControl.Items(frame, width).First(i => i.Kind == CwScopeItemKind.Bar);
 
         Assert.Matches(
-            @"^(dit|dah), \d+ ms$",
+            @"^(dit|dah), \d+ ms, (shape \d\.\d\d of 1|not handed out as a mark)$",
             CwScopeControl.TipAt(frame, width, new Point((bar.X + bar.X2) / 2, CwScopeControl.BarTop + 2)));
         Assert.Equal(
             CwHearingViewModel.ScopeTip,
