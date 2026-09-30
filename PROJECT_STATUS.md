@@ -2,12 +2,12 @@ PROTOCOL: 2
 PROJECT: Hamlet
 STATE: COMPLETED
 TASK: TASK 4 of 4
-WORK_INSTRUCTION: 503 - the tab is the mode (run by hand)
+WORK_INSTRUCTION: 504 - the crash, the W1AW gates, the letter gap (run by hand)
 BALL: tim
 NEXT_PASTE: OUTPUT.md -> Claude Web
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-30T09:10:34-04:00
-NOTE: Unit 503 done - the tab sets the mode, the map writes nothing
+UPDATED: 2026-09-30T10:14:16-04:00
+NOTE: Unit 504 done - crash guarded, no gate turns W1AW away, one odd gap no longer spaces out a sender
 
 ---
 

@@ -4,143 +4,164 @@
 `main`. The prompt carries `PROJECT: Hamlet`, and all five of section 0's checks hold. Hamlet
 confirmed. Nothing in this report is evidence about the radio.
 
+**Which unit this is.** The order is headed 502, but 502's shape score (its section 3a), R110 and
+HM-DEC-206 were already committed in `6f1d3d0c`, and 503 came after it. The file on disk had been
+edited at 09:51 to add three new tasks: 3, 3b and 3c. I asked; the owner ruled that I run the new
+work as **unit 504**, leave 3a as done, and duplicate no record. The order carries no `ISSUED:`
+line, no status instruction, no phase count and no `Asks still outstanding` (§9.6). The status was
+written regardless, and the queue below is carried from unit 503's report.
+
 **Run by hand, outside the loop.**
-- `SESSION.lock` was taken through `tools\arbiter\lock.bat take` and released the same way.
+- `SESSION.lock` was taken through `tools\arbiter\lock.bat take` and released the same way. The
+  script wrote it to `C:\Source\ClaudeProjectStatus\SESSION.lock`, its own default root.
 - Nothing was written to `RUN_LEDGER.md`, and nothing under `tools\arbiter\` was touched.
-- No box was ticked; R111 was appended to both `PHASE_PLAN.md` copies in the owner's words.
+- No box was ticked and nothing was added to `PHASE_PLAN.md`.
 - No recording, fixture, floor or telemetry was read.
 - Nothing under `.run-unit\` was committed, and nothing keys or transmits.
 
-**The changes, file by file** (all in `585b7df5`):
-- **`src/Hamlet.App/ViewModels/MainWindowViewModel.cs`:**
-  - **`FollowTheMapAsync` is gone; `FollowTheTabAsync` replaces it.** It writes the mode the tab
-    means, once, and then the tab's receive settings.
-  - **`TabTarget`:**
-    - The CW tab means CW.
-    - The Digital tab means USB-D.
-    - The Voice tab means the map's voice block (SSB or AM) or, off one, the sideband convention:
-      LSB below 10 MHz, USB above.
-  - **The receive settings follow the tab.** Each tab takes its row of
-    `mode-receiver-conditions.json`, once per tab:
-    - CW: the `CW` row.
-    - Digital: the `FT8` row, the one data row the file states (`FT4` says the same), with the
-      block's "scope span" sentence spoken beside it. That sentence writes nothing.
-    - Voice: nothing, because the file states nothing for it.
-  - **A tab change re-arms everything:** the mode, the operator's hand on the mode, and the operator's
-    hand on the receive settings.
-  - **A band change re-arms nothing.** Before this unit it re-armed mode-follow and re-applied the
-    block's settings.
-  - **A new connection writes the last selected tab's mode and settings once**, after the connected
-    line, so the bar shows what the tab set and anything it could not read.
-  - **The W1AW button only tunes.** Unit 495's CW write and unit 499's hold are removed; the data file
-    is left as it is.
-  - **The dwell timer writes nothing.** It still observes the dial, but nothing reads the result now.
-  - **The operator's own knob stands the app down until he changes tab** (it said "change band"
-    before), and nothing writes it back.
-- **`src/Hamlet.RadioEngine/Explore/ReceiverConditions.cs`:** a new `ForTab(mode, block)` gives a
-  tab's row plus the block's spoken span line. `ForBlock` now calls it, with the same answer as
-  before.
+**Version.** 1.13.190 to 1.13.191.
 
-**Every mode write the app can now make, and what causes it:**
+**The changes, file by file** (all in `fa66b24f`):
+- **`src/Hamlet.RadioEngine/Cw/CwEnvelopeDetector.cs`:**
+  - The walk back to where a mark's tone rose now stops at hop zero (task 3).
+  - Three switches for work instruction 492's delivery rules: `MarksNeedPromptness`,
+    `MarksNeedKeyUp` and `MarksNeedOneCall`. All are on by default, so each gate can be turned off
+    in turn (task 3b).
+- **`src/Hamlet.RadioEngine/Cw/CwRunReader.cs`:** the letter gap is now the lowest cluster of at
+  least three gaps between runs. A smaller cluster below it is read against it (task 3c).
+- **`tests/.../FarnsworthAndLoneLettersTests.cs`:** `LoneMarksAfterACallPrintNothing` is back on
+  seed 5035. It threw `IndexOutOfRangeException` before the fix and reads the call alone after.
+- **`tests/.../WhichGateTurnsAwayW1awTests.cs`, new:** the gate table and the on-air differences.
+- **`tests/.../TheLetterGapHoldsTests.cs`, new:** the owner's hesitation case, a stretched gap, a
+  dropped dit, and a hand fist scattered a fifth each way.
+- **Records:** both `PHASE_OUTCOME.md` copies (`## UNIT 504 - STEP 12`), both `PHASE_STATUS.md`
+  copies, `Directory.Build.props`, `DECISIONS.md`, and `WORK_INSTRUCTIONS.md` as it arrived.
 
-| where | writes | caused by |
-|---|---|---|
-| `FollowTheTabAsync`, CW tab | CW, data off, no filter byte (the radio's own CW filter) | selecting the CW tab, or a radio connecting with it selected; once until the tab changes |
-| `FollowTheTabAsync`, Digital tab | USB, data on, filter slot 1 (the widest, "FIL1") | selecting the Digital tab, or a radio connecting with it selected; once until the tab changes |
-| `FollowTheTabAsync`, Voice tab | LSB, USB or AM, no filter byte | the Voice tab, whenever the dial settles somewhere its voice mode differs; still stands down on the operator's knob |
-| `TuneToOliviaAsync` | USB, data on | the operator pressing an Olivia chip on the Digital tab (unchanged) |
+**The letter-gap rule and its numbers, the author's.**
+- **Three gaps make a sustained change.** That is `MeasuredRunGaps`, the count a sender already
+  shows before its letter gap is used at all. A sender who really speeds up or slows down makes a
+  new cluster of three within three letters. One odd gap never does.
+- **The line between an odd gap and a new one stays at √(7/3), about 1.53.** A hand's gaps scatter
+  by tens of percent, which is well inside a factor of 1.53.
+- **The 10-to-20 WPM case still follows the change.** Its test is green.
 
-- Nothing else in `src/Hamlet.App` calls `SetModeAsync`, and `TheTabIsTheModeTests.EveryModeWriteIsNamed`
-  holds it to these two call sites.
-- If "mode follows the map" is switched off in Settings, the CW and Digital tabs write nothing
-  either.
+**Recorded: HM-DEC-208**, in full:
 
-**What `FollowTheMapAsync` did and what is dead.**
-- It is removed.
-- The settle timer, which the dial, the band and the tab all trigger, now calls
-  `FollowTheTabAsync`. On the CW and Digital tabs that finds the tab already written and writes
-  nothing.
-- **Dead in the app, left in the engine** where their own tests still exercise them:
-  - `ModeFollowPlan.WaitsForDwell`.
-  - `ModeFollowPlan.WorkingCw`.
-  - The dwell look's use of its maturity.
-  - The map's data targets (USB-D for a digital block).
+> **One odd gap does not move a sender's letter gap.** Tim, in the work instruction, 2026-09-30:
+> *"once a sender's letter gap has been measured on real letters, one gap does not move it. A
+> sustained change over several letters does."* His screen that day, a hand-sent QSO on 40 m, read
+> twenty letters of clean English and then every letter as a word of its own.
+>
+> **What it ends.** A hesitation inside a letter splits it, and the gap between the halves can sit
+> far enough under the sender's letter gaps to be a cluster of its own. The run reader took the
+> lowest cluster of a sender's gaps between runs as the letter gap, so that one gap became the
+> letter gap, the word boundary fell under every real letter gap, and every letter printed as a word
+> for the forty gaps the sender remembers.
+>
+> **What is built.** The letter gaps are the lowest cluster holding at least three gaps between
+> runs, the count a sender already shows before its letter gap is used at all; a smaller cluster
+> under it is read against it rather than measuring it. Where no cluster holds three, the lowest
+> stands as before. Two clusters are still told apart by the square root of seven thirds, past the
+> tens of percent a hand's gaps scatter by.
+>
+> **Whose words are whose.** The ruling is Tim's; three as the count of a sustained change, and
+> keeping the cluster ratio as the line between an odd gap and a new one, are the author's under
+> work instruction 504, and overrulable.
 
-**Tests:**
-- **New: `TheTabIsTheModeTests`**, the five cases below.
-- **Re-pinned to R111:**
-  - `TheW1awPressStaysInCwTests`: the press writes no mode, the tab's CW is the only write, and a
-    band change does not re-arm the mode over his knob.
-  - `W1awButtonsTests`: the press writes no mode and holds nothing off.
-  - `TheBarSaysWhatHamletCouldNotDoTests`: its fixture is on the Digital tab at 14.074, where the
-    FT8 row is applied by the tab.
-  - `ModeFollowsTheMapAgainTests.NothingButTheModeIsEverWritten`: it now sweeps `FollowTheTabAsync`
-    and `ReceiverConditions.ForTab`. It was red before this unit and is green now.
-- **Records:**
-  - `## UNIT 503 - STEP 11` is in both outcome copies, and both status copies name 503.
-  - Version 1.13.189 → 1.13.190.
-  - R111 is in both plans.
-  - HM-DEC-207, "The tab is the mode; the map writes nothing", is in `DECISIONS.md`.
-
-**Verification.**
-- **The build:** 0 warnings, 0 errors.
-- **The tab, W1AW, mode-follow and bar tests: 31 of 31.**
-- **The engine's explore, receiver-condition and mode-follow tests: 639 of 639.**
-- **The app carry-forward line: 275 of 278.** The three `TheChipSaysTheChosenModeTests` cases failed
-  in 1 ms and passed alone (6 of 6).
+**Build and tests.**
+- **Build:** `Hamlet.sln` with warnings as errors, 0 warnings, 0 errors.
+- **Reader and detector tests: 49 of 52.** This covers the reader, detector, shape, speed,
+  Farnsworth, gate and letter-gap tests. The three reds were also red at HEAD, checked with this
+  unit's source changes stashed:
+  - `AMarkIsTheEnvelopeOverAThresholdTests`' two cases.
+  - `BurstsBetweenLettersDoNotSetTheSpeed`.
+- **App carry-forward: 277 of 278.** The one loss, `Unit376TheTopBandTests`, took 1 ms and is
+  green alone.
 
 ## 2. What the owner should expect
 
-1. Rebuild.
-2. **On the CW tab the radio is in CW and stays in CW** - wherever the dial goes, on any band,
-   through a restart, across any block on the map.
-3. **On the Digital tab it is in USB-D** with the wide filter, and stays there.
-4. **The map no longer touches the radio.** It still says what lives at a frequency.
-5. **If you turn the radio's mode knob yourself, the app follows you.** It says "You set the radio
-   to USB, so Hamlet will leave the mode alone until you next change tab," and never writes it
-   back. Changing tab puts the tab's settings back.
-6. **The W1AW button just tunes.** The CW tab has already set CW.
-7. **So from now on, if decoding is wrong, it is the decoder.**
+- **Rebuild.**
+- **The CW tab no longer crashes the detector** in the first seconds of audio.
+- **A sender who hesitates once no longer turns into one letter per word.** Before, one odd gap
+  meant every letter after it printed alone, for about forty letters. Now only the letter he
+  hesitated in reads wrong, usually as two letters, and the rest reads normally.
+- **The W1AW zero is not fixed. The measurement says the fault is not in the mark gates.**
+  - A synthetic W1AW at 725 Hz in your 500 Hz filter reads whole with every gate on.
+  - No single gate turned off changes that.
+  - What differs on the air is still to be found. The best lead is that the `marks` count on the
+    verdict row only counts the one bin the detector is watching. If that bin is off the station,
+    the row says keying with 0 marks.
+- **Very ragged hand sending, with gaps about a third off, still misreads.** That fault is in where
+  letters split, not in the spaces, and this unit didn't change it.
 
 ## 3. What you should see
 
-Every case was run headless first against HEAD's code, and all five failed there. Before this unit
-the map's writes to a data block waited for a dwell timer that does not run headless, so on the CW
-tab HEAD wrote nothing at all in the test. On the air that dwell fired, and that was the 12:30
-USB-D write.
+**Task 3b's gate table.** 18 WPM call at 725 Hz, 65 marks sent. "Own marks" means marks within a
+bin of 725 Hz and within 6 dB of the loudest there. "Most 4 s" is the highest `MarksLast4s` read
+on any hop.
 
-| case | before (HEAD) | after |
-|---|---|---|
-| 1. CW tab at 7.0472 (the map's `RTTY` block, whose target was USB-D), then 7.074, 7.0472, 14.074, 14.030 | no CW write; the map's target at each data block was USB-D | one write, `CW, data off`, and nothing more |
-| 2. Restart on the CW tab with the radio left in USB-D | no mode write | first write `CW, data off` |
-| 3. CW, then Digital, then CW | no writes | `CW` · `USB, data on, filter 1` · `CW`; CW settings: auto notch, manual notch, noise blanker, noise reduction, AGC, RF gain, squelch, attenuator, preamp, scope output; Digital settings: noise blanker, noise reduction, auto notch, AGC, and the scope span spoken |
-| 4. CW tab, then the radio reports USB | no write, and the line said "until you next change band" | no write, stands down, "You set the radio to USB, so Hamlet will leave the mode alone until you next change tab." |
-| 5. Every mode write in the app | three: the map's, the W1AW press's, the Olivia press's | two: the tab's, and the Olivia press's |
+| Passband | Gate off | Own marks | Most 4 s | Reads |
+|---|---|---|---|---|
+| whole band, 100 to 3000 Hz | none | 66 | 18 | `CQ CQ DE N0CALL N0CALL K` |
+| whole band | 492 promptness | 66 | 18 | whole |
+| whole band | 492 key-up | 66 | 18 | whole |
+| whole band | 492 one-call | 652 | 18 | placeholders only |
+| whole band | 497 edges | 66 | 18 | whole |
+| whole band | 498 narrowness | 66 | 18 | whole |
+| whole band | 502 shape | 66 | 18 | whole |
+| whole band | all | 686 | 18 | placeholders and one E |
+| 600/500, bins 350 to 850 Hz | none | 66 | 18 | whole |
+| 600/500 | each of promptness, key-up, edges, narrowness, shape | 66 | 18 | whole |
+| 600/500 | 492 one-call | 645 | 18 | placeholders only |
+| 600/500 | all | 662 | 18 | placeholders only |
+| 600/500, scope pointed at 725 | none, or any one but one-call | 66 | 18 | whole |
+| 600/500, scope pointed at 600 | none | 66 | 15 | whole |
+| 600/500 at 48 kHz | none | 65 | 18 | whole |
+
+- **The 66th mark** is one mark split in two, and the reader joins it back.
+- **Narrowness on a 725 Hz tone in a 500 Hz filter centred on 600** reads one side, 425 Hz. The
+  1025 Hz side is off the bins. Every mark scores the full narrowness of 1.00.
+- **No gate turns away the synthetic marks.** One-call off makes things worse, not better, because
+  it lets every key-edge fragment through as a mark.
+
+**Task 3c's cases, before and after.**
+- **The owner's screen, rebuilt.** A hand sender at 20 WPM, four dits between letters and nine
+  between words, hesitating two and a half dits inside the Y:
+  - Before: `NICEL TW I N T O M K T O Y O T A P R I U S B O T H W I T H A N D W I T H O U T T H E HYBRID ENGINE RUNNING`.
+  - After: `NICELTW INTO MK TOYOTA PRIUS BOTH WITH AND WITHOUT THE HYBRID ENGINE RUNNING`.
+- **The order's own two cases were already green at HEAD, not red.** Both read the same before and
+  after:
+  - One gap of a word gap and a half after INTO: `NICELY INTO MK TOYOTA PRIUS BOTH WITH`.
+  - A dit dropped from the L: `NICEAEY INTO MK TOYOTA PRIUS BOTH WITH`.
+  - The stretched gap stays in its own cluster above the letter gaps. The dropped dit leaves a gap
+    three dits long, which is just a letter gap.
+- **A hand fist scattered a fifth each way** reads the whole QSO, with or without the stretched gap.
+- **At three tenths scatter it misreads**, for example `NICELY FTO ■TOYOK PRIUSBOTH■...`, and it does
+  so at HEAD too. That fault is in the letter boundaries and is not in this unit's tests.
+
+**Task 3.** Seed 5035: `the call then T E T T E` reads `CQ CQ DE N0CALL N0CALL K`.
+
+**Every existing case** reads as at HEAD. That covers the calls at 5, 10, 18 and 35 WPM, the
+Farnsworth cases, the speed change, the two stations, `TEST DE W1AW K`, `DE DE`, the lone and stray
+marks, the shape cases and the noise tests.
 
 ## 4. What's blocking us
 
 Nothing blocks. What is left, a line each:
-- **The Olivia press still writes USB-D itself.** It is redundant on the Digital tab and harmless,
-  and the Olivia carry-forward tests pin it. Removing it is a choice for the owner.
-- **The "mode follows the map" setting now also governs the tabs' writes.** Its name no longer says
-  what it does, and renaming a stored setting needs a migration (§6.1).
-- **The Digital tab applies the FT8 row whatever sub-mode is chosen.** The file states no row for
-  PSK31, Olivia or JS8.
-- **The Voice tab applies no receive settings**, because the file states none for voice.
-- **The dwell timer and `ModeFollowPlan`'s data targets, `WaitsForDwell` and `WorkingCw` are now dead
-  in the app.** They are left in place rather than removed on the way past (§12.6).
-- **Two worktree folders from checking HEAD, `C:\Source\HamLet-wt503` and `C:\Source\HamLet-wt503b`,
-  could not be deleted.** Windows refused with "permission denied" while files in them were held
-  open. They are unregistered from git and safe to delete by hand.
-- **The detector crash reported by units 501 and 502 is still in the tree.** It is a one-line guard
-  for the owner to approve.
+- **The W1AW zero on the air is still unexplained.** Next step: put the watched bin's pitch and the
+  pointed pitch on the verdict row beside `marks`, so the next W1AW press shows whether the watched
+  bin is on the station.
+- **`MarksLast4s` counts the watched bin's paired bars, not the marks handed to the reader.** Its
+  name suggests the second. Whether the row should count the marks handed out is a choice for the
+  owner.
+- **Hand sending scattered by about a third misreads on letter boundaries.** The character boundary
+  comes from the dit and the gap smear, not from the sender's measured gaps.
+- **Two worktree folders from unit 503, `C:\Source\HamLet-wt503` and `C:\Source\HamLet-wt503b`,**
+  are still safe to delete by hand.
 - **Pre-existing reds, not this unit's:**
-  - `VoiceTests`' British spelling.
-  - `HowMuchTheApplicationSaysTests`' two ceiling cases, red on HEAD too, checked.
-  - `TheLicenceCardAnswersForTheTabAndNotForMorseAlways`.
-  - `NoBandPillIsOnTheGreenZoneAndTheMapTookTheirWidth`.
-  - `TheVerdictCarriesTheScopeTests`' four cases.
   - `AMarkIsTheEnvelopeOverAThresholdTests`' two cases.
+  - `BurstsBetweenLettersDoNotSetTheSpeed`. This one is red at HEAD and was not named by unit 503.
+  - The app reds unit 503 listed, which were not re-run here.
 
 ### Asks still outstanding
 
