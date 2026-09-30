@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-TASK: 3 of 3
-WORK_INSTRUCTION: 508 - the icon (run by hand)
-BALL: tim
-NEXT_PASTE: output.md -> Claude Web
+STATE: EXECUTING
+TASK: 2 of 3
+WORK_INSTRUCTION: 509 - a letter on the scroll stays on the scroll (order numbered 508, run by hand)
+BALL: code
+NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-30T16:01:18-04:00
-NOTE: Unit 508 complete - Hamlet.exe and ten of ten windows carry the amber quill; the small mark is left for the owner to delete
+UPDATED: 2026-09-30T16:12:34-04:00
+NOTE: Unit 509 - task 1 committed, Farnsworth red on six scroll faults; now the scroll draws every printed letter from its own kept list
 
 ---
 
