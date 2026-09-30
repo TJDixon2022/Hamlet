@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-TASK: TASK 6 of 6
-WORK_INSTRUCTION: 506 - achievements worth opening (run by hand)
-BALL: tim
-NEXT_PASTE: output.md -> Claude Web
+STATE: EXECUTING
+TASK: TASK 2 of 3
+WORK_INSTRUCTION: 508 - the icon (run by hand)
+BALL: code
+NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-30T14:21:18-04:00
-NOTE: Unit 506 done - ring, trail, eight tiles, the strip, seals, and the unlock panel at the log write
+UPDATED: 2026-09-30T15:52:27-04:00
+NOTE: Unit 508 - task 1 committed, Hamlet.exe carries the eight-frame icon; now every window takes its icon from the file
 
 ---
 

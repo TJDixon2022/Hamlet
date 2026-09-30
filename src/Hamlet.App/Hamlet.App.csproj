@@ -8,6 +8,9 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
     <ApplicationManifest>app.manifest</ApplicationManifest>
+    <!-- The amber quill on night, eight sizes drawn for their size (work instruction 508, HM-DEC-212):
+         Hamlet.exe carries it in Explorer, on a shortcut and when pinned. -->
+    <ApplicationIcon>Assets\hamlet.ico</ApplicationIcon>
     <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
 
     <!-- The engine has had this since the start; the shell had not, which
