@@ -2,12 +2,12 @@ PROTOCOL: 2
 PROJECT: Hamlet
 STATE: COMPLETED
 TASK: TASK 4 of 4
-WORK_INSTRUCTION: 498 - a mark is narrow, and a lone letter waits to be confirmed (run by hand)
+WORK_INSTRUCTION: 499 - the band plan says where the modes are (run by hand)
 BALL: tim
-NEXT_PASTE: output.md -> Claude Web
+NEXT_PASTE: OUTPUT.md -> Claude Web
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-29T18:23:17-04:00
-NOTE: Unit 498 done: narrow marks (noise 1069 to 146), lone E and T banked until confirmed; TEST reads TEST, stray dit prints nothing
+UPDATED: 2026-09-29T21:20:56-04:00
+NOTE: Unit 499 done - W1AW is Morse on the map, ARRL band plan cited, press holds CW
 
 ---
 
