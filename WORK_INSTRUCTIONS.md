@@ -1,14 +1,21 @@
-# Work instruction 507 - the pattern is the gate
+# Work instruction 506 - achievements worth opening: overall progress, unlocking, and the moment
 
-**Hand run. One unit.** Every gate on a single mark since unit 497 has been a decibel test - 6 dB
-of edge, 6 dB of narrowness, a shape score whose threshold was set on a strong signal. A decibel
-test is a loudness test wearing a shape test's clothes. **CW's shape is a pattern across marks, and
-none of it is in decibels.** This unit makes the pattern the gate.
+**Hand run. One unit, outside the CW phase.** The achievements window is correct and plain. This
+unit makes it show overall progress, show what is locked and what opens it, and say so at the
+moment something is earned. **What is earned, counted and scored does not change.** This unit
+changes how it is drawn and adds one panel to the main window.
 
-**No test against a recording, a fixture, a floor or copied telemetry** (R96). A headless test
-driving synthetic hops written in the test itself is allowed; nothing read from disk. Verify by
-building `Hamlet.sln` with warnings as errors and running the app carry-forward line. **The
-owner's report at the radio is the test.**
+**The picture is in the tree**, three files the owner approved on 2026-09-30:
+
+- `assets\achievements-look\opening-page.html`
+- `assets\achievements-look\countries-page.html`
+- `assets\achievements-look\unlock-moment.html`
+
+**Read all three before task 1.** Layout, hierarchy and color are the spec. **Every number, date
+and callsign in them is a sample**; the application's come from the log and from his points file.
+
+Verify by building `Hamlet.sln` with warnings as errors and running the app carry-forward line
+before the first change and after the last. **The owner's look at the window is the test.**
 
 ---
 
@@ -38,155 +45,318 @@ If all five hold, say "Hamlet confirmed" and continue.
 ## 1. Rules
 
 - Take `SESSION.lock` through `tools\arbiter\lock.bat take`, release it at the end. Write nothing
-  to `RUN_LEDGER.md`. Touch nothing under `tools\arbiter\`. Tick nothing in `PHASE_PLAN.md`.
+  to `RUN_LEDGER.md`. Touch nothing under `tools\arbiter\`.
+- **This unit is not a step of the CW phase.** Touch no copy of `PHASE_PLAN.md`, `PHASE_OUTCOME.md`
+  or `PHASE_STATUS.md`. Tick nothing. `PROJECT_STATUS.md` follows the cadence in the prompt and
+  names 506; unit 505's wrapper `.run-unit\unit505-status.sh` shows how.
 - One `dotnet test` invocation per line, filtered, with a `timeout`. Never background and poll.
-  The app line loses names to the dispatcher loop; re-run once, count neither way.
+  Never run `Hamlet.App.Tests` unfiltered. The app line loses names to the dispatcher loop; re-run
+  once, count neither way.
 - Apostrophes in quoted heredocs break; `;`, `rm` and `git rm` are refused; Python cannot run
-  here; `-m` more than once for a multi-line commit. Scripts go in `.run-unit\unit507-<name>.sh`
+  here; `-m` more than once for a multi-line commit. Scripts go in `.run-unit\unit506-<name>.sh`
   and are not committed.
-- Nothing that keys or transmits. Nothing written to the radio.
-- `output.md` at the root, four headings exactly: `## 1. What Claude did`, `## 2. What the owner
-  should expect`, `## 3. What you should see`, `## 4. What's blocking us`.
+- **A file that has to go cannot be deleted here.** Empty it to one comment saying which unit
+  retired it and why, and list it once in section 2 for the owner to delete by hand.
+- Nothing that keys or transmits. Nothing written to the radio. Nothing written to the log. **No
+  package. No font file. No image asset.**
+- **Under `src\Hamlet.RadioEngine\`: additive, read-only members on the achievements scoring types
+  only**, where the page needs a number they already compute and do not expose. Nothing else there.
+- The tree is dirty. **Commit only what this unit changed**, by path. The three picture files and
+  this file arrived by zip and are committed with task 0.
+- American spelling. `output.md` at the root, four headings exactly: `## 1. What Claude did`,
+  `## 2. What the owner should expect`, `## 3. What you should see`, `## 4. What's blocking us`.
 
 ---
 
-## 2. The owner's ruling, and what the rows showed
+## 2. The owner's ruling
 
-**His words, 2026-09-30, R112:**
+**His words, 2026-09-30, after unit 505:**
 
-> *"You're still focused on dB. We need to be focused on the shapes in the noise. They're
-> predictable. They're full of good patterns. Chaos and noise have no patterns. All we have to do
-> is clearly identify when we have a pattern, a shape, and the translation is easy."*
+> *"I like the way maps are popping up when you ask for them, but overall, the achievements isn't
+> very visually stunning. It doesn't attract me to go look. This is one of the ways we're going to
+> help people to get use of the radio, is by wanting to get these achievements. We need to show
+> overall progress. We need unlocking. We need just ways to make it visually attractive and
+> stunning."*
 
-**What a keyed tone is, as a pattern.** Not one rectangle - a **sequence** of rectangles with a
-rule:
+**And on the picture:** *"Okay, write it up. The whole thing. It looks good."*
 
-1. all at one pitch;
-2. all at one height;
-3. lengths that fall into exactly two values, about 3 to 1;
-4. gaps that fall into three values, about 1 to 3 to 7 - or a Farnsworth sender's own.
+**Three things he asked for, and where each lands:**
 
-**None of that is in decibels.** Every measure is a ratio between marks: this height to that
-height, this length to that length. A station 8 dB over the noise satisfies all four as well as
-one 38 dB over. **Noise can pass a single-mark test by luck. Noise cannot make five marks that
-agree on pitch, agree on height, sort into two lengths at 3 to 1 and space themselves at 1 to 3 to
-7.** That pattern is the signature, and it is what the owner's ear does when it picks a weak
-station out of hash.
+- **Overall progress** - the standing panel: his rank in a ring, his points, how far to the next
+  rank.
+- **Unlocking** - a kind he has nothing in is drawn locked and says what opens it; the next rank
+  is drawn locked and says where it opens; and the main window says so the moment a contact earns
+  something.
+- **Attractive** - the picture.
 
-**What the rows showed today.** On 14.053, a station the owner hears *clearly*, weaker than W1AW:
-four presses, the meter reading noise, the bars finding nothing, nothing printed. On a stronger
-one at 14.0529: meter at 500 Hz with an 83 ms dit, the reader printing at 500, the detector's
-watched bin at 350 and then 700. **Every synthetic case ever built was 20 dB or more over the
-noise, and every gate was set with those in front of it.** Unit 504 said it: *"a weak station,
-about 10 to 16 dB over the noise, may show broken bars."*
+**What stands, and the picture was drawn inside it:**
 
----
-
-## 3. The change
-
-### One - the single-mark gates go proportional
-
-A bar becomes a candidate mark on what it is **relative to itself**, not to a decibel figure:
-
-- **flat top**: the top holds within a fraction of its own height above the gap beside it - the
-  flatness tolerance already follows contrast (R93); keep that and **drop any absolute floor on
-  a weak mark**;
-- **ends**: the rise and the fall each take no more than a stated number of hops **to reach a
-  stated fraction of the top**, not 6 dB - unit 497's `EdgeDepthDb` becomes a fraction of the
-  mark's own contrast;
-- **narrow**: the bin stands above its neighbours **by a stated fraction of its own contrast**,
-  not 6 dB - unit 498's `NarrowDepthDb` becomes a fraction of the mark's contrast over its gap;
-- **the shape score** (unit 502) is rebuilt from those ratios, and **its threshold is set on the
-  weakest synthetic station below**, not the strongest.
-
-**Every fraction is the author's**, stated in the report with its reason, and **derived from what a
-keyed tone is - a rectangle keeps its proportions at any height - not from a recording, and not
-tuned after a result.**
-
-### Two - the pattern across marks is the gate
-
-A candidate mark **stands only if it belongs to a sequence that has the shape.** In
-`CwRunReader`, or a new stage between the detector and it:
-
-- **Pitch**: within one bin of the sequence's own.
-- **Height**: within a fraction of the sequence's own mean - the same fraction unit 490's level
-  tolerance uses, restated as a ratio.
-- **Lengths**: the sequence's marks sort into two clusters at 2 to 1 or wider, and every mark is in
-  one of them. A mark that is neither a dit nor a dah of this sender is not this sender's.
-- **Gaps**: inside the sequence, every gap is one of the sender's three - element, letter, word -
-  as unit 500 and 501 measure them.
-- **Enough of them**: a sequence needs a stated minimum of marks before it stands - **the count is
-  the author's, with the reason that noise's chance of making that many agreeing marks is what the
-  count buys**, and unit 493's two-run rule is the floor.
-
-**A candidate that fits no sequence is dropped.** It never becomes a mark, never reaches the scope
-or the terminal. **That is where noise dies now** - not at a decibel line on one bar, but at the
-pattern it cannot make.
-
-### Three - what the display shows
-
-- **The detector's watched bin follows the sequence being read.** The light, the scope's blocks and
-  the verdict row's `marks4s` describe the sender the reader is printing - `PrintingHz`, which
-  already exists and was right on today's rows while the watched bin was 150 Hz off. Unit 504
-  named this; do it here.
-- **`marks4s` counts the marks that stood** - the ones in the sequence - not the watched bin's
-  paired bars.
-
-### Four - what must not change
-
-The run reader's letter arithmetic from units 500, 501 and 504; the banking and lone-letter rules
-from 498 and 501; the terminal and scope's one truth; the one layout; the tab-is-the-mode; the
-preamp; the buttons and the verdict row's other fields.
+- `ACHIEVEMENTS_PHILOSOPHY.md` §2, no wall of blanks. **Locked is one step ahead only**: one
+  locked rank, never the ladder; a locked kind only where nothing in it is earned.
+- §3.1, earned and then the one nearest unearned and nothing beyond it.
+- §3.7, a count is `8 worked`, **never `8 of 340`**. A bar runs to the next level of his file, and
+  says the level's count, never the size of the world.
+- R19, the door: amber, a ring, and the words. **Color is never the only carrier** (§0.6).
+- HM-DEC-209, unit 505: a category is a list and the map opens on a click. The row press and the
+  popup are not rebuilt.
+- The points file is his. **No number on this page is written in code**; ranks, rank names and
+  levels are read from it, and where it cannot be read the page says so and shows no scores.
 
 ---
 
-## 4. What to measure
+## 3. Verify this instruction against the tree
 
-**Watch it fail first**, with synthetic hops written in the test. **The weak cases are the point:**
+Read from a harvest of `57b9759` and from unit 505's report; the tree after 505 was not harvested.
+**Check each; report every mismatch in section 1; do not repair this instruction; do not stop over
+a mismatch** unless a task is impossible.
 
-1. **`CQ CQ DE N0CALL N0CALL K` at 20 WPM at 8, 12, 16 and 24 dB over the noise.** Report what each
-   reads before and after, and how many of the 65 marks stood at each. **Red today at 8 and 12** -
-   or report that it is not, with the counts.
-2. **The same at 5 WPM Farnsworth and at 35 WPM, at 10 dB.**
-3. **Thirty seconds of loud noise, and three minutes.** Report how many candidates the loosened
-   single-mark gates pass, and how many stand after the pattern - **that second number is the
-   unit's reason, and both noise tests must print nothing.**
-4. **Two stations, 200 Hz apart, one at 24 dB and one at 10 dB.** The loud one prints; the report
-   says whether the quiet one is now found as a second sequence.
-5. **Every existing case reads exactly as at HEAD** - the calls at every speed, the Farnsworth
-   cases, the speed change, the bursts, the hesitation, `TEST DE W1AW K`, `DE DE`, the lone and
-   stray marks. **If any changes, say so with its text; do not force it.**
-6. **The verdict row on a driven station**: `scopePitchHz` equals `PrintingHz` while printing, and
-   `marks4s` is the count of marks that stood.
+- `src\Hamlet.App\Views\AchievementsWindow.axaml`, 1040 by 720, opened modally from
+  `MainWindowViewModel.OpenAchievements` off the Tools menu item `Achievements…`.
+- The opening page is the `StackPanel` named `AchievementsPage`: `AchievementsPageTitle`,
+  `AchievementsPageSubtitle`, `AchievementsTotalLine` bound to `Page.TotalLine`,
+  `AchievementsPointsProblem`, the `ItemsControl` `AchievementsBadges` on `HmBadgeTemplate`, and
+  `AchievementsLegend`.
+- `AchievementBadge` carries `Kind`, `Name`, `Meaning`, `Emblem`, `Band` (the kind's color),
+  `NextCard`, `NextIsDoor`, `Standing`, `Score`, `ScoreLine`, `Card`.
+- `AchievementBadgePage` carries `Badges`, `Scores`, `TotalLine`, `Problem`. `Scores` exposes
+  `Total`, `RankName`, `ToNextRank`, `NextRankName`.
+- The kinds' colors are `#A8811A` Hall of Fame, `#2A7A94` Continents, `#A33333` Countries,
+  `#2C4C9B` States, `#2F6B3A` Grids, `#6B4C9A` Total Miles, `#8A5A1E` Bands, `#3E4650` Modes.
+- The points file, `data\achievements\achievement-points.json`: `ranks` is eight running totals
+  starting 25, 100, 250, 500; `rank_names` is empty; `levels` gives each kind three or four counts.
+- `AchievementsViewModel` carries `Calling`, a `CqSnapshot`, and `BestBet`.
+- From unit 505: the item template `HmCategoryItemTemplate`, the `category-row` button on
+  `OpenTheMapCommand`, `AchievementCategory.DrawnCards`, `OpenedMapHeading`, the test class
+  `TheCategoryPagesAreListsTests`, and the category band with `AchievementsLevelBar`.
+- The newest decision is `HM-DEC-209`. The version is 1.13.192.
+
+---
+
+## 4. The tasks
+
+### Task 0 - before anything changes
+
+Commit this file and the three pictures. Run the app carry-forward line. Then, filtered, one line
+each: `TheCategoryPagesAreListsTests`, `TheAchievementsPageClicksInTests`,
+`TheAchievementsPageTests`, `TheAchievementsScreenTests`, `TheMapOpensTests`. **Report each green
+or red by name. A red here is inherited and is not chased.**
+
+### Task 1 - the standing panel
+
+The left third of the opening page, as `opening-page.html` draws it: a dark panel, `#14202B`, with
+
+- **the ring**: the fraction of the way from where his rank began to where the next begins, a
+  thick arc, light green `#9AD05F` on `#2B3B49`. Inside it the rank and his points. **Where his
+  file names the rank, the name is drawn; where it names none, `Rank` and the number**, as
+  `TotalLine` does today;
+- **the gap in words** under it: `88 points to Rank 4.` At the top rank, say so and draw the ring
+  full;
+- **three facts**: contacts, countries, farthest in miles;
+- **just unlocked**: the most recent thing he earned, by the date of the contact that earned it -
+  its seal, its name, the station and distance, its points. **It is a button and opens that path
+  in the popup.** With nothing earned the panel says what the first contact earns, and no seal.
+
+The ring is a control drawn in code or a shape the framework already has. **No package.**
+
+The window opens at **1280 by 860**, the author's default from the picture, overrulable.
+
+**Where the points file cannot be read:** the panel says `Problem` in words, draws no ring and no
+number, and the rest of the page still draws.
+
+**Test watched failing first**, a new `TheAchievementsStandingTests`: the ring's fraction is the
+file's arithmetic on three logs - empty, the twelve-contact fixture, and one a point short of a
+rank; the rank name follows the file; an unreadable file draws no number; the just-unlocked button
+opens the popup with that contact's path.
+
+**Drop candidate:** the three facts.
+
+### Task 2 - the rank trail and the eight tiles
+
+**The trail**, one line across the top of the right side: each rank he has passed, checked; the
+one he holds, marked `you are here`; **the next one, locked, a padlock and where it opens, in the form `opens at 500 points`**;
+and nothing after it. A solid line joins what is done, a dashed line leads to the locked one.
+**More than four passed ranks: draw the last three and say how many came before in words.**
+
+**The tiles**, four across and two down, replacing `HmBadgeTemplate`'s badge. Each is still the
+button that opens its kind. An opened kind carries:
+
+- a header in the kind's color with its emblem, its name, and **its level in words** - `Bronze`,
+  `Silver`, `Gold`, `Platinum` - or no chip below the first level;
+- the count, large, and what it counts: `8` `countries worked`;
+- **a bar to the next level** and the gap in words: `2 more to Silver`. At the top level the bar
+  is full and says so;
+- **the next line**: `Next:` and `NextCard`. Where `NextIsDoor` is true the box has the amber ring
+  and says `Opens a set:`.
+
+**A kind with nothing earned is drawn locked**: a dashed border, the muted ground, a padlock and
+the word `Locked`, and `To open it:` with what the first one takes. **It is still a button** and
+opens the kind's page, which shows its next panel.
+
+White on `#A8811A` does not reach 4.5 to 1. **The Hall of Fame header uses `#8A6A10`**; the kind's
+color elsewhere is unchanged.
+
+**The legend line `AchievementsLegend` goes** if the tiles say in words everything it explained;
+say which in the report.
+
+**Test watched failing first**, in `TheAchievementsPageTests` or a new class: eight tiles, each
+opening its kind; a level chip that follows the file's `levels`; the bar's fraction on the fixture;
+a locked tile for every kind with nothing earned and for no other; the trail draws exactly one
+locked rank; **no string `of 340` or any denominator of the world appears**; no string clips at
+1280, 1400 and 1920 wide.
+
+**Drop candidate:** none.
+
+### Task 3 - within reach right now
+
+The dark strip along the bottom of the opening page: up to three stations from `Calling` that
+would earn him something, each with its callsign, its place, and what it earns in words. A door
+has the amber ring.
+
+- **It says where the list came from and when**, if the snapshot carries its time. If it does not,
+  say only what the snapshot can say, and report it.
+- **No callers: the strip says so in a line** and does not draw empty boxes.
+- **It sends nothing and tunes nothing.** It is a list to read.
+
+**Test watched failing first:** three callers in a snapshot draw three; one that opens a continent
+is ringed and says so; an empty snapshot draws the one line.
+
+**Drop candidate:** the whole task.
+
+### Task 4 - the category page, dressed
+
+`countries-page.html`. Unit 505's list, row press and popup stand. What changes:
+
+- **The header band**: the emblem large, the name, the level chip, the standing line, and the
+  level bar with its gap in words at the right, where `AchievementsLevelBar` is today.
+- **Each row gets its seal at the left**: a round double-ruled ring in the kind's color, turned a
+  few degrees, holding the short code of what was earned - a country's prefix, a state's two
+  letters, a grid's four characters, a band's number, a mode's name where it fits. **Which code
+  each kind shows, and where it comes from, is the author's**, stated in the report.
+- **The next panel moves to a column at the right**, dashed and muted with a padlock and
+  `Next stamp`, its callers listed under it, the door ringed with its words.
+- **`Your reach` under it**: farthest, and newest. Both from the cards already built.
+- The rows, newest first. **The order is the view's**; `Cards` is untouched, as in 505.
+
+Continents and Total Miles take the same header and seals. **A continent's row still opens its
+countries, and its `map` button still opens the path.**
+
+**Test watched failing first:** in `TheCategoryPagesAreListsTests`, every earned row carries a
+seal with a code that is not empty; the next panel is beside the list and not in it; farthest is
+the greatest distance among the cards; every 505 test there still passes, and any whose substance
+changed is named in the report with why.
+
+**Drop candidate:** `Your reach`.
+
+### Task 5 - the moment something unlocks
+
+`unlock-moment.html`. **When a contact is written to the log and it earns something he did not
+have**, the main window shows a panel: `Unlocked`, the seal, the name, the station and place and
+distance and band and mode in one sentence, the points added, and the rank bar with the part just
+gained in the lighter green.
+
+- **Find the one place a contact is written to the log** and name it in the report. Compare what
+  is earned before the write and after. **If every mode does not pass through one place, say so,
+  wire the ones that do, and list the ones that do not.**
+- **It never takes the keyboard and never covers the conversation card's controls.** It is a panel
+  over the main window, not a dialog. It closes on its own button, on a click outside it, and
+  **the moment a transmission starts**.
+- **Two buttons**: `See where <place> is`, which opens the achievements window with that path in
+  the popup, and `Keep going`.
+- **More than one thing earned by one contact: one panel**, the largest by points named, and the
+  others in a line under it.
+- **Crossing a rank says the new rank** in the panel.
+- A points file that cannot be read: no panel.
+- **It writes nothing** to the log, the radio or the settings.
+
+**Test watched failing first**, a new `TheUnlockMomentTests`: a logged contact that earns a new
+country shows the panel with that country and its points; one that earns nothing shows nothing;
+one that crosses a rank says the rank; a transmission starting closes it; the panel holds no
+keyboard focus.
+
+**Drop candidate:** the whole task. **If the log has no single write point, drop it, say so, and
+leave nothing half-wired.**
+
+### Task 6 - three widths, the old tests, the comments
+
+- Stand the achievements window up at 1280, 1400 and 1920 wide and **describe, computed**, the
+  opening page, Countries, Continents and Total Miles at each: what is drawn, what clips if
+  anything.
+- Every existing test that pinned the old badge or the old opening page is carried in substance
+  or retired. **Name each with which happened and why.**
+- The comments in `AchievementsWindow.axaml` that describe the old opening page are rewritten to
+  cite this unit and HM-DEC-210.
+
+**Drop candidate:** the three-width description.
 
 ---
 
 ## 5. Record
 
-- `PHASE_OUTCOME.md`, both copies: `## UNIT 507 - STEP 12`, one paragraph.
-- `PHASE_STATUS.md`, both copies: names 507.
+- `DECISIONS.md`, newest first, **HM-DEC-210**, headline *The achievements window shows overall
+  progress, what is locked, and the moment it opens*, quoting him from section 2, and saying whose
+  words are whose: the ruling and the approval of the picture are Tim's; the picture, the window
+  size, the seal's code, `#8A6A10`, and how the unlock panel closes are the author's under work
+  instruction 506, and overrulable.
+- The index row for it in `CLAUDE.md` §1, in the shape of the rows above it. **Do not fill
+  189 to 208.**
 - Patch-bump `Directory.Build.props`.
-- **Append R112 to the rulings section of both `PHASE_PLAN.md` copies**, in the owner's words
-  above. **Touch no checkbox.**
-- `DECISIONS.md`, newest first, **HM-DEC-209**, headline *The pattern across marks is the gate;
-  a single-mark test is proportional, never a decibel figure*, quoting him, naming that every
-  synthetic case had been 20 dB or more over the noise and the gates set on those.
+- **No phase file.** See section 1.
 
 ---
 
-## 6. Report
+## 6. What not to do
+
+- **Do not change what is earned, counted or scored**, or any number in his points file.
+- **Do not draw the ladder.** One locked rank. One locked thing per kind.
+- **Do not write a denominator of the world.**
+- **Do not draw a map at rest** anywhere in the achievements window. Unit 505's zero stands.
+- **Do not ship a font or an image.** The picture's serif display face is not in the application;
+  use the application's own faces at the picture's sizes and weights, and say so.
+- **Do not let the unlock panel take focus, block a control, or outlive the start of a
+  transmission.**
+- **Do not use color alone** for locked, next, door or level. Each has its word.
+- **Do not clip or wrap a word.**
+- **Report mismatches; repair nothing else on the way past** (`CLAUDE.md` §12.6).
+
+---
+
+## 7. Committing and pushing
+
+Commit per task on `main`, by path, each with its red quoted. Push at the end and say whether it
+succeeded.
+
+---
+
+## 8. Report
+
+`output.md` at the root, above the four headings:
+
+```
+READ IN THIS ORDER.
+
+A. Whether the opening page shows the ring, the trail, eight tiles and the strip, and which kinds
+   draw locked on the fixture.
+B. Whether a logged contact shows the unlock panel, and where the log's write point is.
+C. The rest. Section 4 raises <n> items, none blocking.
+```
+
+```
+UNIT:       506 - <complete|stopped> at task N of 6, <dropped or none dropped> - <date time>
+UNIT GOAL:  <in your own words>
+NUMBER:     tiles drawn: <n> of 8, locked: <n>; unlock panel on a new country: <shown|not built>
+```
 
 Section 2, for the owner, in plain words:
 
 - rebuild;
-- **weaker stations that you hear clearly should now read** - a mark is judged by whether it fits
-  the sender's pattern, not by how loud it is;
-- noise still prints nothing, because noise cannot make the pattern;
-- the light, the blocks and the row now describe the station being printed;
-- **if a station you hear still reads nothing, section 3's table says at what strength the bench
-  stops reading, and that is the number to report against.**
+- Tools, Achievements: the ring and your rank at the left, the trail with the next rank locked,
+  eight tiles, who is within reach along the bottom;
+- a kind you have nothing in is locked and says what opens it;
+- click a tile, then a row: the map, as before;
+- log a contact that earns something: the panel comes up in the main window;
+- where it differs from the picture, and why;
+- any file emptied for him to delete by hand.
 
-Section 1: what changed, file by file, every fraction and count with its reason, and that the
-build and the app line are green. **Section 3: the strength table at the top - what reads at 8,
-12, 16 and 24 dB, before and after - then the noise counts, then the cases.** Section 4: anything
-left, a line each.
+Section 1: what changed, file by file; every mismatch against section 3; the old tests and what
+became of each; the log's write point; that the build and the app line are green. **Section 3: the
+three widths, computed.** Section 4: anything left, a line each.
