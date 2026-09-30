@@ -1,136 +1,135 @@
 ```
-UNIT: 510 - stopped at task 7 of 7, task 6 dropped - 2026-09-30
-UNIT GOAL: the next things, in the order they pay (the order headed 509)
-LANDED: 1, 2, 3, 7   MEASURED, NOT LANDED: 4, 5   DROPPED: 6
+UNIT: 511 - complete at task 3 of 3, none dropped; task 3 removed nothing - 2026-09-30
+UNIT GOAL: the blocks stay, the sender's own dits count, and the old decoder retires
+LANDED: 1, 2, and 3 as far as its own rules allow (tag and section M; no file removed)
 ```
 
 ## 1. What Claude did
 
-Claude Code on the development machine, branch `main`. The prompt claimed `PROJECT: Hamlet`; the order's gate held: `SHACK_FACTS.md`, `CwProbabilisticDecoder.cs` and `CW_REQUIREMENTS.md` exist, there is no `CoreHMI.sln` or `MURC.sln`, the root is `C:\Source\HamLet`, and `PROJECT_CARD.md` says Hamlet. Nothing in this report is evidence about the radio.
-
-**Numbering.** The order is headed 509, but 509 was the scroll unit, and HM-DEC-212, which it named, was the icon. As before, it ran as **unit 510** with **HM-DEC-214**.
+Claude Code on the development machine, branch `main`. The prompt claimed `PROJECT: Hamlet`; the order's gate held: `SHACK_FACTS.md`, `CwProbabilisticDecoder.cs` and `CW_REQUIREMENTS.md` exist, there is no `CoreHMI.sln` or `MURC.sln`, the root is `C:\Source\HamLet`, and `PROJECT_CARD.md` says Hamlet. Nothing in this report is evidence about the radio. Unit 511 and HM-DEC-215 were both free.
 
 SESSION.lock was taken through `tools\arbiter\lock.bat take` and released at the end. Nothing was written to `RUN_LEDGER.md`, nothing under `tools\arbiter\` was touched, no box was ticked, and no ruling was added to either plan. Scratch probes are under `.run-unit\` and not committed.
 
-**Order of work.** I did tasks 1 to 5, then 7, and dropped 6. That departs from "drop from the back", and here is why. Task 7 was a narrow, measurable fix in the reader's arithmetic. Task 6 changes the terminal and the scroll from one sender to several, across the reader, the character stream, the transcript, the terminal and the scope. That is the largest change in the order and the one that most changes what the display asserts, and it would have changed existing cases that must read as at HEAD.
+**Task 1: a block on the scroll stays on the scroll** (`e58435b1`).
+- **Before.** The scroll's blocks were the watched bin's paired bars. `CwTrainingGraph.Update` threw away and rebuilt the last four seconds of them on every tick, and the watched bin and its pairing move. So a block drawn on one frame could be gone on the next.
+- **`ViewModels/CwTrainingGraph.cs`.**
+  - New `Stand(mark, heard, now)` keeps a mark as a block once, by its sequence number.
+  - New `Trim(now)` takes blocks and letters away only by time.
+  - The kept sequence numbers outlive a Clear, so a cleared block does not come back while it is still inside the window.
+- **`ViewModels/CwScopeFeed.cs`.** Each tick offers every mark that stood at the pitch the decoder is printing and is still inside the window. So a sender's first marks, which stood before the reader started printing it, appear the moment it prints. When nobody is printed, nothing is drawn. `Update` stays for the control-level tests that build frames with it, but the live path no longer calls it.
+- **`Hamlet.App.Tests/ViewModels/TheScrollKeepsItsBlocksTests.cs`**, sampled every 50 ms, with a block counted as still present when a later frame covers any of its time:
+  - The 20 WPM call was already whole before the change (the order expected it red): 0 blocks went early.
+  - The 5 WPM Farnsworth call was red: 10 blocks went before the edge. Now 0.
+  - Loud noise draws no block.
+- **Side effect.** In unit 509's Farnsworth case, every letter now sits over a block. The letters with no block under them that 509 reported are gone.
+- The scope tests beside it pass, 25 of 25.
 
-**Task 1: the terminal's scroll bar** (landed, `dcd2aae8`).
-- The terminal already sat in a `ScrollViewer` that follows new text unless scrolled up, within 40 px of the bottom. Fluent's bar is a hairline that hides itself until the pointer finds it, so the history looked gone.
-- `MainWindow.axaml`: `AllowAutoHide="False"`, and the vertical bar's hover text comes from a new `Controls/CwTerminalScroll.cs`.
-- `Views/TheTerminalScrollsTests.cs`, on the real window: red first on "auto-hide True; tip empty". After:
-  - forty lines: offset 266, viewport 260, extent 526, bar visible, newest line in view;
-  - scrolled up with ten more lines: offset held at 0;
-  - back at the bottom with ten more lines: it follows.
+**Task 2: the sender's own dits count** (`3b6329bc`).
+- **`Cw/CwPatternGate.cs`.** Once a sender stands, a candidate at its pitch passes if all of these hold:
+  - its length is within √2 of the sender's dit or dah;
+  - it is quieter than the sender's marks of the same kind (dits against dits, dahs against dahs) by more than the level tolerance and no more than twice it;
+  - a gap to the mark before it or after it is inside a letter: under two dits and not under half a dit.
+- **Timing.** Where the gap before already places it inside a letter, it stands at once. The first mark of a letter waits for the next mark.
+- **Constants.** `QuieterShare` = 2 (the order's figure). `InsideLetterShare` = 2 and `LengthRatio` = √2 are the author's, overrulable.
+- **Why "of the same kind".** This detector reads a dit a tenth or two of a decibel under a dah. The order's case measures 6.0x dB under against dits and dahs mixed, and 5.9 dB against dits.
+- **`Cw/CwMark.cs`.** New `BySendersPattern` flag on a mark admitted this way.
+- **`Cw/CwRunReader.cs`.** A mark with the flag is matched to its sender by pitch alone, because the gate has already judged its level against that sender. The sender's reference level leaves such marks out. Otherwise the quiet mark pulled the reference about 3 dB down, the sender's next ordinary mark missed it, and a new sender took over, which stopped the printing at `N0CAA`.
+- **Correction to unit 510's measurement.** Its test helper started `quietRun` at `int.MaxValue`, so the counter overflowed on the first element and counted it as none. Its "first dit of the first L" was in fact the L's dah. Fixed.
+- **`Cw/TheSendersPatternFindsItsMarksTests.cs`**, measured red first:
+  - first dit of the first L 6 dB down: `CQ CQ DE N0CA DL N0CALL K`, now the call whole;
+  - the L's dah 6 dB down (what unit 510 actually measured): `N0CAE IL`, now whole.
+- **Every reading case against HEAD.** Eight synthetic reader classes: 51 of 54, the same three reds as HEAD (unit 507's 8 dB, 12 dB and 10 dB rows). Their printed readings match HEAD's except one: unit 502's weak call, `CGE N EQ DE N0CALL NT ON EAE IL A` → `... NT ON EALL A`, where one more mark stands (61 against 60). The two-station case and both noise cases are unchanged (section 3).
+- The app cases through the reader pass, 16 of 16.
 
-**Task 2: Copy** (landed, `ec38bc2f`).
-- `MainWindowViewModel.CopyTerminalCommand` puts `Transcript.PlainText` on the clipboard of the button's own window, passed in as the command parameter. Prosigns come out as their bracketed names. A missing or busy clipboard throws nothing.
-- The button sits beside Clear.
-- It is named in the hover registry (`WhatItDoes`, `IsItTrue`) and in the closed CW-tab list.
-- `Views/TheTerminalCopiesTests.cs`: red first on "there is no Copy button on the CW tab". After a decoded call, the clipboard holds `CQ CQ DE N0CALL N0CALL K`.
+**Task 3: the old decoder retires** (`6ad21ceb`).
+- **The tag.** HEAD is tagged **`before-cw-cleanup`** at `3b6329bc` and pushed.
+- **Section M.** `CW_REQUIREMENTS.md` section M is marked superseded at its head, in one paragraph. The rows HM-REQ-120 to 129 are kept. No test parses the file.
+- **Nothing was removed.** Rule 3 of the order is "if a retired piece is still called by something live, say so and leave it — do not refactor around it", and every piece the order names is still called:
 
-**Task 3: the W1AW score** (landed, `f7f8cf2e` + `273ce2ed`).
-- **Commit mistake.** `f7f8cf2e` carried only the scorer's rename, because the `git add` before it failed on the old path. `273ce2ed` is the rest. Between the two pushes, `main` did not build the engine tests.
-- **The scorer moves.** `CwScorer.cs` moves from `tests/Hamlet.RadioEngine.Tests/Cw` into `src/Hamlet.RadioEngine/Cw`, unchanged except the namespace and one cref. Five test files gained a `using`. The scorer's own tests pass 33 of 33.
-- **The comparison.** New `CwTextScore` uses `CwScorer.Within`, which aligns the whole pasted text to the stretch of the terminal that fits it best (free ends) and leaves the rest unscored.
-  - Both sides are upper-cased and every run of whitespace becomes one space.
-  - The counts are: wrong; missing, including spaces missing; and extra, including spaces added.
-  - The percentage is (sent length − edits) / sent length.
-- **The slot.** `W1awMorseFrequencies.Latest` gives the run on now, or the last one that started, for the slot name, e.g. `W1AW 4 PM practice`.
-- **The screen.** A paste box, Score, and the line go under the W1AW schedule line, still the last thing in that column (R101). The closed hover list reads the box by its name.
-- **Telemetry.** One `cw` / `w1aw_score` row per score, with `slotStartUtc`, `slotKind`, `slotSpeed`, `percent`, `wrong`, `missing`, `extra` and `sentLength`. The text itself is never written (HM-DEC-018).
-- `ViewModels/HamletScoresItselfAgainstW1awTests.cs`: red first on an empty line. After:
-  - the call against its own text in lower case reads `: 100% of characters, 0 wrong, 0 missing, 0 extra`;
-  - with one letter changed it reads `96% ..., 1 wrong, 0 missing, 0 extra`;
-  - two rows are written.
+| Piece | Built by | Superseded by | Still called by |
+|---|---|---|---|
+| `CwProbabilisticDecoder` (lattice, speed grid, emission gate), and `CwProbabilisticStream` around it | 1xx and after; the stream by the second-pass design (HM-DEC-096) | 493 (`ReadsRuns`) | `CwDecoder` builds and feeds it on every hop; `CwTrainingGraph`, `CwRunReader`, `CwCharacter` and `MainWindowViewModel` read its constants and members |
+| `CwUnitEstimator` | the streaming estimator, before 493 | 493 | `CwProbabilisticStream` |
+| `CwToneTracker` | 48 and after | 496, 507 | `CwDecoder`'s hop loop is driven by it (`Process`, `HopSamples`); the verdict row reads `trackerHz`; the decode report and capture sheet read its pitch and proof |
+| `CwToneSurvey` | 95 and after | 496, 507 | `CwToneTracker`, `CwEnvelopeDetector` (its `ShortestDitMs` sets the shortest bar), `CwCompetitor` |
+| `CwKeyingMeter` swing test, `ConfidentSwingDb` | 474 to 479 | 485 to 507 | `MainWindowViewModel` builds it and publishes its reading to the verdict row and the tracker |
+| Unit 489's three switches (`DetectorSteersPitch`, `DetectorGatesKeying`, `DetectorGatesBlocks`) | 489 | 493 | `CwDecoder`; `TheScopeDrawsLiveTests` sets `DetectorGatesKeying` |
+| The second decoder, `Cw/Second/Fldigi*`, `CwSecondReader`, `CwSecondReading`, `FldigiConfidence` | 456 to 461 | the shape approach (493) | **it runs live**: the app builds `CwDecoder` with `secondReader: true` (`MainWindowViewModel.cs` line 11571) |
+| `CwArbiter`, `CwVoteTable`, `CwSwitchTable` (arbitration and calibration) | 462 to 467 | the same | `CwDecoder`; the capture sheet's `arbiter` line reads `CwArbitrationCase` |
+| The mixdown path the tracker fed | before 496 | 496 | inside `CwDecoder`'s hop loop |
 
-**Task 4: integrating over a dit** (measured, not landed). A `Follow(pitch, dit)` feeding the sender's bins the power mean of their last half-dit of hops, behind a switch, was measured and then reverted with `git checkout`. The table is in section 3.
-- **Half, not whole.** A running mean a whole dit wide turns a dit's flat top into a single point, so half a dit is the widest a flat-top detector can take.
-- **Every row got worse.**
-- **Two variants, neither kept.** Integrating every bin read 24 dB whole but damaged 12 and 16 dB. Widening the edge window by the mean's ramp broke every row.
-- The order says nothing is forced, so the detector is as it was.
+- **What could go but can't be deleted here.** `CwInterferenceNotes` (with `InterferenceFix`) is the one CW type that no source file calls. It came from `2fdfb349`, "name what is sitting in the passband", under HM-DEC-096 phase 5. It and `CwInterferenceNotesTests.cs` are listed for you to delete, because this session's `rm` and `git rm` are refused.
 
-**Task 5: the sender's pattern** (measured, not landed). The case: the strong call at 24 dB with the first dit of the first L 6 dB down.
-- **Red.** `N0CALL` reads `N0CAE IL`.
-- **Why.** The blind stage found the dit (73 candidates against 72), but the pattern gate dropped it, since 6 dB is outside the sender's 3 dB level tolerance at this contrast.
-- **The conflict.** The order's own condition, "at the sender's level within the tolerance", keeps it outside, so the fix needs a ruling (section 4). The test is set aside, not committed.
-
-**Task 6: every sequence on its own line** (dropped, not started).
-
-**Task 7: the word gap at speed** (landed, `dd23bc55`).
-- **Measured.** At 35 WPM and 24 dB the reader measures a letter gap of 110 ms and a word boundary of 248 ms. At 10 dB it measures a letter gap of **46 ms**, which is the gap inside a letter, so the boundary falls at 110 ms and every 110 ms letter gap reads as a word. Runs closed before the dit was known had left gaps inside letters among the gaps between runs.
-- **Fix.** In `CwRunReader.LetterAndWordGaps`, gaps under the sender's own letter boundary (gap dit × √3) no longer measure the letter gap.
-- `Cw/TheWordGapHoldsAtSpeedTests.cs`: red first on `C Q C Q D E N 0 C A L L N 0 C A L L K`; after, `CQ CQ DE N0CALL N0CALL K`.
-- **Every other case as at HEAD.** Seven synthetic reader classes went 50 of 53 at HEAD and after, with the same three reds (507's 8 dB, 12 dB and 10 dB Farnsworth/35 WPM case). Their 70 printed readings are identical except the fixed case and three rows of unit 504's `WhichGateTurnsAwayW1aw` diagnostic with all gates off, whose garbage respaced: `MT N OT N I I L K` → `MTN OTN IIL K`, and `CALI I N/ CI IIL D` → `CALII N/ CI IIL D`. None is asserted.
-
-**Build and tests.**
+**Build and records.**
 - Build `Hamlet.sln` with warnings as errors: RC=0.
-- App carry-forward: 278 of 278.
-- `TheTestsStayOffTheNetworkTests`: 5 of 5.
-- `BindingHealthTests`: 1 of 1.
-- The closed hover lists: 3 of 3.
-- The app cases through the reader: 13 of 13.
-- Version 1.13.196 to 1.13.197.
-
-**Records.**
-- `PHASE_OUTCOME.md` (both copies): `## UNIT 510 - STEP 12`.
-- `PHASE_STATUS.md` (both copies) names 510.
+- App carry-forward line: 278 of 278.
+- Version 1.13.197 to 1.13.198.
+- `PHASE_OUTCOME.md` (both copies): `## UNIT 511 - STEP 12`.
+- `PHASE_STATUS.md` (both copies) names 511.
 - `CLAUDE.md` §1 index row.
-- `DECISIONS.md` HM-DEC-214, in full below. Its headline says what landed, not the order's *…and a mark is judged over a dit's width*, which would be untrue.
+- `DECISIONS.md` HM-DEC-215, in full below. Its headline says the old decoder is *tagged for retirement* rather than *retires*, because nothing was removed; the entry says so.
 
-> **Hamlet scores itself against W1AW, and the word gap holds at speed.** The order named the headline *Hamlet scores itself against W1AW, and a mark is judged over a dit's width*; the second half did not land, so the headline says what did. Tim, 2026-09-30, the order's tasks; tasks 1 and 2 are his own asks.
+> **The blocks stay, the sender's own dits count, and the old decoder is tagged for retirement.** The order named the headline *...and the old decoder retires*; nothing was removed, so the headline says what was done. Tim, 2026-09-30: *"The letters are solid, but the bars, the dashes and dots bars, tend to come and go."* And: *"We're running two decoders. We really don't need them both."* Task 2 answers unit 510's question from the pattern (R85), as the order directs.
 >
-> **What landed.** The CW terminal's scroll bar stays shown past the box and says what it does; it already followed new text unless scrolled up, and Fluent's bar had hidden itself until the pointer found it (task 1). Copy beside Clear puts the transcript's text on the clipboard (task 2). Under the W1AW line he pastes the ARRL's published text and presses Score, and the line says how much of it the terminal read, `W1AW 7 PM bulletin: 94% of characters, 3 wrong, 2 missing, 1 extra`: the scorer's edit distance over the stretch of the terminal the text aligns to best, case folded and every run of whitespace one space, with one `cw` / `w1aw_score` row of the slot, the percentage and the counts, and never the text (task 3). `CwScorer` moved from the engine tests into the engine for it, so the app and the tests score with one instrument. At 35 WPM and 10 dB a gap under the sender's own letter boundary no longer measures its letter gap, and the call reads in words (task 7).
+> **The blocks.** A block that was drawn stays drawn until time carries it off the left. The scroll's blocks are the marks that stood at the pitch being printed, each kept once by its sequence, never reworked from the detector's live state; nobody printed, nothing is drawn.
 >
-> **What did not.** Integrating the sender's bins over half its dit made every row of the strength table worse, and the variants either cost the 12 and 16 dB rows or broke every row, so the detector is unchanged (task 4). A dit 6 dB down inside a letter is dropped by the pattern gate for sitting outside the sender's level tolerance, which the order's own condition keeps it outside (task 5, a question for Tim). Printing every sequence that stands was dropped (task 6).
+> **The sender's own dits.** Once a sender stands, a candidate at its pitch, of its dit or dah length within √2, quieter than its marks of that kind by more than the level tolerance and no more than twice it, stands as its mark where a gap to the mark before or after it is inside a letter, under two dits; a letter's first mark waits for the next. The reader matches such a mark on pitch and leaves it out of its reference level. Between letters, between senders and at any other pitch the tolerance stands. The √2, the two dits and the kind-by-kind comparison are the author's, overrulable.
+>
+> **The old decoder.** HEAD is tagged `before-cw-cleanup` and section M of `CW_REQUIREMENTS.md` is superseded, its rows kept. **Nothing was removed**: every piece the order names is still called by live code - the decoder's hop loop runs on `CwToneTracker` and feeds `CwProbabilisticStream`, the app builds its decoder with the second reader on, the verdict row reads the tracker, and the capture sheet's arbiter line reads the arbitration types - and the order says to leave such pieces rather than refactor around them. Retiring them is a refactor of `CwDecoder` and its callers, and waits on an order that says so.
 
 ## 2. What the owner should expect
 
 - **Rebuild.**
-- **The scroll bar and Copy.** The CW terminal now shows its scroll bar whenever the text is taller than the box. Scroll up to read, and it holds still while new text arrives. Scroll back to the bottom and it follows again. **Copy**, beside Clear, puts everything the terminal still holds on the clipboard.
-- **Scoring a bulletin.** Press the W1AW button and let the run go. Then paste the ARRL's published text for that run into the new box under the W1AW line and press **Score**. The line reads like `W1AW 7 PM bulletin: 94% of characters, 3 wrong, 2 missing, 1 extra`. Each score is also kept in Hamlet's own record, which has the figures and not the text. Nothing is fetched from the internet.
-- **Weak stations.** Fast CW on a weak signal no longer prints every letter as its own word: the 35 WPM, 10 dB call now reads in words. The bench floor is unchanged at 16 dB, with 8 and 12 dB still misreading their first letters, because task 4's integration measured worse and was left out.
-- **A second station** still does not print on its own line. That was task 6, which was dropped.
+- **The scroll's bars.** The dots and dashes on the scroll no longer come and go. A block stays until it slides off the left, as the letters already did.
+  - The bars now start at the moment the terminal starts printing a station. Its first few dits and dahs appear then, all at once, in their right places.
+  - While nobody is being printed, the scroll draws no bars.
+- **Quieter dits.** A strong station's quieter dit or dah inside a letter is now kept. On the bench a dit 6 dB down inside `N0CALL`'s L reads right, where it read `N0CA DL`, so `SEPTEMBER` should read `SEPTEMBER`. Nothing else about what reads changed on the bench, except one weak test call that now reads one more letter right.
+- **The old decoder** is still in the tree. It is tagged `before-cw-cleanup`, so it can be reached by name once it goes. Nothing about what reads changed because of it.
+  - It couldn't come out under this order's rules: the running decoder still passes its audio through the old tracker, the app still runs the fldigi second decoder in the background, and the verdict row and the capture sheet still read pieces of it.
+  - Taking it out means rebuilding `CwDecoder` around the new path, which needs an order that allows that refactor.
+- **Two files to delete by hand:** `src\Hamlet.RadioEngine\Cw\CwInterferenceNotes.cs` and `tests\Hamlet.RadioEngine.Tests\Cw\CwInterferenceNotesTests.cs`. Nothing else uses them.
 - **Still red, as before:**
   - `DecisionLogOrderTests.EveryRulingAppearsOnceAndTheGapsAreTheKnownOnes`, on the index gaps 166, 182 and 189 to 210;
-  - `VoiceTests.NoOperatorFacingStringUsesABritishSpelling`, on two "centre"s from unit 450 in `MainWindowViewModel.cs`, untouched here;
+  - `VoiceTests.NoOperatorFacingStringUsesABritishSpelling`, on unit 450's two "centre"s;
   - unit 507's three strength reds.
 
 ## 3. What you should see
 
-**The strength table** (the call at 20 WPM, 65 marks sent, unit 507's seeds). "Before" is HEAD. The next three columns are task 4's measurements, all reverted.
+Task 1, every frame at 50 ms:
 
-| Strength | Before (HEAD, and now) | Sender's bins over half a dit | Every bin over half a dit | …and wider edges |
-|---|---|---|---|---|
-| 8 dB | 68 candidates, 58 stood, 58 printed: `N ET A EI A DE N0CALL NTJCE AEL K` | 78 / 44 / 41: `N ET A EI A DE N0CAN N M NE IA` | 66 / 59 / 59: `N ET A EI A DE N0CALLN0NEALLK` | 20 / 17 / 17: `N ET A EI A DE N` |
-| 12 dB | 69 / 64 / 64: `CT A CQ DE N0CALL N0CALL K` | 103 / 70 / 24: `CT A CQ D O E I` | 79 / 63 / 63: `CT A CQ DE N0CALL E0CALL K` | 11 / 11 / 11: `CT A C` |
-| 16 dB | 75 / 70 / 65: `CQ CQ DE N0CALL N0CALL K` | 91 / 58 / 48: `CQ CG NENM M A AA A EMTCTAA K` | 92 / 77 / 67: `CQ CQ DE N0CALL N0CAL■ K` | 15 / 13 / 13: `CQ CT` |
-| 24 dB | 72 / 65 / 65: `CQ CQ DE N0CALL N0CALL K` | 95 / 48 / 47: `CQ CG IE NT T C A AE NT A A N L K` | 106 / 85 / 65: `CQ CQ DE N0CALL N0CALL K` | 15 / 13 / 13: `CQ CT` |
-| 30 s noise | 635 candidates, 0 stood, nothing printed | the same | the same | the same |
-| 180 s noise | 3,932 candidates, 80 stood, nothing printed | the same (integration never engaged) | not run | not run |
-
-Task 5, the call at 24 dB, before any change:
-- as sent: 72 candidates, 65 stood, 65 printed, `CQ CQ DE N0CALL N0CALL K`;
-- first dit of the first L 6 dB down: 73 / 64 / 64, `CQ CQ DE N0CAE IL N0CALL K`.
-
-Task by task:
-
-| Task | Case | Result |
+| Case | Before | After |
 |---|---|---|
-| 1 | forty lines; scroll up and add ten; back to the bottom and add ten | bar shown, tip present, newest in view; offset held at 0; follows |
-| 2 | Copy after a decoded call | clipboard `CQ CQ DE N0CALL N0CALL K` |
-| 3 | own text in lower case; one letter changed | `100% of characters, 0 wrong, 0 missing, 0 extra`; `96% of characters, 1 wrong, 0 missing, 0 extra`; two `w1aw_score` rows |
-| 7 | 35 WPM at 10 dB | `C Q C Q D E N 0 C A L L N 0 C A L L K` → `CQ CQ DE N0CALL N0CALL K`; the 5 WPM Farnsworth at 10 dB still `CK C TA DE E■CAEIL N0RALL N`, as at HEAD |
+| `CQ CQ DE N0CALL N0CALL K` at 20 WPM | 0 blocks went before the edge (up to 37 on a frame) | 0 |
+| The call at 5 WPM Farnsworth | **10** went before the edge (e.g. 03.275–03.330 on frame 143, gone on 144) | 0 |
+| Loud noise, 30 s | no block | no block |
+
+Task 2:
+
+| Case | Before | After |
+|---|---|---|
+| The call at 24 dB, as sent | 72 candidates, 65 stood, 65 printed, whole | the same |
+| First dit of the first L 6 dB down | 73 / 64 / 64, `CQ CQ DE N0CA DL N0CALL K` | 73 / 65 / 65, whole |
+| The L's dah 6 dB down (unit 510's actual case) | `CQ CQ DE N0CAE IL N0CALL K` | whole |
+| Two stations, the loud one at 625 Hz | 67 candidates, 65 stood, whole | the same |
+| Two stations, the quiet one at 825 Hz | 20 candidates, 12 stood | the same: its marks don't join the loud one |
+| 30 s of loud noise | 635 candidates, 0 stood, nothing printed | the same |
+| 180 s of loud noise | 3,932 candidates, 80 stood, nothing printed | the same |
+| Unit 502's weak call | 60 marks, `... NT ON EAE IL A` | 61 marks, `... NT ON EALL A` |
+| 35 WPM at 10 dB (unit 510's task 7) | `CQ CQ DE N0CALL N0CALL K` | the same |
 
 ## 4. What's blocking us
 
 Nothing blocks. The items:
 
-1. **Task 5, a ruling on the level tolerance for the sender's own marks.** The ruling proposed: once a sender stands, a candidate at its pitch, of its dit or dah length within tolerance, inside one of its letters, is admitted as its mark down to 6 dB under its level, which is twice the present tolerance; nowhere else does the tolerance change. The reason: the case the order names cannot pass under "at the sender's level within the tolerance", because the tolerance at 24 dB contrast is 3 dB. Rejected: widening the tolerance everywhere, which would let a second station's marks join the first.
-2. **Task 4 as ordered does not help a flat-top detector.** Integration and bars pull against each other. If integration is still wanted, the next step is a matched filter feeding a separate mark test, rather than the runs.
-3. **Task 6, dropped:** printing every sequence that stands on its own line, headed by its pitch, with its own scroll row.
-4. **The task 3 commit mistake.** `f7f8cf2e` on `main` carries only the scorer's rename. `273ce2ed` completes it, and nothing was rewritten.
-5. **Numbering.** The next order should be 511 or later, with ruling id HM-DEC-215 or later.
-6. **Outbound HTTP (task 3's question).** The app already calls out to callook.info, POTA, SOTA and RBN (HM-DEC-024, HM-DEC-028). The score uses none of them and adds none.
+1. **Retiring the old decoder needs an order that allows refactoring `CwDecoder`.** The work would be:
+   - drive its hop loop from the envelope detector rather than `CwToneTracker`;
+   - stop building the second reader in the app;
+   - drop the capture sheet's `arbiter` line and the tracker fields of the verdict row, or re-source them.
+
+   The table in section 1 lists every piece and what still holds it.
+2. **Two files to delete by hand:** `CwInterferenceNotes.cs` and `CwInterferenceNotesTests.cs`.
+3. **Unit 510's weak-dit figure was measured on the dah, not the dit.** Its report's `N0CAE IL` is the dah case, and its test helper is corrected here.
+4. **The 20 WPM case of task 1 was already whole before the change**, so the owner's flicker at the radio is more likely the Farnsworth kind: the watched bin moving or re-pairing on a slow or weak sender. Your report at the radio is the test.
 
 ### Asks still outstanding
 
@@ -142,5 +141,3 @@ Nothing blocks. The items:
   revised, at the cost of seconds of lag. On the run path, now the only path to the screen, the
   terminal shows only settled text. The ask stands only for the timing-only path, which no longer
   reaches the screen; no change for it sits in the tree.
-- **Unit 510, 2026-09-30:** task 5's level tolerance for the sender's own marks (item 1 above). No
-  change for it sits in the tree.

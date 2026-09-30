@@ -4,6 +4,38 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-215
+date: 2026-09-30
+refs: work instruction 511, tag before-cw-cleanup (3b6329bc), src/Hamlet.App/ViewModels/CwTrainingGraph.cs, src/Hamlet.App/ViewModels/CwScopeFeed.cs, src/Hamlet.RadioEngine/Cw/CwPatternGate.cs, src/Hamlet.RadioEngine/Cw/CwRunReader.cs, src/Hamlet.RadioEngine/Cw/CwMark.cs, CW_REQUIREMENTS.md section M
+---
+
+**The blocks stay, the sender's own dits count, and the old decoder is tagged for retirement.** The order
+named the headline *...and the old decoder retires*; nothing was removed, so the headline says what
+was done. Tim, 2026-09-30: *"The
+letters are solid, but the bars, the dashes and dots bars, tend to come and go."* And: *"We're running
+two decoders. We really don't need them both."* Task 2 answers unit 510's question from the pattern
+(R85), as the order directs.
+
+**The blocks.** A block that was drawn stays drawn until time carries it off the left. The scroll's
+blocks are the marks that stood at the pitch being printed, each kept once by its sequence, never
+reworked from the detector's live state; nobody printed, nothing is drawn.
+
+**The sender's own dits.** Once a sender stands, a candidate at its pitch, of its dit or dah length
+within √2, quieter than its marks of that kind by more than the level tolerance and no more than twice
+it, stands as its mark where a gap to the mark before or after it is inside a letter, under two dits;
+a letter's first mark waits for the next. The reader matches such a mark on pitch and leaves it out of
+its reference level. Between letters, between senders and at any other pitch the tolerance stands.
+The √2, the two dits and the kind-by-kind comparison are the author's, overrulable.
+
+**The old decoder.** HEAD is tagged `before-cw-cleanup` and section M of `CW_REQUIREMENTS.md` is
+superseded, its rows kept. **Nothing was removed**: every piece the order names is still called by
+live code - the decoder's hop loop runs on `CwToneTracker` and feeds `CwProbabilisticStream`, the app
+builds its decoder with the second reader on, the verdict row reads the tracker, and the capture
+sheet's arbiter line reads the arbitration types - and the order says to leave such pieces rather
+than refactor around them. Retiring them is a refactor of `CwDecoder` and its callers, and waits on
+an order that says so.
+
+---
 id: HM-DEC-214
 date: 2026-09-30
 refs: work instruction numbered 509 (run as unit 510; it named HM-DEC-212, already used by the icon unit), src/Hamlet.RadioEngine/Cw/CwScorer.cs, src/Hamlet.RadioEngine/Cw/CwTextScore.cs, src/Hamlet.RadioEngine/Cw/CwRunReader.cs, src/Hamlet.App/Views/MainWindow.axaml, src/Hamlet.App/ViewModels/MainWindowViewModel.cs
