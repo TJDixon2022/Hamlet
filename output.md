@@ -1,188 +1,206 @@
+READ IN THIS ORDER.
+
+A. Whether the opening page shows the ring, the trail, eight tiles and the strip, and which kinds
+   draw locked on the fixture.
+B. Whether a logged contact shows the unlock panel, and where the log's write point is.
+C. The rest. Section 4 raises 7 items, none blocking.
+
+```
+UNIT:       506 - complete at task 6 of 6, none dropped - 2026-09-30 14:20 -04:00
+UNIT GOAL:  Make the achievements window show overall progress, what is locked and what opens it, and say so in the main window the moment a logged contact earns something.
+NUMBER:     tiles drawn: 8 of 8, locked: 1 (States, on the twelve-contact fixture; all 8 on an empty log); unlock panel on a new country: shown
+```
+
+**A.** Yes, all four are drawn at 1280, 1400 and 1920, and nothing clips at any of them.
+- **Ring:** 0.660 on the twelve contacts, which is 415 points between Rank 4's 250 and Rank 5's 500.
+- **Trail:** Ranks 1 to 3 checked, `Rank 4 · you are here`, and `Rank 5 · opens at 500 points` locked.
+- **Tiles:** eight. On the fixture **States** is locked, with `To open it: a US state.`
+- **Strip:** `ZL1ABC New Zealand opens Oceania`, ringed, then `OE8DDX Austria` and `J38DX Grenada`, each `a new country and grid`.
+
+**B.** Yes. The write point is **`MainWindowViewModel.WriteLoggedContact`**, the only caller of `ContactLogStore.Append`. Every mode's Save passes through it, so no mode is left unwired.
+- **The case the tests log:** Italy after Norway shows `Unlocked · A DX contact · I2ZZZ in Italy, 4,228 miles, 20 m FT8. · +31 points · Also: Italy, JN45.`
+- **Named first:** `A DX contact`, the largest single thing earned by points. It names the first DX contact, not the country. The country is in the `Also:` line.
+
 ## 1. What Claude did
 
-**Surface and gate.** Claude Code on the development computer at `C:\Source\HamLet`, branch
-`main`. The prompt carries `PROJECT: Hamlet`, and all five of section 0's checks hold. Hamlet
-confirmed. Nothing in this report is evidence about the radio.
+**Surface and gate.** Claude Code on the development computer at `C:\Source\HamLet`, branch `main`.
+The prompt carries `PROJECT: Hamlet`, and all five of section 0's checks hold. Hamlet confirmed.
+Nothing in this report is evidence about the radio.
 
-**Run by hand, outside the loop.**
-- **The lock:** `SESSION.lock` was taken through `tools\arbiter\lock.bat take` and released the same
-  way.
-- **Records not touched:** nothing was written to `RUN_LEDGER.md`, and nothing under
-  `tools\arbiter\` was touched. No box was ticked.
-- **Read:** no recording, fixture, floor or telemetry.
-- **Not committed:** nothing under `.run-unit\`. Nothing keys or transmits.
+**Run by hand.**
+- **The lock:** `SESSION.lock` was taken through `tools\arbiter\lock.bat take` and released at the end.
+- **Records not touched:** nothing was written to `RUN_LEDGER.md`, and nothing under `tools\arbiter\` was touched. No phase file was touched and nothing was ticked.
+- **The status:** `PROJECT_STATUS.md` names 506 through `.run-unit\unit506-status.sh`, on unit 505's pattern.
+- **What stayed out:** no package, no font file and no image asset.
+- **Commits:** only this unit's files, by path, one commit per task, each pushed. Every push succeeded.
 
-**One departure from the order.** It named **HM-DEC-209**, which unit 505 had already used an hour
-earlier. Ids are never reused (§2.1), so this ruling is **HM-DEC-210**.
+**Commits:**
+- `f6101189` task 0
+- `8a08a730` task 1
+- `995ba56b` task 2
+- `ae656081` task 3
+- `1639f21d` task 4
+- `e33b1965` task 5
+- `50d297d1` task 6
 
-**Commits, all on `main` and pushed:**
-- `f35a994c` task 1, the measurement
-- `2a6a1835` tasks 2 and 3, the gates and the pattern
-- `994624dc` task 4, the display and the records
+**Version.** 1.13.193 to 1.13.194.
 
-**Version.** 1.13.192 to 1.13.193.
+**Task 0, before anything changed.**
+- **App carry-forward:** 278 of 278.
+- **`TheCategoryPagesAreListsTests`:** green, 16 of 16.
+- **`TheAchievementsPageClicksInTests`:** green, 8 of 8.
+- **`TheAchievementsPageTests`:** green, 10 of 10.
+- **`TheMapOpensTests`:** green, 9 of 9.
+- **`TheAchievementsScreenTests`:** 9 of 10. `TheWindowDrawsEverySixRows` is red and inherited: it looks for `AchievementsModeRows`, which the window has not had since before this unit.
 
-**Measured first, against the true key timing** (task 1). The call is at 20 WPM, with 65 marks
-sent.
-- **16 dB:** no mark was lost. Four real marks were called twice, overlapping at one pitch and two
-  levels, and those were the letters that read wrong.
-- **8 dB:** four dahs were lost, and others read 30 to 80 ms for 180. The detector measured no
-  contrast at all.
-
-So the weak station's marks mostly *did* reach the reader. What was wrong was duplicates at 16 dB
-and broken bars at 8 dB.
+**Mismatches against section 3.**
+- **Newest decision:** the order says HM-DEC-209. It was **HM-DEC-210**, taken by unit 507, so this ruling is **HM-DEC-211**.
+- **Version:** 1.13.193, not 1.13.192.
+- **The window:** it was 1040 by 720 as stated.
+- **The page:** `AchievementsPage` was the `StackPanel` described, with the badges, total line, problem line and legend.
+- **`AchievementBadge`:** carries every member listed.
+- **`AchievementBadgePage`:** as listed, and `Scores` exposes `Total`, `RankName`, `ToNextRank` and `NextRankName`.
+- **Kind colors:** as listed.
+- **The points file:** `ranks` starts 25, 100, 250, 500. There are **five** ranks in the shipped file, not eight, so Rank 5 at 500 is the top threshold and Rank 6 is the top rank. `rank_names` is empty, and `levels` gives each kind three or four counts.
+- **Unit 505's names:** all present.
+- **A miss of my own, not a mismatch:** `ThePsk31RecordsAppearTests` had been red since unit 505. It still found cards by `trading-card`, and I didn't catch it then. It is repointed and green.
 
 **The changes, file by file:**
-- **`src/Hamlet.RadioEngine/Cw/CwEnvelopeDetector.cs`:**
-  - **Every single-mark test is now a fraction of the mark's own height over the gap beside it**
-    (`OwnContrast`). That height is the median of the peak bin's hops 3 to 8 outside each edge.
-  - **Edges:** a mark must fall `EdgeShare` = **0.5** of its own height within four hops. It had to
-    fall 6 dB. The reason: a keyed edge takes the level from the top to the gap within the window's
-    spread whatever the height, so half of it is crossed at any height, and a bump in noise that
-    slopes into its neighbours does not cross it.
-  - **Narrowness:** a mark is broad only where the bins 300 Hz away **both rise with it** by more than
-    `NarrowShare` = **0.5** of its height. Before, it had to stand 6 dB over their *level*. The reason:
-    noise is broadband and lifts both sides at once, while a tone's energy stays in its own bin.
-    - The rise replaced the level for a measured reason. The first version, a level at half the
-      mark's height, lost a dah of the loud station in the two-station case: the quiet station at
-      825 Hz leaks into the 925 Hz probe bin.
-    - The rise of one side alone failed too, whenever the other station happened to key during the
-      mark. "Both sides" answers both.
-  - **The shape score is rebuilt from ratios.**
-    - **Narrowness** is one less the smaller neighbour rise over the mark's height.
-    - **Contrast** is how evenly the mark stands over its two gaps: the lower of the two heights
-      over the higher.
-    - **The 15 dB constant is gone.**
-    - **The threshold is 0.003**, a quarter under the lowest real mark's 0.004 at 8 dB, with the
-      edges and narrowness tested and the shape not. It still turns away any bar scoring nought on
-      a term. It no longer separates much else on a weak station, and the pattern does that work.
-    - Unit 502's 0.25 was set with a call 22 dB over the noise in front of it.
-  - **The pattern gate is wired in.** Every candidate goes to `CwPatternGate`, and only marks that
-    stand reach `MarksSince`, the scope's hops and the mark count. The one-call rule reads every
-    candidate, as it read every called mark at HEAD.
-  - **`Follow(pitch)`:** the printed sender's bin is watched over the radio's pointer and the sweep.
-    The reading's `Pointed` flag stays true only for the radio's own pointer.
-  - **`MarksLast4s`** is now the marks that stood at the watched pitch in the last four seconds,
-    where it was the watched bin's paired bars.
-  - **Switches and counts:** `MarksNeedPattern`, `CandidateCount` and `StoodCount`.
-- **`src/Hamlet.RadioEngine/Cw/CwPatternGate.cs`, new.** A sequence is candidates:
-  - within one bin of its pitch;
-  - within the reader's own level tolerance of its height, unit 490's figure as the order asks;
-  - silent no longer than the slowest Farnsworth word gap and a 5 WPM dah.
+- **`src/Hamlet.RadioEngine/Contacts/AchievementScores.cs`:** one additive, read-only member, `RankStartsAt`: where the rank he holds began. The ring needs it, and the class already worked it out without exposing it.
+- **`src/Hamlet.App/Controls/StandingRingControl.cs`, new:** the ring, drawn in code.
+- **`src/Hamlet.App/Controls/AchievementSealControl.cs`, new:** a double-ruled ring turned eight degrees, holding the code in the application's monospace face. It shrinks the code to the ring rather than spilling.
+- **`src/Hamlet.App/ViewModels/AchievementStanding.cs`, new:** the ring fraction (the file's arithmetic), rank name or number, gap, three facts, and just-unlocked.
+- **`src/Hamlet.App/ViewModels/AchievementBadges.cs`:**
+  - The tile members: `IsLocked`, `TileBand`, `LevelChip`, `CountText`, `CountWords`, `BarFraction`, `BarGapLine`, `NextLabel`, `ToOpenLine`.
+  - The rank trail: `AchievementRankTrail` and `AchievementRankStep`.
+  - `Page.Trail`.
+- **`src/Hamlet.App/ViewModels/AchievementWithinReach.cs`, new:** the strip.
+- **`src/Hamlet.App/ViewModels/AchievementCategory.cs`:**
+  - On the card: `EarnedUtc`, `Place`, `Miles`, `SealCode`, `SealColor`, `HasSeal`.
+  - The seal codes, stamped by kind in the constructor (`SealFor`).
+  - `DrawnCards`, now the earned rows newest first.
+  - `NextStamp` and `NextStamps`, the reach members, and the header's `LevelChip`.
+  - `Cards` is untouched.
+- **`src/Hamlet.App/ViewModels/AchievementsViewModel.cs`:** `Earned`, `EarnedIn`, `Standing` and `WithinReach`.
+- **`src/Hamlet.App/ViewModels/UnlockMoment.cs`, new:** what a logged contact unlocked, compared before and after on the achievements window's own pages. It returns nothing where the points file can't be read.
+- **`src/Hamlet.App/ViewModels/MainWindowViewModel.cs`:**
+  - `WriteLoggedContact` reads the log before the write and shows the moment after a successful one.
+  - `Unlocked`, `UnlockIsOpen`, `CloseUnlockCommand` and `SeeWhereUnlockedCommand`.
+  - `OpenAchievementsAt`, which opens the window with the moment's path already in the popup.
+  - `ApplyRigState` closes the panel when `TransmitStatus` reads 1.
+- **`src/Hamlet.App/Views/AchievementsWindow.axaml`:**
+  - The opening page is a two-column grid: the standing panel, then the title, trail, eight tiles on `HmTileTemplate` (which replaces `HmBadgeTemplate`), and the strip.
+  - Category rows carry their seal, with band, mode and date on a third line.
+  - The next stamp and `Your reach` stand in a 330 px column at the right.
+  - The header band carries the level in words.
+  - The window opens at 1280 by 860.
+  - The comments are rewritten to cite this unit and HM-DEC-211.
+- **`src/Hamlet.App/Views/MainWindow.axaml`:** the `UnlockPanel` popup.
+- **Records:** HM-DEC-211 in `DECISIONS.md`, its index row in `CLAUDE.md` §1 (189 to 208 not filled), and `Directory.Build.props`.
 
-  It **stands at five marks in two lengths at 2 to 1 or wider**, then releases its held marks in
-  order, and every agreeing mark after that at once. A candidate **closer than half the sender's
-  dit** to the sequence's last mark is the same tone read twice, or a piece of it, and is dropped.
-  - **Five:** unit 493's two runs of two, four, is the floor. Five is one past it, so the pattern is
-    always wider than one four-mark letter. What the count buys is noise's chance of making that
-    many agreeing marks.
-  - **Half a dit:** Morse puts a dit of silence between elements, a hand scatters it by tens of
-    percent, and the detector reads gaps long, never short.
-- **`src/Hamlet.RadioEngine/Cw/CwMark.cs`:** `Stood` and `OwnContrastDb`.
-- **`src/Hamlet.App/ViewModels/MainWindowViewModel.cs`:** on every scope tick the detector follows
-  `PrintingHz` while decoding.
-- **`tests/.../ThePatternIsTheGateTests.cs`, new:** the strength table, Farnsworth and 35 WPM, the
-  noise, the two stations, and the verdict row.
-- **Records:**
-  - R112 in both `PHASE_PLAN.md` copies.
-  - Both `PHASE_STATUS.md` copies name 507.
-  - `## UNIT 507 - STEP 12` in both `PHASE_OUTCOME.md` copies.
-  - `Directory.Build.props`, and HM-DEC-210.
+**What the author chose, with reasons:**
+- **Seal codes:**
+  - A country, and a country on a continent's page: the callsign's own prefix, the letters before its first digit or a leading digit and the letters after it (`LA`, `G`, `4X`). The callsign is what the log holds.
+  - A state: its two letters. A grid: its four characters.
+  - A band: its number of metres. A mode: its name, or its first three letters past five characters.
+  - A continent: its two-letter code.
+  - A Hall of Fame first: `1ST`, `DX`, `PSK`, `OLV` or `CW`, or its distance in thousands, `5K` or `10K`.
+  - A Total Miles tier: its line in thousands, `50K`.
+- **Locked-tile words:** `Nothing here yet.` and a `To open it:` phrase of 16 characters or fewer, such as `a US state.` or `any contact.`. That is what a tile holds on the test host's measure.
+- **`Next:` and `Opens a set:`:** on their own line above what's next, for the same reason.
+
+**The picture versus what's drawn, and why:**
+- **Faces:** no serif display face or web font ships. The application's own face is used at the picture's sizes and weights, with Consolas for callsigns.
+- **The three facts** are three rows, not three across. At the panel's 292 px, a large figure and its word don't both fit a third of it.
+- **Ring detail:** the ring shows no second sentence ("one new continent gets you most of the way"), because nothing computes it.
+- **Tiles:** the name is 13 pt, and the level chip sits on its own row under the header. The Total Miles gap and count shrink to the tile if they ever outgrow it.
+- **Rows:** band, mode and date sit under the call line, so a row fits beside the stamp column at 1280.
+- **Next stamp:** its sentences may wrap between words, as the picture draws them there. No word is broken.
+- **The strip's heading** says when the list was read, not on what band: the snapshot carries a time and no band.
+- **The unlock panel** is 560 px wide, not 640, and sits at the window's left rather than the center. That keeps it clear of the right-hand column the conversation cards stand in.
+- **`Best day`** in the picture's reach panel isn't drawn; the order asks for farthest and newest.
+
+**The legend went.** The tiles now say in words everything it explained. `Opens a set:` in the ring is the door, `Next:` is a counter, `Locked` says what can't be opened yet, and a hand cursor shows every tile is pressable. The running-total line went too, because the ring carries it.
+
+**The old tests, and what became of each:**
+- **Carried in substance:**
+  - `TheEightBadgesAreOnTheWindowAndNothingIsClipped`: counts visibly drawn emblems, and finds the total in the ring's points line.
+  - `NoStringInAnySlotIsClippedAtTheWindowsSize`: the badge slots became the tile slots. The corner slot is gone.
+  - `ThePageHasNoScrollerAndNothingBelowTheLegend` became **`...NothingBelowTheWindow`**.
+  - `TheAchievementsWindowAtItsOwnSize`: the tiles' bottom edge replaces the legend's.
+  - `StatesCountWhatTheLogsStateFieldSays`: the tile says `2` and `states, from STATE`, so ruling 35's words survive.
+- **Carried with changed substance, and renamed:**
+  - `TheOneToEarnNextIsDrawnAboveTheEarnedRows` became **`TheNextStampStandsBesideTheList`**, since the picture puts it beside.
+  - `InsideACategoryTheOneToEarnNextComesFirstThenTheEarned` became **`InsideACategoryTheEarnedAreNewestFirstAndTheNextStandsApart`**.
+- **The page-wide measures** in the lists and clicks-in tests now let a sentence wrap only on an unearned card, and only where every word fits. Two built-in watched reds hold their line under its longest word, not under half the line.
+- **My own unit 505 tests** stood the window up at its old 1040 and now use its 1280.
+- **`TheNextCardKnowsWhoIsCalling`** reads the callers from the stamp, not the list.
+- **Retired:** none.
+
+**Watched red first:**
+- **Task 1:** no `AchievementsStandingRing`, no `AchievementsStanding`, no `AchievementsJustUnlocked`.
+- **Task 2:** expected 8 tiles; no `AchievementsRankTrail`; the old badges drew `5 of 7`.
+- **Task 3:** no `AchievementsWithinReach`, twice.
+- **Task 4:** `hall_of_fame [Over 5,000 miles] has no seal`; no `AchievementsNextCard`; no `AchievementsReach`.
+- **Task 5:** the window case, with no `UnlockPanel`. **The view-model cases were not watched red.** I wrote `UnlockMoment` before them, and they passed on their first run.
 
 **Build and tests.**
 - **Build:** `Hamlet.sln` with warnings as errors, 0 warnings, 0 errors.
-- **Reader and detector tests:** 51 of 54. The three reds are the same as at HEAD:
-  `BurstsBetweenLettersDoNotSetTheSpeed` and `AMarkIsTheEnvelopeOverAThresholdTests`' two.
-- **Pattern tests:** 11 of 14. The reds are the 8 dB call, the 12 dB call, and the 10 dB Farnsworth
-  and 35 WPM case.
-- **`OneDecoderOneTruthTests`:** 6 of 6, with readings identical to HEAD.
-- **App carry-forward:** 277 of 278. The loss, `TheTestsStayOffTheNetworkTests`, took 1 ms and is
-  green alone.
+- **The achievements set with voice, record and binding health:** 87 of 90. The three reds are all inherited:
+  - `TheWindowDrawsEverySixRows`.
+  - `VoiceTests.NoOperatorFacingStringUsesABritishSpelling`: the two `centre`s in `MainWindowViewModel.cs`.
+  - `DecisionLogOrderTests`: the index gaps 166, 182 and 189 to 210, since the order says not to fill 189 to 208.
+- **App carry-forward after the last change:** 278 of 278.
 
 ## 2. What the owner should expect
 
 - **Rebuild.**
-- **Weaker stations should now read better.** A mark is judged by whether it fits the sender's
-  pattern and how its shape compares with its own height, not by how loud it is. On the bench, a
-  call 16 dB over the noise that used to come out as `CQ TNQ DE N0CALR` now reads whole.
-- **Noise still prints nothing, because noise can't make the pattern.** In thirty seconds of loud
-  noise, 635 bars passed the single-mark tests and none of them formed a pattern.
-- **The light, the blocks and the verdict row now describe the station being printed.** The row's
-  pitch is the printed pitch, and its mark count is the marks that fit that station's pattern.
-- **There is a limit.** Below about 16 dB over the noise the bench doesn't read a call whole. At
-  8 dB the dahs themselves break up before any of this sees them. **If a station you can hear still
-  reads nothing, section 3's table shows where the bench stops, and that is the number to report
-  against.**
+- **Tools, Achievements.** Your rank sits in a green ring at the left, with your points and how many more to the next rank.
+  - Under it: how many contacts and countries, your farthest in miles, and what you last unlocked. Click that to see the map, where it has one.
+  - Across the top: the trail of ranks, with the next one locked and the points it opens at.
+  - Eight tiles, each with its level, its count, a bar to the next level, and what's next.
+  - Along the bottom: who on the CQ list, when you opened it, would earn you something new.
+- **A kind you have nothing in is locked** and says what opens it. Click it and it still opens.
+- **Click a tile, then a row: the map, as before.** Each row now has its stamp at the left, and the newest are at the top. The next one to earn stands in its own column at the right, with who's calling and your farthest and newest under it.
+- **Log a contact that earns something new** and a panel comes up at the left of the main window. It says what you unlocked, where the station is, the points it added, and your rank bar with the new part in lighter green.
+  - **See where Chile is** opens the achievements window with that map showing.
+  - **Keep going**, or a click anywhere else, closes it.
+  - It never takes the keyboard, and it goes away the moment you transmit.
+- **Where it differs from the picture:**
+  - the application's own typeface instead of the picture's serif;
+  - the three facts as rows rather than side by side;
+  - the level on its own line in each tile;
+  - band, mode and date under the callsign in each row;
+  - the strip says when the CQ list was read but not the band;
+  - the unlock panel sits at the left, clear of the conversation cards.
+  - The reasons are in section 1.
+- **Nothing is left for you to delete by hand.**
 
 ## 3. What you should see
 
-**The strength table.** The call `CQ CQ DE N0CALL N0CALL K` at 20 WPM has 65 marks sent. Decibels
-are over the noise on unit 502's scale. Each "after" cell shows candidates at the pitch, the marks
-that stood, and the reading.
+These are computed on the headless host with the twelve-contact fixture, four callers and the shipped points file.
 
-| Strength | Before (HEAD) | After |
-|---|---|---|
-| 24 dB | `CQ CQ DE N0CALL N0CALL K` | 72 candidates, 65 stood: `CQ CQ DE N0CALL N0CALL K` |
-| 16 dB | `CQ TNQ DE N0CALR N0CALL K` | 75 candidates, 70 stood: **`CQ CQ DE N0CALL N0CALL K`** |
-| 12 dB | `CT A CQ DE N0CALL N0CAL<AS> K` | 69 candidates, 64 stood: `CT A CQ DE N0CALL N0CALL K` |
-| 8 dB | `NETA R ADEN0CALL N0CE AEL K` | 68 candidates, 58 stood: `N ET A EI A DE N0CALL NTJCE AEL K` |
+| Width | Opening page | Countries | Continents | Total Miles |
+|---|---|---|---|---|
+| 1280 x 860 | ring at 0.660; trail Rank 1 to 3 checked, Rank 4 here, Rank 5 locked at 500; 8 tiles of 212 x 196, States locked; strip of 3; nothing clips | 8 rows, newest first, all shown without scrolling, 64 px each, with the next stamp and Your reach beside; nothing clips | 7 rows, the 5 earned whole, the 2 unreached as panels with their callers; nothing clips | no earned tier, the 50,000-mile tier as the next stamp with its bar; nothing clips |
+| 1400 x 860 | the same, tiles 242 wide; nothing clips | the same; nothing clips | the same; nothing clips | the same; nothing clips |
+| 1920 x 860 | the same, tiles 372 wide; nothing clips | the same; nothing clips | the same; nothing clips | the same; nothing clips |
 
-- **The bench reads the call whole from 16 dB up.** At 12 dB only the cold-start CQ is wrong, as at
-  HEAD.
-- **Below that the bars break.** At 8 dB, four of the call's dahs never become bars. That is before
-  any gate this unit touched, so a pattern can't bring them back.
-
-**At 10 dB, before and after:**
-
-| Case | Reads |
-|---|---|
-| 35 WPM | `C Q C Q D E N 0 C A L L N 0 C A L L K`: every letter right, and every letter its own word, as at HEAD. That's the reader's word-gap arithmetic, which the order says must not change here. |
-| 5 WPM Farnsworth | `CK C TA DE E■CAEIL N0RALL N`, unchanged |
-
-**Noise:**
-
-| Case | Candidates passing the single-mark tests | Stood in a pattern | Printed |
-|---|---|---|---|
-| 30 s of loud noise | 635 (66 at HEAD) | **0** | nothing |
-| 3 min of loud noise | 3,932 (372 at HEAD) | **80** | nothing |
-
-The loosened single-mark tests pass many more noise bars. The pattern stands almost none of them,
-and the reader prints none.
-
-**The cases:**
-- **Two stations 200 Hz apart**, the loud one at 24 dB and 625 Hz and the quiet one at 10 dB and
-  825 Hz. The loud one reads whole, as at HEAD. The quiet one **is found as a second sequence**: 12
-  of its marks stood. The reader prints one sender, the loud one.
-- **The verdict row on a driven station:** while printing and keying, `scopePitchHz` equalled the
-  printed pitch on all 1,322 readings, and `marks4s` was the count of marks that stood there, up to
-  20.
-- **Every existing case** was compared text for text with HEAD. That covers the calls at every
-  speed, the Farnsworth cases, the speed change, the bursts, the hesitation, `TEST DE W1AW K`,
-  `DE DE`, and the lone and stray marks. All read as at HEAD **but one**: unit 502's weak call, about
-  10 dB at 23 WPM, went from `CG N EQ DE N0CALL NT ON EAE IL A` to
-  `CGE N EQ DE N0CALL NT ON EAE IL A`. Its test asserts only the mark count, so it stays green. It
-  was not forced back.
-- **Diagnostic counts that changed but don't affect any reading:**
-  - A lone E or T, and noise alone, now reach the reader as 0 marks, where they were 13 and 66. Both
-    still print nothing.
-  - Unit 504's gate table shows 65 of 65 marks, where it was 66, because the split mark is now
-    dropped. With every gate off it reads `MT N OT N I I L K`, where HEAD read placeholders.
+**What the fixture gives:**
+- **Empty log:** all eight tiles are locked, and the standing panel says `Your first contact earns` / `10 points.`
+- **Unreadable points file:** no ring and no score. The panel says why, and the page still draws.
+- **Maps at rest:** none, anywhere in the window, as unit 505 left it.
 
 ## 4. What's blocking us
 
-Nothing blocks. What is left, a line each:
-- **Weak bars break at 8 dB before any gate sees them.** The flat-top tolerance at a weak mark's
-  measured contrast is the next place to look, and it is outside this order.
-- **At 35 WPM at 10 dB every letter prints as a word.** That's the reader's word-gap arithmetic,
-  which this order protects.
-- **The 12 dB cold start** reads `CT A` for the first `CQ`, as at HEAD.
-- **The reader prints one sender**, so a second sequence that stood, like the quiet station, is found
-  but never printed.
-- **`DecisionLogOrderTests.EveryRulingAppearsOnceAndTheGapsAreTheKnownOnes`** has been red since
-  before unit 505, because the `CLAUDE.md` §1 index stops at HM-DEC-188. HM-DEC-210 joins the gaps,
-  since this order asked for no index row.
-- **The app's verdict row is checked at the engine level.** The detector's reading is what the row
-  copies. No app test drives the scope tick itself.
+Nothing blocks. What's left, a line each:
+- **Decision id:** the order named HM-DEC-210, which unit 507 had already taken, so this ruling is HM-DEC-211.
+- **The trail's top:** the shipped points file has five ranks, not eight. At Rank 6 the trail draws the last three passed ranks and `Rank 6 · you are here` with nothing locked, and the ring is full.
+- **Unlock panel placement:** it is fixed at the window's left, clear of the conversation cards' column. It does not track any other panel's position.
+- **The strip** says when the CQ list was read and not on what band, because the snapshot carries no band.
+- **`VoiceTests`' two `centre`s** in `MainWindowViewModel.cs` are still red and inherited.
+- **`TheWindowDrawsEverySixRows`** is still red and inherited. It looks for a control the window no longer has.
+- **The decision index** still stops short at 189 to 208. The order says not to fill them.
 
 ### Asks still outstanding
 
