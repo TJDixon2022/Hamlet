@@ -4,6 +4,40 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-211
+date: 2026-09-30
+refs: work instruction 506 (which named HM-DEC-210, already used by unit 507), assets/achievements-look/opening-page.html, assets/achievements-look/countries-page.html, assets/achievements-look/unlock-moment.html, src/Hamlet.App/Views/AchievementsWindow.axaml, src/Hamlet.App/Views/MainWindow.axaml, src/Hamlet.App/ViewModels/UnlockMoment.cs
+---
+
+**The achievements window shows overall progress, what is locked, and the moment it opens.** Tim,
+2026-09-30: *"I like the way maps are popping up when you ask for them, but overall, the achievements
+isn't very visually stunning. It doesn't attract me to go look. This is one of the ways we're going to
+help people to get use of the radio, is by wanting to get these achievements. We need to show overall
+progress. We need unlocking. We need just ways to make it visually attractive and stunning."* And on
+the picture: *"Okay, write it up. The whole thing. It looks good."*
+
+**What is built.** The opening page is the approved picture: his standing in a ring - the fraction of
+the way from where his rank began to where the next begins, the rank by the name his file gives it or
+its number, the gap in words, three facts, and what he last unlocked as a button to its path; a rank
+trail with each passed rank checked, the one he holds, and the next one locked with where it opens;
+eight tiles, each opening its kind, with the level in words, the count and what it counts, a bar to
+the next level of his file, and what is next, a door in the amber ring; a kind with nothing earned
+drawn locked with what opens it; and who on the CQ list is within reach. A category's rows carry
+seals and run newest first, with the next stamp in a column at the right and his reach under it. A
+logged contact that earns something he did not have shows a panel over the main window that takes no
+focus, blocks no control, and closes on its own button, a click outside, or the start of a
+transmission.
+
+**What stands.** `ACHIEVEMENTS_PHILOSOPHY.md` §2 and §3.1 - one locked rank, never the ladder, and a
+locked kind only where nothing in it is earned; §3.7 - no denominator of the world; R19's door; unit
+505's list, row press and popup; and his points file as the source of every number. Nothing earned,
+counted or scored changes.
+
+**Whose words are whose.** The ruling and the approval of the picture are Tim's. The picture, the
+window size of 1280 by 860, each kind's seal code, the Hall of Fame header's `#8A6A10`, and how the
+unlock panel closes are the author's under work instruction 506, and overrulable.
+
+---
 id: HM-DEC-210
 date: 2026-09-30
 refs: work instruction 507 (which named HM-DEC-209, already used by unit 505), docs/phase-requirements/PHASE_PLAN.md R112, src/Hamlet.RadioEngine/Cw/CwPatternGate.cs, src/Hamlet.RadioEngine/Cw/CwEnvelopeDetector.cs, src/Hamlet.App/ViewModels/MainWindowViewModel.cs, tests/Hamlet.RadioEngine.Tests/Cw/ThePatternIsTheGateTests.cs

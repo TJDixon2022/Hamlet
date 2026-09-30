@@ -16,8 +16,9 @@
          that reason.
 
          **IT READS AND IT NEVER WRITES.** Nothing on it reaches the file or a send
-         path; the only commands are the badge presses and the back control, and
-         both only change which view of the same record is showing.
+         path; the only commands are the tile presses, the row presses, the map
+         buttons and the back control, and each only changes which view of the same
+         record is showing.
 
          **THE EXPOSURE HERE IS AN ACHIEVEMENT CLAIMED THAT WAS NOT EARNED**
          (§0.0). Every figure on it is derived from the records at the moment it is
@@ -29,11 +30,20 @@
          states of this one grid; the old card view, the belt, *Your best* and the
          file path are gone from the window.
 
-         **TEXT FITS, EVERYWHERE, AND NOTHING WRAPS** (work instruction 332 task 1).
-         Every slot is sized to the longest string it can carry on the test host's
-         flat ten pixels a character, which is wider than any face on the glass;
-         `TheAchievementsPageClicksInTests` measures it. That is why the window is
-         1000 wide where 331 left it at 820. -->
+         **OVERALL PROGRESS, WHAT IS LOCKED, AND THE MOMENT IT OPENS** (work instruction
+         506, HM-DEC-211, replacing unit 331's title over eight badges and a legend).
+         Tim, 2026-09-30: *"We need to show overall progress. We need unlocking."* The
+         page is the approved picture, `assets/achievements-look/opening-page.html`: your
+         standing in a ring at the left, and at the right the rank trail, eight tiles and
+         who is within reach. **The window opens at 1280 by 860**, the picture's own
+         size, where 505 left it at 1040 by 720; the author's, overrulable.
+
+         **TEXT FITS, EVERYWHERE, AND NO WORD IS BROKEN** (work instruction 332 task 1,
+         carried by 506). Every slot is sized to the longest string it can carry on the
+         test host's flat ten pixels a character, which is wider than any face on the
+         glass; `TheAchievementTilesTests` and `TheAchievementsPageClicksInTests` measure
+         it. **One exception, and it is the picture's**: in a category's next-stamp column
+         a sentence may run to a second line between words, as the picture draws it there. -->
 
     <Window.Styles>
         <Style Selector="Button.hm-badge">

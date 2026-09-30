@@ -216,6 +216,56 @@ public sealed class TheAchievementTilesTests
         }
     }
 
+    /// <remarks>
+    /// Work instruction 506 task 6: the opening page at 1280, 1400 and 1920 wide on the twelve contacts with four
+    /// callers, described as computed - the ring, the trail, the tiles drawn and locked, the strip - and what
+    /// clips. It asserts only that nothing clips.
+    /// </remarks>
+    [AvaloniaFact]
+    public void TheOpeningPageAtThreeWidthsDescribed()
+    {
+        var calling = CqSnapshot.From(
+            new[] { "CQ OE8DDX JN76", "CQ DX J38DX FK92", "CQ K1ABC FN42", "CQ ZL1ABC RF72" }.Select(m => new DigitalDecodeRow("214100", "-10", "0.2", "1200", m)),
+            new DateTime(2026, 9, 30, 14, 32, 0, DateTimeKind.Utc));
+
+        foreach (var width in new[] { 1280.0, 1400.0, 1920.0 })
+        {
+            var window = new AchievementsWindow
+            {
+                DataContext = new AchievementsViewModel(TheAchievementsPageTests.TwelveContacts(), "FN00", AchievementPoints.Parse(AchievementPoints.Shipped())) { Calling = calling },
+                Width = width,
+                Height = 860,
+            };
+
+            window.Show();
+            TheAchievementsStandingTests.Settle(window);
+
+            try
+            {
+                var tiles = Tiles(window);
+                var locked = tiles.Where(t => ((AchievementBadge)t.DataContext!).IsLocked).Select(t => ((AchievementBadge)t.DataContext!).Name).ToList();
+                var ring = TheAchievementsStandingTests.Named<StandingRingControl>(window, "AchievementsStandingRing");
+                var trail = TheAchievementsStandingTests.VisibleText(TheAchievementsStandingTests.Named<Control>(window, "AchievementsRankTrail")).ToList();
+                var strip = TheAchievementsStandingTests.VisibleText(TheAchievementsStandingTests.Named<Control>(window, "AchievementsWithinReach")).ToList();
+                var tile = tiles[0];
+                var clips = Clips(window);
+
+                _output.WriteLine(
+                    width.ToString("0", CultureInfo.InvariantCulture) + " x 860: ring " + ring.Bounds.Width.ToString("0", CultureInfo.InvariantCulture) + " px at "
+                    + ring.Fraction.ToString("0.000", CultureInfo.InvariantCulture) + "; trail " + string.Join(" | ", trail) + "; " + tiles.Count + " tiles, each "
+                    + tile.Bounds.Width.ToString("0", CultureInfo.InvariantCulture) + " x " + tile.Bounds.Height.ToString("0", CultureInfo.InvariantCulture) + ", locked: "
+                    + (locked.Count == 0 ? "none" : string.Join(", ", locked)) + "; strip " + string.Join(" | ", strip) + "; "
+                    + (clips.Count == 0 ? "nothing clips" : string.Join("; ", clips)));
+
+                Assert.Empty(clips);
+            }
+            finally
+            {
+                window.Close();
+            }
+        }
+    }
+
     /// <summary>
     /// **A sentence on an unearned card that wraps between words and breaks none** (work instruction 506 task
     /// 4): the next stamp stands in a column the picture draws its sentences over two lines in, so there a run

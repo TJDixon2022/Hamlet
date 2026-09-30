@@ -6,8 +6,8 @@ WORK_INSTRUCTION: 506 - achievements worth opening (run by hand)
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-30T14:15:54-04:00
-NOTE: Unit 506 - task 5 committed, a logged new country shows the unlock panel; now the three widths, the comments and the records
+UPDATED: 2026-09-30T14:17:31-04:00
+NOTE: Unit 506 task 6 - app carry-forward line after the last change
 
 ---
 
