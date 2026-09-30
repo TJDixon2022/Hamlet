@@ -7,131 +7,149 @@ confirmed. Nothing in this report is evidence about the radio.
 **Run by hand, outside the loop.**
 - `SESSION.lock` was taken through `tools\arbiter\lock.bat take` and released the same way.
 - Nothing was written to `RUN_LEDGER.md`, and nothing under `tools\arbiter\` was touched.
-- No box was ticked; R109 was appended to both `PHASE_PLAN.md` copies in the owner's words.
+- No box was ticked; R110 was appended to both `PHASE_PLAN.md` copies in the owner's words.
 - No recording, fixture, floor or telemetry was read.
 - Nothing under `.run-unit\` was committed, and nothing was written to the radio.
 
-**The changes, file by file** (all in `aeb848ec`):
-- **`src/Hamlet.RadioEngine/Cw/CwRunReader.cs`, change one: the gaps between letters are the
-  sender's own.**
-  - **The gap inside a letter** stays as unit 500 left it: the gap dit, with the boundary at √3.
-  - **The letter gap** is the mean of the lowest cluster of the sender's gaps between runs. The
-    gaps are sorted and walked up from the shortest until two neighbours differ by √(7/3), which
-    is half of three-to-seven in log length.
-  - **The word boundary** is that letter gap × √(7/3). Farnsworth stretching spreads PARIS's
-    nineteen spacing units evenly, so the letter and word gaps still sit at three and seven of one
-    stretched unit.
-  - **Why the lowest cluster:** a pause longer than a word gap sits above the word cluster and
-    cannot pull the letter gap. A split at the widest ratio would let it.
-  - **Before the sender has shown three gaps between runs**, the reader keeps 1:3:7 on the gap dit,
-    and **a sender is not printed until it has shown them**. Printed earlier, a Farnsworth call's
-    first two letters were spaced on the dit and read `C Q`.
-  - **The silence span** now follows the measured word boundary.
-  - **A sender not yet measured is kept at least 3.66 s**, the slowest Farnsworth word gap (18 WPM
-    letters at 5 WPM overall, from PARIS), plus the wait for its next mark. Before this, a 5 WPM
-    Farnsworth sender was forgotten between its letters and never made two runs.
-- **`src/Hamlet.RadioEngine/Cw/CwRunReader.cs`, change two: a lone letter must belong to something
-  (R109).**
-  - **A one-mark letter prints only when a letter of two marks or more** from the same sender stands
-    within twice the word boundary, before or after it.
-  - **Another one-mark letter no longer confirms it.**
-  - **Three or more one-mark letters in a row are dropped together.**
-  - A banked letter has not been printed, so dropping it takes nothing off the screen (R100).
-- **`tests/Hamlet.RadioEngine.Tests/Cw/FarnsworthAndLoneLettersTests.cs`, new.** The Farnsworth
-  audio is built in the test: each letter at 18 WPM, followed by the gap PARIS gives. One stretched
-  unit is (60/overall − 31 × 1.2/18) / 19 s; a letter gap is three units and a word gap seven.
+**Task 0.** Unit 501 is in the tree: `FarnsworthAndLoneLettersTests` is present and green.
+
+**The changes, file by file** (all in `6f1d3d0c`):
+- **`src/Hamlet.RadioEngine/Cw/CwEnvelopeDetector.cs` - one shape, one score.** Every bar that
+  passes the five existing tests gets one score, and becomes a mark only at `ShapeThreshold`,
+  0.25, or more. The five tests stay in the tree and stay on; nothing is loosened. There is a
+  switch, `MarksNeedShape`, so the difference can be counted.
+- **`src/Hamlet.RadioEngine/Cw/CwMark.cs`:** each mark carries its `CwMarkShape`, the five
+  properties and their product, so the run reader, the scope and anything downstream can see it.
+- **The scope's hover** (`CwEnvelopeDetector.History`, `CwTrainingGraph`, `CwScopeControl.BarTip`):
+  - The hops under a called mark carry its score, and a block's hover says
+    `dah, 150 ms, shape 0.87 of 1`.
+  - A block the detector drew but did not hand out as a mark says `not handed out as a mark`.
+  - Two tests that pinned the old hover wording were updated to the new words.
+- **Tests:**
+  - `TheShapeOfAKeyedToneTests`, new: the noise table, the score distributions, the scope's hops,
+    and the weak station.
+  - `TheBlockSaysItsShapeTests`, new: the hover's words.
+  - Unit 498's noise-count helper now switches the shape off, so its counts stay what it measured.
 - **Records:**
-  - `## UNIT 501 - STEP 12` is in both outcome copies, and both status copies name 501.
-  - Version 1.13.187 → 1.13.188.
-  - R109 is in both plans.
-  - HM-DEC-205, "Farnsworth gaps are the sender's own, and a lone letter must belong to something",
-    is in `DECISIONS.md`.
-- **Not changed:** the detector, the marks, the narrowness, the edges, unit 496's bin choice, the
-  keyed-mark rule, the two-run rule, the scope, the terminal, the layout, the preamp and the
-  buttons.
+  - `## UNIT 502 - STEP 12` is in both outcome copies, and both status copies name 502.
+  - Version 1.13.188 → 1.13.189.
+  - R110 is in both plans.
+  - HM-DEC-206, "A mark is judged by its whole shape, not by crossing five lines", is in
+    `DECISIONS.md`.
 
-**Watched failing first, at HEAD's reader:**
-- The Farnsworth call at 5 WPM overall read **nothing**.
-- The Farnsworth call at 10 and 13 read `C Q C Q D N 0 C A L L N 0 C A L L K`.
-- Farnsworth `TEST DE W1AW K` at 5 read **nothing**.
-- The call followed by `T E T T E` read `CQ CQ DE N0CALL N0CALL K T E T T`, which is the
-  owner's symptom.
-- `DE DE` read `DE D`.
-- `T E T T E` alone already printed nothing at HEAD, because a sender of lone marks never makes two
-  runs of two marks and so is never printed. That is why the call-first case was added.
+**How the score is built.** Each property is a distance from the ideal of a keyed tone, from 0 to 1:
+- **Flatness:** 1 minus the top's RMS wander from its own mean, divided by the flatness tolerance at
+  the bar's contrast (R93).
+  - The top excludes the one hop of its own rise or fall that the window can leave at an end.
+  - First built without that trim, the real dahs scored 0: one hop 12 dB under the top made a
+    flat dah read as unflat. That hop is the edge, which the edge score judges.
+- **Edges:** for the rise and for the fall, 2 over the hops taken to reach half amplitude, capped
+  at 1. Two hops is the window's own spread. The two edges are multiplied.
+- **Narrowness:** how far the bar's bin stands above the louder of the bins 300 Hz either side,
+  over 15 dB, capped at 1.
+- **Contrast:** its level over its gaps, over 15 dB, capped at 1.
+- **Length:** 1 up to a 5 WPM dah (720 ms), and that length over its own beyond it.
+  - The detector knows no sender, so every length from the shortest bar up to that is a plausible
+    dit or dah. On every case here length scored 1: it separates nothing, and the report says so
+    rather than pretend it does.
+- **Where 15 dB comes from:** the work instruction's statement that a real mark stands 15 to
+  30 dB above the band.
+- **Why a product:** a key down is all five at once, and a bar that is bad on one is not the shape.
+  A sum or a mean would let four good properties carry a bad one. Each property is weighed the
+  same, and none was weighted by what makes a test pass.
 
-**Found and not repaired: a crash in the detector.**
-- `CwEnvelopeDetector.cs` line 1160 walks a mark back to where its tone rose. In the first seconds
-  of audio it can step to hop −1, and `Level(-1)` throws `IndexOutOfRangeException`.
-- It happened on the call-then-`T E T T E` case with seed 5035. The detector was outside this
-  unit's scope, so the case was moved to seed 5036, and the test's remarks say so.
+**The threshold and its reason.**
+- **The floor:** the lowest score of any real mark is 0.621 on the clean call and 0.334 on the same
+  call 12 dB weaker.
+- **The threshold is 0.25**, a quarter under 0.334. That leaves room for a real mark rougher than
+  a synthetic one.
+- It was not set by looking at noise. Section 3 shows the two populations overlap, and the
+  threshold sits under the overlap, not in it.
+
+**Watched failing first.** With the threshold at nought, which is HEAD's behaviour, the noise test
+was red: the shape turned away no bar, 146 in and 146 out.
 
 **Verification.**
 - **The build:** 0 warnings, 0 errors.
-- **Run reader, speed and Farnsworth tests: 33 of 33.**
-- **The decoder's run-path tests: 9 of 11.** The reds are `AMarkIsTheEnvelopeOverAThresholdTests`'
+- **Shape, reader, speed and Farnsworth tests: 37 of 37.**
+- **The decoder's run-path tests: 10 of 12.** The reds are `AMarkIsTheEnvelopeOverAThresholdTests`'
   two cases, unchanged from before.
-- **The app carry-forward line: 276 of 278.** `ThePsk31OfferTests` and
-  `TheMainWindowBindsWithoutOneComplaint` failed in 1 ms and passed alone (3 of 3).
+- **The app carry-forward line: 278 of 278.**
 
 ## 2. What the owner should expect
 
 1. Rebuild.
-2. **W1AW's slow code practice should read as words.** Its letters come at 18 WPM with long spaces
-   between them, and the reader now measures those spaces from the sender instead of assuming them
-   from the dit.
-3. **Strings of `E` and `T` should be gone.** A lone letter now needs a real letter beside it, and
-   three lone letters in a row are thrown out.
-4. `TEST`, `DE` and every real `E` and `T` inside a word still print.
-5. **The first letters of a sender appear a little late.** Nothing prints until the sender has
-   shown three gaps between letters; at 5 WPM Farnsworth that is several seconds.
-6. **If it still comes out wrong, compare the gap table in section 3** with what you hear.
+2. **Fewer false marks still.** A mark now has to look like a keyed tone as a whole, not just clear
+   five separate bars. On loud noise, less than half as many marks reach the reader: about 2 a
+   second where there were 5.
+3. **A real station, strong or weak, is unaffected.** Its marks score well inside the shape. The
+   synthetic call at about 22 dB scores 0.62 to 0.94, and at about 10 dB 0.33 to 0.78, against a
+   threshold of 0.25.
+4. **Hover over a block on the CW tab's scope** and it says the mark's shape score, or that the
+   block was not handed out as a mark.
+5. **If real letters go missing, that is the threshold.** Section 3's score table names the floor.
 
 ## 3. What you should see
 
-**Farnsworth, 18 WPM letters, the true gaps beside the measured ones:**
+**Thirty seconds of loud noise:**
 
-| sent | overall | letter gap, true / measured | word gap, true / measured | before | after |
-|---|---|---|---|---|---|
-| `CQ CQ DE N0CALL N0CALL K` | 5 WPM | 1568 / 1577 ms | 3660 / 3667 ms | nothing | `CQ CQ DE N0CALL N0CALL K` |
-| `CQ CQ DE N0CALL N0CALL K` | 10 WPM | 621 / 628 ms | 1449 / 1455 ms | `C Q C Q D N 0 C A L L N 0 C A L L K` | `CQ CQ DE N0CALL N0CALL K` |
-| `CQ CQ DE N0CALL N0CALL K` | 13 WPM | 402 / 410 ms | 939 / 948 ms | `C Q C Q D N 0 C A L L N 0 C A L L K` | `CQ CQ DE N0CALL N0CALL K` |
-| `TEST DE W1AW K` | 5 WPM | 1568 / 1576 ms | 3660 / 3668 ms | nothing | `TEST DE W1AW K` |
+| passing the older tests | with edges | narrow | inside the shape |
+|---|---|---|---|
+| 1452 | 1069 | 146 | **66** |
 
-**Lone letters:**
+- **Marks handed out a second:** 4.9 before, 2.2 after.
+- **Three minutes of noise:** 115 marks in the last minute before, 54 after.
+- Both noise tests still print nothing.
 
-| case | before | after |
-|---|---|---|
-| `T E T T E` alone, 18 WPM | nothing | nothing |
-| the call, then `T E T T E`, 18 WPM | `CQ CQ DE N0CALL N0CALL K T E T T` | `CQ CQ DE N0CALL N0CALL K` |
-| `TEST DE W1AW K`, 18 WPM | `TEST DE W1AW K` | `TEST DE W1AW K` |
-| `DE DE`, 18 WPM | `DE D` | `DE DE` |
+**The scores:**
 
-**The existing cases read exactly as at HEAD:**
-- The calls at 5, 10, 18 and 35 WPM read whole.
-- The 10-to-20 WPM sender reads whole.
+| | marks | lowest | median | highest |
+|---|---|---|---|---|
+| clean call, about 22 dB | 65 | **0.621** | 0.874 | 0.944 |
+| weak call, about 10 dB | 61 | **0.334** | 0.652 | 0.776 |
+| loud noise passing all five | 146 | 0.000 | 0.229 | **0.800** |
+
+- **They overlap.** 42 of the 146 noise bars score at or above the lowest real mark, 0.334. The
+  highest noise bar, 0.800, is above most of the clean call's marks.
+- The threshold is **0.25**, under the overlap.
+- The noise bars that score high are all 20 to 30 ms long, the shortest a bar can be. The real
+  marks are all 40 ms or longer.
+
+**The cases.** Every one reads exactly as at HEAD:
+- The calls at 5, 10, 18 and 35 WPM, and the 10-to-20 WPM sender, read whole.
+- Farnsworth at 5, 10 and 13 WPM overall, and Farnsworth `TEST DE W1AW K`, read whole.
 - The clean call, the call with bursts, the two-station case and the stray dit each read
   `CQ CQ DE N0CALL N0CALL K`.
-- `TEST DE W1AW K` at 5, 10 and 23 WPM reads whole.
-- The lone dit and lone dah print nothing.
-- Both noise tests print nothing: 146 marks on thirty seconds of noise, and 115 in the last minute
-  of three.
+- `TEST DE W1AW K` and `DE DE` read whole.
+- The lone dit, the lone dah, `T E T T E` alone and the call followed by `T E T T E` print nothing
+  beyond the call.
+- Both noise tests print nothing.
+
+**The weak station, about 10 dB over the noise:**
+- It keeps all 61 of its marks with the shape on.
+- It reads `CG N EQ DE N0CALL NT ON EAE IL A` before and after. That reading predates this unit:
+  the score takes nothing from it and does not repair it.
 
 ## 4. What's blocking us
 
 Nothing blocks. What is left, a line each:
-- **The detector can crash on real audio.** `CwEnvelopeDetector.cs` line 1160 reads the hop before
-  hop zero and throws `IndexOutOfRangeException` early in the audio (seed 5035 in the new test). A
-  guard there is a one-line detector change and wants the owner's go-ahead, since the detector was
-  out of scope.
-- **A sender that never shows three gaps between runs is never printed.** For example, a two-letter
-  word sent once and nothing else.
-- **A sender not yet measured is kept 3.66 s rather than one second** before it is forgotten. The
-  noise tests are unchanged by it, but noise gets longer to accumulate.
-- **The cluster walk, the three gaps and the forgetting floor are the author's**, derived from
-  PARIS and 1:3:7, and overrulable.
+- **Noise still overlaps the shape.** 42 of the noise bars that passed the five tests score like
+  real marks. The score halves what gets through; it does not end it.
+- **Length separates nothing without a sender.** The noise that scores high is at the shortest bar
+  length, but the detector cannot call that too short without knowing the sender's dit. The reader
+  knows it, and a length test against the sender's own dit would sit there.
+- **A weak station, about 10 dB over the noise, still reads wrongly**:
+  `CG N EQ DE N0CALL NT ON EAE IL A`, as at HEAD.
+- **The detector crash reported by unit 501 is still in the tree.** `CwEnvelopeDetector.cs` in
+  `CallMarks` can read the hop before hop zero while it reaches a mark back to where its tone rose,
+  and throws `IndexOutOfRangeException` early in the audio. It is a one-line guard for the owner to
+  approve.
+- **The verdict row does not yet write the score.** The mark carries it, so the row can when asked.
+- **The five scores, the product, the 15 dB ideal, the threshold and its margin are the author's**,
+  and overrulable.
 - **Pre-existing reds, not this unit's:**
   - `VoiceTests`' British spelling.
+  - `TheVerdictCarriesTheScopeTests`' four cases, red on HEAD too, checked in a clean worktree.
   - `HowMuchTheApplicationSaysTests`.
   - `ModeFollowsTheMapAgainTests.NothingButTheModeIsEverWritten`.
   - `TheLicenceCardAnswersForTheTabAndNotForMorseAlways`.
