@@ -15,9 +15,10 @@ using Xunit.Abstractions;
 namespace Hamlet.App.Tests.ViewModels;
 
 /// <summary>
-/// **The W1AW button's CW sticks** (work instruction 499, HM-DEC-203). The owner pressed `W1AW on
-/// 40 m` and the radio ended in USB-D at 3 kHz; after a press the radio is in CW and stays in CW
-/// until he changes band or mode himself.
+/// **The W1AW button tunes, and the CW tab's CW stands** (work instructions 499 and 503, HM-DEC-203,
+/// HM-DEC-207). Unit 499 made the press set CW and hold mode-follow off; the hold did not survive a
+/// restart, and since R111 the CW tab sets CW and keeps it, so the press only tunes. Re-pinned to
+/// R111: the tab writes the mode, the map and the button do not.
 /// </summary>
 public sealed class TheW1awPressStaysInCwTests
 {
@@ -36,70 +37,48 @@ public sealed class TheW1awPressStaysInCwTests
         });
 
     /// <remarks>
-    /// Case 3: from 40 m, press, and the radio reports the new frequency and CW back; mode-follow
-    /// then looks, as its settle timer does. One mode write, CW, and no later data variant.
+    /// On the CW tab, the tab writes CW once; the press, the radio reporting 7.0475 back, and the tab
+    /// looking again write nothing more, and no data variant.
     /// </remarks>
     [AvaloniaFact]
-    public async Task OnePressOneCwWriteAndNothingAfterTheReportBack()
+    public async Task ThePressTunesAndTheTabsCwIsTheOnlyWrite()
     {
         var (model, rig) = Pressed(7_030_000, 7_030_000);
 
         model.ApplyRigState(Radio(7_047_500, CivMode.Cw, false, DateTime.UtcNow.AddSeconds(1)));
-        await model.FollowTheMapForTests();
+        await model.FollowTheTabForTests();
 
         _output.WriteLine($"writes: {string.Join(", ", rig.Writes)}; suspended {model.ModeFollowSuspended}");
 
         Assert.Equal(new[] { "Cw data False" }, rig.Writes);
-        Assert.True(model.ModeFollowSuspended);
-    }
-
-    /// <remarks>
-    /// Case 3, the press's own band change: with the band on screen elsewhere, the press moves it to
-    /// 40 m, and that band change keeps the hold rather than re-arming mode-follow over the CW.
-    /// </remarks>
-    [AvaloniaFact]
-    public async Task ThePressesOwnBandChangeKeepsTheHold()
-    {
-        var model = new MainWindowViewModel(General(), null);
-        var rig = new RecordingRig();
-
-        model.UseRigForTests(rig);
-        model.TuneToCommand.Execute(7_030_000L);
-        model.SelectedBand = model.Bands[3];
-
-        await model.TuneToW1awCommand.ExecuteAsync(model.W1awHere);
-        await model.FollowTheMapForTests();
-
-        _output.WriteLine($"band {model.SelectedBand.Band.Name}, dial {model.FrequencyHz}; writes: {string.Join(", ", rig.Writes)}; suspended {model.ModeFollowSuspended}");
-
-        Assert.Equal("40 m", model.SelectedBand.Band.Name);
-        Assert.Equal(new[] { "Cw data False" }, rig.Writes);
-        Assert.True(model.ModeFollowSuspended);
-    }
-
-    /// <remarks>
-    /// Case 3, and the hold ends where the order says: the operator changing band himself re-arms
-    /// mode-follow exactly as before (HM-DEC-056).
-    /// </remarks>
-    [AvaloniaFact]
-    public async Task HisOwnBandChangeReArmsIt()
-    {
-        var (model, _) = Pressed(7_030_000, 7_030_000);
-
-        model.SelectBandCommand.Execute(model.Bands[3]);
-        await Task.Yield();
-
-        _output.WriteLine($"after his band press: {model.SelectedBand.Band.Name}, suspended {model.ModeFollowSuspended}");
-
         Assert.False(model.ModeFollowSuspended);
     }
 
     /// <remarks>
-    /// Case 2: at 7.0475 the card reads Morse, with no digital sub-mode under it, and the license
-    /// line speaks about Morse.
+    /// A band change re-arms nothing (R111): after the operator sets USB on the radio's own knob,
+    /// his own band press leaves the app standing down, and nothing is written back.
     /// </remarks>
     [AvaloniaFact]
-    public async Task TheCardAtW1awReadsMorse()
+    public async Task HisBandChangeDoesNotReArmTheModeOverHisKnob()
+    {
+        var (model, rig) = Pressed(7_030_000, 7_030_000);
+
+        model.ApplyRigState(Radio(7_047_500, CivMode.Usb, false, DateTime.UtcNow.AddSeconds(1)));
+        model.SelectBandCommand.Execute(model.Bands[3]);
+        await model.FollowTheTabForTests();
+
+        _output.WriteLine($"after his band press: {model.SelectedBand.Band.Name}, suspended {model.ModeFollowSuspended}, writes {string.Join(", ", rig.Writes)}");
+
+        Assert.True(model.ModeFollowSuspended);
+        Assert.Equal(new[] { "Cw data False" }, rig.Writes);
+    }
+
+    /// <remarks>
+    /// At 7.0475 the card reads Morse, with no digital sub-mode under it, and the license line
+    /// speaks about Morse (unit 499's case 2, unchanged).
+    /// </remarks>
+    [AvaloniaFact]
+    public void TheCardAtW1awReadsMorse()
     {
         var (model, _) = Pressed(7_030_000, 7_030_000);
         var card = model.GreenZone;
@@ -128,6 +107,9 @@ public sealed class TheW1awPressStaysInCwTests
         model.UseRigForTests(rig);
         model.TuneToCommand.Execute(dialHz);
         model.ApplyRigState(Radio(radioHz, CivMode.Cw, false, DateTime.UtcNow.AddSeconds(-5)));
+
+        // The CW tab writes CW once, as it does when a radio connects (work instruction 503).
+        model.FollowTheTabForTests().GetAwaiter().GetResult();
 
         var button = model.W1awHere;
 

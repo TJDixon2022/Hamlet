@@ -200,20 +200,30 @@ public static class ReceiverConditions
     /// Hamlet cannot yet keep whole.</para>
     /// </remarks>
     public static IReadOnlyList<ReceiverCondition> ForBlock(Neighborhood? hood)
-    {
-        if (hood is null)
-        {
-            return Array.Empty<ReceiverCondition>();
-        }
+        => hood is null ? Array.Empty<ReceiverCondition>() : ForTab(hood.ShortName, hood);
 
-        var all = new List<ReceiverCondition>(ForMode(hood.ShortName));
+    /// <summary>
+    /// What the receiver has to be for a tab's mode, with the block under the dial's scope span
+    /// spoken beside it (work instruction 503, R111).
+    /// </summary>
+    /// <param name="mode">The mode row the tab means, as the file spells it: `CW`, `FT8`.</param>
+    /// <param name="hood">The block the dial is in, or null.</param>
+    /// <returns>The mode's conditions, and the block's span where the block has a passband; empty where the file states nothing for the mode.</returns>
+    /// <remarks>
+    /// **THE TAB CHOOSES THE ROW; THE MAP ONLY SPEAKS.** The span is a sentence about the block the
+    /// dial is in and has no field, so it writes nothing; the settings that are written are the
+    /// tab's.
+    /// </remarks>
+    public static IReadOnlyList<ReceiverCondition> ForTab(string? mode, Neighborhood? hood)
+    {
+        var all = new List<ReceiverCondition>(ForMode(mode));
 
         if (all.Count == 0)
         {
             return Array.Empty<ReceiverCondition>();
         }
 
-        if (hood.PassbandHz is { } wideHz)
+        if (hood?.PassbandHz is { } wideHz)
         {
             all.Add(new ReceiverCondition(
                 "scope span",

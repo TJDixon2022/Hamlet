@@ -170,7 +170,8 @@ public sealed class ModeFollowsTheMapAgainTests
         // the rest of the file and finding nothing there either.
         var follow = Between(
             source,
-            "private async Task FollowTheMapAsync()",
+            // Since work instruction 503 (R111) the mode is the tab's, and the path is the tab's.
+            "private async Task FollowTheTabAsync()",
             "private async Task EstablishReceiveConditionsAsync(");
 
         _output.WriteLine($"{follow.Split('\n').Length} lines of the follow path");
@@ -204,7 +205,7 @@ public sealed class ModeFollowsTheMapAgainTests
             $"{conditions.Length} characters of the receive-side path");
 
         Assert.Contains("ReceiverSetup", conditions, StringComparison.Ordinal);
-        Assert.Contains("ReceiverConditions.ForBlock", conditions, StringComparison.Ordinal);
+        Assert.Contains("ReceiverConditions.ForTab", conditions, StringComparison.Ordinal);
 
         // Nothing in it names a setting: the block says what it needs and the
         // engine works out the rest, so there is no list of controls here to

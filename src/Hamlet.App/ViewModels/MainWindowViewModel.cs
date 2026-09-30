@@ -102,15 +102,15 @@ public partial class MainWindowViewModel : ObservableObject
     private bool _receiverSetupRunning;
 
     /// <summary>
-    /// The block whose conditions have been established, by its lower edge.
+    /// The tab whose receive conditions have been established on this connection, or null.
     /// </summary>
     /// <remarks>
-    /// **ONCE PER TUNE-IN, THEN HANDS OFF.** Keyed by the block rather than by
-    /// the dial, because nudging the VFO a hundred hertz inside an FT8 block is
-    /// not arriving somewhere new, and re-asserting the noise controls every time
-    /// the knob moved would be the app fighting the operator for his own radio.
+    /// **ONCE PER TAB, THEN HANDS OFF** (work instruction 503, R111). Keyed by the tab rather than
+    /// by the block or the dial, because the tab is what the operator means: crossing a block on
+    /// the map is not arriving somewhere new, and re-asserting the noise controls every time the
+    /// knob moved would be the app fighting the operator for his own radio.
     /// </remarks>
-    private long? _conditionsSetForBlockHz;
+    private string? _conditionsSetForTab;
 
     /// <summary>What the last tune-in did to the receive side.</summary>
     /// <remarks>
@@ -329,15 +329,14 @@ public partial class MainWindowViewModel : ObservableObject
     private ModeFollowState _modeFollow = ModeFollowState.Armed(false);
 
     /// <summary>
-    /// Where a W1AW press set CW and holds mode-follow off, or null (work instruction 499).
+    /// The tab whose mode has been written on this connection, or null (work instruction 503, R111).
     /// </summary>
     /// <remarks>
-    /// **THE PRESS IS THE OPERATOR CHOOSING CW, AND ONLY HE ENDS IT.** A band change re-arms
-    /// mode-follow, and a band change that lands on the band holding this frequency is the press's
-    /// own arrival or the radio reporting it back, not his hand. It ends when the band moves to one
-    /// that does not hold it, or when he tunes anywhere else.
+    /// **SELECTING A TAB WRITES ITS MODE ONCE.** The CW and Digital tabs write their mode when they
+    /// are selected and when a radio connects, and never again until the tab changes: the dial, the
+    /// band and the map do not move it.
     /// </remarks>
-    private long? _cwHeldAtHz;
+    private string? _tabWrittenFor;
 
     /// <summary>Whether the dial has come to rest where it is (work instruction 050).</summary>
     private ModeDwell _modeDwell = ModeDwell.Nowhere;
@@ -593,16 +592,20 @@ public partial class MainWindowViewModel : ObservableObject
         // and touched the radio nowhere; every mode write in the application
         // came from the dial moving.
         //
-        // **WHAT IS WRITTEN IS WHAT THE MAP SAYS LIVES AT THE DIAL**, generated
-        // from the band-plan row rather than from the tab's name (§0). A tab is
-        // not a mode: the Digital tab at an FT8 frequency wants USB-D, and at a
-        // frequency the map calls Morse it wants what the map says, because the
-        // map is the source of truth about the band and the tab is a view of it.
+        // **THE TAB IS THE MODE** (work instruction 503, R111, HM-DEC-207). Tim:
+        // *"If I'm on the CW tab, we have CW settings. If I'm on the data tab, we
+        // have data settings."* Changing tab is his decision, so it re-arms
+        // everything his hand had taken over - the mode and the receive settings -
+        // and the new tab writes its mode and its settings once.
         //
         // **HM-DEC-056 IS UNTOUCHED AND STILL GOVERNS.** This goes through the
-        // same settle timer the dial does, so the operator's own hand still
-        // wins, the suspension is still visible, and a value the radio did not
-        // confirm is still unknown rather than assumed.
+        // same settle timer as before, so a mode he then sets on the radio's own
+        // knob wins, and the app says so and does not write it back.
+        _tabWrittenFor = null;
+        _conditionsSetForTab = null;
+        _modeFollow = _modeFollow.Rearmed();
+        ModeFollowSuspended = false;
+        _receiverMemory = _receiverMemory.Rearmed();
         ScheduleModeFollow();
     }
 
@@ -10255,67 +10258,36 @@ public partial class MainWindowViewModel : ObservableObject
     }
 
     /// <summary>
-    /// Tune to W1AW on the band the dial is on and set the radio to CW (work instructions 494 and 495, HM-DEC-199).
+    /// Tune to W1AW on the band the dial is on (work instructions 494, 495 and 503, HM-DEC-199, HM-DEC-207).
     /// </summary>
     /// <param name="button">The button for the band the dial is on.</param>
+    /// <returns>A task that completes once the dial has been asked to move.</returns>
     /// <remarks>
-    /// <para>**THE DIAL GOES BY THE SAME PATH AS EVERY OTHER TUNE BUTTON**, <see cref="TuneTo"/>.
-    /// The mode is not left to mode-follow: the map now draws each W1AW frequency as Morse (work
-    /// instruction 499), but 160 m is not a band Hamlet maps. So the press sets CW itself, with the same mode write the Olivia tab makes, and holds
-    /// mode-follow off until the next band change exactly as the operator's own hand on the mode
-    /// knob does (HM-DEC-056), because pressing a CW button is the operator choosing CW.</para>
-    /// <para>**NOTHING KEYS.** A frequency and a mode, both writes Hamlet already makes, and
-    /// nothing else: no drive, no keyer, no transmit (CLAUDE.md §0.2).</para>
+    /// <para>**THE DIAL GOES BY THE SAME PATH AS EVERY OTHER TUNE BUTTON**, <see cref="TuneTo"/>.</para>
+    /// <para>**IT TUNES AND NOTHING ELSE** (work instruction 503, R111). The button is on the CW tab,
+    /// and the CW tab has already set the radio to CW and keeps it there; the press set CW itself
+    /// and held mode-follow off until units 495 and 499, a hold that did not survive a restart and
+    /// that nothing needs now.</para>
+    /// <para>**NOTHING KEYS.** A frequency and nothing else: no mode, no drive, no keyer, no
+    /// transmit (CLAUDE.md §0.2).</para>
     /// </remarks>
     [RelayCommand(CanExecute = nameof(CanTuneToW1aw))]
-    private async Task TuneToW1aw(W1awButton? button)
+    private Task TuneToW1aw(W1awButton? button)
     {
         if (button is not { CanTune: true })
         {
-            return;
+            return Task.CompletedTask;
         }
-
-        // **HELD BEFORE THE DIAL MOVES, NOT AFTER** (work instruction 499). Suspended after the
-        // tune, the move had already started mode-follow's settle timer and a band change had
-        // already re-armed it; held first, the move schedules nothing and the band change keeps it.
-        _cwHeldAtHz = button.FrequencyHz;
-        _modeFollow = _modeFollow.SuspendedByOperator();
-        ModeFollowSuspended = true;
 
         TuneTo(button.FrequencyHz);
 
         var where = $"{button.Label}: {Megahertz(button.FrequencyHz)} MHz";
 
-        if (_rig is not { } rig || !IsConnected)
-        {
-            Narrate($"{where}. No radio is connected, so Hamlet has not set CW.");
+        Narrate(_rig is null || !IsConnected
+            ? $"{where}. No radio is connected, so the dial has not moved."
+            : $"{where}.");
 
-            return;
-        }
-
-        _settingModeOurselves = true;
-
-        try
-        {
-            var result = await rig.SetModeAsync(CivMode.Cw, false).ConfigureAwait(true);
-
-            _lastKnownMode = result.Worked ? CivMode.Cw : null;
-
-            AppEvents.ModeFollowed(_telemetry, CivMode.Cw.ToString(), false, result.Outcome.ToString());
-
-            Narrate(result.Worked
-                ? $"{where} in CW. Hamlet will leave the mode alone until you next change band."
-                : $"{where}, but the radio did not take CW ("
-                  + (result.Detail.Length > 0 ? result.Detail : result.Source) + ").");
-        }
-        catch (Exception ex)
-        {
-            Narrate($"{where}, but Hamlet could not set CW ({ex.Message}).");
-        }
-        finally
-        {
-            _settingModeOurselves = false;
-        }
+        return Task.CompletedTask;
     }
 
     /// <summary>Tune to a saved frequency.</summary>
@@ -10474,12 +10446,6 @@ public partial class MainWindowViewModel : ObservableObject
     {
         AppEvents.TuneRequested(_telemetry, hz, "story_or_spot");
 
-        // A tune anywhere but the held W1AW frequency is the operator moving on (work instruction 499).
-        if (_cwHeldAtHz != hz)
-        {
-            _cwHeldAtHz = null;
-        }
-
         var arrivedOn = MarkActedOn(hz);
         var band = HfBands.BandFor(hz);
         if (band is not null && band.Name != SelectedBand.Band.Name)
@@ -10502,29 +10468,10 @@ public partial class MainWindowViewModel : ObservableObject
     {
         Neighborhoods = NeighborhoodPlan.WithEdges(value.Band);
 
-        // A band change is a fresh start rather than a continuation, and
-        // somebody who took the wheel on 40 m did not mean to keep it forever
-        // (HM-DEC-056).
-        //
-        // **EXCEPT WHERE A W1AW PRESS HOLDS CW ON THIS BAND** (work instruction 499). The press's
-        // own band change, or a report of it, is not the operator changing band.
-        var held = _cwHeldAtHz is { } heldHz
-                   && heldHz >= value.Band.LowHz && heldHz <= value.Band.HighHz;
-
-        if (!held)
-        {
-            _cwHeldAtHz = null;
-        }
-
-        _modeFollow = held ? _modeFollow.SuspendedByOperator() : _modeFollow.Rearmed();
-
-        // The receive side is re-armed with it, for the same reason: a band
-        // change is a fresh start, and the noise blanker he switched on to get
-        // through an electric fence on 40 m says nothing about 20 (HM-DEC-056).
-        _receiverMemory = _receiverMemory.Rearmed();
-        _conditionsSetForBlockHz = null;
-
-        ModeFollowSuspended = held;
+        // **A BAND CHANGE RE-ARMS NOTHING** (work instruction 503, R111). The tab is
+        // what the operator means, so the mode and the receive settings stay as the
+        // tab set them, or as his own hand set them, until he changes tab. Only the
+        // Voice tab looks at the dial, for the sideband, and it is asked again here.
         ScheduleModeFollow();
 
         _settings.LastBand = value.Band.Name;
@@ -11419,7 +11366,7 @@ public partial class MainWindowViewModel : ObservableObject
         _modeFollow = _modeFollow.SuspendedByOperator();
         ModeFollowSuspended = true;
         Narrate($"You set the radio to {mode.Text}, so Hamlet will leave the "
-                + "mode alone until you next change band.");
+                + "mode alone until you next change tab.");
     }
 
     /// <summary>
@@ -13891,8 +13838,6 @@ public partial class MainWindowViewModel : ObservableObject
     [RelayCommand]
     private void SelectBand(BandButtonViewModel band)
     {
-        // His own band press ends a W1AW hold, on its own band too (work instruction 499).
-        _cwHeldAtHz = null;
         SelectedBand = band;
         FrequencyHz = band.Band.JumpHz;
     }
@@ -14007,9 +13952,20 @@ public partial class MainWindowViewModel : ObservableObject
 
         var hz = await rig.GetFrequencyHzAsync();
         ApplyRigFrequency(hz);
+
         StatusText = port == TrainingRadio
             ? "On the training radio, with synthesised signals and nothing on the air"
             : $"Connected to the IC-7300 on {port}";
+
+        // **THE TAB THAT WAS LAST SELECTED SETS THE MODE** (work instruction 503, R111). A new
+        // connection is a fresh start: the tab writes its mode and its receive settings once, now,
+        // rather than waiting for the dial to be looked at. After the line saying the radio is
+        // connected, so what the tab set, and anything it could not read, is what the bar says.
+        _tabWrittenFor = null;
+        _conditionsSetForTab = null;
+        _modeFollow = _modeFollow.Rearmed();
+        ModeFollowSuspended = false;
+        await FollowTheTabAsync();
 
         return true;
     }
@@ -14396,7 +14352,7 @@ public partial class MainWindowViewModel : ObservableObject
     private async void OnModeSettleTick(object? sender, EventArgs e)
     {
         _modeSettleTimer.Stop();
-        await FollowTheMapAsync();
+        await FollowTheTabAsync();
     }
 
     /// <summary>
@@ -14412,7 +14368,7 @@ public partial class MainWindowViewModel : ObservableObject
     /// awaiting, so an exception here would take the process down with no
     /// operator action behind it.</para>
     /// </remarks>
-    private async void OnDwellLook(object? sender, EventArgs e)
+    private void OnDwellLook(object? sender, EventArgs e)
     {
         try
         {
@@ -14427,12 +14383,11 @@ public partial class MainWindowViewModel : ObservableObject
             var (next, matured) = _modeDwell.Observe(
                 here?.Name ?? "", atHz, DateTime.UtcNow, Scan.IsScanning);
 
+            // **A MATURE DWELL NO LONGER WRITES ANYTHING** (work instruction 503, R111): it was
+            // where the map's data blocks waited for the dial to rest before mode-follow set
+            // USB-D, and the tab sets the mode now. The dwell is still observed for what reads it.
             _modeDwell = next;
-
-            if (matured && ModeFollowPlan.WaitsForDwell(ModeFollowPlan.TargetFor(here)))
-            {
-                await FollowTheMapAsync();
-            }
+            _ = matured;
         }
         catch (Exception ex)
         {
@@ -14458,33 +14413,76 @@ public partial class MainWindowViewModel : ObservableObject
             : ModeFollowNote.Describe(
                 target, RigState.Mode, RigState.DataVariant, decision.Because);
 
-    /// <summary>
-    /// Set the radio to the mode this stretch of band is worked in.
-    /// </summary>
-    /// <remarks>
-    /// <para>NARRATED, ALWAYS (HM-DEC-056). A radio that changes itself silently
-    /// is the "is it broken" confusion relocated rather than removed, and this
-    /// operator has had enough of machines doing things without saying so.</para>
-    /// <para>A write that is not confirmed leaves the mode unknown rather than
-    /// assumed. The rig reports that itself, so the badge empties and the screen
-    /// stops claiming to know something it does not (§0.0).</para>
-    /// </remarks>
-    /// <summary>Follow the map now, for a test, without waiting on a timer.</summary>
-    /// <returns>A task that completes when the tune-in has been established.</returns>
+    /// <summary>Follow the tab now, for a test, without waiting on a timer.</summary>
+    /// <returns>A task that completes when the tab's mode and receive settings have been established.</returns>
     /// <remarks>
     /// <para>**THE REAL DOOR, NOT A STRING HANDED OVER** (work instruction 284 task
     /// 1). The tune-in composes its narration inside
     /// <see cref="EstablishReceiveConditionsAsync"/>, and reaching that from a test
-    /// otherwise means waiting on the mode-settle timer or the dwell timer, neither
-    /// of which runs headless.</para>
-    /// <para>**IT IS THE SAME IDIOM AS <see cref="NarrateForTests"/> AND A WEAKER
-    /// SEAM THAN IT**: this one hands over nothing at all, so what the bar ends up
-    /// showing is composed by the application from the rig it is actually talking
-    /// to. Nothing in `src/` calls it.</para>
+    /// otherwise means waiting on the mode-settle timer, which does not run
+    /// headless. Nothing in `src/` calls it.</para>
     /// </remarks>
-    internal Task FollowTheMapForTests() => FollowTheMapAsync();
+    internal Task FollowTheTabForTests() => FollowTheTabAsync();
 
-    private async Task FollowTheMapAsync()
+    /// <summary>
+    /// The mode the tab means (work instruction 503, R111, HM-DEC-207).
+    /// </summary>
+    /// <param name="here">The block the dial is in, or null.</param>
+    /// <param name="atHz">The dial.</param>
+    /// <returns>CW on the CW tab, USB-D on the Digital tab, and on the Voice tab the map's voice
+    /// block or, off one, the sideband convention; null where there is no radio mode for the tab.</returns>
+    /// <remarks>
+    /// **THE VOICE TAB IS THE ONE PLACE THE MAP STILL CHOOSES**, because voice is worked on the
+    /// lower sideband below ten megahertz and the upper above, and on AM in the AM corners
+    /// (<see cref="ModeFollowPlan.TargetFor(Neighborhood?)"/>). Morse and data are one mode on
+    /// every band.
+    /// </remarks>
+    private ModeTarget? TabTarget(Neighborhood? here, long atHz)
+    {
+        if (IsCwMode)
+        {
+            return new ModeTarget(CivMode.Cw, false, "the CW tab is selected");
+        }
+
+        if (IsDigitalMode)
+        {
+            return new ModeTarget(
+                CivMode.Usb, true,
+                "the Digital tab is selected, and the digital modes are all worked through the "
+                + "computer on the upper sideband");
+        }
+
+        if (IsVoiceMode)
+        {
+            return ModeFollowPlan.TargetFor(here) is { Mode: CivMode.Lsb or CivMode.Usb or CivMode.Am, DataMode: false } voice
+                ? voice
+                : atHz < ModeFollowPlan.SidebandChangeoverHz
+                    ? new ModeTarget(CivMode.Lsb, false, "voice below ten megahertz is worked on the lower sideband")
+                    : new ModeTarget(CivMode.Usb, false, "voice above ten megahertz is worked on the upper sideband");
+        }
+
+        return null;
+    }
+
+    /// <summary>
+    /// Set the radio to the mode the tab means, once, and the tab's receive settings with it
+    /// (work instruction 503, R111, HM-DEC-207).
+    /// </summary>
+    /// <remarks>
+    /// <para>**THE TAB IS THE MODE.** Tim: *"If I'm on the CW tab, we have CW settings. If I'm on
+    /// the data tab, we have data settings."* On the CW and Digital tabs the mode is written once
+    /// when the tab is selected or a radio connects, and not again until the tab changes: the dial,
+    /// the band and the map's blocks do not move it. On the Voice tab the sideband follows the dial
+    /// through the same decision mode-follow always used.</para>
+    /// <para>**THE MAP WRITES NOTHING.** Until work instruction 503 this was the map's mode-follow,
+    /// writing whatever mode the block under the dial called for, and on 2026-09-30 at 12:30 UTC it
+    /// wrote USB-D two seconds after the app read CW at 7.0472 MHz on a restart.</para>
+    /// <para>**HIS HAND ON THE RADIO WINS** (HM-DEC-056): a mode he sets on the radio's own knob
+    /// suspends this until he changes tab, and nothing writes it back.</para>
+    /// <para>NARRATED, ALWAYS. A write that is not confirmed leaves the mode unknown rather than
+    /// assumed (§0.0).</para>
+    /// </remarks>
+    private async Task FollowTheTabAsync()
     {
         var rig = _rig;
         if (rig is null || !IsConnected)
@@ -14492,146 +14490,119 @@ public partial class MainWindowViewModel : ObservableObject
             return;
         }
 
-        // Read once and carried, because the dial can move while the write is
-        // in flight and the memory has to name the frequency it was made at.
         var atHz = FrequencyHz;
-
         var here = Neighborhoods.FirstOrDefault(n => n.Contains(atHz));
+        var target = TabTarget(here, atHz);
+        var tab = OperatingMode;
 
-        // **WHAT HE IS VISIBLY DOING BEATS WHAT THE MAP SAYS LIVES HERE**
-        // (HM-DEC-056). The evidence is `ModeFollowPlan.WorkingCw`, which carries
-        // its reasoning and the measurement behind it. It used to be an
-        // expression on this line asking `IsInsideCwSegment`, which silenced
-        // mode-follow across all 28 digital blocks and which no test could reach,
-        // because every one of them supplied the value by hand.
-        var target = ModeFollowPlan.TargetFor(here);
-        var workingCw = ModeFollowPlan.WorkingCw(target, IsCopyingMorse);
+        bool write;
 
-        // **THE AGE OF EACH READING TRAVELS WITH IT** (work instruction 042,
-        // task 1). A ledger value read before Hamlet's own write is the radio
-        // not having been asked since, and one read after it is the radio
-        // answering. Those are the snap-back and the operator's hand on the
-        // knob, and by value alone they are the same picture.
-        var decision = ModeFollowPlan.Decide(
-            _modeFollow, RigState.Mode, RigState.DataVariant,
-            target, atHz, workingCw,
-            RigState[RigField.Mode].AtUtc,
-            RigState[RigField.DataMode].AtUtc);
-
-        // Data territory waits for the dial to come to rest; the rule is
-        // `ModeDwell`. Not writing is silent, and the receive side still runs
-        // below, because hearing a block is not being in its mode.
-        var waiting = ModeFollowPlan.WaitsForDwell(target)
-                      && !(_modeDwell.Spent
-                           && _modeDwell.Block == (here?.Name ?? "")
-                           && _modeDwell.FrequencyHz == atHz);
-
-        RememberWhyNothingHappened(target, decision, waiting);
-
-        if (!decision.Write || waiting)
+        if (IsVoiceMode)
         {
-            // **THE MODE BEING RIGHT ALREADY IS NOT THE WHOLE OF ARRIVING**
-            // (work instruction 042, task 3). He can be in USB-D on an FT8 block
-            // with the noise blanker chopping the tones up, and that is exactly
-            // the state this unit exists to end.
-            await EstablishReceiveConditionsAsync(rig, here).ConfigureAwait(true);
-            return;
+            // The sideband follows the dial, through the decision mode-follow always made.
+            var decision = ModeFollowPlan.Decide(
+                _modeFollow, RigState.Mode, RigState.DataVariant,
+                target, atHz, false,
+                RigState[RigField.Mode].AtUtc,
+                RigState[RigField.DataMode].AtUtc);
+
+            RememberWhyNothingHappened(target, decision, false);
+            write = decision.Write;
+        }
+        else
+        {
+            write = target is not null
+                    && _modeFollow.Enabled
+                    && !_modeFollow.Suspended
+                    && _tabWrittenFor != tab;
+
+            _modeFollowNote = target is null ? ""
+                : !_modeFollow.Enabled ? "Hamlet does not set the mode: that setting is switched off."
+                : _modeFollow.Suspended ? "You set the radio's mode yourself, so Hamlet leaves it alone until you change tab."
+                : $"The {tab} tab sets the radio to {target.Name} once, and leaves it there until you change tab.";
         }
 
-        _settingModeOurselves = true;
-        try
+        if (write && target is not null)
         {
-            // **THE FILTER GOES WITH THE MODE, IN THE SAME FRAME** (work
-            // instruction 040). Where the block states how much passband it
-            // needs, the write asks for the widest slot; where it states none,
-            // nothing is claimed and the radio keeps choosing as before.
-            //
-            // **ASKING FOR THE WIDEST SLOT IS NOT KNOWING ITS WIDTH.** FIL1 is
-            // whatever the operator configured it to be, so the passband is only
-            // established by the readback, and until that arrives it is unknown
-            // rather than assumed (HM-DEC-056, §0.0).
-            var wantsPassband = here?.PassbandHz is not null;
+            _settingModeOurselves = true;
 
-            var result = await rig.SetModeAsync(
-                decision.Mode,
-                decision.DataMode,
-                wantsPassband ? CivWrites.WidestFilterSlot : null);
-
-            _lastKnownMode = result.Worked ? decision.Mode : null;
-
-            // The write is remembered only where the radio confirmed it, so a
-            // failed write is retried and a successful one is not repeated
-            // (HM-OPEN-041).
-            if (result.Worked)
+            try
             {
-                _modeFollow = _modeFollow.Done(
-                    atHz, decision.Mode, decision.DataMode, DateTime.UtcNow);
-            }
+                // **THE FILTER GOES WITH THE MODE, IN THE SAME FRAME** (work instruction 040). The
+                // Digital tab asks for the widest slot, the data filter; the CW and Voice tabs name
+                // none, so the radio takes its own filter for the mode.
+                //
+                // **ASKING FOR THE WIDEST SLOT IS NOT KNOWING ITS WIDTH.** FIL1 is whatever the
+                // operator configured it to be, so the passband is only established by the
+                // readback, and until that arrives it is unknown rather than assumed (§0.0).
+                var result = await rig.SetModeAsync(
+                    target.Mode,
+                    target.DataMode,
+                    IsDigitalMode ? CivWrites.WidestFilterSlot : null);
 
-            // A radio that has no such mode says so by having nothing to say,
-            // and blanking the status line over it would wipe whatever the
-            // operator was reading.
-            //
-            // **THE TWO ARMS ARE DIFFERENT KINDS** (work instruction 282 task 1).
-            // `decision.Narration` is Hamlet saying what it did and goes behind
-            // the mark; `result.Detail` is the radio declining and speaks.
-            var say = result.Worked ? decision.Narration : result.Detail;
-            if (say.Length > 0)
-            {
+                _lastKnownMode = result.Worked ? target.Mode : null;
+
                 if (result.Worked)
                 {
-                    Narrate(say);
+                    _tabWrittenFor = tab;
+                    _modeFollow = _modeFollow.Done(atHz, target.Mode, target.DataMode, DateTime.UtcNow);
+                    Narrate($"Hamlet set the radio to {target.Name}, because {target.Because}.");
                 }
-                else
+                else if (result.Detail.Length > 0)
                 {
-                    StatusText = say;
+                    StatusText = result.Detail;
                 }
-            }
 
-            AppEvents.ModeFollowed(
-                _telemetry, decision.Mode.ToString(), decision.DataMode,
-                result.Outcome.ToString());
-        }
-        catch (Exception ex)
-        {
-            // Never-throw discipline (§8). A mode change that failed is a
-            // sentence, not a crash.
-            StatusText = $"Hamlet could not set the mode: {ex.Message}";
-        }
-        finally
-        {
-            _settingModeOurselves = false;
+                AppEvents.ModeFollowed(
+                    _telemetry, target.Mode.ToString(), target.DataMode,
+                    result.Outcome.ToString());
+            }
+            catch (Exception ex)
+            {
+                // Never-throw discipline (§8). A mode change that failed is a sentence, not a crash.
+                StatusText = $"Hamlet could not set the mode: {ex.Message}";
+            }
+            finally
+            {
+                _settingModeOurselves = false;
+            }
         }
 
         await EstablishReceiveConditionsAsync(rig, here).ConfigureAwait(true);
     }
 
     /// <summary>
-    /// Set what would otherwise stop the operator hearing this block, and
-    /// nothing else.
+    /// Set what the tab's mode needs of the receive side, once per tab, and nothing else (work
+    /// instructions 042 and 503).
     /// </summary>
     /// <remarks>
     /// <para>**THE OPERATOR DOES NOT TOUCH THE RADIO** (work instruction 042).
     /// He was told three times in one afternoon to press buttons on the front of
     /// it, and what a mode needs of the receive side is a fact this project
-    /// holds. He states an intent by tuning somewhere and the settings are the
+    /// holds. He states an intent by choosing a tab and the settings are the
     /// consequence; there is no row of switches and there is not going to be one
     /// (HM-DEC-050).</para>
+    /// <para>**THE TAB'S ROW, NOT THE BLOCK'S** (work instruction 503, R111): the CW tab takes the
+    /// `CW` row of `mode-receiver-conditions.json`, the Digital tab the `FT8` row - the one data row
+    /// the file states, and `FT4` says the same - and the Voice tab, which the file states nothing
+    /// for, nothing. His hand on any of them holds until he changes tab.</para>
     /// <para>Never-throw discipline (§8): a setting that could not be changed is
     /// a sentence rather than a crash.</para>
     /// </remarks>
     private async Task EstablishReceiveConditionsAsync(IRig rig, Neighborhood? here)
     {
-        if (here is null || _conditionsSetForBlockHz == here.LowHz)
+        if (_conditionsSetForTab == OperatingMode)
         {
             return;
         }
 
-        var conditions = ReceiverConditions.ForBlock(here);
+        var conditions = IsCwMode ? ReceiverConditions.ForTab("CW", null)
+            : IsDigitalMode ? ReceiverConditions.ForTab("FT8", here)
+            : Array.Empty<ReceiverCondition>();
 
-        // A block that states nothing produces no claim and no write, and the
-        // block is marked as done either way so a settled dial is quiet.
-        _conditionsSetForBlockHz = here.LowHz;
+        // A tab that states nothing produces no claim and no write, and the tab
+        // is marked as done either way so a settled dial is quiet.
+        _conditionsSetForTab = OperatingMode;
 
         // **THE OVERLOAD FOLLOW STARTS AFRESH AT EVERY TUNE-IN** (HM-DEC-179), so a
         // preamp he took over on one block is followed again on the next.

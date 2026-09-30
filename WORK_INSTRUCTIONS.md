@@ -1,12 +1,13 @@
-# Work instruction 502 - one shape, one score
+# Work instruction 503 - the tab is the mode
 
-**Hand run. One unit, after 501.** Seven independent tests each let some chaos through. A keyed
-tone is one shape. This unit judges a mark by that shape as a whole.
+**Hand run. One unit.** The owner has spent days unable to tell whether decoding is failing or the
+radio has been moved to something else. The app has been deciding what he meant from where the
+dial sits - the map, mode-follow, block widths, a hold that survives a band change but not a
+restart. All of that goes. **The tab is what he means.**
 
-**No test against a recording, a fixture, a floor or copied telemetry** (R96). A headless test
-driving synthetic hops written in the test itself is allowed; nothing read from disk. Verify by
-building `Hamlet.sln` with warnings as errors and running the app carry-forward line. **The
-owner's report at the radio is the test.**
+**No test against a recording, a fixture, a floor or copied telemetry** (R96). Verify by building
+`Hamlet.sln` with warnings as errors and running the app carry-forward line. **The owner's report
+at the radio is the test.**
 
 ---
 
@@ -35,123 +36,115 @@ If all five hold, say "Hamlet confirmed" and continue.
 
 ## 1. Rules
 
-- **Unit 501 must be in the tree.** If its Farnsworth test is absent, stop at task 0 and say so.
 - Take `SESSION.lock` through `tools\arbiter\lock.bat take`, release it at the end. Write nothing
   to `RUN_LEDGER.md`. Touch nothing under `tools\arbiter\`. Tick nothing in `PHASE_PLAN.md`.
 - One `dotnet test` invocation per line, filtered, with a `timeout`. Never background and poll.
   The app line loses names to the dispatcher loop; re-run once, count neither way.
 - Apostrophes in quoted heredocs break; `;`, `rm` and `git rm` are refused; Python cannot run
-  here; `-m` more than once for a multi-line commit. Scripts go in `.run-unit\unit502-<name>.sh`
+  here; `-m` more than once for a multi-line commit. Scripts go in `.run-unit\unit503-<name>.sh`
   and are not committed.
-- Nothing that keys or transmits. Nothing written to the radio.
+- **Nothing that keys or transmits.** This unit changes what the app writes to the radio's mode,
+  filter and receive settings, which §0.2 allows and §12.4 governs: **no value guessed, every write
+  named in the report.**
 - `output.md` at the root, four headings exactly: `## 1. What Claude did`, `## 2. What the owner
   should expect`, `## 3. What you should see`, `## 4. What's blocking us`.
 
 ---
 
-## 2. The owner's principle
+## 2. What the telemetry showed, and the owner's ruling
 
-**His words, 2026-09-30, R110:**
+**2026-09-30, 12:30 UTC.** The app restarted, read the radio at 7.0472 MHz in CW, and two seconds
+later wrote **`mode_followed: Usb, dataMode: true`**. Then CW → USB-D → CW → USB-D at 12:37 and
+12:43. The radio was 50 Hz outside unit 499's W1AW block, so the map called the frequency data and
+mode-follow wrote it. The button's hold had not survived the restart.
 
-> *"Shape is the key to us getting really good CW. Noise is chaos. It can be anything. And you've
-> been randomly trying to extract order from that chaos. But we know that CW is not any order.
-> It's a particular shape and size and width. And we need to focus just on that."*
+**The owner's ruling, R111:**
 
-**What the code has, and what it lacks.** A bar becomes a mark by passing a row of independent
-yes-or-no tests: it stands clear of its gaps (the wander check), it is a dit or longer (25 ms), its
-top is flat (R93), it has edges (unit 497, 6 dB within four hops), and it is narrow (unit 498,
-6 dB above the bins 300 Hz either side). **Each test lets through the noise that happens to pass
-it.** A spike passes the edge test; a flat wobble passes the flatness test; a broadband thump
-long enough passes the length test. What survives all five - 146 of 1452 noise bars in unit 498's
-count, about 5 a second - is noise that happened to pass each one narrowly.
-
-**A keyed tone is one shape**, and a real mark does not pass each test narrowly. It passes every
-test by a wide margin at once: its top is flat to a fraction of a decibel, its edges are a few
-milliseconds, it stands 15 to 30 dB above the band beside it, and it is exactly a dit or exactly
-a dah. **Noise that squeaks past five gates does not look like that.** One score that measures
-how far a bar sits inside the shape - not whether it crossed each line - separates the two.
+> *"If I'm on the CW tab, we have CW settings. If I'm on the data tab, we have data settings. I've
+> made the decision that I'm chasing either CW or data by being on the tab, and the settings should
+> follow that. Right now, I'm spending a lot of time trying to figure out if the decoding isn't
+> working or if the radio has been set to something else."*
 
 ---
 
-## 3. The change - a shape score
+## 3. The change
 
-In `CwEnvelopeDetector`, every completed bar gets **one score, from all of its properties
-together**, and it becomes a mark only above a threshold on that score.
+### One - the tab sets the mode
 
-**The properties, each as a distance from the ideal rather than a pass or fail:**
+- **The CW tab means CW.** While it is selected, the radio is in CW, with the CW filter and the CW
+  receive settings from `mode-receiver-conditions.json`. **It stays there**: turn the dial anywhere
+  on any band, restart the app, cross any block on the map - still CW.
+- **The Digital tab means data.** USB-D, the data filter, the data receive settings. Same
+  permanence.
+- **The Voice tab means the voice mode** the map says for the frequency - USB above 10 MHz, LSB
+  below - and is the only tab where the map still chooses, because voice genuinely differs by band.
+- **Selecting a tab writes its mode once**, and again only if the operator changes tab.
+- **On startup, the tab that was last selected sets the mode**, before anything else looks at the
+  radio.
 
-- **Flatness** - how far the top wanders from its own mean, in dB, over the whole top. An ideal
-  mark wanders a fraction of a decibel.
-- **Edges** - how many hops the rise and the fall each take, from the gap level to the top and
-  back. An ideal mark takes one or two, the window's own spread.
-- **Narrowness** - how far the bar's bin stands above the band either side, in dB. An ideal mark
-  stands 15 dB or more.
-- **Contrast** - how far the top stands above the gaps either side of it, in dB.
-- **Length** - how close the bar's length is to a dit or to a dah of the sender it belongs to, if
-  a sender is known; how close to any plausible dit if not. A bar that is neither is far from the
-  shape.
+### Two - the map stops writing the radio
 
-**How they combine is the author's**, stated in the report with its reason. **The reason must be
-about the shape of a keyed tone, not about a result.** A product of per-property scores, each from
-0 to 1, is the obvious choice: a bar that is perfect on four and bad on one is bad. **Do not weight
-them by looking at what makes the tests pass.**
+- **Mode-follow from the map is retired.** The map still says what is at a frequency - the card,
+  the blocks, the neighbours, the licence line - and it **writes nothing**. `FollowTheMapAsync`
+  no longer writes a mode. Say in the report what it still does, if anything, and what is dead.
+- **Unit 499's W1AW block width and unit 495's mode-follow hold become irrelevant.** Leave the
+  data as it is; the button now only tunes, because the tab already set CW.
+- **Unit 499's `TheW1awPressStaysInCwTests` and every test that asserted a mode-follow write** are
+  re-pinned to R111: the tab writes the mode, the map does not. Name each.
 
-**The threshold is the author's**, derived from what a real keyed mark scores on the synthetic
-cases - **the lowest score any real mark of the clean call earns is the floor the threshold sits
-under**, with a margin the report states. It is not set by looking at what turns noise away.
+### Three - the operator's hand on the radio wins
 
-**The five existing tests stay in the tree** and stay on: they are cheap and they are the floor.
-The score is a sixth condition, on bars that passed all five. **Nothing is loosened.**
+- **If the operator turns the radio's own mode knob**, the app follows the radio, not the tab. His
+  hand on the radio is the highest authority (HM-DEC-056).
+- **The tab says so plainly**, as the send panel already does: *"The radio is in USB rather than
+  Morse. Switch to CW and it will be ready."* That sentence stays and is the only thing that
+  happens - **the app does not write the mode back.**
+- **His hand on any receive setting still holds** - preamp, AGC, filter - until he changes it or
+  changes tab. Changing tab re-applies that tab's settings, which is his decision by the ruling.
 
-**The mark carries its score**, so the run reader, the scope and the verdict row can see it. The
-scope's hover on a block says its score.
+### Four - what must not change
 
----
+The CW detector, the marks, the run reader, the scope, the terminal, the one layout, the W1AW
+button's tuning, the verdict buttons and row.
 
-## 4. What to measure
+**Watch it fail first**, headless:
 
-**Watch it fail first**, with synthetic hops written in the test:
-
-1. **Thirty seconds of loud noise.** Unit 498's table, extended: passing the older tests, with
-   edges, narrow, **and above the shape threshold**. That last number is the unit's reason.
-   Report the marks handed out per second before and after; unit 498 measured 5.
-2. **The distribution of scores** on the clean call's 65 marks, and on the noise bars that passed
-   all five tests: the lowest real score, the highest noise score, and whether they overlap.
-   **If they overlap, say so and by how much**, and do not move the threshold into the overlap.
-3. **Every existing case reads exactly as it does at HEAD**: the calls at 5, 10, 18 and 35 WPM,
-   the Farnsworth cases, the speed change, the bursts, the two stations, `TEST DE W1AW K`, the
-   lone dit, the lone dah, the stray dit, the string of lone marks, both noise tests. **If a real
-   mark is lost, the threshold is too high - say so with the count and set it under the real
-   floor**, never to what makes a noise case pass.
-4. **A weak station, 10 dB over the noise.** Report what it reads before and after, and the scores
-   its marks earn. This is the case the score must not break: a weak mark is still the shape,
-   smaller.
+1. On the CW tab at 7.0472 - inside the RTTY block by unit 499's data - the app writes CW once and
+   never a data variant, however the dial moves. **Red today**: mode-follow writes USB-D.
+2. Restart with the CW tab selected: the first mode write is CW.
+3. Select the Digital tab: one USB-D write with the data filter and settings; back to CW: one CW
+   write with the CW filter and settings.
+4. The radio reports USB while the CW tab is selected: the app writes nothing, and the tab's
+   sentence says the radio is in USB.
+5. **Every mode write the app makes is listed** in the report, with what causes each.
 
 ---
 
-## 5. Record
+## 4. Record
 
-- `PHASE_OUTCOME.md`, both copies: `## UNIT 502 - STEP 12`, one paragraph.
-- `PHASE_STATUS.md`, both copies: names 502.
+- `PHASE_OUTCOME.md`, both copies: `## UNIT 503 - STEP 11`, one paragraph.
+- `PHASE_STATUS.md`, both copies: names 503.
 - Patch-bump `Directory.Build.props`.
-- **Append R110 to the rulings section of both `PHASE_PLAN.md` copies**, in the owner's words
+- **Append R111 to the rulings section of both `PHASE_PLAN.md` copies**, in the owner's words
   above. **Touch no checkbox.**
-- `DECISIONS.md`, newest first, **HM-DEC-206**, headline *A mark is judged by its whole shape, not
-  by crossing five lines*, quoting him.
+- `DECISIONS.md`, newest first, **HM-DEC-207**, headline *The tab is the mode; the map writes
+  nothing*, quoting him, naming the 12:30 restart that wrote USB-D two seconds after reading CW,
+  and that HM-DEC-056's rule - the operator's hand on the radio wins - stands above it.
 
 ---
 
-## 6. Report
+## 5. Report
 
 Section 2, for the owner, in plain words:
 
 - rebuild;
-- fewer false marks still: a mark now has to look like a keyed tone as a whole, not just clear
-  five separate bars;
-- a real station, strong or weak, is unaffected - its marks score far inside the shape;
-- **if real letters go missing, that is the threshold, and section 3's score table names the
-  floor.**
+- **on the CW tab the radio is in CW and stays in CW** - dial, restart, block, whatever;
+- on the Digital tab it is in data;
+- the map no longer touches the radio;
+- if you turn the radio's mode knob yourself, the app follows you and says so, and does not fight
+  you;
+- **so from now on, if decoding is wrong, it is the decoder.**
 
-Section 1: what changed, file by file, how the score is built and why, the threshold and its
-reason, and that the build and the app line are green. **Section 3: the noise table at the top,
-then the score distributions, then the cases.** Section 4: anything left, a line each.
+Section 1: what changed, file by file, **every mode write the app can now make and what causes
+it**, what `FollowTheMapAsync` still does, and that the build and the app line are green.
+Section 3: the five cases. Section 4: anything left, a line each.

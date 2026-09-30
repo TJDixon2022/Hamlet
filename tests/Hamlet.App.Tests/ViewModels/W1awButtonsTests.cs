@@ -58,17 +58,17 @@ public sealed class W1awButtonsTests
 
         _output.WriteLine($"  asked for {model.FrequencyHz}, mode writes {rig.ModeSets} {rig.LastMode} data {rig.LastData}, settings {rig.SettingWrites}");
 
+        // **THE PRESS TUNES AND NOTHING ELSE** (work instruction 503, R111): the CW tab sets CW, so
+        // the press writes no mode and holds nothing off.
         Assert.Equal(wantHz, model.FrequencyHz);
-        Assert.Equal(1, rig.ModeSets);
-        Assert.Equal(CivMode.Cw, rig.LastMode);
-        Assert.False(rig.LastData);
+        Assert.Equal(0, rig.ModeSets);
         Assert.Equal(0, rig.SettingWrites);
-        Assert.True(model.ModeFollowSuspended);
+        Assert.False(model.ModeFollowSuspended);
     }
 
     /// <remarks>
-    /// Case 1: on 40 m the button reads "W1AW on 40 m", and a press asks for 7.0475 MHz and CW - one
-    /// mode write, no setting written, nothing keyed (the rig throws if anything tries).
+    /// Case 1: on 40 m the button reads "W1AW on 40 m", and a press asks for 7.0475 MHz and nothing
+    /// else - no mode written since R111, no setting, nothing keyed (the rig throws if anything tries).
     /// </remarks>
     [Fact]
     public Task On40m() => PressesTo(7_030_000, "W1AW on 40 m", 7_047_500);

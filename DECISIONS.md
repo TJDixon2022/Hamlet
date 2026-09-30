@@ -4,6 +4,36 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-207
+date: 2026-09-30
+refs: work instruction 503, docs/phase-requirements/PHASE_PLAN.md R111, src/Hamlet.App/ViewModels/MainWindowViewModel.cs, src/Hamlet.RadioEngine/Explore/ReceiverConditions.cs, tests/Hamlet.App.Tests/ViewModels/TheTabIsTheModeTests.cs
+---
+
+**The tab is the mode; the map writes nothing.** Tim, 2026-09-30, R111: *"If I'm on the CW tab, we
+have CW settings. If I'm on the data tab, we have data settings. I've made the decision that I'm
+chasing either CW or data by being on the tab, and the settings should follow that. Right now, I'm
+spending a lot of time trying to figure out if the decoding isn't working or if the radio has been
+set to something else."*
+
+**What it ends.** On 2026-09-30 at 12:30 UTC the app restarted, read the radio at 7.0472 MHz in CW,
+and two seconds later mode-follow wrote USB-D, because the map calls 7.0472 the RTTY block. The
+W1AW button's hold had not survived the restart, and the radio went CW, USB-D, CW, USB-D through
+12:43.
+
+**What is built.** The CW tab writes CW and the CW receive settings; the Digital tab writes USB-D,
+the widest filter slot and the data settings; each once, when the tab is selected and when a radio
+connects, and not again until the tab changes. The Voice tab alone still follows the dial, for the
+sideband. The map says what is at a frequency and writes nothing to the radio. The W1AW button only
+tunes.
+
+**What stands above it.** HM-DEC-056: the operator's hand on the radio wins. A mode he sets on the
+radio's own knob stands the app down until he changes tab, the app says so, and nothing writes it
+back; his hand on a receive setting holds until he changes it or changes tab.
+
+**Whose words are whose.** The ruling is Tim's; which rows the tabs take, the filter each asks for,
+and where the writes sit are work instruction 503's and the author's, and overrulable.
+
+---
 id: HM-DEC-206
 date: 2026-09-30
 refs: work instruction 502, docs/phase-requirements/PHASE_PLAN.md R110, src/Hamlet.RadioEngine/Cw/CwEnvelopeDetector.cs, src/Hamlet.RadioEngine/Cw/CwMark.cs, src/Hamlet.App/Controls/CwScopeControl.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheShapeOfAKeyedToneTests.cs

@@ -274,6 +274,11 @@ Noise is chaos. It can be anything. And you've been randomly trying to extract o
 chaos. But we know that CW is not any order. It's a particular shape and size and width. And we
 need to focus just on that."*
 
+**R111 - Tim, 2026-09-30: the tab is the mode.** *"If I'm on the CW tab, we have CW settings. If
+I'm on the data tab, we have data settings. I've made the decision that I'm chasing either CW or
+data by being on the tab, and the settings should follow that. Right now, I'm spending a lot of time
+trying to figure out if the decoding isn't working or if the radio has been set to something else."*
+
 ## §3 What is different from the phases before it
 
 1. **A criterion is a requirement id.** A report states the requirement, the condition, the

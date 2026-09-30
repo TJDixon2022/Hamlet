@@ -192,6 +192,11 @@ public sealed class TheBarSaysWhatHamletCouldNotDoTests
         window.Show();
         HowMuchTheApplicationSaysTests.Pump(window);
 
+        // **THE TAB IS THE MODE** (work instruction 503, R111): the FT8 row is applied by the
+        // Digital tab, not by the block under the dial, so the fixture is on the Digital tab before
+        // the radio connects, as the operator on 14.074 would be.
+        panel.OperatingMode = "Digital";
+
         panel.SelectedPort = MainWindowViewModel.TrainingRadio;
 
         // **THE TOGGLE IS A TOGGLE.** Pressing it on a panel that is already
@@ -219,7 +224,13 @@ public sealed class TheBarSaysWhatHamletCouldNotDoTests
 
         HowMuchTheApplicationSaysTests.Pump(window);
 
-        await panel.FollowTheMapForTests();
+        // **AND THE DIGITAL TAB IS SELECTED AGAIN ON 14.074** (work instruction 503, R111): the
+        // tab's settings are applied once when it is selected, not when the dial moves, so the
+        // paragraph for the FT8 block is composed by selecting the tab there.
+        panel.OperatingMode = "CW";
+        panel.OperatingMode = "Digital";
+
+        await panel.FollowTheTabForTests();
 
         HowMuchTheApplicationSaysTests.Pump(window);
 
