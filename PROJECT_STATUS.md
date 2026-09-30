@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-TASK: TASK 5 of 5
-WORK_INSTRUCTION: 505 - the category pages are lists, and the map opens on a click (run by hand)
-BALL: tim
-NEXT_PASTE: output.md -> Claude Web
+STATE: EXECUTING
+TASK: TASK 2 of 4
+WORK_INSTRUCTION: 507 - the pattern is the gate (run by hand)
+BALL: code
+NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-30T11:11:53-04:00
-NOTE: Unit 505 done - categories are lists, the map opens on a row click, maps at rest 8 to 0
+UPDATED: 2026-09-30T11:27:58-04:00
+NOTE: Unit 507 - task 1 measured: at 16 dB real marks are called twice, at 8 dB dahs break and no contrast is measured; now the proportional gates
 
 ---
 

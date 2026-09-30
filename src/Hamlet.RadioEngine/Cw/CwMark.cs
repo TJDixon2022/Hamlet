@@ -38,6 +38,12 @@ public sealed record CwMark(
     /// and their product (work instruction 502, R110). Null for a mark not built by the detector.
     /// </summary>
     public CwMarkShape? Shape { get; init; }
+
+    /// <summary>
+    /// Whether the mark stood in a sequence with the shape of a keyed tone, and so was handed on (work
+    /// instruction 507, R112). Every mark a reader is handed has stood.
+    /// </summary>
+    public bool Stood { get; init; } = true;
 }
 
 /// <summary>

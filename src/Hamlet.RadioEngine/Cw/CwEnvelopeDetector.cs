@@ -428,6 +428,19 @@ public sealed class CwEnvelopeDetector
         }
     }
 
+
+    /// <summary>How many marks have stood and been handed on since the detector was made (work instruction 507).</summary>
+    public int StoodCount
+    {
+        get
+        {
+            lock (_gate)
+            {
+                return (int)_markSequence;
+            }
+        }
+    }
+
     /// <summary>The pitch of the bin the detector is watching.</summary>
     public double WatchedHz
     {
