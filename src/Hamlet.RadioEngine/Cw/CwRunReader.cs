@@ -585,6 +585,16 @@ public sealed class CwRunReader
         /// length; what is below is the letter gaps. The word gaps are the next cluster up, and
         /// anything longer - a pause between two calls - is above them, so it cannot pull the letter
         /// gap the way a split at the widest ratio would.
+        /// <para>**AND NOTHING SHORTER THAN THEM MEASURES THEM EITHER** (work instruction 504). A
+        /// hesitation inside a letter splits it, and the gap between the halves can sit far enough
+        /// under the sender's letter gaps to be a cluster of its own; walked up from the shortest,
+        /// that one gap was the letter gap, the word boundary fell under every real letter gap, and
+        /// every letter printed as a word for the forty gaps the sender remembers. So the letter
+        /// gaps are the lowest cluster of at least <see cref="MeasuredRunGaps"/>, the same count
+        /// a sender shows before its letter gap is used at all: a sender who really slows or
+        /// speeds up makes a new cluster of three within three letters, and one odd gap never
+        /// does. How far apart two clusters are is unchanged, √(7/3): a hand's gaps scatter by tens
+        /// of percent, and a factor of 1.53 is past that scatter.</para>
         /// </remarks>
         public double? LetterGapSeconds => LetterAndWordGaps().Letter;
 
@@ -598,23 +608,26 @@ public sealed class CwRunReader
 
             var sorted = _runGaps.OrderBy(g => g).ToList();
             var jump = Math.Sqrt(7.0 / 3);
-            var top = 1;
+            var clusters = new List<List<double>> { new() { sorted[0] } };
 
-            while (top < sorted.Count && sorted[top] / sorted[top - 1] < jump)
+            for (var i = 1; i < sorted.Count; i++)
             {
-                top++;
+                if (sorted[i] / sorted[i - 1] >= jump)
+                {
+                    clusters.Add(new List<double>());
+                }
+
+                clusters[^1].Add(sorted[i]);
             }
 
-            var letters = sorted.Take(top).ToList();
-            var above = sorted.Skip(top).ToList();
-            var next = 1;
+            // **ONE ODD GAP IS NOT A CLUSTER** (work instruction 504): the letter gaps are the lowest
+            // cluster holding MeasuredRunGaps gaps or more, and a smaller one under it is read against
+            // them rather than measuring them. Where none holds that many, the lowest stands, as before.
+            var at = clusters.FindIndex(c => c.Count >= MeasuredRunGaps);
 
-            while (next < above.Count && above[next] / above[next - 1] < jump)
-            {
-                next++;
-            }
+            at = at < 0 ? 0 : at;
 
-            return (letters.Average(), above.Count > 0 ? above.Take(next).Average() : null);
+            return (clusters[at].Average(), at + 1 < clusters.Count ? clusters[at + 1].Average() : null);
         }
 
         /// <summary>

@@ -4,6 +4,33 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-208
+date: 2026-09-30
+refs: work instruction 504 (issued headed 502), src/Hamlet.RadioEngine/Cw/CwRunReader.cs, src/Hamlet.RadioEngine/Cw/CwEnvelopeDetector.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheLetterGapHoldsTests.cs, tests/Hamlet.RadioEngine.Tests/Cw/WhichGateTurnsAwayW1awTests.cs
+---
+
+**One odd gap does not move a sender's letter gap.** Tim, in the work instruction, 2026-09-30:
+*"once a sender's letter gap has been measured on real letters, one gap does not move it. A
+sustained change over several letters does."* His screen that day, a hand-sent QSO on 40 m, read
+twenty letters of clean English and then every letter as a word of its own.
+
+**What it ends.** A hesitation inside a letter splits it, and the gap between the halves can sit
+far enough under the sender's letter gaps to be a cluster of its own. The run reader took the
+lowest cluster of a sender's gaps between runs as the letter gap, so that one gap became the letter
+gap, the word boundary fell under every real letter gap, and every letter printed as a word for
+the forty gaps the sender remembers.
+
+**What is built.** The letter gaps are the lowest cluster holding at least three gaps between
+runs, the count a sender already shows before its letter gap is used at all; a smaller cluster
+under it is read against it rather than measuring it. Where no cluster holds three, the lowest
+stands as before. Two clusters are still told apart by the square root of seven thirds, past the
+tens of percent a hand's gaps scatter by.
+
+**Whose words are whose.** The ruling is Tim's; three as the count of a sustained change, and
+keeping the cluster ratio as the line between an odd gap and a new one, are the author's under
+work instruction 504, and overrulable.
+
+---
 id: HM-DEC-207
 date: 2026-09-30
 refs: work instruction 503, docs/phase-requirements/PHASE_PLAN.md R111, src/Hamlet.App/ViewModels/MainWindowViewModel.cs, src/Hamlet.RadioEngine/Explore/ReceiverConditions.cs, tests/Hamlet.App.Tests/ViewModels/TheTabIsTheModeTests.cs

@@ -1146,7 +1146,7 @@ public sealed class CwEnvelopeDetector
                 // windows of its end. A bar found later, when a bin's history is read again at a
                 // newly measured contrast, was not a bar when it ended, and handing it out seconds
                 // late would split the letter it belongs to.
-                if (hop - m.End > 3 * edgeHops)
+                if (MarksNeedPromptness && hop - m.End > 3 * edgeHops)
                 {
                     continue;
                 }
@@ -1159,7 +1159,7 @@ public sealed class CwEnvelopeDetector
                 // to the peak, a piece that stops while the tone goes on would be handed out first and
                 // the whole dah refused as already called. So one window after the bar ends, the peak
                 // must have dropped below it by more than the flatness tolerance: the key came up.
-                if (_bins[apex].Level(m.End + edgeHops) > level - FlatToleranceDb)
+                if (MarksNeedKeyUp && _bins[apex].Level(m.End + edgeHops) > level - FlatToleranceDb)
                 {
                     continue;
                 }
@@ -1170,7 +1170,9 @@ public sealed class CwEnvelopeDetector
                 // stayed at its level, within the flatness tolerance, to the whole flat top.
                 var start = m.Start;
 
-                while (start > m.End - HistoryHops && _bins[apex].Level(start - 1) >= level - FlatToleranceDb)
+                // Never past hop zero (work instruction 504): before the first hop there is no level,
+                // and reading hop -1 threw in the first seconds of audio.
+                while (start > 0 && start > m.End - HistoryHops && _bins[apex].Level(start - 1) >= level - FlatToleranceDb)
                 {
                     start--;
                 }
@@ -1207,7 +1209,7 @@ public sealed class CwEnvelopeDetector
                 var to = nowSeconds - ((hop - m.End) * HopMs / 1000);
                 var pitch = _bins[StationBin(apex, start, m.End)].Hz;
 
-                if (AlreadyCalled(from, to, pitch, level))
+                if (MarksNeedOneCall && AlreadyCalled(from, to, pitch, level))
                 {
                     continue;
                 }
@@ -1260,6 +1262,22 @@ public sealed class CwEnvelopeDetector
     /// marks: the pairing, the keying verdict, the light and the scope see every bar as before.
     /// </remarks>
     public bool MarksNeedEdges { get; set; } = true;
+
+    /// <summary>Whether a bar found more than three windows after its end is turned away; on by default.</summary>
+    /// <remarks>
+    /// Work instruction 492's first delivery rule. The switch exists so work instruction 504 could
+    /// count, one gate at a time, what each turns away; off, a late bar is handed out. It gates
+    /// only the marks.
+    /// </remarks>
+    public bool MarksNeedPromptness { get; set; } = true;
+
+    /// <summary>Whether a bar must end where its tone's peak drops, a window later; on by default.</summary>
+    /// <remarks>Work instruction 492's second delivery rule, switchable for the same count (work instruction 504).</remarks>
+    public bool MarksNeedKeyUp { get; set; } = true;
+
+    /// <summary>Whether a bar overlapping a mark already called at its pitch and level is not called again; on by default.</summary>
+    /// <remarks>Work instruction 492's third delivery rule, switchable for the same count (work instruction 504).</remarks>
+    public bool MarksNeedOneCall { get; set; } = true;
 
     /// <summary>
     /// Whether the level at the peak falls at least <see cref="EdgeDepthDb"/> below the mark's top

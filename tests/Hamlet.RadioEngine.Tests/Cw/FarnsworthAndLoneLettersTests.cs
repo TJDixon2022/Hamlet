@@ -149,15 +149,14 @@ public sealed class FarnsworthAndLoneLettersTests
     /// Case 3, from a sender already printed: the call, then T E T T E at the same pitch and level.
     /// Alone, lone marks never make a sender to print; after a call they are that sender's, and each
     /// lone letter used to confirm the next. The call prints and the string does not.
-    /// <para>**SEED 5036, NOT 5035.** With seed 5035 the detector throws IndexOutOfRangeException at
-    /// `CwEnvelopeDetector.cs` line 1160, reading the hop before hop zero while it reaches a mark
-    /// back to where its tone rose. That is the detector's, out of this unit's scope, and reported
-    /// in its output; the seed was moved so this case tests the reader.</para>
+    /// <para>**SEED 5035, RESTORED** (work instruction 504). Unit 501 moved it to 5036 because the
+    /// detector read the hop before hop zero while reaching a mark back to where its tone rose, and
+    /// threw; the walk now stops at hop zero.</para>
     /// </remarks>
     [Fact]
     public void LoneMarksAfterACallPrintNothing()
     {
-        var (text, _, _) = Read(Standard(Call + " T E T T E", 18, 5036));
+        var (text, _, _) = Read(Standard(Call + " T E T T E", 18, 5035));
 
         _output.WriteLine($"the call then `T E T T E` at 18 WPM: read `{text}`");
 
