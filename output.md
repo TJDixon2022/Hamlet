@@ -1,24 +1,3 @@
-READ IN THIS ORDER.
-
-A. Maps drawn on a category page with the popup closed, before and after.
-B. Whether a row press opens its path, and what the popup's heading says.
-C. The rest. Section 4 raises 6 items, none blocking.
-
-```
-UNIT:       505 - complete at task 5 of 5, none dropped - 2026-09-30 11:11 -04:00
-UNIT GOAL:  Draw each achievements category as a list of what he earned, with no map on it, and open the one map on a click.
-NUMBER:     maps on the Countries page at rest: 8 -> 0; earned rows visible at 1040 x 720: 8 of 8 on the fixture, below the next panel
-```
-
-**A.** On the twelve-contact fixture with the popup closed, the Countries page drew **8** maps and
-now draws **0**. Every other page is now **0** too; before, Grids drew 10, Continents 5, Hall of
-Fame 5, Modes 5, Bands 4 and Europe 3.
-
-**B.** Yes. A real click on the Norway row opens Norway's path, and the heading reads
-**`Norway · LA1ZZZ`**. After closing it, a click on the United Kingdom row reads
-**`United Kingdom · G0MNO`**. The X closes it, and so does a click outside. A row with no grid
-opens nothing.
-
 ## 1. What Claude did
 
 **Surface and gate.** Claude Code on the development computer at `C:\Source\HamLet`, branch
@@ -27,190 +6,183 @@ confirmed. Nothing in this report is evidence about the radio.
 
 **Run by hand, outside the loop.**
 - **The lock:** `SESSION.lock` was taken through `tools\arbiter\lock.bat take` and released the same
-  way. The script keeps it in `C:\Source\ClaudeProjectStatus`.
-- **Records not touched:** nothing was written to `RUN_LEDGER.md`, and nothing under `tools\arbiter\`
-  was touched. No copy of `PHASE_PLAN.md`, `PHASE_OUTCOME.md` or `PHASE_STATUS.md` was touched.
-- **The status:** `tools\status.sh` takes the unit from `PHASE_STATUS.md`, so a wrapper,
-  `.run-unit\unit505-status.sh`, set the status to name 505 after each write.
-- **What was left alone:** nothing under `src\Hamlet.RadioEngine\` was touched. No package, no image
-  asset, nothing written to the radio or the log, nothing that keys.
-- **Commits:** only this unit's files, by path, one commit per task, each pushed.
+  way.
+- **Records not touched:** nothing was written to `RUN_LEDGER.md`, and nothing under
+  `tools\arbiter\` was touched. No box was ticked.
+- **Read:** no recording, fixture, floor or telemetry.
+- **Not committed:** nothing under `.run-unit\`. Nothing keys or transmits.
 
-**Commits, in order:**
-- `6894e593` task 0
-- `435ada28` task 1
-- `3adecc7e` task 2
-- `a7e22be3` task 3
-- `f9c18033` task 4
-- `5644b54d` task 5
+**One departure from the order.** It named **HM-DEC-209**, which unit 505 had already used an hour
+earlier. Ids are never reused (§2.1), so this ruling is **HM-DEC-210**.
 
-Every push succeeded.
+**Commits, all on `main` and pushed:**
+- `f35a994c` task 1, the measurement
+- `2a6a1835` tasks 2 and 3, the gates and the pattern
+- `994624dc` task 4, the display and the records
 
-**Version.** 1.13.191 to 1.13.192.
+**Version.** 1.13.192 to 1.13.193.
 
-**Task 0, before anything changed.**
-- **App carry-forward:** 277 of 278. The loss, `ThePsk31ConversationCardTests`, took 1 ms and is
-  green alone.
-- **`TheCategoryPagesAreTradingCardsTests`:** green, 15 of 15.
-- **`TheAchievementsPageTests`:** green, 10 of 10.
-- **`TheMapOpensTests`:** green, 9 of 9.
-- **`TheAchievementsPageClicksInTests`:** 7 of 8. `NoStringInAnySlotIsClippedAtTheWindowsSize` was
-  red and inherited, with `modes: [Olivia] needs 60.0 px and its slot is 0.0`.
-- **The count:** 8 maps on Countries at rest.
+**Measured first, against the true key timing** (task 1). The call is at 20 WPM, with 65 marks
+sent.
+- **16 dB:** no mark was lost. Four real marks were called twice, overlapping at one pitch and two
+  levels, and those were the letters that read wrong.
+- **8 dB:** four dahs were lost, and others read 30 to 80 ms for 180. The detector measured no
+  contrast at all.
+
+So the weak station's marks mostly *did* reach the reader. What was wrong was duplicates at 16 dB
+and broken bars at 8 dB.
 
 **The changes, file by file:**
-- **`src/Hamlet.App/Views/AchievementsWindow.axaml`:**
-  - **One template for an item of a category, `HmCategoryItemTemplate`.**
-    - **An earned item is a row.** It has the category's color at the left edge and the title bold in
-      a 340 px column. The call line and any count sit under the title. Then come the distance at
-      22 pt bold, band and mode over the date, the points, and at the right end `map` or the no-map
-      word.
-    - **The unearned one is a panel:** the grey edge, the title and points, `next`, the tier bar,
-      the wants line, the quill line, and the callers panel as the card drew it.
-  - **The card list is one column and the row is the button.** Where the contact has a map the row
-    sits inside a `category-row` button on `OpenTheMapCommand`. Its resting look says it can be
-    pressed: a hand cursor, the word `map`, and the edge goes amber under the pointer. Otherwise the
-    row is a plain control with its contacts in the tooltip.
-  - **The list binds `DrawnCards`**, so the unearned one comes first.
-  - **Continents:** seven rows, each an `hm-badge` button that opens its countries. A separate
-    `category-map` button beside the row opens the path.
-  - **The popup is not rebuilt.** Its heading binds `OpenedMapHeading`.
-  - **The comments** that cited R22, the 231 px map and rulings 11 and 16 now cite this unit and
-    HM-DEC-209 and say what they replaced.
-- **`src/Hamlet.App/ViewModels/AchievementCategory.cs`:**
-  - `AchievementCategoryCard.MapWord` (`map`), `OpensAMap` and `ContactTip`.
-  - `AchievementCategory.DrawnCards`: the unearned one first, then the earned in the order earned.
-- **`src/Hamlet.App/ViewModels/AchievementsViewModel.cs`:**
-  - `OpenedCard`, kept beside `OpenedMap`, and `OpenedMapHeading`.
-  - `OpenedMapCallsign` stays.
-- **`tests/.../TheCategoryPagesAreListsTests.cs`, new.** It holds 16 tests, 17 cases.
-- **`tests/.../TheAchievementsPageClicksInTests.cs`:**
-  - `InsideACategoryTheEarnedCardsComeFirstThenOneUnearned` is rewritten and renamed
-    `InsideACategoryTheOneToEarnNextComesFirstThenTheEarned`.
-  - Its `DrawnCards` helper looks for `category-card`.
-  - Its `StateContacts` call points at the new class.
-- **`tests/.../TheCategoryPagesAreTradingCardsTests.cs`:** emptied to one comment.
-- **`DECISIONS.md`:** HM-DEC-209.
-- **`CLAUDE.md` §1:** its index row, at the top.
-- **`Directory.Build.props`:** the version bump.
+- **`src/Hamlet.RadioEngine/Cw/CwEnvelopeDetector.cs`:**
+  - **Every single-mark test is now a fraction of the mark's own height over the gap beside it**
+    (`OwnContrast`). That height is the median of the peak bin's hops 3 to 8 outside each edge.
+  - **Edges:** a mark must fall `EdgeShare` = **0.5** of its own height within four hops. It had to
+    fall 6 dB. The reason: a keyed edge takes the level from the top to the gap within the window's
+    spread whatever the height, so half of it is crossed at any height, and a bump in noise that
+    slopes into its neighbours does not cross it.
+  - **Narrowness:** a mark is broad only where the bins 300 Hz away **both rise with it** by more than
+    `NarrowShare` = **0.5** of its height. Before, it had to stand 6 dB over their *level*. The reason:
+    noise is broadband and lifts both sides at once, while a tone's energy stays in its own bin.
+    - The rise replaced the level for a measured reason. The first version, a level at half the
+      mark's height, lost a dah of the loud station in the two-station case: the quiet station at
+      825 Hz leaks into the 925 Hz probe bin.
+    - The rise of one side alone failed too, whenever the other station happened to key during the
+      mark. "Both sides" answers both.
+  - **The shape score is rebuilt from ratios.**
+    - **Narrowness** is one less the smaller neighbour rise over the mark's height.
+    - **Contrast** is how evenly the mark stands over its two gaps: the lower of the two heights
+      over the higher.
+    - **The 15 dB constant is gone.**
+    - **The threshold is 0.003**, a quarter under the lowest real mark's 0.004 at 8 dB, with the
+      edges and narrowness tested and the shape not. It still turns away any bar scoring nought on
+      a term. It no longer separates much else on a weak station, and the pattern does that work.
+    - Unit 502's 0.25 was set with a call 22 dB over the noise in front of it.
+  - **The pattern gate is wired in.** Every candidate goes to `CwPatternGate`, and only marks that
+    stand reach `MarksSince`, the scope's hops and the mark count. The one-call rule reads every
+    candidate, as it read every called mark at HEAD.
+  - **`Follow(pitch)`:** the printed sender's bin is watched over the radio's pointer and the sweep.
+    The reading's `Pointed` flag stays true only for the radio's own pointer.
+  - **`MarksLast4s`** is now the marks that stood at the watched pitch in the last four seconds,
+    where it was the watched bin's paired bars.
+  - **Switches and counts:** `MarksNeedPattern`, `CandidateCount` and `StoodCount`.
+- **`src/Hamlet.RadioEngine/Cw/CwPatternGate.cs`, new.** A sequence is candidates:
+  - within one bin of its pitch;
+  - within the reader's own level tolerance of its height, unit 490's figure as the order asks;
+  - silent no longer than the slowest Farnsworth word gap and a 5 WPM dah.
 
-**Where the order changed (task 3): in the view.** `DrawnCards` reorders for the list, and `Cards`
-is untouched. That is the smaller change, because about a dozen builders fill `Cards` and every count
-reads it.
-
-**Row height, the author's.** It follows the content: two lines of text and their padding. That is
-41 px on the test host (51 px where a count line adds a third), plus 8 between rows. The reason is to
-be readable at arm's length and small enough that a page of countries shows seven or eight at once.
-
-**Earned rows at 1040 x 720:**
-- The list's viewport is 589 px, and the Countries next panel takes 201 of it.
-- All 8 of the fixture's 8 countries show whole without scrolling.
-- The space below the panel holds about 8 rows of 41 px; a ninth would scroll.
-
-**Tooltips:** moving `ContactLines` into the tooltip loses nothing. The one no-map row on the
-fixtures, Canada, lists its contact there, and the test checks every line is in it.
-
-**Watched red first, one per task:**
-- **Task 1:** `twelve contacts: 0 earned rows drawn for 8 earned`, `1040.00 hall_of_fame: no row is
-  drawn`, and the map count above.
-- **Task 2:** `[Norway] opened LA1ZZZ, heading LA1ZZZ`.
-- **Task 3:** `hall_of_fame: the one to earn next is at y 360.00, not above the first earned row at
-  115.00`.
-- **Task 4:** `Africa earned, map buttons 0`.
-
-**Every mismatch against section 3.**
-- **None in the three files.** `AchievementsWindow.axaml` was 716 lines at 1040 by 720 with the
-  template as described. `AchievementCategory.cs` was 1415 lines with the record and class as
-  described. `NextCaller` carries no grid and no path. The newest decision was HM-DEC-208.
-- **`TheCategoryPagesAreTradingCardsTests`** held seven tests and seven traces as counted; the popup
-  test is a two-case theory.
-- **The carry-forward list** names none of them.
-- **Not in section 3:** `TheAchievementsScreenTests.TheWindowDrawsEverySixRows` is red. It looks for
-  an `ItemsControl` named `AchievementsModeRows` that is not in the window at HEAD either, so it is
-  inherited and was not chased.
-
-**What became of each old test in `TheCategoryPagesAreTradingCardsTests`:**
-- **`EveryKindsBandCarriesCountScoreLevelAndABar`:** carried whole. It does not depend on the card.
-- **`StatesCountWhatTheLogsStateFieldSays`:** carried whole. Its "no card is white" check now uses
-  the row measure below.
-- **`EveryEarnedCardIsTheContactThatEarnedIt`:** carried in substance.
-  - The view-model half and the ruling 21 facts at 1400 and 1920 are unchanged. The "has a map"
-    check now means the row is the button that opens one.
-  - The window check at 1040 now counts rows that open a map, where it counted maps drawn.
-  - **The ruling 11 and 12 half is retired:** the map across the card at 231 px, and its crop to the
-    two stations. No map is drawn on a row, and the popup's frame is `TheMapOpensTests`'.
-- **`ACardsMapOpensInItsPopupOnAClickAndAClickOutsideClosesIt`:** carried as
-  `ARowsMapOpensInItsPopupOnAClickAndAClickOutsideClosesIt`. The click lands on the row. Hover opens
-  nothing, it never covers the back control, and nothing is written; all unchanged.
-- **`TheNextCardKnowsWhoIsCalling`:** moved whole in task 3. Only the class it finds the card by
-  changed, `trading-card` to `category-card`.
-- **`TheOtherFiveKindsEachDrawTheirOwnCards`:** carried. "No map with width" now means the row is
-  not the button that opens one.
-- **`NoStringClipsAndNoCardIsWhiteAtFourteenHundredAndNineteenTwenty`:** carried.
-  - "White" was "no map, bar or list". It is now "nothing but the title": a row needs a bar, a list,
-    or a fact beside its title. Its built-in watched red hides those and restores them.
-- **The seven traces, `Unit342`, `Unit345`, `Unit346`, `Unit347`, `Unit348`, `Unit349` and
-  `Unit354`:** retired. They measured a card layout that no longer exists.
+  It **stands at five marks in two lengths at 2 to 1 or wider**, then releases its held marks in
+  order, and every agreeing mark after that at once. A candidate **closer than half the sender's
+  dit** to the sequence's last mark is the same tone read twice, or a piece of it, and is dropped.
+  - **Five:** unit 493's two runs of two, four, is the floor. Five is one past it, so the pattern is
+    always wider than one four-mark letter. What the count buys is noise's chance of making that
+    many agreeing marks.
+  - **Half a dit:** Morse puts a dit of silence between elements, a hand scatters it by tens of
+    percent, and the detector reads gaps long, never short.
+- **`src/Hamlet.RadioEngine/Cw/CwMark.cs`:** `Stood` and `OwnContrastDb`.
+- **`src/Hamlet.App/ViewModels/MainWindowViewModel.cs`:** on every scope tick the detector follows
+  `PrintingHz` while decoding.
+- **`tests/.../ThePatternIsTheGateTests.cs`, new:** the strength table, Farnsworth and 35 WPM, the
+  noise, the two stations, and the verdict row.
+- **Records:**
+  - R112 in both `PHASE_PLAN.md` copies.
+  - Both `PHASE_STATUS.md` copies name 507.
+  - `## UNIT 507 - STEP 12` in both `PHASE_OUTCOME.md` copies.
+  - `Directory.Build.props`, and HM-DEC-210.
 
 **Build and tests.**
 - **Build:** `Hamlet.sln` with warnings as errors, 0 warnings, 0 errors.
-- **The achievements set and binding health:** 48 of 48. That covers `TheCategoryPagesAreListsTests`,
-  `TheAchievementsPageClicksInTests`, `TheAchievementsPageTests`, `TheMapOpensTests`,
-  `TheGlobeOnTheCardFaceTests` and `BindingHealthTests`.
-- **`NoStringInAnySlotIsClippedAtTheWindowsSize`, red at HEAD, is now green.** The callers panel now
-  runs full width, so the Olivia caller row has room.
-- **App carry-forward after the last change:** 277 of 278. The loss, `ThePsk31OfferTests`, took 1 ms
-  and is green alone.
+- **Reader and detector tests:** 51 of 54. The three reds are the same as at HEAD:
+  `BurstsBetweenLettersDoNotSetTheSpeed` and `AMarkIsTheEnvelopeOverAThresholdTests`' two.
+- **Pattern tests:** 11 of 14. The reds are the 8 dB call, the 12 dB call, and the 10 dB Farnsworth
+  and 35 WPM case.
+- **`OneDecoderOneTruthTests`:** 6 of 6, with readings identical to HEAD.
+- **App carry-forward:** 277 of 278. The loss, `TheTestsStayOffTheNetworkTests`, took 1 ms and is
+  green alone.
 
 ## 2. What the owner should expect
 
 - **Rebuild.**
-- **Open Achievements and click Countries.** You get a list, one country to a row, and no maps. Each
-  row shows the country, who you worked and their grid, how far it was in big type, the band and
-  mode, the date and the points.
-- **Click a row.** The map of that contact opens, you to there, headed with the place and the
-  station, like `Norway · LA1ZZZ`. It closes on the X or a click anywhere else. A row that says
-  `no grid, so no map` isn't a button; hover over it to see the contact.
-- **The one to earn next is at the top**, above the rows, with who on the CQ list would earn it for
-  you.
-- **Continents:** clicking a row opens that continent's countries, and the small `map` button beside
-  it opens the path of the contact that first reached it.
-- **Delete these by hand; they are emptied to one comment:**
-  - `tests\Hamlet.App.Tests\Views\TheCategoryPagesAreTradingCardsTests.cs`.
-- **`assets\category-page-countries.png`** is the picture this replaces. It's left as it was.
+- **Weaker stations should now read better.** A mark is judged by whether it fits the sender's
+  pattern and how its shape compares with its own height, not by how loud it is. On the bench, a
+  call 16 dB over the noise that used to come out as `CQ TNQ DE N0CALR` now reads whole.
+- **Noise still prints nothing, because noise can't make the pattern.** In thirty seconds of loud
+  noise, 635 bars passed the single-mark tests and none of them formed a pattern.
+- **The light, the blocks and the verdict row now describe the station being printed.** The row's
+  pitch is the printed pitch, and its mark count is the marks that fit that station's pattern.
+- **There is a limit.** Below about 16 dB over the noise the bench doesn't read a call whole. At
+  8 dB the dahs themselves break up before any of this sees them. **If a station you can hear still
+  reads nothing, section 3's table shows where the bench stops, and that is the number to report
+  against.**
 
 ## 3. What you should see
 
-The three pages at three widths, computed on the headless host with the twelve-contact fixture,
-four callers and a 17 m best bet. The window is 720 tall and the list's viewport is 589 px at every
-width.
+**The strength table.** The call `CQ CQ DE N0CALL N0CALL K` at 20 WPM has 65 marks sent. Decibels
+are over the noise on unit 502's scale. Each "after" cell shows candidates at the pitch, the marks
+that stood, and the reading.
 
-| Width | Countries | Continents | Total Miles |
+| Strength | Before (HEAD) | After |
+|---|---|---|
+| 24 dB | `CQ CQ DE N0CALL N0CALL K` | 72 candidates, 65 stood: `CQ CQ DE N0CALL N0CALL K` |
+| 16 dB | `CQ TNQ DE N0CALR N0CALL K` | 75 candidates, 70 stood: **`CQ CQ DE N0CALL N0CALL K`** |
+| 12 dB | `CT A CQ DE N0CALL N0CAL<AS> K` | 69 candidates, 64 stood: `CT A CQ DE N0CALL N0CALL K` |
+| 8 dB | `NETA R ADEN0CALL N0CE AEL K` | 68 candidates, 58 stood: `N ET A EI A DE N0CALL NTJCE AEL K` |
+
+- **The bench reads the call whole from 16 dB up.** At 12 dB only the cold-start CQ is wrong, as at
+  HEAD.
+- **Below that the bars break.** At 8 dB, four of the call's dahs never become bars. That is before
+  any gate this unit touched, so a pattern can't bring them back.
+
+**At 10 dB, before and after:**
+
+| Case | Reads |
+|---|---|
+| 35 WPM | `C Q C Q D E N 0 C A L L N 0 C A L L K`: every letter right, and every letter its own word, as at HEAD. That's the reader's word-gap arithmetic, which the order says must not change here. |
+| 5 WPM Farnsworth | `CK C TA DE E■CAEIL N0RALL N`, unchanged |
+
+**Noise:**
+
+| Case | Candidates passing the single-mark tests | Stood in a pattern | Printed |
 |---|---|---|---|
-| 1040 | the next panel (201 px), then 8 of 8 earned rows whole at 41 px; nothing clips | 7 rows, 4 of the 5 earned whole at 51 px; the two unearned carry their callers; nothing clips | the next tier panel alone (117 px) with its bar; nothing clips |
-| 1400 | the same: 8 of 8 whole; nothing clips | the same: 4 of 5 whole; nothing clips | the same; nothing clips |
-| 1920 | the same: 8 of 8 whole; nothing clips | the same: 4 of 5 whole; nothing clips | the same; nothing clips |
+| 30 s of loud noise | 635 (66 at HEAD) | **0** | nothing |
+| 3 min of loud noise | 3,932 (372 at HEAD) | **80** | nothing |
 
-**Why the widths don't change the counts:** rows are one to a line at every width, so the count
-depends on the height. The extra width goes into the space between the title and the distance.
+The loosened single-mark tests pass many more noise bars. The pattern stands almost none of them,
+and the reader prints none.
 
-**Maps realized with the popup closed:** 0 on every kind and on Europe, on both fixtures.
+**The cases:**
+- **Two stations 200 Hz apart**, the loud one at 24 dB and 625 Hz and the quiet one at 10 dB and
+  825 Hz. The loud one reads whole, as at HEAD. The quiet one **is found as a second sequence**: 12
+  of its marks stood. The reader prints one sender, the loud one.
+- **The verdict row on a driven station:** while printing and keying, `scopePitchHz` equalled the
+  printed pitch on all 1,322 readings, and `marks4s` was the count of marks that stood there, up to
+  20.
+- **Every existing case** was compared text for text with HEAD. That covers the calls at every
+  speed, the Farnsworth cases, the speed change, the bursts, the hesitation, `TEST DE W1AW K`,
+  `DE DE`, and the lone and stray marks. All read as at HEAD **but one**: unit 502's weak call, about
+  10 dB at 23 WPM, went from `CG N EQ DE N0CALL NT ON EAE IL A` to
+  `CGE N EQ DE N0CALL NT ON EAE IL A`. Its test asserts only the mark count, so it stays green. It
+  was not forced back.
+- **Diagnostic counts that changed but don't affect any reading:**
+  - A lone E or T, and noise alone, now reach the reader as 0 marks, where they were 13 and 66. Both
+    still print nothing.
+  - Unit 504's gate table shows 65 of 65 marks, where it was 66, because the split mark is now
+    dropped. With every gate off it reads `MT N OT N I I L K`, where HEAD read placeholders.
 
 ## 4. What's blocking us
 
 Nothing blocks. What is left, a line each:
-- **The `CLAUDE.md` §1 index stops at HM-DEC-188**, with 189 to 208 never indexed.
-  `DecisionLogOrderTests.EveryRulingAppearsOnceAndTheGapsAreTheKnownOnes` was red at HEAD with gaps
-  166 and 182. Adding 209's row, as the order asks, now also exposes 189 to 208. Filling those twenty
-  rows is its own work (§12.6).
-- **`VoiceTests.NoOperatorFacingStringUsesABritishSpelling`** is red at HEAD: two uses of `centre` at
-  `MainWindowViewModel.cs:13226` and `13234`. It is inherited and not this unit's.
-- **`TheAchievementsScreenTests.TheWindowDrawsEverySixRows`** is red at HEAD. It looks for
-  `AchievementsModeRows`, which the window no longer has, so the test is stale.
-- **The window's opening comment still says the window is 1000 wide**; it is 1040. Left alone.
-- **`TheCategoryPagesAreTradingCardsTests.cs`** is emptied and waits for the owner to delete it.
-- **Continents keep their alphabetical order**, so an unearned continent can sit between earned
-  ones. Task 3 moved the next one first only on the card lists, as ordered.
+- **Weak bars break at 8 dB before any gate sees them.** The flat-top tolerance at a weak mark's
+  measured contrast is the next place to look, and it is outside this order.
+- **At 35 WPM at 10 dB every letter prints as a word.** That's the reader's word-gap arithmetic,
+  which this order protects.
+- **The 12 dB cold start** reads `CT A` for the first `CQ`, as at HEAD.
+- **The reader prints one sender**, so a second sequence that stood, like the quiet station, is found
+  but never printed.
+- **`DecisionLogOrderTests.EveryRulingAppearsOnceAndTheGapsAreTheKnownOnes`** has been red since
+  before unit 505, because the `CLAUDE.md` §1 index stops at HM-DEC-188. HM-DEC-210 joins the gaps,
+  since this order asked for no index row.
+- **The app's verdict row is checked at the engine level.** The detector's reading is what the row
+  copies. No app test drives the scope tick itself.
 
 ### Asks still outstanding
 
