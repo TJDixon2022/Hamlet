@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: TASK 2 of 3
+TASK: 3 of 3
 WORK_INSTRUCTION: 508 - the icon (run by hand)
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-30T15:52:27-04:00
-NOTE: Unit 508 - task 1 committed, Hamlet.exe carries the eight-frame icon; now every window takes its icon from the file
+UPDATED: 2026-09-30T15:54:49-04:00
+NOTE: Unit 508 - task 2 committed, ten of ten windows carry the icon from the file; now retiring the small mark and its tests
 
 ---
 

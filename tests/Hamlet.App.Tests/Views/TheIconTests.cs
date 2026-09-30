@@ -77,4 +77,79 @@ public sealed class TheIconTests
 
         Assert.Equal(new[] { 16, 20, 24, 32, 40, 48, 64, 256 }, frames);
     }
+
+    /// <remarks>
+    /// Task 2: the icon every window carries is the icon file itself, handed to the platform whole so
+    /// Windows picks the frame drawn for the size it wants, and never a raster of the old small mark.
+    /// </remarks>
+    [AvaloniaFact]
+    public void TheWindowIconIsTheIconFile()
+    {
+        Assert.Equal("avares://Hamlet.App/Assets/hamlet.ico", AppIcon.Source);
+
+        Assert.NotNull(AppIcon.Current);
+
+        // The headless platform keeps no bytes of an icon it is handed (its Save writes nothing), so
+        // what is read here is the file the icon is loaded from, through the same resource loader.
+        using var file = Avalonia.Platform.AssetLoader.Open(new Uri(AppIcon.Source));
+        using var bytes = new MemoryStream();
+        file.CopyTo(bytes);
+
+        var frames = Frames(bytes.ToArray());
+
+        _output.WriteLine("loaded from " + AppIcon.Source + ", " + bytes.Length + " bytes, frames: " + string.Join(", ", frames));
+
+        Assert.Equal(new[] { 16, 20, 24, 32, 40, 48, 64, 256 }, frames);
+    }
+
+    /// <remarks>
+    /// Task 2: a missing icon file costs the icon and nothing else - the load answers null and throws
+    /// nothing, so no window fails to open over a picture of itself (§8, never-throw).
+    /// </remarks>
+    [AvaloniaFact]
+    public void AMissingIconFileIsNoIconAndNoThrow()
+    {
+        var icon = AppIcon.Load("avares://Hamlet.App/Assets/no-such-icon.ico");
+
+        Assert.Null(icon);
+    }
+
+    /// <remarks>
+    /// Task 2: every window the application opens carries the icon, shown on a rendering host - the
+    /// main window, the achievements, About, and each dialog. Set in one place, `App.axaml`.
+    /// </remarks>
+    [AvaloniaFact]
+    public void EveryWindowCarriesTheIcon()
+    {
+        var windows = typeof(MainWindow).Assembly.GetTypes()
+            .Where(t => typeof(Window).IsAssignableFrom(t) && !t.IsAbstract && t.GetConstructor(Type.EmptyTypes) is not null)
+            .OrderBy(t => t.Name)
+            .ToList();
+
+        _output.WriteLine("windows: " + windows.Count);
+
+        Assert.Equal(10, windows.Count);
+
+        var bare = new List<string>();
+
+        foreach (var type in windows)
+        {
+            var window = (Window)Activator.CreateInstance(type)!;
+
+            window.Show();
+
+            var carries = window.Icon is not null && ReferenceEquals(window.Icon, AppIcon.Current);
+
+            _output.WriteLine(type.Name + ": " + (carries ? "carries the icon" : "no icon"));
+
+            if (!carries)
+            {
+                bare.Add(type.Name);
+            }
+
+            window.Close();
+        }
+
+        Assert.True(bare.Count == 0, "windows without the icon: " + string.Join(", ", bare));
+    }
 }

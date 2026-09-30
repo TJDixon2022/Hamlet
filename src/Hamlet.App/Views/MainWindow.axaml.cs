@@ -19,16 +19,9 @@ public partial class MainWindow : Window
     {
         InitializeComponent();
 
-        // **THE WINDOW AND THE TASKBAR CARRY THE MARK** (work instruction 285 task
-        // 3). It is rendered from `Assets/hamlet-mark-small.svg` rather than shipped
-        // as a second drawing, and it is set here rather than in the markup because
-        // rasterising wants a platform that can draw. **Null where one cannot** -
-        // a headless run has no rasteriser, and a window that refused to open
-        // because it could not draw a picture of itself would be a poor trade.
-        if (Controls.AppIcon.Small is { } mark)
-        {
-            Icon = mark;
-        }
+        // **THE WINDOW AND THE TASKBAR CARRY THE ICON** (work instruction 508,
+        // HM-DEC-212): the amber quill on night, from `Assets/hamlet.ico`, set for
+        // every window by one style in `App.axaml` rather than here.
 
         // **A BADGE SAYS SO ON THE SCREEN** (Tim, 2026-09-08, work instruction 286
         // task 2). Subscribed here rather than in the view model, so the view model

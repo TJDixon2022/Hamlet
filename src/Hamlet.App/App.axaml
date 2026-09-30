@@ -1,5 +1,6 @@
 ﻿<Application xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:ctl="using:Hamlet.App.Controls"
              x:Class="Hamlet.App.App"
              RequestedThemeVariant="Light">
 
@@ -203,6 +204,14 @@
 
     <Application.Styles>
         <FluentTheme />
+
+        <!-- EVERY WINDOW CARRIES THE ICON, FROM ONE PLACE (work instruction 508, HM-DEC-212).
+             The amber quill on night, the icon file handed to the platform whole so it
+             picks the frame drawn for the size it wants. Null where the file cannot be
+             loaded, and the window opens without it. -->
+        <Style Selector=":is(Window)">
+            <Setter Property="Icon" Value="{x:Static ctl:AppIcon.Current}" />
+        </Style>
 
         <!-- WHAT A BUTTON LOOKS LIKE WHEN IT CAN BE PRESSED (HM-DEC-087).
 
