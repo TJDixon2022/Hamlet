@@ -331,6 +331,495 @@ public sealed class TheCategoryPagesAreListsTests
         }
     }
 
+    /// <summary>
+    /// **Task 3: the one to earn next is drawn first, above the earned rows, as a panel** - on every
+    /// kind that holds both, with its wants line and its callers drawn on it.
+    /// </summary>
+    [AvaloniaFact]
+    public void TheOneToEarnNextIsDrawnAboveTheEarnedRows()
+    {
+        var window = Realized(TheAchievementsPageTests.TwelveContacts(), 1040, Calling(), new BandBet("17 m", "best bet now"));
+        var screen = (AchievementsViewModel)window.DataContext!;
+        var checkedKinds = 0;
+
+        try
+        {
+            foreach (var kind in AchievementKinds.All.Concat(ContinentKinds()))
+            {
+                OpenOnWindow(window, screen, kind);
+
+                // **CONTINENTS DRAWS ITS SEVEN, NOT THIS LIST** (task 4).
+                if (!screen.Category!.HasCards)
+                {
+                    ToThePage(window, screen);
+                    continue;
+                }
+
+                var drawn = CategoryCards(window);
+                var next = drawn.Where(b => b.DataContext is AchievementCategoryCard { Earned: false }).ToList();
+                var earned = drawn.Where(b => b.DataContext is AchievementCategoryCard { Earned: true }).ToList();
+
+                _output.WriteLine(kind.PadRight(14) + string.Join(" / ", drawn.Select(b => (((AchievementCategoryCard)b.DataContext!).Earned ? "" : "next: ") + ((AchievementCategoryCard)b.DataContext!).Title)));
+
+                if (next.Count == 1 && earned.Count > 0)
+                {
+                    checkedKinds++;
+
+                    Assert.True(
+                        Top(next[0], window) < earned.Min(e => Top(e, window)),
+                        kind + ": the one to earn next is at y " + F(Top(next[0], window)) + ", not above the first earned row at " + F(earned.Min(e => Top(e, window))));
+                    Assert.Null(NextCardMiss(next[0], (AchievementCategoryCard)next[0].DataContext!));
+
+                    // **A PANEL AND NOT A ROW**: it is not a button and opens nothing.
+                    Assert.Null(RowButton(next[0]));
+                }
+
+                ToThePage(window, screen);
+            }
+        }
+        finally
+        {
+            window.Close();
+        }
+
+        Assert.True(checkedKinds >= 4, "only " + checkedKinds + " kinds hold both a next one and an earned one");
+    }
+
+    /// <summary>
+    /// **Work instruction 335 task 3: the next card names what it wants and who on the CQ list would
+    /// earn it, with distance - and says no one is calling from there when nobody listed would.**
+    /// </summary>
+    /// <remarks>
+    /// **CARRIED WHOLE FROM `TheCategoryPagesAreTradingCardsTests` BY WORK INSTRUCTION 505 TASK 3.** Its
+    /// assertions are unchanged; the drawn card is found by the class every row and panel now carries,
+    /// `category-card`, where it was `trading-card`.
+    /// </remarks>
+    [AvaloniaFact]
+    public void TheNextCardKnowsWhoIsCalling()
+    {
+        var records = TheAchievementsPageTests.TwelveContacts();
+        var log = new AchievementLog(records, MyGrid);
+        var points = AchievementPoints.Parse(AchievementPoints.Shipped());
+        var read = new DateTime(2026, 9, 12, 21, 41, 0, DateTimeKind.Utc);
+        var calling = CqSnapshot.From(
+            new[]
+            {
+                Heard("CQ LA8ENA JO59"),
+                Heard("CQ OE8DDX JN76"),
+                Heard("CQ DX J38DX FK92"),
+                Heard("K2ABC W3YNI FN20"),
+                Heard("CQ W1AW FN31"),
+                Heard("CQ K1ABC FN42"),
+            },
+            read);
+
+        // **THE SHORT NAME**, which is the tree's own name for a place on a line with a callsign
+        // and a distance beside it (`EntitySpoken.Short`).
+        string Place(string call) => EntitySpoken.Short(DxccPrefixes.EntityOf(call));
+
+        string Mi(string grid)
+            => OperatorLocation.FromGrid(MyGrid) is { } a && OperatorLocation.FromGrid(grid) is { } b
+                ? GridPath.DescribeMiles(GridPath.MilesBetween(a, b)).Replace(" miles", " mi", StringComparison.Ordinal)
+                : "";
+
+        _output.WriteLine("read at " + calling.ReadAt + ": "
+            + string.Join(", ", calling.Calls.Select(c => c.Callsign + " " + c.Grid)));
+
+        // **FIVE CQS; THE REPLY TO W3YNI IS NOT ONE.**
+        Assert.Equal(5, calling.Calls.Count);
+        Assert.DoesNotContain(calling.Calls, c => c.Callsign == "W3YNI" || c.Callsign == "K2ABC");
+
+        var screen = new AchievementsViewModel(records, MyGrid, points) { Calling = calling };
+
+        void Print(AchievementCategoryCard card)
+            => _output.WriteLine(
+                "  next [" + card.Title + "] wants [" + card.WantsLine + "] " + card.CallersHeading + ": "
+                + string.Join(" / ", card.Callers.Select(c => c.Place + " " + c.CallLine))
+                + (card.NoCallerLine.Length > 0 ? " [" + card.NoCallerLine + "]" : ""));
+
+        // **COUNTRIES: THE UNWORKED COUNTRIES CALLING, WITH DISTANCE.** Norway and the United
+        // States are in the log, so LA8ENA, W1AW and K1ABC are not listed.
+        screen.OpenCategoryCommand.Execute(AchievementKinds.Countries);
+
+        var country = screen.Category!.Cards[^1];
+
+        Print(country);
+
+        var unworked = calling.Calls
+            .Where(c => DxccPrefixes.EntityOf(c.Callsign) is { } e
+                && !log.Entities.Contains(e, StringComparer.OrdinalIgnoreCase))
+            .Select(c => Place(c.Callsign))
+            .OrderBy(p => p, StringComparer.Ordinal)
+            .ToList();
+
+        Assert.False(country.Earned);
+        Assert.Equal("Any country you have not worked", country.WantsLine);
+        Assert.Equal("calling CQ at 21:41 UTC, unworked", country.CallersHeading);
+        Assert.Contains(Place("OE8DDX"), unworked);
+        Assert.Equal(unworked, country.Callers.Select(c => c.Place).OrderBy(p => p, StringComparer.Ordinal));
+        Assert.Contains(country.Callers, c => c.Place == Place("OE8DDX") && c.CallLine == "OE8DDX · " + Mi("JN76"));
+        Assert.DoesNotContain(country.Callers, c => c.CallLine.StartsWith("LA8ENA", StringComparison.Ordinal));
+        Assert.Equal("", country.NoCallerLine);
+
+        screen.BackCommand.Execute(null);
+
+        // **GRIDS: A NEW SQUARE FROM A COUNTRY ALREADY WORKED STILL COUNTS.**
+        screen.OpenCategoryCommand.Execute(AchievementKinds.Grids);
+
+        var square = screen.Category!.Cards[^1];
+
+        Print(square);
+
+        Assert.Equal("Any grid you have not worked", square.WantsLine);
+        Assert.Contains(square.Callers, c => c.Place == "FN42" && c.CallLine == "K1ABC · " + Mi("FN42"));
+        Assert.DoesNotContain(square.Callers, c => c.Place == "FN31" || c.Place == "JO59");
+
+        screen.BackCommand.Execute(null);
+
+        // **INSIDE A CONTINENT: ONLY THE CALLERS ON IT.**
+        screen.OpenCategoryCommand.Execute(AchievementKinds.Continents);
+        screen.OpenCategoryCommand.Execute("continent-EU");
+
+        var europe = screen.Category!.Cards[^1];
+
+        Print(europe);
+
+        Assert.Equal(new[] { Place("OE8DDX") }, europe.Callers.Select(c => c.Place));
+
+        screen.BackCommand.Execute(null);
+        screen.BackCommand.Execute(null);
+
+        // **STATES: A CQ CARRIES NO STATE, AND THE CARD SAYS SO RATHER THAN THAT NO ONE IS
+        // CALLING** (the arbiter's proposal, marked for Tim).
+        screen.OpenCategoryCommand.Execute(AchievementKinds.States);
+
+        var state = screen.Category!.Cards[^1];
+
+        Print(state);
+
+        Assert.Empty(state.Callers);
+        Assert.Equal("Hamlet cannot tell a caller's state", state.NoCallerLine);
+
+        // **A LIST WITH NOBODY WHO WOULD EARN IT.**
+        var quiet = new AchievementsViewModel(records, MyGrid, points)
+        {
+            Calling = CqSnapshot.From(new[] { Heard("CQ LA8ENA JO59"), Heard("CQ W1AW FN31") }, read),
+        };
+
+        quiet.OpenCategoryCommand.Execute(AchievementKinds.Countries);
+
+        var none = quiet.Category!.Cards[^1];
+
+        Print(none);
+
+        Assert.Empty(none.Callers);
+        Assert.Equal("no one is calling from there now", none.NoCallerLine);
+        Assert.Equal("calling CQ at 21:41 UTC, unworked", none.CallersHeading);
+
+        // **WORK INSTRUCTION 342 RULING 14: THE PICTURE'S SENTENCE ONLY WHERE THE LIST DRAWS IT.** A
+        // decoded row is marked by its sender's country (`NudgeSet.WouldOpen`): the still green
+        // quill for an unworked country on a continent the log has reached, the ringed amber one
+        // where the continent is new too, and nothing for a worked country.
+        _output.WriteLine("  quiet countries quill [" + none.QuillLine + "]");
+
+        // **NOBODY LISTED, AND TWO CONTINENTS STILL UNWORKED**, so a caller could carry either.
+        Assert.Equal(5, log.Continents.Count);
+        Assert.Equal("On the CQ list they carry a quill.", none.QuillLine);
+
+        void Quill(string kind, string? inside, string expected)
+        {
+            screen.OpenCategoryCommand.Execute(kind);
+
+            if (inside is not null)
+            {
+                screen.OpenCategoryCommand.Execute(inside);
+            }
+
+            var next = screen.Category!.Cards[^1];
+
+            _output.WriteLine("  " + (inside ?? kind) + " quill [" + next.QuillLine + "]");
+
+            Assert.False(next.Earned);
+            Assert.Equal(expected, next.QuillLine);
+
+            while (screen.Category is not null)
+            {
+                screen.BackCommand.Execute(null);
+            }
+        }
+
+        // **COUNTRIES**: Austria and Grenada, both on continents already reached - green.
+        Assert.All(country.Callers, c => Assert.False(c.OpensContinent, c.Place + " opens a continent"));
+        Quill(AchievementKinds.Countries, null, "On the CQ list they carry the green quill.");
+
+        // **EUROPE, REACHED**: every unworked country there is green.
+        Quill(AchievementKinds.Continents, "continent-EU", "On the CQ list they carry the green quill.");
+
+        // **GRIDS AND STATES: THE LIST MARKS A COUNTRY, NOT A SQUARE OR A STATE**, so no sentence.
+        Quill(AchievementKinds.Grids, null, "");
+        Quill(AchievementKinds.States, null, "");
+
+        // **A LIST WITH A CALLER WHO WOULD OPEN A CONTINENT**: his row is ringed and the others are
+        // green, so the sentence says a quill and each caller's own mark says which.
+        var mixed = new AchievementsViewModel(records, MyGrid, points) { Calling = Calling() };
+
+        mixed.OpenCategoryCommand.Execute(AchievementKinds.Countries);
+
+        var either = mixed.Category!.Cards[^1];
+
+        Print(either);
+
+        Assert.Contains(either.Callers, c => c.OpensContinent);
+        Assert.Contains(either.Callers, c => !c.OpensContinent);
+        Assert.Equal("On the CQ list they carry a quill.", either.QuillLine);
+
+        mixed.BackCommand.Execute(null);
+
+        // **OCEANIA, NEVER REACHED: EVERY CALLER ON IT OPENS IT**, so the ringed quill - on its card
+        // among the seven and on its own page of countries.
+        mixed.OpenCategoryCommand.Execute(AchievementKinds.Continents);
+
+        var oceania = mixed.Category!.SubBadges.Single(b => b.Kind == "continent-OC").Card!;
+
+        Assert.False(oceania.Earned);
+        Assert.Equal("On the CQ list they carry the ringed quill.", oceania.QuillLine);
+
+        mixed.OpenCategoryCommand.Execute("continent-OC");
+
+        Assert.Equal("On the CQ list they carry the ringed quill.", mixed.Category!.Cards[^1].QuillLine);
+
+        // **AND DRAWN ON THE CARD AT 1400, UNDER THE WANTS LINE.**
+        var quillWindow = Realized(records, 1400, calling);
+
+        try
+        {
+            ((AchievementsViewModel)quillWindow.DataContext!).OpenCategoryCommand.Execute(AchievementKinds.Countries);
+            Settle(quillWindow);
+
+            var drawn = Named<ItemsControl>(quillWindow, "AchievementsCategoryCards").GetVisualDescendants().OfType<TextBlock>()
+                .Where(t => t.IsEffectivelyVisible)
+                .ToList();
+            var wants = drawn.Single(t => t.Text == "Any country you have not worked");
+            var quill = drawn.Single(t => t.Text == "On the CQ list they carry the green quill.");
+
+            Assert.True(
+                Top(quill, quillWindow) > Top(wants, quillWindow),
+                "the quill line is at y " + F(Top(quill, quillWindow)) + ", not under the wants line at " + F(Top(wants, quillWindow)));
+        }
+        finally
+        {
+            quillWindow.Close();
+        }
+
+        // **ON THE WINDOW: THE HEADING AND EACH CALLER ARE DRAWN ON THE NEXT CARD.**
+        var window = Realized(records, 1040, calling);
+        var shown = (AchievementsViewModel)window.DataContext!;
+
+        try
+        {
+            shown.OpenCategoryCommand.Execute(AchievementKinds.Countries);
+            Settle(window);
+
+            var said = VisibleText(Named<ItemsControl>(window, "AchievementsCategoryCards")).ToList();
+
+            Assert.Contains("calling CQ at 21:41 UTC, unworked", said);
+
+            foreach (var caller in shown.Category!.Cards[^1].Callers)
+            {
+                Assert.Contains(caller.Place, said);
+                Assert.Contains(caller.CallLine, said);
+            }
+        }
+        finally
+        {
+            window.Close();
+        }
+
+        // **WORK INSTRUCTION 345 TASK 1, RULING 17: EVERY NEXT CARD AS DRAWN AT 1400 AND 1920**, on
+        // every kind, the Continents page and every continent page, over the four callers and the best
+        // bet the page-wide test uses. **Modes on the five-contact log as well**, because the twelve
+        // contacts have worked every mode and draw no next card there.
+        var bet = new BandBet("17 m", "best bet now");
+        var watchedNext = false;
+
+        foreach (var width in new[] { 1400.0, 1920.0 })
+        {
+            // **WORK INSTRUCTION 346 TASK 1: MODES WITH A PSK31 CALLER AS WELL**, so a Modes row's who is
+            // there is drawn where the list's rows say the mode and someone is calling in it.
+            // **WORK INSTRUCTION 347 TASK 1, RULINGS 29 AND 30: THE PSK31 ROW AS DRAWN, WORKED OUT HERE FROM
+            // THE TEXT AND `GridPath`** and not from the snapshot - a certain CQ with a grid carries his
+            // distance, a CQ with no grid or an uncertain reading is the callsign alone, and of two callers
+            // the nearest by miles is named. Europe is drawn on the certain caller's list too, where he is.
+            foreach (var (fixture, kinds, list, psk31Row) in new[]
+            {
+                (records, AchievementKinds.All.Concat(ContinentKinds()).ToList(), Calling(), (string?)null),
+                (FiveContacts(), new List<string> { AchievementKinds.Modes }, Calling(), "3.580 on 80 m · no one calling at 21:41 UTC"),
+                (FiveContacts(), new List<string> { AchievementKinds.Modes }, CallingWithPsk31(), "3.580 on 80 m · EA3XYZ"),
+                (FiveContacts(), new List<string> { AchievementKinds.Modes, AchievementCategory.ContinentPrefix + "EU" },
+                    CallingWith(CertainPsk31WithGrid), "3.580 on 80 m · EA3ABC · " + Mi("JN11")),
+                (FiveContacts(), new List<string> { AchievementKinds.Modes }, CallingWith(UncertainPsk31WithGrid), "3.580 on 80 m · EA3ABC"),
+                (FiveContacts(), new List<string> { AchievementKinds.Modes },
+                    CallingWith(Psk31WithNoGrid, CertainPsk31WithGrid), "3.580 on 80 m · EA3ABC · " + Mi("JN11") + " and 1 more"),
+            })
+            {
+                var wide = Realized(fixture, width, list, bet);
+                var opened = (AchievementsViewModel)wide.DataContext!;
+
+                try
+                {
+                    foreach (var kind in kinds)
+                    {
+                        OpenOnWindow(wide, opened, kind);
+
+                        var category = opened.Category!;
+                        var held = category.Cards.Concat(category.SubBadges.Select(b => b.Card!)).Where(c => !c.Earned).ToList();
+                        var drawn = wide.GetVisualDescendants().OfType<Border>()
+                            .Where(b => b.IsEffectivelyVisible && b.Classes.Contains("category-card")
+                                && b.DataContext is AchievementCategoryCard { Earned: false })
+                            .ToList();
+                        var where = F(width) + " " + kind;
+                        var fromTheCqList = kind == AchievementKinds.Countries || kind == AchievementKinds.Grids
+                            || kind == AchievementKinds.Continents || kind.StartsWith(AchievementCategory.ContinentPrefix, StringComparison.Ordinal);
+
+                        Assert.True(
+                            drawn.Count == held.Count,
+                            where + ": the view model holds " + held.Count + " next card(s) and the page draws " + drawn.Count);
+
+                        foreach (var next in held)
+                        {
+                            var card = drawn.Single(b => ReferenceEquals(b.DataContext, next));
+                            var said = VisibleText(card).ToList();
+                            var rows = CallerRows(card);
+                            var miss = NextCardMiss(card, next);
+
+                            _output.WriteLine(where + " [" + next.Title + "] " + (miss ?? "drawn: " + string.Join(" | ", said)));
+
+                            Assert.True(miss is null, where + ": " + miss);
+
+                            if (!watchedNext && next.Callers.Count > 0)
+                            {
+                                // **RULING 19, WATCHED RED ON THE TEST WINDOW ONLY**: the drawn card held
+                                // against a caller line the view model does not hold.
+                                var wrong = NextCardMiss(
+                                    card, next with { Callers = next.Callers.Append(new NextCaller("Nowhere", "XX0XX · 1 mi")).ToList() });
+
+                                _output.WriteLine(where + " [" + next.Title + "] with a caller the view model does not hold, watched red: " + wrong);
+
+                                Assert.NotNull(wrong);
+                                watchedNext = true;
+                            }
+
+                            // **FROM THE CQ LIST: THE READ TIME, AND A DISTANCE ON EVERY CALLER, OR NO ONE.**
+                            if (fromTheCqList)
+                            {
+                                Assert.Contains("calling CQ at 21:41 UTC, unworked", said);
+                                Assert.All(rows, r => Assert.Matches(@" · [\d,]+ mi$", r.CallLine));
+
+                                if (rows.Count == 0)
+                                {
+                                    Assert.Contains("no one is calling from there now", said);
+                                }
+                            }
+
+                            // **GRIDS AND STATES: THE LIST MARKS NO SQUARE OR STATE, SO NO QUILL IS DRAWN**;
+                            // States says in words that a caller carries no state.
+                            if (kind == AchievementKinds.Grids || kind == AchievementKinds.States)
+                            {
+                                Assert.DoesNotContain(
+                                    card.GetVisualDescendants().OfType<TextBlock>(),
+                                    t => t.IsEffectivelyVisible && t.Classes.Contains("card-quill"));
+                            }
+
+                            if (kind == AchievementKinds.States)
+                            {
+                                Assert.Contains(AchievementCategory.NoStateFromTheAir, said);
+                            }
+
+                            // **BANDS: THE BEST BET IS THE FIRST ROW DRAWN.**
+                            if (kind == AchievementKinds.Bands)
+                            {
+                                Assert.Equal(new NextCaller("17 m", "best bet now"), rows[0]);
+                            }
+
+                            // **MODES: WHERE EACH UNWORKED MODE LIVES, DRAWN.**
+                            if (kind == AchievementKinds.Modes)
+                            {
+                                // **§R12, WORK INSTRUCTION 368.** This named the three unworked modes
+                                // of one fixture - CW, FT4 and PSK31 - which is a fact about that log
+                                // and about a table with five workable modes in it, not about the rule.
+                                // Decision BY put Olivia among the modes there are to work, and on the
+                                // twelve-contact fixture, where all five of the old table were worked
+                                // and no Modes next card was drawn at all, this assertion had never
+                                // run. **The rule it was written for is asserted instead**: every row
+                                // drawn is a mode this log has not worked, and the rows are the
+                                // unworked modes the card has room for.
+                                var worked = opened.Page!.Log.Modes;
+                                var stillToWork = ContactModes.Logged
+                                    .Where(m => m.IsContactMode
+                                        && !worked.Contains(m.Name, StringComparer.OrdinalIgnoreCase))
+                                    .Select(m => m.Name)
+                                    .Take(rows.Count)
+                                    .OrderBy(p => p, StringComparer.Ordinal);
+
+                                Assert.Equal(stillToWork, rows.Select(r => r.Place).OrderBy(p => p, StringComparer.Ordinal));
+
+                                Assert.All(
+                                    rows,
+                                    r => Assert.DoesNotContain(r.Place, worked, StringComparer.OrdinalIgnoreCase));
+
+                                // **WORK INSTRUCTION 346 TASK 1, RULINGS 25 AND 26: EVERY ROW SAYS WHERE ITS MODE
+                                // LIVES AND WHO IS THERE, AND NONE IS EMPTY.**
+                                var modesMiss = ModesRowMiss(rows, list, bet);
+
+                                _output.WriteLine(
+                                    where + " with " + list.Calls.Count + " on the CQ list, modes rows: "
+                                    + (modesMiss ?? string.Join(" / ", rows.Select(r => r.Place + " [" + r.CallLine + "]"))));
+
+                                if (psk31Row is not null)
+                                {
+                                    var drawnPsk31 = rows.Single(r => r.Place == "PSK31").CallLine;
+
+                                    _output.WriteLine(where + " PSK31 row drawn [" + drawnPsk31 + "], wanted [" + psk31Row + "]");
+
+                                    Assert.True(drawnPsk31 == psk31Row, where + ": the PSK31 row draws [" + drawnPsk31 + "], not [" + psk31Row + "]");
+                                }
+
+                                // **WORK INSTRUCTION 347 RULING 31: THE LIST WAS READ ONCE, SO NO ROW SAYS *NOW*.**
+                                Assert.DoesNotContain(
+                                    rows, r => System.Text.RegularExpressions.Regex.IsMatch(r.CallLine, @"\bnow\b", System.Text.RegularExpressions.RegexOptions.IgnoreCase));
+
+                                Assert.True(modesMiss is null, where + " with " + list.Calls.Count + " on the CQ list: " + modesMiss);
+
+                                // **RULING 19, WATCHED RED ON THE TEST WINDOW ONLY**: the same rows held against a
+                                // best bet on another band.
+                                var wrongBet = ModesRowMiss(rows, list, bet with { Band = "40 m" });
+
+                                _output.WriteLine(where + " modes rows held against a 40 m best bet, watched red: " + wrongBet);
+
+                                Assert.NotNull(wrongBet);
+                            }
+
+                            // **HALL OF FAME: THE NEXT FIRST, WITH ITS BAR DRAWN.**
+                            if (kind == AchievementKinds.HallOfFame)
+                            {
+                                Assert.Contains("Over 10,000 miles", said);
+                                Assert.Contains(
+                                    card.GetVisualDescendants().OfType<BadgeProgressControl>(),
+                                    b => b.IsEffectivelyVisible && b.Bounds.Width > 0);
+                            }
+                        }
+
+                        ToThePage(wide, opened);
+                    }
+                }
+                finally
+                {
+                    wide.Close();
+                }
+            }
+        }
+    }
+
     /// <summary>The rows and panels the open category draws in its list, top to bottom.</summary>
     private static List<Border> CategoryCards(Window window)
         => Named<ItemsControl>(window, "AchievementsCategoryCards").GetVisualDescendants().OfType<Border>()

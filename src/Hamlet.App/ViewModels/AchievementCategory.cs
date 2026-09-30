@@ -370,6 +370,18 @@ public sealed class AchievementCategory
     /// <summary>Earned cards, then at most one unearned.</summary>
     public IReadOnlyList<AchievementCategoryCard> Cards { get; }
 
+    /// <summary>
+    /// **The cards in the order the list draws them: the one to earn next first, then the earned in
+    /// the order they were earned** (work instruction 505 task 3, HM-DEC-209).
+    /// </summary>
+    /// <remarks>
+    /// §3.1 stands - the earned, and the one nearest unearned, and nothing beyond it - but in a list of
+    /// a hundred countries the one at the bottom is never seen. **The order is changed here, for the
+    /// view, and not in <see cref="Cards"/>**, which a dozen builders fill and every count reads; this
+    /// is the smaller change.
+    /// </remarks>
+    public IReadOnlyList<AchievementCategoryCard> DrawnCards => Cards.Where(c => !c.Earned).Concat(Cards.Where(c => c.Earned)).ToList();
+
     /// <summary>True where there are cards to draw.</summary>
     public bool HasCards => Cards.Count > 0;
 

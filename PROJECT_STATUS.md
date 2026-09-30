@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: TASK 3 of 5
+TASK: TASK 4 of 5
 WORK_INSTRUCTION: 505 - the category pages are lists, and the map opens on a click (run by hand)
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-30T10:59:17-04:00
-NOTE: Unit 505 - task 2 committed, a row press opens its path headed Norway · LA1ZZZ; now the next one first
+UPDATED: 2026-09-30T11:01:38-04:00
+NOTE: Unit 505 - task 3 committed, the one to earn next draws above the rows; now the continents' second button
 
 ---
 

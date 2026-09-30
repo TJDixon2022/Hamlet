@@ -644,7 +644,7 @@
                 </ItemsControl>
             </ScrollViewer>
 
-            <!-- **THE LIST: EARNED, AND THE NEAREST UNEARNED ONE, NOTHING BEYOND IT** (§3.1),
+            <!-- **THE LIST: THE NEAREST UNEARNED ONE FIRST, THEN THE EARNED, NOTHING BEYOND** (§3.1),
                  one column, full width (work instruction 505, HM-DEC-209, replacing unit 335's
                  two-column trading cards). A kind can hold a hundred countries, so the list
                  scrolls inside the category; the page itself never does. -->
@@ -652,7 +652,7 @@
                           IsVisible="{Binding HasCards}"
                           VerticalScrollBarVisibility="Auto">
                 <ItemsControl x:Name="AchievementsCategoryCards"
-                              ItemsSource="{Binding Cards}">
+                              ItemsSource="{Binding DrawnCards}">
                     <!-- **THE ROW IS THE THING HE PRESSES** (work instruction 505). Where the
                          contact has a map the whole row is a button on `OpenTheMapCommand`, with a
                          hand cursor, reachable from the keyboard, and it says `map` in words at its
