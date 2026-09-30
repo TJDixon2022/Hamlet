@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256" role="img" aria-label="Hamlet">
+  <title>Hamlet</title>
+  <defs>
+    <linearGradient id="night" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#22384A"/>
+      <stop offset="1" stop-color="#101A23"/>
+    </linearGradient>
+  </defs>
+  <rect x="8" y="8" width="240" height="240" rx="58" fill="url(#night)"/>
+  <g transform="translate(14,-18) scale(0.86) rotate(38 128 128) translate(20,22)">
+    <path d="M128 14 C70 52, 62 150, 128 204 Z" fill="#F08A24"/>
+    <path d="M128 14 C182 40, 200 100, 184 138 L156 126 L174 162 C162 182, 146 196, 128 204 Z" fill="#FFC457"/>
+    <path d="M128 40 L128 232" fill="none" stroke="#14202B" stroke-width="9" stroke-linecap="round"/>
+    <path d="M128 204 L128 236" fill="none" stroke="#FDF6EA" stroke-width="14" stroke-linecap="round"/>
+    <path d="M117 232 L139 232 L128 256 Z" fill="#FDF6EA"/>
+  </g>
+  <g fill="#FDF6EA">
+    <circle cx="126" cy="206" r="10"/>
+    <circle cx="154" cy="206" r="10"/>
+    <circle cx="182" cy="206" r="10"/>
+    <circle cx="210" cy="206" r="10"/>
+  </g>
+</svg>
