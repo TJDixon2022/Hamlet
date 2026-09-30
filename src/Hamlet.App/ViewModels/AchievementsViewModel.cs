@@ -423,6 +423,12 @@ public sealed partial class AchievementsViewModel : ObservableObject
         return earned;
     }
 
+    private AchievementWithinReach? _withinReach;
+
+    /// <summary>**Within reach right now**, the strip along the bottom of the opening page (work instruction 506), or null without a page.</summary>
+    public AchievementWithinReach? WithinReach
+        => Page is null ? null : _withinReach ??= new AchievementWithinReach(Page.Log, Calling);
+
     /// <summary>**Your standing**, the left third of the opening page (work instruction 506), or null without a page.</summary>
     public AchievementStanding? Standing
         => Page is null ? null

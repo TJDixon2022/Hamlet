@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: TASK 3 of 6
+TASK: TASK 4 of 6
 WORK_INSTRUCTION: 506 - achievements worth opening (run by hand)
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-30T13:58:00-04:00
-NOTE: Unit 506 - task 2 committed, eight tiles with States locked on the fixture and one locked rank; now the within-reach strip
+UPDATED: 2026-09-30T14:00:09-04:00
+NOTE: Unit 506 - task 3 committed, the strip draws ZL1ABC opens Oceania ringed; now the category page's seals and the next panel at the right
 
 ---
 

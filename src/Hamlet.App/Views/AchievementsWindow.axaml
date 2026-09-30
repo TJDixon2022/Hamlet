@@ -717,7 +717,66 @@
             </Border>
 
             <!-- ============ THE RIGHT SIDE ============ -->
-            <StackPanel Grid.Column="1" Spacing="16">
+            <DockPanel Grid.Column="1">
+                <!-- **WITHIN REACH RIGHT NOW** (work instruction 506 task 3): up to three stations on the CQ
+                     list the window was opened with who would earn him something, what in words, and a door
+                     ringed in amber with the words `opens` beside it (R19, §0.6). **It sends nothing and tunes
+                     nothing.** The snapshot carries the time it was read and no band, so the heading says the
+                     time. With nobody who would earn anything it says so in a line and draws no empty box. -->
+                <Border x:Name="AchievementsWithinReach"
+                        DockPanel.Dock="Bottom"
+                        Margin="0,16,0,0"
+                        Background="#14202B"
+                        CornerRadius="14"
+                        Padding="18,14">
+                    <StackPanel Spacing="10">
+                        <StackPanel Orientation="Horizontal" Spacing="12">
+                            <TextBlock Text="Within reach right now" FontSize="18" FontWeight="Bold" Foreground="White" VerticalAlignment="Bottom" />
+                            <TextBlock Text="{Binding WithinReach.Heading, FallbackValue=''}" FontSize="13" Foreground="#C9D3DB" VerticalAlignment="Bottom" />
+                        </StackPanel>
+
+                        <TextBlock Text="{Binding WithinReach.NobodyLine, FallbackValue=''}"
+                                   IsVisible="{Binding WithinReach.HasNobody, FallbackValue=False}"
+                                   FontSize="13"
+                                   Foreground="#C9D3DB" />
+
+                        <ItemsControl ItemsSource="{Binding WithinReach.Stations, FallbackValue={x:Null}}"
+                                      IsVisible="{Binding WithinReach.HasStations, FallbackValue=False}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <UniformGrid Rows="1" Columns="3" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate x:DataType="vm:ReachableStation">
+                                    <Border Classes="reach-station"
+                                            Margin="0,0,12,0"
+                                            Background="#14FFFFFF"
+                                            BorderBrush="#2EFFFFFF"
+                                            BorderThickness="1"
+                                            CornerRadius="10"
+                                            Padding="12,10">
+                                        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
+                                            <Ellipse Classes="reach-ring" IsVisible="{Binding OpensContinent}" Width="12" Height="12" Fill="White" Stroke="#9A5B00" StrokeThickness="3" VerticalAlignment="Center" />
+                                            <Ellipse Classes="reach-dot" IsVisible="{Binding IsCounter}" Width="12" Height="12" Fill="#3B6D11" VerticalAlignment="Center" />
+
+                                            <StackPanel Grid.Column="1">
+                                                <StackPanel Orientation="Horizontal" Spacing="6">
+                                                    <TextBlock Text="{Binding Callsign}" FontFamily="Consolas, Menlo, monospace" FontSize="14" Foreground="White" />
+                                                    <TextBlock Text="{Binding Place}" FontSize="13" Foreground="#C9D3DB" />
+                                                </StackPanel>
+                                                <TextBlock Text="{Binding Earns}" FontSize="12" Foreground="#C9D3DB" />
+                                            </StackPanel>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </Border>
+
+            <StackPanel Spacing="16">
                 <StackPanel Spacing="2">
                     <TextBlock x:Name="AchievementsPageTitle"
                                Text="Achievements"
@@ -789,6 +848,7 @@
                     </ItemsControl.ItemsPanel>
                 </ItemsControl>
             </StackPanel>
+            </DockPanel>
         </Grid>
 
         <!-- ============ A CATEGORY, IN THE SAME FRAME ============ -->
