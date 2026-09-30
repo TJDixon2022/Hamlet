@@ -161,6 +161,14 @@ grade — the lowest grade acceptable for the corpus used.
 
 ## M. Two decoders (ruled 2026-09-26)
 
+**SUPERSEDED, 2026-09-30 (work instruction 511, HM-DEC-215).** The rows below, HM-REQ-120 to 129,
+no longer govern. As the order retiring them states, the second decoder measured worse than ours on
+every real condition (unit 466) and never voted, and the shape approach made the question moot: since
+unit 493 only `CwRunReader` reaches the screen, from the marks `CwEnvelopeDetector` finds and
+`CwPatternGate` stands, and neither decoder's letters are shown. The rows stay as the record of what
+was ruled. The code they governed is tagged `before-cw-cleanup`; it is still in the tree while the
+decoder's hop loop, the verdict row and the capture sheet call it.
+
 Hamlet carries its own probabilistic decoder and a second decoder ported from fldigi's CW
 modem (`src/cw_rtty/cw.cxx`, GPL-3, W1HKJ and AG1LE). The owner's ruling, 2026-09-26: *"Two
 decoders must read the same audio. When the decoders agree, there's no problem. When they

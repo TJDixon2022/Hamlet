@@ -6,8 +6,8 @@ WORK_INSTRUCTION: 511 - the blocks stay, the senders own dits count, the old dec
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-30T17:23:59-04:00
-NOTE: Unit 511 - task 2 committed, the senders quieter marks inside a letter stand; task 3, tagging HEAD and tracing what the old decoder still reaches
+UPDATED: 2026-09-30T17:26:26-04:00
+NOTE: Unit 511 - task 3 committed as far as it can land: tag pushed, section M superseded, nothing removable without refactoring live callers; records next
 
 ---
 
