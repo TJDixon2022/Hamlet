@@ -8449,7 +8449,14 @@ public partial class MainWindowViewModel : ObservableObject
     /// all.</para>
     /// </remarks>
     [RelayCommand]
-    private void OpenAchievements()
+    private void OpenAchievements() => OpenAchievementsAt(null);
+
+    /// <summary>
+    /// Open the achievements window, and where a moment is handed in, with the path of what it unlocked
+    /// already open in the popup (work instruction 506 task 5: `See where Chile is`).
+    /// </summary>
+    /// <param name="moment">The unlock moment whose path to show, or null.</param>
+    private void OpenAchievementsAt(UnlockMoment? moment)
     {
         var owner = (Application.Current?.ApplicationLifetime
             as IClassicDesktopStyleApplicationLifetime)?.MainWindow;
@@ -8500,6 +8507,12 @@ public partial class MainWindowViewModel : ObservableObject
             _telemetry,
             screen.Page?.Badges.Count ?? 0,
             screen.Page?.Scores.For(AchievementKinds.States).Worked ?? 0);
+
+        if (moment is not null
+            && screen.Earned.FirstOrDefault(e => e.Kind == moment.Kind && e.Card.Title == moment.Card.Title && e.Card.HasMap).Card is { } shown)
+        {
+            screen.OpenTheMapCommand.Execute(shown);
+        }
 
         new Views.AchievementsWindow { DataContext = screen }.ShowDialog(owner);
     }
@@ -11169,6 +11182,13 @@ public partial class MainWindowViewModel : ObservableObject
         }
 
         _rigStateApplied = state;
+
+        // **THE UNLOCK PANEL NEVER OUTLIVES THE START OF A TRANSMISSION** (work instruction 506 task 5): the
+        // radio says it is keyed, by Hamlet's send or by his own hand, and the panel is gone.
+        if (UnlockIsOpen && state[RigField.TransmitStatus] is { IsKnown: true, Number: 1 })
+        {
+            UnlockIsOpen = false;
+        }
 
         NoticeOperatorModeChange(state);
 
@@ -17249,7 +17269,15 @@ public partial class MainWindowViewModel : ObservableObject
     /// <param name="receivedSource">Where the RST received came from: `heard`, `yours`, or null for the ledger's own.</param>
     private bool WriteLoggedContact(AdifContact entry, string? sentSource = null, string? receivedSource = null)
     {
+        // **WHAT WAS EARNED BEFORE THE WRITE** (work instruction 506 task 5), so the moment compares the log
+        // as it stood with the log as it stands.
+        var before = ReadLogQuietly();
         var written = ContactLogStore.Append(entry, AboutViewModel.AppVersion);
+
+        if (written)
+        {
+            ShowWhatUnlocked(before);
+        }
 
         // **AND OLIVIA IS A KEYBOARD MODE IN THE SAME CATEGORY** (work instruction 368,
         // §R13). Logging is a stage, and a stage a step adds writes a line a person can
@@ -17265,6 +17293,74 @@ public partial class MainWindowViewModel : ObservableObject
         }
 
         return written;
+    }
+
+    /// <summary>
+    /// **What the last logged contact unlocked**, shown in the panel over the main window, or null (work
+    /// instruction 506 task 5).
+    /// </summary>
+    [ObservableProperty]
+    private UnlockMoment? _unlocked;
+
+    /// <summary>True while the unlock panel is showing.</summary>
+    [ObservableProperty]
+    private bool _unlockIsOpen;
+
+    /// <summary>The log's records, or none where the file cannot be read: the moment is never worth a failure.</summary>
+    private static IReadOnlyList<AdifLogRecord> ReadLogQuietly()
+    {
+        try
+        {
+            return ContactLogStore.ReadRecords();
+        }
+        catch (IOException)
+        {
+            return Array.Empty<AdifLogRecord>();
+        }
+        catch (UnauthorizedAccessException)
+        {
+            return Array.Empty<AdifLogRecord>();
+        }
+    }
+
+    /// <summary>
+    /// **The moment something unlocks** (work instruction 506 task 5): compare what the log earned before the
+    /// write with what it earns after, and show the panel where the contact earned something he did not have.
+    /// </summary>
+    /// <param name="before">The log's records before the write.</param>
+    /// <remarks>
+    /// <para>**THE ONE PLACE A CONTACT REACHES THE FILE** is <see cref="WriteLoggedContact"/>, and every mode's
+    /// Save passes through it, so every mode's moment is seen here.</para>
+    /// <para>**THE POINTS FILE IS READ, NEVER SEEDED**, since the panel writes nothing; where it cannot be read
+    /// there is no panel. **It writes nothing** to the log, the radio or the settings.</para>
+    /// </remarks>
+    private void ShowWhatUnlocked(IReadOnlyList<AdifLogRecord> before)
+    {
+        var points = AchievementPoints.Read(SettingsStore.AchievementPointsPath);
+
+        if (UnlockMoment.Between(before, ReadLogQuietly(), _settings.Operator.GridSquare, points) is not { } moment)
+        {
+            return;
+        }
+
+        moment.SeeWhere = SeeWhereUnlockedCommand;
+        moment.KeepGoing = CloseUnlockCommand;
+        Unlocked = moment;
+        UnlockIsOpen = true;
+    }
+
+    /// <summary>`Keep going`, the panel's own close, and a click outside it.</summary>
+    [RelayCommand]
+    private void CloseUnlock() => UnlockIsOpen = false;
+
+    /// <summary>`See where Chile is`: the achievements window, with that path open in its popup.</summary>
+    [RelayCommand]
+    private void SeeWhereUnlocked()
+    {
+        var moment = Unlocked;
+
+        UnlockIsOpen = false;
+        OpenAchievementsAt(moment);
     }
 
     /// <summary>Whether this record was made in one of the two keyboard modes.</summary>

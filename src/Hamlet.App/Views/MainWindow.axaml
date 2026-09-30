@@ -7210,5 +7210,130 @@
                         ToolTip.Tip="{Binding StopTip}" />
             </Grid>
         </Border>
+
+        <!-- ============ THE MOMENT SOMETHING UNLOCKS ============ -->
+        <!-- **A PANEL OVER THE MAIN WINDOW, NOT A DIALOG** (work instruction 506 task 5, HM-DEC-211,
+             `assets/achievements-look/unlock-moment.html`). A logged contact that earns something he did not
+             have says so here: `Unlocked`, the seal, the name, the station and where in one sentence, the
+             points added, and the rank bar with the part just gained in the lighter green.
+
+             **IT NEVER TAKES THE KEYBOARD AND NEVER BLOCKS A CONTROL**: its buttons do not take focus, and a
+             click outside it closes it and still reaches whatever was clicked. **It never covers the
+             conversation cards**: it opens at the window's left, 24 px in and below the top strip, and at
+             560 px wide it ends well short of the right-hand column the cards stand in. **It closes on its
+             own button, on a click outside, and the moment the radio reports a transmission.** It writes
+             nothing. -->
+        <Popup x:Name="UnlockPanel"
+               IsOpen="{Binding UnlockIsOpen, Mode=TwoWay}"
+               IsLightDismissEnabled="True"
+               OverlayDismissEventPassThrough="True"
+               PlacementTarget="{Binding $parent[Window]}"
+               Placement="AnchorAndGravity"
+               PlacementAnchor="TopLeft"
+               PlacementGravity="BottomRight"
+               HorizontalOffset="24"
+               VerticalOffset="150">
+            <Border Width="560"
+                    DataContext="{Binding Unlocked}"
+                    x:DataType="vm:UnlockMoment"
+                    Background="#14202B"
+                    CornerRadius="16"
+                    Padding="28,24"
+                    Focusable="False">
+                <StackPanel Spacing="12" HorizontalAlignment="Center">
+                    <TextBlock Text="{Binding Heading}"
+                               HorizontalAlignment="Center"
+                               FontSize="13" FontWeight="SemiBold"
+                               Foreground="#9AD05F" />
+
+                    <ctl:AchievementSealControl HorizontalAlignment="Center"
+                                                Code="{Binding Card.SealCode}"
+                                                Ink="#FFFFFF"
+                                                Width="96" Height="96"
+                                                CodeSize="24" />
+
+                    <TextBlock Text="{Binding Name}"
+                               HorizontalAlignment="Center"
+                               FontSize="30" FontWeight="Bold"
+                               Foreground="White" />
+
+                    <TextBlock Text="{Binding Sentence}"
+                               HorizontalAlignment="Center"
+                               TextAlignment="Center"
+                               TextWrapping="Wrap"
+                               FontSize="15"
+                               Foreground="#C9D3DB" />
+
+                    <TextBlock Text="{Binding AlsoLine}"
+                               IsVisible="{Binding HasAlso}"
+                               HorizontalAlignment="Center"
+                               TextAlignment="Center"
+                               TextWrapping="Wrap"
+                               FontSize="13"
+                               Foreground="#C9D3DB" />
+
+                    <TextBlock Text="{Binding RankCrossed}"
+                               IsVisible="{Binding HasRankCrossed}"
+                               HorizontalAlignment="Center"
+                               FontSize="16" FontWeight="SemiBold"
+                               Foreground="#9AD05F" />
+
+                    <StackPanel Width="420" Spacing="6" HorizontalAlignment="Center">
+                        <Grid ColumnDefinitions="*,Auto,*">
+                            <TextBlock Text="{Binding BarLeft}" FontSize="13" Foreground="#C9D3DB" />
+                            <TextBlock Grid.Column="1" Text="{Binding PointsAdded}" FontSize="13" FontWeight="SemiBold" Foreground="#9AD05F" />
+                            <TextBlock Grid.Column="2" Text="{Binding BarRight}" HorizontalAlignment="Right" FontSize="13" Foreground="#C9D3DB" />
+                        </Grid>
+
+                        <!-- The part he had before in the darker green over the part the contact added in
+                             the lighter, as the picture draws it; the words under it carry both (§0.6). -->
+                        <Panel>
+                            <ctl:BadgeProgressControl Fraction="{Binding AfterFraction}"
+                                                      Length="420" Thickness="12"
+                                                      Track="#2B3B49" Foreground="#9AD05F" />
+                            <ctl:BadgeProgressControl Fraction="{Binding BeforeFraction}"
+                                                      Length="420" Thickness="12"
+                                                      Track="Transparent" Foreground="#5E8F2E" />
+                        </Panel>
+
+                        <TextBlock Text="{Binding BarUnder}"
+                                   HorizontalAlignment="Center"
+                                   FontSize="13"
+                                   Foreground="#C9D3DB" />
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal" Spacing="12" HorizontalAlignment="Center" Margin="0,8,0,0">
+                        <Button x:Name="UnlockSeeWhere"
+                                Classes="unlock-go"
+                                Focusable="False"
+                                IsVisible="{Binding CanShowWhere}"
+                                Content="{Binding SeeWhereLabel}"
+                                Command="{Binding SeeWhere}"
+                                Cursor="Hand"
+                                MinHeight="40"
+                                Padding="18,0"
+                                VerticalContentAlignment="Center"
+                                Background="#9AD05F"
+                                Foreground="#14202B"
+                                FontWeight="SemiBold" />
+
+                        <Button x:Name="UnlockKeepGoing"
+                                Classes="unlock-keep"
+                                Focusable="False"
+                                Content="Keep going"
+                                Command="{Binding KeepGoing}"
+                                Cursor="Hand"
+                                MinHeight="40"
+                                Padding="18,0"
+                                VerticalContentAlignment="Center"
+                                Background="Transparent"
+                                BorderBrush="#66FFFFFF"
+                                BorderThickness="1"
+                                Foreground="White"
+                                FontWeight="SemiBold" />
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+        </Popup>
     </Grid>
 </Window>

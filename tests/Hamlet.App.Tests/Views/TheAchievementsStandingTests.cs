@@ -39,13 +39,17 @@ public sealed class TheAchievementsStandingTests
 
     /// <summary>The shipped file with its `ranks` and `rank_names` replaced.</summary>
     internal static AchievementPoints WithRanks(IEnumerable<long> ranks, IEnumerable<string>? names = null)
+        => AchievementPoints.Parse(WithRanksJson(ranks, names));
+
+    /// <summary>The shipped file's text with its `ranks` and `rank_names` replaced.</summary>
+    internal static string WithRanksJson(IEnumerable<long> ranks, IEnumerable<string>? names = null)
     {
         var json = AchievementPoints.Shipped();
 
         json = Regex.Replace(json, @"""ranks""\s*:\s*\[[^\]]*\]", @"""ranks"": [" + string.Join(", ", ranks.Select(r => r.ToString(CultureInfo.InvariantCulture))) + "]");
         json = Regex.Replace(json, @"""rank_names""\s*:\s*\[[^\]]*\]", @"""rank_names"": [" + string.Join(", ", (names ?? Array.Empty<string>()).Select(n => "\"" + n + "\"")) + "]");
 
-        return AchievementPoints.Parse(json);
+        return json;
     }
 
     private static double Expected(AchievementScores scores)
