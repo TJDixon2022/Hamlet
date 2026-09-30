@@ -122,6 +122,16 @@ public sealed class AchievementScores
     /// <summary>The total the next rank starts at, or null at the top.</summary>
     public long? NextRankAt { get; }
 
+    /// <summary>
+    /// **The total the rank he holds began at**: nought for Rank 1, the file's threshold before it
+    /// otherwise, or null where the file could not be read (work instruction 506, for the standing
+    /// ring). Read-only; it computes nothing <see cref="Rank"/> does not already.
+    /// </summary>
+    public long? RankStartsAt
+        => Total is null ? null
+            : Rank <= 1 || Rank - 2 >= Points.Ranks.Count ? 0
+            : Points.Ranks[Rank - 2];
+
     /// <summary>How many points to the next rank, or null at the top.</summary>
     public long? ToNextRank
         => NextRankAt is { } at && Total is { } total ? Math.Max(0, at - total) : null;

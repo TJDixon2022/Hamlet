@@ -6,7 +6,7 @@
         x:Class="Hamlet.App.Views.AchievementsWindow"
         x:DataType="vm:AchievementsViewModel"
         Title="Achievements"
-        Width="1040" Height="720"
+        Width="1280" Height="860"
         WindowStartupLocation="CenterOwner"
         Background="{StaticResource HmBackgroundBrush}">
 
@@ -39,6 +39,24 @@
         <Style Selector="Button.hm-badge">
             <Setter Property="Cursor" Value="Hand" />
             <Setter Property="Padding" Value="0" />
+        </Style>
+
+        <!-- **JUST UNLOCKED READS AS PRESSABLE ON THE DARK PANEL** (work instruction 506, §0.5.1): a pale
+             frame and a lighter ground at rest, lighter still under the pointer. -->
+        <Style Selector="Button.standing-unlocked">
+            <Setter Property="Padding" Value="14" />
+            <Setter Property="CornerRadius" Value="14" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="BorderBrush" Value="#38FFFFFF" />
+            <Setter Property="Background" Value="#14FFFFFF" />
+            <Setter Property="Foreground" Value="White" />
+        </Style>
+        <Style Selector="Button.standing-unlocked /template/ ContentPresenter">
+            <Setter Property="Background" Value="#14FFFFFF" />
+        </Style>
+        <Style Selector="Button.standing-unlocked:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="#26FFFFFF" />
+            <Setter Property="BorderBrush" Value="#66FFFFFF" />
         </Style>
 
         <!-- **A ROW THAT OPENS A MAP LOOKS PRESSABLE AT REST** (work instruction 505, §0.5.1):
@@ -455,18 +473,181 @@
                 </Grid>
             </Border>
         </DataTemplate>
+
+        <!-- **WHAT WAS JUST UNLOCKED: ITS SEAL, ITS NAME, THE STATION AND DISTANCE, ITS POINTS** (work
+             instruction 506 task 1), drawn once for the button that opens its path and for the panel
+             that has none. -->
+        <DataTemplate x:Key="HmJustUnlockedFace" x:DataType="vm:AchievementStanding">
+            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="14">
+                <ctl:AchievementSealControl Grid.Column="0"
+                                            Code="{Binding JustUnlocked.SealCode, FallbackValue=''}"
+                                            Ink="{Binding JustUnlockedSealInk}"
+                                            Width="64" Height="64"
+                                            CodeSize="18" />
+
+                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                    <TextBlock Text="{Binding JustUnlocked.Title, FallbackValue=''}"
+                               FontSize="20" FontWeight="Bold"
+                               Foreground="White" />
+                    <TextBlock Text="{Binding JustUnlockedLine}"
+                               FontFamily="Consolas, Menlo, monospace"
+                               FontSize="13"
+                               Foreground="#C9D3DB" />
+                    <TextBlock Text="{Binding JustUnlockedPoints}"
+                               FontSize="13" FontWeight="SemiBold"
+                               Foreground="#9AD05F" />
+                </StackPanel>
+            </Grid>
+        </DataTemplate>
     </Window.Resources>
 
     <Grid Margin="16">
 
-        <!-- ============ THE PAGE: EIGHT BADGES AND NOTHING ELSE ============ -->
-        <!-- **TITLE, THE RUNNING TOTAL, EIGHT BADGES IN TWO ROWS OF FOUR, THE LEGEND.**
-             No scroller and nothing below the legend. **NO IMAGE ASSET IS REFERENCED
-             HERE OR ANYWHERE IN `src/`**; every emblem is geometry in
-             `BadgeEmblemControl`. -->
-        <StackPanel x:Name="AchievementsPage"
-                    IsVisible="{Binding ShowsPage}"
-                    Spacing="10">
+        <!-- **THE OPENING PAGE, AS `assets/achievements-look/opening-page.html` DRAWS IT** (work
+             instruction 506, HM-DEC-211, replacing unit 331's title over eight badges): your standing
+             at the left, and at the right the title, the rank trail, the eight tiles and who is within
+             reach. Tim, 2026-09-30: *"We need to show overall progress. We need unlocking."* **No
+             scroller; no image asset is referenced here or anywhere in `src/`**, and every emblem is
+             geometry. **The picture's serif display face is not in the application**: the headings use
+             the application's own face at the picture's sizes and weights. -->
+        <Grid x:Name="AchievementsPage"
+              IsVisible="{Binding ShowsPage}"
+              ColumnDefinitions="340,*"
+              ColumnSpacing="20">
+
+            <!-- ============ YOUR STANDING ============ -->
+            <!-- **THE RING, THE GAP, THREE FACTS, AND WHAT WAS JUST UNLOCKED** (work instruction 506
+                 task 1). Every number is his file's arithmetic (`AchievementStanding`); where the file
+                 cannot be read no ring and no number is drawn, the panel says why, and the rest of the
+                 page still draws. -->
+            <Border x:Name="AchievementsStanding"
+                    Grid.Column="0"
+                    Background="#14202B"
+                    CornerRadius="18"
+                    Padding="24">
+                <DockPanel>
+                    <StackPanel DockPanel.Dock="Top" Spacing="18">
+                        <TextBlock Text="YOUR STANDING"
+                                   FontSize="12" FontWeight="SemiBold"
+                                   Foreground="#C9D3DB" />
+
+                        <Panel Width="232" Height="232"
+                               HorizontalAlignment="Center"
+                               IsVisible="{Binding Standing.HasScores, FallbackValue=False}">
+                            <ctl:StandingRingControl x:Name="AchievementsStandingRing"
+                                                     Fraction="{Binding Standing.Fraction, FallbackValue=0}"
+                                                     Foreground="#9AD05F"
+                                                     Track="#2B3B49"
+                                                     Thickness="16" />
+
+                            <StackPanel HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        Spacing="2">
+                                <TextBlock Text="{Binding Standing.RankLabel, FallbackValue=''}"
+                                           IsVisible="{Binding Standing.HasRankLabel, FallbackValue=False}"
+                                           HorizontalAlignment="Center"
+                                           FontSize="13"
+                                           Foreground="#C9D3DB" />
+
+                                <!-- A named rank can be longer than the ring is wide, so the figure
+                                     shrinks to fit rather than clipping (§6). -->
+                                <Viewbox MaxWidth="170" Height="80" StretchDirection="DownOnly">
+                                    <TextBlock Classes="standing-rank"
+                                               Text="{Binding Standing.RankBig, FallbackValue=''}"
+                                               FontSize="80" FontWeight="Bold"
+                                               Foreground="White" />
+                                </Viewbox>
+
+                                <TextBlock Text="{Binding Standing.PointsLine, FallbackValue=''}"
+                                           HorizontalAlignment="Center"
+                                           FontSize="15"
+                                           Foreground="#C9D3DB" />
+                            </StackPanel>
+                        </Panel>
+
+                        <TextBlock Text="{Binding Standing.GapLine, FallbackValue=''}"
+                                   IsVisible="{Binding Standing.HasScores, FallbackValue=False}"
+                                   HorizontalAlignment="Center"
+                                   FontSize="15" FontWeight="SemiBold"
+                                   Foreground="#9AD05F" />
+
+                        <!-- **WHERE THE FILE COULD NOT BE READ, THE SENTENCE AND NO NUMBER.** The one line
+                             here allowed to wrap, because it carries a path Hamlet does not choose. -->
+                        <TextBlock Text="{Binding Standing.Problem, FallbackValue=''}"
+                                   IsVisible="{Binding Standing.HasProblem, FallbackValue=False}"
+                                   FontSize="13" TextWrapping="Wrap"
+                                   Foreground="#F2C46B" />
+
+                        <!-- **THREE FACTS, ONE TO A ROW** (work instruction 506 task 1). The picture sets
+                             them three across; at the panel's 292 px a figure like `9,673` in large type
+                             and a word like `countries` under it do not both fit a third of it without
+                             clipping on the test host's measure (§6), so each is a row, the figure large
+                             at the left and its words beside it. -->
+                        <Border Classes="standing-fact" Background="#14FFFFFF" CornerRadius="10" Padding="12,8">
+                            <StackPanel Spacing="4">
+                                <Grid ColumnDefinitions="96,*">
+                                    <TextBlock Text="{Binding Standing.Contacts, FallbackValue=''}" FontSize="22" FontWeight="Bold" Foreground="White" />
+                                    <TextBlock Grid.Column="1" Text="contacts" FontSize="13" VerticalAlignment="Center" Foreground="#C9D3DB" />
+                                </Grid>
+
+                                <Grid ColumnDefinitions="96,*">
+                                    <TextBlock Text="{Binding Standing.Countries, FallbackValue=''}" FontSize="22" FontWeight="Bold" Foreground="White" />
+                                    <TextBlock Grid.Column="1" Text="countries" FontSize="13" VerticalAlignment="Center" Foreground="#C9D3DB" />
+                                </Grid>
+
+                                <Grid ColumnDefinitions="96,*" IsVisible="{Binding Standing.HasFarthest, FallbackValue=False}">
+                                    <TextBlock Text="{Binding Standing.Farthest, FallbackValue=''}" FontSize="22" FontWeight="Bold" Foreground="White" />
+                                    <TextBlock Grid.Column="1" Text="farthest, miles" FontSize="13" VerticalAlignment="Center" Foreground="#C9D3DB" />
+                                </Grid>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+
+                    <!-- **JUST UNLOCKED: THE MOST RECENT THING HE EARNED, BY THE DATE OF ITS CONTACT.** A
+                         button that opens its path in the popup; with nothing earned, what the first
+                         contact earns, and no seal. -->
+                    <StackPanel DockPanel.Dock="Bottom" Spacing="10" VerticalAlignment="Bottom">
+                        <TextBlock Text="JUST UNLOCKED"
+                                   FontSize="12" FontWeight="SemiBold"
+                                   Foreground="#C9D3DB" />
+
+                        <Button x:Name="AchievementsJustUnlocked"
+                                Classes="standing-unlocked"
+                                IsVisible="{Binding Standing.JustUnlockedOpensMap, FallbackValue=False}"
+                                Command="{Binding OpenTheMapCommand}"
+                                CommandParameter="{Binding Standing.JustUnlocked}"
+                                Cursor="Hand"
+                                HorizontalAlignment="Stretch"
+                                HorizontalContentAlignment="Stretch">
+                            <ContentControl Content="{Binding Standing}"
+                                            ContentTemplate="{StaticResource HmJustUnlockedFace}" />
+                        </Button>
+
+                        <!-- **WITH NO PATH IT IS NOT A BUTTON**, as a row with no grid is not (unit 505): it
+                             names what was earned and does not offer a map it cannot open. -->
+                        <Border x:Name="AchievementsJustUnlockedNoMap"
+                                IsVisible="{Binding Standing.JustUnlockedHasNoMap, FallbackValue=False}"
+                                Padding="14"
+                                CornerRadius="14"
+                                BorderThickness="1"
+                                BorderBrush="#38FFFFFF"
+                                Background="#14FFFFFF">
+                            <ContentControl Content="{Binding Standing}"
+                                            ContentTemplate="{StaticResource HmJustUnlockedFace}" />
+                        </Border>
+
+                        <TextBlock Text="{Binding Standing.NothingYetLine, FallbackValue=''}"
+                                   IsVisible="{Binding Standing.HasNothingYet, FallbackValue=False}"
+                                   FontSize="14"
+                                   Foreground="White" />
+                    </StackPanel>
+
+                    <Panel />
+                </DockPanel>
+            </Border>
+
+            <!-- ============ THE RIGHT SIDE ============ -->
+            <StackPanel Grid.Column="1" Spacing="10">
             <StackPanel Spacing="2">
                 <TextBlock x:Name="AchievementsPageTitle"
                            Text="Achievements"
@@ -512,7 +693,8 @@
                        Text="Click a badge to open it. Orange ring: a door that opens a set. Green quill: a counter."
                        FontSize="11"
                        Foreground="{StaticResource HmTextMutedBrush}" />
-        </StackPanel>
+            </StackPanel>
+        </Grid>
 
         <!-- ============ A CATEGORY, IN THE SAME FRAME ============ -->
         <!-- **A TEMPLATE OVER THE CATEGORY AND NOT BINDINGS THROUGH IT.** While the page

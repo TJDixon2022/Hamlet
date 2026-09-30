@@ -389,6 +389,49 @@ public sealed partial class AchievementsViewModel : ObservableObject
     /// <summary>True where the badge page has been built.</summary>
     public bool HasPage => Page is not null;
 
+    private AchievementStanding? _standing;
+    private IReadOnlyList<(string Kind, AchievementCategoryCard Card)>? _earned;
+
+    /// <summary>
+    /// **Every earned card of every kind, with its kind** (work instruction 506): the eight categories'
+    /// earned cards and the continents' own, built once from the page.
+    /// </summary>
+    public IReadOnlyList<(string Kind, AchievementCategoryCard Card)> Earned
+        => _earned ??= EarnedIn(Page);
+
+    /// <summary>Every earned card on a page, with its kind; empty where there is no page.</summary>
+    internal static IReadOnlyList<(string Kind, AchievementCategoryCard Card)> EarnedIn(AchievementBadgePage? page)
+    {
+        if (page is null)
+        {
+            return Array.Empty<(string, AchievementCategoryCard)>();
+        }
+
+        var earned = new List<(string Kind, AchievementCategoryCard Card)>();
+
+        foreach (var kind in AchievementKinds.All)
+        {
+            if (AchievementCategory.For(kind, page, CqSnapshot.None, BandBet.None) is not { } category)
+            {
+                continue;
+            }
+
+            earned.AddRange(category.Cards.Where(c => c.Earned).Select(c => (kind, c)));
+            earned.AddRange(category.SubBadges.Select(b => b.Card).OfType<AchievementCategoryCard>().Where(c => c.Earned).Select(c => (kind, c)));
+        }
+
+        return earned;
+    }
+
+    /// <summary>**Your standing**, the left third of the opening page (work instruction 506), or null without a page.</summary>
+    public AchievementStanding? Standing
+        => Page is null ? null
+            : _standing ??= new AchievementStanding(
+                Page,
+                Earned,
+                AchievementCategory.For(AchievementKinds.HallOfFame, Page, CqSnapshot.None, BandBet.None)?.Cards
+                    .FirstOrDefault(c => !c.Earned && c.Title == "Your first contact")?.PointsLine ?? "");
+
     /// <summary>
     /// **What he has opened, and the standing targets.**
     /// </summary>

@@ -49,6 +49,28 @@ public sealed record AchievementCategoryCard(
     /// <summary>The path map, or null where there is no grid to draw it from.</summary>
     public Ft8GlobePlot? Globe { get; init; }
 
+    /// <summary>When the contact that earned it was made, or null where the log has no date (work instruction 506).</summary>
+    public DateTime? EarnedUtc { get; init; }
+
+    /// <summary>Where the station was, by its callsign's entity in the short form, or "" (work instruction 506).</summary>
+    public string Place { get; init; } = "";
+
+    /// <summary>The great-circle miles to the station, or null where either grid is missing (work instruction 506).</summary>
+    public double? Miles { get; init; }
+
+    /// <summary>
+    /// **The short code the row's seal holds** - a callsign's prefix, a state's two letters, a grid's four
+    /// characters, a band's number, a mode's name - or "" where the card is not earned (work instruction
+    /// 506). Stamped by the category, which knows the kind.
+    /// </summary>
+    public string SealCode { get; init; } = "";
+
+    /// <summary>The seal's ink, the kind's own color, or "" (work instruction 506).</summary>
+    public string SealColor { get; init; } = "";
+
+    /// <summary>True where the row draws a seal.</summary>
+    public bool HasSeal => SealCode.Length > 0;
+
     /// <summary>True where the card draws a map.</summary>
     public bool HasMap => Globe is not null;
 
@@ -199,7 +221,7 @@ public sealed class AchievementCategory
         GapLine = badge.GapLine;
         ParentKind = parentKind;
         BackLabel = "‹ " + (parentName ?? "All achievements");
-        Cards = cards;
+        Cards = cards.Select(c => c.Earned && c.SealCode.Length == 0 ? c with { SealCode = SealFor(Kind, c), SealColor = Band } : c).ToList();
         SubBadges = subBadges;
 
         // **THE BAND SAYS FOUR THINGS AND DRAWS ONE** (work instruction 335 task 1, R22): the
@@ -242,6 +264,75 @@ public sealed class AchievementCategory
         BandLine = full.Length <= BandLineMost ? full
             : shorter.Length <= BandLineMost ? shorter
             : Joined(Standing, ScoreLine, LevelName, HasLevelBar ? "" : GapLine);
+    }
+
+    /// <summary>
+    /// **The short code an earned row's seal holds, by kind** (work instruction 506). The author's,
+    /// overrulable.
+    /// </summary>
+    /// <param name="kind">The category's kind, or `continent-XX` for a continent's countries.</param>
+    /// <param name="card">The earned card.</param>
+    /// <returns>At most five characters; never "" for an earned card.</returns>
+    /// <remarks>
+    /// <para>**WHAT WAS EARNED, IN THE FEWEST CHARACTERS IT HAS OF ITS OWN.** A country, and a country on a
+    /// continent's page, is the prefix of the callsign that earned it - the letters before the first
+    /// digit, or a leading digit and the letters after it (`LA`, `G`, `4X`) - read off the callsign and
+    /// not a table, because the callsign is what the log holds. A state is its two letters and a grid its
+    /// four characters, which are the card's own title. A band is its number of metres. A mode is its name
+    /// where it is five characters or fewer and its first three where it is longer. A Hall of Fame first
+    /// is a code for the first (`1ST`, `DX`, `CW`, `5K`). A Total Miles tier is its line in thousands
+    /// (`50K`).</para>
+    /// </remarks>
+    internal static string SealFor(string kind, AchievementCategoryCard card)
+    {
+        var code = kind switch
+        {
+            AchievementKinds.States or AchievementKinds.Grids => card.Title,
+            AchievementKinds.Bands => new string(card.Title.TakeWhile(char.IsDigit).ToArray()),
+            AchievementKinds.Modes => card.Title.Length <= 5 ? card.Title : card.Title[..3].ToUpperInvariant(),
+            AchievementKinds.HallOfFame => card.Title switch
+            {
+                "Your first contact" => "1ST",
+                "A DX contact" => "DX",
+                "A PSK31 contact" => "PSK",
+                "An Olivia contact" => "OLV",
+                "A Morse contact" => "CW",
+                _ => Thousands(card.Title),
+            },
+            AchievementKinds.TotalMiles => Thousands(card.Title),
+            _ => CallsignPrefix(card.Callsign),
+        };
+
+        return code.Length > 0 ? code : CallsignPrefix(card.Callsign) is { Length: > 0 } prefix ? prefix : card.Title[..Math.Min(3, card.Title.Length)].ToUpperInvariant();
+    }
+
+    /// <summary>`50K` for `50,000 miles` or `Over 5,000 miles`; "" where the words carry no thousands.</summary>
+    private static string Thousands(string said)
+    {
+        var digits = new string(said.Where(char.IsDigit).ToArray());
+
+        return digits.Length > 3 && long.TryParse(digits, NumberStyles.None, CultureInfo.InvariantCulture, out var n)
+            ? (n / 1000).ToString(CultureInfo.InvariantCulture) + "K"
+            : "";
+    }
+
+    /// <summary>The letters before a callsign's first digit, or a leading digit and the letters after it.</summary>
+    internal static string CallsignPrefix(string callsign)
+    {
+        var call = callsign.Split('/').OrderByDescending(p => p.Length).FirstOrDefault() ?? "";
+        var prefix = new System.Text.StringBuilder();
+
+        for (var i = 0; i < call.Length; i++)
+        {
+            if (char.IsDigit(call[i]) && i > 0)
+            {
+                break;
+            }
+
+            prefix.Append(char.ToUpperInvariant(call[i]));
+        }
+
+        return prefix.Length <= 4 ? prefix.ToString() : prefix.ToString()[..4];
     }
 
     /// <summary>
@@ -1253,6 +1344,9 @@ public sealed class AchievementCategory
                 : "",
             BandModeLine = Joined(AdifLog.BandDisplayNameFor(first.Band), first.Mode?.Name ?? ""),
             DateLine = DateOf(first),
+            EarnedUtc = first.StartedUtc,
+            Place = place,
+            Miles = first.Miles,
         };
     }
 
@@ -1361,6 +1455,8 @@ public sealed class AchievementCategory
             {
                 CountLine = worked.ToString(CultureInfo.InvariantCulture)
                     + (worked == 1 ? " country" : " countries") + " worked there",
+                SealCode = code,
+                SealColor = AchievementBadgePage.ContinentsBand,
             };
         }
 

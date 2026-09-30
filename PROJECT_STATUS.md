@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-TASK: TASK 4 of 4
-WORK_INSTRUCTION: 507 - the pattern is the gate (run by hand)
-BALL: tim
-NEXT_PASTE: output.md -> Claude Web
+STATE: EXECUTING
+TASK: TASK 2 of 6
+WORK_INSTRUCTION: 506 - achievements worth opening (run by hand)
+BALL: code
+NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-30T12:07:11-04:00
-NOTE: Unit 507 done - the pattern is the gate; 16 dB reads whole, noise stands 0 of 635 in 30 s, the row follows the printed sender
+UPDATED: 2026-09-30T13:48:02-04:00
+NOTE: Unit 506 - task 1 committed, the ring reads the file on three logs; now the rank trail and eight tiles
 
 ---
 
