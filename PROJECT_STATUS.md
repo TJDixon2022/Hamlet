@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 4 of 7
+TASK: 7 of 7
 WORK_INSTRUCTION: 510 - the next things, in the order they pay (order numbered 509, run by hand)
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-30T16:37:33-04:00
-NOTE: Unit 510 - task 3 committed, the W1AW score box; now the detector judging over a dit, measuring the strength table first
+UPDATED: 2026-09-30T16:55:17-04:00
+NOTE: Unit 510 - task 7, the app cases through the reader
 
 ---
 

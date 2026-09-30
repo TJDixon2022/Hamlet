@@ -601,12 +601,19 @@ public sealed class CwRunReader
         /// <summary>The sender's measured letter gap and, where it has shown one, word gap: for the tests' report.</summary>
         public (double? Letter, double? Word) LetterAndWordGaps()
         {
-            if (_runGaps.Count < MeasuredRunGaps)
+            // **A GAP UNDER THE SENDER'S OWN LETTER BOUNDARY IS NOT A LETTER GAP** (work instruction
+            // numbered 509, run as unit 510, task 7, HM-DEC-214). Runs closed before the sender's dit
+            // was known can end at a gap inside a letter; at 35 WPM and 10 dB three of those, 46 ms,
+            // were the lowest cluster, the letter gap was measured as the gap inside a letter, and every
+            // 110 ms letter gap read as a word. What sits under the boundary between a gap inside a
+            // letter and one between letters, gap dits times √3, measured now, measures neither.
+            var boundary = CharacterGapSeconds;
+            var sorted = _runGaps.Where(g => !(g < boundary)).OrderBy(g => g).ToList();
+
+            if (sorted.Count < MeasuredRunGaps)
             {
                 return (null, null);
             }
-
-            var sorted = _runGaps.OrderBy(g => g).ToList();
             var jump = Math.Sqrt(7.0 / 3);
             var clusters = new List<List<double>> { new() { sorted[0] } };
 
