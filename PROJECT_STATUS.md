@@ -2,12 +2,12 @@ PROTOCOL: 2
 PROJECT: Hamlet
 STATE: COMPLETED
 TASK: TASK 4 of 4
-WORK_INSTRUCTION: 499 - the band plan says where the modes are (run by hand)
+WORK_INSTRUCTION: 500 - the gaps belong to the sender's own dit (run by hand)
 BALL: tim
 NEXT_PASTE: OUTPUT.md -> Claude Web
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-29T21:20:56-04:00
-NOTE: Unit 499 done - W1AW is Morse on the map, ARRL band plan cited, press holds CW
+UPDATED: 2026-09-29T22:31:48-04:00
+NOTE: Unit 500 done - slow and fast senders read whole; the run of Es was not reproduced
 
 ---
 
