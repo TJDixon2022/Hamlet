@@ -11076,6 +11076,10 @@ public partial class MainWindowViewModel : ObservableObject
         _clearedUtc = DateTime.UtcNow;
 
         Transcript.Clear();
+
+        // The scroll clears with the terminal (work instruction numbered 508, run as unit 509): its
+        // letters are the terminal's, so a clear that left them would show what the owner cleared.
+        _scopeFeed.Graph.Clear();
         OnPropertyChanged(nameof(TerminalSummary));
     }
 

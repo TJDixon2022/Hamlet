@@ -227,12 +227,12 @@ public sealed class CwScopeControl : Control
     /// all, because the owner read a noise line as a signal. Nothing new is drawn while nobody is
     /// keying, and nothing drawn blinks out when the detector lets go: it scrolls off the left with
     /// time. "listening" only before anything has been heard at all.</para>
-    /// <para>**THE LETTER OVER THE BLOCKS THAT MADE IT, AND ONLY WHERE THERE ARE BLOCKS BENEATH
-    /// IT** (R94, R97, §0.0). Each character the decoder settled spans the time it was made from -
-    /// its end on the decoder's own audio clock and its span in the decoder's hops - and scrolls
-    /// left with its blocks. It is never moved to sit better. A letter with no block anywhere under
-    /// it is not drawn: nothing the detector heard stands under it. A word gap draws nothing; a
-    /// prosign is its bracketed name; an unreadable character is the placeholder glyph.</para>
+    /// <para>**THE LETTER OVER THE BLOCKS THAT MADE IT, AND IT STAYS** (R94, R100, §0.0, work
+    /// instruction numbered 508 run as unit 509, HM-DEC-213). Each character the terminal printed
+    /// spans the time it was made from - its end on the decoder's own audio clock and its span in
+    /// the decoder's hops - and scrolls left with its blocks until it slides off. It is never moved
+    /// to sit better, and never taken away by a redraw. A word gap draws nothing; a prosign is its
+    /// bracketed name; an unreadable character is the placeholder glyph.</para>
     /// </remarks>
     public static IReadOnlyList<CwScopeItem> Items(CwScopeFrame frame, double width)
     {
@@ -272,23 +272,24 @@ public sealed class CwScopeControl : Control
         return items;
     }
 
-    /// <summary>The settled characters the scope draws, oldest first: those with a block beneath them, while keying.</summary>
+    /// <summary>The settled characters the scope draws, oldest first: every letter the terminal printed, still on the scroll.</summary>
     /// <param name="frame">The frame.</param>
     /// <returns>The letters, in the order their items appear.</returns>
+    /// <remarks>
+    /// **A LETTER ON THE SCROLL STAYS ON THE SCROLL** (work instruction numbered 508, run as unit
+    /// 509, R100, HM-DEC-213). The letters are the graph's own list, appended from the
+    /// `CharacterSettled` event the terminal prints from and trimmed only as time carries them off
+    /// the left. Before, each frame kept only the letters with a block beneath them on that frame,
+    /// and the detector rebuilds its last four seconds of blocks every tick, so a printed letter
+    /// blinked out, drew late, or never drew at all when its blocks moved.
+    /// </remarks>
     public static IReadOnlyList<CwGraphLetter> DrawnLetters(CwScopeFrame frame)
     {
         ArgumentNullException.ThrowIfNull(frame);
 
         var training = frame.Training;
 
-        if (training.Listening)
-        {
-            return Array.Empty<CwGraphLetter>();
-        }
-
-        return training.Letters
-            .Where(l => training.Bars.Any(b => b.StartUtc <= l.EndUtc && b.EndUtc >= l.StartUtc))
-            .ToList();
+        return training.Listening ? Array.Empty<CwGraphLetter>() : training.Letters;
     }
 
     /// <summary>What a letter's hover says, first of all.</summary>

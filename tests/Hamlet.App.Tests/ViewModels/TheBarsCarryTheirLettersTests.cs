@@ -75,12 +75,14 @@ public sealed class TheBarsCarryTheirLettersTests
     }
 
     /// <remarks>
-    /// Proves a letter with no block beneath it is not drawn (work instruction 485, R97): nothing
-    /// the detector heard stands under it, so it is not on the scope. Keying is on, so the only
-    /// reason it is missing is the missing block.
+    /// Proves a letter the terminal printed is drawn even where no block stands beneath it (work
+    /// instruction numbered 508, run as unit 509, R100, R106, HM-DEC-213). It replaces
+    /// `ALetterWithNoBlocksBeneathItIsNotDrawn`, which work instruction 485 wrote under R97: R102
+    /// took the detector's keying and blocks off what is emitted, and the scroll's letters are now
+    /// the terminal's, so a letter it printed is on the scroll whatever the detector's blocks say.
     /// </remarks>
     [Fact]
-    public void ALetterWithNoBlocksBeneathItIsNotDrawn()
+    public void APrintedLetterWithNoBlockBeneathItIsStillDrawn()
     {
         var graph = new CwTrainingGraph();
         var now = new DateTime(2026, 9, 28, 17, 15, 0, DateTimeKind.Utc);
@@ -95,7 +97,7 @@ public sealed class TheBarsCarryTheirLettersTests
 
         Assert.Empty(frame.Training.Bars);
         Assert.Single(frame.Training.Letters);
-        Assert.DoesNotContain(CwScopeControl.Items(frame, Width), i => i.Kind == CwScopeItemKind.Letter);
+        Assert.Single(CwScopeControl.Items(frame, Width), i => i.Kind == CwScopeItemKind.Letter && i.Text == "E");
     }
 
     /// <remarks>
