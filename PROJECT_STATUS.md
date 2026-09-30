@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-TASK: 3 of 3
-WORK_INSTRUCTION: 509 - a letter on the scroll stays on the scroll (order numbered 508, run by hand)
-BALL: tim
-NEXT_PASTE: output.md -> Claude Web
+STATE: EXECUTING
+TASK: 2 of 7
+WORK_INSTRUCTION: 510 - the next things, in the order they pay (order numbered 509, run by hand)
+BALL: code
+NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-30T16:21:20-04:00
-NOTE: Unit 509 complete - every printed letter draws on the scroll when it prints and stays; app line 278 of 278
+UPDATED: 2026-09-30T16:26:29-04:00
+NOTE: Unit 510 - task 1 committed, the terminal bar stays shown with its tip; now the Copy button beside Clear
 
 ---
 

@@ -1735,8 +1735,19 @@
                             BorderThickness="1"
                             Background="{x:Static ctl:InstrumentPalette.SurfaceBrush}"
                             BorderBrush="{x:Static ctl:InstrumentPalette.EdgeBrush}">
+                        <!-- THE BAR STAYS SHOWN (work instruction numbered 509, run as unit
+                             510, task 1): Fluent's hairline hid itself until the pointer found
+                             it, so the history looked gone. It appears once the text is taller
+                             than the box, and says on hover what it does. -->
                         <ScrollViewer MaxHeight="260" MinHeight="150"
-                                      VerticalScrollBarVisibility="Auto">
+                                      VerticalScrollBarVisibility="Auto"
+                                      AllowAutoHide="False">
+                            <ScrollViewer.Styles>
+                                <Style Selector="ScrollBar:vertical">
+                                    <Setter Property="ToolTip.Tip" Value="{x:Static ctl:CwTerminalScroll.BarTip}" />
+                                    <Setter Property="ToolTip.ShowDelay" Value="300" />
+                                </Style>
+                            </ScrollViewer.Styles>
                             <!-- ONE LINE, WITH THE LEADING EDGE ON THE END OF IT
                                  (HM-DEC-096). Hamlet reads the same audio twice
                                  and the reader has to be able to tell which one
