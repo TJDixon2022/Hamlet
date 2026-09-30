@@ -407,6 +407,7 @@ public sealed class WhatEveryControlSaysOnHoverTests
         ["ComposeSeventyThreeCommand"] = "fills the send line with 73 TU E E; sends nothing",
         ["Transmit.OwnWords.Message (the text)"] = "the line Send puts on the air; typing changes it and sends nothing",
         ["ClearTerminalCommand"] = "wipes the transcript on screen; the decoder keeps listening with the speed and noise floor it has",
+        ["CopyTerminalCommand"] = "puts the transcript's text on the clipboard of the window it is in; sends nothing, changes nothing",
         ["IsExpanded (folds the panel)"] = "folds the panel away, or opens it again",
         ["CaptureAudioCommand"] = "keeps the last half minute of audio as a file with its sheet and adds a row to tonight's list",
         ["OpenReceiveHelpCommand"] = "cannot run (CanExecute is false): would expand a panel that is on no screen (HM-OPEN-087)",
@@ -443,6 +444,7 @@ public sealed class WhatEveryControlSaysOnHoverTests
     internal static readonly IReadOnlyDictionary<string, string> IsItTrue = new Dictionary<string, string>
     {
         ["\"Clear\" (ClearTerminalCommand)"] = "true, kept",
+        ["\"Copy\""] = "true (unit 510)",
         ["\"I hear a station\""] = "true, kept",
         ["\"I agree with you\""] = "true (unit 474): writes one owner_verdict row, keeps no audio",
         ["\"You're an idiot\""] = "true (unit 474): writes one owner_verdict row, keeps no audio",

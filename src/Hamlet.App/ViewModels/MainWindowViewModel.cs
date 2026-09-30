@@ -11083,6 +11083,41 @@ public partial class MainWindowViewModel : ObservableObject
         OnPropertyChanged(nameof(TerminalSummary));
     }
 
+    /// <summary>What the terminal's Copy button says on hover (work instruction numbered 509, run as unit 510, task 2).</summary>
+    public const string CopyTerminalTip =
+        "Copies everything the terminal still holds to the clipboard as plain text, with prosigns "
+        + "written as their names in angle brackets, so you can paste it into a log or a message.";
+
+    /// <summary>
+    /// Put the terminal's text on the clipboard (work instruction numbered 509, run as unit 510,
+    /// task 2, HM-DEC-214).
+    /// </summary>
+    /// <param name="clipboard">The clipboard of the window the button is in, or null where it has none.</param>
+    /// <returns>When the clipboard has it.</returns>
+    /// <remarks>
+    /// **THE TRANSCRIPT'S OWN TEXT**, the decoder's characters as the settled pass handed them over,
+    /// prosigns as their bracketed names and unreadable characters as the placeholder. The clipboard
+    /// comes from the button's own window rather than being looked up, so the view model never goes
+    /// looking for a window. A window with no clipboard copies nothing and throws nothing (§8).
+    /// </remarks>
+    [RelayCommand]
+    private async Task CopyTerminalAsync(Avalonia.Input.Platform.IClipboard? clipboard)
+    {
+        if (clipboard is null)
+        {
+            return;
+        }
+
+        try
+        {
+            await clipboard.SetTextAsync(Transcript.PlainText.Trim());
+        }
+        catch (Exception)
+        {
+            // The clipboard is the operating system's, and a busy one is not worth a crash.
+        }
+    }
+
     /// <summary>
     /// Open the screen that says what the radio is doing.
     /// </summary>

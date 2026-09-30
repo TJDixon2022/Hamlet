@@ -1586,11 +1586,21 @@
                      the header button rather than in it, so it
                      cannot collapse the panel on its way past. -->
                 <ctl:CollapsiblePanel.HeaderAction>
-                    <Button Content="Clear"
-                            FontSize="11" Padding="10,2"
-                            Command="{Binding ClearTerminalCommand}"
-                            ToolTip.Tip="Wipes what is on screen. The decoder keeps listening, and keeps the speed and the noise floor it has worked out."
-                            ToolTip.ShowDelay="300" />
+                    <StackPanel Orientation="Horizontal" Spacing="6">
+                        <!-- COPY, BESIDE CLEAR (work instruction numbered 509, run as unit
+                             510, task 2). The clipboard is this window's own, handed in. -->
+                        <Button Content="Copy"
+                                FontSize="11" Padding="10,2"
+                                Command="{Binding CopyTerminalCommand}"
+                                CommandParameter="{Binding $parent[TopLevel].Clipboard}"
+                                ToolTip.Tip="{x:Static vm:MainWindowViewModel.CopyTerminalTip}"
+                                ToolTip.ShowDelay="300" />
+                        <Button Content="Clear"
+                                FontSize="11" Padding="10,2"
+                                Command="{Binding ClearTerminalCommand}"
+                                ToolTip.Tip="Wipes what is on screen. The decoder keeps listening, and keeps the speed and the noise floor it has worked out."
+                                ToolTip.ShowDelay="300" />
+                    </StackPanel>
                 </ctl:CollapsiblePanel.HeaderAction>
 
                 <StackPanel Spacing="6">

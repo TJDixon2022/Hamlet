@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 2 of 7
+TASK: 3 of 7
 WORK_INSTRUCTION: 510 - the next things, in the order they pay (order numbered 509, run by hand)
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-30T16:26:29-04:00
-NOTE: Unit 510 - task 1 committed, the terminal bar stays shown with its tip; now the Copy button beside Clear
+UPDATED: 2026-09-30T16:29:25-04:00
+NOTE: Unit 510 - task 2 committed, Copy beside Clear; now the W1AW score box, reading CwScorer
 
 ---
 
