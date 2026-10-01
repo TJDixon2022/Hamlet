@@ -635,6 +635,8 @@ public sealed class CwEnvelopeDetector
         // and 514's follow-the-meter are gone.
         var nowSeconds = _samplesSeen / (double)SampleRate;
 
+        _pattern.HandKinds = ShapeFirst;
+
         if (ShapeFirst)
         {
             BandMarks(evals, hop, nowSeconds);

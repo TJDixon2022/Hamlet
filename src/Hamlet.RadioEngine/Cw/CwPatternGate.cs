@@ -39,6 +39,13 @@ internal sealed class CwPatternGate
     public const int MarksToStand = 5;
 
     /// <summary>
+    /// Whether a sequence may also stand on a hand's two kinds (work instruction 523): on for the shape-first path,
+    /// whose lengths are a rectangle's true ones, and off for the per-bin path, whose short ragged bars make ten noisy
+    /// marks look like a hand - noise stood 159 marks in three minutes there where it stood 80.
+    /// </summary>
+    public bool HandKinds { get; set; }
+
+    /// <summary>
     /// The least gap between two marks of one sender, as a share of the sender's dit: a half (work
     /// instruction 507).
     /// </summary>
@@ -108,7 +115,7 @@ internal sealed class CwPatternGate
                 return Array.Empty<CwMark>();
             }
 
-            home = new Sequence(++_nextId);
+            home = new Sequence(++_nextId, this);
             _sequences.Add(home);
         }
 
@@ -214,7 +221,7 @@ internal sealed class CwPatternGate
         => _sequences.RemoveAll(s => nowSeconds - s.LastToSeconds > SilenceSeconds);
 
     /// <summary>One sender's marks.</summary>
-    private sealed class Sequence(int id)
+    private sealed class Sequence(int id, CwPatternGate owner)
     {
         private readonly List<CwMark> _held = new();
         private readonly List<CwMark> _recent = new();
@@ -236,7 +243,7 @@ internal sealed class CwPatternGate
 
             // A shape is forming only where its recent marks already come in two lengths, a dah beside a dit: noise's
             // short bars agree in ones and twos at every pitch, and are all of one kind.
-            return TwoLengths(recent) ? recent.Count : 0;
+            return TwoLengths(recent, owner.HandKinds) ? recent.Count : 0;
         }
 
         public int Count { get; private set; }
@@ -464,7 +471,7 @@ internal sealed class CwPatternGate
 
             _held.Add(m);
 
-            if (_held.Count < MarksToStand || !TwoLengths(_held))
+            if (_held.Count < MarksToStand || !TwoLengths(_held, owner.HandKinds))
             {
                 return Array.Empty<CwMark>();
             }
@@ -479,7 +486,7 @@ internal sealed class CwPatternGate
         }
 
         /// <summary>Whether the lengths split in two at a ratio of <see cref="CwRunReader.TwoKindsRatio"/> or wider.</summary>
-        private static bool TwoLengths(IReadOnlyList<CwMark> marks)
+        private static bool TwoLengths(IReadOnlyList<CwMark> marks, bool handKinds)
         {
             var lengths = marks.Select(m => m.ToSeconds - m.FromSeconds).OrderBy(l => l).ToList();
 
@@ -498,7 +505,7 @@ internal sealed class CwPatternGate
             // **ON TEN MARKS, NOT FIVE**: two clusters of five lengths always look tight, and noise stood on them - eight
             // marks in thirty seconds where none stood before. A clean jump is evidence on five marks; overlapping
             // clusters need twice that before they are a hand rather than chance.
-            return lengths.Count >= 2 * MarksToStand && CwRunReader.TwoKindsOfAHand(lengths);
+            return handKinds && lengths.Count >= 2 * MarksToStand && CwRunReader.TwoKindsOfAHand(lengths);
         }
     }
 }

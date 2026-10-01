@@ -1016,7 +1016,30 @@ public sealed class CwRunReader
         // their spreads each side of the boundary. The short side, and the boundary.
         private (List<double> Shorts, double? Split) Kinds()
         {
-            var lengths = _recent.Select(m => m.ToSeconds - m.FromSeconds).OrderBy(l => l).ToList();
+            // **TWO SPEEDS: THE NEWER IS THE SENDER'S NOW** (work instruction 523, case 3). A sender who steps from 10 to
+            // 20 WPM leaves 60, 120, 180 and 360 ms marks among its recent forty, two jumps of two, and the widest put
+            // 60, 120 and 180 together as dits, so a 20 WPM dah read short. A side wider than a hand makes is two speeds
+            // (unit 513); where the split over the recent marks has one, it is taken again over the newest half, then the
+            // newest quarter, down to the five marks a sequence needs to stand, and the first split as tight as a hand
+            // makes is the sender's now.
+            var kinds = KindsOf(_recent);
+
+            for (var n = _recent.Count / 2; kinds.TwoSpeeds && n >= CwPatternGate.MarksToStand; n /= 2)
+            {
+                var newer = KindsOf(_recent.Skip(_recent.Count - n).ToList());
+
+                if (!newer.TwoSpeeds && newer.Split is not null && newer.Shorts.Count > 0)
+                {
+                    return (newer.Shorts, newer.Split);
+                }
+            }
+
+            return (kinds.Shorts, kinds.Split);
+        }
+
+        private static (List<double> Shorts, double? Split, bool TwoSpeeds) KindsOf(IReadOnlyList<CwMark> marks)
+        {
+            var lengths = marks.Select(m => m.ToSeconds - m.FromSeconds).OrderBy(l => l).ToList();
             var at = -1;
             var widest = 0.0;
 
@@ -1033,7 +1056,7 @@ public sealed class CwRunReader
 
             if (at < 0)
             {
-                return (lengths, null);
+                return (lengths, null, false);
             }
 
             // **A CLEAN GAP BETWEEN THE LENGTHS IS TWO KINDS, AS BEFORE.** Where two neighbors differ by
@@ -1044,7 +1067,10 @@ public sealed class CwRunReader
                 var shortSide = lengths.Take(at).ToList();
                 var longSide = lengths.Skip(at).ToList();
 
-                return (shortSide, Boundary(LogStats(shortSide), LogStats(longSide)));
+                var shortStats = LogStats(shortSide);
+                var longStats = LogStats(longSide);
+
+                return (shortSide, Boundary(shortStats, longStats), shortStats.Sd > HandSpread || longStats.Sd > HandSpread);
             }
 
             // **A FIST'S LENGTHS OVERLAP, AND NO CLEAN GAP IS LEFT** (work instruction 513, R113). Its
@@ -1054,7 +1080,8 @@ public sealed class CwRunReader
             // neither wider than HandSpread. A mix of two speeds is wider, and is not taken.
             var hand = HandKinds(lengths, at);
 
-            return hand is { } kinds ? kinds : (lengths, null);
+            // Refused as a hand's two kinds, a mix of lengths is two speeds as much as a wide side of a clean jump is.
+            return hand is { } h ? (h.Shorts, h.Split, false) : (lengths, null, true);
         }
 
         /// <summary>
