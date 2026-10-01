@@ -491,7 +491,14 @@ internal sealed class CwPatternGate
                 }
             }
 
-            return false;
+            // **OR A HAND'S TWO KINDS** (work instruction 523): a fist scattered by a fifth sends dits to 1.2 dits and
+            // dahs down to 2.4, and the clean jump of two is gone though the two kinds stand three to one; the reader
+            // learned this in unit 513, and the gate takes its test - two clusters by the nearer centre, two to one
+            // apart, neither wider than a hand makes.
+            // **ON TEN MARKS, NOT FIVE**: two clusters of five lengths always look tight, and noise stood on them - eight
+            // marks in thirty seconds where none stood before. A clean jump is evidence on five marks; overlapping
+            // clusters need twice that before they are a hand rather than chance.
+            return lengths.Count >= 2 * MarksToStand && CwRunReader.TwoKindsOfAHand(lengths);
         }
     }
 }

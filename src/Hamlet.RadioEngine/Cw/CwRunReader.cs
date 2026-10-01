@@ -229,6 +229,30 @@ public sealed class CwRunReader
     /// <summary>The printed sender's clusters as last measured on this thread: for the tests' report (work instruction 513).</summary>
     internal static string LastClusters => _lastClusters ?? "not measured";
 
+    /// <summary>
+    /// Whether some mark lengths with no clean jump of <see cref="TwoKindsRatio"/> are a hand's two kinds (work
+    /// instructions 513 and 523): the reader's own test, for the pattern gate.
+    /// </summary>
+    /// <param name="lengths">The lengths.</param>
+    /// <returns>True where they split as a hand's dits and dahs.</returns>
+    internal static bool TwoKindsOfAHand(IEnumerable<double> lengths)
+    {
+        var sorted = lengths.OrderBy(l => l).ToList();
+        var at = -1;
+        var widest = 0.0;
+
+        for (var i = 1; i < sorted.Count; i++)
+        {
+            if (sorted[i] / sorted[i - 1] > widest)
+            {
+                widest = sorted[i] / sorted[i - 1];
+                at = i;
+            }
+        }
+
+        return at > 0 && Sender.HandKinds(sorted, at) is not null;
+    }
+
     /// <summary>Every sender's pitch and shape, and whether it is the one printed: for the tests' report (work instruction 519).</summary>
     internal IReadOnlyList<(double PitchHz, CwSequenceShape Shape, bool Printed, int Marks)> SenderShapes
         => _senders.Select(s => (s.Reference.Pitch, s.Shape, s == _station, s.Marks)).ToList();
@@ -1028,11 +1052,26 @@ public sealed class CwRunReader
             // found as two clusters settled by the nearer centre, and taken only where they are what a
             // hand makes: centres TwoKindsRatio apart, SeparationSpreads each side of the boundary, and
             // neither wider than HandSpread. A mix of two speeds is wider, and is not taken.
+            var hand = HandKinds(lengths, at);
+
+            return hand is { } kinds ? kinds : (lengths, null);
+        }
+
+        /// <summary>
+        /// Sorted lengths with no clean jump of <see cref="TwoKindsRatio"/>, split at the widest as a hand's two
+        /// kinds: two clusters settled by the nearer centre, taken where they are what a hand makes, or null (work
+        /// instruction 513; shared with the pattern gate by work instruction 523).
+        /// </summary>
+        /// <param name="lengths">The lengths, shortest first.</param>
+        /// <param name="at">Where the widest ratio between neighbours falls.</param>
+        /// <returns>The short side and the boundary, or null.</returns>
+        public static (List<double> Shorts, double? Split)? HandKinds(List<double> lengths, int at)
+        {
             var (shorts, longs) = Refine(lengths.Take(at).ToList(), lengths.Skip(at).ToList());
 
             if (shorts.Count == 0 || longs.Count == 0)
             {
-                return (lengths, null);
+                return null;
             }
 
             var dit = LogStats(shorts);
@@ -1041,7 +1080,7 @@ public sealed class CwRunReader
             if (Math.Exp(dah.Mu - dit.Mu) < TwoKindsRatio || dah.Mu - dit.Mu < SeparationSpreads * (dit.Sd + dah.Sd)
                 || dit.Sd > HandSpread || dah.Sd > HandSpread)
             {
-                return (lengths, null);
+                return null;
             }
 
             return (shorts, Boundary(dit, dah));

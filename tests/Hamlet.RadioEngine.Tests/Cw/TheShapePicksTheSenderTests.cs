@@ -664,6 +664,30 @@ public sealed class TheShapePicksTheSenderTests
 
         _output.WriteLine(string.Create(CultureInfo.InvariantCulture, $"{db:0} dB: before {Stood(false)} stood, `{before.Text}`; after {Stood(true)} stood, `{after.Text}`"));
     }
+
+    /// <remarks>
+    /// **SHAPE FIRST READS A FIST** (work instruction 523, cases 1 and 4): unit 513's fists - 12, 27 and 35 WPM scattered
+    /// by a fifth, 27 by three tenths, and one that tightens from three tenths to a tenth - read whole with shape-first
+    /// on. Unit 522 read nothing of the 12 WPM fist and slipped a letter on the rough two.
+    /// </remarks>
+    /// <param name="wpm">The speed.</param>
+    /// <param name="scatter">How far each length is scattered either way; negative for the fist that tightens.</param>
+    /// <param name="seed">Unit 513's seed for the case.</param>
+    [Theory]
+    [InlineData(12, 0.2, 5144)]
+    [InlineData(35, 0.2, 5167)]
+    [InlineData(27, 0.2, 5130)]
+    [InlineData(27, 0.3, 5131)]
+    [InlineData(27, -1.0, 5140)]
+    public void ShapeFirstReadsAFist(int wpm, double scatter, int seed)
+    {
+        var (samples, _) = AFistIsReadByTheNearerClusterTests.Fist(Call, wpm, letter => scatter >= 0 ? scatter : letter < 10 ? 0.3 : 0.1, seed);
+        var run = ThePatternIsTheGateTests.Read(samples, AFistIsReadByTheNearerClusterTests.Pitch, d => d.ShapeFirst = true);
+
+        _output.WriteLine(string.Create(CultureInfo.InvariantCulture, $"{wpm} WPM, scatter {(scatter >= 0 ? scatter.ToString("0.0", CultureInfo.InvariantCulture) : "0.3 then 0.1")}: reads `{run.Text}`"));
+
+        Assert.Equal(Call, run.Text);
+    }
     /// <remarks>
     /// Case 5: thirty seconds and three minutes of loud noise print nothing; the highest shape score any noise
     /// sequence earned is printed beside the real senders' of cases 1 to 3.

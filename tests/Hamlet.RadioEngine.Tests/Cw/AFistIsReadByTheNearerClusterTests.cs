@@ -31,6 +31,10 @@ public sealed class AFistIsReadByTheNearerClusterTests
     internal sealed record Truth(List<double> Dits, List<double> Dahs, List<double> ElementGaps, List<double> LetterGaps, List<double> WordGaps);
 
     /// <summary>A hand-sent message: the scatter for each letter from the function, by the letter's index.</summary>
+    /// <summary>Where the marks of the last fist built on this thread lie, in seconds (work instruction 523).</summary>
+    [ThreadStatic]
+    internal static List<(double From, double To)>? LastMarks;
+
     internal static (float[] Samples, Truth Truth) Fist(string text, int wpm, Func<int, double> scatter, int seed, double wordGapDits = 7)
     {
         var random = new Random(seed);
@@ -85,6 +89,22 @@ public sealed class AFistIsReadByTheNearerClusterTests
         }
 
         keyed.Add((3.0, false));
+
+        // Where each mark lies, for the probes (work instruction 523).
+        var clock = 0.0;
+        var marks = new List<(double From, double To)>();
+
+        foreach (var (seconds, on) in keyed)
+        {
+            if (on)
+            {
+                marks.Add((clock, clock + seconds));
+            }
+
+            clock += Math.Round(seconds * Rate) / Rate;
+        }
+
+        LastMarks = marks;
 
         var total = (int)(keyed.Sum(k => k.Seconds) * Rate) + Rate;
         var samples = new float[total];

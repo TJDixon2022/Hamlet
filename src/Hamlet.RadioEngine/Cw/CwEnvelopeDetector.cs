@@ -1302,7 +1302,7 @@ public sealed class CwEnvelopeDetector
     /// garbles two stations and a sender who speeds up. Off, the per-bin path runs as it did at the tag
     /// <c>before-shape-first</c>; the tests turn this on to print both.
     /// </summary>
-    public bool ShapeFirst { get; set; }
+    public bool ShapeFirst { get; set; } = Environment.GetEnvironmentVariable("HAMLET_SHAPE_FIRST") == "1";
 
     /// <summary>
     /// The least whole-band fit score at which a stretch's span is looked at all: a half (work instruction 522). From
@@ -1394,14 +1394,40 @@ public sealed class CwEnvelopeDetector
     /// <summary>The lengths, in hops, the whole-band trace is fitted at: the sweep and the standing senders' (work instruction 522).</summary>
     private SortedSet<int> BandLengths(double nowSeconds)
     {
+        // A tenth at a time (work instruction 523): a hand's dah lands anywhere, and at a quarter a 318 ms dah sat 9%
+        // from the nearest length, so the fit laid its far pad on the dah's own top and never placed it.
         var lengths = new SortedSet<int>(FitLengths(nowSeconds));
 
-        for (var ms = ShortestBarMs; ms <= LongestDahMs; ms *= 1.25)
+        for (var ms = ShortestBarMs; ms <= LongestDahMs; ms *= 1.1)
         {
             lengths.Add(Math.Max(1, (int)Math.Round(ms / HopMs)));
         }
 
         return lengths;
+    }
+
+    /// <summary>The whole-band fit's score and step height over a span on the detector's clock: for the tests' probes (work instruction 523).</summary>
+    internal (double Score, double HeightDb) BandFitAt(double fromSeconds, double toSeconds)
+    {
+        lock (_gate)
+        {
+            var nowSeconds = _samplesSeen / (double)SampleRate;
+            var last = _hop - 1;
+            var start = last + 1 - (long)Math.Round((nowSeconds - fromSeconds) * 1000 / HopMs);
+            var end = last - (long)Math.Round((nowSeconds - toSeconds) * 1000 / HopMs);
+            var pad = FitPadHops;
+
+            if (start - pad < 0 || end + pad > last || last - (start - pad) >= _band.SumsKept || end < start)
+            {
+                return (double.NaN, double.NaN);
+            }
+
+            var (nT, sT, _) = _band.Sums(start, end);
+            var (n1, s1, _) = _band.Sums(start - pad, start - 1);
+            var (n2, s2, _) = _band.Sums(end + 1, end + pad);
+
+            return (FitTrace(_band, start, end, pad), (sT / nT) - ((s1 + s2) / (n1 + n2)));
+        }
     }
 
     /// <summary>The share of a trace's variance over a stretch and its pads that one top and one floor explain; nought where the top is not above the floor.</summary>
