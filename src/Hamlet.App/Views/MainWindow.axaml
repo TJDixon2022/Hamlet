@@ -1793,13 +1793,27 @@
                                                 Frame="{Binding CwHearing.Scope}"
                                                 ToolTip.Tip="{x:Static vm:CwHearingViewModel.ScopeTip}"
                                                 ToolTip.ShowDelay="300" />
-                            <TextBlock FontSize="11"
-                                       TextTrimming="CharacterEllipsis"
-                                       Foreground="{StaticResource HmTextMutedBrush}">
-                                <Run Text="{Binding CwHearing.Scope.ToneLine}" />
-                                <Run Text=" · " />
-                                <Run Text="{Binding CwHearing.Scope.MixingLine}" />
-                            </TextBlock>
+                            <!-- THE FILTER'S EDGE, NAMED BESIDE THE TONE (work instruction 514, task 3):
+                                 shown only while the printed station sits within 75 Hz of the radio's
+                                 passband edge, on the same line so nothing moves when it appears. -->
+                            <Grid ColumnDefinitions="Auto,*">
+                                <TextBlock FontSize="11"
+                                           TextTrimming="CharacterEllipsis"
+                                           Foreground="{StaticResource HmTextMutedBrush}">
+                                    <Run Text="{Binding CwHearing.Scope.ToneLine}" />
+                                    <Run Text=" · " />
+                                    <Run Text="{Binding CwHearing.Scope.MixingLine}" />
+                                </TextBlock>
+                                <TextBlock Grid.Column="1" x:Name="CwFilterEdge"
+                                           FontSize="11" Margin="8,0,0,0"
+                                           TextTrimming="CharacterEllipsis"
+                                           Foreground="{StaticResource HmAmberDeepBrush}"
+                                           Background="Transparent"
+                                           Text="{Binding CwHearing.Scope.EdgeLine}"
+                                           IsVisible="{Binding CwHearing.Scope.EdgeLine, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                                           ToolTip.Tip="{Binding CwHearing.Scope.EdgeTip}"
+                                           ToolTip.ShowDelay="300" />
+                            </Grid>
                         </StackPanel>
 
                         <!-- HIS EAR IS THE YARDSTICK (HM-DEC-184). Each press

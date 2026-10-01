@@ -107,6 +107,40 @@ public sealed record CwScopeFrame(
         }
     }
 
+    /// <summary>What the line beside the tone says when the printed station is at the filter's edge (work instruction 514, task 3).</summary>
+    public const string EdgeWords = "near the filter's edge - the radio is attenuating it";
+
+    /// <summary>How near the filter's edge the printed station sits before it is named, in hertz: 75 (work instruction 514).</summary>
+    public const double EdgeHz = 75;
+
+    /// <summary>
+    /// The printed station's distance inside the radio's filter, in hertz - negative outside it - or
+    /// NaN where the filter is not known from the rig or nobody is printed.
+    /// </summary>
+    private double InsideHz => Reading.PassbandFromRig && double.IsFinite(MixingHz)
+        && double.IsFinite(Reading.PassbandLowHz) && double.IsFinite(Reading.PassbandHighHz)
+        ? Math.Min(MixingHz - Reading.PassbandLowHz, Reading.PassbandHighHz - MixingHz)
+        : double.NaN;
+
+    /// <summary>
+    /// **THE STATION AT THE FILTER'S EDGE IS NAMED, AND THE RADIO IS LEFT ALONE** (work instruction
+    /// 514, task 3, HM-DEC-218): <see cref="EdgeWords"/> while the printed station sits within
+    /// <see cref="EdgeHz"/> of the passband's edge as the rig state gives it, and nothing otherwise.
+    /// </summary>
+    /// <remarks>
+    /// A station at 380 Hz in a 500 Hz filter on a 600 Hz pitch arrives turned down before Hamlet hears
+    /// it, and nothing in code undoes that; the owner is told it is the radio and not Hamlet. Nothing is
+    /// written to the radio.
+    /// </remarks>
+    public string EdgeLine => InsideHz <= EdgeHz ? EdgeWords : string.Empty;
+
+    /// <summary>What the edge line says on hover: the filter's width and centre, and what would help.</summary>
+    public string EdgeTip => InsideHz <= EdgeHz
+        ? string.Create(
+            CultureInfo.InvariantCulture,
+            $"The radio's filter here is {Reading.PassbandHighHz - Reading.PassbandLowHz:0} Hz wide around {(Reading.PassbandLowHz + Reading.PassbandHighHz) / 2:0} Hz, and this station is at {MixingHz:0} Hz, close to its edge, where the radio turns a signal down before Hamlet ever hears it. Widening the filter, or tuning so the station sits nearer {(Reading.PassbandLowHz + Reading.PassbandHighHz) / 2:0} Hz, would bring it back up. Hamlet changes nothing on the radio.")
+        : string.Empty;
+
     /// <summary>"decoding at 742 Hz": the pitch of the station whose letters the terminal and the scroll show, from the run reader (work instructions 488, 489, 493).</summary>
     public string MixingLine => double.IsNaN(MixingHz)
         ? NotMixingWords
