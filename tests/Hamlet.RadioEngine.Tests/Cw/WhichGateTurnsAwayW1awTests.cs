@@ -79,10 +79,8 @@ public sealed class WhichGateTurnsAwayW1awTests
             detector.SetPassband(600, 500);
         }
 
-        if (pointed is { } hz)
-        {
-            detector.PointAt(hz);
-        }
+        // Since unit 515 nothing points the detector (R114): the pointed rows read as the unpointed ones.
+        _ = pointed;
 
         var reader = new CwRunReader();
         var characters = new List<CwCharacter>();

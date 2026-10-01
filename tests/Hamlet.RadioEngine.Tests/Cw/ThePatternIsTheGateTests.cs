@@ -132,8 +132,8 @@ public sealed class ThePatternIsTheGateTests
     }
 
     /// <remarks>
-    /// Case 6, the verdict row on a driven station: the detector follows the pitch the reader prints, as
-    /// the application hands it on every scope tick, and while the reader prints and the bars say keying
+    /// Case 6, the verdict row on a driven station: nothing is followed since unit 515 (R114); the reading names the pitch of the
+    /// sequence that stands, and while the reader prints and the bars say keying
     /// the reading's pitch - the row's `scopePitchHz` - is the printed pitch, and its mark count - the row's
     /// `scopeMarksLast4s` - is the marks that stood there in the last four seconds.
     /// </remarks>
@@ -151,7 +151,6 @@ public sealed class ThePatternIsTheGateTests
         {
             var printing = reader.StationPitchHz;
 
-            detector.Follow(double.IsFinite(printing) ? printing : null);
             detector.Process(samples.AsSpan(at, Chunk));
 
             var batch = detector.MarksSince(sequence);

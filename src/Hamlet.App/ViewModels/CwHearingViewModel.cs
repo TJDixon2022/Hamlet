@@ -340,9 +340,6 @@ public sealed partial class CwHearingViewModel : ObservableObject
         {
             ["verdict"] = verdict,
             ["light"] = LightWords,
-            ["trackerHz"] = Measured(state.TrackerHz),
-            ["trackerHasPitch"] = state.TrackerHasPitch,
-            ["trackerHasKeying"] = state.TrackerHasKeying,
             ["meterVerdict"] = VerdictWord(meter.Verdict),
             ["meterHz"] = meter.ToneHz > 0 ? meter.ToneHz : null,
             ["meterScore"] = Measured(meter.Score),

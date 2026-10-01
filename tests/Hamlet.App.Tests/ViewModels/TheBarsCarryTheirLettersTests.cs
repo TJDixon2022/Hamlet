@@ -147,6 +147,16 @@ public sealed class TheBarsCarryTheirLettersTests
         }
 
         Add(500, false);
+
+        // A Q first, three and a half seconds before the C (work instruction 515): a sequence stands at five
+        // marks of two lengths, so the C's own four complete it, and the Q lies outside the four seconds the
+        // picture is built from.
+        foreach (var (length, on) in new[] { (3, true), (1, false), (3, true), (1, false), (1, true), (1, false), (3, true) })
+        {
+            Add(length * 60, on);
+        }
+
+        Add(3500, false);
         var startMs = samples.Count * 1000.0 / Rate;
 
         foreach (var (length, on) in units)

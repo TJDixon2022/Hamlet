@@ -89,7 +89,6 @@ public sealed class TheScrollKeepsItsBlocksTests
 
         void Tick()
         {
-            detector.Follow(double.IsFinite(decoder.PrintingHz) ? decoder.PrintingHz : null);
             frame = feed.Tick(detector, detector.Reading, decoder.PrintingHz, frame, scopeQuiet: false, Now());
             frames.Add((frame.Training.NowUtc, frame.Training.Bars));
         }

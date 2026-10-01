@@ -30,7 +30,7 @@ public sealed class TheScopeIsTheMiddlePictureTests
     [Fact]
     public void TheBarsAndTwoLinesOfWordsAreDrawn()
     {
-        var detector = Keyed(742, 500, 1.73);
+        var detector = Keyed(742, 500, 2.69);
         var frame = CwScopeFrame.From(detector.History(), detector.HopMs, detector.Reading, 742, null);
 
         var lines = CwScopeControl.Lines(frame);
@@ -63,22 +63,22 @@ public sealed class TheScopeIsTheMiddlePictureTests
         Assert.Equal("no keying", before.ToneLine);
 
         // 90 ms into Q's first dah, where a paired bar is up.
-        var mark = Keyed(742, 500, 1.73);
+        var mark = Keyed(742, 500, 2.69);
         var inMark = CwScopeFrame.From(mark.History(), mark.HopMs, mark.Reading, 742, before);
 
         Assert.Matches(@"^tone 7[3-5]\d Hz heard$", inMark.ToneLine);
 
         // 40 ms into the gap after it: still keying, so the pitch holds.
-        var gap = Keyed(742, 500, 1.86);
+        var gap = Keyed(742, 500, 2.82);
 
-        Assert.True(gap.Reading.Keying && !gap.Reading.Mark, "the driven detector is not in a keyed gap at 1.86 s");
+        Assert.True(gap.Reading.Keying && !gap.Reading.Mark, "the driven detector is not in a keyed gap at 2.82 s");
 
         var inGap = CwScopeFrame.From(gap.History(), gap.HopMs, gap.Reading, 742, inMark);
 
         Assert.Equal(inMark.ToneLine, inGap.ToneLine);
 
         // Two seconds after the last element: nobody is keying.
-        var after = Keyed(742, 500, 4.6);
+        var after = Keyed(742, 500, 5.56);
 
         Assert.False(after.Reading.Keying);
         Assert.Equal("no keying", CwScopeFrame.From(after.History(), after.HopMs, after.Reading, 742, inGap).ToneLine);
@@ -88,7 +88,7 @@ public sealed class TheScopeIsTheMiddlePictureTests
     [Fact]
     public void TheMixingLineSaysWhereTheDecoderIs()
     {
-        var detector = Keyed(742, 500, 1.73);
+        var detector = Keyed(742, 500, 2.69);
 
         Assert.Equal(
             "decoding at 750 Hz",
@@ -128,12 +128,17 @@ public sealed class TheScopeIsTheMiddlePictureTests
     }
 
     /// <summary>How long the keyed pattern below runs, in seconds.</summary>
-    private const double CwKeyedSeconds = 2.58;
+    private const double CwKeyedSeconds = 3.54;
 
     /// <summary>C, Q at 20 words a minute after 0.8 s of noise, then quiet.</summary>
     private static readonly (bool On, double Ms)[] Keying =
     {
         (false, 800),
+
+        // A Q first (work instruction 515): a sequence stands at five marks of two lengths, so the C and Q
+        // below are examined after it stands; every time examined is 0.96 s later than before.
+        (true, 180), (false, 60), (true, 180), (false, 60), (true, 60), (false, 60), (true, 180),
+        (false, 180),
         (true, 180), (false, 60), (true, 60), (false, 60), (true, 180), (false, 60), (true, 60),
         (false, 180),
         (true, 180), (false, 60), (true, 180), (false, 60), (true, 60), (false, 60), (true, 180),

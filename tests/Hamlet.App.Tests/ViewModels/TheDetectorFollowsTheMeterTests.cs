@@ -8,70 +8,52 @@ using Xunit.Abstractions;
 namespace Hamlet.App.Tests.ViewModels;
 
 /// <summary>
-/// **When the reader has nobody, the detector follows the meter** (work instruction 514, task 1,
-/// HM-DEC-218).
+/// **The meter steers nothing; the detector is not pointed** (work instruction 515, R114, HM-DEC-219).
 /// </summary>
 /// <remarks>
-/// <para>**22:59, 7.0249**: the meter read a station at 500 Hz, a 49 ms dit, score 0.28, while the
-/// reader printed nobody and the detector sat on 600.</para>
-/// <para>**THE VIEW MODEL'S OWN SCOPE TICK**, driven on a real detector fed silence written here, so
-/// only the pitch it is told to follow can move it; the meter's reading is set as the meter would
-/// publish it. Nothing is read from disk (R96).</para>
+/// <para>**WHAT THIS FILE HELD**: unit 514's two cases, `AStationTheMeterHearsIsFollowed` and
+/// `NoiseTheMeterReadsIsNotFollowed`, which drove the scope tick's follow-the-meter wire. Unit 515
+/// retired the wire with the watched bin, and those two are retired with it.</para>
+/// <para>**WHAT IT HOLDS NOW**: the view model's own scope tick, a real detector fed silence written
+/// here, and a meter reading a station at 500 Hz. Nothing stands in silence, so the detector says no
+/// keying and names no pitch, whatever the meter says. Nothing is read from disk (R96).</para>
 /// </remarks>
 public sealed class TheDetectorFollowsTheMeterTests
 {
     private const int Rate = 8000;
 
+    private static readonly BindingFlags Private = BindingFlags.Instance | BindingFlags.NonPublic;
+
     private readonly ITestOutputHelper _output;
 
     /// <summary>Creates the tests.</summary>
-    /// <param name="output">Where the pitches are printed.</param>
+    /// <param name="output">Where the reading is printed.</param>
     public TheDetectorFollowsTheMeterTests(ITestOutputHelper output) => _output = output;
 
-    private static readonly BindingFlags Private = BindingFlags.Instance | BindingFlags.NonPublic;
-
-    /// <summary>The detector watching 600, the meter reading as given, one scope tick, then a tenth of a second.</summary>
-    private static (double Before, double After) Tick(KeyingReading meter)
+    /// <remarks>
+    /// Unit 515: a meter reading keying at 500 Hz, 49 ms, score 0.28, through the scope tick, leaves a
+    /// detector that has heard only silence saying no keying and no pitch.
+    /// </remarks>
+    [Fact]
+    public void TheMetersStationDoesNotSteerTheDetector()
     {
         var panel = new MainWindowViewModel(new AppSettings(), null);
         var detector = new CwEnvelopeDetector(Rate);
         var silence = new float[Rate / 10];
 
         typeof(MainWindowViewModel).GetField("_envelope", Private)!.SetValue(panel, detector);
-        typeof(MainWindowViewModel).GetField("_keyingReading", Private)!.SetValue(panel, meter);
+        typeof(MainWindowViewModel).GetField("_keyingReading", Private)!.SetValue(
+            panel, new KeyingReading(KeyingVerdict.Keying, 500, 49, 30, 20, 0.28, false, 49));
 
-        detector.Follow(600);
         detector.Process(silence);
-
-        var before = detector.WatchedHz;
-
         typeof(MainWindowViewModel).GetMethod("OnScopeTick", Private)!.Invoke(panel, new object?[] { null, EventArgs.Empty });
         detector.Process(silence);
 
-        return (before, detector.WatchedHz);
-    }
+        var reading = detector.Reading;
 
-    /// <remarks>Task 1: a meter reading a station at 500 Hz, 49 ms, score 0.28, with the reader printing nobody, moves the detector to 500.</remarks>
-    [Fact]
-    public void AStationTheMeterHearsIsFollowed()
-    {
-        var (before, after) = Tick(new KeyingReading(KeyingVerdict.Keying, 500, 49, 30, 20, 0.28, false, 49));
+        _output.WriteLine($"meter keying at 500 Hz; detector keying {reading.Keying}, pitch {reading.PitchHz}");
 
-        _output.WriteLine($"meter keying at 500 Hz, 49 ms, score 0.28: detector {before:0} Hz, after one tick {after:0} Hz");
-
-        Assert.Equal(600, before);
-        Assert.Equal(500, after);
-    }
-
-    /// <remarks>Task 1: a meter reading of score 0.06 with a 4 ms median is noise, and the detector does not move to it.</remarks>
-    [Fact]
-    public void NoiseTheMeterReadsIsNotFollowed()
-    {
-        var (before, after) = Tick(new KeyingReading(KeyingVerdict.Keying, 500, 4, 30, 20, 0.06, false, 4));
-
-        _output.WriteLine($"meter at 500 Hz, 4 ms, score 0.06: detector {before:0} Hz, after one tick {after:0} Hz");
-
-        Assert.Equal(600, before);
-        Assert.NotEqual(500, after);
+        Assert.False(reading.Keying);
+        Assert.True(double.IsNaN(reading.PitchHz));
     }
 }

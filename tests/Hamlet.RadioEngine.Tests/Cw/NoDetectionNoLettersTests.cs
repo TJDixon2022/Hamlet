@@ -176,7 +176,7 @@ public sealed class NoDetectionNoLettersTests
         var decoder = new CwDecoder(Rate, 600)
         {
             KeyingGate = () => detector.Reading.Keying,
-            DetectorPitch = () => detector.Reading.Keying ? detector.WatchedHz : double.NaN,
+            DetectorPitch = () => detector.Reading.Keying ? detector.Reading.PitchHz : double.NaN,
             DetectorBlocks = blocks ? detector.BlocksBetween : null,
             DetectorGatesKeying = true,
             DetectorSteersPitch = true,

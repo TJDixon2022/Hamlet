@@ -43,7 +43,7 @@ public sealed class PrintedStaysPrintedTests
         var decoder = new CwDecoder(Rate, 600)
         {
             KeyingGate = () => detector.Reading.Keying,
-            DetectorPitch = () => detector.Reading.Keying ? detector.WatchedHz : double.NaN,
+            DetectorPitch = () => detector.Reading.Keying ? detector.Reading.PitchHz : double.NaN,
             DetectorBlocks = detector.BlocksBetween,
             DetectorGatesKeying = true,
             DetectorSteersPitch = true,

@@ -36,9 +36,8 @@ public sealed record CwBarBin(
 /// <param name="PassbandLowHz">The lowest bin's edge of the sweep.</param>
 /// <param name="PassbandHighHz">The highest.</param>
 /// <param name="PassbandFromRig">Whether the edges came from the radio's pitch and filter.</param>
-/// <param name="MarksLast4s">How many marks that stood in a sequence the last four seconds hold at the watched pitch (work instruction 507: the watched bin's paired bars before).</param>
-/// <param name="Keying">Whether any bin in the passband made two bars and a gap in the last second.</param>
-/// <param name="Pointed">Whether the watched bin is the one the radio's scope points at, not the sweep's.</param>
+/// <param name="MarksLast4s">How many marks stood in the last four seconds: at the standing pitch while a sequence stands, at any pitch otherwise (work instruction 515).</param>
+/// <param name="Keying">Whether a sequence the pattern gate stands has had a mark within the hold, at any pitch (work instruction 515, R114).</param>
 public sealed record CwEnvelopeReading(
     double EnvelopeDb,
     double FloorDb,
@@ -51,8 +50,7 @@ public sealed record CwEnvelopeReading(
     double PassbandHighHz,
     bool PassbandFromRig,
     int MarksLast4s,
-    bool Keying = false,
-    bool Pointed = false)
+    bool Keying = false)
 {
     /// <summary>Nothing heard.</summary>
     public static CwEnvelopeReading None { get; } = new(
@@ -201,7 +199,6 @@ public sealed class CwEnvelopeDetector
     private readonly double _hannSum;
     private readonly int _minBarHops;
     private readonly int _keyingHops;
-    private readonly int _holdHops;
 
     private Bin[] _bins = Array.Empty<Bin>();
     private int _watched;
@@ -231,18 +228,7 @@ public sealed class CwEnvelopeDetector
     private double _highHz = double.NaN;
     private bool _fromRig;
     private double _loudestGapDb = double.NaN;
-    private double _pointedHz = double.NaN;
-    private double _followHz = double.NaN;
     private CwEnvelopeReading _reading = CwEnvelopeReading.None;
-
-    // The station being held (work instruction 485): its bin, the last hop a mark arrived there,
-    // and its bars' level; -1 where nothing is held.
-    private int _holdBin = -1;
-    private long _holdLastMarkHop;
-    private double _holdBarDb = double.NaN;
-
-    // The station's bin while keying, held through the gaps (work instruction 496); NaN otherwise.
-    private double _stationHz = double.NaN;
 
     private IAudioSource? _attached;
 
@@ -274,7 +260,6 @@ public sealed class CwEnvelopeDetector
         // A run of n hops covers (n - 1) hops plus one window of audio.
         _minBarHops = Math.Max(1, (int)Math.Ceiling(((ShortestBarMs / HopMs) - (EnvelopeWindowSamples / (double)HopSamples)) + 1));
         _keyingHops = (int)Math.Round(KeyingSeconds * 1000 / HopMs);
-        _holdHops = (int)Math.Round(HoldSeconds * 1000 / HopMs);
         HistoryHops = (int)Math.Ceiling(HistorySeconds * 1000 / HopMs);
 
         SetPassband(null, null);
@@ -356,8 +341,6 @@ public sealed class CwEnvelopeDetector
                 .Select(k => new Bin(k * BinSpacingHz, SampleRate, HistoryHops + (2 * _keyingHops), _keyingHops))
                 .ToArray();
             _watched = _bins.Length / 2;
-            _holdBin = -1;
-            _holdBarDb = double.NaN;
             _hop = 0;
             _loudestGapDb = double.NaN;
             _reading = CwEnvelopeReading.None with
@@ -366,26 +349,6 @@ public sealed class CwEnvelopeDetector
                 PassbandHighHz = _highHz,
                 PassbandFromRig = _fromRig,
             };
-        }
-    }
-
-    /// <summary>
-    /// **THE RADIO POINTS** (work instruction 480 task 2, R94, HM-DEC-188): watch the bin nearest
-    /// the pitch the radio's scope reports, or sweep again when it reports none.
-    /// </summary>
-    /// <param name="pitchHz">The pitch <see cref="CwScopePointer"/> gives, or null while the scope is quiet.</param>
-    /// <remarks>
-    /// <para>**WHILE THE SCOPE POINTS, THERE IS NO SWEEP.** The watched bin is the pointed one on
-    /// every hop, so the bars, the contrast and the pitch all come from it; the other bins go on
-    /// being measured, and are what the sweep picks from again the moment the pointer is null.</para>
-    /// <para>A pitch outside the bins, beyond the passband's edge by more than half a bin, is not
-    /// one the detector hears, and it sweeps as if nothing pointed.</para>
-    /// </remarks>
-    public void PointAt(double? pitchHz)
-    {
-        lock (_gate)
-        {
-            _pointedHz = pitchHz is > 0 and var hz ? hz : double.NaN;
         }
     }
 
@@ -448,30 +411,6 @@ public sealed class CwEnvelopeDetector
         }
     }
 
-    /// <summary>The pitch of the bin the detector is watching.</summary>
-    public double WatchedHz
-    {
-        get
-        {
-            lock (_gate)
-            {
-                return _bins.Length > 0 ? _bins[_watched].Hz : double.NaN;
-            }
-        }
-    }
-
-    /// <summary>The pitch the radio's scope points at, or NaN while it points nowhere.</summary>
-    public double PointedHz
-    {
-        get
-        {
-            lock (_gate)
-            {
-                return _pointedHz;
-            }
-        }
-    }
-
     /// <summary>Listen to a source beside whatever else listens to it. Replaces any previous one.</summary>
     /// <param name="source">The source, or null to stop listening.</param>
     public void Listen(IAudioSource? source)
@@ -530,8 +469,14 @@ public sealed class CwEnvelopeDetector
         }
     }
 
-    /// <summary>The last four seconds of the bin being watched, oldest first.</summary>
+    /// <summary>The last four seconds at the standing pitch, oldest first: each hop's level, and whether a mark that stood covers it.</summary>
     /// <returns>One entry per hop.</returns>
+    /// <remarks>
+    /// **THE SCOPE READS WHAT STOOD** (work instruction 515, R114, HM-DEC-219). A hop is marked where a mark
+    /// that stood near this pitch covers it, carrying that mark's shape score (work instruction 502); the bin's
+    /// own paired bars no longer decide it, because the station's own bin pairs them rarely (unit 496) and the
+    /// shoulder the old watched bin sat on is not watched any more.
+    /// </remarks>
     public IReadOnlyList<CwScopeHop> History()
     {
         lock (_gate)
@@ -545,31 +490,18 @@ public sealed class CwEnvelopeDetector
             }
 
             var bin = _bins[_watched];
-            var bars = Evaluate(bin).Marked;
             var oldest = _hop - fill;
             var nowSeconds = _samplesSeen / (double)SampleRate;
-            var b = 0;
 
             for (var i = 0; i < fill; i++)
             {
                 var hop = oldest + i;
 
-                while (b < bars.Count && bars[b].End < hop)
-                {
-                    b++;
-                }
-
-                var mark = b < bars.Count && bars[b].Start <= hop;
-
-                // The shape score of a mark called over this hop near the watched pitch (work
-                // instruction 502), on the clock the mark was called on: a hop's middle, seconds back
-                // from now as many hops as it is old.
+                // On the clock the mark was called on: a hop's middle, seconds back from now as many hops as it is old.
                 var middle = nowSeconds - ((_hop - 1 - hop + 0.5) * HopMs / 1000);
-                var called = mark
-                    ? _marks.LastOrDefault(k => k.FromSeconds <= middle && k.ToSeconds >= middle && Math.Abs(k.PitchHz - bin.Hz) <= 2 * BinSpacingHz)
-                    : null;
+                var called = _marks.LastOrDefault(k => k.FromSeconds <= middle && k.ToSeconds >= middle && Math.Abs(k.PitchHz - bin.Hz) <= 2 * BinSpacingHz);
 
-                copy[i] = new CwScopeHop(bin.Level(hop), _reading.FloorDb, _reading.ThresholdDb, mark, called?.Shape?.Score ?? double.NaN);
+                copy[i] = new CwScopeHop(bin.Level(hop), _reading.FloorDb, _reading.ThresholdDb, called is not null, called?.Shape?.Score ?? double.NaN);
             }
 
             return copy;
@@ -620,21 +552,14 @@ public sealed class CwEnvelopeDetector
             bin.Prune(hop - HistoryHops - _keyingHops);
         }
 
-        // **THE PITCH IS THE KEYING BIN WITH THE MOST BARS IN THE LAST SECOND, AMONG THE BINS
-        // THAT HEAR THE BARS AT THEIR FULL LEVEL.** A tone lights every bin its ten millisecond
-        // window reaches, about two hundred hertz either side, with the same bars; the ones off
-        // the tone hear it quieter, where the noise splits a bar in two and counts it twice.
-        // So only bins whose bars sit within the flat tolerance of the loudest keying bin's are
-        // counted, and the louder breaks a tie. Where nothing is keying the watched bin stays
-        // where it was, so the trace goes on showing where the last station was.
+        // Every bin is evaluated: its bars, their pairs and the gaps' level, which the mark rules read.
         var evals = new Evaluation[_bins.Length];
-        var keying = false;
         _loudestGapDb = double.NaN;
 
         for (var i = 0; i < _bins.Length; i++)
         {
             var e = evals[i] = Evaluate(_bins[i]);
-            keying |= e.Keying;
+
 
             // The gap a run is measured over is the loudest hop of the gaps: the formula's noise
             // is the noise that adds to or takes from the tone at one hop, and a run has to hold
@@ -653,7 +578,6 @@ public sealed class CwEnvelopeDetector
                 _bins[i].ContrastDb = contrast;
                 _bins[i].Reread(Math.Max(0, hop - HistoryHops - _keyingHops), hop);
                 evals[i] = e = Evaluate(_bins[i]);
-                keying |= e.Keying;
             }
 
             _bins[i].ContrastDb = contrast;
@@ -664,123 +588,38 @@ public sealed class CwEnvelopeDetector
             }
         }
 
-        // How far a tone reaches across bins: the Hann window's main lobe, two bins of its
-        // own resolution either side - two hundred hertz at ten milliseconds.
-        var reach = (int)Math.Ceiling(2.0 * SampleRate / EnvelopeWindowSamples / BinSpacingHz);
-        var best = -1;
-        Evaluation? bestEval = null;
+        // **THE SHAPE IS FOUND WHEREVER IT APPEARS; THE WATCHED BIN RETIRES** (work instruction 515,
+        // R114, HM-DEC-219). Tim: *"Pitch almost doesn't matter. It's shape."* Every bin on every hop
+        // already offers its bars as marks and the pattern gate already stands them from any pitch; now
+        // the verdict reads the same thing. It is keying when a sequence stands with a mark within
+        // the hold, and its pitch is that sequence's, the loudest where several stand. Nothing points
+        // it and nothing follows: unit 476's survey choice, 496's verdict bin, 507's follow-the-reader
+        // and 514's follow-the-meter are gone.
+        var nowSeconds = _samplesSeen / (double)SampleRate;
 
-        // **THE RADIO POINTS; THE SWEEP IS THE FALLBACK** (work instruction 480, R94). While the
-        // scope names a pitch inside the bins, that bin is watched and nothing is searched.
-        // **THE SENDER BEING PRINTED FIRST** (work instruction 507): while the reader prints a sequence, its
-        // bin is watched, over the radio's pointer and the sweep, so the light, the blocks and the mark
-        // count describe the station on the screen.
-        var followed = Followed();
-        var pointed = followed >= 0 ? followed : Pointed();
+        CallMarks(evals, hop, nowSeconds);
 
-        for (var i = 0; pointed < 0 && i < _bins.Length; i++)
-        {
-            var e = evals[i];
+        var standing = _pattern.Standing(nowSeconds, HoldSeconds);
+        var keying = standing.Count > 0;
+        var pitchHz = keying
+            ? Math.Round(standing.OrderByDescending(s => s.LevelDb).First().PitchHz / BinSpacingHz) * BinSpacingHz
+            : double.NaN;
 
-            if (!e.Keying)
-            {
-                continue;
-            }
-
-            var loudest = double.NegativeInfinity;
-
-            for (var j = Math.Max(0, i - reach); j <= Math.Min(_bins.Length - 1, i + reach); j++)
-            {
-                loudest = Math.Max(loudest, evals[j].LoudestBarDb);
-            }
-
-            if (e.BarDb < loudest - FlatToleranceDb)
-            {
-                continue;
-            }
-
-            if (bestEval is not { } top
-                || e.BarsLastSecond > top.BarsLastSecond
-                || (e.BarsLastSecond == top.BarsLastSecond && e.BarDb > top.BarDb))
-            {
-                best = i;
-                bestEval = e;
-            }
-        }
-
-        if (pointed >= 0)
-        {
-            _watched = pointed;
-        }
-        else if (best >= 0)
-        {
-            _watched = best;
-        }
-
-        // **THE STATION IS HELD THROUGH ITS GAPS** (work instruction 485, R97). Once bars are found
-        // at a pitch, keying stays true there while marks keep arriving - a paired bar, or a run
-        // at least a bar long standing within the flat tolerance of the station's bars - and is let
-        // go only when none has arrived for HoldSeconds. While held, the watched pitch stays on the
-        // station, unless the radio points elsewhere.
-        if (_holdBin >= 0 && pointed >= 0)
-        {
-            _holdBin = pointed;
-        }
-
-        if (_holdBin >= 0)
-        {
-            var held = _bins[_holdBin];
-            var heldEval = evals[_holdBin];
-            var lastBar = heldEval.Marked.Count > 0 ? heldEval.Marked.Max(m => m.End) : -1;
-            var run = held.Open;
-
-            if (!double.IsNaN(heldEval.BarDb))
-            {
-                _holdBarDb = heldEval.BarDb;
-            }
-
-            if (lastBar > _holdLastMarkHop)
-            {
-                _holdLastMarkHop = lastBar;
-            }
-
-            if (run is not null && run.End == hop && run.Count >= _minBarHops
-                && !double.IsNaN(_holdBarDb) && run.Mean >= _holdBarDb - FlatToleranceDb)
-            {
-                _holdLastMarkHop = hop;
-            }
-
-            if (hop - _holdLastMarkHop > _holdHops)
-            {
-                _holdBin = -1;
-                _holdBarDb = double.NaN;
-            }
-        }
-
-        // While bars are keying somewhere, the detector's own choice of pitch stands and the hold
-        // follows it; only in a gap, when nothing is keying, does the hold keep keying and the pitch.
+        // The bin the scope's trace and the reading's levels come from: the one nearest the standing
+        // pitch, derived from it and never steered; where nothing stands it stays where it was.
         if (keying)
         {
-            // Held from the last mark itself, not from the hop the detector still calls keying,
-            // so the hold does not stack on the detector's own one-second window.
-            var lastMark = evals[_watched].Marked.Count > 0 ? evals[_watched].Marked.Max(m => m.End) : hop;
+            var nearest = 0;
 
-            _holdLastMarkHop = _holdBin == _watched ? Math.Max(_holdLastMarkHop, lastMark) : lastMark;
-            _holdBin = _watched;
-
-            if (!double.IsNaN(evals[_watched].BarDb))
+            for (var i = 1; i < _bins.Length; i++)
             {
-                _holdBarDb = evals[_watched].BarDb;
+                if (Math.Abs(_bins[i].Hz - pitchHz) < Math.Abs(_bins[nearest].Hz - pitchHz))
+                {
+                    nearest = i;
+                }
             }
-        }
-        else if (_holdBin >= 0)
-        {
-            keying = true;
 
-            if (pointed < 0)
-            {
-                _watched = _holdBin;
-            }
+            _watched = nearest;
         }
 
         var watched = _bins[_watched];
@@ -791,8 +630,6 @@ public sealed class CwEnvelopeDetector
         // **THE BLOCKS THIS DETECTOR CALLED, KEPT ON THE DECODER'S CLOCK** (work instruction 487,
         // R99): a hop's time is the end of the audio it read, so a span's hops are placed back
         // from now. A span read again at a later hop replaces the first reading of it.
-        var nowSeconds = _samplesSeen / (double)SampleRate;
-
         foreach (var m in eval.Marked)
         {
             var from = nowSeconds - ((hop - m.Start + 1) * HopMs / 1000);
@@ -808,8 +645,6 @@ public sealed class CwEnvelopeDetector
         {
             _called.Remove(old);
         }
-
-        CallMarks(evals, hop, nowSeconds);
 
         var gapDb = eval.GapDb;
         var barDb = eval.BarDb;
@@ -827,105 +662,22 @@ public sealed class CwEnvelopeDetector
             runMs = Math.Min(hop - lastEnd, HistoryHops) * HopMs;
         }
 
-        // **THE PITCH IS THE STATION'S OWN BIN** (work instruction 496, HM-DEC-200). The watched bin
-        // is the one with the most bars, and that is often a shoulder of the tone: unit 488 measured
-        // a 625 Hz station's own bin calling no bars two hops in three, its gaps near -20 dB where
-        // the bins 50 Hz off read -42, because the loudness that makes it the station also fills its
-        // gaps. The watched bin still gives the scope its blocks; the pitch reported is the top of
-        // the lobe over the watched bin's latest bar, held through the gaps while keying.
-        if (!keying)
-        {
-            _stationHz = double.NaN;
-        }
-        else if (eval.Marked.Count > 0)
-        {
-            var last = eval.Marked[^1];
-
-            _stationHz = _bins[StationBin(_watched, last.Start, last.End)].Hz;
-        }
-
         _reading = new CwEnvelopeReading(
             watched.Level(hop),
             gapDb,
             midDb,
             up,
             runMs,
-
-            // **KEYING ALWAYS COMES WITH A PITCH** (work instruction 488, HM-DEC-193). The pitch
-            // was set only on the hop a mark was up, while keying is held through the gaps between
-            // marks (work instruction 485), so four readings in five said keying with no pitch:
-            // the owner's verdict rows of 2026-09-28 carried a null pitch on every row. Keying and
-            // its pitch now go together: the bin the bars were called in, which the hold follows.
-            keying ? (followed >= 0 ? _bins[followed].Hz : double.IsNaN(_stationHz) ? watched.Hz : _stationHz) : double.NaN,
+            pitchHz,
             up && !double.IsNaN(gapDb) ? barDb - gapDb : double.NaN,
             _lowHz,
             _highHz,
             _fromRig,
-            _marks.Count(k => k.ToSeconds > nowSeconds - HistorySeconds && Math.Abs(k.PitchHz - watched.Hz) <= BinSpacingHz),
-            keying,
-            pointed >= 0 && followed < 0);
-    }
 
-    /// <summary>The bin nearest the followed pitch, or -1 where nothing is followed or it is off the bins.</summary>
-    private int Followed()
-    {
-        if (double.IsNaN(_followHz) || _bins.Length == 0)
-        {
-            return -1;
-        }
-
-        var nearest = 0;
-
-        for (var i = 1; i < _bins.Length; i++)
-        {
-            if (Math.Abs(_bins[i].Hz - _followHz) < Math.Abs(_bins[nearest].Hz - _followHz))
-            {
-                nearest = i;
-            }
-        }
-
-        return Math.Abs(_bins[nearest].Hz - _followHz) <= BinSpacingHz / 2 ? nearest : -1;
-    }
-
-    /// <summary>
-    /// **THE SEQUENCE BEING READ** (work instruction 507, R112): watch the bin of the sender the reader is
-    /// printing, over the radio's pointer and the sweep, or let them decide again when it prints nobody.
-    /// </summary>
-    /// <param name="pitchHz">The printed sender's pitch, <see cref="CwDecoder.PrintingHz"/>, or null.</param>
-    /// <remarks>
-    /// <para>**UNIT 504 NAMED IT; THE OWNER'S ROWS SHOWED IT.** On 14.0529 the reader printed at 500 Hz
-    /// while the watched bin sat at 350 and then 700, so the light, the blocks and the mark count
-    /// described a bin nobody was reading. The printed pitch was right on every row.</para>
-    /// <para>A pitch outside the bins, beyond the passband's edge by more than half a bin, is not one the
-    /// detector hears, and the pointer or the sweep decide as if nothing were followed.</para>
-    /// </remarks>
-    public void Follow(double? pitchHz)
-    {
-        lock (_gate)
-        {
-            _followHz = pitchHz is > 0 and var hz && double.IsFinite(hz) ? hz : double.NaN;
-        }
-    }
-
-    /// <summary>The bin nearest the pointed pitch, or -1 where nothing points or it is off the bins.</summary>
-    private int Pointed()
-    {
-        if (double.IsNaN(_pointedHz) || _bins.Length == 0)
-        {
-            return -1;
-        }
-
-        var nearest = 0;
-
-        for (var i = 1; i < _bins.Length; i++)
-        {
-            if (Math.Abs(_bins[i].Hz - _pointedHz) < Math.Abs(_bins[nearest].Hz - _pointedHz))
-            {
-                nearest = i;
-            }
-        }
-
-        return Math.Abs(_bins[nearest].Hz - _pointedHz) <= BinSpacingHz / 2 ? nearest : -1;
+            // The marks that stood in the last four seconds: at the standing pitch while one stands,
+            // which is the printed sender's while it is printed, and at any pitch otherwise.
+            _marks.Count(k => k.ToSeconds > nowSeconds - HistorySeconds && (!keying || Math.Abs(k.PitchHz - pitchHz) <= BinSpacingHz)),
+            keying);
     }
 
     /// <summary>One bin's level this hop, as mean square: a full-scale sine reads -3 dB.</summary>
@@ -1306,9 +1058,15 @@ public sealed class CwEnvelopeDetector
 
                 // **THE PATTERN ACROSS MARKS IS THE GATE** (work instruction 507, R112, HM-DEC-210): a
                 // candidate is handed on only when it stands in a sequence with the shape of a keyed tone.
+                // **A MARK THAT STANDS IS KEYED** (work instruction 515, R114, HM-DEC-219): keying is a
+                // sequence standing, at any pitch, so a mark handed on is a keyed mark. It used to be keyed
+                // only where the bins around its peak paired their bars, which through the radio's 500 Hz
+                // filter they did not at 700 Hz, so 65 marks stood, none was keyed and nothing printed
+                // (unit 514). Noise stands a few marks and still prints nothing; the reader's own rules
+                // hold it.
                 foreach (var stood in MarksNeedPattern ? _pattern.Offer(candidate) : new[] { candidate })
                 {
-                    _marks.Add(stood with { Sequence = ++_markSequence, Stood = true });
+                    _marks.Add(stood with { Sequence = ++_markSequence, Stood = true, Keyed = true });
                 }
             }
 

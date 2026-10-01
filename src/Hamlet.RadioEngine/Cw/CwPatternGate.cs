@@ -155,6 +155,19 @@ internal sealed class CwPatternGate
     /// <summary>How far a quieter mark's length may be from the sender's dit or dah, as a ratio: √2. The author's.</summary>
     public static readonly double LengthRatio = Math.Sqrt(2);
 
+    /// <summary>
+    /// The sequences that stand and have had a mark within the hold: their pitch, level and last mark
+    /// (work instruction 515, R114, HM-DEC-219). Reads only; the gate's rules are unchanged.
+    /// </summary>
+    /// <param name="nowSeconds">The detector's audio clock.</param>
+    /// <param name="holdSeconds">The least hold, the longest gap in ordinary sending; each sequence adds its longest mark, and a slower sender its own longest gap.</param>
+    /// <returns>One entry per standing sequence, in no order.</returns>
+    public IReadOnlyList<(double PitchHz, double LevelDb, double LastToSeconds)> Standing(double nowSeconds, double holdSeconds)
+        => _sequences
+            .Where(s => s.Standing && nowSeconds - s.LastToSeconds <= s.HoldSeconds(holdSeconds))
+            .Select(s => (s.PitchHz, s.LevelDb, s.LastToSeconds))
+            .ToList();
+
     /// <summary>Forget sequences silent past <see cref="SilenceSeconds"/>.</summary>
     /// <param name="nowSeconds">The detector's audio clock.</param>
     public void Prune(double nowSeconds)
@@ -171,6 +184,30 @@ internal sealed class CwPatternGate
         public int Count { get; private set; }
 
         public double LastToSeconds { get; private set; } = double.NegativeInfinity;
+
+        /// <summary>
+        /// How long the sequence may be silent and still be keying, given the least hold: the longer of that hold and
+        /// its own longest gap between recent marks, and then its longest recent mark (work instruction 515).
+        /// </summary>
+        /// <param name="holdSeconds">The least hold: the longest gap in ordinary sending.</param>
+        /// <returns>Seconds from the last mark's end.</returns>
+        /// <remarks>
+        /// A mark reaches the gate only once it has ended, so from one mark's end the next is seen a gap and a
+        /// mark later: a word gap and a dah at 9 WPM is 1.33 s. A slow sender's own gaps hold it longer.
+        /// </remarks>
+        public double HoldSeconds(double holdSeconds)
+        {
+            var longestGap = _recent.Count < 2 ? 0
+                : _recent.Zip(_recent.Skip(1), (a, b) => b.FromSeconds - a.ToSeconds).Where(g => g < SilenceSeconds).DefaultIfEmpty(0).Max();
+
+            return Math.Max(holdSeconds, longestGap) + (_recent.Count > 0 ? _recent.Max(r => r.ToSeconds - r.FromSeconds) : 0);
+        }
+
+        /// <summary>The sequence's pitch: the mean of its recent marks' (work instruction 515).</summary>
+        public double PitchHz => _recent.Count > 0 ? _recent.Average(r => r.PitchHz) : double.NaN;
+
+        /// <summary>The sequence's level: the mean of its last eight marks', the quieter marks it took by its pattern left out (work instruction 515).</summary>
+        public double LevelDb => _recent.Where(r => !r.BySendersPattern).TakeLast(8).Select(r => r.LevelDb).DefaultIfEmpty(double.NaN).Average();
 
         private CwMark? Last => _recent.Count > 0 ? _recent[^1] : null;
 

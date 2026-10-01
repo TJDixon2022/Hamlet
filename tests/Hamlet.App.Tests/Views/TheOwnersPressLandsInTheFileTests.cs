@@ -42,7 +42,9 @@ public sealed class TheOwnersPressLandsInTheFileTests : IDisposable
     {
         ("the verdict", new[] { "verdict" }),
         ("the light, now the bars", new[] { "light", "sinceVerdictMs" }),
-        ("the tracker", new[] { "trackerHz", "trackerHasPitch", "trackerHasKeying" }),
+        // Work instruction 515: the tracker left the row with the watched bin (R114); the pitch the decoder
+        // prints at stands in its place.
+        ("where the decoder prints", new[] { "mixingHz" }),
         ("the meter's figures", new[] { "meterVerdict", "meterHz", "meterScore", "meterMedianMs", "meterSwingDb" }),
         ("the survey's bins", new[] { "survey" }),
         ("the rig state", new[] { "frequency", "mode", "agc", "preamp", "inputPeakDb", "inputFloorDb" }),
@@ -237,7 +239,7 @@ public sealed class TheOwnersPressLandsInTheFileTests : IDisposable
         // A figure not measured is null, never NaN: no field is a number written as a word.
         foreach (var key in new[]
         {
-            "trackerHz", "meterHz", "meterScore", "meterMedianMs", "meterSwingDb",
+            "mixingHz", "meterHz", "meterScore", "meterMedianMs", "meterSwingDb",
             "frequency", "inputPeakDb", "inputFloorDb", "sinceVerdictMs",
         })
         {

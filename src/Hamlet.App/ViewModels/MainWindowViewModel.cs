@@ -12781,89 +12781,35 @@ public partial class MainWindowViewModel : ObservableObject
 
         envelope.SetPassband(pitch, width);
 
-        // **THE RADIO POINTS** (work instruction 480 task 2, R94, HM-DEC-188). The frame handler
-        // reads the dial, pitch and filter the tick last saw in CW; the detector watches the
-        // pointed bin while the scope sends frames and sweeps when it has been quiet three
-        // seconds; the tracker takes the scope's pitch only while the bars there say keying.
-        //
-        // **PLAIN CW ONLY.** A peak above the dial beats at the pitch plus its offset on CW's
-        // sideband, which is the instruction's rule; on CW-R the sideband is reversed and so is
-        // the sign, which nothing here has been checked against, so CW-R sweeps as it did.
+        // **THE RADIO'S SCOPE IS READ, AND POINTS NOTHING** (work instructions 480 and 515). The frame
+        // handler still reads the dial, pitch and filter in plain CW, so the scope's peak reaches the row
+        // and the sheet; since unit 515 nothing steers the detector or the tracker with it. CW-R's
+        // sideband is reversed and nothing here has been checked against it, so it is plain CW only.
         var plainCw = cw && state[RigField.Mode] is { Number: { } m } && (CivMode)(int)m == CivMode.Cw;
         var dial = plainCw && state[RigField.Frequency] is { IsKnown: true, Number: { } f } ? f : double.NaN;
         Volatile.Write(ref _pointDialHz, dial);
         Volatile.Write(ref _pointPitchHz, pitch ?? double.NaN);
         Volatile.Write(ref _pointWidthHz, width is { } w ? w : double.NaN);
 
-        var pointed = plainCw ? _scopePointer.Pointing(DateTime.UtcNow) : null;
-        envelope.PointAt(pointed?.PitchHz);
-
-        // **THE SEQUENCE BEING READ, FIRST** (work instruction 507): while the reader prints a sender, the
-        // detector watches its bin, so the light, the blocks and the verdict row's mark count describe the
-        // station on the screen; printing nobody, the pointer or the sweep decide as before.
-        envelope.Follow(FollowPitch(
-            IsDecoding && _decoder is { } printing ? printing.PrintingHz : double.NaN,
-            envelope.MarksSince(0),
-            _keyingReading));
-
+        // **NOTHING TO POINT, NOTHING TO FOLLOW** (work instruction 515, R114, HM-DEC-219): the detector
+        // finds the shape in every bin, and its verdict, pitch and blocks are whatever sequence stands.
+        // Unit 480's pointer, 507's follow-the-reader and 514's follow-the-meter are gone.
         var reading = envelope.Reading;
-        _decoder?.Tracker.FollowScope(reading is { Pointed: true, Keying: true } ? pointed?.PitchHz : null);
 
         // **BARS, AND THE LETTERS OVER THEM** (work instruction 480): the detector's last four
-        // seconds go into the graph's eight, on the wall's clock. The tracker's pitch goes beside
-        // the detector's, so the owner sees whether they agree (work instruction 478); the last
-        // frame is handed back so the pitch holds across a gap.
+        // seconds go into the graph's eight, on the wall's clock; the last frame is handed back so the
+        // pitch holds across a gap.
         CwHearing.ObserveScope(_scopeFeed.Tick(
             envelope,
             reading,
             IsDecoding && _decoder is { } mixing ? mixing.PrintingHz : double.NaN,
             CwHearing.Scope,
-            scopeQuiet: plainCw && pointed is null,
+            scopeQuiet: false,
             DateTime.UtcNow));
     }
 
     /// <summary>What the scope is handed: the detector's hops and the settled letters (work instruction 480).</summary>
     private readonly CwScopeFeed _scopeFeed = new();
-
-    /// <summary>
-    /// The pitch the detector follows: the sender being printed while it is being heard, else the pitch
-    /// the keying meter hears a station at, else none (work instruction 514, task 1, HM-DEC-218).
-    /// </summary>
-    /// <param name="printingHz">The pitch the reader prints, or NaN.</param>
-    /// <param name="marks">The marks that stood, on the detector's clock.</param>
-    /// <param name="meter">The keying meter's latest reading.</param>
-    /// <returns>The pitch to follow, or null so the radio's pointer or the sweep decides.</returns>
-    /// <remarks>
-    /// <para>**22:59, 7.0249**: the meter read a station at 500 Hz, a 49 ms dit, score 0.28, while the
-    /// reader printed nobody new and the detector was told to follow 600, the last pitch it had
-    /// printed, so the meter's find went nowhere.</para>
-    /// <para>**A SENDER IS BEING PRINTED ONLY WHILE IT IS BEING HEARD**: a mark stood at its pitch within
-    /// the detector's own hold, <see cref="CwEnvelopeDetector.HoldSeconds"/>. A pitch the reader has
-    /// not let go of but nothing has stood at for a second is not followed.</para>
-    /// <para>**THE METER'S PITCH ONLY WHERE THE METER SAYS A STATION** by its own bars: its verdict
-    /// keying, its score at least <see cref="CwKeyingThresholds.KeyingScore"/>, and its median element
-    /// inside <see cref="CwKeyingThresholds.SlowestChatterMs"/> to
-    /// <see cref="CwKeyingThresholds.LongestElementMs"/>. A score of 0.06 over a 4 ms median is noise.</para>
-    /// </remarks>
-    internal static double? FollowPitch(double printingHz, CwMarkBatch marks, KeyingReading meter)
-    {
-        ArgumentNullException.ThrowIfNull(marks);
-
-        if (double.IsFinite(printingHz)
-            && marks.Marks.Any(m => Math.Abs(m.PitchHz - printingHz) <= CwRunReader.PitchToleranceHz
-                                    && marks.HeardSeconds - m.ToSeconds <= CwEnvelopeDetector.HoldSeconds))
-        {
-            return printingHz;
-        }
-
-        var station = meter.Verdict == KeyingVerdict.Keying
-            && meter.ToneHz > 0
-            && meter.Score >= CwKeyingThresholds.KeyingScore
-            && meter.ElementMedianMs >= CwKeyingThresholds.SlowestChatterMs
-            && meter.ElementMedianMs <= CwKeyingThresholds.LongestElementMs;
-
-        return station ? meter.ToneHz : null;
-    }
 
     /// <summary>
     /// The pitch the decoder's second rung is fed: the reading's own pitch while it says keying, and
@@ -12916,10 +12862,9 @@ public partial class MainWindowViewModel : ObservableObject
     {
         _keyingReading = reading;
 
-        // **THE TRACKER OBEYS THE METER** (work instruction 477, HM-DEC-186): the same reading
-        // the light shows goes to the decoder's tracker, which mixes at the meter's pitch from
-        // its next hop and tells the decoder a station is there while the meter says keying.
-        _decoder?.Tracker.FollowMeter(reading);
+        // **THE METER STEERS NOTHING** (work instruction 515, R114, HM-DEC-219): unit 477 handed this
+        // reading to the decoder's tracker to mix at; the shape is found at every pitch now, and the
+        // meter's reading is shown and written to the row and nothing else.
 
         KeyingWord = reading.Verdict switch
         {

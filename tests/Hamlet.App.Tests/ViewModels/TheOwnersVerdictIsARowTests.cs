@@ -25,7 +25,9 @@ public sealed class TheOwnersVerdictIsARowTests
     private static readonly string[] Fields =
     {
         "verdict", "light",
-        "trackerHz", "trackerHasPitch", "trackerHasKeying",
+        // Work instruction 515: the three tracker fields left the row with the watched bin (R114), and
+        // mixingHz, the pitch the decoder prints at since unit 488, is named here at last.
+        "mixingHz",
         "meterVerdict", "meterHz", "meterScore", "meterMedianMs", "meterSwingDb",
         "survey",
         "frequency", "mode", "agc", "preamp",
@@ -59,9 +61,6 @@ public sealed class TheOwnersVerdictIsARowTests
         // Work instruction 478: the light is gone and the field carries the bars' verdict.
         // Nothing has fed the scope here, so the bars say no keying.
         Assert.Equal("the bars say no keying", row.Data["light"]);
-        Assert.Equal(612.0, row.Data["trackerHz"]);
-        Assert.Equal(true, row.Data["trackerHasPitch"]);
-        Assert.Equal(false, row.Data["trackerHasKeying"]);
         Assert.Equal("keying", row.Data["meterVerdict"]);
         Assert.Equal(610.0, row.Data["meterHz"]);
         Assert.Equal(0.21, row.Data["meterScore"]);
@@ -136,7 +135,7 @@ public sealed class TheOwnersVerdictIsARowTests
 
         var row = Assert.Single(rows);
 
-        Assert.Null(row.Data["trackerHz"]);
+        Assert.Null(row.Data["mixingHz"]);
         Assert.Null(row.Data["meterHz"]);
         Assert.Null(row.Data["frequency"]);
         Assert.DoesNotContain(row.Data.Values, v => v is double d && double.IsNaN(d));

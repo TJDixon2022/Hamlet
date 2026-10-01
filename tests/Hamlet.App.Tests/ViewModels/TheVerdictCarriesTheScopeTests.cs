@@ -27,7 +27,9 @@ public sealed class TheVerdictCarriesTheScopeTests
     private static readonly string[] Fields =
     {
         "verdict", "light",
-        "trackerHz", "trackerHasPitch", "trackerHasKeying",
+        // Work instruction 515: the three tracker fields left the row with the watched bin (R114), and
+        // mixingHz, the pitch the decoder prints at since unit 488, is named here at last.
+        "mixingHz",
         "meterVerdict", "meterHz", "meterScore", "meterMedianMs", "meterSwingDb",
         "survey",
         "frequency", "mode", "agc", "preamp",
@@ -73,9 +75,9 @@ public sealed class TheVerdictCarriesTheScopeTests
         var rows = new List<(TelemetryCategory Category, string Event, IReadOnlyDictionary<string, object?> Data)>();
         var hearing = new CwHearingViewModel(new Recording(rows), () => CwHearingRig.Unknown);
 
-        // C sent (ends 1.46 s), then Q stopped 90 ms into its first dah (from 1.64 s): five
-        // marks, the fifth up.
-        var detector = Keyed(1.73);
+        // C and Q sent (Q ends 2.42 s), then the second C stopped 90 ms into its first dah (from 2.60 s):
+        // eight marks stood (work instruction 515: what stood, at the standing pitch), the ninth up.
+        var detector = Keyed(2.69);
         var reading = detector.Reading;
 
         hearing.ObserveScope(CwScopeFrame.From(detector.History(), detector.HopMs, reading));
@@ -94,7 +96,7 @@ public sealed class TheVerdictCarriesTheScopeTests
         Assert.Equal(reading.RunMs, row.Data["scopeRunMs"]);
         Assert.Equal(reading.PitchHz, row.Data["scopePitchHz"]);
         Assert.Equal(reading.ContrastDb, row.Data["scopeContrastDb"]);
-        Assert.Equal(5, row.Data["scopeMarksLast4s"]);
+        Assert.Equal(8, row.Data["scopeMarksLast4s"]);
 
         Assert.InRange((double)row.Data["scopeRunMs"]!, 70, 110);
         Assert.InRange((double)row.Data["scopePitchHz"]!, 717, 767);
@@ -125,18 +127,19 @@ public sealed class TheVerdictCarriesTheScopeTests
         Assert.Equal(0, empty["scopeMarksLast4s"]);
         Assert.DoesNotContain(empty.Values, v => v is double d && double.IsNaN(d));
 
-        // After the C, 120 ms into the gap before the Q: four marks, none up, no pitch.
-        var detector = Keyed(1.58);
+        // After the Q, 120 ms into the gap before the second C: eight marks stood, none up, and the verdict holds
+        // through the gap with its pitch (work instructions 488 and 515).
+        var detector = Keyed(2.54);
         hearing.ObserveScope(CwScopeFrame.From(detector.History(), detector.HopMs, detector.Reading));
         hearing.IdiotCommand.Execute(null);
 
         var gap = rows[^1].Data;
 
         Assert.Equal(false, gap["scopeMark"]);
-        Assert.Null(gap["scopePitchHz"]);
+        Assert.InRange((double)gap["scopePitchHz"]!, 717, 767);
         Assert.Null(gap["scopeContrastDb"]);
         Assert.IsType<double>(gap["scopeEnvelopeDb"]);
-        Assert.Equal(4, gap["scopeMarksLast4s"]);
+        Assert.Equal(8, gap["scopeMarksLast4s"]);
     }
 
     /// <remarks>Proves the row still goes through the existing writer as one line, 26 fields.</remarks>
@@ -144,7 +147,7 @@ public sealed class TheVerdictCarriesTheScopeTests
     public void TheRowIsStillOneLineOfTheExistingWriter()
     {
         var hearing = new CwHearingViewModel(null, () => CwHearingRig.Unknown);
-        var detector = Keyed(1.73);
+        var detector = Keyed(2.69);
 
         hearing.ObserveScope(CwScopeFrame.From(detector.History(), detector.HopMs, detector.Reading));
 
@@ -159,16 +162,18 @@ public sealed class TheVerdictCarriesTheScopeTests
         Assert.Equal(Fields.Length, data.EnumerateObject().Count());
         Assert.All(ScopeFields, f => Assert.True(data.TryGetProperty(f, out _), f));
         Assert.True(data.GetProperty("scopeMark").GetBoolean());
-        Assert.Equal(5, data.GetProperty("scopeMarksLast4s").GetInt32());
+        Assert.Equal(8, data.GetProperty("scopeMarksLast4s").GetInt32());
     }
 
-    /// <summary>C, Q at 20 words a minute after 0.8 s of noise.</summary>
+    /// <summary>C, Q, C at 20 words a minute after 0.8 s of noise (work instruction 515: long enough that the C and the Q stand).</summary>
     private static readonly (bool On, double Ms)[] Keying =
     {
         (false, 800),
         (true, 180), (false, 60), (true, 60), (false, 60), (true, 180), (false, 60), (true, 60),
         (false, 180),
         (true, 180), (false, 60), (true, 180), (false, 60), (true, 60), (false, 60), (true, 180),
+        (false, 180),
+        (true, 180), (false, 60), (true, 60), (false, 60), (true, 180), (false, 60), (true, 60),
         (false, 3000),
     };
 
