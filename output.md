@@ -1,123 +1,130 @@
 ```
-UNIT: 513 - complete - 2026-09-30
-UNIT GOAL: a fist is read by which cluster is nearer, not a hard line
-NUMBER: fist cases whole: 5 of 5 (2 red at HEAD); existing readings moved: 1 red case and 3 diagnostic rows
+UNIT: 514 - complete at task 3 of 3; task 2 measured, no code changed - 2026-09-30
+UNIT GOAL: any pitch in the filter
+NUMBER: pitches read whole through a 500 Hz filter on 600: 4 of 5 (700 Hz reads nothing, before and after)
 ```
 
 ## 1. What Claude did
 
-Claude Code on the development machine, branch `main`. The prompt claimed `PROJECT: Hamlet`; the order's gate held: `SHACK_FACTS.md`, `CwRunReader.cs` and `CW_REQUIREMENTS.md` exist, there is no `CoreHMI.sln` or `MURC.sln`, the root is `C:\Source\HamLet`, and `PROJECT_CARD.md` says Hamlet. Nothing in this report is evidence about the radio.
+Claude Code on the development machine, branch `main`. The prompt claimed `PROJECT: Hamlet`; the order's gate held: `SHACK_FACTS.md`, `CwRunReader.cs` and `CW_REQUIREMENTS.md` exist, there is no `CoreHMI.sln` or `MURC.sln`, the root is `C:\Source\HamLet`, and `PROJECT_CARD.md` says Hamlet. Nothing in this report is evidence about the radio. Unit 514 and HM-DEC-218 were free.
 
-**Numbering.** Unit 513 and HM-DEC-217 were free. Unit 512 and HM-DEC-216 were never used, because the order numbered itself past them.
+SESSION.lock was taken through `tools\arbiter\lock.bat take` and released at the end. Nothing was written to `RUN_LEDGER.md`, nothing under `tools\arbiter\` was touched, no box was ticked, and no ruling was added. Nothing keys, transmits or writes to the radio. Scratch probes are under `.run-unit\` and not committed. **The engine source is unchanged in this unit.**
 
-SESSION.lock was taken through `tools\arbiter\lock.bat take` and released at the end. Nothing was written to `RUN_LEDGER.md`, nothing under `tools\arbiter\` was touched, no box was ticked, and R113 was appended to both plans. **Only `CwRunReader.cs` changed under `src`.** Scratch variants and probes are under `.run-unit\` and not committed.
+**Task 1: the wire** (`97210f1a`).
+- `ViewModels/MainWindowViewModel.cs`: new `FollowPitch(printingHz, marks, meter)`, called from `OnScopeTick`. It returns, in order of preference:
+  - **the printed sender's pitch**, but only while a mark stood at that pitch within the detector's own one-second hold (`CwEnvelopeDetector.HoldSeconds`), so a pitch the reader still holds but no longer hears is not followed;
+  - **else the keying meter's pitch**, where the meter's own bars say a station: verdict keying, score at least `KeyingScore` (0.10), median element within `SlowestChatterMs` to `LongestElementMs` (25 to 250 ms);
+  - **else none**, so the radio's pointer or the sweep decides, as before.
+- `ViewModels/TheDetectorFollowsTheMeterTests.cs`, on the view model's own `OnScopeTick`, with a real detector fed silence:
+  - red first: a meter reading 500 Hz, 49 ms, score 0.28 left the detector on 600;
+  - now it moves to 500 in one tick;
+  - a meter reading of score 0.06 over a 4 ms median does not move it.
 
-**What changed in `CwRunReader`** (`0627c6c7`).
+**Task 2: narrowness** (`c6ab5635`). Measured; **no code changed.**
+- `Cw/NarrownessReadsTheFiltersBandTests.cs` runs the call at 20 WPM, 24 dB, through this test's stand-in for the radio's filter (two band-pass sections at 600 Hz, Q 1.2, about 500 Hz wide), with the detector told that passband as the app tells it. Results are at the top of section 3.
+- **Narrowness is not the fault.** It turns away 0 to 3 of about 70 candidates at any of the five pitches. And with the passband from the rig, the detector's bins already end at the passband, so a probe outside it is already skipped. The order's rule is what the code already does, and changing the probe would move nothing that is broken.
+- **What is broken is pairing.**
+  - At **700 Hz** through the filter, all 65 marks stand and **none is keyed**, so the reader, which prints only a sender whose runs carry a keyed mark, prints nothing. Probed: 725 Hz is the same, keyed 1, nothing printed; 650 keys only 6 but reads.
+  - The same 700 Hz station without the filter keys 64 of 65 and reads whole. Giving the detector the passband or not makes no difference; the filter does.
+  - At 9 s into the filtered 700 Hz call, the bins at 600 and 625 Hz pair their bars and key, while 650 to 800 form a bar or two and never pair. A single dit and dah at 700 through the filter look right: flat tops within 0.2 dB, equal levels, a clean fall.
+  - I could not find from outside the detector's private pairing code why they don't pair. It is the first item in section 4.
+- The test is committed red at 700 Hz, as the measurement.
 
-- **Dit or dah (`Kinds`).**
-  - Where the sender's sorted mark lengths have a clean gap, two neighbours 2× apart, the kinds split there as before. Only the line between them moves, from the geometric mean of the two sides' means to the point that is as many spreads from one centre as from the other (`Boundary`).
-  - Where a fist leaves no clean gap, which HEAD read as "one kind", the two kinds are found as two clusters. They're settled by the nearer centre in log-length (`Refine`), starting from the widest-ratio cut.
-  - Those clusters are taken only when three things hold: their centres are 2× apart; each centre is two spreads from the boundary; and neither cluster is wider than **0.25** in log-length. Otherwise the fallback is as at HEAD.
-- **Gaps.**
-  - The line between a gap inside a letter and one between letters (`CharacterGapSeconds`) is the boundary between the sender's own two clusters once both are measured: its gaps inside letters, at least three, and its letter gaps. Until then it's HEAD's √3 gap dits.
-  - The letter gaps are settled against the word gaps by the nearer centre (`GapClusters`). The word line stays at the letter centre × √(7/3), which for a regular sender is the boundary between the two clusters.
-- **Diagnostics.** `LastClusters` and `Describe` report the printed sender's clusters, for the test's report only.
+**Task 3: the filter's edge** (`7540a4d3`).
+- `ViewModels/CwHearingViewModel.cs`, on `CwScopeFrame`:
+  - `EdgeLine` reads *near the filter's edge - the radio is attenuating it* while the printed sender's pitch sits within `EdgeHz` (75) of the passband edge the rig state gives (`PassbandFromRig`).
+  - `EdgeTip` names the filter's width and centre, says widening it or retuning would help, and says Hamlet changes nothing on the radio.
+  - With no filter from the rig, or nobody printed, both are empty.
+- `Views/MainWindow.axaml`: an amber `CwFilterEdge` text beside the tone line, on the same line so nothing moves when it appears, visible only while it has words, with the hover.
+- `ViewModels/TheFiltersEdgeIsNamedTests.cs`: red first on a stub. Now 380 Hz in a 500 Hz filter on 600 is named with its hover, and 600, an unknown filter, and nobody printed are not.
 
-**The figures and their reasons** (the author's, overrulable, derived from what a hand does):
-
-| Figure | Value | Reason |
-|---|---|---|
-| `SpreadFloor` | 0.1 in log-length | The detector reads a length to one 5 ms hop, smeared by its 10 ms window: a tenth to a fifth of a dit from 12 to 35 WPM. |
-| `SeparationSpreads` | 2 each side | The boundary then has about nineteen in twenty of each cluster on its own side. A fist a third either way clears it; evenly spread noise lengths do not. |
-| `HandSpread` | 0.25 in log-length | The widest fist named (unit 504's third either way) is about 0.19, plus the detector's 0.1 in quadrature, about 0.22. |
-
-**How the figures were reached, stated plainly.**
-- **The hand-spread limit was added after a failure.** It became necessary when the first build turned the speed-change case red: `... K TEST DE W1AW K` read `... K ■HW1AW K`. A sender going from 10 to 20 WPM leaves 60, 120 and 180 ms marks together in its history, 0.45 wide: two speeds, not one fist. The value comes from the hand, not from that case.
-- **Measured and not taken.**
-  - Using the measured word-gap cluster for the word line moved the 8 dB row from `NTJCE AEL K` to `NTJCEAELK`, and no fist case needed it.
-  - Settling clusters even where HEAD found a clean gap is what broke the speed change, so the clean-gap path is kept as at HEAD.
-
-**Commit mistake.** `0627c6c7`'s message quotes the tightening fist's red reading as `CQ CQ DE DEN■CALL N0CALL K`. What was measured is `CQ CQ DEN■CALL N0CALL K`.
-
-**Tests.**
-- New file: `tests/Hamlet.RadioEngine.Tests/Cw/AFistIsReadByTheNearerClusterTests.cs`. Its fist keyer is written in the test: a 625 Hz tone with 4 ms raised-cosine edges, 24 dB over seeded Gaussian noise, every element and gap its ideal length × (1 + u), with u drawn uniformly from −s to +s.
+**Build and tests.**
 - Build `Hamlet.sln` with warnings as errors: RC=0.
-- App carry-forward line: **278 of 278**.
-- Eight synthetic reader classes plus the fist cases: 57 of 60. The three reds are unit 507's, as at HEAD.
-- The app cases through the reader: 16 of 16.
+- App carry-forward line: 277 of 278. The one loss, `TheStopIsAlwaysOnScreenTests` in 1 ms to *"You've caused dispatcher loop"*, passes 5 of 5 alone.
+- `BindingHealthTests` 1 of 1.
+- The closed hover lists 3 of 3.
+- The layout tests 13 of 13.
+- The app reading cases 16 of 16.
 
 **Records.**
-- Version 1.13.198 to 1.13.199.
-- `PHASE_OUTCOME.md` (both copies): `## UNIT 513 - STEP 12`.
-- `PHASE_STATUS.md` (both copies) names 513.
-- R113 appended to both `PHASE_PLAN.md` copies, with no checkbox touched.
+- Version 1.13.199 to 1.13.200.
+- `PHASE_OUTCOME.md` (both copies): `## UNIT 514 - STEP 12`.
+- `PHASE_STATUS.md` (both copies) names 514.
 - `CLAUDE.md` §1 index row.
-- `DECISIONS.md` HM-DEC-217, in full:
+- `DECISIONS.md` HM-DEC-218, in full below. Its headline says what was done; the order's headline claimed a narrowness change that wasn't made.
 
-> **A fist is read by the nearer cluster, not a hard line.** Tim, 2026-09-30, R113. At 21:44 UTC on 7.0299 a station hand-sent at about 27 WPM reached the reader as a clean stream of marks - 18 to 22 in four seconds, a 45 ms dit, every press *agree* - and printed real words inside wrong letters. No case on the bench had been both fast and human: every fast case was machine-sent.
+> **Any pitch in the filter: the detector follows the meter when the reader has nobody, and the app says when a station is at the edge; narrowness was measured and is not the fault.** The order named the headline *... narrowness reads the band the filter gives it ...*; that change was not made, so the headline says what was. Tim, 2026-09-30: *"It seems like CW out in the wild has varieties of pitch, and you just aren't getting any of that."*
 >
-> **What is built, in `CwRunReader` alone.** Where the sender's sorted mark lengths show a clean gap, two neighbors twice apart, the dits and dahs split there as before, the line moved to the boundary weighted by each side's spread. Where a fist leaves no clean gap, the two kinds are found as two clusters settled by the nearer centre in log-length, and taken only when their centres stand twice apart, two spreads each side of the boundary, and neither is wider than a hand makes. The line between a gap inside a letter and one between letters is the boundary between the sender's own two clusters once both are measured; the letter gaps are settled against the word gaps, and the word line stays at the letter centre times √(7/3). Before the clusters are measured, the old lines stand.
+> **The rows.** 22:59 on 7.0249: the meter read a station at 500 Hz, a 49 ms dit, score 0.28, while the detector said no keying and was told to follow 600, the pitch the reader last printed. 23:02, W1AW on 7.0475: a 41.9 dB swing, no marks, four rows in five printing nobody. Across the week stations at 350, 500, 550 and 700 Hz reached the reader with the detector on another bin, and 600 Hz stations read.
 >
-> **The figures and why, the author's, overrulable.** A spread is never under 0.1 in log-length, the detector's own reading error of one hop and its window. Two kinds stand two spreads each side of their boundary, where nineteen in twenty of each fall on their own side. A cluster is one kind only up to 0.25: the widest fist named, a third either way, is about 0.19 and the detector adds 0.1 in quadrature. That last was found needed when a sender going from 10 to 20 WPM read `TEST DE` as `■H`: its mixed history is 0.45 wide, two speeds rather than one fist.
+> **The wire.** The detector follows the printed sender only while a mark stood at its pitch within its own one-second hold; else the keying meter's pitch where its bars say a station - keying, a score of at least 0.10, a median element of 25 to 250 ms; else nothing, so the radio's pointer or the sweep decides.
 >
-> **What was measured and not taken.** The word line from the word gaps' own cluster moved unit 507's 8 dB call from `NTJCE AEL K` to `NTJCEAELK` and no fist case needed it.
+> **Narrowness, measured.** Through a 500 Hz filter on 600, narrowness turns away 0 to 3 of about 70 candidates at 425, 500, 600, 700 and 775 Hz, and the detector's bins already end at the passband, so a probe outside it is already not read. It is not the fault and was not changed. What fails is pairing: at 700 and 725 Hz the bins at and above the tone form bars and never pair them, so no mark is keyed and the reader prints nothing, while the same station unfiltered keys 64 of 65. That is the next unit's question.
 >
-> **What moved.** Every synthetic reading is as at HEAD but the red 5 WPM Farnsworth row at 10 dB, `CK C TA DE E■CAEIL N0RALL N` to `CK CK DE E■CASL N0RALL N`, and three rows of unit 504's all-gates-off diagnostic.
+> **The edge.** Beside the tone line, while the printed station sits within 75 Hz of the passband's edge as the rig state gives it, the tab says *near the filter's edge - the radio is attenuating it*, with a hover naming the filter's width and centre and that widening it or retuning would help. Nothing is written to the radio.
 
 ## 2. What the owner should expect
 
 - **Rebuild.**
-- **Hand-sent stations at speed should read.** The reader now sorts each dit, dah and gap by which of the sender's own clusters it's nearer, the way an ear copes with a rough fist, instead of by a fixed line. On the bench, a 27 WPM fist whose elements wander by 30% now reads `CQ CQ DE N0CALL N0CALL K`, where it read `CQ CQ DE N0CALL N0■LL D`.
-- **Machine-sent and slow senders are unchanged.** Every existing bench case reads as before, apart from one already-wrong slow Farnsworth case, whose wrong text changed.
-- **If a fist still reads wrong at the radio,** the cluster table in section 3 sets what the reader measured beside the truth. If the measured centres are near the truth, the sorting was at fault. If they're far off, the measurement was.
-- **One thing this bench cannot show:** my fist scatters evenly around the ideal. A real hand's gaps can drift as a whole, element gaps toward 80 ms and letter gaps toward 100, and only the owner's station tests that.
-- **Still red, as before:**
-  - `DecisionLogOrderTests.EveryRulingAppearsOnceAndTheGapsAreTheKnownOnes`, whose gaps now also include the unused 216;
-  - `VoiceTests.NoOperatorFacingStringUsesABritishSpelling`, on unit 450's two "centre"s;
-  - unit 507's three strength reds.
+- **When the reader has nobody,** the detector now goes where the keying meter hears a station, instead of sitting on the last pitch it printed. The 22:59 case moves the detector from 600 to 500 in one tick.
+- **A station at the filter's edge is named as such:** *near the filter's edge - the radio is attenuating it*, beside the tone line. Hover over it for the filter's width and centre and what would help. Hamlet changes nothing on the radio.
+- **A station anywhere inside the filter is not yet always read.** On the bench, through a stand-in for your 500 Hz filter on 600:
+  - 425, 500, 600 and 775 Hz read whole;
+  - **700 and 725 Hz read nothing**.
+
+  The order blamed narrowness. It isn't narrowness, so this unit changed nothing there. At those pitches the detector's bars at the station never pair into keying, and the reader won't print a station that never keys. That is the next thing to fix.
+- **If a station inside the filter still reads nothing,** check the pitch table at the top of section 3. A station near 700 Hz reading nothing matches what the bench shows.
+- **Still red, as before this unit:**
+  - **Seven verdict-row tests** in `TheVerdictCarriesTheScopeTests` and `TheOwnersVerdictIsARowTests`. They expect the row without the `mixingHz` field that unit 488 added on 2026-09-28. They are not on the carry-forward line and were not touched.
+  - `DecisionLogOrderTests.EveryRulingAppearsOnceAndTheGapsAreTheKnownOnes`, the index gaps.
+  - `VoiceTests.NoOperatorFacingStringUsesABritishSpelling`, unit 450's two "centre"s.
+  - Unit 507's three strength reds.
+  - New and deliberate: `NarrownessReadsTheFiltersBandTests` at 700 Hz.
 
 ## 3. What you should see
 
-**The fist cases.** "True" is the generator's; "reader" is what the reader measured by the end. Centres are geometric means; ± is the spread as the SD of the log. The reader measures marks slightly short and gaps slightly long, which is the detector's known smear.
+**The pitch table.** The call at 20 WPM, 24 dB over the noise, through two band-pass sections at 600 Hz with Q 1.2, the detector told the 350–850 Hz passband. Before and after are the same, since no detector code changed.
 
-| Case | Before (HEAD) | After | True: dit / dah; gaps element / letter / word | Reader after: dit / dah (split); gaps element / letter / word (element-letter line, word line) |
-|---|---|---|---|---|
-| 27 WPM, 20% | `CQ CQ DE N0CALL N0CALL K` | the same | 45±.11 / 131±.12; 44±.11 / 131±.11 / 346±.02 | 38±.12 / 123±.14 (66); 50±.13 / 136±.11 / 352±.02 (86, 224 ms) |
-| 27 WPM, 30% | `CQ CQ DE N0CALL N0■LL D` | **`CQ CQ DE N0CALL N0CALL K`** | 42±.17 / 132±.16; 44±.16 / 131±.18 / 338±.14 | 35±.16 / 126±.19 (62); 50±.15 / 136±.17 / 344±.14 (80, 226 ms) |
-| 12 WPM, 20% | `CQ CQ DE N0CALL N0CALL K` | the same | 100±.11 / 290±.12; 101±.12 / 292±.13 / 698±.07 | 94±.12 / 284±.12 (162); 108±.12 / 298±.12 / 703±.07 (178, 477 ms) |
-| 35 WPM, 20% | `CQ CQ DE N0CALL N0CALL K` | the same | 35±.10 / 99±.13; 33±.11 / 103±.13 / 262±.07 | 29±.13 / 93±.13 (52); 39±.11 / 110±.12 / 268±.07 (65, 178 ms) |
-| 27 WPM, 30% then 10% | `CQ CQ DEN■CALL N0CALL K` | **`CQ CQ DE N0CALL N0CALL K`** | 44±.11 / 130±.15; 45±.11 / 134±.13 / 287±.12 | 38±.12 / 121±.10 (71); 50±.10 / **171±.36 / none** (66, 280 ms) |
+| Pitch | Narrowness passes (of candidates) | Stood | Keyed | Printed | Reads |
+|---|---|---|---|---|---|
+| 425 Hz | 68 of 68 | 65 | — | 65 | `CQ CQ DE N0CALL N0CALL K` |
+| 500 Hz | 75 of 78 | 65 | — | 65 | whole |
+| 600 Hz | 76 of 76 | 65 | 50 | 65 | whole |
+| 700 Hz | 69 of 69 | 65 | **0** | **0** | nothing |
+| 775 Hz | 71 of 72 | 65 | — | 65 | whole |
+| 650 Hz (probe) | — | 65 | 6 | 65 | whole |
+| 725 Hz (probe) | — | 65 | 1 | 0 | nothing |
+| 700 Hz, no filter (probe) | — | 65 | 64 | 65 | whole |
 
-HEAD's reader on the 30% fist, for comparison: dit 55 ms, split 95 ms, letter line 113 ms. On the tightening fist: letter gap 183 ms, word line 280 ms.
+**The bins at 9 s into the filtered 700 Hz call:**
 
-**In the tightening fist, the letter and word gaps ended up as one cluster** (171 ms ±0.36, no word cluster). It reads whole anyway, but the measurement is imperfect there.
+| Bins | Bars a second | Gaps | Keying |
+|---|---|---|---|
+| 600, 625 Hz | 4 | 4 / 4 | true |
+| 650–800 Hz | 0 to 3 | 0 | false |
 
-**The existing cases**, eight synthetic reader classes: every printed reading identical to HEAD, including these:
-- the speed change, 10 then 20 WPM: `... TEST DE W1AW K`;
-- the strength table: 16 and 24 dB whole; 8 dB `N ET A EI A DE N0CALL NTJCE AEL K`; 12 dB `CT A CQ DE N0CALL N0CALL K`;
-- 35 WPM at 10 dB whole;
-- the bursts, the hesitation, `TEST DE W1AW K`, `DE DE`, the lone and stray marks;
-- both noise cases: 635 candidates, 0 stood, and 3,932, 80 stood, nothing printed;
-- the two-station case: loud one whole, quiet one 12 stood;
-- unit 511's quieter dit and dah: whole.
+Unfiltered, every bin from 600 to 800 Hz pairs 4 or 5 and keys.
 
-Except:
+**The wire cases:**
 
-| Case | HEAD | Now |
+| Meter reading, reader printing nobody | Detector before the tick | After the tick |
 |---|---|---|
-| 5 WPM Farnsworth at 10 dB (red at HEAD) | `CK C TA DE E■CAEIL N0RALL N` | `CK CK DE E■CASL N0RALL N` |
-| `WhichGateTurnsAwayW1aw`, all gates off, 600/500 | `MTN OTN IIL K` | `N CI IIL K` |
-| the same, pointed 725 | `MTN OTN IIL K` | `N CI IIL K` |
-| the same, whole band | `CALII N/ CI IIL D` | `CALII N N CI IIL D` |
+| keying at 500 Hz, 49 ms, score 0.28 | 600 Hz | **500 Hz** (HEAD: 600) |
+| at 500 Hz, 4 ms, score 0.06 | 600 Hz | 600 Hz |
+
+**The edge cases:** 380 Hz in a 500 Hz filter on 600 shows the sentence and the hover *"The radio's filter here is 500 Hz wide around 600 Hz, and this station is at 380 Hz, close to its edge, where the radio turns a signal down before Hamlet ever hears it. Widening the filter, or tuning so the station sits nearer 600 Hz, would bring it back up. Hamlet changes nothing on the radio."* 600 Hz, an unknown filter, and nobody printed show nothing.
+
+**The existing cases:** the engine is unchanged, so every engine reading case reads as at HEAD by construction: the strength table, both noise tests (nothing printed), the two stations, the fists, the speed change. The app reading cases pass 16 of 16.
 
 ## 4. What's blocking us
 
 Nothing blocks. The items:
 
-1. **Letter and word gaps can merge on a tightening fist.** The letter and word clusters of the fist that tightens ended as one (171 ms ±0.36). It reads whole here; a longer transmission might not.
-2. **A drifting fist is not on the bench.** The generator scatters around the ideal. A hand whose element and letter gaps drift toward each other as a whole, which is the owner's 21:44 description, is not tested; your report at the radio is.
-3. **Unit 512 and HM-DEC-216 were skipped** by the order's numbering. The next order should be 514 or later, with ruling id HM-DEC-218 or later.
-4. **Commit message slip.** `0627c6c7` quotes the tightening fist's red reading wrongly; section 3 has the measured text.
+1. **Pairing fails off-centre through the filter.** At 700 and 725 Hz the bins at and above the tone form bars and never pair them, so no mark is keyed and the reader prints nothing. The cause is not yet found. A single dit and dah look right through the filter, and the same station unfiltered keys 64 of 65. The next unit should trace the private pairing code (`Evaluate`: the level agreement between bars, the "dropped" check on the gap, and the wander check) on the filtered 700 Hz call.
+2. **Narrowness needs no change** while the detector's bins end at the passband, which they do whenever the rig state gives the filter.
+3. **The filter in the tests is a stand-in:** two band-pass sections at Q 1.2, not the IC-7300's own filter shape. The 700 Hz finding should be confirmed at the radio.
+4. **Seven verdict-row tests are red since unit 488** over the `mixingHz` field. They are named, not repaired (§12.6).
+5. **Process slip.** Task 1 was committed before its neighbour tests were read, because the run script's exit status is not the tests'. Those failures were checked afterward and predate the unit.
 
 ### Asks still outstanding
 

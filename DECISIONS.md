@@ -4,6 +4,40 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-218
+date: 2026-09-30
+refs: work instruction 514, src/Hamlet.App/ViewModels/MainWindowViewModel.cs, src/Hamlet.App/ViewModels/CwHearingViewModel.cs, src/Hamlet.App/Views/MainWindow.axaml, tests/Hamlet.RadioEngine.Tests/Cw/NarrownessReadsTheFiltersBandTests.cs
+---
+
+**Any pitch in the filter: the detector follows the meter when the reader has nobody, and the app says
+when a station is at the edge; narrowness was measured and is not the fault.** The order named the
+headline *... narrowness reads the band the filter gives it ...*; that change was not made, so the
+headline says what was. Tim, 2026-09-30: *"It seems like CW out in the wild has varieties of pitch,
+and you just aren't getting any of that."*
+
+**The rows.** 22:59 on 7.0249: the meter read a station at 500 Hz, a 49 ms dit, score 0.28, while the
+detector said no keying and was told to follow 600, the pitch the reader last printed. 23:02, W1AW on
+7.0475: a 41.9 dB swing, no marks, four rows in five printing nobody. Across the week stations at 350,
+500, 550 and 700 Hz reached the reader with the detector on another bin, and 600 Hz stations read.
+
+**The wire.** The detector follows the printed sender only while a mark stood at its pitch within its
+own one-second hold; else the keying meter's pitch where its bars say a station - keying, a score of
+at least 0.10, a median element of 25 to 250 ms; else nothing, so the radio's pointer or the sweep
+decides.
+
+**Narrowness, measured.** Through a 500 Hz filter on 600, narrowness turns away 0 to 3 of about 70
+candidates at 425, 500, 600, 700 and 775 Hz, and the detector's bins already end at the passband, so
+a probe outside it is already not read. It is not the fault and was not changed. What fails is
+pairing: at 700 and 725 Hz the bins at and above the tone form bars and never pair them, so no mark is
+keyed and the reader prints nothing, while the same station unfiltered keys 64 of 65. That is the next
+unit's question.
+
+**The edge.** Beside the tone line, while the printed station sits within 75 Hz of the passband's edge
+as the rig state gives it, the tab says *near the filter's edge - the radio is attenuating it*, with a
+hover naming the filter's width and centre and that widening it or retuning would help. Nothing is
+written to the radio.
+
+---
 id: HM-DEC-217
 date: 2026-09-30
 refs: work instruction 513, PHASE_PLAN.md R113, src/Hamlet.RadioEngine/Cw/CwRunReader.cs, tests/Hamlet.RadioEngine.Tests/Cw/AFistIsReadByTheNearerClusterTests.cs
