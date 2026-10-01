@@ -143,6 +143,10 @@ public sealed class ThePatternIsTheGateTests
         var samples = Standard(Call, 20, 16, 5086);
         var detector = new CwEnvelopeDetector(Rate);
         var reader = new CwRunReader();
+
+        // The reading follows what the terminal prints (work instruction 519), as the app wires it.
+        detector.PrintedPitch = () => reader.StationPitchHz;
+
         var sequence = 0L;
         var checkedHops = 0;
         var mostMarks = 0;

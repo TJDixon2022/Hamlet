@@ -375,6 +375,11 @@ public sealed partial class CwHearingViewModel : ObservableObject
             ["scopeContrastDb"] = Measured(scope.ContrastDb),
             ["scopeMarksLast4s"] = scope.MarksLast4s,
 
+            // **WHAT WAS CHOSEN OVER WHAT** (work instruction 519, R116): the shape score of the sequence
+            // the reading follows, and how many stood beside it, so a wrong pick shows what it beat.
+            ["shapeScore"] = Measured(scope.ShapeScore),
+            ["sequencesStanding"] = scope.SequencesStanding,
+
             // **WHERE THE RADIO'S SCOPE SAID THE SIGNAL WAS** (work instruction 480 task 2). The
             // decibels are null on every row: the radio sends its waveform on a 0 to 160 scale
             // and nothing in this tree ties that scale to decibels, so the level goes beside it

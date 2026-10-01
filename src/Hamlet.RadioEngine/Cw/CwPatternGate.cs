@@ -108,7 +108,7 @@ internal sealed class CwPatternGate
                 return Array.Empty<CwMark>();
             }
 
-            home = new Sequence();
+            home = new Sequence(++_nextId);
             _sequences.Add(home);
         }
 
@@ -156,17 +156,28 @@ internal sealed class CwPatternGate
     public static readonly double LengthRatio = Math.Sqrt(2);
 
     /// <summary>
-    /// The sequences that stand and have had a mark within the hold: their pitch, level and last mark
-    /// (work instruction 515, R114, HM-DEC-219). Reads only; the gate's rules are unchanged.
+    /// The sequences that stand and have had a mark within the hold: which one, its pitch, level, last mark
+    /// and shape (work instructions 515 and 519). Reads only; the gate's rules are unchanged.
     /// </summary>
     /// <param name="nowSeconds">The detector's audio clock.</param>
     /// <param name="holdSeconds">The least hold, the longest gap in ordinary sending; each sequence adds its longest mark, and a slower sender its own longest gap.</param>
     /// <returns>One entry per standing sequence, in no order.</returns>
-    public IReadOnlyList<(double PitchHz, double LevelDb, double LastToSeconds)> Standing(double nowSeconds, double holdSeconds)
+    public IReadOnlyList<StandingSequence> Standing(double nowSeconds, double holdSeconds)
         => _sequences
             .Where(s => s.Standing && nowSeconds - s.LastToSeconds <= s.HoldSeconds(holdSeconds))
-            .Select(s => (s.PitchHz, s.LevelDb, s.LastToSeconds))
+            .Select(s => new StandingSequence(s.Id, s.PitchHz, s.LevelDb, s.LastToSeconds, s.Shape))
             .ToList();
+
+    /// <summary>One standing sequence as <see cref="Standing"/> reports it (work instruction 519).</summary>
+    /// <param name="Id">Which sequence, the same for as long as it lives.</param>
+    /// <param name="PitchHz">The mean of its recent marks' pitch.</param>
+    /// <param name="LevelDb">Its recent level; reported, and ranks nothing.</param>
+    /// <param name="LastToSeconds">Where its last mark ended.</param>
+    /// <param name="Shape">How much it sounds like code.</param>
+    public sealed record StandingSequence(int Id, double PitchHz, double LevelDb, double LastToSeconds, CwSequenceShape Shape);
+
+    // The next sequence's id.
+    private int _nextId;
 
     /// <summary>
     /// The dit and dah lengths of the sequences that stand, in seconds: where the rectangle fit looks
@@ -189,10 +200,15 @@ internal sealed class CwPatternGate
         => _sequences.RemoveAll(s => nowSeconds - s.LastToSeconds > SilenceSeconds);
 
     /// <summary>One sender's marks.</summary>
-    private sealed class Sequence
+    private sealed class Sequence(int id)
     {
         private readonly List<CwMark> _held = new();
         private readonly List<CwMark> _recent = new();
+
+        public int Id { get; } = id;
+
+        /// <summary>How much its recent marks sound like code (work instruction 519, R116).</summary>
+        public CwSequenceShape Shape => CwSequenceShape.Of(_recent, Count);
 
         public bool Standing { get; private set; }
 

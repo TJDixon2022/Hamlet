@@ -38,6 +38,8 @@ public sealed record CwBarBin(
 /// <param name="PassbandFromRig">Whether the edges came from the radio's pitch and filter.</param>
 /// <param name="MarksLast4s">How many marks stood in the last four seconds: at the standing pitch while a sequence stands, at any pitch otherwise (work instruction 515).</param>
 /// <param name="Keying">Whether a sequence the pattern gate stands has had a mark within the hold, at any pitch (work instruction 515, R114).</param>
+/// <param name="ShapeScore">The shape score of the standing sequence the reading follows, nought to one; NaN while none stands (work instruction 519, R116).</param>
+/// <param name="SequencesStanding">How many sequences stand now, the one followed among them (work instruction 519).</param>
 public sealed record CwEnvelopeReading(
     double EnvelopeDb,
     double FloorDb,
@@ -50,7 +52,9 @@ public sealed record CwEnvelopeReading(
     double PassbandHighHz,
     bool PassbandFromRig,
     int MarksLast4s,
-    bool Keying = false)
+    bool Keying = false,
+    double ShapeScore = double.NaN,
+    int SequencesStanding = 0)
 {
     /// <summary>Nothing heard.</summary>
     public static CwEnvelopeReading None { get; } = new(
@@ -202,6 +206,22 @@ public sealed class CwEnvelopeDetector
 
     private Bin[] _bins = Array.Empty<Bin>();
     private int _watched;
+
+    /// <summary>Whether the shape picks the sequence the reading follows (work instruction 519); off, unit 515's loudest returns, for the tests' before.</summary>
+    internal bool ShapePicks { get; set; } = true;
+
+    /// <summary>
+    /// The pitch the terminal is printing, or NaN when it prints nothing (work instruction 519, R116): while a
+    /// standing sequence sits there the reading - its pitch, the light and the scope - follows it, so the
+    /// screen shows the sender the terminal reads. Read on the audio thread; the reader writes it there too.
+    /// </summary>
+    public Func<double>? PrintedPitch { get; set; }
+
+    // The shape score of the standing sequence the reading follows (work instruction 519).
+    private double _readingShape = double.NaN;
+
+    /// <summary>The highest shape score any standing sequence has had: for the tests' report (work instruction 519).</summary>
+    internal double HighestStandingShape { get; private set; }
     private int _ringWrite;
     private int _ringFill;
     private int _hopFill;
@@ -601,10 +621,27 @@ public sealed class CwEnvelopeDetector
         FitMarks(evals, hop, nowSeconds);
         FlushFitted(evals, hop);
 
+        // **SHAPE PICKS THE SENDER; LOUDNESS PICKS NOTHING** (work instruction 519, R116, HM-DEC-223). The
+        // reading - its pitch, the light and the scope - follows the standing sequence whose marks and gaps
+        // sound most like code, at every hop. Unit 515 took the loudest. The terminal holds its sender through
+        // the sending, and the reading follows what it prints (<see cref="PrintedPitch"/>) while that stands,
+        // and the best shape otherwise.
         var standing = _pattern.Standing(nowSeconds, HoldSeconds);
         var keying = standing.Count > 0;
-        var pitchHz = keying
-            ? Math.Round(standing.OrderByDescending(s => s.LevelDb).First().PitchHz / BinSpacingHz) * BinSpacingHz
+        var printed = PrintedPitch?.Invoke() ?? double.NaN;
+        var chosen = standing.FirstOrDefault(s => ShapePicks && double.IsFinite(printed) && Math.Abs(s.PitchHz - printed) <= BinSpacingHz)
+            ?? standing
+            .OrderByDescending(s => ShapePicks ? s.Shape.Score : s.LevelDb).FirstOrDefault();
+
+        _readingShape = chosen?.Shape.Score ?? double.NaN;
+
+        foreach (var s in standing)
+        {
+            HighestStandingShape = Math.Max(HighestStandingShape, s.Shape.Score);
+        }
+
+        var pitchHz = chosen is not null
+            ? Math.Round(chosen.PitchHz / BinSpacingHz) * BinSpacingHz
             : double.NaN;
 
         // The bin the scope's trace and the reading's levels come from: the one nearest the standing
@@ -679,7 +716,9 @@ public sealed class CwEnvelopeDetector
             // The marks that stood in the last four seconds: at the standing pitch while one stands,
             // which is the printed sender's while it is printed, and at any pitch otherwise.
             _marks.Count(k => k.ToSeconds > nowSeconds - HistorySeconds && (!keying || Math.Abs(k.PitchHz - pitchHz) <= BinSpacingHz)),
-            keying);
+            keying,
+            _readingShape,
+            standing.Count);
     }
 
     /// <summary>One bin's level this hop, as mean square: a full-scale sine reads -3 dB.</summary>

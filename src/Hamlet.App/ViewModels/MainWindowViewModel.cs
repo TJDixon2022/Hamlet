@@ -11646,6 +11646,11 @@ public partial class MainWindowViewModel : ObservableObject
         // bin its bars were called in, carried through the gaps - and is fed nothing otherwise.
         _decoder.DetectorPitch = () => PitchForTheDecoder(detector.Reading);
 
+        // **AND THE READING FOLLOWS WHAT THE TERMINAL PRINTS** (work instruction 519, R116, HM-DEC-223): the
+        // light, the tone line and the scope show the sender being printed, the best shape, never the loudest.
+        var printer = _decoder;
+        detector.PrintedPitch = () => printer.RunsPrintingHz;
+
         // **AND A LETTER NEEDS BLOCKS** (work instruction 487, R99): one block the detector called
         // under each dit and dah, or the letter does not reach the screen.
         _decoder.DetectorBlocks = detector.BlocksBetween;

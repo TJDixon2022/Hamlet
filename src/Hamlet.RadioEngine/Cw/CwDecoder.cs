@@ -525,6 +525,12 @@ public sealed class CwDecoder
     public double PrintingHz => RunsRead ? _runs.StationPitchHz : MixingHz;
 
     /// <summary>
+    /// The pitch of the sender the run reader is printing, or NaN when it prints nothing or runs are not read
+    /// (work instruction 519): what the detector's reading follows. Safe to read from any thread.
+    /// </summary>
+    public double RunsPrintingHz => RunsRead ? _runs.StationPitchHz : double.NaN;
+
+    /// <summary>
     /// The last half minute of exactly what the decoder was fed (HM-DEC-088).
     /// </summary>
     /// <remarks>

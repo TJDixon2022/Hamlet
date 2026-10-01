@@ -84,6 +84,14 @@ public sealed record CwMarkShape(double Flatness, double Edges, double Narrownes
     /// <summary>The product of the five: how far inside the shape the bar sits, nought to one.</summary>
     public double Score => Flatness * Edges * Narrowness * Contrast * Length;
 
+    /// <summary>
+    /// The product of the four that are about shape and not height - flatness, edges, narrowness and
+    /// length - with <see cref="Contrast"/>, the level over the gaps, left out (work instruction 519, R116,
+    /// HM-DEC-223). This is what ranks a sender; <see cref="Score"/> still decides unit 502's gate and
+    /// shades the scope, which this unit leaves as they were.
+    /// </summary>
+    public double ShapeOnly => Flatness * Edges * Narrowness * Length;
+
     /// <summary>The five and the score, as the hover and the report print them.</summary>
     public override string ToString()
         => string.Create(

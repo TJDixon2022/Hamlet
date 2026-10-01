@@ -229,6 +229,16 @@ public sealed class CwRunReader
     /// <summary>The printed sender's clusters as last measured on this thread: for the tests' report (work instruction 513).</summary>
     internal static string LastClusters => _lastClusters ?? "not measured";
 
+    /// <summary>Every sender's pitch and shape, and whether it is the one printed: for the tests' report (work instruction 519).</summary>
+    internal IReadOnlyList<(double PitchHz, CwSequenceShape Shape, bool Printed, int Marks)> SenderShapes
+        => _senders.Select(s => (s.Reference.Pitch, s.Shape, s == _station, s.Marks)).ToList();
+
+    /// <summary>
+    /// Whether the shape picks the sender printed (work instruction 519); on by default. Off, unit 490's rule
+    /// returns - the most marks, the louder on a tie, held until silent - so the tests can print the before.
+    /// </summary>
+    internal bool ShapePicks { get; set; } = true;
+
     private double _printedThrough = double.NegativeInfinity;
 
     private void Print(double heardSeconds)
@@ -251,14 +261,24 @@ public sealed class CwRunReader
             _senders.RemoveAll(s => s != _station && s.LastToSeconds < heardSeconds - (s.Ended.Count(r => r.Length >= 2) >= QualifyingRuns ? CwEnvelopeDetector.CalledSeconds : s.ForgetSeconds));
         }
 
-        // The sender with the most marks among those that have made two runs, the louder on a tie.
-        // And that has shown its own gaps between letters (work instruction 501): printed before, a
-        // Farnsworth sender's first two letters were spaced by a boundary built on its dit and read C Q.
-        _station ??= _senders
+        // **SHAPE PICKS THE SENDER; LOUDNESS PICKS NOTHING** (work instruction 519, R116, HM-DEC-223). Of the
+        // senders that qualify - two keyed runs, two kinds, their own letter gaps shown - the one printed is
+        // the one whose marks and gaps sound most like code. Unit 490 printed the one with the most marks,
+        // and the louder on a tie. A printed sender is held as before, until it has been silent past its own
+        // release (unit 500's: twice its word gap, a dah and the lag in calling it), so a better shape takes the
+        // terminal at the next pause in the sending and never mid-sentence. A shape of nought prints nothing.
+        var qualified = _senders
             .Where(s => s.Ended.Count(r => r.Length >= 2 && r.Any(m => m.Keyed)) >= QualifyingRuns && s.TwoKindsSeen && s.LetterGapSeconds is not null)
-            .OrderByDescending(s => s.Marks)
-            .ThenByDescending(s => s.Reference.Level)
-            .FirstOrDefault();
+            .Select(s => (Sender: s, Score: s.Shape.Score))
+
+            // A sender whose marks and gaps do not sound like code at all - nought - is not a sender to print
+            // (work instruction 519): a carrier keyed at random qualified by its lengths and was held forever.
+            .Where(s => !ShapePicks || s.Score > 0)
+            .OrderByDescending(s => ShapePicks ? s.Score : s.Sender.Marks)
+            .ThenByDescending(s => ShapePicks ? 0 : s.Sender.Reference.Level)
+            .ToList();
+
+        _station ??= qualified.Select(q => q.Sender).FirstOrDefault();
 
         // The pitch of the sender being printed, for the panel on the screen's thread (work
         // instruction 493): one double, written here on the audio thread and read with Volatile.Read.
@@ -525,6 +545,9 @@ public sealed class CwRunReader
                 System.Globalization.CultureInfo.InvariantCulture,
                 $"dit {Of(split is null ? null : shorts)}, dah {Of(longs)}, split {SplitSeconds * 1000:0} ms; gaps element {Of(inside)}, letter {Of(letter)}, word {Of(word)}; boundaries {CharacterGapSeconds * 1000:0} and {WordGapSeconds * 1000:0} ms");
         }
+
+        /// <summary>How much this sender's recent marks sound like code (work instruction 519, R116).</summary>
+        public CwSequenceShape Shape => CwSequenceShape.Of(_recent, Marks);
 
         public int PrintedRuns { get; set; }
 
