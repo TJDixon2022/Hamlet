@@ -1304,7 +1304,7 @@ public sealed class CwEnvelopeDetector
     /// garbles two stations and a sender who speeds up. Off, the per-bin path runs as it did at the tag
     /// <c>before-shape-first</c>; the tests turn this on to print both.
     /// </summary>
-    public bool ShapeFirst { get; set; } = Environment.GetEnvironmentVariable("HAMLET_SHAPE_FIRST") == "1";
+    public bool ShapeFirst { get; set; }
 
     /// <summary>
     /// The least whole-band fit score at which a stretch's span is looked at all: a half (work instruction 522). From
