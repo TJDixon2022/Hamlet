@@ -168,6 +168,20 @@ internal sealed class CwPatternGate
             .Select(s => new StandingSequence(s.Id, s.PitchHz, s.LevelDb, s.LastToSeconds, s.Shape))
             .ToList();
 
+    /// <summary>
+    /// How many marks within the window the fullest sequence not yet standing holds: what the
+    /// light counts toward <see cref="MarksToStand"/> (work instruction 521). Reads only.
+    /// </summary>
+    /// <param name="nowSeconds">The detector's audio clock.</param>
+    /// <param name="windowSeconds">How recent its last mark must be.</param>
+    /// <returns>Nought where none is forming.</returns>
+    public int Forming(double nowSeconds, double windowSeconds)
+        => _sequences
+            .Where(s => !s.Standing && nowSeconds - s.LastToSeconds <= windowSeconds)
+            .Select(s => s.HeldSince(nowSeconds - windowSeconds))
+            .DefaultIfEmpty(0)
+            .Max();
+
     /// <summary>One standing sequence as <see cref="Standing"/> reports it (work instruction 519).</summary>
     /// <param name="Id">Which sequence, the same for as long as it lives.</param>
     /// <param name="PitchHz">The mean of its recent marks' pitch.</param>
@@ -211,6 +225,19 @@ internal sealed class CwPatternGate
         public CwSequenceShape Shape => CwSequenceShape.Of(_recent, Count);
 
         public bool Standing { get; private set; }
+
+        /// <summary>How many marks it holds while it has not stood (work instruction 521).</summary>
+        public int HeldCount => _held.Count;
+
+        /// <summary>How many of the marks it holds ended at or after a time (work instruction 521).</summary>
+        public int HeldSince(double seconds)
+        {
+            var recent = _held.Where(m => m.ToSeconds >= seconds).ToList();
+
+            // A shape is forming only where its recent marks already come in two lengths, a dah beside a dit: noise's
+            // short bars agree in ones and twos at every pitch, and are all of one kind.
+            return TwoLengths(recent) ? recent.Count : 0;
+        }
 
         public int Count { get; private set; }
 

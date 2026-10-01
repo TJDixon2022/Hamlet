@@ -37,7 +37,7 @@ public sealed class TheOwnersVerdictIsARowTests
         // Work instruction 476 task 3 extends the row with the scope's state at the press;
         // TheVerdictCarriesTheScopeTests asserts these eight by value.
         "scopeEnvelopeDb", "scopeFloorDb", "scopeThresholdDb", "scopeMark",
-        "scopeRunMs", "scopePitchHz", "scopeContrastDb", "scopeMarksLast4s", "shapeScore", "sequencesStanding",
+        "scopeRunMs", "scopePitchHz", "scopeContrastDb", "scopeMarksLast4s", "shapeScore", "sequencesStanding", "shapeLight",
 
         // Work instruction 480 task 2: where the radio's own scope said the signal was.
         "scopePeakHz", "scopePeakDb", "scopePeakLevel", "scopeFramesLast4s",

@@ -21,7 +21,7 @@ public sealed class TheVerdictCarriesTheScopeTests
     private static readonly string[] ScopeFields =
     {
         "scopeEnvelopeDb", "scopeFloorDb", "scopeThresholdDb", "scopeMark",
-        "scopeRunMs", "scopePitchHz", "scopeContrastDb", "scopeMarksLast4s", "shapeScore", "sequencesStanding",
+        "scopeRunMs", "scopePitchHz", "scopeContrastDb", "scopeMarksLast4s", "shapeScore", "sequencesStanding", "shapeLight",
     };
 
     private static readonly string[] Fields =
@@ -36,7 +36,7 @@ public sealed class TheVerdictCarriesTheScopeTests
         "inputPeakDb", "inputFloorDb",
         "sinceVerdictMs",
         "scopeEnvelopeDb", "scopeFloorDb", "scopeThresholdDb", "scopeMark",
-        "scopeRunMs", "scopePitchHz", "scopeContrastDb", "scopeMarksLast4s", "shapeScore", "sequencesStanding",
+        "scopeRunMs", "scopePitchHz", "scopeContrastDb", "scopeMarksLast4s", "shapeScore", "sequencesStanding", "shapeLight",
         "scopePeakHz", "scopePeakDb", "scopePeakLevel", "scopeFramesLast4s",
     };
 

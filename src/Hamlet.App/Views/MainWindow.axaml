@@ -1824,6 +1824,30 @@
                         <StackPanel Grid.Column="1" Orientation="Vertical"
                                     VerticalAlignment="Center"
                                     Margin="8,0,0,0" Spacing="6">
+                            <!-- THE HOLD-STILL LIGHT (work instruction 521, HM-DEC-225): dark while
+                                 listening, amber while a shape forms with its count, green when a
+                                 station's shape stands and while it is read. Its words beside it, in
+                                 a fixed width, so nothing moves when they change. -->
+                            <StackPanel x:Name="CwShapeLight" Orientation="Horizontal" Spacing="6"
+                                        Background="Transparent"
+                                        ToolTip.Tip="{Binding CwHearing.ShapeLightTip}"
+                                        ToolTip.ShowDelay="300">
+                                <Panel Width="12" Height="12" VerticalAlignment="Center">
+                                    <Ellipse Fill="{StaticResource HmSlateEdgeBrush}"
+                                             IsVisible="{Binding CwHearing.ShapeLightIsDark}" />
+                                    <Ellipse Fill="{StaticResource HmAmberBrush}"
+                                             Stroke="{StaticResource HmAmberDeepBrush}" StrokeThickness="1"
+                                             IsVisible="{Binding CwHearing.ShapeLightIsAmber}" />
+                                    <Ellipse Fill="{StaticResource HmGreenBrush}"
+                                             Stroke="{StaticResource HmGreenEdgeBrush}" StrokeThickness="1"
+                                             IsVisible="{Binding CwHearing.ShapeLightIsGreen}" />
+                                </Panel>
+                                <TextBlock Width="140" FontSize="11"
+                                           VerticalAlignment="Center"
+                                           TextTrimming="CharacterEllipsis"
+                                           Foreground="{StaticResource HmTextPrimaryBrush}"
+                                           Text="{Binding CwHearing.ShapeLightWords}" />
+                            </StackPanel>
                             <Button Content="I agree with you"
                                     FontSize="11" Padding="10,4"
                                     HorizontalAlignment="Stretch"

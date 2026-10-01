@@ -303,7 +303,30 @@ public sealed partial class CwHearingViewModel : ObservableObject
         }
 
         Scope = frame;
+
+        OnPropertyChanged(nameof(ShapeLightWords));
+        OnPropertyChanged(nameof(ShapeLightIsDark));
+        OnPropertyChanged(nameof(ShapeLightIsAmber));
+        OnPropertyChanged(nameof(ShapeLightIsGreen));
     }
+
+    /// <summary>
+    /// **THE HOLD-STILL LIGHT** (work instruction 521, HM-DEC-225): dark while listening, amber while a shape forms
+    /// with its count, green when a sequence stands and while a sender is printed. Its words say it too (§0.6).
+    /// </summary>
+    public string ShapeLightWords => CwShapeLights.Words(Scope.Reading.ShapeLight, Scope.Reading.ShapeForming);
+
+    /// <summary>Whether the light is dark: listening.</summary>
+    public bool ShapeLightIsDark => Scope.Reading.ShapeLight == CwShapeLight.Listening;
+
+    /// <summary>Whether the light is amber: a shape forming.</summary>
+    public bool ShapeLightIsAmber => Scope.Reading.ShapeLight == CwShapeLight.Forming;
+
+    /// <summary>Whether the light is green: a shape found, or a sender being read.</summary>
+    public bool ShapeLightIsGreen => Scope.Reading.ShapeLight is CwShapeLight.Found or CwShapeLight.Reading;
+
+    /// <summary>What the light means, on hover.</summary>
+    public static string ShapeLightTip => CwShapeLights.Tip;
 
     /// <summary>The owner says Hamlet was right.</summary>
     [RelayCommand]
@@ -379,6 +402,9 @@ public sealed partial class CwHearingViewModel : ObservableObject
             // the reading follows, and how many stood beside it, so a wrong pick shows what it beat.
             ["shapeScore"] = Measured(scope.ShapeScore),
             ["sequencesStanding"] = scope.SequencesStanding,
+
+            // **WHAT THE HOLD-STILL LIGHT SHOWED** (work instruction 521), in its words.
+            ["shapeLight"] = CwShapeLights.Words(scope.ShapeLight, scope.ShapeForming),
 
             // **WHERE THE RADIO'S SCOPE SAID THE SIGNAL WAS** (work instruction 480 task 2). The
             // decibels are null on every row: the radio sends its waveform on a 0 to 160 scale

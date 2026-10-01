@@ -40,6 +40,8 @@ public sealed record CwBarBin(
 /// <param name="Keying">Whether a sequence the pattern gate stands has had a mark within the hold, at any pitch (work instruction 515, R114).</param>
 /// <param name="ShapeScore">The shape score of the standing sequence the reading follows, nought to one; NaN while none stands (work instruction 519, R116).</param>
 /// <param name="SequencesStanding">How many sequences stand now, the one followed among them (work instruction 519).</param>
+/// <param name="ShapeLight">What the hold-still light shows (work instruction 521).</param>
+/// <param name="ShapeForming">How many marks the fullest sequence not yet standing holds, within the last two seconds (work instruction 521).</param>
 public sealed record CwEnvelopeReading(
     double EnvelopeDb,
     double FloorDb,
@@ -54,7 +56,9 @@ public sealed record CwEnvelopeReading(
     int MarksLast4s,
     bool Keying = false,
     double ShapeScore = double.NaN,
-    int SequencesStanding = 0)
+    int SequencesStanding = 0,
+    CwShapeLight ShapeLight = CwShapeLight.Listening,
+    int ShapeForming = 0)
 {
     /// <summary>Nothing heard.</summary>
     public static CwEnvelopeReading None { get; } = new(
@@ -647,6 +651,14 @@ public sealed class CwEnvelopeDetector
             }
         }
 
+        // **THE HOLD-STILL LIGHT** (work instruction 521, HM-DEC-225): green while a sender is printed and keying,
+        // green while a sequence stands, amber while one is forming with marks in the last two seconds, dark else.
+        var forming = _pattern.Forming(nowSeconds, CwShapeLights.FormingSeconds);
+        var light = keying && double.IsFinite(printed) ? CwShapeLight.Reading
+            : keying ? CwShapeLight.Found
+            : forming > 0 ? CwShapeLight.Forming
+            : CwShapeLight.Listening;
+
         var pitchHz = chosen is not null
             ? Math.Round(chosen.PitchHz / BinSpacingHz) * BinSpacingHz
             : double.NaN;
@@ -725,7 +737,9 @@ public sealed class CwEnvelopeDetector
             _marks.Count(k => k.ToSeconds > nowSeconds - HistorySeconds && (!keying || Math.Abs(k.PitchHz - pitchHz) <= BinSpacingHz)),
             keying,
             _readingShape,
-            standing.Count);
+            standing.Count,
+            light,
+            forming);
     }
 
     /// <summary>One bin's level this hop, as mean square: a full-scale sine reads -3 dB.</summary>

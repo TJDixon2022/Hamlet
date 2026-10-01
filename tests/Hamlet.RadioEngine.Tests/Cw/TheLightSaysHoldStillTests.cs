@@ -1,0 +1,118 @@
+using System.Globalization;
+using Hamlet.RadioEngine.Cw;
+using Hamlet.RadioEngine.Training;
+using Xunit;
+using Xunit.Abstractions;
+
+namespace Hamlet.RadioEngine.Tests.Cw;
+
+/// <summary>
+/// **A GREEN LIGHT SAYS HOLD STILL** (work instruction 521, task 2, HM-DEC-225).
+/// </summary>
+/// <remarks>
+/// <para>**THE OWNER, 2026-10-01**: *"I want a green light whenever the first shape is being detected so that I
+/// know to hold on that frequency and not adjust, because you're not hearing it."*</para>
+/// <para>**ON THE LIVE PATH, SYNTHETIC AUDIO WRITTEN HERE** (R96): the detector and the run reader wired as the app
+/// wires them, the reading following what the reader prints.</para>
+/// </remarks>
+public sealed class TheLightSaysHoldStillTests
+{
+    private const int Rate = 8000;
+    private const int Chunk = 80;
+    private const string Call = "CQ CQ DE N0CALL N0CALL K";
+
+    private readonly ITestOutputHelper _output;
+
+    /// <summary>Creates the tests.</summary>
+    /// <param name="output">Where the light's sequence is printed.</param>
+    public TheLightSaysHoldStillTests(ITestOutputHelper output) => _output = output;
+
+    /// <summary>One step of the light: when, what it showed, and its count.</summary>
+    internal sealed record Step(double Seconds, CwShapeLight Light, int Forming);
+
+    internal static (List<Step> Steps, List<double> Letters, List<CwMark> Candidates) Run(float[] samples)
+    {
+        var detector = new CwEnvelopeDetector(Rate);
+        var reader = new CwRunReader();
+        var steps = new List<Step>();
+        var letters = new List<double>();
+        var sequence = 0L;
+
+        detector.PrintedPitch = () => reader.StationPitchHz;
+        reader.CharacterRead += c =>
+        {
+            if (!c.IsWordGap)
+            {
+                letters.Add(steps.Count > 0 ? steps[^1].Seconds : 0);
+            }
+        };
+
+        for (var at = 0; at + Chunk <= samples.Length; at += Chunk)
+        {
+            detector.Process(samples.AsSpan(at, Chunk));
+
+            var batch = detector.MarksSince(sequence);
+
+            sequence = batch.Marks.Count > 0 ? batch.Marks.Max(m => m.Sequence) : sequence;
+            reader.Read(batch);
+
+            var reading = detector.Reading;
+
+            steps.Add(new Step((at + Chunk) / (double)Rate, reading.ShapeLight, reading.ShapeForming));
+        }
+
+        return (steps, letters, detector.CandidatesKept.ToList());
+    }
+
+
+    /// <remarks>
+    /// A clean call at 20 WPM, 24 dB: dark before it; amber with its count climbing to four; green `shape found` at the
+    /// fifth mark and before the first letter; green `reading` from the first letter; dark within two seconds and a
+    /// half of the last mark.
+    /// </remarks>
+    [Fact]
+    public void ACleanCallLightsInOrder()
+    {
+        var signal = CwSignal.Generate(new CwSignalRequest(
+            Call, WordsPerMinute: 20, ToneHz: 625, SampleRate: Rate, Amplitude: ThePatternIsTheGateTests.Over(24),
+            NoiseAmplitude: 0.04, LeadInSeconds: 3, TailSeconds: 4, Seed: 5213)).Samples;
+        var (steps, letters, candidates) = Run(signal);
+        var marks = candidates.Where(m => Math.Abs(m.PitchHz - 625) <= 50 && m.FromSeconds >= 2.9).OrderBy(m => m.FromSeconds).ToList();
+        var lastMark = marks[^1].ToSeconds;
+        var changes = steps.Where((s, i) => i == 0 || s.Light != steps[i - 1].Light || s.Forming != steps[i - 1].Forming).ToList();
+
+        foreach (var s in changes.Where(c => c.Seconds > 2.5 && c.Seconds < 7 || c.Seconds > lastMark - 0.5))
+        {
+            _output.WriteLine(string.Create(CultureInfo.InvariantCulture, $"{s.Seconds:0.000} s  {CwShapeLights.Words(s.Light, s.Forming)}"));
+        }
+
+        _output.WriteLine(string.Create(CultureInfo.InvariantCulture, $"fifth mark of the call ends at {marks[4].ToSeconds:0.000} s; first letter printed at {letters[0]:0.000} s; last mark ends at {lastMark:0.000} s"));
+
+        var firstFound = steps.First(s => s.Seconds > 3 && s.Light == CwShapeLight.Found).Seconds;
+        var firstReading = steps.First(s => s.Light == CwShapeLight.Reading).Seconds;
+        var forming = steps.Where(s => s.Seconds > 3 && s.Seconds < firstFound && s.Light == CwShapeLight.Forming).Select(s => s.Forming).ToList();
+
+        Assert.Equal(CwShapeLight.Listening, steps.Last(s => s.Seconds < 2.9).Light);
+        Assert.Contains(4, forming);
+        Assert.True(firstFound < letters[0], "green before the first letter");
+        Assert.True(firstReading >= letters[0], "reading from the first letter");
+        Assert.Equal(CwShapeLight.Listening, steps.First(s => s.Seconds > lastMark + 2.5).Light);
+    }
+    /// <remarks>
+    /// Loud noise alone, thirty seconds: never green, and the share of the time a forming sequence holds one, two,
+    /// three and four marks, which is where amber should begin.
+    /// </remarks>
+    [Fact]
+    public void LoudNoiseIsNeverGreen()
+    {
+        var noise = CwSignal.Generate(new CwSignalRequest(
+            " ", SampleRate: Rate, Amplitude: 0, NoiseAmplitude: 0.3, LeadInSeconds: 15, TailSeconds: 15, Seed: 5212)).Samples;
+        var (steps, _, _) = Run(noise);
+
+        string Share(int least) => string.Create(CultureInfo.InvariantCulture, $"{100.0 * steps.Count(s => s.Forming >= least) / steps.Count:0.0}%");
+
+        _output.WriteLine($"loud noise, 30 s: forming at 1 or more {Share(1)}, 2 or more {Share(2)}, 3 or more {Share(3)}, 4 {Share(4)}; green {steps.Count(s => s.Light is CwShapeLight.Found or CwShapeLight.Reading)} steps");
+
+        Assert.DoesNotContain(steps, s => s.Light is CwShapeLight.Found or CwShapeLight.Reading);
+    }
+}
