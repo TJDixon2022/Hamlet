@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: COMPLETED
-TASK: 2 of 2
-WORK_INSTRUCTION: 517 - the fit fills gaps, the spaces come from the shape (run by hand)
+TASK: 1 of 1
+WORK_INSTRUCTION: 519 - shape picks the sender, and loudness picks nothing (run by hand)
 BALL: tim
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-10-01T10:11:58-04:00
-NOTE: Unit 517 - fit fills only gaps, floor 10 dB; word-gap line waits on a ruling
+UPDATED: 2026-10-01T11:27:11-04:00
+NOTE: Unit 519 - shape picks the printed sender; case 2 waits on a ruling about the hold
 
 ---
 

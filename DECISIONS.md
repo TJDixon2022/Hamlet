@@ -4,6 +4,55 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-223
+date: 2026-10-01
+supersedes: unit 490's rule that the sender printed is the one with the most marks, the louder on a tie (HM-DEC-195 in part); unit 515's rule that the reading's pitch is the loudest standing sequence's (HM-DEC-219 in part)
+refs: work instruction 519, PHASE_PLAN.md R116, src/Hamlet.RadioEngine/Cw/CwSequenceShape.cs, src/Hamlet.RadioEngine/Cw/CwPatternGate.cs, src/Hamlet.RadioEngine/Cw/CwRunReader.cs, src/Hamlet.RadioEngine/Cw/CwEnvelopeDetector.cs, src/Hamlet.RadioEngine/Cw/CwMark.cs, src/Hamlet.App/ViewModels/CwHearingViewModel.cs
+---
+
+**Shape picks the sender; loudness picks nothing.** Tim, R116: *"I don't care what the pitch is. You
+should find the shape in the noise. It's there. It was audible. Let's defocus pitch and emphasize
+shape."* And: *"I want this to be so much shape that I'm shocked."*
+
+**What the rows showed.** On 2026-10-01, from 14:24 to 14:26, the owner tuned across three or four
+stations and pressed sixteen times, twelve of them *You're an idiot*. On every station the keying meter
+found clean marks of 55 to 63 ms, scoring up to 0.49. Each time the sequence the pattern gate stood, and
+the one the terminal printed, was a louder and messier one.
+
+**What it retires.** Unit 490's rule printed the sender with the most marks, the louder on a tie. Unit
+515's rule gave the reading the pitch of the loudest standing sequence.
+
+**What is built.**
+- Every sequence the gate stands, and every sender the reader keeps, carries one shape score, from 0 to
+  1. It is the product of eight figures:
+  - the mean of its marks' shape with the height left out, or a fitted mark's fit score;
+  - how tightly its dits cluster, and how tightly its dahs cluster, each nought at a hand's widest spread
+    of 0.25 in log-length;
+  - how far apart the dit and dah centres stand, nought at two to one and one at three;
+  - how tightly its gaps inside letters cluster, and its gaps between letters;
+  - the share of its marks within √2 of their nearer centre;
+  - the evidence, 1 − e^(−count/10).
+- **Why a product.** A keyed tone is all of these at once, so something crisp on four and wrong on one is
+  not a keyed tone, as unit 502 chose for a single mark.
+- The terminal prints the qualified sender with the highest score, and a sender scoring nought prints
+  nothing.
+- A printed sender is held as before, until its own release.
+- The reading's pitch, the light and the scope follow the printed sender while it stands, and the best
+  shape otherwise.
+- The verdict row gains `shapeScore` and `sequencesStanding`.
+
+**Every score that had a level term, and what replaced it.**
+- The reading's choice of standing sequence ranked by level. It now ranks by shape score.
+- The printed sender's tie-break was level. It is gone, and the shape score decides.
+- A mark's shape score carried contrast, its level over its gaps. Ranking now uses
+  `CwMarkShape.ShapeOnly`, which has no contrast term.
+- `CwMarkShape.Score`, with contrast, still decides unit 502's shape gate and shades the scope's blocks.
+  Both are pass-or-fail gates or pictures, which this ruling leaves unchanged.
+- Level still groups a sender's marks, through units 490 and 511's tolerance, and ranks nothing.
+- The fit's lobe-peak check (517) and the attribution of a mark to its lobe's peak bin (496) still compare
+  levels. They choose a bin within one tone's lobe, not a sender, and are not changed.
+
+---
 id: HM-DEC-221
 date: 2026-10-01
 refs: work instruction 517, src/Hamlet.RadioEngine/Cw/CwEnvelopeDetector.cs, src/Hamlet.RadioEngine/Cw/CwMark.cs, src/Hamlet.RadioEngine/Cw/CwPatternGate.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheRectangleIsFittedTests.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheSpacesComeFromTheShapeTests.cs

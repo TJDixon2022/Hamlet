@@ -1,152 +1,138 @@
 ```
-UNIT: 517 - partial (task 1 landed, task 2 dropped for a ruling) - 2026-10-01
-UNIT GOAL: the fit fills gaps, the spaces come from the shape
-NUMBER: bench reading floor 10 dB (was 14 dB at HEAD); strong bulletin identical with the fit on and off
+UNIT: 519 - complete, two of the order's cases not met as written - 2026-10-01
+UNIT GOAL: shape picks the sender, and loudness picks nothing
+NUMBER: clean senders score 0.405 to 0.853, noise at most 0.107; nothing ranks by level
 ```
 
 ## 1. What Claude did
 
-Claude Code on the development machine, branch `main`. The prompt claimed `PROJECT: Hamlet`, and the order's gate held: `SHACK_FACTS.md`, `CwRunReader.cs` and `CW_REQUIREMENTS.md` exist, there is no `CoreHMI.sln` or `MURC.sln`, and the root is `C:\Source\HamLet`. Hamlet confirmed. Nothing in this report is evidence about the radio. Unit 517 and HM-DEC-221 were free.
+Claude Code on the development machine, branch `main`. The prompt claimed `PROJECT: Hamlet`, and the order's gate held: `SHACK_FACTS.md`, `CwPatternGate.cs` and `CW_REQUIREMENTS.md` exist, there is no `CoreHMI.sln` or `MURC.sln`, and the root is `C:\Source\HamLet`. Hamlet confirmed. Nothing in this report is evidence about the radio. Unit 519 and HM-DEC-223 were free.
 
 **How the session ran:**
 - It took SESSION.lock through `tools\arbiter\lock.bat take` and released it at the end.
-- It wrote nothing to `RUN_LEDGER.md`, touched nothing under `tools\arbiter\`, ticked no box, and added no ruling to either plan.
+- It wrote nothing to `RUN_LEDGER.md`, touched nothing under `tools\arbiter\`, and ticked no box.
 - It read no recording, fixture or telemetry.
 - Nothing keys, transmits or writes to the radio.
+- The change is commit `8d7e27ea`.
 
-**Task 1: the fit fills only what the per-hop tests left.** Commit `08b31d65`.
-- **Starting point.** I restored unit 516's change from `f917267a`: the rectangle fit in `CwEnvelopeDetector`, `CwMark.FitScore`/`Fitted`, `CwPatternGate.StandingLengths`, `TheRectangleIsFittedTests`, and the shape test's per-hop-only measurement. The score, the lengths, the lobe, and the 0.7 threshold under the 24 dB lowest of 0.835 are all unchanged from 516.
-- **The rule it lacked.** In `CwEnvelopeDetector`:
-  - A fitted rectangle is held while any bar within two bins that overlaps its span is still running or still inside the hops the per-hop tests may call it in (`PerHopStillBusy`).
-  - Once none is, the rectangle is dropped if any per-hop mark overlaps it at all, within two bins (`OverlapsPerHopMark`), or if another fitted mark covers half of it.
-  - A fit held longer than a 5 WPM dah past its end is dropped.
-- **The other half of the cause.** `AlreadyCalled`, which the per-hop path uses to refuse a repeat, now ignores fitted marks. A mark the per-hop tests find is never refused because a fit got there first. That refusal is how a fitted rectangle on the front of a dah took the dah's place in 516.
-- **The bulletin test** is `AStrongBulletinReadsTheSameWithTheFitOnAndOff`. It sends `THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG 0123456789` at 18 WPM and 24 dB. It is held identical, fit on and off, in five versions: plain, through the 500 Hz filter, fading, and with a 2 dB AGC overshoot plain and through the filter.
-- **It was not red on 516's `f917267a`.** None of the five reproduced the on-air loss. 516 also reads them identically.
-  - I looked for a case where 516 breaks a bulletin the per-hop path reads whole, and found none.
-  - An AGC overshoot of 3 dB or more at key-down makes the **per-hop path itself** read dits only, fit or no fit.
-  - On those dahs, 516's fit split the digits (`012SMHT56TBM`); the rule reads them `0123456789`.
-  - Timing ruled out lag: the fit costs about 4 points of real time (17–20% to 20–24% at 8 and 48 kHz).
+**File by file:**
+- **`CwSequenceShape.cs` (new).** One score per sender, from 0 to 1, from ratios alone. It is the product of eight figures:
+  - rectangle: the mean of its marks' `ShapeOnly`, or a fitted mark's fit score;
+  - dit tightness and dah tightness: one less the spread in log-length over 0.25, a hand's widest (unit 513);
+  - separation: nought at 2:1, one at 3:1;
+  - element-gap tightness and letter-gap tightness, measured the same way;
+  - consistency: the share of marks within √2 of the nearer centre;
+  - evidence: 1 − e^(−count/10).
 
-**Task 2: dropped, with the reason.** Commit `653f8259` keeps the measurement.
-- `TheSpacesComeFromTheShapeTests` sends the Quebec station's text by hand at 18 WPM, with a scatter of a sixth, using unit 513's fist generator. I gave the generator a word-gap parameter whose default leaves it unchanged, and added the letters this text needs.
-- **Red as predicted:**
-  - 7-dit word gaps read whole.
-  - 5 dits read `KI1MM DEVE2JD NAME ISJEANQTHQUEBECHW`.
-  - 4 dits read `KI1MMDEVE2JDNAMEISJEANQTHQUEBECHW`.
-- **The order's rule cannot make it green.** "Any gap past 1.5 times the letter centre" is the reader's own line already, √(7/3) = 1.53. That is 4.5 dits, above a 4-dit word gap.
-- **Any line that would work is a trade-off.** With a hand's scatter, 3-dit letter gaps reach 3.5 dits and 4-dit word gaps fall to 3.33, so a line between them puts some spaces inside words. Moving the gap kinds into the gate unchanged would change no reading.
-- **So nothing moved into the gate**, and `CwRunReader` is unchanged. The 7-dit row is asserted; 4 and 5 are printed.
+  **Why a product:** a keyed tone is all of these at once, so crisp on four and wrong on one is not a keyed tone, as unit 502 chose for a mark. A fist's overlapping lengths are split by unit 513's nearer-centre refinement.
+- **`CwMark.cs`.** `CwMarkShape.ShapeOnly` is flatness × edges × narrowness × length, with **no contrast**.
+- **`CwPatternGate.cs`.** Every sequence carries an id and its `Shape`. `Standing` returns them (`StandingSequence`). The gate's own rules are unchanged.
+- **`CwRunReader.cs`.** Of the qualified senders, the one printed is the one with the **highest shape score**. Unit 490's most-marks, louder-on-a-tie pick is retired. A sender scoring nought prints nothing. A printed sender is held to its existing release.
+- **`CwEnvelopeDetector.cs`.**
+  - The reading's pitch, the light and the scope follow the **printed** sender (a new `PrintedPitch` source) while it stands, and the best-shaped standing sequence otherwise. Unit 515's loudest is retired.
+  - The reading carries `ShapeScore` and `SequencesStanding`.
+- **`CwDecoder.cs`** gains `RunsPrintingHz`. **`MainWindowViewModel`** wires `detector.PrintedPitch` to it.
+- **`CwHearingViewModel`.** The verdict row gains `shapeScore` and `sequencesStanding`. The two row tests list them.
+- **Before and after from the same audio.** `ShapePicks` (internal, on by default) on the reader and the detector restores HEAD's rules, so every case prints both.
+
+**Every score that had a level term, and what replaced it:**
+- The detector's choice of standing sequence ranked by level. It now ranks by shape score.
+- The reader's printed-sender tie-break was level. It is removed.
+- A mark's shape carried contrast. Ranking now uses `ShapeOnly`.
+- **Left as they were, and why:**
+  - `CwMarkShape.Score` (with contrast) still decides unit 502's shape gate and shades the scope's blocks and the training graph. §3 keeps the per-mark gates and the scope's drawing unchanged.
+  - Level still groups a sender's marks (490/511 tolerance) and ranks nothing.
+  - The fit's lobe-peak check (517) and the mark's peak-bin attribution (496) still compare levels within one tone's lobe. That picks a bin, not a sender.
+
+**Where I departed from the order, and why:**
+- **The hold is the reader's existing release, not "word gap plus a dah".** I tried a switch at the printed sender's word gap plus a dah. A mark is seen only once it has ended, so a letter gap followed by a dah reads as that much silence. It switched mid-word, losing the last `L` of `N0CALL`. It also switched before the final `K` of `TheStationPrintedReadsWhole`. The existing release, twice the word gap plus a dah, is "as unit 511 holds it", and it never switches mid-sentence.
+- **The reading follows the printed sender, not the best shape alone.** Following the best shape alone put the reading on a noise sequence at 1050 Hz early in a 16 dB call, when both had few marks. `TheRowDescribesTheSenderBeingPrinted` now wires `PrintedPitch` to its reader, as the app does. That is the one harness change to an existing case.
 
 **Records:**
-- HM-DEC-221 in `DECISIONS.md`, with 516's revert and why, and the Quebec station. It records the gap-kinds half as ruled and not built.
+- R116 in both plans. R115 is not there: it was reverted with unit 516's records.
+- HM-DEC-223 in `DECISIONS.md`, with the 490 and 515 rules it retires and every level term.
 - The `CLAUDE.md` index row.
-- `PHASE_OUTCOME` (both copies) has `## UNIT 517 - STEP 12`.
-- `PHASE_STATUS` (both copies) names 517.
-- **The version went from 1.13.201 to 1.13.203, not 1.13.202.** 1.13.202 was unit 516's build, which you ran and which was reverted, and HM-DEC-150 counts a unit per patch.
+- `PHASE_OUTCOME` (both copies) has `## UNIT 519 - STEP 12`.
+- `PHASE_STATUS` (both copies) names 519.
+- Version 1.13.203 to 1.13.204.
 
-**Build and app line:** build 0 warnings, 0 errors. App carry-forward 276 of 278; the two 1 ms dispatcher-loop losses passed alone.
+**Build and app line:** build 0 warnings, 0 errors. App carry-forward 278 of 278; one 1 ms loss passed alone.
 
 ## 2. What the owner should expect
 
 - **Rebuild before you run it.**
-- **Weaker stations should read further down.** On the bench the call reads whole down to 10 dB over the noise, where HEAD stopped at 14.
-- **A strong station reads exactly as it did.** The fit now fills only where the per-hop tests found nothing, and never touches or replaces a mark they found. The bulletin reads identically with the fit on and off.
-- **Hand senders who barely pause between words still run together.** That half was not built, because the line the order gave is already the line in use. Section 4 has the decision.
-- **Watch W1AW on the air.** The bench never reproduced 516's dits-only reading. If it happens again with this build, the per-hop path is the next suspect: on the bench, an AGC overshoot at key-down of 3 dB or more turns it to dits with no fit involved.
+- **The station with the cleanest rhythm is the one Hamlet chooses**, however loud its neighbours. A sender that does not sound like code at all, like a carrier keyed at random, scores nought and is never printed.
+- **Once a station is being read, Hamlet stays on it until it pauses.** It does not change stations mid-sentence.
+- **The catch is in that hold.** If a sloppier, louder station stands first and keeps sending, Hamlet stays on it until it pauses, even though the clean one ranks higher. On the bench that is case 2, and it is not fixed. Section 4 has the decision.
+- **The row now carries the printed station's `shapeScore` and `sequencesStanding`.** When it picks wrong, you can see the score of what it chose and how many it chose among.
+- **Letters are read exactly as before**, and nothing about them changed.
 
 ## 3. What you should see
 
-**The bulletin**, at 18 WPM and 24 dB, fit off and fit on:
+**Case 1: clean 20 WPM at 12 dB at 625 Hz, beside a 24 dB carrier keyed at random.**
 
-| version | fit off | fit on (fitted) |
-|---|---|---|
-| plain | `THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG 0123456789` | same (0) |
-| 500 Hz filter | same | same (0) |
-| AGC +2 dB | same | same (0) |
-| AGC +2 dB, filter | same | same (0) |
-| fading 6 dB over 4 s | `THE G NK D WN U T JU S OS HE L M DM OJ M4H E8M` | same (0) |
-
-All five read the same on 516's `f917267a`. The fading row reads badly at HEAD too, with no fit involved; it is a per-hop finding.
-
-**AGC overshoot of 3 dB or more breaks the per-hop path.** These rows are printed, not held:
-
-| version | fit off (HEAD) | 516 | now |
-|---|---|---|---|
-| AGC +3 dB | `HE E I INEE SE E I E U E I ES S HE E IA I E I I S H 5 H S I` | `…AMITMANS MTS EEN THE EDATDKT…` | `HE E I INEE SE E I E U JUMPS OVER THE LAZY DOG 0123456789` |
-| AGC +3 dB, filter | `HE EII S FT I I ES S HE E IE I E I I S H 5 H S I` | `HE EII S FTMX JUMPS OVER THE LAZY DOG 012SMHT56TBM ITMN` | `HE EII S N FOX JUMPS OVER THE LAZY DOG 0123456789` |
-| AGC +6 dB | nothing | `IEN I IMAT I MTI EA T…` | `IEN I I MW I OITEA T I EAG Y T OG 01234 H6789` |
-
-**The strength table** is the call at 20 WPM, fit off then fit on:
-
-| dB | stood off | reads off | stood on (fitted) | reads on |
+| carrier | before | after | clean shape | carrier shape |
 |---|---|---|---|---|
-| 24 | 65 | whole | 65 (0) | whole |
-| 16 | 70 | whole | 70 (0) | whole |
-| 14 | 65 | whole | 65 (0) | whole |
-| 12 | 64 | `CT A CQ DE N0CALL N0CALL K` | 65 (1) | whole |
-| 10 | 62 | `CQ RMT IE N0CALL N0CALL K` | 65 (3) | whole |
-| 8 | 58 | `N ET A EI A DE N0CALL NTJCE AEL K` | 65 (7) | `CQ NIQ DE N0CALL NTJCALL K` |
+| 1025 Hz | `CQ CQ DE N0CALL N0CALL K` | `CQ CQ DE N0CALL N0CALL K` | 0.549 | 0.000 |
+| 825 Hz | `NOAM■HIV5■` (carrier) | `NOAM■HIV5■` (carrier) | 0.352, 21 of 65 marks | 0.000 |
 
-**Fading station, 24 dB to 10 and back:** whole, fit off and on, with nothing fitted.
+At 200 Hz the carrier's keying costs the clean sender most of its marks at the per-mark gates. That is unchanged by this unit, so choosing can't help. At 400 Hz HEAD's rule already read it whole. **No version of case 1 is red under HEAD's rule and green under this one.**
 
-**Score distributions:**
-- Real marks:
-  - 24 dB: lowest 0.835, median 0.892.
-  - 16 dB: 5% 0.807; one mark is zeroed by the lobe rules.
-  - 12 dB: lowest 0.738.
-  - 8 dB: 5% 0.671; 6 marks under 0.7.
-- Noise: highest 0.239 and 0.189, 95% under 0.05.
-- No overlap, apart from the real marks the rules set to nought.
+**Case 2: clean 20 WPM at 10 dB at 825 Hz through the 500 Hz filter on 600, beside a 20 dB fist scattered by a third at 600.**
 
-**Noise:**
-- 30 s: 0 fitted, prints nothing.
-- 180 s: 1 fitted (3,932 → 3,933 candidates), 80 stood as at HEAD, prints nothing.
+| | prints at 600 | prints at 825 | shapes |
+|---|---|---|---|
+| clean alone through the filter | | `CQCQDEN0CALLN0CALLK` | 0.492 |
+| before | `TESTDEW1AWTESTDEW1AWK` | `ILK` | |
+| after | `TESTDEW1AWTESTDEW1AWK` | `ILK` | clean 0.413, fist 0.000 |
 
-**The word-gap cases** are a hand sender at 18 WPM, unchanged reader:
+**Not met.** The shape ranks the clean sender above the fist, and the test now asserts that. But the fist qualified first, and the hold keeps it through its whole call.
 
-| word gap | true letter / word gap | reads |
-|---|---|---|
-| 7 dits | 207 / 439 ms | `KI1MM DE VE2JD NAME IS JEAN QTH QUEBEC HW` |
-| 5 dits | 199 / 328 ms | `KI1MM DEVE2JD NAME ISJEANQTHQUEBECHW` |
-| 4 dits | 205 / 268 ms | `KI1MMDEVE2JDNAMEISJEANQTHQUEBECHW` |
+**Case 3: 24 dB clean at 625 Hz and 10 dB clean at 825 Hz.** The loud one prints whole, scoring 0.853. The quiet one stood only 11 marks and scored 0.405, held back by its evidence and its rectangle. The two scores are not close.
 
-**Every existing case:** I ran unit 515's filter and diffed every printed line against HEAD's run. 113 lines each side; all are identical except these, each nearer the sent text:
-- 12 dB: `CT A CQ DE N0CALL N0CALL K` → `CQ CQ DE N0CALL N0CALL K`
-- 8 dB: `N ET A EI A DE N0CALL NTJCE AEL K` → `CQ NIQ DE N0CALL NTJCALL K`
-- 5 WPM Farnsworth at 10 dB: `CK CK DE E■CASL N0RALL N` → `CK CQ DE N0CALL N0CALL K`
-- The weak call: `CGE N EQ DE N0CALL NT ON EALL A` → `CGE CQ DE N0CALL N0CALL K`. In the shape measurement, its per-hop marks went from 61 to 60, because a fitted mark in the sequence changes which per-hop mark the gate stands.
-- 180 s noise candidates: 3,932 → 3,933.
+**Case 4: a fist scattered by a fifth at 625 Hz, 24 dB, printing; a clean sender at 825 Hz, 20 dB, starts at 8 s.**
+- Reads `CQ CQ DE N0CALL N0CALL K 1AW K TEST DE W1AW K`.
+- The fist is printed whole; its last mark is at 18.35 s.
+- The clean sender takes over 1.2 s later, at 19.58 s. Its letters sent while the fist held the terminal are not printed.
+- Shapes: fist 0.069, clean 0.665.
 
-Reds in those classes go from 4 at HEAD to 3. `TheCallReadsAtEveryStrength(12)` is now green. Still red, as at HEAD:
+**Case 5: noise.**
+- 30 s: highest shape score 0.057, prints nothing.
+- 180 s: highest shape score 0.107, prints nothing.
+- **Against the real senders:** clean senders in cases 1 to 4 score 0.405 to 0.853, so there is no overlap with noise. **Fists do overlap:** 0.069 for a fifth's scatter and 0.000 for a third's, at or under noise's best.
+
+**Every existing case:** I ran unit 515's filter, unit 517's fit and word-gap tests, and these cases, and diffed every printed line against HEAD's run. All are identical except:
+- **The W1AW all-gates-off diagnostic rows**, at 600/500, at 600/500 pointed at 725, and on the whole band. They read `N CI IIL K` and `CALII N N CI IIL D` at HEAD, and now read nothing. Those senders score nought.
+- **The bulletin faded by 6 dB**, wrong both ways. HEAD read `THE G NK D WN U T JU S OS HE L M DM OJ M4H E8M`; now `THE G NK D ERO WN U EOD T JU MP TER T AZN M DM OJ M4H E8M`. A different fading sender is picked.
+
+Still red, as at HEAD:
 - `TheCallReadsAtEveryStrength(8)`
 - `FarnsworthAndFastReadAtTenDecibels`
 - `ALetterReadFromNoiseDoesNotReachTheScreen(blocks: True)`
 
 ## 4. What's blocking us
 
-1. **Task 2 waits on a ruling: where a word gap starts for a hand sender.**
-   - **Ruling asked:** the line between a letter gap and a word gap, when a sender's gaps form only one cluster.
-   - **Industry standard:** fldigi and CW Skimmer use an adaptive threshold near 5 dits on the measured dit (between Morse's 3 and 7). The cost of a false space inside a callsign is the reason they don't go lower.
+1. **Decision: may a better-shaped sender take the terminal before the printed one pauses?** Case 2 can't be met under the hold the order set.
 
-   | Option | Line | Pros | Cons |
+   | Option | Rule | Pros | Cons |
    |---|---|---|---|
-   | A (recommended) | 5 dits of gap, from the sender's own element gap | Parts 5-dit word gaps; a hand's 3-dit letter gaps rarely reach 5; one place, in the gate | 4-dit word gaps still run together |
-   | B | 1.25 × the letter centre (about 3.75 dits) | Parts most 4-dit word gaps | A hand scattering a sixth puts spaces inside words, `KI1 MM`, which is §0.0's wrong-callsign case |
-   | C | Keep 1.53 × the letter centre (today) | Nothing moves | The Quebec screen stays as it was |
+   | A (recommended) | Delay the first pick: when the first sender qualifies, wait a word gap for others to qualify, then print the best | Case 2 met; nothing switches mid-sentence | The first letters print a word later |
+   | B | Switch at the printed sender's measured word gap, the gap itself, when a better shape stands | Case 2 met | Needs a clean word-gap measure; tried this unit as word gap plus a dah, it split words |
+   | C | Keep the hold as built | Never switches mid-sentence | A sloppy station that stands first keeps the terminal |
 
-   With a ruling, the next unit builds it in `CwPatternGate` as the order designed, and `CwRunReader` loses its gap arithmetic.
-2. **516's on-air failure was not reproduced on the bench.** The fix closes the mechanism the order named. AGC overshoot, which breaks the per-hop path itself, is the leading other suspect. A capture at the radio would settle it, but the ban on reading recordings stands.
-3. **A slow 6 dB fade breaks the per-hop path at 24 dB**, with no fit involved. This is a new finding, not this unit's work.
-4. **`DecisionLogOrderTests.EveryRulingAppearsOnceAndTheGapsAreTheKnownOnes` is red.** It was already red for gaps at HEAD (HM-DEC-166, 182, 189, …); HM-DEC-220, reverted with 516, is now one more. The order check passes.
-5. **Unit 512 is still unrun.** The next order is 518 or later, with ruling HM-DEC-222 or later.
+2. **Fists rank at or under noise's best.** Tightness reaches nought at a hand's widest spread. A fist alone still prints in every existing case, but one scattered by a third scores nought, and the nought rule would refuse it if it stood alone. The limit is the author's figure; overrule it if you want fists ranked above noise.
+3. **Case 1 never failed on the choice.** At 200 Hz the per-mark gates lose the clean sender's marks to the carrier, and that is the next problem, not this unit's.
+4. **`CwMarkShape.Score` still carries contrast for unit 502's gate and the scope's shading.** I left them because §3 keeps them unchanged. Overrule if you want contrast out of the gate too.
+5. **`DecisionLogOrderTests` gaps check** was already red at HEAD for HM-DEC-166, 182, 189 and others. It now also lists HM-DEC-220, reverted, and HM-DEC-222, held for unit 518. The order check passes.
+6. **Unit 518 is next**, as the order says.
 
 ### Asks still outstanding
 
-- **Unit 517, 2026-10-01: the hand sender's word-gap line**, item 1 above. Waiting on the owner. The measurement sits in `TheSpacesComeFromTheShapeTests`; no change sits in the reader or the gate.
+- **Unit 519, 2026-10-01:** whether a better-shaped sender may take the terminal before the printed one pauses (item 1). Waiting on the owner. The shape score and the hold are in the tree.
+- **Unit 517, 2026-10-01:** the hand sender's word-gap line, 5 dits recommended. Waiting on the owner. The measurement is in `TheSpacesComeFromTheShapeTests`, and no change sits in the reader or the gate.
 - **Unit 440's item 1:** MET-COVERAGE counts wrong sure characters. Raised 2026-09-25 and waiting on the owner. No change for it sits in the tree.
 - **Unit 440's item 2:** R72 is cited as HM-DEC-175. Raised 2026-09-25 and scheduled as step 8 record work under R80.
-- **Unit 487, 2026-09-28:** whether the terminal shows only settled text, so nothing on it is ever revised, at the cost of seconds of lag.
-  - On the run path, which is now the only path to the screen, the terminal already shows only settled text.
-  - The ask stands only for the timing-only path, which no longer reaches the screen.
+- **Unit 487, 2026-09-28:** whether the terminal shows only settled text, at the cost of seconds of lag.
+  - The run path, the only path to the screen, already shows only settled text.
+  - The ask stands only for the timing-only path.
   - No change for it sits in the tree.
