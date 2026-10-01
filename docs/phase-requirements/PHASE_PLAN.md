@@ -299,6 +299,10 @@ are pitches. I just care about shape."*
 the shape in the noise. It's there. It was audible. Let's defocus pitch and emphasize shape."* And: *"I
 want this to be so much shape that I'm shocked."*
 
+**R117 - Tim, 2026-10-01: shape is everything.** *"You're still not focusing 100% on shape. You're trying to
+interpret the noise instead of creating the shape patterns. Shape is everything, 100%."* And: *"We lose the
+weakest stations, but pitch becomes largely irrelevant."* Pitch is an output, never a decision.
+
 ## §3 What is different from the phases before it
 
 1. **A criterion is a requirement id.** A report states the requirement, the condition, the

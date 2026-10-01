@@ -4,6 +4,52 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-226
+date: 2026-10-01
+refs: work instruction 522, PHASE_PLAN.md R117, tag before-shape-first, src/Hamlet.RadioEngine/Cw/CwEnvelopeDetector.cs, src/Hamlet.RadioEngine/Cw/CwShapeLight.cs, src/Hamlet.App/ViewModels/CwHearingViewModel.cs, src/Hamlet.App/Views/MainWindow.axaml, tests/Hamlet.RadioEngine.Tests/Cw/TheShapePicksTheSenderTests.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheLightSaysHoldStillTests.cs
+---
+
+**Shape first: the rectangle is found in time across the passband and pitch is its centroid; the per-bin
+gates retire; the light reads the score and fills.** Tim, R117: *"Shape is everything, 100%."* And: *"We
+lose the weakest stations, but pitch becomes largely irrelevant."*
+
+HEAD was tagged `before-shape-first` before any engine change.
+
+**The four faults it answers.**
+- A neighbour 200 Hz away steals a station's marks (units 520 and 521).
+- A station reads at one click and not the next (the owner, 2026-10-01).
+- A dah beside a steady carrier makes no candidate at all (unit 521).
+- A sequence scoring 0.06 went green on the light (2026-10-01, 18:20).
+
+**Built, measured, and off by default.** `CwEnvelopeDetector.ShapeFirst` builds marks this way:
+- it fits unit 517's rectangle in time to the whole passband's summed energy, at every swept length and
+  the standing senders';
+- a mark's pitch is the centroid of its excess power, measured over its own samples, where tones 200 Hz
+  apart are resolved;
+- two peaks there are two marks, each refitted on its own energy;
+- a span whose whole-band step is no taller than the flatness tolerance passes only on unit 517's lobe at
+  its centroid;
+- a mark's level is read over the hops inside its edges.
+
+The per-hop bar tests decide nothing on this path. The bins keep their bars for the scope and the meter.
+
+**What it did.**
+- **Better:** the call reads whole down to 8 dB, where the per-bin path garbled it; the dah beside a
+  steady carrier is found, 175 ms at 625 Hz; every pitch from 600 to 750 Hz through the filter, and a
+  100 Hz dial step mid-call, read whole; noise stands nothing.
+- **Worse:** a 12 WPM fist reads nothing; the two-station case and a sender who speeds up garble; the 30%
+  and tightening fists slip a letter. The neighbour beside a random carrier reads nothing: the carrier no
+  longer prints, but the clean marks under its marks are not split off.
+- **So it ships off.** The per-bin path still runs, and the tests turn shape-first on to print both.
+
+**The light reads the score and fills (built, on).**
+- Green needs a standing sequence whose shape passes 0.2, clear of noise's best of 0.173 (unit 520). One
+  that stands under it stays amber at five of five.
+- The light is a gauge: a fifth per mark to the mark at four-fifths, then the shape score from 0.2 at the
+  mark to 1.0, and full while a sender is read.
+- The row gains `shapeFill`.
+
+---
 id: HM-DEC-225
 date: 2026-10-01
 refs: work instruction 521, src/Hamlet.RadioEngine/Cw/CwShapeLight.cs, src/Hamlet.RadioEngine/Cw/CwPatternGate.cs, src/Hamlet.RadioEngine/Cw/CwEnvelopeDetector.cs, src/Hamlet.App/ViewModels/CwHearingViewModel.cs, src/Hamlet.App/Views/MainWindow.axaml, tests/Hamlet.RadioEngine.Tests/Cw/TheLightSaysHoldStillTests.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheShapePicksTheSenderTests.cs
