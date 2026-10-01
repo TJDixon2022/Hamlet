@@ -4,6 +4,47 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-225
+date: 2026-10-01
+refs: work instruction 521, src/Hamlet.RadioEngine/Cw/CwShapeLight.cs, src/Hamlet.RadioEngine/Cw/CwPatternGate.cs, src/Hamlet.RadioEngine/Cw/CwEnvelopeDetector.cs, src/Hamlet.App/ViewModels/CwHearingViewModel.cs, src/Hamlet.App/Views/MainWindow.axaml, tests/Hamlet.RadioEngine.Tests/Cw/TheLightSaysHoldStillTests.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheShapePicksTheSenderTests.cs
+---
+
+**A mark's pitch is where its own keying is; a light says hold still.** Tim, work instruction 521. The
+light is built. The pitch half is ruled and not built.
+
+**One cause, as the order named it.** The owner, 2026-10-01: *"The signal was just as clear one click off
+in either direction. Only thing that changed was pitch."* Unit 515's five pitches were all bin centres.
+Unit 520 found unit 496's climb to the louder bin carrying a 12 dB mark up a 24 dB neighbour's lobe. The
+order named both as level comparison between bins.
+
+**What the bench showed.**
+- **The bin-centre finding is not reproduced.** A clean sender at 600, 606, 612, 618 and 625 Hz reads
+  whole with all 65 marks, at 24 dB, at 12 dB, and as a fist at 16 dB. A tone half a bin off has its
+  marks split between the two bins, and the reader's one-bin tolerance holds them.
+- **The neighbour finding has a second cause under the climb.** Two stations 200 Hz apart, at a 5 ms hop,
+  beat at the hop rate. In the bins between them the cross term reads as power keyed with the mark.
+  Measuring a mark's pitch over its own samples, less the gaps either side, separated them: in one
+  variant all 65 clean marks beside a steady carrier landed at 625. But that variant broke the two-station
+  case and case 2. In the simplest test, a lone dah beside a steady carrier, the dah made no candidate at
+  all: it is lost at its own bin's bars, before any pitch is measured.
+- **No engine change ships.** The sweep stays as the test the week never had.
+
+**The light, built.** The owner, 2026-10-01: *"I want a green light whenever the first shape is being
+detected so that I know to hold on that frequency and not adjust, because you're not hearing it."*
+- **Dark, `listening`:** nothing is forming.
+- **Amber, `shape forming · n of 5`:** a sequence not yet standing holds marks from the last two seconds,
+  already in two lengths, and n is how many.
+- **Green, `shape found · hold here`:** a sequence stands.
+- **Green, `reading`:** the printed sender is keying.
+- **The hover:** *"Green means Hamlet has the shape of a station here. Hold the frequency; the first
+  letters print after one word gap."*
+- **The row** gains `shapeLight`.
+
+**Why two lengths.** Counted on every held mark, loud noise held a four-mark sequence 93% of the time.
+Counted on marks in the window, it held three or more marks 94% of the time. With two lengths required,
+noise shows amber 7.2% of the time, never past 2 of 5, and never green.
+
+---
 id: HM-DEC-224
 date: 2026-10-01
 supersedes: unit 519's tightness scale (HM-DEC-223 in part) and its first pick at the first qualifier
