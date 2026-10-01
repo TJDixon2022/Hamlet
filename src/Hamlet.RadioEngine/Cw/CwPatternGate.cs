@@ -168,21 +168,6 @@ internal sealed class CwPatternGate
             .Select(s => (s.PitchHz, s.LevelDb, s.LastToSeconds))
             .ToList();
 
-    /// <summary>
-    /// The dit and dah lengths of the sequences that stand, in seconds: where the rectangle fit looks
-    /// (work instruction 516). Reads only; the gate's rules are unchanged.
-    /// </summary>
-    /// <param name="nowSeconds">The detector's audio clock.</param>
-    /// <param name="holdSeconds">The least hold, as for <see cref="Standing"/>.</param>
-    /// <returns>One pair per standing sequence whose marks fall into two lengths.</returns>
-    public IReadOnlyList<(double DitSeconds, double DahSeconds)> StandingLengths(double nowSeconds, double holdSeconds)
-        => _sequences
-            .Where(s => s.Standing && nowSeconds - s.LastToSeconds <= s.HoldSeconds(holdSeconds))
-            .Select(s => s.Lengths())
-            .Where(l => l is not null)
-            .Select(l => l!.Value)
-            .ToList();
-
     /// <summary>Forget sequences silent past <see cref="SilenceSeconds"/>.</summary>
     /// <param name="nowSeconds">The detector's audio clock.</param>
     public void Prune(double nowSeconds)
@@ -360,22 +345,6 @@ internal sealed class CwPatternGate
             }
 
             return admitted;
-        }
-
-        /// <summary>The mean dit and dah of the recent marks where they split in two, or null (work instruction 516).</summary>
-        public (double DitSeconds, double DahSeconds)? Lengths()
-        {
-            var lengths = _recent.Select(r => r.ToSeconds - r.FromSeconds).OrderBy(l => l).ToList();
-
-            for (var i = 1; i < lengths.Count; i++)
-            {
-                if (lengths[i] / lengths[i - 1] >= CwRunReader.TwoKindsRatio)
-                {
-                    return (lengths.Take(i).Average(), lengths.Skip(i).Average());
-                }
-            }
-
-            return null;
         }
 
         /// <summary>Whether the mark sits on the last one, closer than half the sender's dit.</summary>

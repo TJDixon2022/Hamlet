@@ -89,9 +89,8 @@ public sealed class TheShapeOfAKeyedToneTests
     [Fact]
     public void RealMarksScoreInsideTheShapeAndNoiseOutside()
     {
-        // The per-hop bars' own shape is what is measured; a rectangle the fit found has none (work instruction 516).
-        var real = CallsOwn(Marks(CleanCall(), shape: false)).Where(m => !m.Fitted).ToList();
-        var weak = CallsOwn(Marks(WeakCall(), shape: false)).Where(m => !m.Fitted).ToList();
+        var real = CallsOwn(Marks(CleanCall(), shape: false));
+        var weak = CallsOwn(Marks(WeakCall(), shape: false));
         var noise = Marks(NoiseAlone(), shape: false);
 
         void Print(string name, IReadOnlyList<CwMark> marks)

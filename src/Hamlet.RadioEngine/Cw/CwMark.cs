@@ -52,16 +52,6 @@ public sealed record CwMark(
     public double OwnContrastDb { get; init; } = double.NaN;
 
     /// <summary>
-    /// Whether the mark was found by fitting a rectangle to the stretch as a whole rather than by the
-    /// per-hop bar tests (work instruction 516, R115, HM-DEC-220); its score is the share of the stretch's
-    /// variance the rectangle explains.
-    /// </summary>
-    public double FitScore { get; init; } = double.NaN;
-
-    /// <summary>Whether the rectangle fit found this mark (work instruction 516).</summary>
-    public bool Fitted => double.IsFinite(FitScore);
-
-    /// <summary>
     /// Whether the mark stood by its sender's pattern alone: at a standing sender's pitch, of its dit or
     /// dah length, inside one of its letters, and quieter than the sender by more than the level
     /// tolerance and no more than twice it (work instruction 511, task 2, HM-DEC-215). The reader
