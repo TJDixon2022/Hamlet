@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: COMPLETED
-TASK: 3 of 3
-WORK_INSTRUCTION: 516 - fit the rectangle, do not check it (run by hand)
+TASK: 4 of 4
+WORK_INSTRUCTION: 515 - the shape is found wherever it appears (run by hand)
 BALL: tim
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-30T22:14:32-04:00
-NOTE: Unit 516 complete - the fit lifts the bench floor from 14 dB to 10 dB, strong cases unchanged
+UPDATED: 2026-09-30T21:13:13-04:00
+NOTE: Unit 515 - the watched bin retired; all five pitches read through the filter, noise prints nothing
 
 ---
 

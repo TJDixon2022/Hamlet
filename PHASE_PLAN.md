@@ -295,9 +295,6 @@ almost doesn't matter. It's shape. If you can identify height, flat top, period,
 a dot or a dash. The pitch doesn't matter."* And: *"You keep talking about 350, 400, 500, 600. Those
 are pitches. I just care about shape."*
 
-**R115 - Tim, 2026-09-30: fit the shape.** *"Focus on shape. If you get the shape, the decode
-comes."*
-
 ## §3 What is different from the phases before it
 
 1. **A criterion is a requirement id.** A report states the requirement, the condition, the
