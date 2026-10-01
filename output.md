@@ -1,136 +1,152 @@
 ```
-UNIT: 515 - complete - 2026-09-30
-UNIT GOAL: the shape is found wherever it appears; the watched bin retires
-NUMBER: pitches read whole through a 500 Hz filter on 600, nothing pointed: 5 of 5 (was 4 of 5; 700 Hz read nothing)
+UNIT: 517 - partial (task 1 landed, task 2 dropped for a ruling) - 2026-10-01
+UNIT GOAL: the fit fills gaps, the spaces come from the shape
+NUMBER: bench reading floor 10 dB (was 14 dB at HEAD); strong bulletin identical with the fit on and off
 ```
 
 ## 1. What Claude did
 
-Claude Code on the development machine, branch `main`. The prompt claimed `PROJECT: Hamlet`; the order's gate held: `SHACK_FACTS.md`, `CwRunReader.cs` and `CW_REQUIREMENTS.md` exist, there is no `CoreHMI.sln` or `MURC.sln`, the root is `C:\Source\HamLet`, and `PROJECT_CARD.md` says Hamlet. Nothing in this report is evidence about the radio. Unit 515 and HM-DEC-219 were free.
+Claude Code on the development machine, branch `main`. The prompt claimed `PROJECT: Hamlet`, and the order's gate held: `SHACK_FACTS.md`, `CwRunReader.cs` and `CW_REQUIREMENTS.md` exist, there is no `CoreHMI.sln` or `MURC.sln`, and the root is `C:\Source\HamLet`. Hamlet confirmed. Nothing in this report is evidence about the radio. Unit 517 and HM-DEC-221 were free.
 
-SESSION.lock was taken through `tools\arbiter\lock.bat take` and released at the end. Nothing was written to `RUN_LEDGER.md`, nothing under `tools\arbiter\` was touched, no box was ticked, and R114 was appended to both plans in the owner's words. Nothing keys, transmits or writes to the radio. Scratch probes are under `.run-unit\` and not committed. The change is commit `7d27cca3`.
+**How the session ran:**
+- It took SESSION.lock through `tools\arbiter\lock.bat take` and released it at the end.
+- It wrote nothing to `RUN_LEDGER.md`, touched nothing under `tools\arbiter\`, ticked no box, and added no ruling to either plan.
+- It read no recording, fixture or telemetry.
+- Nothing keys, transmits or writes to the radio.
 
-**`src/Hamlet.RadioEngine/Cw/CwEnvelopeDetector.cs`.**
-- **The verdict.** `Keying` is true when a sequence the pattern gate stands has had a mark within that sequence's own hold. `PitchHz` is that sequence's pitch, on the bin grid, the loudest where several stand.
-- **A mark that stands is keyed.** Before, it was keyed only where the bins round its peak paired their bars. Through the filter they didn't at 700 Hz, so 65 marks stood, none was keyed, and the reader printed nothing.
-- **Gone:** `Follow`, `PointAt`, `WatchedHz`, `PointedHz`, the followed and pointed bins, the old held-station logic (`_holdBin` and its kin), and the 496 "station's own bin" choice for the verdict.
-- **Kept:** every bin's bar and pairing evaluation, `CallMarks`, and the 496 peak walk that puts a mark on its lobe's peak, which is attribution, not pointing.
-- **The scope's bin** is the one nearest the standing pitch: derived from it, never steered, left where it was when nothing stands. `History()` marks a hop where a mark that stood covers it, carrying that mark's shape score; it no longer uses the bin's own paired bars, which the station's exact bin forms rarely (unit 496).
-- **`MarksLast4s`** counts the marks that stood in four seconds: at the standing pitch while one stands, at any pitch otherwise.
-- **`CwEnvelopeReading`** loses `Pointed`.
+**Task 1: the fit fills only what the per-hop tests left.** Commit `08b31d65`.
+- **Starting point.** I restored unit 516's change from `f917267a`: the rectangle fit in `CwEnvelopeDetector`, `CwMark.FitScore`/`Fitted`, `CwPatternGate.StandingLengths`, `TheRectangleIsFittedTests`, and the shape test's per-hop-only measurement. The score, the lengths, the lobe, and the 0.7 threshold under the 24 dB lowest of 0.835 are all unchanged from 516.
+- **The rule it lacked.** In `CwEnvelopeDetector`:
+  - A fitted rectangle is held while any bar within two bins that overlaps its span is still running or still inside the hops the per-hop tests may call it in (`PerHopStillBusy`).
+  - Once none is, the rectangle is dropped if any per-hop mark overlaps it at all, within two bins (`OverlapsPerHopMark`), or if another fitted mark covers half of it.
+  - A fit held longer than a 5 WPM dah past its end is dropped.
+- **The other half of the cause.** `AlreadyCalled`, which the per-hop path uses to refuse a repeat, now ignores fitted marks. A mark the per-hop tests find is never refused because a fit got there first. That refusal is how a fitted rectangle on the front of a dah took the dah's place in 516.
+- **The bulletin test** is `AStrongBulletinReadsTheSameWithTheFitOnAndOff`. It sends `THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG 0123456789` at 18 WPM and 24 dB. It is held identical, fit on and off, in five versions: plain, through the 500 Hz filter, fading, and with a 2 dB AGC overshoot plain and through the filter.
+- **It was not red on 516's `f917267a`.** None of the five reproduced the on-air loss. 516 also reads them identically.
+  - I looked for a case where 516 breaks a bulletin the per-hop path reads whole, and found none.
+  - An AGC overshoot of 3 dB or more at key-down makes the **per-hop path itself** read dits only, fit or no fit.
+  - On those dahs, 516's fit split the digits (`012SMHT56TBM`); the rule reads them `0123456789`.
+  - Timing ruled out lag: the fit costs about 4 points of real time (17–20% to 20–24% at 8 and 48 kHz).
 
-**`src/Hamlet.RadioEngine/Cw/CwPatternGate.cs`.** Read-only additions; the gate's rules are unchanged.
-- `Standing(now, hold)` lists the standing sequences.
-- Each sequence has `PitchHz`, `LevelDb` (leaving out unit 511's quieter marks) and `HoldSeconds(hold)`.
-- **The hold is the sender's own:** the longer of the detector's one-second hold and the sequence's longest gap between recent marks, plus its longest mark. A mark reaches the gate only once it has ended, so a 9 WPM word gap and dah is 1.33 s.
-- How I got there:
-  - a one-second hold dropped keying mid-call at the first word gap;
-  - a two-second hold lingered past the test's limit after the call;
-  - a hold of the longest gap seen plus the longest mark still dropped at the first word gap, before any word gap had been seen.
+**Task 2: dropped, with the reason.** Commit `653f8259` keeps the measurement.
+- `TheSpacesComeFromTheShapeTests` sends the Quebec station's text by hand at 18 WPM, with a scatter of a sixth, using unit 513's fist generator. I gave the generator a word-gap parameter whose default leaves it unchanged, and added the letters this text needs.
+- **Red as predicted:**
+  - 7-dit word gaps read whole.
+  - 5 dits read `KI1MM DEVE2JD NAME ISJEANQTHQUEBECHW`.
+  - 4 dits read `KI1MMDEVE2JDNAMEISJEANQTHQUEBECHW`.
+- **The order's rule cannot make it green.** "Any gap past 1.5 times the letter centre" is the reader's own line already, √(7/3) = 1.53. That is 4.5 dits, above a 4-dit word gap.
+- **Any line that would work is a trade-off.** With a hand's scatter, 3-dit letter gaps reach 3.5 dits and 4-dit word gaps fall to 3.33, so a line between them puts some spaces inside words. Moving the gap kinds into the gate unchanged would change no reading.
+- **So nothing moved into the gate**, and `CwRunReader` is unchanged. The 7-dit row is asserted; 4 and 5 are printed.
 
-**`src/Hamlet.App/ViewModels/MainWindowViewModel.cs`.**
-- The scope tick no longer calls `PointAt` or `Follow`, and unit 514's `FollowPitch` is gone.
-- `Tracker.FollowScope` and `Tracker.FollowMeter` are no longer called.
-- The radio's scope pointer is still observed, for `scopePeakHz`, `scopePeakLevel` and `scopeFramesLast4s` on the row and the sheet.
-- "scope quiet, sweeping" no longer leads the tone line, since nothing sweeps.
+**Records:**
+- HM-DEC-221 in `DECISIONS.md`, with 516's revert and why, and the Quebec station. It records the gap-kinds half as ruled and not built.
+- The `CLAUDE.md` index row.
+- `PHASE_OUTCOME` (both copies) has `## UNIT 517 - STEP 12`.
+- `PHASE_STATUS` (both copies) names 517.
+- **The version went from 1.13.201 to 1.13.203, not 1.13.202.** 1.13.202 was unit 516's build, which you ran and which was reverted, and HM-DEC-150 counts a unit per patch.
 
-**`src/Hamlet.App/ViewModels/CwHearingViewModel.cs`.** The verdict row drops `trackerHz`, `trackerHasPitch` and `trackerHasKeying`. It keeps `scopePitchHz`, `scopeMarksLast4s` and `mixingHz`.
-
-**Tests.**
-- New: `Cw/TheShapeIsFoundWhereverItAppearsTests.cs`, with the five pitches through the filter, the drifting station, and the two stations.
-- Rewritten because they drove the retired pointing, each saying why in its own text:
-  - `TheDetectorFollowsTheMeterTests`: unit 514's two cases are retired. It now proves the meter does not steer the detector.
-  - `TheRadioPointsTheDetectorTests`: keeps the scope pointer's own peak and quiet; the detector-pointing assertions are gone.
-  - `ThePatternIsTheGateTests.TheRowDescribesTheSenderBeingPrinted`: no `Follow`. The reading's pitch equals the printed pitch on its own, which is case 5.
-  - `TheScrollKeepsItsBlocksTests`: no `Follow`.
-  - `NoDetectionNoLettersTests` and `PrintedStaysPrintedTests`: `WatchedHz` becomes the reading's pitch.
-  - `WhichGateTurnsAwayW1awTests`: its "pointed" rows are no longer pointed.
-- The row key-set tests (`TheOwnersVerdictIsARowTests`, `TheVerdictCarriesTheScopeTests`, `TheOwnersPressLandsInTheFileTests`) drop the tracker fields and name `mixingHz` at last. That fixes the seven reds they had carried since unit 488.
-- **The scope-row and picture tests keyed too little to stand.** `TheVerdictCarriesTheScopeTests`, `TheScopeIsTheMiddlePictureTests` and `TheBarsCarryTheirLettersTests` keyed a single C, or C and part of a Q, which never stands under the five-mark pattern rule. They now key enough to stand: a C, Q and C; a Q prepended, with every examined time shifted by 0.96 s; a Q 3.5 s before the C. The assertions carry the new meaning: the gap keeps the standing pitch, and the mark counts are the marks that stood.
-
-**What the meter and the tracker still touch, for unit 512.**
-
-| Piece | What still constructs it | What still reads it |
-|---|---|---|
-| `CwKeyingMeter` | `MainWindowViewModel` (line ~11589) | `PublishKeying`: the keying word; the verdict row's `meter*` fields; the capture sheet's `KeyingLine` and `KeyingRecordLine` |
-| `CwToneTracker` | `CwDecoder`'s constructor, which runs it in its hop loop | the decode report's pitch and proof (the sheet); `AutoCallViewModel` (`Tracker.Follows`); `MainWindowViewModel`'s `CoarseCandidates()` for the hearing state; `CwDecoder.DetectorPitch` hands it the detector's pitch |
-| — | — | `FollowMeter` and `FollowScope` stay on the tracker, called by nothing in the app; `CwHearingState` still carries `TrackerHz`, `TrackerHasPitch` and `TrackerHasKeying`, which no row reads |
-
-**Build and tests.**
-- Build `Hamlet.sln` with warnings as errors: RC=0.
-- App carry-forward line: 276 of 278. The two losses, `TheFavoritesAreChipsTests` and `BindingHealthTests` in 1 ms to *"You've caused dispatcher loop"*, pass alone, 4 of 4 and 1 of 1.
-- Engine reading set: 76 of 80.
-- App scope, scroll, row and reading cases: green.
-
-**Records.**
-- Version 1.13.200 to 1.13.201.
-- `PHASE_OUTCOME.md` (both copies): `## UNIT 515 - STEP 12`.
-- `PHASE_STATUS.md` (both copies) names 515.
-- R114 appended to both plans, with no checkbox touched.
-- `CLAUDE.md` §1 index row.
-- `DECISIONS.md` HM-DEC-219, in full:
-
-> **The shape is found wherever it appears; the watched bin retires.** Tim, 2026-09-30, R114: *"I'm wondering why we're so focused on pitch. Pitch almost doesn't matter. It's shape. If you can identify height, flat top, period, then you know it's a dot or a dash. The pitch doesn't matter."* And: *"You keep talking about 350, 400, 500, 600. Those are pitches. I just care about shape."*
->
-> **What it ends.** Since unit 476 the detector kept one watched bin for its keying verdict, its light, its blocks and its mark count, and a chain of rules chose which: 476's survey, 496's station's own bin for the verdict, 507's follow-the-reader, 514's follow-the-meter. Every pointing fault of the week was that bin being where the station was not. All four rules are superseded; the radio's scope peak is still read for the row and the sheet, and points nothing.
->
-> **What is built.** The verdict is a sequence the pattern gate stands, at any pitch, with a mark within the sender's own hold - the longer of the detector's one-second hold and its own longest gap, plus its longest mark, since a mark reaches the gate only once it has ended. Its pitch is that sequence's, the loudest where several stand. A mark that stands is keyed. The scope's bin is the one nearest the standing pitch, derived and never steered, and its hops are marked by the marks that stood. The meter and the tracker steer nothing on the screen's path; the verdict row drops trackerHz, trackerHasPitch and trackerHasKeying. The 496 peak walk that puts a mark on its lobe's peak stays.
->
-> **What it showed.** Through a 500 Hz filter on 600 with nothing pointed, 700 Hz had stood 65 marks and keyed none, so nothing printed; now 425 to 775 Hz all read whole with their pitch named, and a station drifting from 500 to 560 Hz is followed by its shape. Every synthetic reading is as before, and noise prints nothing. A test of the timing decoder's gate, which the app has not used since unit 493, now opens on a noise sequence that stands and is left red.
+**Build and app line:** build 0 warnings, 0 errors. App carry-forward 276 of 278; the two 1 ms dispatcher-loop losses passed alone.
 
 ## 2. What the owner should expect
 
-- **Rebuild.**
-- **A station at any pitch inside the filter is found the moment it keys.** The shape is looked for in every bin at once, so nothing has to be pointed at it or catch up with it. On the bench, through a stand-in for your 500 Hz filter on 600, the call reads whole at 425, 500, 600, 700 and 775 Hz. A station drifting from 500 to 560 Hz reads whole, with the pitch shown rising with it.
-- **The light, the blocks and the row describe whatever is standing.** The tone line names the standing station's pitch. Keying holds through that sender's own gaps and lets go about a second after its last mark, longer for a slow sender.
-- **Nothing about how letters are read changed.** Every synthetic call reads exactly as before, and noise still prints nothing.
-- **If a station still reads nothing,** report it against the pitch table in section 3.
-- **One test is newly red, deliberately.** `NoDetectionNoLettersTests.ALetterReadFromNoiseDoesNotReachTheScreen(blocks: True)` drives the old timing decoder's gate, which the app hasn't used since unit 493. Under the new verdict, a noise sequence that stands opens that gate. The reader on the screen's path still prints nothing on noise.
-- **Still red, as before:** unit 507's three strength cases, the decision-log index gaps, and unit 450's two "centre"s. The seven verdict-row reds since unit 488 are fixed.
+- **Rebuild before you run it.**
+- **Weaker stations should read further down.** On the bench the call reads whole down to 10 dB over the noise, where HEAD stopped at 14.
+- **A strong station reads exactly as it did.** The fit now fills only where the per-hop tests found nothing, and never touches or replaces a mark they found. The bulletin reads identically with the fit on and off.
+- **Hand senders who barely pause between words still run together.** That half was not built, because the line the order gave is already the line in use. Section 4 has the decision.
+- **Watch W1AW on the air.** The bench never reproduced 516's dits-only reading. If it happens again with this build, the per-hop path is the next suspect: on the bench, an AGC overshoot at key-down of 3 dB or more turns it to dits with no fit involved.
 
 ## 3. What you should see
 
-**The pitch table.** The call at 20 WPM, 24 dB, through two band-pass sections at 600 Hz, Q 1.2, with the detector told the passband and nothing pointed or followed.
+**The bulletin**, at 18 WPM and 24 dB, fit off and fit on:
 
-| Pitch | HEAD: keyed / reads | Now: keyed / pitch named / reads |
+| version | fit off | fit on (fitted) |
 |---|---|---|
-| 425 Hz | 28 of 65 / whole | 65 of 65 / 425 Hz / `CQ CQ DE N0CALL N0CALL K` |
-| 500 Hz | 59 of 65 / whole | 65 / 500 Hz / whole |
-| 600 Hz | 50 of 65 / whole | 65 / 600 Hz / whole |
-| **700 Hz** | **0 of 65 / nothing** | **65 / 700 Hz / whole** |
-| 775 Hz | 49 of 65 / whole | 65 / 775 Hz / whole |
+| plain | `THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG 0123456789` | same (0) |
+| 500 Hz filter | same | same (0) |
+| AGC +2 dB | same | same (0) |
+| AGC +2 dB, filter | same | same (0) |
+| fading 6 dB over 4 s | `THE G NK D WN U T JU S OS HE L M DM OJ M4H E8M` | same (0) |
 
-**The drifting station,** 500 to 560 Hz over the call, through the same filter: 65 stood, 65 keyed. The pitch named over the first quarter averaged 512 Hz and over the last quarter 550 Hz, and the call reads whole. At HEAD it also read whole, with 16 keyed.
+All five read the same on 516's `f917267a`. The fading row reads badly at HEAD too, with no fit involved; it is a per-hop finding.
 
-**Two stations,** 625 Hz at 24 dB and 825 Hz at 10 dB: the loud one reads whole (65 stood) and the quiet one stands (12), as at HEAD.
+**AGC overshoot of 3 dB or more breaks the per-hop path.** These rows are printed, not held:
 
-**The verdict row on a driven station:** while the reader prints and the bars say keying, `scopePitchHz` is the printed pitch on every reading, with nothing followed. The key set has no tracker fields.
+| version | fit off (HEAD) | 516 | now |
+|---|---|---|---|
+| AGC +3 dB | `HE E I INEE SE E I E U E I ES S HE E IA I E I I S H 5 H S I` | `…AMITMANS MTS EEN THE EDATDKT…` | `HE E I INEE SE E I E U JUMPS OVER THE LAZY DOG 0123456789` |
+| AGC +3 dB, filter | `HE EII S FT I I ES S HE E IE I E I I S H 5 H S I` | `HE EII S FTMX JUMPS OVER THE LAZY DOG 012SMHT56TBM ITMN` | `HE EII S N FOX JUMPS OVER THE LAZY DOG 0123456789` |
+| AGC +6 dB | nothing | `IEN I IMAT I MTI EA T…` | `IEN I I MW I OITEA T I EAG Y T OG 01234 H6789` |
 
-**The existing cases.** Every printed reading of the eight synthetic reader classes is identical to HEAD:
-- the calls at every speed, both Farnsworth cases and the speed change;
-- the fists;
-- the bursts, the hesitation, `TEST DE W1AW K`, `DE DE`, the lone and stray marks;
-- the strength table: 16 and 24 dB whole; 8 dB `N ET A EI A DE N0CALL NTJCE AEL K`; 12 dB `CT A CQ DE N0CALL N0CALL K`;
-- unit 511's quiet dit and dah, whole.
+**The strength table** is the call at 20 WPM, fit off then fit on:
 
-Both noise tests print nothing (30 s: 0 stood; 180 s: 80 stood). In `WhichGateTurnsAwayW1aw`, only its diagnostic counts moved: keying hops, and "pointed 600" now counting 18 marks rather than 0.
+| dB | stood off | reads off | stood on (fitted) | reads on |
+|---|---|---|---|---|
+| 24 | 65 | whole | 65 (0) | whole |
+| 16 | 70 | whole | 70 (0) | whole |
+| 14 | 65 | whole | 65 (0) | whole |
+| 12 | 64 | `CT A CQ DE N0CALL N0CALL K` | 65 (1) | whole |
+| 10 | 62 | `CQ RMT IE N0CALL N0CALL K` | 65 (3) | whole |
+| 8 | 58 | `N ET A EI A DE N0CALL NTJCE AEL K` | 65 (7) | `CQ NIQ DE N0CALL NTJCALL K` |
+
+**Fading station, 24 dB to 10 and back:** whole, fit off and on, with nothing fitted.
+
+**Score distributions:**
+- Real marks:
+  - 24 dB: lowest 0.835, median 0.892.
+  - 16 dB: 5% 0.807; one mark is zeroed by the lobe rules.
+  - 12 dB: lowest 0.738.
+  - 8 dB: 5% 0.671; 6 marks under 0.7.
+- Noise: highest 0.239 and 0.189, 95% under 0.05.
+- No overlap, apart from the real marks the rules set to nought.
+
+**Noise:**
+- 30 s: 0 fitted, prints nothing.
+- 180 s: 1 fitted (3,932 → 3,933 candidates), 80 stood as at HEAD, prints nothing.
+
+**The word-gap cases** are a hand sender at 18 WPM, unchanged reader:
+
+| word gap | true letter / word gap | reads |
+|---|---|---|
+| 7 dits | 207 / 439 ms | `KI1MM DE VE2JD NAME IS JEAN QTH QUEBEC HW` |
+| 5 dits | 199 / 328 ms | `KI1MM DEVE2JD NAME ISJEANQTHQUEBECHW` |
+| 4 dits | 205 / 268 ms | `KI1MMDEVE2JDNAMEISJEANQTHQUEBECHW` |
+
+**Every existing case:** I ran unit 515's filter and diffed every printed line against HEAD's run. 113 lines each side; all are identical except these, each nearer the sent text:
+- 12 dB: `CT A CQ DE N0CALL N0CALL K` → `CQ CQ DE N0CALL N0CALL K`
+- 8 dB: `N ET A EI A DE N0CALL NTJCE AEL K` → `CQ NIQ DE N0CALL NTJCALL K`
+- 5 WPM Farnsworth at 10 dB: `CK CK DE E■CASL N0RALL N` → `CK CQ DE N0CALL N0CALL K`
+- The weak call: `CGE N EQ DE N0CALL NT ON EALL A` → `CGE CQ DE N0CALL N0CALL K`. In the shape measurement, its per-hop marks went from 61 to 60, because a fitted mark in the sequence changes which per-hop mark the gate stands.
+- 180 s noise candidates: 3,932 → 3,933.
+
+Reds in those classes go from 4 at HEAD to 3. `TheCallReadsAtEveryStrength(12)` is now green. Still red, as at HEAD:
+- `TheCallReadsAtEveryStrength(8)`
+- `FarnsworthAndFastReadAtTenDecibels`
+- `ALetterReadFromNoiseDoesNotReachTheScreen(blocks: True)`
 
 ## 4. What's blocking us
 
-Nothing blocks. The items:
+1. **Task 2 waits on a ruling: where a word gap starts for a hand sender.**
+   - **Ruling asked:** the line between a letter gap and a word gap, when a sender's gaps form only one cluster.
+   - **Industry standard:** fldigi and CW Skimmer use an adaptive threshold near 5 dits on the measured dit (between Morse's 3 and 7). The cost of a false space inside a callsign is the reason they don't go lower.
 
-1. **The old timing-path noise test is red.** `ALetterReadFromNoiseDoesNotReachTheScreen(blocks: True)` exercises a gate the app has not used since 493. Unit 512's cleanup should retire it with the timing decoder, or a ruling should say the verdict must stay closed on noise sequences that stand.
-2. **For 512:** the meter and tracker table in section 1. Neither steers anything on the screen's path any more.
-3. **The filter in the tests is a stand-in** (two band-pass sections), not the IC-7300's own shape. Your station at the radio is the test.
-4. **Unit 512 is still unrun.** This unit numbered past it as the order said; the next order should be 516 or later, with ruling id HM-DEC-220 or later.
+   | Option | Line | Pros | Cons |
+   |---|---|---|---|
+   | A (recommended) | 5 dits of gap, from the sender's own element gap | Parts 5-dit word gaps; a hand's 3-dit letter gaps rarely reach 5; one place, in the gate | 4-dit word gaps still run together |
+   | B | 1.25 × the letter centre (about 3.75 dits) | Parts most 4-dit word gaps | A hand scattering a sixth puts spaces inside words, `KI1 MM`, which is §0.0's wrong-callsign case |
+   | C | Keep 1.53 × the letter centre (today) | Nothing moves | The Quebec screen stays as it was |
+
+   With a ruling, the next unit builds it in `CwPatternGate` as the order designed, and `CwRunReader` loses its gap arithmetic.
+2. **516's on-air failure was not reproduced on the bench.** The fix closes the mechanism the order named. AGC overshoot, which breaks the per-hop path itself, is the leading other suspect. A capture at the radio would settle it, but the ban on reading recordings stands.
+3. **A slow 6 dB fade breaks the per-hop path at 24 dB**, with no fit involved. This is a new finding, not this unit's work.
+4. **`DecisionLogOrderTests.EveryRulingAppearsOnceAndTheGapsAreTheKnownOnes` is red.** It was already red for gaps at HEAD (HM-DEC-166, 182, 189, …); HM-DEC-220, reverted with 516, is now one more. The order check passes.
+5. **Unit 512 is still unrun.** The next order is 518 or later, with ruling HM-DEC-222 or later.
 
 ### Asks still outstanding
 
-- **Unit 440's item 1:** MET-COVERAGE counts wrong sure characters. Raised 2026-09-25, waiting on
-  the owner; no change sits in the tree.
-- **Unit 440's item 2:** R72 is cited as HM-DEC-175. Raised 2026-09-25 and scheduled as step 8
-  record work under R80.
-- **Unit 487, 2026-09-28:** whether the terminal shows only settled text, so nothing on it is ever
-  revised, at the cost of seconds of lag. On the run path, now the only path to the screen, the
-  terminal shows only settled text. The ask stands only for the timing-only path, which no longer
-  reaches the screen; no change for it sits in the tree.
+- **Unit 517, 2026-10-01: the hand sender's word-gap line**, item 1 above. Waiting on the owner. The measurement sits in `TheSpacesComeFromTheShapeTests`; no change sits in the reader or the gate.
+- **Unit 440's item 1:** MET-COVERAGE counts wrong sure characters. Raised 2026-09-25 and waiting on the owner. No change for it sits in the tree.
+- **Unit 440's item 2:** R72 is cited as HM-DEC-175. Raised 2026-09-25 and scheduled as step 8 record work under R80.
+- **Unit 487, 2026-09-28:** whether the terminal shows only settled text, so nothing on it is ever revised, at the cost of seconds of lag.
+  - On the run path, which is now the only path to the screen, the terminal already shows only settled text.
+  - The ask stands only for the timing-only path, which no longer reaches the screen.
+  - No change for it sits in the tree.

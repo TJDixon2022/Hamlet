@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: COMPLETED
-TASK: 4 of 4
-WORK_INSTRUCTION: 515 - the shape is found wherever it appears (run by hand)
+TASK: 2 of 2
+WORK_INSTRUCTION: 517 - the fit fills gaps, the spaces come from the shape (run by hand)
 BALL: tim
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-30T21:13:13-04:00
-NOTE: Unit 515 - the watched bin retired; all five pitches read through the filter, noise prints nothing
+UPDATED: 2026-10-01T10:11:58-04:00
+NOTE: Unit 517 - fit fills only gaps, floor 10 dB; word-gap line waits on a ruling
 
 ---
 

@@ -4,6 +4,41 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-221
+date: 2026-10-01
+refs: work instruction 517, src/Hamlet.RadioEngine/Cw/CwEnvelopeDetector.cs, src/Hamlet.RadioEngine/Cw/CwMark.cs, src/Hamlet.RadioEngine/Cw/CwPatternGate.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheRectangleIsFittedTests.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheSpacesComeFromTheShapeTests.cs
+---
+
+**The fit fills only what the per-hop tests left; the gap kinds come from the shape.** Tim, work
+instruction 517. The first half is built. The second half is ruled and not built: the line it names
+does not part the gaps it was written for, and the line that would is a further ruling.
+
+**Why 516 was reverted.** Unit 516 built the rectangle fit R115 asked for: a weak dah fitted as a whole
+rather than checked hop by hop. On the air, W1AW at 18 WPM lost every dah and read `S I SEEIIE IIIS SIIE
+I5I`, dits only, where 515 had read the same bulletin whole. So 516 was reverted (`8a85e6ab`,
+`6bf777cf`), with its change left reachable at `f917267a`. The fit had competed with marks instead of
+filling where they were missing. A rectangle fitted to the front of a dah reached the pattern gate before
+the per-hop path called the whole dah, and the dah was then refused as already called.
+
+**The rule it lacked, now built.** A fitted rectangle waits until the per-hop path has finished with
+every bar within two bins that overlaps it, meaning the bar has ended and its calling hops are past. Then
+it is dropped if any mark the per-hop tests found overlaps it at all, within two bins. A per-hop call is
+never refused because of a fitted mark. Everything else of 516's design stands as it was: the score is
+the share of variance explained, the lengths are the sender's own or a sweep, the fit is taken across the
+lobe, and the threshold is 0.7, under the clean call's lowest real-mark score of 0.835 at 24 dB. A
+strong bulletin reads identically with the fit on and off, plain, through the filter, fading, and with a
+2 dB AGC overshoot. Where a 3 dB overshoot breaks the per-hop path into dits, 516's fit split the digits'
+dahs into `012SMHT56TBM`; with the rule they read `0123456789`.
+
+**The Quebec station.** On 2026-10-01 at 7.0265 MHz, a station in Quebec working Maine at 18 WPM read
+`KI1MMRDEVE2JD...QTHQUEBEC,HW?...`, the letters mostly right and almost no spaces. That is a hand sender
+whose word gaps run short, so they never form a cluster apart from the letter gaps. Measured on the bench
+at 18 WPM with a hand's scatter of a sixth, word gaps of 7 dits read with their spaces, and gaps of 5 and
+4 dits run together. The order's fallback, any gap past 1.5 times the letter centre, is the reader's own
+√(7/3), 1.53, already: 4.5 dits, above a 4-dit word gap. Moving the gap kinds into the gate unchanged
+would change no reading, so the move waits on the line.
+
+---
 id: HM-DEC-219
 date: 2026-09-30
 supersedes: the pointing rules of work instructions 476 (the survey's choice of bin), 496 (the station's own bin for the verdict), 507 (follow the reader) and 514 (follow the meter, HM-DEC-218 in part)
