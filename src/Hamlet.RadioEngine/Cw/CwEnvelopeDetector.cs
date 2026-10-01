@@ -222,6 +222,9 @@ public sealed class CwEnvelopeDetector
 
     /// <summary>The highest shape score any standing sequence has had: for the tests' report (work instruction 519).</summary>
     internal double HighestStandingShape { get; private set; }
+
+    /// <summary>The shape that scored <see cref="HighestStandingShape"/>, term by term: for the tests' report (work instruction 520).</summary>
+    internal CwSequenceShape? HighestStandingShapeOf { get; private set; }
     private int _ringWrite;
     private int _ringFill;
     private int _hopFill;
@@ -637,7 +640,11 @@ public sealed class CwEnvelopeDetector
 
         foreach (var s in standing)
         {
-            HighestStandingShape = Math.Max(HighestStandingShape, s.Shape.Score);
+            if (s.Shape.Score > HighestStandingShape)
+            {
+                HighestStandingShape = s.Shape.Score;
+                HighestStandingShapeOf = s.Shape;
+            }
         }
 
         var pitchHz = chosen is not null

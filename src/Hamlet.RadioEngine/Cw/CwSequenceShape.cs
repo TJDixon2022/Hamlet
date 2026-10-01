@@ -22,14 +22,14 @@ namespace Hamlet.RadioEngine.Cw;
 /// between, and every mark one of the two. Something crisp on four and wrong on one is not a keyed
 /// tone; a sum would let the four outvote the one, and a product does not. The author's, from what a
 /// keyed tone is, not from any result.</para>
-/// <para>**A HAND'S WIDEST IS THE LIMIT** (unit 513's 0.25 in log-length): a cluster as wide as the
-/// widest fist scores nought for tightness and a machine's scores near one, so a fist ranks under a
-/// machine sender and noise, whose lengths spread wider than any hand, under both.</para>
+/// <para>**A HAND'S WIDEST IS THE MEASURE** (unit 513's 0.25 in log-length, work instruction 520): a cluster
+/// as wide as the widest fist scores four-fifths for tightness, a machine's near one, and only past what any hand
+/// makes does it fall toward nought at twice that, so a machine ranks over a fist and a fist over noise.</para>
 /// </remarks>
 public sealed record CwSequenceShape(
     double Rectangle, double Dits, double Dahs, double Separation, double ElementGaps, double LetterGaps, double Consistency, double Evidence)
 {
-    /// <summary>A cluster's spread in log-length at which its tightness reaches nought: a hand's widest (unit 513).</summary>
+    /// <summary>A hand's widest spread in log-length (unit 513): tightness is four-fifths there and nought at twice it.</summary>
     public const double WidestSpread = 0.25;
 
     /// <summary>The marks at which the evidence reaches 63%: two sequences' worth of standing, ten.</summary>
@@ -52,8 +52,9 @@ public sealed record CwSequenceShape(
     /// </summary>
     /// <param name="marks">Its recent marks, oldest first.</param>
     /// <param name="count">How many marks it has had in all, for the evidence.</param>
+    /// <param name="againstAHand">Whether tightness is scored against a hand (work instruction 520), or, false, unit 519's machine scale, kept for the tests' before.</param>
     /// <returns>The shape; <see cref="None"/> where its marks do not split into two lengths.</returns>
-    public static CwSequenceShape Of(IReadOnlyList<CwMark> marks, int count)
+    public static CwSequenceShape Of(IReadOnlyList<CwMark> marks, int count, bool againstAHand = true)
     {
         var lengths = marks.Select(m => m.ToSeconds - m.FromSeconds).ToList();
         var sorted = lengths.OrderBy(l => l).ToList();
@@ -121,25 +122,44 @@ public sealed record CwSequenceShape(
 
         return new CwSequenceShape(
             rectangles.Count > 0 ? rectangles.Average() : 1,
-            Tightness(dits),
-            Tightness(dahs),
+            Tightness(dits, againstAHand),
+            Tightness(dahs, againstAHand),
             Math.Clamp((Math.Log(dah / dit) - Math.Log(2)) / (Math.Log(3) - Math.Log(2)), 0, 1),
-            inside.Count >= 2 ? Tightness(inside) : 1,
-            between.Count >= 2 ? Tightness(between) : 1,
+            !againstAHand && inside.Count < 2 ? 1 : Tightness(inside, againstAHand),
+            !againstAHand && between.Count < 2 ? 1 : Tightness(between, againstAHand),
             lengths.Count > 0 ? consistent / (double)lengths.Count : 0,
             1 - Math.Exp(-count / EvidenceMarks));
     }
 
     private static double Centre(IReadOnlyList<double> lengths) => Math.Exp(lengths.Average(l => Math.Log(l)));
 
-    private static double Tightness(IReadOnlyList<double> lengths)
+    private static double Tightness(IReadOnlyList<double> lengths, bool againstAHand)
     {
         var logs = lengths.Select(l => Math.Log(l)).ToList();
-        var mu = logs.Average();
-        var sd = Math.Sqrt(logs.Sum(l => (l - mu) * (l - mu)) / logs.Count);
+        var mu = logs.Count > 0 ? logs.Average() : 0;
+        var squares = logs.Sum(l => (l - mu) * (l - mu));
 
-        return Math.Clamp(1 - (sd / WidestSpread), 0, 1);
+        if (!againstAHand)
+        {
+            return logs.Count < 2 ? 1 : Math.Clamp(1 - (Math.Sqrt(squares / logs.Count) / WidestSpread), 0, 1);
+        }
+
+        // **A FEW LENGTHS SHOW NO TIGHTNESS** (work instruction 520, HM-DEC-224): two lengths at a hand's widest
+        // stand in until the cluster shows its own, so a cluster of two that happen to agree, or none at all, is
+        // scored as a hand's and not as a machine's.
+        var sd = Math.Sqrt((squares + (PriorLengths * WidestSpread * WidestSpread)) / (logs.Count + PriorLengths));
+
+        // **SCORED AGAINST WHAT A HAND DOES**: up to a hand's widest the score falls gently, to four-fifths at the
+        // widest fist unit 513 measured, so four such terms leave a widest fist about two-fifths of a machine's
+        // score - under a machine, and a sender. Past it, toward nought at twice a hand's widest, which no hand
+        // makes and where unit 513's two speeds mixed in one cluster sit (0.45).
+        var x = sd / WidestSpread;
+
+        return x <= 1 ? 1 - (0.2 * x * x) : 0.8 * Math.Pow(Math.Max(0, 2 - x), 2);
     }
+
+    /// <summary>The lengths at a hand's widest that stand in for a cluster until it shows its own: two (work instruction 520). The author's.</summary>
+    public const double PriorLengths = 2;
 
     // The gaps between letters are the lowest cluster of the longer gaps, walked up and split where two
     // neighbours differ by √(7/3), half of three to seven in log-length, as the reader finds them (unit 501).

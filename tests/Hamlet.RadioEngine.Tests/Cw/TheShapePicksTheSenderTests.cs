@@ -126,7 +126,8 @@ public sealed class TheShapePicksTheSenderTests
         string Text,
         List<(double Seconds, double PitchHz, string Text)> Letters,
         IReadOnlyList<(double PitchHz, CwSequenceShape Shape, bool Printed, int Marks)> Senders,
-        double HighestStandingShape);
+        double HighestStandingShape,
+        CwSequenceShape? HighestStandingShapeOf = null);
 
     private static Run Read(float[] samples, bool shape, Action<CwEnvelopeDetector>? setUp = null)
     {
@@ -165,12 +166,12 @@ public sealed class TheShapePicksTheSenderTests
 
         var text = string.Join(' ', string.Concat(characters.Select(c => c.Text)).Split(' ', StringSplitOptions.RemoveEmptyEntries));
 
-        return new Run(text, letters, senders, detector.HighestStandingShape);
+        return new Run(text, letters, senders, detector.HighestStandingShape, detector.HighestStandingShapeOf);
     }
 
     private void Report(string what, Run run)
     {
-        _output.WriteLine($"{what}: reads `{run.Text}`; highest standing sequence shape {run.HighestStandingShape:0.000}");
+        _output.WriteLine($"{what}: reads `{run.Text}`; highest standing sequence {run.HighestStandingShapeOf?.ToString() ?? "none"}");
 
         foreach (var group in run.Letters.GroupBy(l => Math.Round(l.PitchHz / 25) * 25))
         {
@@ -321,6 +322,44 @@ public sealed class TheShapePicksTheSenderTests
         Assert.True(cleanLetters.Min(l => l.Seconds) > fistLetters.Max(l => l.Seconds), "the clean sender is printed only after the fist's last letter");
     }
 
+
+    /// <remarks>
+    /// **A FIST IS A SENDER** (work instruction 520, task 1): the call at 20 WPM, 24 dB, clean and scattered
+    /// by a fifth and by a third, alone. Its shape from the last forty marks that stood at its pitch, on unit
+    /// 519's machine scale and against a hand; both fists above noise's best (0.107 in unit 519) and the clean
+    /// sender above both.
+    /// </remarks>
+    /// <param name="scatter">How far each length is scattered either way.</param>
+    [Theory]
+    [InlineData(0.0)]
+    [InlineData(0.2)]
+    [InlineData(1.0 / 3)]
+    public void AFistScoresAboveNoise(double scatter)
+    {
+        var marks = Morse(Call, 20, scatter, 3, 5203);
+        var samples = Noise(marks[^1].To + 3, 5204);
+
+        Key(samples, marks, 625, 24);
+
+        var detector = new CwEnvelopeDetector(Rate);
+
+        for (var at = 0; at + Chunk <= samples.Length; at += Chunk)
+        {
+            detector.Process(samples.AsSpan(at, Chunk));
+        }
+
+        var stood = detector.MarksSince(0).Marks.Where(m => Math.Abs(m.PitchHz - 625) <= 2 * CwEnvelopeDetector.BinSpacingHz).ToList();
+        var recent = stood.TakeLast(40).ToList();
+        var before = CwSequenceShape.Of(recent, stood.Count, againstAHand: false);
+        var after = CwSequenceShape.Of(recent, stood.Count);
+        var run = Read(samples, shape: true);
+
+        _output.WriteLine(string.Create(CultureInfo.InvariantCulture, $"scattered by {scatter:0.00}: {stood.Count} stood, reads `{run.Text}`"));
+        _output.WriteLine($"  before, a machine's scale: {before}");
+        _output.WriteLine($"  after, against a hand:     {after}");
+
+        Assert.True(after.Score > 0.2, $"shape {after.Score:0.000} is clear of noise's best");
+    }
     /// <remarks>
     /// Case 5: thirty seconds and three minutes of loud noise print nothing; the highest shape score any noise
     /// sequence earned is printed beside the real senders' of cases 1 to 3.

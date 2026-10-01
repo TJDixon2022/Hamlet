@@ -1,17 +1,14 @@
-# Work instruction 519 - shape picks the sender, and loudness picks nothing
+# Work instruction 520 - a fist is a sender, the best shape gets the terminal, and a neighbour does not kill a station
 
-**Hand run. One unit.** On every station the owner tuned to this morning, the meter found clean
-55 to 63 ms marks - the shape was there and the code saw it - and the reader printed from a
-different, louder, messier sequence. **Loudness is not shape.** This unit takes loudness out of
-every choice the shape side makes.
+**Hand run. One unit, three tasks, commit per task, drop from the back.**
 
 **No test against a recording, a fixture, a floor or copied telemetry** (R96). A headless test
 driving synthetic hops written in the test itself is allowed; nothing read from disk. Verify by
 building `Hamlet.sln` with warnings as errors and running the app carry-forward line. **Every
 existing reading case reads exactly as at HEAD**, or the report says what changed and why.
 
-**Numbering.** This is unit 519, ruling HM-DEC-223. If taken, use the next free and say so.
-**Unit 518 is not run until this has.**
+**Numbering.** This is unit 520, ruling HM-DEC-224. If taken, use the next free and say so.
+**Unit 518 runs after this.**
 
 ---
 
@@ -24,7 +21,7 @@ PROJECT: Hamlet
 
 Check the repository root:
   MUST EXIST:      SHACK_FACTS.md
-  MUST EXIST:      src\Hamlet.RadioEngine\Cw\CwPatternGate.cs
+  MUST EXIST:      src\Hamlet.RadioEngine\Cw\CwSequenceShape.cs
   MUST EXIST:      CW_REQUIREMENTS.md
   MUST NOT EXIST:  CoreHMI.sln
   MUST NOT EXIST:  MURC.sln
@@ -44,137 +41,109 @@ If all five hold, say "Hamlet confirmed" and continue.
   to `RUN_LEDGER.md`. Touch nothing under `tools\arbiter\`. Tick nothing in `PHASE_PLAN.md`.
 - One `dotnet test` invocation per line, filtered, with a `timeout`. Never background and poll.
 - Apostrophes in quoted heredocs break; `;` is refused; Python cannot run here; `-m` more than
-  once for a multi-line commit. Scripts go in `.run-unit\unit519-<name>.sh`, not committed.
+  once for a multi-line commit. Scripts go in `.run-unit\unit520-<name>.sh`, not committed.
 - Nothing that keys or transmits. Nothing written to the radio.
 - `output.md` at the root, four headings exactly: `## 1. What Claude did`, `## 2. What the owner
   should expect`, `## 3. What you should see`, `## 4. What's blocking us`.
 
 ---
 
-## 2. The owner's ruling, and what the rows showed
+## 2. Task 1 - a fist is a sender
 
-**His words, 2026-10-01, R116:**
+**Unit 519 measured it:** a fist scattered by a fifth scores **0.069**; by a third, **0.000**.
+Noise's best is 0.107. **A sloppy human ranks below noise.** The owner's 21:44 station on
+2026-09-30 was a sloppy human and a real one, and under 519's nought rule it would print nothing.
 
-> *"I don't care what the pitch is. You should find the shape in the noise. It's there. It was
-> audible. Let's defocus pitch and emphasize shape."* And: *"I want this to be so much shape that
-> I'm shocked."*
+**Why.** `CwSequenceShape`'s tightness terms reach nought at `0.25` in log-length, a hand's widest
+spread (unit 513). A fist at that spread scores zero on four of eight terms, and the product is
+zero.
 
-**The rows, 14:24 to 14:26, three or four stations he tuned across, sixteen presses.** On every one
-the keying meter found a real sender - **55 to 63 ms marks, score up to 0.49**. The pattern gate
-stood a sequence. **And the one it stood was never the one with the clean marks**: the meter at
-875, the detector's standing pitch at 600 and 650, the reader printing at 700, then chasing.
-Twelve *idiot* presses. **The shape was found every time and thrown away for something louder.**
+**The rule.** A fist is still a sequence with two lengths and three gaps - wider ones. **Tightness
+is scored against what a hand does, not against a machine:** a spread up to a hand's widest
+scores well, and only a spread past what any hand makes scores toward nought. The figure is the
+author's, stated with its reason, derived from unit 513's measured fists - not from a result.
+**A machine sender still scores higher than a fist; a fist still scores well above noise.**
 
-**Why.** Unit 515: *"PitchHz is that sequence's pitch, the loudest where several stand."* Unit 490:
-*"one sender is printed: the first to make two runs, the one with the most marks if several
-have."* And underneath, every per-mark score (502, 507) and the fit (517) carry the mark's level
-as a term. **Loudness decides which sequence stands first, which is printed, and which pitch the
-light and the scope show.** A station at the filter's edge, attenuated 10 dB, loses to leakage
-and noise that happens to be louder in the passband. A loud carrier with no rhythm can out-rank a
-quiet station with perfect rhythm.
+**Watch it fail first**: unit 513's fists at a fifth and a third, their shape scores before and
+after; **both must score above noise's best (0.107) by a clear margin**, and the clean sender
+above both. Noise, 30 s and 180 s, prints nothing and its best score is reported.
 
-**What an ear does.** It picks the one that *sounds like code* - the cleanest rhythm - and follows
-it, whatever is louder beside it.
+## 3. Task 2 - the best shape gets the terminal
 
----
+**Unit 519's question, answered here as a CW question (R85), not raised to the owner:** **option
+A.** When the first sender qualifies, **wait one of its word gaps** for others to qualify, then
+print the best-shaped. Nothing switches mid-sentence; the first letters print a word late. **A
+printed sender is held as unit 511 holds it** - until it has been silent for its word gap and a
+dah; at that silence, if a better-shaped sender is standing, it takes the terminal.
 
-## 3. The change - a shape score for a sequence, and loudness in none of it
+**Watch it fail first**: unit 519's case 2 - a clean 10 dB sender at the filter's edge beside a
+20 dB fist in the centre. **Red today**: the fist prints. Green: the clean one prints, whole.
+Case 4 reports the switch time. Every other case reads as at HEAD, with the first word's delay
+noted.
 
-### One - every sequence gets a shape score
+## 4. Task 3 - a neighbour does not kill a station
 
-In `CwPatternGate`, every standing sequence carries **one score from the shape of its marks and
-gaps together**, 0 to 1, built only from ratios:
+**Unit 519's case 1 at 200 Hz:** a clean 12 dB sender beside a 24 dB carrier keyed at random,
+200 Hz away. The clean sender keeps **21 of 65 marks**. Not a choice fault - **the per-mark gates
+lose the marks to the carrier's keying.** And this is the owner's screen this morning: stations
+he heard clearly, pressed *idiot* twelve times, while the meter found their marks and the pattern
+gate stood something else.
 
-- **rectangle quality**: the mean of its marks' per-mark shape scores (502, 507) **with the
-  level term removed** - flatness, edges, narrowness, fit; **never contrast, never height**;
-- **cluster tightness**: how tightly its dits cluster, how tightly its dahs cluster, and how far
-  apart the two centres stand - a sender with a crisp 1:3 scores high, a fist scores lower, noise
-  scores near nothing;
-- **gap tightness**: the same for its element gaps and letter gaps;
-- **consistency**: the share of its marks that fall inside its own clusters;
-- **count**: how many marks have stood, saturating - five marks are evidence, fifty are proof,
-  five hundred are no more proof than fifty.
+**Find which gate first.** On that case, with each per-mark gate off in turn - flatness, edges,
+narrowness, the fit, the pattern gate's level tolerance - how many of the clean sender's 65 marks
+survive. **Report the table.** The likely one is narrowness: the carrier 200 Hz away sits inside
+the narrowness probe's reach, so a clean mark reads as broad whenever the carrier is up.
 
-**How they combine is the author's**, stated with its reason. **The reason must be about what a
-keyed tone is, not about a result.** A product of per-property scores is the obvious choice, as
-unit 502 chose: a sequence crisp on four and bad on one is bad.
+**Then fix that gate so a neighbour is a neighbour, not noise.** A probe bin that is itself a
+keyed tone - its own level making bars - is not "the band beside the mark"; it is excluded from
+the narrowness comparison, and the mark is judged against the band that is not another station.
+If the gate is a different one, the same principle: a mark is judged against noise, never against
+another sender.
 
-### Two - loudness picks nothing
+**Watch it fail first**: case 1 at 200 Hz, red today at 21 of 65; green when the clean sender
+keeps its marks and reads whole. Then at 150 and 100 Hz, printed. The two-station case at 200 Hz
+still reads the loud one whole and stands the quiet one.
 
-- **The sequence printed is the one with the highest shape score**, not the first to stand and not
-  the one with the most marks. Unit 490's rule retires.
-- **The reading's pitch, the light and the scope follow the printed sequence** - the one with the
-  best shape - not the loudest. Unit 515's *"the loudest where several stand"* retires.
-- **Once a sequence is being printed it is held** until it has been silent for its own word gap
-  plus a dah, as unit 511 holds it. A better-shaped sequence arriving does not take the terminal
-  mid-sentence; it takes it at the next silence. An ear does not switch stations mid-word.
-- **The per-mark shape score loses its level term everywhere it is used as a score.** The level
-  is still measured - the sequence's own level tolerance (490, 511) still groups marks - but
-  **nothing ranks by it.** Say in the report every place level or contrast was a term in a score
-  and what replaced it.
-- **The verdict row** gains `shapeScore` for the printed sequence, and `sequencesStanding`, so
-  the owner can see what was chosen over what.
-
-### Three - what must not change
-
-The per-mark gates' pass-or-fail rules (497, 498, 507), the fit's fill-only rule (517), the
-reader's letter arithmetic, the terminal, the scope's drawing, the layout, the tab, the buttons.
+**Drop candidate:** this task, with the gate table stated even if the fix is not built.
 
 ---
 
-## 4. What to measure
+## 5. What must not change
 
-**Watch it fail first**, synthetic hops written in the test. **These are the cases that make the
-rule, and they are all about a weaker station with the better shape:**
-
-1. **A clean 20 WPM machine sender at 12 dB beside a loud 24 dB carrier that keys randomly** -
-   marks of random length at random gaps, no rhythm. **The clean sender prints, whole.** Red
-   today: the carrier out-ranks it.
-2. **A clean 20 WPM sender at 10 dB through the filter at the passband's edge, beside a 20 dB
-   fist scattered by a third in the passband's centre.** Both are real; the clean one has the
-   better shape. **The clean one prints.** Report the two shape scores.
-3. **The two-station case**, 24 dB at 625 and 10 dB at 825, both clean: the louder one prints
-   because its shape is as good and it stood first - **and the report prints both scores**, and
-   they are close.
-4. **A sequence being printed is not taken mid-word** by a better one arriving; it is taken at the
-   next silence. Report the switch time.
-5. **Thirty seconds of loud noise, and three minutes: nothing prints**, and the report gives the
-   highest shape score any noise sequence earned beside the lowest a real sender earned in cases
-   1 to 3. **They must not overlap.**
-6. **Every existing case reads exactly as at HEAD**: every speed, both Farnsworth cases, the speed
-   change, the fists, the bursts, the hesitation, `TEST DE W1AW K`, `DE DE`, the lone and stray
-   marks, the five pitches, the drifting station, the quiet dit and dah, the strength table with
-   unit 517's fit, the strong bulletin identical with the fit on and off.
+Every existing case reads exactly as at HEAD apart from the first-word delay task 2 adds: every
+speed, both Farnsworth cases, the speed change, the fists, the bursts, the hesitation,
+`TEST DE W1AW K`, `DE DE`, the lone and stray marks, both noise tests, the five pitches, the
+drifting station, the quiet dit and dah, the strength table with the fit, the strong bulletin
+identical with the fit on and off.
 
 ---
 
-## 5. Record
+## 6. Record
 
-- `PHASE_OUTCOME.md`, both copies: `## UNIT 519 - STEP 12`, one paragraph.
-- `PHASE_STATUS.md`, both copies: names 519.
+- `PHASE_OUTCOME.md`, both copies: `## UNIT 520 - STEP 12`, one paragraph naming what landed.
+- `PHASE_STATUS.md`, both copies: names 520.
 - Patch-bump `Directory.Build.props`.
 - `CLAUDE.md` §1 index row.
-- **Append R116 to the rulings section of both `PHASE_PLAN.md` copies**, in the owner's words.
-  **Touch no checkbox.**
-- `DECISIONS.md`, newest first, **HM-DEC-223**, headline *Shape picks the sender; loudness picks
-  nothing*, quoting him, and naming the rules of 490 and 515 it retires and every score that lost
-  its level term.
+- `DECISIONS.md`, newest first, **HM-DEC-224**, headline *A fist is a sender; the best shape gets
+  the terminal after one word gap; a mark is judged against noise, never against another
+  sender*, naming unit 519's measurements.
+- **Touch no checkbox in `PHASE_PLAN.md`**, and add no ruling.
 
 ---
 
-## 6. Report
+## 7. Report
 
 Section 2, for the owner, in plain words:
 
 - rebuild;
-- **the station with the cleanest rhythm is the one that prints**, however loud its neighbours;
-  a loud carrier or a louder sloppy fist no longer takes the terminal from it;
-- once a station is being read, Hamlet stays on it until it pauses;
-- the row now says the printed station's shape score and how many sequences were standing, so
-  **when it picks wrong you can see what it chose over what**;
+- **a rough fist is a station**, ranked well above noise, and prints;
+- **the cleanest station gets the terminal** - Hamlet waits one word after the first station
+  appears, then picks the best; it switches only at a pause;
+- **a station next to a louder one is no longer thrown away** because the loud one's keying
+  bleeds into the comparison;
 - nothing about letters changed.
 
-Section 1: what changed, file by file; how the sequence score is built and why; every score that
-had a level term and what replaced it; and that the build and the app line are green. **Section
-3: cases 1 and 2 with both sequences' scores at the top, then the noise scores against the real
-ones, then the existing cases.** Section 4: anything left, a line each.
+Section 1: what changed, file by file, per task; the tightness figure and its reason; **the gate
+table from task 3**; and that the build and the app line are green. **Section 3: the fist scores
+against noise first, then case 2's switch, then the gate table, then the existing cases.**
+Section 4: anything left, a line each, and any task dropped.
