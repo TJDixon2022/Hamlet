@@ -4,6 +4,53 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-220
+date: 2026-09-30
+refs: work instruction 516, PHASE_PLAN.md R115, src/Hamlet.RadioEngine/Cw/CwEnvelopeDetector.cs, src/Hamlet.RadioEngine/Cw/CwMark.cs, src/Hamlet.RadioEngine/Cw/CwPatternGate.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheRectangleIsFittedTests.cs
+---
+
+**A weak mark is a rectangle fitted as a whole, not checked hop by hop.** Tim, R115: *"Focus on
+shape. If you get the shape, the decode comes."*
+
+**What failed.** Five presses of *You're an idiot* on 2026-10-01 UTC, on 7.0265 MHz, a Quebec station
+working Maine at 18 WPM: at 01:17 nothing was found, the meter scoring 0.05 to 0.09 on a swing of 15 dB;
+at 01:18 it was reading at 65 ms dits on a swing of 20 to 25 dB; at 01:18:26 the marks dropped to 6 on a
+swing of 16 dB; and on 7.0361, on a swing of 13 to 14 dB, nothing. Every per-hop test judges a bar one
+hop at a time, and noise riding on a weak dah's top breaks it into pieces of 20 and 30 ms that no test
+passes, while the rectangle is still plainly there.
+
+**The wrong version, unit 510's.** A running mean over half a dit, then the same per-hop tests run on the
+blurred result. Every row got worse, because the blur rounded the edges the tests look for. This ruling
+leaves the per-hop tests exactly as they were and adds a second way in.
+
+**What is built.** Each hop, in every bin, a two-level rectangle - a top over the stretch and a floor
+over a shortest bar's width of gap either side - is fitted at the standing sender's dit and dah lengths
+and a fifth either side, or at a sweep from the shortest bar to a 5 WPM dah in steps of a quarter where
+nobody stands. It is fitted across the lobe: the bin and the bins 100 Hz either side, each with its own
+levels. The score is the share of the variance the rectangle explains, nought to one, with no decibel
+figure in it. A bin's best at its best end in time becomes a candidate where it scores 0.7 or more, and
+it goes to the unchanged pattern gate.
+
+**The threshold, 0.7.** The lowest score a real mark of the clean call earns at 24 dB over the noise is
+0.835; 0.7 sits 0.135 under it. The highest score any dit- or dah-length stretch of noise earned is 0.239.
+It is not to be moved to make a weak case pass or a noise case fail.
+
+**Four rules the measurement required, so that a strong signal is unchanged.** Each was added because a
+strong case changed without it, and none loosens a per-hop test, the gate or the reader. The rectangle
+must be its bin's: where a lobe bin 100 Hz away stands higher over its own gaps, the rectangle is another
+station's and the score is nought. A step no taller than the flatness tolerance, 1.5 dB, is a flat top,
+since the share explained has no scale and on a clean tone half a decibel of ripple explains most of
+nothing. No bin within 300 Hz, the reach narrowness reads at, may stand higher over the same span, because
+a strong tone's side lobes 225 Hz out are rectangles too. And a fitted rectangle is held until the
+per-hop path has had its turn at the same stretch, then dropped if a mark already called covers half of
+it or more.
+
+**What it showed.** On the bench's call, the floor at which it reads whole moves from 14 dB over the
+noise to 10 dB. At 12 dB `CT A CQ DE N0CALL N0CALL K` reads whole, and at 8 dB `N ET A EI A DE N0CALL NTJCE
+AEL K` becomes `CQ NITK DE N0CALL NTJCALL K`. Both noise cases print nothing, and every strong case reads
+as before.
+
+---
 id: HM-DEC-219
 date: 2026-09-30
 supersedes: the pointing rules of work instructions 476 (the survey's choice of bin), 496 (the station's own bin for the verdict), 507 (follow the reader) and 514 (follow the meter, HM-DEC-218 in part)
