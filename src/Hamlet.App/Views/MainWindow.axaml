@@ -1828,25 +1828,35 @@
                                  listening, amber while a shape forms with its count, green when a
                                  station's shape stands and while it is read. Its words beside it, in
                                  a fixed width, so nothing moves when they change. -->
-                            <StackPanel x:Name="CwShapeLight" Orientation="Horizontal" Spacing="6"
+                            <!-- THE GAUGE (work instruction 522, task 3): the light becomes a bar that
+                                 fills as Hamlet grows sure, a fifth per mark to the mark at four-fifths,
+                                 then with the shape score, full while reading; its colour follows the
+                                 state and its words say it. Same width as the light was. -->
+                            <StackPanel x:Name="CwShapeLight" Orientation="Vertical" Spacing="2"
+                                        Width="158"
                                         Background="Transparent"
                                         ToolTip.Tip="{Binding CwHearing.ShapeLightTip}"
                                         ToolTip.ShowDelay="300">
-                                <Panel Width="12" Height="12" VerticalAlignment="Center">
-                                    <Ellipse Fill="{StaticResource HmSlateEdgeBrush}"
-                                             IsVisible="{Binding CwHearing.ShapeLightIsDark}" />
-                                    <Ellipse Fill="{StaticResource HmAmberBrush}"
-                                             Stroke="{StaticResource HmAmberDeepBrush}" StrokeThickness="1"
-                                             IsVisible="{Binding CwHearing.ShapeLightIsAmber}" />
-                                    <Ellipse Fill="{StaticResource HmGreenBrush}"
-                                             Stroke="{StaticResource HmGreenEdgeBrush}" StrokeThickness="1"
-                                             IsVisible="{Binding CwHearing.ShapeLightIsGreen}" />
-                                </Panel>
-                                <TextBlock Width="140" FontSize="11"
-                                           VerticalAlignment="Center"
+                                <TextBlock FontSize="11"
                                            TextTrimming="CharacterEllipsis"
                                            Foreground="{StaticResource HmTextPrimaryBrush}"
                                            Text="{Binding CwHearing.ShapeLightWords}" />
+                                <Panel Height="6">
+                                    <Border Background="{StaticResource HmSlateTintBrush}"
+                                            BorderBrush="{StaticResource HmSlateEdgeBrush}" BorderThickness="1"
+                                            CornerRadius="3" />
+                                    <Border HorizontalAlignment="Left" CornerRadius="3"
+                                            Width="{Binding CwHearing.ShapeGaugeWidth}"
+                                            Background="{StaticResource HmAmberBrush}"
+                                            IsVisible="{Binding CwHearing.ShapeLightIsAmber}" />
+                                    <Border HorizontalAlignment="Left" CornerRadius="3"
+                                            Width="{Binding CwHearing.ShapeGaugeWidth}"
+                                            Background="{StaticResource HmGreenBrush}"
+                                            IsVisible="{Binding CwHearing.ShapeLightIsGreen}" />
+                                    <!-- The mark: where the marks toward five end and the shape score begins. -->
+                                    <Border HorizontalAlignment="Left" Margin="126,0,0,0" Width="1"
+                                            Background="{StaticResource HmTextMutedBrush}" />
+                                </Panel>
                             </StackPanel>
                             <Button Content="I agree with you"
                                     FontSize="11" Padding="10,4"

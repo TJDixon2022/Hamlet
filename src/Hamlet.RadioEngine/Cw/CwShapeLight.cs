@@ -37,6 +37,26 @@ public static class CwShapeLights
     /// </summary>
     public const double GreenScore = 0.2;
 
+    /// <summary>Where the gauge's first stretch, the marks toward five, ends and its second, the shape score, begins.</summary>
+    public const double Mark = 0.8;
+
+    /// <summary>
+    /// **THE GAUGE** (work instruction 522, task 3): how full the bar is, nought to one. Empty while listening; a fifth
+    /// per mark while a shape forms, to four-fifths at four; from the fifth mark the shape score, 0.2 at the mark and
+    /// 1.0 full; full while a sender is read.
+    /// </summary>
+    /// <param name="light">The light's state.</param>
+    /// <param name="forming">How many marks the forming sequence holds.</param>
+    /// <param name="shapeScore">The standing sequence's shape score, NaN while none stands.</param>
+    /// <returns>The fill.</returns>
+    public static double Fill(CwShapeLight light, int forming, double shapeScore) => light switch
+    {
+        CwShapeLight.Reading => 1,
+        CwShapeLight.Found => Mark + ((1 - Mark) * Math.Clamp((shapeScore - GreenScore) / (1 - GreenScore), 0, 1)),
+        CwShapeLight.Forming => Math.Min(Mark, forming / (double)CwPatternGate.MarksToStand),
+        _ => 0,
+    };
+
     /// <summary>What the light says.</summary>
     /// <param name="light">Its state.</param>
     /// <param name="forming">How many marks the forming sequence holds.</param>
@@ -51,5 +71,5 @@ public static class CwShapeLights
 
     /// <summary>What the light means, on hover.</summary>
     public const string Tip =
-        "Green means Hamlet has the shape of a station here, sure enough to say so. Hold the frequency; the first letters print after one word gap. Amber at five of five is a shape that has stood but is not yet clean enough to trust.";
+        "Fills as Hamlet grows sure it has a station here. Past the mark, hold the frequency; the first letters print after one word gap. Amber at the mark is a shape that has stood but is not yet clean enough to trust.";
 }

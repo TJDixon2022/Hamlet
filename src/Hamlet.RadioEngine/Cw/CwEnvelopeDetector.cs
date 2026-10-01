@@ -42,6 +42,7 @@ public sealed record CwBarBin(
 /// <param name="SequencesStanding">How many sequences stand now, the one followed among them (work instruction 519).</param>
 /// <param name="ShapeLight">What the hold-still light shows (work instruction 521).</param>
 /// <param name="ShapeForming">How many marks the fullest sequence not yet standing holds, within the last two seconds (work instruction 521).</param>
+/// <param name="ShapeFill">How full the gauge is, nought to one (work instruction 522, task 3).</param>
 public sealed record CwEnvelopeReading(
     double EnvelopeDb,
     double FloorDb,
@@ -58,7 +59,8 @@ public sealed record CwEnvelopeReading(
     double ShapeScore = double.NaN,
     int SequencesStanding = 0,
     CwShapeLight ShapeLight = CwShapeLight.Listening,
-    int ShapeForming = 0)
+    int ShapeForming = 0,
+    double ShapeFill = 0)
 {
     /// <summary>Nothing heard.</summary>
     public static CwEnvelopeReading None { get; } = new(
@@ -765,7 +767,8 @@ public sealed class CwEnvelopeDetector
             _readingShape,
             standing.Count,
             light,
-            forming);
+            forming,
+            CwShapeLights.Fill(light, forming, _readingShape));
     }
 
     /// <summary>One bin's level this hop, as mean square: a full-scale sine reads -3 dB.</summary>

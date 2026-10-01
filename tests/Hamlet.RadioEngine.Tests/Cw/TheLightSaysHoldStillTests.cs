@@ -28,7 +28,7 @@ public sealed class TheLightSaysHoldStillTests
     public TheLightSaysHoldStillTests(ITestOutputHelper output) => _output = output;
 
     /// <summary>One step of the light: when, what it showed, and its count.</summary>
-    internal sealed record Step(double Seconds, CwShapeLight Light, int Forming);
+    internal sealed record Step(double Seconds, CwShapeLight Light, int Forming, double Fill = 0);
 
     internal static (List<Step> Steps, List<double> Letters, List<CwMark> Candidates) Run(float[] samples)
     {
@@ -58,7 +58,7 @@ public sealed class TheLightSaysHoldStillTests
 
             var reading = detector.Reading;
 
-            steps.Add(new Step((at + Chunk) / (double)Rate, reading.ShapeLight, reading.ShapeForming));
+            steps.Add(new Step((at + Chunk) / (double)Rate, reading.ShapeLight, reading.ShapeForming, reading.ShapeFill));
         }
 
         return (steps, letters, detector.CandidatesKept.ToList());
@@ -141,6 +141,32 @@ public sealed class TheLightSaysHoldStillTests
         Assert.True(standing.Max(s => s.Score) <= CwShapeLights.GreenScore, "the sequence stands with a shape under the bar");
         Assert.DoesNotContain(steps, s => s.Light is CwShapeLight.Found or CwShapeLight.Reading);
     }
+
+    /// <remarks>
+    /// **THE GAUGE** (work instruction 522, task 3): on a clean call the bar fills a fifth per mark toward the mark at
+    /// four-fifths, crosses it at the fifth mark, climbs with the shape score, and is full from the first letter.
+    /// </remarks>
+    [Fact]
+    public void TheGaugeFillsOnACleanCall()
+    {
+        var signal = CwSignal.Generate(new CwSignalRequest(
+            Call, WordsPerMinute: 20, ToneHz: 625, SampleRate: Rate, Amplitude: ThePatternIsTheGateTests.Over(24),
+            NoiseAmplitude: 0.04, LeadInSeconds: 3, TailSeconds: 4, Seed: 5213)).Samples;
+        var (steps, letters, _) = Run(signal);
+        var changes = steps.Where((s, i) => i > 0 && (Math.Abs(s.Fill - steps[i - 1].Fill) >= 0.01 || s.Light != steps[i - 1].Light || (s.Light == CwShapeLight.Found && i % 50 == 0))).ToList();
+
+        foreach (var s in changes.Where(c => c.Seconds < letters[0] + 0.1))
+        {
+            _output.WriteLine(string.Create(CultureInfo.InvariantCulture, $"{s.Seconds:0.000} s  fill {s.Fill:0.00}  {CwShapeLights.Words(s.Light, s.Forming)}"));
+        }
+
+        var crossed = steps.First(s => s.Fill > CwShapeLights.Mark).Seconds;
+        var before = steps.Where(s => s.Seconds > 3 && s.Seconds < crossed).Select(s => s.Fill).ToList();
+
+        Assert.Contains(before, f => Math.Abs(f - 0.8) < 0.001);
+        Assert.True(crossed < letters[0], "the gauge crosses the mark before the first letter");
+        Assert.All(steps.Where(s => s.Seconds >= letters[0] + 0.05 && s.Seconds < letters[0] + 1), s => Assert.Equal(1, s.Fill));
+    }
     /// <remarks>
     /// Loud noise alone, thirty seconds: never green, and the share of the time a forming sequence holds one, two,
     /// three and four marks, which is where amber should begin.
@@ -157,5 +183,6 @@ public sealed class TheLightSaysHoldStillTests
         _output.WriteLine($"loud noise, 30 s: forming at 1 or more {Share(1)}, 2 or more {Share(2)}, 3 or more {Share(3)}, 4 {Share(4)}; green {steps.Count(s => s.Light is CwShapeLight.Found or CwShapeLight.Reading)} steps");
 
         Assert.DoesNotContain(steps, s => s.Light is CwShapeLight.Found or CwShapeLight.Reading);
+        Assert.DoesNotContain(steps, s => s.Fill > CwShapeLights.Mark);
     }
 }

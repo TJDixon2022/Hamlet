@@ -308,6 +308,7 @@ public sealed partial class CwHearingViewModel : ObservableObject
         OnPropertyChanged(nameof(ShapeLightIsDark));
         OnPropertyChanged(nameof(ShapeLightIsAmber));
         OnPropertyChanged(nameof(ShapeLightIsGreen));
+        OnPropertyChanged(nameof(ShapeGaugeWidth));
     }
 
     /// <summary>
@@ -324,6 +325,12 @@ public sealed partial class CwHearingViewModel : ObservableObject
 
     /// <summary>Whether the light is green: a shape found, or a sender being read.</summary>
     public bool ShapeLightIsGreen => Scope.Reading.ShapeLight is CwShapeLight.Found or CwShapeLight.Reading;
+
+    /// <summary>The gauge's full width, in pixels: the words' width, so nothing moves (work instruction 522, task 3).</summary>
+    public const double ShapeGaugeFullWidth = 158;
+
+    /// <summary>How wide the gauge's fill is now, in pixels (work instruction 522, task 3).</summary>
+    public double ShapeGaugeWidth => ShapeGaugeFullWidth * Math.Clamp(Scope.Reading.ShapeFill, 0, 1);
 
     /// <summary>What the light means, on hover.</summary>
     public static string ShapeLightTip => CwShapeLights.Tip;
@@ -405,6 +412,7 @@ public sealed partial class CwHearingViewModel : ObservableObject
 
             // **WHAT THE HOLD-STILL LIGHT SHOWED** (work instruction 521), in its words.
             ["shapeLight"] = CwShapeLights.Words(scope.ShapeLight, scope.ShapeForming),
+            ["shapeFill"] = Measured(scope.ShapeFill),
 
             // **WHERE THE RADIO'S SCOPE SAID THE SIGNAL WAS** (work instruction 480 task 2). The
             // decibels are null on every row: the radio sends its waveform on a 0 to 160 scale
