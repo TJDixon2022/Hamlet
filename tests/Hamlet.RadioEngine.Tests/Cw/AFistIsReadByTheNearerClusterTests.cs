@@ -31,7 +31,7 @@ public sealed class AFistIsReadByTheNearerClusterTests
     internal sealed record Truth(List<double> Dits, List<double> Dahs, List<double> ElementGaps, List<double> LetterGaps, List<double> WordGaps);
 
     /// <summary>A hand-sent message: the scatter for each letter from the function, by the letter's index.</summary>
-    internal static (float[] Samples, Truth Truth) Fist(string text, int wpm, Func<int, double> scatter, int seed)
+    internal static (float[] Samples, Truth Truth) Fist(string text, int wpm, Func<int, double> scatter, int seed, double wordGapDits = 7)
     {
         var random = new Random(seed);
         var dit = 1.2 / wpm;
@@ -77,7 +77,7 @@ public sealed class AFistIsReadByTheNearerClusterTests
 
             if (w + 1 < words.Length)
             {
-                var gap = Draw(7 * dit, scatter(letter));
+                var gap = Draw(wordGapDits * dit, scatter(letter));
 
                 truth.WordGaps.Add(gap);
                 keyed.Add((gap, false));
@@ -128,6 +128,8 @@ public sealed class AFistIsReadByTheNearerClusterTests
     {
         'A' => ".-", 'C' => "-.-.", 'D' => "-..", 'E' => ".", 'K' => "-.-", 'L' => ".-..", 'N' => "-.",
         'Q' => "--.-", '0' => "-----",
+        'B' => "-...", 'H' => "....", 'I' => "..", 'J' => ".---", 'M' => "--", 'S' => "...", 'T' => "-", 'U' => "..-",
+        'V' => "...-", 'W' => ".--", '1' => ".----", '2' => "..---",
         _ => throw new ArgumentOutOfRangeException(nameof(c), c, "not in the call"),
     };
 
