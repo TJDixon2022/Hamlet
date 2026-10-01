@@ -239,6 +239,10 @@ public sealed class CwRunReader
     /// </summary>
     internal bool ShapePicks { get; set; } = true;
 
+    // Where the wait for the first pick began, and how long it is (work instruction 520).
+    private double _waitingSince = double.NaN;
+    private double _waitSeconds;
+
     private double _printedThrough = double.NegativeInfinity;
 
     private void Print(double heardSeconds)
@@ -264,9 +268,9 @@ public sealed class CwRunReader
         // **SHAPE PICKS THE SENDER; LOUDNESS PICKS NOTHING** (work instruction 519, R116, HM-DEC-223). Of the
         // senders that qualify - two keyed runs, two kinds, their own letter gaps shown - the one printed is
         // the one whose marks and gaps sound most like code. Unit 490 printed the one with the most marks,
-        // and the louder on a tie. A printed sender is held as before, until it has been silent past its own
-        // release (unit 500's: twice its word gap, a dah and the lag in calling it), so a better shape takes the
-        // terminal at the next pause in the sending and never mid-sentence. A shape of nought prints nothing.
+        // and the louder on a tie. Which one, when, and how it is held follows below (work instruction 520). It
+        // is released as before, silent past twice its word gap, a dah and the lag in calling it (unit 500). A
+        // shape of nought prints nothing.
         var qualified = _senders
             .Where(s => s.Ended.Count(r => r.Length >= 2 && r.Any(m => m.Keyed)) >= QualifyingRuns && s.TwoKindsSeen && s.LetterGapSeconds is not null)
             .Select(s => (Sender: s, Score: s.Shape.Score))
@@ -278,7 +282,45 @@ public sealed class CwRunReader
             .ThenByDescending(s => ShapePicks ? 0 : s.Sender.Reference.Level)
             .ToList();
 
-        _station ??= qualified.Select(q => q.Sender).FirstOrDefault();
+        // **THE BEST SHAPE GETS THE TERMINAL** (work instruction 520, HM-DEC-224). A printed sender silent for its
+        // own word gap and a dah - a mark is seen only once it has ended, so a letter gap and the dah after it fall
+        // short of this and only a gap between words passes - gives the terminal to a better-shaped sender standing
+        // then. Never inside a word, and never to a worse shape.
+        if (ShapePicks
+            && _station is not null
+            && _station.Open.Count == 0
+            && double.IsFinite(heardSeconds)
+            && heardSeconds - _station.LastToSeconds > _station.WordGapSeconds + _station.LongestMarkSeconds + CallingLagSeconds
+            && qualified.FirstOrDefault(q => q.Sender != _station) is { Sender: not null } better
+            && better.Score > _station.Shape.Score)
+        {
+            _station = better.Sender;
+        }
+
+        // **AND THE FIRST PICK WAITS ONE WORD GAP** (work instruction 520): when the first sender qualifies, the
+        // reader waits one of its word gaps for others to qualify, then prints the best-shaped. Its letters are
+        // banked meanwhile and print a word late; at the end of the audio nothing waits.
+        if (_station is null && qualified.Count > 0)
+        {
+            if (!ShapePicks || !double.IsFinite(heardSeconds))
+            {
+                _station = qualified[0].Sender;
+            }
+            else if (double.IsNaN(_waitingSince))
+            {
+                _waitingSince = heardSeconds;
+                _waitSeconds = qualified[0].Sender.WordGapSeconds;
+            }
+            else if (heardSeconds - _waitingSince >= _waitSeconds)
+            {
+                _station = qualified[0].Sender;
+            }
+        }
+
+        if (_station is not null)
+        {
+            _waitingSince = double.NaN;
+        }
 
         // The pitch of the sender being printed, for the panel on the screen's thread (work
         // instruction 493): one double, written here on the audio thread and read with Volatile.Read.

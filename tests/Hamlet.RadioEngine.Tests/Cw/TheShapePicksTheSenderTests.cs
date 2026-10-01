@@ -216,8 +216,8 @@ public sealed class TheShapePicksTheSenderTests
 
     /// <remarks>
     /// Case 2: a clean 20 WPM sender at 10 dB at the passband's edge, 825 Hz through 500 Hz on 600, beside a
-    /// 20 dB fist scattered by a third at the centre. The order asks that the clean one prints; it does not,
-    /// the fist having stood first, and what is held is that its shape ranks above the fist's.
+    /// 20 dB fist scattered by a third at the centre. The clean one prints, whole (work instruction 520): the first
+    /// pick waits one word gap, and its shape ranks above the fist's.
     /// </remarks>
     [Fact]
     public void ACleanSenderAtTheEdgeOutranksALouderFistAtTheCentre()
@@ -246,9 +246,7 @@ public sealed class TheShapePicksTheSenderTests
         var fistLetters = run.Letters.Where(l => Math.Abs(l.PitchHz - 600) <= 50).ToList();
         var cleanLetters = run.Letters.Where(l => Math.Abs(l.PitchHz - 825) <= 50).ToList();
 
-        // **NOT MET** (work instruction 519): the fist stands first and is held through its call, as the order
-        // holds a printed sender, so the clean one prints only its last letters. What holds is the ranking: the
-        // clean sender's shape is the higher. The reading is printed for the report.
+        // **MET BY UNIT 520** (task 2): the first pick waits one word gap, and the clean sender's shape is the higher.
         var shapes = run.Senders.Where(s => s.Marks >= CwPatternGate.MarksToStand).ToList();
         var cleanShape = shapes.Where(s => Math.Abs(s.PitchHz - 825) <= 50).Select(s => s.Shape.Score).DefaultIfEmpty(0).Max();
         var fistShape = shapes.Where(s => Math.Abs(s.PitchHz - 600) <= 50).Select(s => s.Shape.Score).DefaultIfEmpty(0).Max();
@@ -256,6 +254,7 @@ public sealed class TheShapePicksTheSenderTests
         _output.WriteLine($"  printed at 600: `{string.Concat(fistLetters.Select(l => l.Text))}`, at 825: `{string.Concat(cleanLetters.Select(l => l.Text))}`");
 
         Assert.True(cleanShape > fistShape, $"the clean sender's shape {cleanShape:0.000} is above the fist's {fistShape:0.000}");
+        Assert.Equal(Call, run.Text);
     }
 
     /// <remarks>
