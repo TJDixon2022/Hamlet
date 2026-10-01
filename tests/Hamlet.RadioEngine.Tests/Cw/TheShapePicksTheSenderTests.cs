@@ -466,10 +466,59 @@ public sealed class TheShapePicksTheSenderTests
         }
 
         var during = detector.CandidatesKept.Where(m => clean.Any(c => m.ToSeconds > c.From && m.FromSeconds < c.To)).ToList();
-        var byPitch = string.Join(", ", during.GroupBy(m => m.PitchHz).OrderBy(g => g.Key).Select(g => $"{g.Key:0}:{g.Count()}"));
+        var byPitch = string.Join(", ", during.GroupBy(m => Math.Round(m.PitchHz / 25) * 25).Where(g => g.Key >= 500 && g.Key <= 900).OrderBy(g => g.Key).Select(g => $"{g.Key:0}:{g.Count()}"));
         var overlapCarrier = during.Count(m => Math.Abs(m.PitchHz - 625) <= 50 && carrier.Any(c => m.ToSeconds > c.Item1 && m.FromSeconds < c.Item2));
 
         _output.WriteLine($"{variant,-18} candidates during the clean marks by pitch: {byPitch}; at 625 while the carrier was up {overlapCarrier}");
+    }
+
+    /// <remarks>
+    /// **THE BIN-GRID SWEEP** (work instruction 521, task 1): a clean 20 WPM sender at 24 dB at 600, 606, 612,
+    /// 618 and 625 Hz, within one 25 Hz bin, no filter, at 24 and 12 dB and with a fist at 16 dB. Every pitch
+    /// reads as 600 does: flat at unit 520's head, so the owner's one-click-off reading is not this.
+    /// </remarks>
+    /// <param name="pitch">The sender's pitch.</param>
+    /// <param name="pitch">The sender's pitch.</param>
+    /// <param name="db">Its level over the noise.</param>
+    /// <param name="scatter">How far its lengths scatter either way.</param>
+    [Theory]
+    [InlineData(600.0, 24.0, 0.0)]
+    [InlineData(606.0, 24.0, 0.0)]
+    [InlineData(612.0, 24.0, 0.0)]
+    [InlineData(618.0, 24.0, 0.0)]
+    [InlineData(625.0, 24.0, 0.0)]
+    [InlineData(600.0, 12.0, 0.0)]
+    [InlineData(606.0, 12.0, 0.0)]
+    [InlineData(612.0, 12.0, 0.0)]
+    [InlineData(618.0, 12.0, 0.0)]
+    [InlineData(600.0, 16.0, 0.2)]
+    [InlineData(606.0, 16.0, 0.2)]
+    [InlineData(612.0, 16.0, 0.2)]
+    [InlineData(618.0, 16.0, 0.2)]
+    public void AStationReadsTheSameBetweenBinCentres(double pitch, double db, double scatter)
+    {
+        var marks = Morse(Call, 20, scatter, 3, 5210);
+        var samples = Noise(marks[^1].To + 3, 5211);
+
+        Key(samples, marks, pitch, db);
+
+        var detector = new CwEnvelopeDetector(Rate);
+
+        for (var at = 0; at + Chunk <= samples.Length; at += Chunk)
+        {
+            detector.Process(samples.AsSpan(at, Chunk));
+        }
+
+        var stood = detector.MarksSince(0).Marks.Where(m => marks.Any(c => m.ToSeconds > c.From && m.FromSeconds < c.To)).ToList();
+        var byPitch = string.Join(", ", stood.GroupBy(m => Math.Round(m.PitchHz)).OrderBy(g => g.Key).Select(g => $"{g.Key:0}:{g.Count()}"));
+        var near = stood.Where(m => Math.Abs(m.PitchHz - pitch) <= CwEnvelopeDetector.BinSpacingHz).ToList();
+        var shape = CwSequenceShape.Of(near.TakeLast(40).ToList(), near.Count);
+        var run = Read(samples, shape: true);
+
+        _output.WriteLine(string.Create(CultureInfo.InvariantCulture, $"{pitch:0} Hz, {db:0} dB, scatter {scatter:0.0}: {near.Count} of {marks.Count} stood within a bin (by pitch {byPitch}); shape {shape.Score:0.000}; reads `{run.Text}`"));
+
+        Assert.Equal(Call, run.Text);
+        Assert.Equal(marks.Count, near.Count);
     }
     /// <remarks>
     /// Case 5: thirty seconds and three minutes of loud noise print nothing; the highest shape score any noise
