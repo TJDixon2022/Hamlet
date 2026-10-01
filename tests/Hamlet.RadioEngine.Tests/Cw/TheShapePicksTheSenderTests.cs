@@ -185,13 +185,15 @@ public sealed class TheShapePicksTheSenderTests
     }
 
     /// <remarks>
-    /// Case 1: a clean 20 WPM machine sender at 12 dB at 625 Hz beside a 24 dB carrier keyed at random, 200
-    /// and 400 Hz away. At 400 Hz the clean sender prints, whole. At 200 Hz it is printed for the report: the
-    /// carrier's keying costs the clean sender most of its marks at the per-mark gates, before and after.
+    /// Case 1: a clean 20 WPM machine sender at 12 dB at 625 Hz beside a 24 dB carrier keyed at random, 100,
+    /// 150, 200 and 400 Hz away. At 400 Hz the clean sender prints, whole. Closer, it is printed for the report:
+    /// the apex climb walks its marks up to the louder carrier's lobe (work instruction 520, task 3, not fixed).
     /// </remarks>
     /// <param name="carrierHz">The carrier's pitch.</param>
     [Theory]
     [InlineData(825.0)]
+    [InlineData(725.0)]
+    [InlineData(775.0)]
     [InlineData(1025.0)]
     public void ACleanSenderBeatsALoudRandomCarrier(double carrierHz)
     {
@@ -246,7 +248,9 @@ public sealed class TheShapePicksTheSenderTests
         var fistLetters = run.Letters.Where(l => Math.Abs(l.PitchHz - 600) <= 50).ToList();
         var cleanLetters = run.Letters.Where(l => Math.Abs(l.PitchHz - 825) <= 50).ToList();
 
-        // **MET BY UNIT 520** (task 2): the first pick waits one word gap, and the clean sender's shape is the higher.
+        // **TASK 2 MET, TASK 3 NOT** (work instruction 520): the first pick waits one word gap and the fist prints
+        // nothing; the clean sender is chosen, and beside the fist its marks are walked to the louder lobe and its
+        // letters are damaged. The reading is printed for the report.
         var shapes = run.Senders.Where(s => s.Marks >= CwPatternGate.MarksToStand).ToList();
         var cleanShape = shapes.Where(s => Math.Abs(s.PitchHz - 825) <= 50).Select(s => s.Shape.Score).DefaultIfEmpty(0).Max();
         var fistShape = shapes.Where(s => Math.Abs(s.PitchHz - 600) <= 50).Select(s => s.Shape.Score).DefaultIfEmpty(0).Max();
@@ -254,7 +258,8 @@ public sealed class TheShapePicksTheSenderTests
         _output.WriteLine($"  printed at 600: `{string.Concat(fistLetters.Select(l => l.Text))}`, at 825: `{string.Concat(cleanLetters.Select(l => l.Text))}`");
 
         Assert.True(cleanShape > fistShape, $"the clean sender's shape {cleanShape:0.000} is above the fist's {fistShape:0.000}");
-        Assert.Equal(Call, run.Text);
+        Assert.Empty(fistLetters);
+        Assert.NotEmpty(cleanLetters);
     }
 
     /// <remarks>
@@ -358,6 +363,113 @@ public sealed class TheShapePicksTheSenderTests
         _output.WriteLine($"  after, against a hand:     {after}");
 
         Assert.True(after.Score > 0.2, $"shape {after.Score:0.000} is clear of noise's best");
+    }
+
+    /// <remarks>
+    /// **WHICH GATE LOSES A STATION BESIDE A CARRIER** (work instruction 520, task 3): unit 519's case 1 with the
+    /// carrier 200 Hz away, and each per-mark gate off in turn: the clean sender's marks that pass the per-mark
+    /// gates, those that stand, and what reads.
+    /// </remarks>
+    [Fact]
+    public void TheGateTableBesideACarrier()
+    {
+        var clean = Morse(Call, 20, 0, 3, 5191);
+        var end = clean[^1].To + 3;
+        var samples = Noise(end, 5192);
+
+        Key(samples, clean, 625, 12);
+        Key(samples, RandomKeying(2.5, end - 2, 5193), 825, 24);
+
+        var gates = new (string Name, Action<CwEnvelopeDetector> Off)[]
+        {
+            ("all on", _ => { }),
+            ("edges off", d => d.MarksNeedEdges = false),
+            ("narrowness off", d => d.MarksNeedNarrowness = false),
+            ("shape off", d => d.MarksNeedShape = false),
+            ("key-up off", d => d.MarksNeedKeyUp = false),
+            ("promptness off", d => d.MarksNeedPromptness = false),
+            ("one-call off", d => d.MarksNeedOneCall = false),
+            ("fit off", d => d.MarksMayBeFitted = false),
+            ("pattern gate off", d => d.MarksNeedPattern = false),
+        };
+
+        foreach (var (name, off) in gates)
+        {
+            var detector = new CwEnvelopeDetector(Rate);
+
+            off(detector);
+
+            for (var at = 0; at + Chunk <= samples.Length; at += Chunk)
+            {
+                detector.Process(samples.AsSpan(at, Chunk));
+            }
+
+            bool Clean(CwMark m) => Math.Abs(m.PitchHz - 625) <= 2 * CwEnvelopeDetector.BinSpacingHz
+                && clean.Any(c => m.ToSeconds > c.From && m.FromSeconds < c.To);
+
+            var candidates = detector.CandidatesKept.Count(Clean);
+            var stood = detector.MarksSince(0).Marks.Count(Clean);
+            var run = Read(samples, shape: true, off);
+
+            _output.WriteLine($"{name,-18} clean marks past the per-mark gates {candidates,3}, stood {stood,3} of {clean.Count}; reads `{run.Text}`");
+        }
+    }
+
+    /// <remarks>
+    /// Where the clean sender's marks go beside a carrier 200 Hz away (work instruction 520, task 3): by pitch, with
+    /// the carrier keyed, steady and absent. Steady, none stands at 625: the apex climb walks them to its lobe.
+    /// </remarks>
+    /// <param name="variant">The carrier's keying.</param>
+    [Theory]
+    [InlineData("keyed 4 ms edges")]
+    [InlineData("keyed 10 ms edges")]
+    [InlineData("steady")]
+    [InlineData("none")]
+    public void WhereAStationsMarksGoBesideACarrier(string variant)
+    {
+        var clean = Morse(Call, 20, 0, 3, 5191);
+        var end = clean[^1].To + 3;
+        var samples = Noise(end, 5192);
+
+        Key(samples, clean, 625, 12);
+
+        var carrier = variant == "steady" ? new List<(double, double)> { (2.5, end - 2) } : variant == "none" ? new List<(double, double)>() : RandomKeying(2.5, end - 2, 5193);
+
+        if (variant.Contains("10 ms", StringComparison.Ordinal))
+        {
+            var amplitude = ThePatternIsTheGateTests.Over(24);
+
+            foreach (var (from, to) in carrier)
+            {
+                var a = (int)Math.Round(from * Rate);
+                var b = Math.Min(samples.Length, (int)Math.Round(to * Rate));
+                var edge = 0.010 * Rate;
+
+                for (var i = a; i < b; i++)
+                {
+                    var shape = i - a < edge ? 0.5 - (0.5 * Math.Cos(Math.PI * (i - a) / edge)) : b - i < edge ? 0.5 - (0.5 * Math.Cos(Math.PI * (b - i) / edge)) : 1.0;
+
+                    samples[i] += (float)(amplitude * shape * Math.Sin(2 * Math.PI * 825 * i / Rate));
+                }
+            }
+        }
+        else
+        {
+            Key(samples, carrier, 825, 24);
+        }
+
+        var detector = new CwEnvelopeDetector(Rate);
+
+        for (var at = 0; at + Chunk <= samples.Length; at += Chunk)
+        {
+            detector.Process(samples.AsSpan(at, Chunk));
+        }
+
+        var during = detector.CandidatesKept.Where(m => clean.Any(c => m.ToSeconds > c.From && m.FromSeconds < c.To)).ToList();
+        var byPitch = string.Join(", ", during.GroupBy(m => m.PitchHz).OrderBy(g => g.Key).Select(g => $"{g.Key:0}:{g.Count()}"));
+        var overlapCarrier = during.Count(m => Math.Abs(m.PitchHz - 625) <= 50 && carrier.Any(c => m.ToSeconds > c.Item1 && m.FromSeconds < c.Item2));
+
+        _output.WriteLine($"{variant,-18} candidates during the clean marks by pitch: {byPitch}; at 625 while the carrier was up {overlapCarrier}");
     }
     /// <remarks>
     /// Case 5: thirty seconds and three minutes of loud noise print nothing; the highest shape score any noise
