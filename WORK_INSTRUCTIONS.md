@@ -1,17 +1,14 @@
-# Work instruction 515 - the shape is found wherever it appears
+# Work instruction 516 - fit the rectangle, do not check it
 
-**Hand run. One unit.** The detector has had a watched bin since unit 476: one pitch it looks at
-for its keying verdict and its blocks, and a chain of rules - unit 496, 507, 514 - for deciding
-which pitch. Every pointing fault this week came from that bin being somewhere the station was
-not. **This unit removes the watched bin.** Every bin, every hop, the same shape test; wherever a
-rectangle appears, that is a mark, and its pitch is the row it was found in.
+**Hand run. One unit.** A weak dah is still a rectangle. The current shape tests look at it one
+hop at a time and a weak one breaks into pieces. This unit fits the rectangle as a whole.
 
 **No test against a recording, a fixture, a floor or copied telemetry** (R96). A headless test
 driving synthetic hops written in the test itself is allowed; nothing read from disk. Verify by
 building `Hamlet.sln` with warnings as errors and running the app carry-forward line. **Every
 existing reading case reads exactly as at HEAD**, or the report says what changed and why.
 
-**Numbering.** This is unit 515, ruling HM-DEC-219. If taken, use the next free and say so.
+**Numbering.** This is unit 516, ruling HM-DEC-220. If taken, use the next free and say so.
 
 ---
 
@@ -44,117 +41,118 @@ If all five hold, say "Hamlet confirmed" and continue.
   to `RUN_LEDGER.md`. Touch nothing under `tools\arbiter\`. Tick nothing in `PHASE_PLAN.md`.
 - One `dotnet test` invocation per line, filtered, with a `timeout`. Never background and poll.
 - Apostrophes in quoted heredocs break; `;` is refused; Python cannot run here; `-m` more than
-  once for a multi-line commit. Scripts go in `.run-unit\unit515-<name>.sh`, not committed.
+  once for a multi-line commit. Scripts go in `.run-unit\unit516-<name>.sh`, not committed.
 - Nothing that keys or transmits. Nothing written to the radio.
+- **Only `CwEnvelopeDetector` and what it hands the pattern gate change.** The reader, the gate's
+  sequence rules, the scope, the terminal, the layout, the tab, the buttons, the row: untouched.
 - `output.md` at the root, four headings exactly: `## 1. What Claude did`, `## 2. What the owner
   should expect`, `## 3. What you should see`, `## 4. What's blocking us`.
 
 ---
 
-## 2. The owner's ruling, and what it ends
+## 2. The fault, measured, and the owner's rule
 
-**His words, 2026-09-30, R114:**
+**2026-10-01, 7.0265, a Quebec station working Maine at 18 WPM.** Five *idiot* presses: at 01:17
+nothing found, meter score 0.05 to 0.09, swing 15; at 01:18 the same station, same pitch,
+reading at 65 ms dits, swing 20 to 25; at 01:18:26 marks drop to 6, swing 16; then reading again.
+On 7.0361, a station the owner heard, swing 13 to 14, nothing. **Every idiot press tonight is the
+same fault: a signal he hears clearly sitting at or below the detector's floor.** Unit 507
+measured the floor at about 16 dB and said why: *"at 8 dB four of the call's dahs never become
+bars. That is before any gate this unit touched."*
 
-> *"I'm wondering why we're so focused on pitch. Pitch almost doesn't matter. It's shape. If you
-> can identify height, flat top, period, then you know it's a dot or a dash. The pitch doesn't
-> matter."* And: *"You keep talking about 350, 400, 500, 600. Those are pitches. I just care
-> about shape."*
+**Why the dahs break.** Every shape test on a bar - flatness (R93), edges (497), narrowness (498),
+the shape score (502, 507) - **judges the rectangle one hop at a time**: is this hop within
+tolerance of the top, did this hop fall fast enough. On a strong signal every hop is. On a weak
+one, noise rides on the top, hops fall outside the tolerance, and the bar splits into pieces of
+20 and 30 ms that are neither dit nor dah. The rectangle is still there; the per-hop test cannot
+see it through the noise.
 
-**What the detector does now.** `CwEnvelopeDetector` keeps a **watched bin** - one pitch - and
-measures its keying verdict, its light, its scope blocks and `MarksLast4s` there. Which pitch it
-watches has been decided by, in turn: the survey (476), the station's own bin (496), the printed
-sender (507's `Follow(PrintingHz)`), and the meter when the reader has nobody (514). **Every
-pointing fault this week** - the detector on 600 while the meter had the station at 500, `tone
-600 heard · decoding at 666`, keying at 350 while printing at 500 - **was that one bin being
-somewhere the station was not.** The marks themselves were already found in every bin (490); the
-pattern gate already takes candidates from every bin (507). **Only the detector's own verdict,
-the light and the scope still think one pitch at a time.**
+**Unit 510 tried a running mean over half a dit and made every row worse.** It blurred the edges
+and then applied the per-hop tests to the blurred result. That is the wrong version of the right
+idea.
 
-**The rule.** Height, flat top, period, sharp ends: that is a dot or a dash. **It is tested in every
-bin on every hop.** Wherever it appears, that is a mark; its pitch is the row it was found in. No
-watched bin. Nothing to point. Nothing to follow.
+**The owner's rule, R115, 2026-10-01:** *"Focus on shape. If you get the shape, the decode
+comes."* A weak dah is a rectangle. **Fit the rectangle; do not check it.**
 
 ---
 
-## 3. The change
+## 3. The change - a rectangle fit
 
-### One - no watched bin
+In `CwEnvelopeDetector`, a second way for a stretch of hops in a bin to become a candidate mark,
+beside the per-hop tests:
 
-In `CwEnvelopeDetector`:
+- **For a stretch of hops, find the rectangle that explains them best**: its start, its end, its
+  height over the floor either side. Every hop in the stretch and in the gaps beside it votes;
+  the top's level is the mean over the top, not any one hop.
+- **Score it by how much better the rectangle explains the stretch than noise does** - the share
+  of the stretch's variance the rectangle accounts for, a ratio from 0 to 1. **No decibel figure
+  anywhere in it.** A weak dah fits a 180 ms rectangle well although no single hop is flat; noise
+  fits no rectangle of any width.
+- **The fit is tried at the sender's own lengths where a sender stands** - its dit and its dah,
+  from the pattern gate - and at a sweep of plausible dit and dah lengths where none does.
+- **The same rectangle in the lobe.** A tone's rectangle appears in the bins either side of its
+  peak at proportional heights; noise in adjacent bins is uncorrelated. **Fit across the lobe** -
+  the peak bin and its neighbours together, each at its share of the height - so a weak mark has
+  three bins of evidence instead of one. The lobe's width is what unit 490's peak walk already
+  knows.
+- **A stretch whose fit scores above a threshold is a candidate mark**, with the fitted start,
+  end, height and pitch, and it goes to the pattern gate exactly as a per-hop candidate does. The
+  gate's rules are unchanged; it still needs five agreeing marks to stand anything.
+- **The threshold is the author's**, stated with its reason, **set under the lowest score a real
+  mark of the clean call earns at 24 dB**, with a stated margin - never moved to make a weak case
+  pass or a noise case fail. **Report the distribution**: real marks' fit scores at 24, 16, 12
+  and 8 dB, and noise stretches' fit scores, and whether they overlap.
 
-- **The keying verdict is: does any bin hold a sequence that stands** (the pattern gate's own
-  test). Not: does the watched bin pair bars.
-- **`Follow(pitch)`, `Pointed`, `WatchedHz`, and the choice of a watched bin go.** Unit 514's
-  follow-the-meter wire, unit 507's follow-the-reader, unit 496's station's-own-bin selection for
-  the *verdict* - all retire. The 496 peak walk that puts a **mark** on its lobe's peak stays; that
-  is attribution, not pointing.
-- **The reading's pitch is the pitch of the sequence that stands**, or of the loudest standing
-  sequence where several do. NaN when none.
-- **`MarksLast4s`** is the marks that stood in the last four seconds, at any pitch - or, when a
-  sender is being printed, at that sender's pitch, as unit 507 left it.
+**A strong signal is unchanged.** Where the per-hop tests already make a candidate, the fit adds
+nothing. The fit exists for the stretches the per-hop tests broke.
 
-### Two - the light and the scope read the standing sequences
+**Do not loosen** any per-hop test, the pattern gate, or the reader.
 
-- **The light** is lit when any sequence stands.
-- **The scope's blocks** are the marks that stood for the sender being printed - unit 511's kept
-  list, unchanged in rule, now fed from the standing sequences rather than from a watched bin.
-- **The verdict row** loses `trackerHz`, `trackerHasPitch` and `trackerHasKeying` - they describe
-  a bin nobody watches - and keeps `scopePitchHz`, `marks4s`, `mixingHz`. The key-set test is
-  updated and says why.
+---
 
-### Three - the meter and the tracker stop steering anything
-
-`CwKeyingMeter` and `CwToneTracker` no longer feed the detector, the light or the scope. **Leave
-them in the tree** - unit 512's cleanup is still to run - but nothing on the screen's path reads
-them. Say in the report what still constructs them and what still reads them, so 512 can take
-them out.
-
-### Four - what must not change
-
-`CwRunReader` (units 500 to 513), the pattern gate's rules, the mark rules of 492, 496, 497, 498,
-507 and 511, the terminal, the one layout, the tab-is-the-mode, the preamp, the buttons.
+## 4. What to measure
 
 **Watch it fail first**, synthetic hops written in the test:
 
-1. **The call at 20 WPM at 425, 500, 600, 700 and 775 Hz**, through a 500 Hz passband centred on
-   600, **with no pointer and no follow**. Each reads whole, and the reading's pitch is the
-   station's. **Red today at every pitch but 600**, or say so with the text.
-2. **A station that changes pitch mid-transmission** - drifts from 500 to 560 Hz over the call, as
-   a hand VFO does. Reads whole; the reading's pitch follows.
-3. **Two stations 200 Hz apart**, as unit 507: the loud one prints whole, both stand.
-4. **Every existing case reads exactly as at HEAD**: the calls at every speed, the Farnsworth
+1. **The strength table**, unit 507's: the call at 8, 12, 16 and 24 dB over the noise. **Report, for
+   each, how many of the 65 marks the per-hop tests find, how many the fit adds, and what reads,
+   before and after.** The 8 and 12 dB rows are the unit's reason. HEAD: 8 dB
+   `N ET A EI A DE N0CALL NTJCE AEL K`, 12 dB `CT A CQ DE N0CALL N0CALL K`.
+2. **The fit-score distributions** from §3, as a table: real marks at each strength, noise.
+3. **Both noise tests print nothing**, with the counts of candidates the fit adds on noise.
+4. **A fading station**: the call at 24 dB fading to 10 dB and back over its length, as the Quebec
+   station did. Report what reads.
+5. **Every existing case reads exactly as at HEAD**: the calls at every speed, both Farnsworth
    cases, the speed change, the fists, the bursts, the hesitation, `TEST DE W1AW K`, `DE DE`, the
-   lone and stray marks, both noise tests, the strength table, unit 511's quiet dit and dah.
-5. **The verdict row on a driven station**: `scopePitchHz` equals the printed pitch; no tracker
-   fields.
+   lone and stray marks, the two stations, the five pitches, the drifting station, unit 511's
+   quiet dit and dah. **If any changes, say so with its text; do not force it.**
 
 ---
 
-## 4. Record
+## 5. Record
 
-- `PHASE_OUTCOME.md`, both copies: `## UNIT 515 - STEP 12`, one paragraph.
-- `PHASE_STATUS.md`, both copies: names 515.
+- `PHASE_OUTCOME.md`, both copies: `## UNIT 516 - STEP 12`, one paragraph.
+- `PHASE_STATUS.md`, both copies: names 516.
 - Patch-bump `Directory.Build.props`.
 - `CLAUDE.md` §1 index row.
-- **Append R114 to the rulings section of both `PHASE_PLAN.md` copies**, in the owner's words
-  above. **Touch no checkbox.**
-- `DECISIONS.md`, newest first, **HM-DEC-219**, headline *The shape is found wherever it appears;
-  the watched bin retires*, quoting him, and naming every pointing rule this supersedes: 476's
-  survey choice, 496's verdict bin, 507's follow-the-reader, 514's follow-the-meter.
+- **Append R115 to the rulings section of both `PHASE_PLAN.md` copies**, in the owner's words.
+  **Touch no checkbox.**
+- `DECISIONS.md`, newest first, **HM-DEC-220**, headline *A weak mark is a rectangle fitted as a
+  whole, not checked hop by hop*, naming tonight's five presses and unit 510's wrong version.
 
 ---
 
-## 5. Report
+## 6. Report
 
 Section 2, for the owner, in plain words:
 
 - rebuild;
-- **a station at any pitch inside the filter is found the moment it keys**, because the shape is
-  looked for everywhere at once; nothing has to be pointed or to catch up;
-- the light, the blocks and the row describe whatever is standing;
-- nothing about how letters are read changed;
-- **if a station still reads nothing, the pitch table in section 3 is what to report against.**
+- **weaker stations should now read** - a dah that noise used to break into pieces is found as one
+  rectangle because the whole shape is fitted at once, across the tone's own bins;
+- strong stations and noise are unchanged;
+- **the bench's floor before and after, in dB, is the number to report against.**
 
-Section 1: what changed, file by file; what the meter and tracker still touch, for 512; and that
-the build and the app line are green. **Section 3: the pitch table at the top, the drifting
-station, then the existing cases.** Section 4: anything left, a line each.
+Section 1: what changed in the detector, how the fit is scored, the threshold and its reason, and
+that the build and the app line are green. **Section 3: the strength table at the top, then the
+score distributions, then the fading station, then the existing cases.** Section 4: anything
+left, a line each.
