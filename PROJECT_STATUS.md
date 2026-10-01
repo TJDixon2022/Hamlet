@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: COMPLETED
-TASK: 1 of 1
-WORK_INSTRUCTION: 519 - shape picks the sender, and loudness picks nothing (run by hand)
+TASK: 3 of 3
+WORK_INSTRUCTION: 520 - a fist is a sender, the best shape gets the terminal (run by hand)
 BALL: tim
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-10-01T11:27:11-04:00
-NOTE: Unit 519 - shape picks the printed sender; case 2 waits on a ruling about the hold
+UPDATED: 2026-10-01T12:51:49-04:00
+NOTE: Unit 520 - fists rank above noise, best shape after a word; task 3 dropped, the climb is the cause
 
 ---
 

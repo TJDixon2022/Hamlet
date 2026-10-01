@@ -4,6 +4,59 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-224
+date: 2026-10-01
+supersedes: unit 519's tightness scale (HM-DEC-223 in part) and its first pick at the first qualifier
+refs: work instruction 520, src/Hamlet.RadioEngine/Cw/CwSequenceShape.cs, src/Hamlet.RadioEngine/Cw/CwRunReader.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheShapePicksTheSenderTests.cs
+---
+
+**A fist is a sender; the best shape gets the terminal after one word gap; a mark is judged against
+noise, never against another sender.** Tim, work instruction 520. The first two halves are built. The
+third is ruled and not built: its cause is found, and no fix that leaves a lone station untouched was
+found.
+
+**What unit 519 measured.**
+- A fist scattered by a fifth scored 0.069, and one scattered by a third 0.000, against noise's best of
+  0.107. A sloppy human ranked below noise.
+- Beside a 24 dB carrier 200 Hz away, a clean 12 dB sender kept 21 of its 65 marks.
+- In case 2 a 20 dB fist stood first and held the terminal, so a clean sender with the better shape never
+  printed.
+
+**A fist is a sender (built).** Tightness is scored against what a hand does:
+- four-fifths at a hand's widest spread (unit 513's 0.25 in log-length);
+- nought at twice it, which no hand makes and where unit 513's two speeds mixed in one cluster sit;
+- a cluster that has shown few lengths is scored as a hand's until it shows its own, through two prior
+  lengths at a hand's widest.
+
+Four terms at a hand's widest leave a widest fist about two-fifths of a machine's score: under a machine,
+and a sender. Measured:
+
+| sender | shape |
+|---|---|
+| clean | 0.779 |
+| fist, a fifth | 0.693 |
+| fist, a third | 0.374 |
+| noise, best in 3 min | 0.173 |
+| noise, best in 30 s | 0.061 |
+
+**The best shape gets the terminal (built).** This is unit 519's question, answered as a CW question
+(R85) with option A:
+- When the first sender qualifies, the reader waits one of its word gaps, then prints the best-shaped.
+- A printed sender silent for its word gap and a dah gives the terminal to a better-shaped one standing
+  then.
+
+In unit 519's case 2 the fist no longer prints and the clean sender is chosen.
+
+**A mark against another sender (not built).**
+- **No per-mark gate is the cause.** With each gate off in turn, 31 of the clean sender's 65 marks pass
+  and 29 stand.
+- **The apex climb is (unit 496).** It walks a mark to the louder neighbouring bin. With the carrier
+  steady, none of the clean marks lands at 625 Hz; with it keyed, 36 land at 825 Hz.
+- **Three climbs were tried, and none ships.** Climbing by how far a bin rises over its own gaps, by
+  loudness and that rise together, and the same with the gaps taken past the mark's edges. Each split a
+  lone station's marks across its own lobe.
+
+---
 id: HM-DEC-223
 date: 2026-10-01
 supersedes: unit 490's rule that the sender printed is the one with the most marks, the louder on a tie (HM-DEC-195 in part); unit 515's rule that the reading's pitch is the loudest standing sequence's (HM-DEC-219 in part)
