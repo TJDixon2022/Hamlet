@@ -670,10 +670,20 @@ public sealed class CwEnvelopeDetector
         // **THE HOLD-STILL LIGHT** (work instruction 521, HM-DEC-225): green while a sender is printed and keying,
         // green while a sequence stands, amber while one is forming with marks in the last two seconds, dark else.
         var forming = _pattern.Forming(nowSeconds, CwShapeLights.FormingSeconds);
-        var light = keying && double.IsFinite(printed) ? CwShapeLight.Reading
-            : keying ? CwShapeLight.Found
-            : forming > 0 ? CwShapeLight.Forming
+
+        // **THE LIGHT READS THE SCORE** (work instruction 522, task 2): green only for a standing sequence whose shape
+        // passes CwShapeLights.GreenScore; one that stands under it stays amber at its full count, since a sequence of
+        // 0.06 went green on the air on 2026-10-01 at 18:20.
+        var sure = keying && _readingShape > CwShapeLights.GreenScore;
+        var light = sure && double.IsFinite(printed) ? CwShapeLight.Reading
+            : sure ? CwShapeLight.Found
+            : keying || forming > 0 ? CwShapeLight.Forming
             : CwShapeLight.Listening;
+
+        if (keying && !sure)
+        {
+            forming = CwPatternGate.MarksToStand;
+        }
 
         var pitchHz = chosen is not null
             ? Math.Round(chosen.PitchHz / BinSpacingHz) * BinSpacingHz

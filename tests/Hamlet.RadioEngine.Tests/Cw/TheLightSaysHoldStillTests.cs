@@ -98,6 +98,49 @@ public sealed class TheLightSaysHoldStillTests
         Assert.True(firstReading >= letters[0], "reading from the first letter");
         Assert.Equal(CwShapeLight.Listening, steps.First(s => s.Seconds > lastMark + 2.5).Light);
     }
+
+    /// <remarks>
+    /// **THE LIGHT READS THE SCORE** (work instruction 522, task 2): a short sloppy keyed sequence that stands with a
+    /// low shape score - five and then a few more marks of scattered lengths and gaps - never turns the light green;
+    /// it stays amber.
+    /// </remarks>
+    [Fact]
+    public void ALowScoringSequenceNeverTurnsTheLightGreen()
+    {
+        var noise = CwSignal.Generate(new CwSignalRequest(
+            " ", SampleRate: Rate, Amplitude: 0, NoiseAmplitude: 0.04, LeadInSeconds: 4, TailSeconds: 4, Seed: 5218)).Samples;
+        var samples = noise.ToArray();
+        var amplitude = ThePatternIsTheGateTests.Over(24);
+        var marks = new (double Ms, double GapMs)[] { (40, 60), (280, 40), (75, 150), (140, 30), (55, 100), (230, 0) };
+        var at = 3.0;
+
+        foreach (var (ms, gap) in marks)
+        {
+            for (var i = (int)(at * Rate); i < (int)((at + (ms / 1000)) * Rate); i++)
+            {
+                samples[i] += (float)(amplitude * Math.Sin(2 * Math.PI * 625 * i / Rate));
+            }
+
+            at += (ms + gap) / 1000;
+        }
+
+        var detector = new CwEnvelopeDetector(Rate);
+        var steps = new List<(double Seconds, CwShapeLight Light, double Score)>();
+
+        for (var k = 0; k + Chunk <= samples.Length; k += Chunk)
+        {
+            detector.Process(samples.AsSpan(k, Chunk));
+            steps.Add(((k + Chunk) / (double)Rate, detector.Reading.ShapeLight, detector.Reading.ShapeScore));
+        }
+
+        var standing = steps.Where(s => double.IsFinite(s.Score)).ToList();
+
+        _output.WriteLine(string.Create(CultureInfo.InvariantCulture, $"a sloppy sequence: stood with shape {(standing.Count > 0 ? standing.Max(s => s.Score) : double.NaN):0.000} at best; green {steps.Count(s => s.Light is CwShapeLight.Found or CwShapeLight.Reading)} steps, amber {steps.Count(s => s.Light == CwShapeLight.Forming)}"));
+
+        Assert.NotEmpty(standing);
+        Assert.True(standing.Max(s => s.Score) <= CwShapeLights.GreenScore, "the sequence stands with a shape under the bar");
+        Assert.DoesNotContain(steps, s => s.Light is CwShapeLight.Found or CwShapeLight.Reading);
+    }
     /// <remarks>
     /// Loud noise alone, thirty seconds: never green, and the share of the time a forming sequence holds one, two,
     /// three and four marks, which is where amber should begin.

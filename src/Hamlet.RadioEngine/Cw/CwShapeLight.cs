@@ -31,6 +31,12 @@ public static class CwShapeLights
     /// <summary>How recent a candidate mark must be for the light to say a shape is forming, in seconds: two.</summary>
     public const double FormingSeconds = 2;
 
+    /// <summary>
+    /// The shape score a standing sequence must pass before the light goes green: a fifth (work instruction 522, task
+    /// 2). Clear of everything noise has produced - unit 520 measured noise's best at 0.173 - and under a rough fist's 0.374.
+    /// </summary>
+    public const double GreenScore = 0.2;
+
     /// <summary>What the light says.</summary>
     /// <param name="light">Its state.</param>
     /// <param name="forming">How many marks the forming sequence holds.</param>
@@ -45,5 +51,5 @@ public static class CwShapeLights
 
     /// <summary>What the light means, on hover.</summary>
     public const string Tip =
-        "Green means Hamlet has the shape of a station here. Hold the frequency; the first letters print after one word gap.";
+        "Green means Hamlet has the shape of a station here, sure enough to say so. Hold the frequency; the first letters print after one word gap. Amber at five of five is a shape that has stood but is not yet clean enough to trust.";
 }
