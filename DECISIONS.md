@@ -4,6 +4,56 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-227
+date: 2026-10-01
+refs: work instruction 523, tag before-shape-first, src/Hamlet.RadioEngine/Cw/CwEnvelopeDetector.cs, src/Hamlet.RadioEngine/Cw/CwPatternGate.cs, src/Hamlet.RadioEngine/Cw/CwRunReader.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheShapePicksTheSenderTests.cs
+---
+
+**Shape-first is the path**, once it reads everything the per-bin path reads. Tim, work instruction 523.
+Five of the six cases unit 522 named now read with shape-first on. The switch is not yet on, because five
+other cases still read worse with it. The per-bin path stays behind `ShapeFirst` at the tag
+`before-shape-first`.
+
+**1. A 12 WPM fist read nothing** (fixed). The pattern gate stood a sequence only on a clean 2:1 jump
+between neighbouring lengths. A fist scattered by a fifth sends dits to 1.2 dits and dahs down to 2.4, and
+with shape-first's true lengths that jump was gone, so nothing stood. On the shape-first path the gate
+now also takes the reader's own test for a hand's two kinds (unit 513). It does so on ten marks, not
+five: two clusters of five lengths always look tight. Noise stood on them, and on the per-bin path it
+stood 159 marks in three minutes where it had stood 80. The whole-band fit's lengths also step by a
+tenth: at a quarter, a hand's 318 ms dah sat 9% from the nearest length and was never placed.
+
+**2. Two stations garbled** (fixed). The whole band cannot see one sender's edges under another's.
+- Where a span holds two senders, each is searched for rectangles on the bin nearest its own pitch.
+- Where only one pitch shows but its own bin holds two rectangles, those are the marks. A sender keyed
+  steadily through another's gap cancels out of the excess.
+- The pitch measure weighs every sample of the span alike. A Hann window weighed a dit at the end of
+  another sender's dah to nothing.
+
+The two-station case reads `CQ CQ DE N0CALL N0CALL K`.
+
+**3. A sender who speeds up garbled** (all but one space). Over its recent forty marks, a sender stepping
+from 10 to 20 WPM is two speeds: a split wider than a hand on either side, or a mix refused as a hand's
+two kinds. The reader now takes the split again over the newest half, quarter and so on, down to the
+five marks a sequence needs to stand, and the first split as tight as a hand makes is the sender's speed
+now. It reads `… K TESTDE W1AW K`; the first word gap at the new speed comes before enough new marks
+have.
+
+**4. The rough fists** (fixed by case 1). Both read whole.
+
+**5. The two no-detection cases** (fixed by case 1). Both pass. No noise sequence stands on this path, in
+thirty seconds or three minutes.
+
+**6. A clean sender under a louder neighbour** (dropped). The carrier reads as junk where unit 522's end
+read nothing. The finer length sweep lets a random carrier's marks stand.
+
+**The switch stays off.** With shape-first on, these still read worse than the per-bin path reads them:
+- the speed change, one space short;
+- the quiet dit inside a letter (`N0CA DL`);
+- a clean sender beside a carrier 400 Hz away;
+- unit 519's switch case;
+- unit 519's edge case.
+
+---
 id: HM-DEC-226
 date: 2026-10-01
 refs: work instruction 522, PHASE_PLAN.md R117, tag before-shape-first, src/Hamlet.RadioEngine/Cw/CwEnvelopeDetector.cs, src/Hamlet.RadioEngine/Cw/CwShapeLight.cs, src/Hamlet.App/ViewModels/CwHearingViewModel.cs, src/Hamlet.App/Views/MainWindow.axaml, tests/Hamlet.RadioEngine.Tests/Cw/TheShapePicksTheSenderTests.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheLightSaysHoldStillTests.cs

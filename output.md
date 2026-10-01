@@ -1,100 +1,91 @@
 ```
-UNIT: 522 - partial (task 1 built and measured, off by default; tasks 2 and 3 on) - 2026-10-01
-UNIT GOAL: shape first, pitch as a result, and a gauge that fills
-NUMBER: shape-first reads the call whole down to 8 dB (the per-bin path garbles 8); it ships off because a 12 WPM fist reads nothing
+UNIT: 523 - partial (five of six cases read with shape-first on; the switch stays off) - 2026-10-01
+UNIT GOAL: shape-first reads everything the per-bin path reads, then it is the path
+NUMBER: with shape-first on, 5 cases still read worse than today's path, so ShapeFirst stays off
 ```
 
 ## 1. What Claude did
 
-Claude Code on the development machine, branch `main`. The prompt claimed `PROJECT: Hamlet`, and the order's gate held: `SHACK_FACTS.md`, `CwSequenceShape.cs` and `CW_REQUIREMENTS.md` exist, there is no `CoreHMI.sln` or `MURC.sln`, and the root is `C:\Source\HamLet`. Hamlet confirmed. Nothing in this report is evidence about the radio. Unit 522 and HM-DEC-226 were free.
+Claude Code on the development machine, branch `main`. The prompt claimed `PROJECT: Hamlet`, and the order's gate held: `SHACK_FACTS.md`, `CwSequenceShape.cs` and `CW_REQUIREMENTS.md` exist, there is no `CoreHMI.sln` or `MURC.sln`, and the root is `C:\Source\HamLet`. Hamlet confirmed. Nothing in this report is evidence about the radio. Unit 523 and HM-DEC-227 were free.
 
 **How the session ran:**
-- **HEAD was tagged `before-shape-first` and pushed** before any engine change.
 - It took SESSION.lock through `tools\arbiter\lock.bat take` and released it at the end.
 - It wrote nothing to `RUN_LEDGER.md`, touched nothing under `tools\arbiter\`, and ticked no box.
 - It read no recording, fixture or telemetry.
 - Nothing keys, transmits or writes to the radio.
+- **To measure every case with shape-first on**, the detector read a temporary `HAMLET_SHAPE_FIRST=1` from the environment as its default, set only in the measurement script. That switch was in the commits of cases 1 to 3. **It is removed in `23aaccb7`.**
 
-**Task 1: shape first.** Commit `ec60a7d9`. **Built, measured, and off by default** (`CwEnvelopeDetector.ShapeFirst`).
-- **The rectangle is found in time.** Each hop, the passband's bins are summed in linear power into one trace (a second `Bin`, with running sums). Unit 517's rectangle fit (share of variance explained) runs on it at every swept length from 25 ms to a 5 WPM dah, plus the standing senders' lengths. Each rectangle's best end in time becomes a span. **No bin is chosen to find it.**
-- **Pitch is a result.** Over a span:
-  - each bin's excess power (span less pads) is taken;
-  - the bins standing four times the median excess, two or more together, are one sender's energy;
-  - within that energy, the excess is measured again over the mark's **own samples**, at 5 Hz steps through a Hann window the mark's length. The 10 ms bins see two stations 200 Hz apart beat in step with the 5 ms hop, which reads as keyed power between them; over a 180 ms dah they are separate tones;
-  - the centroid of the half-power stretch round each peak is a mark's pitch. **There is no climb, and unit 496's apex walk plays no part on this path.**
-- **Overlapping senders.** Two peaks a quarter of the strongest or more, 50 Hz or more apart, are two marks. Each is refitted on its own bins for its own edges.
-- **The weakest get a second pass.** A span whose whole-band step is no taller than the 1.5 dB flatness tolerance (unit 516's rule) passes only on unit 517's lobe at its centroid, which judges height against its own bin. Without that rule a 1 dB bump on a dah's own top was a mark, and `N0CALL` read `NOETCALL`.
-- **A mark's level is read over the hops inside its edges.** A fist's dit read several dB under its own dahs and fell outside the pattern gate's tolerance.
-- **The retired per-hop tests.** Flatness (R93), edges (497), narrowness (498, 514), key-up and promptness (492) and the gaps' wander decide nothing on this path. The bins still build their bars, which the scope, the meter and the per-bin path use. The pattern gate is unchanged in rule, and its "within one bin" is now on the centroid.
-- **The costs, measured:** on the bench's call, the floor went **down**, not up. See section 3. The noise added by summing the passband is outweighed by fitting a whole mark rather than judging a hop.
+**Case 1: a 12 WPM fist read nothing.** Fixed, commit `52ea1f0c`. Measured with each true mark's span, whole-band fit and candidates printed. **Two causes:**
+1. **The gate never stood the fist.** It stands a sequence only on a clean 2:1 jump between neighbouring lengths. A fist scattered by a fifth sends dits to 1.2 dits and dahs down to 2.4: the longest dit was 120 ms and the shortest dah 235 ms, a ratio of 1.96.
+   - **Fix:** the gate also takes the reader's own test for a hand's two kinds (unit 513, now one shared `HandKinds`).
+   - **On ten marks, not five:** on five, two clusters always look tight, and noise stood on them.
+   - **On the shape-first path only (`HandKinds`):** on the per-bin path, noise stood 159 marks in three minutes where it had stood 80.
+2. **Three dahs were never placed.** The whole-band fit's lengths stepped by a quarter, and a hand's 318 ms dah sat 9% from the nearest length. They now step by a tenth.
 
-**Why it ships off.** Every existing case was run with it on. It improves 8 dB, the steady-carrier dah, the clicks and noise. But with it on:
-- a **12 WPM fist reads nothing** (its dahs are partly missed and nothing stands);
-- the **two-station** case reads `CM CT A IE EMMCAE EL N0CALL K`;
-- the **sender who speeds up** reads `… K ■H■S`;
-- the 30% fist reads `N0CE LL`, and the tightening fist `DEN ■CALL`;
-- the **neighbour** beside a random carrier reads nothing. The carrier no longer prints, but the clean sender's marks under the carrier's (47 of 65) are not split off; 8 of them are found.
-- Two no-detection cases fail.
+**Case 2: two stations garbled.** Fixed, commit `cf4229b2`. Measured on station A's true marks. **Three causes:**
+1. **A loud sender's marks under the other's were missed or merged.** The whole band can't see one sender's edges under another's. **Fix:** where a span holds two senders, each is searched for rectangles on the bin nearest its own pitch across the span.
+2. **Two of A's dahs merged into one.** B keyed steadily through A's gap, so it cancelled out of the excess and only one pitch showed. **Fix:** where one pitch's own bin shows two rectangles or more, those are the marks.
+3. **A dit right after B's dah vanished.** The pitch measure's Hann window weighed the span's ends to nothing, and A's dit sat at the end. **Fix:** every sample is weighed alike. A flat window's sidelobes, about a twentieth in power, stay under the quarter that makes a second sender.
 
-Off, every existing case runs the per-bin path as at the tag, and the task 1 tests turn shape-first on to print both.
+**Case 3: a sender who speeds up.** All but one space, commit `97c812a4`.
+- **Cause:** a 10→20 WPM sender leaves 60, 120, 180 and 360 ms marks among its recent forty. The reader's split put 60, 120 and 180 together as dits (dit 120 ms), so 20 WPM dahs read short.
+- **Fix:** a split wider than a hand on either side, or a mix refused as a hand's two kinds, is two speeds (unit 513). The reader takes the split again over the newest half, quarter and so on, down to the five marks a sequence needs to stand. The first split as tight as a hand makes is the sender's speed now.
+- **Result:** with shape-first on it reads `… K TESTDE W1AW K`. The dit follows to 56 ms and the `K` is right; the first word gap at the new speed comes before enough new marks have.
 
-**Task 2: the light reads the score.** Commit `b18c628c`. Green (`shape found` or `reading`) needs a standing sequence whose shape passes **0.2** (`CwShapeLights.GreenScore`). That is clear of noise's best (0.173, unit 520) and under a rough fist's 0.374. One that stands under it stays amber at "5 of 5". The hover says so.
+**Case 4: the rough fists.** Fixed by case 1, same cause. Both read whole.
 
-**Task 3: the gauge.** Commit `4996c216`.
-- **The engine.** `CwShapeLights.Fill`:
-  - empty while listening;
-  - a fifth per mark while a shape forms, to the mark at 0.8;
-  - from the fifth mark, the shape score from 0.2 at the mark to 1.0 full;
-  - full while reading.
+**Case 5: the two no-detection cases.** Fixed by case 1. Both pass with shape-first on, and no noise sequence stands on this path.
 
-  The reading carries `ShapeFill`.
-- **The window.** The light is now a 158 px bar under its words, the width the lamp and words took. The fill is amber or green by state, and a thin line marks four-fifths. The hover reads *"Fills as Hamlet grows sure it has a station here. Past the mark, hold the frequency…"*
-- **The row** gains `shapeFill`.
+**Case 6: a clean sender under a louder neighbour.** Dropped. The finer sweep lets the random carrier's marks stand, so junk prints at 200, 150 and 100 Hz where unit 522's end printed nothing.
+
+**Case 7: the switch.** Off. With shape-first on, five cases read worse than the per-bin path reads them today:
+- **the speed change:** one space short;
+- **the quiet dit inside a letter (511):** `CQ CQ DE N0CA DL N0CALL K`;
+- **a clean sender beside a carrier 400 Hz away:** `E EG NQ N M D D EOT N I A`;
+- **unit 519's switch case:** the fist reads `N0CTLD T0CALL`;
+- **unit 519's edge case:** the rough fist now stands and prints beside the clean sender.
+
+By the order's rule the switch stays off. The per-hop gates' own tests were not changed, since they still test the default.
+
+**Files:**
+- `CwEnvelopeDetector.cs`: the tenth-step sweep, the per-sender bin search, the flat window, a probe hook (`BandFitAt`), and setting the gate's `HandKinds`.
+- `CwPatternGate.cs`: a hand's two kinds on ten marks, when `HandKinds` is set.
+- `CwRunReader.cs`: `HandKinds` shared with the gate, and the newer-speed retry.
+- Tests: `ShapeFirstReadsAFist` in `TheShapePicksTheSenderTests`, and `LastMarks` in the fist generator.
 
 **Records:**
-- R117 in both plans, in the owner's words.
-- HM-DEC-226 in `DECISIONS.md`, naming the tag and the four faults.
+- HM-DEC-227 in `DECISIONS.md`. Headline per the order, with the switch stated as off.
 - The `CLAUDE.md` index row.
-- `PHASE_OUTCOME` (both copies) has `## UNIT 522 - STEP 12`.
-- `PHASE_STATUS` (both copies) names 522.
-- Version 1.13.206 to 1.13.207.
+- `PHASE_OUTCOME` (both copies) has `## UNIT 523 - STEP 12`.
+- `PHASE_STATUS` (both copies) names 523.
+- Version 1.13.207 to 1.13.208.
 
 **Build and app line:** build 0 warnings, 0 errors. App carry-forward 278 of 278; two 1 ms losses passed alone.
 
 ## 2. What the owner should expect
 
 - **Rebuild before you run it.**
-- **The gauge.** Beside the scope on the CW tab, a bar under the words:
-  - it fills a fifth per mark while a shape forms, amber;
-  - past the line at four-fifths it turns green and says **hold here**, and it keeps filling as the shape gets cleaner;
-  - it is full once letters print.
-
-  It never crosses the line on noise. A sloppy shape that stands but scores under 0.2 sits at the line in amber and never says hold here: that is the 0.06 sequence from 18:20.
-- **What prints is unchanged today.** The new way of finding marks, by shape in time with pitch as the result, is built but **switched off**. On the bench it reads a weak station further (whole at 8 dB), finds a dash next to a steady carrier, and reads every pitch and a 100 Hz dial step the same. But it still reads nothing from a slow hand sender at 12 WPM and garbles two stations at once, and switching it on now would make the radio read worse.
-- **The weakest stations would read further, not less far.** The floor on the bench's call goes from garbled at 8 dB to whole at 8 dB.
-- **Nothing about letters changed.**
+- **What reads on your radio hasn't changed today.** The shape-first front end is still switched off: with it on, five cases still read worse than the radio reads now. The worst are a sender who speeds up (one space lost), a weak dit inside a letter, and a clean station near a random carrier 400 Hz away. The rule was to switch it on only if nothing reads worse, and something does.
+- **With it on, much more now reads:** slow and rough hand senders, two stations at once, a station one click either way, a dash beside a steady carrier, and the call down to 8 dB.
+- **The gauge works as unit 522 left it,** and never moves on noise.
+- **Nothing that reads today reads worse.** The per-bin path reads every case as before; the only changed lines are junk text on cases that were junk before.
 
 ## 3. What you should see
 
-**The neighbour and the steady carrier**, per-bin path (before) against shape-first (after):
+**The six cases**, shape-first on:
 
-| case | before | after |
+| case | unit 522's end | now |
 |---|---|---|
-| clean 12 dB at 625, random 24 dB carrier 200 Hz away | `NOAM■HIV5■` (the carrier) | nothing |
-| the same, 150 Hz away | `NOAM■HIV5■` | nothing |
-| the same, 100 Hz away | `NOAM■HEEV■■M` | nothing |
-| one 180 ms dah at 625 beside a steady 24 dB carrier at 825 | no candidate at 625 | **one mark, 175 ms at 625 Hz** |
+| 1. 12 WPM fist, a fifth | nothing | `CQ CQ DE N0CALL N0CALL K` |
+| 2. two stations | `CM CT A IE EMMCAE EL N0CALL K` | `CQ CQ DE N0CALL N0CALL K` |
+| 3. speed change | `… K ■H■S` | `… K TESTDE W1AW K` |
+| 4. 30% fist / tightening fist | `N0CE LL` / `DEN ■CALL` | both whole |
+| 5. no-detection cases | two red | pass |
+| 6. clean beside carrier, 200 Hz | nothing | `NOAM■MII■` (the carrier), dropped |
 
-**One click either way**, 24 dB through the 500 Hz filter on 600, before and after:
+**The strength table**, per-bin and shape-first:
 
-| pitch | before | after |
-|---|---|---|
-| 600, 610, 650, 690, 700, 750 Hz | whole | whole |
-| 600, 650, 700 Hz with the dial stepped 100 Hz mid-call | whole | whole |
-
-**The strength table**, 20 WPM, marks stood at the pitch and what reads:
-
-| dB | before | after |
+| dB | per-bin | shape-first |
 |---|---|---|
 | 24 | 65, whole | 65, whole |
 | 16 | 65, whole | 65, whole |
@@ -102,53 +93,52 @@ Off, every existing case runs the per-bin path as at the tag, and the task 1 tes
 | 10 | 65, whole | 65, whole |
 | 8 | 64, `CQ NIQ EIE N0CALL N ■NIALL K` | 65, **whole** |
 
-**Noise:**
-- With shape-first on, 30 s and 3 min of loud noise stand no sequence.
-- Off (as shipped), noise's best shape is 0.061 in 30 s and 0.173 in 3 min, and the light is never green.
+**Other shape-first measurements:**
+- 600 to 750 Hz through the filter, and a 100 Hz dial step mid-call: whole.
+- A dah beside a steady carrier: 170 ms at 625 Hz.
 
-**The gauge's sequence**, on a clean 20 WPM call at 24 dB:
+**The gauge with shape-first on**, on the live path:
 
 | time | fill | words |
 |---|---|---|
-| 3.320 s | 0.40 | `shape forming · 2 of 5` |
-| 3.560 s | 0.60 | `shape forming · 3 of 5` |
-| 3.680 s | 0.80 | `shape forming · 4 of 5` |
-| 4.040 s | 0.80, crossing | `shape found · hold here` |
-| 4.5 to 6.0 s | 0.82 → 0.85 | `shape found · hold here` |
-| 6.380 s | 1.00 | `reading` (the first letter is at 6.360 s) |
+| 3.330 s | 0.40 | `shape forming · 2 of 5` |
+| 3.580 s | 0.60 | `shape forming · 3 of 5` |
+| 3.690 s | 0.80 | `shape forming · 4 of 5` |
+| 4.050 s | 0.81 | `shape found · hold here` |
+| 4.3 to 6.1 s | 0.82 → 0.88 | `shape found · hold here` |
+| 6.390 s | 1.00 | `reading` |
+| 19.480 s | — | `listening`, 0.2 s after the last mark |
 
-- **A sloppy sequence** that stands at shape 0.005 was green for 126 steps on the old rule. Now it is amber throughout, at the line.
-- **Loud noise** never fills past 0.8.
-- **Amber starts at 0.4, not 0.2.** A shape is counted only once it shows a dah beside a dit (unit 521).
+**Noise, 30 s and 3 min, shape-first on:** nothing stands, and the gauge never crosses the mark (amber 0% of the time).
 
-**Every existing case**, with the shipped default: unit 515's filter, units 517 to 521's cases and these tests all print as at HEAD. No line HEAD printed is missing.
+**Every existing case, shape-first on, still red:**
+- the five in section 1;
+- `ALetterReadFromNoiseDoesNotReachTheScreen(blocks: True)`, red at HEAD too;
+- unit 522's low-scoring light test, whose precondition fails because no sloppy sequence stands on this path;
+- the per-bin gates' own tests (edges, narrowness, the shape gate), which test the per-bin path.
 
-Still red, as at HEAD:
-- `TheCallReadsAtEveryStrength(8)`
-- `FarnsworthAndFastReadAtTenDecibels`
-- `ALetterReadFromNoiseDoesNotReachTheScreen(blocks: True)`
+**Every existing case, as shipped (per-bin):** the same three reds as HEAD, and every reading case prints as at HEAD. The only changed lines are junk on cases that were junk at HEAD:
+- the random carrier reads `NOAM■ZE■` where it read `NOAM■HIV5■`;
+- the W1AW all-gates-off rows read `IIL K` where they read nothing.
 
 ## 4. What's blocking us
 
-1. **Shape-first can't be switched on yet.** Its failures, each its own work:
-   - a 12 WPM fist reads nothing;
-   - two stations garble;
-   - a sender who speeds up garbles;
-   - the 30% and tightening fists slip a letter;
-   - two no-detection cases fail;
-   - a clean sender's marks under a louder neighbour's marks are not split off.
-
-   The next unit should take them in that order, then switch it on.
-2. **The per-hop gates' own tests** (edges, narrowness, the shape gate, which gate turns W1AW away) test the per-bin path. They pass because it stays the default, and they will need `ShapeFirst = false` when shape-first is switched on.
-3. **The gauge's first step is 0.4**, because a shape needs two lengths to count.
+1. **The switch is off.** Five cases still read worse with it on, and the next unit should take them in this order:
+   - the speed change's first word gap;
+   - the quiet dit (unit 511's quieter-mark rule on fitted levels);
+   - a random carrier standing on the finer sweep, which is also case 6;
+   - unit 519's switch case;
+   - unit 519's edge case.
+2. **Case 6 is dropped.** A random carrier stands on the finer sweep, and a random carrier needs to stay a non-sender on this path.
+3. **The per-bin path's random-carrier junk text changed**, junk either way.
 4. **`DecisionLogOrderTests` gaps check** is red as at HEAD, for HM-DEC-166, 182, 189, 220 and 222. The order check passes.
-5. **Unit 518 runs next**, as the order says.
+5. **Unit 518 runs next.**
 
 ### Asks still outstanding
 
-- **Unit 522, 2026-10-01:** whether to switch shape-first on before its failures are fixed (item 1). Built off, waiting on the owner. The switch is `CwEnvelopeDetector.ShapeFirst`.
-- **Unit 520, 2026-10-01:** how a mark finds its own tone beside a louder one. Partly answered by task 1's centroid over the mark's own samples (the steady-carrier dah). The random neighbour is still open, and no change sits in the climb.
-- **Unit 517, 2026-10-01:** the hand sender's word-gap line, 5 dits recommended. Waiting on the owner. The measurement is in `TheSpacesComeFromTheShapeTests`, and no change sits in the reader or the gate.
+- **Unit 522, 2026-10-01:** whether to switch shape-first on before its failures are fixed. Still off. Five cases remain (item 1).
+- **Unit 520, 2026-10-01:** how a mark finds its own tone beside a louder one. Partly answered by the per-sender bin search; the random neighbour is still open (case 6).
+- **Unit 517, 2026-10-01:** the hand sender's word-gap line, 5 dits recommended. Waiting on the owner. The measurement is in `TheSpacesComeFromTheShapeTests`, and no change sits in the reader's word line.
 - **Unit 440's item 1:** MET-COVERAGE counts wrong sure characters. Raised 2026-09-25 and waiting on the owner. No change for it sits in the tree.
 - **Unit 440's item 2:** R72 is cited as HM-DEC-175. Raised 2026-09-25 and scheduled as step 8 record work under R80.
 - **Unit 487, 2026-09-28:** whether the terminal shows only settled text, at the cost of seconds of lag.
