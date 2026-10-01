@@ -290,6 +290,11 @@ dits and its gaps wander, and the reader's lines between dit and dah, and betwee
 letter and one between letters, were hard lines. A fist is read the way an ear reads it: each mark
 and each gap is the kind of the sender's own cluster it is nearer, not the side of a fixed line.
 
+**R114 - Tim, 2026-09-30: shape, not pitch.** *"I'm wondering why we're so focused on pitch. Pitch
+almost doesn't matter. It's shape. If you can identify height, flat top, period, then you know it's
+a dot or a dash. The pitch doesn't matter."* And: *"You keep talking about 350, 400, 500, 600. Those
+are pitches. I just care about shape."*
+
 ## §3 What is different from the phases before it
 
 1. **A criterion is a requirement id.** A report states the requirement, the condition, the

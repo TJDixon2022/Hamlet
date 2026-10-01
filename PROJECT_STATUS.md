@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: EXECUTING
+STATE: COMPLETED
 TASK: 4 of 4
 WORK_INSTRUCTION: 515 - the shape is found wherever it appears (run by hand)
-BALL: code
-NEXT_PASTE: none
+BALL: tim
+NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-30T21:08:43-04:00
-NOTE: Unit 515 - the watched bin retired and committed; the app line and the records
+UPDATED: 2026-09-30T21:13:13-04:00
+NOTE: Unit 515 - the watched bin retired; all five pitches read through the filter, noise prints nothing
 
 ---
 

@@ -4,6 +4,38 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-219
+date: 2026-09-30
+supersedes: the pointing rules of work instructions 476 (the survey's choice of bin), 496 (the station's own bin for the verdict), 507 (follow the reader) and 514 (follow the meter, HM-DEC-218 in part)
+refs: work instruction 515, PHASE_PLAN.md R114, src/Hamlet.RadioEngine/Cw/CwEnvelopeDetector.cs, src/Hamlet.RadioEngine/Cw/CwPatternGate.cs, src/Hamlet.App/ViewModels/MainWindowViewModel.cs, src/Hamlet.App/ViewModels/CwHearingViewModel.cs
+---
+
+**The shape is found wherever it appears; the watched bin retires.** Tim, 2026-09-30, R114: *"I'm
+wondering why we're so focused on pitch. Pitch almost doesn't matter. It's shape. If you can identify
+height, flat top, period, then you know it's a dot or a dash. The pitch doesn't matter."* And: *"You
+keep talking about 350, 400, 500, 600. Those are pitches. I just care about shape."*
+
+**What it ends.** Since unit 476 the detector kept one watched bin for its keying verdict, its light,
+its blocks and its mark count, and a chain of rules chose which: 476's survey, 496's station's own bin
+for the verdict, 507's follow-the-reader, 514's follow-the-meter. Every pointing fault of the week was
+that bin being where the station was not. All four rules are superseded; the radio's scope peak is
+still read for the row and the sheet, and points nothing.
+
+**What is built.** The verdict is a sequence the pattern gate stands, at any pitch, with a mark within
+the sender's own hold - the longer of the detector's one-second hold and its own longest gap, plus its
+longest mark, since a mark reaches the gate only once it has ended. Its pitch is that sequence's, the
+loudest where several stand. A mark that stands is keyed. The scope's bin is the one nearest the
+standing pitch, derived and never steered, and its hops are marked by the marks that stood. The meter
+and the tracker steer nothing on the screen's path; the verdict row drops trackerHz, trackerHasPitch and
+trackerHasKeying. The 496 peak walk that puts a mark on its lobe's peak stays.
+
+**What it showed.** Through a 500 Hz filter on 600 with nothing pointed, 700 Hz had stood 65 marks and
+keyed none, so nothing printed; now 425 to 775 Hz all read whole with their pitch named, and a station
+drifting from 500 to 560 Hz is followed by its shape. Every synthetic reading is as before, and noise
+prints nothing. A test of the timing decoder's gate, which the app has not used since unit 493, now
+opens on a noise sequence that stands and is left red.
+
+---
 id: HM-DEC-218
 date: 2026-09-30
 refs: work instruction 514, src/Hamlet.App/ViewModels/MainWindowViewModel.cs, src/Hamlet.App/ViewModels/CwHearingViewModel.cs, src/Hamlet.App/Views/MainWindow.axaml, tests/Hamlet.RadioEngine.Tests/Cw/NarrownessReadsTheFiltersBandTests.cs
