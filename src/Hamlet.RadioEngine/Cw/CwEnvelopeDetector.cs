@@ -230,6 +230,10 @@ public sealed class CwEnvelopeDetector
     /// <summary>The shape that scored <see cref="HighestStandingShape"/>, term by term: for the tests' report (work instruction 520).</summary>
     internal CwSequenceShape? HighestStandingShapeOf { get; private set; }
     private int _ringWrite;
+
+    // The raw audio of the last two seconds, by absolute sample index: where a mark's pitch is measured over its
+    // own samples (work instruction 522).
+    private readonly float[] _raw;
     private int _ringFill;
     private int _hopFill;
     private long _hop;
@@ -275,6 +279,7 @@ public sealed class CwEnvelopeDetector
         EnvelopeWindowSamples = 2 * HopSamples;
 
         _ring = new float[EnvelopeWindowSamples];
+        _raw = new float[2 * sampleRate];
         _window = new float[EnvelopeWindowSamples];
         _hann = new float[EnvelopeWindowSamples];
 
@@ -367,6 +372,9 @@ public sealed class CwEnvelopeDetector
             _bins = Enumerable.Range(first, last - first + 1)
                 .Select(k => new Bin(k * BinSpacingHz, SampleRate, HistoryHops + (2 * _keyingHops), _keyingHops))
                 .ToArray();
+            _band = new Bin(0, SampleRate, HistoryHops + (2 * _keyingHops), _keyingHops);
+            _bandPrev1 = _bandPrev2 = 0;
+            _bandLen1 = 0;
             _watched = _bins.Length / 2;
             _hop = 0;
             _loudestGapDb = double.NaN;
@@ -469,6 +477,7 @@ public sealed class CwEnvelopeDetector
             foreach (var s in samples)
             {
                 _ring[_ringWrite] = s;
+                _raw[(int)(_samplesSeen % _raw.Length)] = s;
                 _ringWrite = (_ringWrite + 1) % _ring.Length;
                 _samplesSeen++;
                 _ringFill = Math.Min(_ringFill + 1, _ring.Length);
@@ -624,9 +633,16 @@ public sealed class CwEnvelopeDetector
         // and 514's follow-the-meter are gone.
         var nowSeconds = _samplesSeen / (double)SampleRate;
 
-        CallMarks(evals, hop, nowSeconds);
-        FitMarks(evals, hop, nowSeconds);
-        FlushFitted(evals, hop);
+        if (ShapeFirst)
+        {
+            BandMarks(evals, hop, nowSeconds);
+        }
+        else
+        {
+            CallMarks(evals, hop, nowSeconds);
+            FitMarks(evals, hop, nowSeconds);
+            FlushFitted(evals, hop);
+        }
 
         // **SHAPE PICKS THE SENDER; LOUDNESS PICKS NOTHING** (work instruction 519, R116, HM-DEC-223). The
         // reading - its pitch, the light and the scope - follows the standing sequence whose marks and gaps
@@ -1263,6 +1279,517 @@ public sealed class CwEnvelopeDetector
             return start - pad < 0 || end + pad > last || last - (start - pad) >= _bins[nearest].SumsKept || end < start
                 ? double.NaN
                 : Fit(nearest, start, end, pad).Score;
+        }
+    }
+
+    /// <summary>
+    /// **SHAPE FIRST, PITCH AS A RESULT** (work instruction 522, R117, HM-DEC-226): candidate marks are rectangles
+    /// fitted in time to the whole passband's energy, and a mark's pitch is where that energy was. **Off by default**
+    /// until it reads what the per-bin path reads: built and measured in unit 522, it reads nothing of a 12 WPM fist and
+    /// garbles two stations and a sender who speeds up. Off, the per-bin path runs as it did at the tag
+    /// <c>before-shape-first</c>; the tests turn this on to print both.
+    /// </summary>
+    public bool ShapeFirst { get; set; }
+
+    /// <summary>
+    /// The least whole-band fit score at which a stretch's span is looked at all: a half (work instruction 522). From
+    /// it to <see cref="FitThreshold"/> the span is a mark only if unit 517's lobe passes at its centroid. The author's.
+    /// </summary>
+    public const double BandSpanScore = 0.5;
+
+    /// <summary>
+    /// How far over the excess noise a bin must stand to be part of a mark's energy, as a multiple of the median
+    /// excess across the passband: four (work instruction 522). The author's.
+    /// </summary>
+    public const double BlobFactor = 4;
+
+    // The whole passband's energy, one level per hop, as a bin of its own (work instruction 522).
+    private Bin _band = null!;
+    private double _bandPrev1;
+    private double _bandPrev2;
+    private int _bandLen1;
+
+    /// <summary>
+    /// **THE RECTANGLE IS FOUND IN TIME, ACROSS THE WHOLE PASSBAND** (work instruction 522, R117, HM-DEC-226). Each hop
+    /// the passband's energy is summed into one trace, and rectangles are fitted to it at the lengths
+    /// <see cref="FitLengths"/> gives; a trace's best at its best end in time is a span, and the span becomes marks
+    /// where its energy is (<see cref="BandSpan"/>). No bin is chosen to find it.
+    /// </summary>
+    /// <remarks>
+    /// <para>**THE OWNER, R117**: *"You're still not focusing 100% on shape. You're trying to interpret the noise
+    /// instead of creating the shape patterns. Shape is everything, 100%."* And: *"We lose the weakest stations, but
+    /// pitch becomes largely irrelevant."*</para>
+    /// <para>**WHAT RETIRES AS A GATE.** The per-hop bar tests - flatness (R93), edges (497), narrowness (498, 514),
+    /// key-up and promptness (492), the gaps' wander - decide nothing here. The bins still keep their bars, for the
+    /// scope and the meter.</para>
+    /// </remarks>
+    private void BandMarks(Evaluation[] evals, long hop, double nowSeconds)
+    {
+        var total = 0.0;
+
+        foreach (var bin in _bins)
+        {
+            total += Math.Pow(10, bin.Level(hop) / 10);
+        }
+
+        _band.Add(hop, 10 * Math.Log10(Math.Max(1e-30, total)), double.NaN, double.NaN);
+
+        var pad = FitPadHops;
+        var end = hop - pad;
+        var reach = _band.SumsKept;
+        var score = 0.0;
+        var length = 0;
+
+        // Every length from the shortest bar to a 5 WPM dah, and the standing senders' own: one trace is cheap to fit,
+        // and a fist's scatter or a sender who speeds up falls outside the standing lengths alone.
+        foreach (var l in BandLengths(nowSeconds))
+        {
+            var start = end - l + 1;
+
+            if (start - pad < 0 || hop - (start - pad) >= reach)
+            {
+                continue;
+            }
+
+            var s = FitTrace(_band, start, end, pad);
+
+            if (s > score)
+            {
+                score = s;
+                length = l;
+            }
+        }
+
+        // The best end in time: the end before this one scored at least as well as the one before it, and better
+        // than this one.
+        if (_bandPrev1 >= BandSpanScore && _bandPrev1 >= _bandPrev2 && _bandPrev1 > score)
+        {
+            var e = end - 1;
+            var s = e - _bandLen1 + 1;
+
+            if (s - pad >= 0)
+            {
+                BandSpan(evals, s, e, _bandPrev1, hop, nowSeconds);
+            }
+        }
+
+        _bandPrev2 = _bandPrev1;
+        _bandPrev1 = score;
+        _bandLen1 = length;
+    }
+
+    /// <summary>The lengths, in hops, the whole-band trace is fitted at: the sweep and the standing senders' (work instruction 522).</summary>
+    private SortedSet<int> BandLengths(double nowSeconds)
+    {
+        var lengths = new SortedSet<int>(FitLengths(nowSeconds));
+
+        for (var ms = ShortestBarMs; ms <= LongestDahMs; ms *= 1.25)
+        {
+            lengths.Add(Math.Max(1, (int)Math.Round(ms / HopMs)));
+        }
+
+        return lengths;
+    }
+
+    /// <summary>The share of a trace's variance over a stretch and its pads that one top and one floor explain; nought where the top is not above the floor.</summary>
+    private static double FitTrace(Bin trace, long start, long end, int pad)
+    {
+        var (nT, sT, qT) = trace.Sums(start, end);
+        var (n1, s1, q1) = trace.Sums(start - pad, start - 1);
+        var (n2, s2, q2) = trace.Sums(end + 1, end + pad);
+        var nF = n1 + n2;
+        var sF = s1 + s2;
+        var qF = q1 + q2;
+
+        if (!(sT / nT > sF / nF))
+        {
+            return 0;
+        }
+
+        var all = sT + sF;
+        var sse = qT - (sT * sT / nT) + (qF - (sF * sF / nF));
+        var sst = qT + qF - (all * all / (nT + nF));
+
+        return sst > 0 ? 1 - (sse / sst) : 0;
+    }
+
+    /// <summary>
+    /// **PITCH IS A RESULT** (work instruction 522): over a fitted span, each bin's power less its power in the pads
+    /// either side; the bins standing <see cref="BlobFactor"/> times the median excess over it, two or more together,
+    /// are one sender's energy, and its centroid is the mark's pitch. Two such blobs are two senders keying at once,
+    /// and each is fitted on its own energy for its own edges. A span the whole band scored under
+    /// <see cref="FitThreshold"/> is a mark only where unit 517's lobe passes at the centroid.
+    /// </summary>
+    private void BandSpan(Evaluation[] evals, long start, long end, double bandScore, long hop, double nowSeconds)
+    {
+        var pad = FitPadHops;
+        // **A STEP NO TALLER THAN A FLAT TOP'S WOBBLE IS NOT A MARK ON ITS OWN SCORE** (unit 516's rule, kept here): the
+        // share explained has no scale, and a bump on a dah's own top explains most of nothing. On the whole passband a
+        // weak station's step is that small too, so such a span passes only on unit 517's lobe at its centroid, which
+        // judges its height against its own bin.
+        var (nT, sT, _) = _band.Sums(start, end);
+        var (n1, s1, _) = _band.Sums(start - pad, start - 1);
+        var (n2, s2, _) = _band.Sums(end + 1, end + pad);
+        var direct = (sT / nT) - ((s1 + s2) / (n1 + n2)) > FlatToleranceDb ? bandScore : 0;
+
+        var excess = new double[_bins.Length];
+
+        for (var k = 0; k < _bins.Length; k++)
+        {
+            excess[k] = MeanPower(_bins[k], start, end)
+                - ((MeanPower(_bins[k], start - pad, start - 1) + MeanPower(_bins[k], end + 1, end + pad)) / 2);
+        }
+
+        var magnitudes = excess.Select(Math.Abs).OrderBy(x => x).ToList();
+        var median = magnitudes[magnitudes.Count / 2];
+        var line = BlobFactor * median;
+        var blobs = new List<(int From, int To)>();
+
+        for (var k = 0; k < excess.Length; k++)
+        {
+            if (!(excess[k] > line))
+            {
+                continue;
+            }
+
+            var from = k;
+
+            while (k + 1 < excess.Length && excess[k + 1] > line)
+            {
+                k++;
+            }
+
+            if (k > from)
+            {
+                blobs.Add((from, k));
+            }
+        }
+
+        foreach (var (from, to) in blobs)
+        {
+            var weight = 0.0;
+            var moment = 0.0;
+
+            for (var k = from; k <= to; k++)
+            {
+                weight += excess[k];
+                moment += excess[k] * _bins[k].Hz;
+            }
+
+            var binPitch = moment / weight;
+            var pitches = SamplePeaks(_bins[from].Hz - BinSpacingHz, _bins[to].Hz + BinSpacingHz, start, end);
+
+            if (pitches.Count == 0)
+            {
+                pitches.Add(binPitch);
+            }
+
+            foreach (var pitch in pitches)
+            {
+                var centre = Nearest(pitch);
+                var (s, e, score) = blobs.Count > 1 || pitches.Count > 1
+                    ? Refit(Math.Max(0, centre - 1), Math.Min(_bins.Length - 1, centre + 1), start, end)
+                    : (start, end, direct);
+
+                if (score < FitThreshold)
+                {
+                    // **THE WEAKEST GET A SECOND PASS**: unit 517's lobe over the span at the centroid, now that the time is known.
+                    score = Math.Max(score, Fit(centre, s, e, pad).Score);
+                }
+
+                if (score >= FitThreshold)
+                {
+                    OfferBand(evals, centre, pitch, s, e, score, hop, nowSeconds);
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// **WHERE THE ENERGY WAS, OVER THE MARK'S OWN SAMPLES** (work instruction 522): between two pitches, the excess
+    /// power at five hertz steps over the mark's whole length, through a Hann window its own length, less the gaps
+    /// either side; and the centroid of the half-power stretch around its peak. NaN where the samples are gone.
+    /// </summary>
+    /// <remarks>
+    /// The bins are ten millisecond windows, and two stations two hundred hertz apart beat in step with the five
+    /// millisecond hop, so between them the bins read power keyed with the mark (unit 521): a bin centroid of a dah
+    /// beside a steady carrier at 825 fell at 693. Over a dah's 180 ms the two are separate tones, six hertz wide.
+    /// </remarks>
+    private List<double> SamplePeaks(double lowHz, double highHz, long start, long end)
+    {
+        var markFrom = ((start + 1) * HopSamples) - (HopSamples / 2);
+        var markTo = ((end + 1) * HopSamples) + (HopSamples / 2);
+        var beforeFrom = (start - (2 * EdgeHops) + 1) * HopSamples;
+        var beforeTo = (start - EdgeHops + 1) * HopSamples;
+        var afterFrom = (end + EdgeHops + 1) * HopSamples;
+        var afterTo = Math.Min(_samplesSeen, (end + (2 * EdgeHops) + 1) * HopSamples);
+        var oldest = Math.Max(0, _samplesSeen - _raw.Length);
+
+        if (markFrom < oldest || markTo > _samplesSeen || markTo - markFrom < 8)
+        {
+            return new List<double>();
+        }
+
+        const double step = 5;
+        var count = (int)Math.Floor((highHz - lowHz) / step) + 1;
+        var excess = new double[count];
+
+        for (var k = 0; k < count; k++)
+        {
+            var hz = lowHz + (k * step);
+            var gaps = 0.0;
+            var parts = 0;
+
+            if (beforeFrom >= oldest && beforeTo - beforeFrom >= 8)
+            {
+                gaps += Power(hz, beforeFrom, beforeTo);
+                parts++;
+            }
+
+            if (afterTo - afterFrom >= 8)
+            {
+                gaps += Power(hz, afterFrom, afterTo);
+                parts++;
+            }
+
+            excess[k] = Power(hz, markFrom, markTo) - (parts > 0 ? gaps / parts : 0);
+        }
+
+        var peaks = new List<double>();
+        var top = excess.Max();
+
+        if (!(top > 0))
+        {
+            return peaks;
+        }
+
+        // Every local peak of at least a quarter of the strongest, fifty hertz or more from a stronger one: two
+        // stations keying at once over this span. Fifty hertz is three times the width a dit's own samples resolve.
+        var order = Enumerable.Range(0, count)
+            .Where(k => excess[k] >= top / 4 && (k == 0 || excess[k] >= excess[k - 1]) && (k == count - 1 || excess[k] >= excess[k + 1]))
+            .OrderByDescending(k => excess[k])
+            .ToList();
+        var taken = new List<int>();
+
+        foreach (var peak in order)
+        {
+            if (taken.Any(t => Math.Abs(t - peak) * step < 50))
+            {
+                continue;
+            }
+
+            taken.Add(peak);
+
+            var half = excess[peak] / 2;
+            var from = peak;
+            var to = peak;
+
+            while (from > 0 && excess[from - 1] >= half && excess[from - 1] <= excess[from])
+            {
+                from--;
+            }
+
+            while (to < count - 1 && excess[to + 1] >= half && excess[to + 1] <= excess[to])
+            {
+                to++;
+            }
+
+            var weight = 0.0;
+            var moment = 0.0;
+
+            for (var k = from; k <= to; k++)
+            {
+                weight += excess[k];
+                moment += excess[k] * (lowHz + (k * step));
+            }
+
+            peaks.Add(moment / weight);
+        }
+
+        return peaks;
+    }
+
+    /// <summary>The mean-square power of the raw samples between two absolute indexes at a frequency, through a Hann window their own length.</summary>
+    private double Power(double hz, long fromSample, long toSample)
+    {
+        var n = (int)(toSample - fromSample);
+        var coefficient = 2 * Math.Cos(2 * Math.PI * hz / SampleRate);
+        double s1 = 0;
+        double s2 = 0;
+        double weights = 0;
+
+        for (var i = 0; i < n; i++)
+        {
+            var w = 0.5 - (0.5 * Math.Cos(2 * Math.PI * (i + 0.5) / n));
+            var x = _raw[(int)((fromSample + i) % _raw.Length)] * w;
+            var s0 = x + (coefficient * s1) - s2;
+
+            s2 = s1;
+            s1 = s0;
+            weights += w;
+        }
+
+        return 2 * ((s1 * s1) + (s2 * s2) - (coefficient * s1 * s2)) / (weights * weights);
+    }
+
+    /// <summary>The bin nearest a pitch.</summary>
+    private int Nearest(double hz)
+    {
+        var nearest = 0;
+
+        for (var i = 1; i < _bins.Length; i++)
+        {
+            if (Math.Abs(_bins[i].Hz - hz) < Math.Abs(_bins[nearest].Hz - hz))
+            {
+                nearest = i;
+            }
+        }
+
+        return nearest;
+    }
+
+    /// <summary>A bin's mean linear power over some hops; nought over none.</summary>
+    private static double MeanPower(Bin bin, long from, long to)
+    {
+        if (to < from || from < 0)
+        {
+            return 0;
+        }
+
+        var sum = 0.0;
+
+        for (var h = from; h <= to; h++)
+        {
+            sum += Math.Pow(10, bin.Level(h) / 10);
+        }
+
+        return sum / (to - from + 1);
+    }
+
+    /// <summary>
+    /// Fit one blob's own energy for its own edges, within a pad of the span's: the start and end where a rectangle
+    /// explains most of the blob's trace (work instruction 522).
+    /// </summary>
+    private (long Start, long End, double Score) Refit(int from, int to, long start, long end)
+    {
+        var pad = FitPadHops;
+        var first = Math.Max(0, start - (2 * pad));
+        var last = Math.Min(_hop - 1, end + (2 * pad));
+        var trace = new double[last - first + 1];
+
+        for (var h = first; h <= last; h++)
+        {
+            var sum = 0.0;
+
+            for (var k = from; k <= to; k++)
+            {
+                sum += Math.Pow(10, _bins[k].Level(h) / 10);
+            }
+
+            trace[h - first] = 10 * Math.Log10(Math.Max(1e-30, sum));
+        }
+
+        var best = (start, end, 0.0);
+
+        for (var s = start - pad; s <= start + pad; s++)
+        {
+            for (var e = Math.Max(s + 1, end - pad); e <= end + pad; e++)
+            {
+                if (s - pad < first || e + pad > last)
+                {
+                    continue;
+                }
+
+                var score = FitArray(trace, (int)(s - first), (int)(e - first), pad);
+
+                if (score > best.Item3)
+                {
+                    best = (s, e, score);
+                }
+            }
+        }
+
+        return best;
+    }
+
+    private static double FitArray(double[] trace, int start, int end, int pad)
+    {
+        double sT = 0, qT = 0, sF = 0, qF = 0;
+        var nT = end - start + 1;
+        var nF = 2 * pad;
+
+        for (var i = start; i <= end; i++)
+        {
+            sT += trace[i];
+            qT += trace[i] * trace[i];
+        }
+
+        for (var i = 1; i <= pad; i++)
+        {
+            sF += trace[start - i] + trace[end + i];
+            qF += (trace[start - i] * trace[start - i]) + (trace[end + i] * trace[end + i]);
+        }
+
+        if (!((sT / nT) - (sF / nF) > FlatToleranceDb))
+        {
+            return 0;
+        }
+
+        var all = sT + sF;
+        var sse = qT - (sT * sT / nT) + (qF - (sF * sF / nF));
+        var sst = qT + qF - (all * all / (nT + nF));
+
+        return sst > 0 ? 1 - (sse / sst) : 0;
+    }
+
+    /// <summary>Hand a mark found in time to the pattern gate, unless one already called covers half of it within a bin.</summary>
+    private void OfferBand(Evaluation[] evals, int centre, double pitch, long start, long end, double score, long hop, double nowSeconds)
+    {
+        var from = nowSeconds - ((hop - start + 1) * HopMs / 1000);
+        var to = nowSeconds - ((hop - end) * HopMs / 1000);
+
+        for (var k = _candidates.Count - 1; k >= 0; k--)
+        {
+            var called = _candidates[k];
+
+            if (called.ToSeconds < from - KeyingSeconds)
+            {
+                break;
+            }
+
+            var overlap = Math.Min(called.ToSeconds, to) - Math.Max(called.FromSeconds, from);
+
+            if (Math.Abs(called.PitchHz - pitch) <= BinSpacingHz && overlap >= (to - from) / 2)
+            {
+                return;
+            }
+        }
+
+        var pad = FitPadHops;
+        // Its level over the hops whose window lies wholly inside it: the first and last hops of a fitted span sit on
+        // the key's rise and fall, and a dit's mean over them read several decibels under its own sender's dahs.
+        var level = end - start >= 2 ? MeanLevel(_bins[centre], start + 1, end - 1) : MeanLevel(_bins[centre], start, end);
+        var floor = (MeanLevel(_bins[centre], start - pad, start - 1) + MeanLevel(_bins[centre], end + 1, end + pad)) / 2;
+        var keyed = false;
+
+        for (var k = Math.Max(0, centre - 2); k <= Math.Min(_bins.Length - 1, centre + 2) && !keyed; k++)
+        {
+            keyed = evals[k].Keying;
+        }
+
+        var candidate = new CwMark(++_candidateSequence, from, to, pitch, level, level - floor)
+        {
+            Keyed = keyed,
+            OwnContrastDb = level - floor,
+            Stood = false,
+            FitScore = score,
+        };
+
+        _candidates.Add(candidate);
+
+        foreach (var stood in MarksNeedPattern ? _pattern.Offer(candidate) : new[] { candidate })
+        {
+            _marks.Add(stood with { Sequence = ++_markSequence, Stood = true, Keyed = true });
         }
     }
 

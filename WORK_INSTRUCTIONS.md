@@ -1,13 +1,14 @@
-# Work instruction 521 - a mark's pitch is where its own keying is, and a light says hold still
+# Work instruction 522 - shape first, pitch as a result, and a gauge that fills
 
-**Hand run. One unit, two tasks, commit per task, task 2 not dropped.**
+**Hand run. One unit, three tasks, commit per task. Task 1 is the unit; tasks 2 and 3 ride on it
+and are not dropped.**
 
 **No test against a recording, a fixture, a floor or copied telemetry** (R96). A headless test
 driving synthetic hops written in the test itself is allowed; nothing read from disk. Verify by
 building `Hamlet.sln` with warnings as errors and running the app carry-forward line. **Every
 existing reading case reads exactly as at HEAD**, or the report says what changed and why.
 
-**Numbering.** This is unit 521, ruling HM-DEC-225. If taken, use the next free and say so.
+**Numbering.** This is unit 522, ruling HM-DEC-226. If taken, use the next free and say so.
 **Unit 518 runs after this.**
 
 ---
@@ -41,125 +42,156 @@ If all five hold, say "Hamlet confirmed" and continue.
   to `RUN_LEDGER.md`. Touch nothing under `tools\arbiter\`. Tick nothing in `PHASE_PLAN.md`.
 - One `dotnet test` invocation per line, filtered, with a `timeout`. Never background and poll.
 - Apostrophes in quoted heredocs break; `;` is refused; Python cannot run here; `-m` more than
-  once for a multi-line commit. Scripts go in `.run-unit\unit521-<name>.sh`, not committed.
+  once for a multi-line commit. Scripts go in `.run-unit\unit522-<name>.sh`, not committed.
 - Nothing that keys or transmits. Nothing written to the radio.
+- **Tag HEAD `before-shape-first` before any engine change**, pushed. The per-bin front end stays
+  reachable by name.
 - `output.md` at the root, four headings exactly: `## 1. What Claude did`, `## 2. What the owner
   should expect`, `## 3. What you should see`, `## 4. What's blocking us`.
 
 ---
 
-## 2. Task 1 - a mark's pitch is where its own keying is
+## 2. The analysis, and the owner's ruling
 
-**Two findings, one cause.**
+**Where pitch still runs the show.** Everything in `CwEnvelopeDetector` is measured per 25 Hz bin.
+A bar forms in a bin; its flatness, edges and key-up are judged in that bin; the climb picks a
+bin; the narrowness probe compares bins; the fit (517) is told which bin; the pattern gate groups
+by "within one bin." **Every bin decision is a pitch decision**, and the week's unexplained faults
+all live there: a neighbour 200 Hz away steals a station's marks (520, 521); a station reads at
+one click and not the next (the owner, 2026-10-01); a dah beside a steady carrier makes no
+candidate at all (521); a sequence with a shape score of **0.06** went green on the light
+(2026-10-01 18:20) because it passed every per-bin gate. The per-bin gates ask *"is this bin
+noisy?"*, not *"is this a rectangle?"*.
 
-**Unit 520:** no per-mark gate loses a quiet station's marks beside a loud neighbour 200 Hz away.
-**The apex climb does** - unit 496's walk to the louder neighbouring bin carries a 12 dB mark up
-the neighbour's lobe to 825 Hz, where the key-up test sees a carrier that never keyed with it and
-refuses the mark. With the carrier steady, **none** of the clean station's marks land at its own
-625 Hz. Three fixes that followed this mark's keying split a lone station across its own lobe,
-and were reverted.
+**The owner's ruling, R117, 2026-10-01:**
 
-**The owner, 2026-10-01:** *"The signal was just as clear one click off in either direction. Only
-thing that changed was pitch."* A tone exactly on a 25 Hz bin centre reads; one click off it, the
-same signal does not. **Unit 515's five-pitch test was 425, 500, 600, 700, 775 - every one a bin
-centre.** W1AW reads because the button tunes to exactly 7.0475 and the pitch is exactly 600: a
-bin centre. Ear-tuned stations land between bins.
+> *"You're still not focusing 100% on shape. You're trying to interpret the noise instead of
+> creating the shape patterns. Shape is everything, 100%."* And: *"We lose the weakest stations,
+> but pitch becomes largely irrelevant."* **Pitch is an output, never a decision.**
 
-**The same mechanism.** The climb decides a mark's pitch by comparing the levels of neighbouring
-bins. Between two bin centres the two bins are equal and the climb flips hop to hop; beside a loud
-neighbour it climbs the wrong way. **Level comparison between bins is the hidden pitch bias.**
+---
 
-**The rule.** **A mark's pitch is where its own keying is, not where the level is highest.** A
-tone's energy across the bins is a lobe of known shape - the window's own - centred on the tone.
-**Fit that lobe to the hops of this mark**: the three bins round the peak, over the mark's own
-duration, and the fitted centre is the mark's pitch, to a fraction of a bin. A loud neighbour has a
-different keying and a different lobe centre; it does not key with this mark, so it does not
-pull this mark's fit. A tone between bin centres gets its true centre instead of a coin flip.
+## 3. Task 1 - shape first, pitch as a result
 
-- The lobe's shape comes from the window the detector already uses; say which and its width.
-- The fit is over the mark's own hops only - the hops that keyed with it.
-- The 496 walk retires for pitch. **Say what else still read the apex bin** - the fit's lobe
-  (517), the narrowness probe's centre (514), the pattern gate's "within one bin" - and that each
-  now reads the fitted centre.
-- A mark's `Hz` becomes a fraction of a bin; the pattern gate's pitch agreement is on that
-  figure.
+**The rule: time first; frequency only to tell overlapping rectangles apart.**
+
+1. **The rectangle is found in time, across the whole passband.** Sum the energy of every bin in
+   the passband into one trace per hop - the oscilloscope the owner asked for on 2026-09-28 -
+   and **fit rectangles to it**, with unit 517's fit: start, end, height, scored by the share of
+   the stretch's variance the rectangle explains, a ratio, never dB. A keyed tone is a rectangle
+   there at any pitch. **No bin is chosen. Nothing can be one click off.**
+2. **Pitch is a result.** During a fitted rectangle, the energy's centroid across the bins is
+   the mark's pitch, to a fraction of a bin. **No climb. No comparison of neighbouring bins. The
+   496 apex walk retires.**
+3. **Overlapping rectangles are split in frequency, and only then.** Where the whole-band trace
+   shows a shape that is not one rectangle - two senders keying at once - look at the bins over
+   that stretch: two energy blobs, two centroids, two marks, each fitted on its own blob. A loud
+   carrier and a quiet station have different **time** edges; that is what separates them, never
+   a level comparison.
+4. **The weakest get a second pass.** Where the whole-band fit finds a rectangle's time span but
+   scores it low, **fit unit 517's lobe over that span at the centroid** - full sensitivity, now
+   that the time is known. A mark passes on either fit.
+5. **The per-hop tests retire as gates.** Flatness (R93), edges (497), narrowness (498, 514),
+   key-up and promptness (492), the wander check: **none decides whether a stretch is a mark.**
+   They may stay as descriptors a mark carries; say which were kept and for what. The fit's
+   score and the pattern gate decide.
+6. **The pattern gate is unchanged in rule.** It is already pure shape - one height, two lengths
+   at 3:1, gaps at the sender's own, consistency, five to stand - and now its "within one bin"
+   is "within one bin of the centroid."
+
+**The costs, stated and accepted.** Summing the passband raises the noise floor by about
+10·log10(bins), 13 dB for 500 Hz of 25 Hz bins; fitting over a dit's length instead of judging a
+5 ms hop buys back about 10 dB at 20 WPM; the lobe pass covers the rest. **Report the floor
+before and after on the strength table** - the owner expects a few dB at the weakest and no
+worse on a clear station.
 
 **Watch it fail first**, synthetic hops written in the test:
 
-1. **The bin-grid sweep, first.** A clean 20 WPM sender at 24 dB at **600, 606, 612, 618 and
-   625 Hz** - within one bin - no filter. For each: marks stood, shape score, text. **Red today
-   if any between-centre pitch reads worse than 600.** Green when the table is flat. **This is
-   the test the week never had.**
-2. **Unit 520's case 1 at 200, 150 and 100 Hz** - the clean 12 dB sender beside a 24 dB carrier.
-   Red today: `NOAM■HIV5■`, the carrier's reading. Green: the clean sender reads whole, its marks
-   at its own pitch; report how many land at 625.
-3. **The same with the carrier steady** - 520's probe that found none at 625. Green when the
-   clean sender's marks are at 625.
-4. **A lone clean sender stays whole** - the case that broke 520's three attempts: no duplicates
-   across its own lobe. The fists, whole.
-5. **Every existing case reads exactly as at HEAD**: every speed, both Farnsworth cases, the speed
+1. **The neighbour**: unit 520's clean 12 dB sender beside a 24 dB carrier keyed at random, at
+   200, 150 and 100 Hz. **Red today**: `NOAM■HIV5■`. Green: the clean sender reads whole.
+2. **The steady carrier**: 521's single dah at 625 Hz beside a steady 24 dB carrier. **Red today:
+   no candidate.** Green: one mark, 180 ms, at 625.
+3. **One click either way**: a clean sender at 24 dB at 600, 610, 650, 690, 700, 750 Hz through
+   the 500 Hz filter on 600 - and the same with a 100 Hz step of the dial modelled as the whole
+   signal shifting by 100 Hz mid-call. Every row reads whole. Report the table.
+4. **The 0.06 sequence**: thirty seconds of loud noise; **no sequence scores above 0.2, and the
+   light is never green.**
+5. **The strength table**: the call at 8, 10, 12, 16, 24 dB, before and after, with marks stood
+   and text. Report the floor.
+6. **Every existing case reads as at HEAD** - every speed, both Farnsworth cases, the speed
    change, the fists, the bursts, the hesitation, `TEST DE W1AW K`, `DE DE`, the lone and stray
-   marks, both noise tests, the five pitches, the drifting station, the quiet dit and dah, the
-   strength table with the fit, the strong bulletin identical with the fit on and off, unit 520's
-   switch cases.
+   marks, both noise tests, the two stations, the five pitches, the drifting station, the quiet
+   dit and dah, the strong bulletin, unit 520's switch cases, the bin-grid sweep. **Where one
+   changes, say so with its text; nothing is forced.**
 
-## 3. Task 2 - a green light says hold still
+## 4. Task 2 - the light reads the score
 
-**The owner, 2026-10-01:** *"I want a green light whenever the first shape is being detected so
-that I know to hold on that frequency and not adjust, because you're not hearing it."*
+**The owner's rows, 2026-10-01 18:20:** the light went `shape found · hold here` and then
+`reading` on a sequence with shape score **0.06 to 0.08** and a meter median of 6 ms - noise.
+Unit 520 measured noise's best at 0.173.
 
-**Why.** Five marks must stand before a sequence exists, and unit 520 adds one word gap before
-the first letter prints. On a hand sender at 24 WPM that is several seconds of nothing on the
-screen while the shape side is working. The owner reads the silence as "not hearing it" and
-moves, and the station he was on never gets its five marks.
+**The rule:** green needs a standing sequence **and a shape score above 0.2** - clear of
+everything noise has produced. Below that the light stays amber with its count. The hover says
+so. `shapeLight` on the row is unchanged in form.
 
-**The light**, on the CW tab beside the scope, in words as well as colour (§0.6):
+**Watch it fail first**: a driven standing sequence scoring 0.08 - red today, the light is green;
+green when it stays amber. The clean call still goes green at the fifth mark.
 
-- **dark, `listening`** - no candidate mark in the last two seconds;
-- **amber, `shape forming · 3 of 5`** - candidate marks are arriving at one pitch and a sequence
-  is building but has not stood; the count fills in as marks arrive;
-- **green, `shape found · hold here`** - a sequence stands; letters follow within a word gap;
-- **green, `reading`** - a sender is being printed.
+## 5. Task 3 - the gauge
 
-The hover says: *"Green means Hamlet has the shape of a station here. Hold the frequency; the
-first letters print after one word gap."* The light is fed from the pattern gate's sequences
-and the reader's printed sender - the same sources as the row - at the scope's tick rate.
+**The owner, 2026-10-01:** *"Not a countdown, but an indicator that starts off low and as you get
+more and more sure, fills in. So I know how it's going."*
 
-**Nothing else moves** (R101). The row gains `shapeLight` with the word shown.
+**The light becomes a gauge**, same place, same width (R101): one horizontal bar that fills from
+left to right, with its words beside it.
 
-**Watch it fail first**, headless on the live path: a clean call - dark before the first
-candidate; amber with the count climbing to 4; green `shape found` at the fifth mark and before
-the first letter; green `reading` from the first letter; dark two seconds after the last mark.
-Then loud noise: never green.
+- **Empty**, `listening`: no candidate in two seconds.
+- **Filling, first stretch**, `shape forming`: marks toward five, as the count already runs - a
+  fifth of the bar per mark.
+- **Filling, second stretch**, `shape found · hold here`: from the fifth mark, the bar fills with
+  the sequence's shape score - 0.2 is where it crosses into the second stretch, 1.0 is full. **A
+  clean station fills fast; a rough one slower; both get there.**
+- **Full**, `reading`: a sender is printing.
+- **Colour follows the fill** - slate, amber, green - and the words carry it (§0.6).
+
+A sequence that never clears 0.2 sits at the boundary with amber words and never says hold here.
+The hover: *"Fills as Hamlet grows sure it has a station here. Past the mark, hold the frequency."*
+`shapeLight` on the row gains the fill as a number.
+
+**Watch it fail first**, headless: the clean call fills 0.2 → 0.4 → 0.6 → 0.8 across the first
+four marks, crosses at the fifth, climbs with the score, reads full from the first letter; loud
+noise never crosses.
 
 ---
 
-## 4. Record
+## 6. Record
 
-- `PHASE_OUTCOME.md`, both copies: `## UNIT 521 - STEP 12`, one paragraph.
-- `PHASE_STATUS.md`, both copies: names 521.
+- `PHASE_OUTCOME.md`, both copies: `## UNIT 522 - STEP 12`, one paragraph.
+- `PHASE_STATUS.md`, both copies: names 522.
 - Patch-bump `Directory.Build.props`.
 - `CLAUDE.md` §1 index row.
-- `DECISIONS.md`, newest first, **HM-DEC-225**, headline *A mark's pitch is where its own keying
-  is; a light says hold still*, naming the bin-centre finding and unit 520's climb finding as one
-  cause, and quoting the owner on the light.
-- **Touch no checkbox in `PHASE_PLAN.md`**, and add no ruling.
+- **Append R117 to the rulings section of both `PHASE_PLAN.md` copies**, in the owner's words.
+  **Touch no checkbox.**
+- `DECISIONS.md`, newest first, **HM-DEC-226**, headline *Shape first: the rectangle is found in
+  time across the passband and pitch is its centroid; the per-bin gates retire; the light reads
+  the score and fills*, naming the tag `before-shape-first` and the four faults it answers.
 
 ---
 
-## 5. Report
+## 7. Report
 
 Section 2, for the owner, in plain words:
 
 - rebuild;
-- **a station reads the same one click either way** - its pitch is now found from its own
-  keying, not from which 25 Hz bin happens to be louder;
-- **a station next to a louder one is no longer pulled onto the loud one and thrown away**;
-- **the light**: dark while listening, amber while a shape forms with a count, **green means hold
-  the frequency** - letters follow within a word;
-- nothing about letters changed.
+- **a station reads the same at any pitch and one click either way**, because no bin is chosen
+  any more - the rectangle is found in time and its pitch is where the energy was;
+- **a station beside a louder one is told apart by when it keys, not how loud it is**;
+- **the gauge** fills as Hamlet grows sure; past the mark, hold the frequency; it never fills on
+  noise;
+- **the weakest stations may read a little less far** - the floor before and after is in section
+  3, and that is the number to report against.
 
-Section 1: what changed, file by file, per task; the lobe shape used and every place that now
-reads the fitted centre; and that the build and the app line are green. **Section 3: the
-bin-grid sweep table first, then the neighbour cases, then the light's sequence, then the
-existing cases.** Section 4: anything left, a line each.
+Section 1: what changed, file by file; what each retired per-hop test became; the costs
+measured; and that the build and the app line are green. **Section 3: the neighbour and steady-
+carrier cases first, then the click table, then the strength table before and after, then the
+gauge's sequence, then the existing cases.** Section 4: anything left, a line each.

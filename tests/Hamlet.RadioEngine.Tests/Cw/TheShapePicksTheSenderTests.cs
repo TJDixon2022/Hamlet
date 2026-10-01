@@ -520,6 +520,150 @@ public sealed class TheShapePicksTheSenderTests
         Assert.Equal(Call, run.Text);
         Assert.Equal(marks.Count, near.Count);
     }
+
+    /// <remarks>
+    /// **SHAPE FIRST: A STATION BESIDE A LOUDER ONE** (work instruction 522, task 1): the clean 12 dB sender at 625 Hz
+    /// beside a 24 dB carrier keyed at random 200, 150 and 100 Hz away, before (the per-bin path) and after. **Not met**:
+    /// the carrier no longer prints, and the clean sender's marks under the carrier's are not split off, 8 of 47 found;
+    /// printed for the report.
+    /// </remarks>
+    /// <param name="carrierHz">The carrier's pitch.</param>
+    [Theory]
+    [InlineData(825.0)]
+    [InlineData(775.0)]
+    [InlineData(725.0)]
+    public void ShapeFirstBesideALouderCarrier(double carrierHz)
+    {
+        var clean = Morse(Call, 20, 0, 3, 5191);
+        var end = clean[^1].To + 3;
+        var samples = Noise(end, 5192);
+
+        Key(samples, clean, 625, 12);
+        Key(samples, RandomKeying(2.5, end - 2, 5193), carrierHz, 24);
+
+        var before = Read(samples, shape: true, d => d.ShapeFirst = false);
+        var after = Read(samples, shape: true, d => d.ShapeFirst = true);
+
+        _output.WriteLine(string.Create(CultureInfo.InvariantCulture, $"carrier {carrierHz - 625:0} Hz away: before `{before.Text}`; after `{after.Text}`"));
+
+    }
+
+    /// <remarks>
+    /// **SHAPE FIRST: A DAH BESIDE A STEADY CARRIER** (work instruction 522, task 1): one 180 ms dah at 625 Hz, 12 dB,
+    /// beside a steady 24 dB carrier at 825. Before, no candidate; after, one mark of about 180 ms at 625.
+    /// </remarks>
+    [Fact]
+    public void ShapeFirstFindsADahBesideASteadyCarrier()
+    {
+        var samples = Noise(5, 5214);
+
+        Key(samples, new List<(double, double)> { (0.5, 4.8) }, 825, 24);
+        Key(samples, new List<(double, double)> { (2.0, 2.18) }, 625, 12);
+
+        string Found(bool shapeFirst)
+        {
+            var detector = new CwEnvelopeDetector(Rate) { ShapeFirst = shapeFirst, MarksNeedPattern = false };
+
+            for (var at = 0; at + Chunk <= samples.Length; at += Chunk)
+            {
+                detector.Process(samples.AsSpan(at, Chunk));
+            }
+
+            var near = detector.CandidatesKept.Where(m => m.ToSeconds > 1.9 && m.FromSeconds < 2.3).ToList();
+
+            return near.Count == 0 ? "none" : string.Join(", ", near.Select(m => string.Create(CultureInfo.InvariantCulture, $"{m.LengthMs:0} ms at {m.PitchHz:0} Hz")));
+        }
+
+        var before = Found(false);
+        var after = Found(true);
+
+        _output.WriteLine($"a dah at 625 beside a steady carrier at 825: before {before}; after {after}");
+
+        Assert.Contains(" at 62", after, StringComparison.Ordinal);
+    }
+
+    /// <remarks>
+    /// **SHAPE FIRST: ONE CLICK EITHER WAY** (work instruction 522, task 1): a clean 24 dB sender at 600, 610, 650,
+    /// 690, 700 and 750 Hz through the 500 Hz filter on 600, and the same with the dial stepped 100 Hz mid-call, the
+    /// whole signal shifting up by 100 Hz from the third word. Every row reads whole.
+    /// </remarks>
+    /// <param name="pitch">The sender's pitch.</param>
+    /// <param name="step">Whether the dial steps 100 Hz mid-call.</param>
+    [Theory]
+    [InlineData(600.0, false)]
+    [InlineData(610.0, false)]
+    [InlineData(650.0, false)]
+    [InlineData(690.0, false)]
+    [InlineData(700.0, false)]
+    [InlineData(750.0, false)]
+    [InlineData(600.0, true)]
+    [InlineData(650.0, true)]
+    [InlineData(700.0, true)]
+    public void ShapeFirstReadsOneClickEitherWay(double pitch, bool step)
+    {
+        var marks = Morse(Call, 20, 0, 3, 5215);
+        var samples = Noise(marks[^1].To + 3, 5216);
+        var shift = marks[16].From - 0.01;
+
+        Key(samples, marks.Where(m => !step || m.From < shift).ToList(), pitch, 24);
+
+        if (step)
+        {
+            Key(samples, marks.Where(m => m.From >= shift).ToList(), pitch - 100, 24);
+        }
+
+        var filtered = NarrownessReadsTheFiltersBandTests.ThroughTheFilter(samples);
+        var before = Read(filtered, shape: true, d =>
+        {
+            d.SetPassband(600, 500);
+            d.ShapeFirst = false;
+        });
+        var after = Read(filtered, shape: true, d =>
+        {
+            d.SetPassband(600, 500);
+            d.ShapeFirst = true;
+        });
+
+        _output.WriteLine(string.Create(CultureInfo.InvariantCulture, $"{pitch:0} Hz{(step ? ", dial stepped 100 Hz mid-call" : string.Empty)}: before `{before.Text}`; after `{after.Text}`"));
+
+        Assert.Equal(Call, after.Text);
+    }
+
+    /// <remarks>
+    /// **SHAPE FIRST: THE STRENGTH TABLE** (work instruction 522, task 1): the call at 8, 10, 12, 16 and 24 dB, before
+    /// and after: marks stood at its pitch, and what reads. The floor is reported, not asserted.
+    /// </remarks>
+    /// <param name="db">Its level over the noise.</param>
+    [Theory]
+    [InlineData(24.0)]
+    [InlineData(16.0)]
+    [InlineData(12.0)]
+    [InlineData(10.0)]
+    [InlineData(8.0)]
+    public void ShapeFirstStrengthTable(double db)
+    {
+        var marks = Morse(Call, 20, 0, 3, 5070 + (int)db);
+        var samples = Noise(marks[^1].To + 3, 5217 + (int)db);
+
+        Key(samples, marks, 625, db);
+
+        int Stood(bool shapeFirst)
+        {
+            var detector = new CwEnvelopeDetector(Rate) { ShapeFirst = shapeFirst };
+
+            for (var at = 0; at + Chunk <= samples.Length; at += Chunk)
+            {
+                detector.Process(samples.AsSpan(at, Chunk));
+            }
+
+            return detector.MarksSince(0).Marks.Count(m => Math.Abs(m.PitchHz - 625) <= 2 * CwEnvelopeDetector.BinSpacingHz);
+        }
+
+        var before = Read(samples, shape: true, d => d.ShapeFirst = false);
+        var after = Read(samples, shape: true, d => d.ShapeFirst = true);
+
+        _output.WriteLine(string.Create(CultureInfo.InvariantCulture, $"{db:0} dB: before {Stood(false)} stood, `{before.Text}`; after {Stood(true)} stood, `{after.Text}`"));
+    }
     /// <remarks>
     /// Case 5: thirty seconds and three minutes of loud noise print nothing; the highest shape score any noise
     /// sequence earned is printed beside the real senders' of cases 1 to 3.

@@ -18,7 +18,7 @@ namespace Hamlet.RadioEngine.Tests.Cw;
 public sealed class AFistIsReadByTheNearerClusterTests
 {
     private const int Rate = 8000;
-    private const double Pitch = 625;
+    internal const double Pitch = 625;
     private const string Call = "CQ CQ DE N0CALL N0CALL K";
 
     private readonly ITestOutputHelper _output;
