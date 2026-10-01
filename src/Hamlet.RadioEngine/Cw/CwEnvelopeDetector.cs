@@ -1526,9 +1526,37 @@ public sealed class CwEnvelopeDetector
             foreach (var pitch in pitches)
             {
                 var centre = Nearest(pitch);
-                var (s, e, score) = blobs.Count > 1 || pitches.Count > 1
-                    ? Refit(Math.Max(0, centre - 1), Math.Min(_bins.Length - 1, centre + 1), start, end)
-                    : (start, end, direct);
+
+                // **TWO SENDERS AT ONCE ARE FOUND ON THEIR OWN BINS** (work instruction 523, case 2). The whole band cannot
+                // see one sender's edges under another's: a loud sender's gap filled by the other's mark joins its two
+                // dahs, and a mark wholly under the other's has no edge of its own there. Where the span holds more than
+                // one sender, each is searched for rectangles on the bin nearest its own pitch, across the span.
+                if (blobs.Count > 1 || pitches.Count > 1)
+                {
+                    foreach (var (rs, re, rscore) in RectanglesOnBin(centre, start, end, BandLengths(nowSeconds)))
+                    {
+                        OfferBand(evals, centre, pitch, rs, re, rscore, hop, nowSeconds);
+                    }
+
+                    continue;
+                }
+
+                // **AND ONE SENDER'S RECTANGLE IS CHECKED ON ITS OWN BIN**: another sender keyed steadily through this one's
+                // gap cancels out of the excess, so only one pitch shows while the whole band joins two of its marks.
+                // Where its own bin shows two rectangles or more across the span, those are the marks.
+                var own = RectanglesOnBin(centre, start, end, BandLengths(nowSeconds));
+
+                if (own.Count >= 2)
+                {
+                    foreach (var (rs, re, rscore) in own)
+                    {
+                        OfferBand(evals, centre, pitch, rs, re, rscore, hop, nowSeconds);
+                    }
+
+                    continue;
+                }
+
+                var (s, e, score) = (start, end, direct);
 
                 if (score < FitThreshold)
                 {
@@ -1546,7 +1574,7 @@ public sealed class CwEnvelopeDetector
 
     /// <summary>
     /// **WHERE THE ENERGY WAS, OVER THE MARK'S OWN SAMPLES** (work instruction 522): between two pitches, the excess
-    /// power at five hertz steps over the mark's whole length, through a Hann window its own length, less the gaps
+    /// power at five hertz steps over the mark's whole length, every sample weighed alike, less the gaps
     /// either side; and the centroid of the half-power stretch around its peak. NaN where the samples are gone.
     /// </summary>
     /// <remarks>
@@ -1648,7 +1676,12 @@ public sealed class CwEnvelopeDetector
         return peaks;
     }
 
-    /// <summary>The mean-square power of the raw samples between two absolute indexes at a frequency, through a Hann window their own length.</summary>
+    /// <summary>
+    /// The mean-square power of the raw samples between two absolute indexes at a frequency, every sample weighed alike
+    /// (work instruction 523): a Hann window weighs a span's ends to nothing, and a dit at the end of a span another
+    /// sender's dah began lost its peak. A flat window's sidelobes, a twentieth in power, stay under the quarter that
+    /// makes a second sender.
+    /// </summary>
     private double Power(double hz, long fromSample, long toSample)
     {
         var n = (int)(toSample - fromSample);
@@ -1659,7 +1692,7 @@ public sealed class CwEnvelopeDetector
 
         for (var i = 0; i < n; i++)
         {
-            var w = 0.5 - (0.5 * Math.Cos(2 * Math.PI * (i + 0.5) / n));
+            const double w = 1;
             var x = _raw[(int)((fromSample + i) % _raw.Length)] * w;
             var s0 = x + (coefficient * s1) - s2;
 
@@ -1669,6 +1702,68 @@ public sealed class CwEnvelopeDetector
         }
 
         return 2 * ((s1 * s1) + (s2 * s2) - (coefficient * s1 * s2)) / (weights * weights);
+    }
+
+    /// <summary>
+    /// The rectangles on one bin whose ends fall within a span, each at its best end in time and length, scoring
+    /// <see cref="FitThreshold"/> or more with a step taller than a flat top's wobble (work instruction 523).
+    /// </summary>
+    private List<(long Start, long End, double Score)> RectanglesOnBin(int bin, long start, long end, SortedSet<int> lengths)
+    {
+        var pad = FitPadHops;
+        var trace = _bins[bin];
+        var found = new List<(long, long, double)>();
+        var last = Math.Min(end, _hop - 1 - pad);
+        var prev1 = 0.0;
+        var prev2 = 0.0;
+        var len1 = 0;
+
+        for (var e = start; e <= last + 1; e++)
+        {
+            var best = 0.0;
+            var length = 0;
+
+            if (e <= last)
+            {
+                foreach (var l in lengths)
+                {
+                    var s = e - l + 1;
+
+                    if (s - pad < 0 || _hop - 1 - (s - pad) >= trace.SumsKept)
+                    {
+                        continue;
+                    }
+
+                    var (nT, sT, _) = trace.Sums(s, e);
+                    var (n1, s1, _) = trace.Sums(s - pad, s - 1);
+                    var (n2, s2, _) = trace.Sums(e + 1, e + pad);
+
+                    if (!((sT / nT) - ((s1 + s2) / (n1 + n2)) > FlatToleranceDb))
+                    {
+                        continue;
+                    }
+
+                    var score = FitTrace(trace, s, e, pad);
+
+                    if (score > best)
+                    {
+                        best = score;
+                        length = l;
+                    }
+                }
+            }
+
+            if (prev1 >= FitThreshold && prev1 >= prev2 && prev1 > best)
+            {
+                found.Add((e - len1, e - 1, prev1));
+            }
+
+            prev2 = prev1;
+            prev1 = best;
+            len1 = length;
+        }
+
+        return found;
     }
 
     /// <summary>The bin nearest a pitch.</summary>
