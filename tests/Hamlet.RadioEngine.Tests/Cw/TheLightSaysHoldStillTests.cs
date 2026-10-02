@@ -187,4 +187,22 @@ public sealed class TheLightSaysHoldStillTests
         Assert.DoesNotContain(steps, s => s.Light is CwShapeLight.Found or CwShapeLight.Reading);
         Assert.DoesNotContain(steps, s => s.Fill > CwShapeLights.Mark);
     }
+
+    /// <remarks>
+    /// **THE GAUGE CANNOT COUNT PAST FIVE** (work instruction 526, task 6): an SKCC straight key read `7 of 5` and `9 of 5`.
+    /// Four marks forming say four of five; five or more without standing say not yet, amber, at the mark, and never
+    /// hold here.
+    /// </remarks>
+    [Fact]
+    public void TheGaugeCannotCountPastFive()
+    {
+        Assert.Equal("shape forming · 4 of 5", CwShapeLights.Words(CwShapeLight.Forming, 4));
+
+        foreach (var forming in new[] { 5, 7, 9 })
+        {
+            Assert.Equal(CwShapeLights.NotYetWords, CwShapeLights.Words(CwShapeLight.Forming, forming));
+            Assert.Equal(CwShapeLights.Mark, CwShapeLights.Fill(CwShapeLight.Forming, forming, double.NaN));
+            Assert.DoesNotContain("hold", CwShapeLights.Words(CwShapeLight.Forming, forming), StringComparison.Ordinal);
+        }
+    }
 }

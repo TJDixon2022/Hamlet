@@ -57,13 +57,18 @@ public static class CwShapeLights
         _ => 0,
     };
 
+    /// <summary>What the light says when a sequence holds five marks or more and has not stood (work instruction 526).</summary>
+    public const string NotYetWords = "shape forming · not yet";
+
     /// <summary>What the light says.</summary>
     /// <param name="light">Its state.</param>
     /// <param name="forming">How many marks the forming sequence holds.</param>
     /// <returns>The words.</returns>
     public static string Words(CwShapeLight light, int forming) => light switch
     {
-        CwShapeLight.Forming => $"shape forming · {forming} of {CwPatternGate.MarksToStand}",
+        // **THE GAUGE CANNOT COUNT PAST FIVE** (work instruction 526, task 6, HM-DEC-230): an SKCC straight key read `7 of 5`
+        // and `9 of 5` for thirty seconds. A count that has reached five without standing says not yet, at the mark.
+        CwShapeLight.Forming => forming >= CwPatternGate.MarksToStand ? NotYetWords : $"shape forming · {forming} of {CwPatternGate.MarksToStand}",
         CwShapeLight.Found => "shape found · hold here",
         CwShapeLight.Reading => "reading",
         _ => "listening",
