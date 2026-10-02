@@ -172,7 +172,7 @@ public sealed class CwRunReader
             best = new Sender();
             _senders.Add(best);
         }
-        else if (best.Open.Count > 0 && best.Lines.KindOf(mark.FromSeconds - best.Open[^1].ToSeconds) != CwGapKind.Element)
+        else if (best.Open.Count > 0 && best.KindOfNext(mark.FromSeconds - best.Open[^1].ToSeconds) != CwGapKind.Element)
         {
             End(best);
         }
@@ -495,7 +495,7 @@ public sealed class CwRunReader
     private void Raise(Sender sender, CwMark[] run)
     {
         var dit = sender.DitSeconds;
-        var split = sender.SplitSeconds;
+        var split = sender.SplitAround(run);
         var at = run[^1].ToSeconds;
         var wpm = (int)Math.Round(1.2 / dit);
 
@@ -587,6 +587,64 @@ public sealed class CwRunReader
         public List<CwMark[]> Ended { get; } = new();
 
         /// <summary>Split the ended runs from one index on again, at the sender's character gap now.</summary>
+        /// <summary>
+        /// What kind the gap before a mark just heard is, judged against the sender's gaps before it (work instruction
+        /// 526, task 2): the gaps between its recent marks, and this one.
+        /// </summary>
+        /// <param name="gap">The gap from the sender's last mark to the new one.</param>
+        public CwGapKind KindOfNext(double gap)
+        {
+            var gaps = _recent.Skip(1).Select((m, i) => m.FromSeconds - _recent[i].ToSeconds).Append(gap).ToList();
+
+            return CwPatternGate.KindAmongNeighbours(gaps, gaps.Count - 1, Lines);
+        }
+
+        /// <summary>
+        /// **A MARK IS JUDGED AGAINST ITS NEIGHBOURS** (work instruction 526, task 1, HM-DEC-230): the split between dit and
+        /// dah for a letter's marks, from the letter's own marks and <see cref="CwPatternGate.NeighbourGaps"/> of the
+        /// sender's marks either side, where they show a clean jump of <see cref="TwoKindsRatio"/>; the sender's running
+        /// split (unit 513) where they do not, a letter of one kind among neighbours of that kind.
+        /// </summary>
+        /// <param name="run">The letter's marks.</param>
+        /// <remarks>
+        /// A change of speed has no adjustment period: the first letter at the new speed is split by its own marks and
+        /// those just after it, not by the forty before it.
+        /// </remarks>
+        public double SplitAround(IReadOnlyList<CwMark> run)
+        {
+            var first = _recent.IndexOf(run[0]);
+            var last = _recent.IndexOf(run[^1]);
+
+            if (first < 0 || last < 0)
+            {
+                return SplitSeconds;
+            }
+
+            var lengths = _recent
+                .Skip(Math.Max(0, first - CwPatternGate.NeighbourGaps))
+                .Take(Math.Min(_recent.Count, last + CwPatternGate.NeighbourGaps + 1) - Math.Max(0, first - CwPatternGate.NeighbourGaps))
+                .Select(m => m.ToSeconds - m.FromSeconds)
+                .OrderBy(l => l)
+                .ToList();
+            var at = -1;
+            var widest = 0.0;
+
+            // Each side at least two: one odd length is not a cluster, and a dit sent at three-fifths beside the K of
+            // N0CALL K took its true dit to be a dah.
+            for (var i = 2; i < lengths.Count - 1; i++)
+            {
+                if (lengths[i] / lengths[i - 1] > widest)
+                {
+                    widest = lengths[i] / lengths[i - 1];
+                    at = i;
+                }
+            }
+
+            return at < 0 || widest < TwoKindsRatio
+                ? SplitSeconds
+                : Boundary(LogStats(lengths.Take(at).ToList()), LogStats(lengths.Skip(at).ToList()));
+        }
+
         /// <param name="from">The first run not yet printed.</param>
         public void Resplit(int from)
         {
@@ -597,18 +655,21 @@ public sealed class CwRunReader
 
             var lines = Lines;
             var marks = Ended.Skip(from).SelectMany(r => r).OrderBy(m => m.FromSeconds).ToList();
+
+            // Each gap judged against the gaps either side of it, now that both sides are known (work instruction 526).
+            var gaps = marks.Skip(1).Select((m, i) => m.FromSeconds - marks[i].ToSeconds).ToList();
             var runs = new List<CwMark[]>();
             var current = new List<CwMark> { marks[0] };
 
-            foreach (var mark in marks.Skip(1))
+            for (var i = 1; i < marks.Count; i++)
             {
-                if (lines.KindOf(mark.FromSeconds - current[^1].ToSeconds) != CwGapKind.Element)
+                if (CwPatternGate.KindAmongNeighbours(gaps, i - 1, lines) != CwGapKind.Element)
                 {
                     runs.Add(current.ToArray());
                     current = new List<CwMark>();
                 }
 
-                current.Add(mark);
+                current.Add(marks[i]);
             }
 
             runs.Add(current.ToArray());

@@ -150,11 +150,83 @@ internal sealed class CwPatternGate
             : CwRunReader.Boundary(CwRunReader.LogStats(inside), CwRunReader.LogStats(letter));
         var letterMean = letter?.Average();
         var fiveDits = (WordGapDits * (ditSeconds + (smear / 2))) + (smear / 2);
+        // **FIVE DITS STAYS A FLOOR** (work instruction 526, task 2, HM-DEC-230): where three clusters show and the letter
+        // gaps sit under five dits, a gap of five dits is a word whatever the letter cluster says. A hand that drifts from
+        // 13 to 18 WPM carries its 13 WPM letter gaps for a while, their √(7/3) line sat over its new 5.8-dit word gaps, and
+        // BROWN FOX read as one word.
         var wordLine = letterMean is not { } l ? gapDit * UnmeasuredWordRatio
             : word is null && l < fiveDits ? fiveDits
+            : l < fiveDits ? Math.Min(fiveDits, l * LetterWordRatio)
             : l * LetterWordRatio;
 
         return new CwGapLines(gapDit, character, wordLine, inside, letter, word);
+    }
+
+    /// <summary>How many gaps either side a gap is judged against: three, a letter's worth (work instruction 526).</summary>
+    public const int NeighbourGaps = 3;
+
+    /// <summary>
+    /// **A GAP IS JUDGED AGAINST ITS NEIGHBOURS** (work instruction 526, task 2, HM-DEC-230): inside a letter or between
+    /// letters, by the gaps around it in the same sender.
+    /// </summary>
+    /// <param name="gaps">The sender's gaps in time order.</param>
+    /// <param name="index">The gap judged.</param>
+    /// <param name="lines">The sender's lines, which decide a word, and decide the rest where the neighbours cannot.</param>
+    /// <returns>The gap's kind.</returns>
+    /// <remarks>
+    /// <para>**THE OWNER, 2026-10-02**: *"Our biggest struggle is in changes of words per minute. Hand keyers are going to
+    /// be all over the place."* The sender's clusters are measured over its last forty marks, eight letters, a long
+    /// memory for a hand: just after a step from 35 back to 25 WPM a 25 WPM gap inside the J of JUMPS read longer than the
+    /// line the 35 WPM gaps had drawn, and the J printed as W and T.</para>
+    /// <para>So the gaps within <see cref="NeighbourGaps"/> either side, word gaps left out, are split where two
+    /// neighbours in length differ by <see cref="CwRunReader.TwoKindsRatio"/> or more, the clean jump the marks are
+    /// split at, and the gap is the kind it sits nearer by the two sides' spreads. Gaps inside a letter and gaps between
+    /// letters are one and three dits; a hand scattered so far that no clean jump is left, or a stretch of one kind,
+    /// falls back to the sender's own lines. A word is still decided by the lines, five dits staying a floor.</para>
+    /// </remarks>
+    public static CwGapKind KindAmongNeighbours(IReadOnlyList<double> gaps, int index, CwGapLines lines)
+    {
+        var gap = gaps[index];
+        var kind = lines.KindOf(gap);
+
+        if (kind == CwGapKind.Word)
+        {
+            return kind;
+        }
+
+        var window = new List<double>();
+
+        for (var i = Math.Max(0, index - NeighbourGaps); i <= Math.Min(gaps.Count - 1, index + NeighbourGaps); i++)
+        {
+            if (lines.KindOf(gaps[i]) != CwGapKind.Word)
+            {
+                window.Add(gaps[i]);
+            }
+        }
+
+        window.Sort();
+
+        var at = -1;
+        var widest = 0.0;
+
+        // Each side at least two: one odd gap is not a cluster (unit 504).
+        for (var i = 2; i < window.Count - 1; i++)
+        {
+            if (window[i] / window[i - 1] > widest)
+            {
+                widest = window[i] / window[i - 1];
+                at = i;
+            }
+        }
+
+        if (at < 0 || widest < CwRunReader.TwoKindsRatio)
+        {
+            return kind;
+        }
+
+        var boundary = CwRunReader.Boundary(CwRunReader.LogStats(window.Take(at).ToList()), CwRunReader.LogStats(window.Skip(at).ToList()));
+
+        return gap > boundary ? CwGapKind.Letter : CwGapKind.Element;
     }
 
     /// <summary>
