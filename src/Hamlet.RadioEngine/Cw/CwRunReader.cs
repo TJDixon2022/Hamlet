@@ -73,6 +73,9 @@ public sealed class CwRunReader
     // envelope windows, twenty milliseconds.
     private const double CallingLagSeconds = 0.02;
 
+    /// <summary>The shape under which a printed sender is let go: half the 0.2 it stood at (work instruction 526, task 5).</summary>
+    internal const double ReleaseScore = CwShapeLights.GreenScore / 2;
+
     // The marks a sender's length and gap figures are read over.
     private const int RecentMarks = 40;
 
@@ -282,7 +285,14 @@ public sealed class CwRunReader
         // first marks can score the line by chance and stand, and as more arrive its lengths and gaps do not hold
         // together and its shape falls, where a sender's rises with the evidence. A printed sender whose shape is under
         // the line the light uses is let go, as a silent one is, and its letters not yet printed are not printed.
-        if (ShapePicks && _station is not null && _station.Shape.Score < CwShapeLights.GreenScore)
+        //
+        // **AND IT IS HELD UNTIL ITS SHAPE FALLS TO HALF THAT** (work instruction 526, task 5, HM-DEC-230): at 12:10:15 on
+        // 7.031 a sender stood at shape 0.50 with the gauge at 0.88 and the reader printed nobody. The gauge reads the gate's
+        // sequence; the reader released on its own sender's shape, judged since unit 524 over the marks at its speed now
+        // with only their evidence, and where a hand's forty marks look like two speeds that is its newest ten or five,
+        // whose evidence alone takes a 0.5 shape under 0.2. A sender stands at 0.2 and is let go only under 0.1: hysteresis,
+        // so one dip does not drop a station that plainly stands. Found by reading, not reproduced on the bench.
+        if (ShapePicks && _station is not null && _station.Shape.Score < ReleaseScore)
         {
             _station = null;
         }
