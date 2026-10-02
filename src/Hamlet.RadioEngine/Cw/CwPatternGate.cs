@@ -60,7 +60,158 @@ internal sealed class CwPatternGate
     /// How long a sequence may be silent and still be the same sending, in seconds: the slowest
     /// Farnsworth word gap the ARRL sends and a dah at 5 WPM after it (units 500 and 501).
     /// </summary>
-    public const double SilenceSeconds = CwRunReader.SlowestFarnsworthWordGapSeconds + (3 * 1.2 / 5);
+    public const double SilenceSeconds = SlowestFarnsworthWordGapSeconds + (3 * 1.2 / 5);
+
+    /// <summary>
+    /// The word gap of the slowest Farnsworth sending the ARRL's code practice uses, 18 WPM letters at
+    /// 5 WPM overall, in seconds: 3.66 (work instruction 501; moved here from the reader by work instruction 525).
+    /// </summary>
+    /// <remarks>
+    /// **FROM PARIS, NOT FROM ANY RECORDING.** PARIS is fifty units: thirty-one in its letters and the
+    /// gaps inside them, sent at the letter speed, and nineteen in its spaces, four letter gaps of
+    /// three and one word gap of seven, stretched so the word takes 60/5 seconds. So one stretched
+    /// unit is (60/5 - 31 × 1.2/18) / 19 seconds, and a word gap is seven of them.
+    /// </remarks>
+    public const double SlowestFarnsworthWordGapSeconds = 7 * ((60.0 / 5) - (31 * 1.2 / 18)) / 19;
+
+    /// <summary>How many gaps of a kind a sender shows before its own cluster of them is used.</summary>
+    /// <remarks>Author's: three, so no single gap sets the boundary alone (unit 501).</remarks>
+    public const int MeasuredRunGaps = 3;
+
+    /// <summary>
+    /// **A WORD GAP IS FIVE DITS OR MORE** where a sender's gaps above the element gap form only one cluster (work
+    /// instruction 525, HM-DEC-229).
+    /// </summary>
+    /// <remarks>
+    /// Five sits between Morse's three and seven, and it is what fldigi and CW Skimmer use. A hand's three-dit letter
+    /// gaps scattered by a sixth reach 3.5 dits and never five, so no space lands inside a callsign; a sender who
+    /// pauses four dits between words still runs together, and that is the honest limit of what timing can tell. The
+    /// owner chose the literal five over the nearer of three and five, 2026-10-02.
+    /// </remarks>
+    public const double WordGapDits = 5;
+
+    // Gaps inside letters and gaps between them, one and three, part at their geometric mean.
+    private static readonly double ElementLetterRatio = Math.Sqrt(3);
+
+    // A letter gap and a word gap are three and seven of one unit, Farnsworth stretched or not (unit 501).
+    private static readonly double LetterWordRatio = Math.Sqrt(7.0 / 3);
+
+    // Before a sender has shown letter gaps: three and seven gap dits at their geometric mean (unit 501).
+    private static readonly double UnmeasuredWordRatio = Math.Sqrt(21);
+
+    /// <summary>
+    /// **THE GATE LABELS EVERY GAP OF A SENDER: ELEMENT, LETTER OR WORD** (work instruction 525, HM-DEC-229): the
+    /// lines between the three kinds, from the sender's own dit and gaps; the reader places its letters and spaces
+    /// from <see cref="CwGapLines.KindOf"/>. The arithmetic of units 500, 501, 504, 510 and 513 moved here from the
+    /// reader unchanged, and the five-dit word line is new.
+    /// </summary>
+    /// <param name="ditSeconds">The sender's dit as its marks read it.</param>
+    /// <param name="elementGaps">Its gaps inside letters.</param>
+    /// <param name="gapOverDit">How much longer each gap inside a letter read than the dit of the marks then.</param>
+    /// <param name="runGaps">Its gaps between runs, at its speed now (unit 524).</param>
+    /// <returns>The lines, and the letter and word gaps measured.</returns>
+    /// <remarks>
+    /// <para>**A GAP IS COUNTED IN DITS OF GAP** (unit 500): the detector reads a mark short and the gap after it
+    /// long, each by its window's smear, so the unit a gap is counted in is the marks' dit plus the median of what
+    /// the sender's gaps inside letters have run over it.</para>
+    /// <para>**ELEMENT AGAINST LETTER** (units 500 and 513): gap dits times √3 until the sender has shown its letter
+    /// gaps and three gaps inside letters, then the boundary between those two clusters of its own.</para>
+    /// <para>**LETTER AGAINST WORD.** Where three clusters show, the sender's letter gap times √(7/3), its geometric
+    /// mean with a word gap in a Farnsworth sender's stretched units (units 501 and 513). Where only the letter
+    /// cluster shows and it sits under five dits, a word gap is five dits or more (work instruction 525). Five dits
+    /// are counted on the true dit: a mark reads short and a gap long by the same smear, so the true dit is the
+    /// marks' dit and half of what a gap inside a letter runs over it, and a gap of five dits reads five of those
+    /// and half a smear. A Farnsworth sender's letter gaps are twenty dits and more, so the five-dit line would sit
+    /// inside them (W1AW at 5 WPM read every letter as a word); there the √(7/3) line stands. Before any letter gap
+    /// is measured, three and seven gap dits at their geometric mean.</para>
+    /// </remarks>
+    public static CwGapLines GapLines(double ditSeconds, IReadOnlyList<double> elementGaps, IReadOnlyList<double> gapOverDit, IReadOnlyList<double> runGaps)
+    {
+        var smear = gapOverDit.Count > 0 ? Math.Max(0, Median(gapOverDit)) : 0;
+        var gapDit = ditSeconds + smear;
+        var line = gapDit * ElementLetterRatio;
+        var (letter, word) = GapClusters(runGaps, line);
+        var inside = elementGaps.Where(g => g < line).ToList();
+        var character = letter is null || inside.Count < MeasuredRunGaps
+            ? line
+            : CwRunReader.Boundary(CwRunReader.LogStats(inside), CwRunReader.LogStats(letter));
+        var letterMean = letter?.Average();
+        var fiveDits = (WordGapDits * (ditSeconds + (smear / 2))) + (smear / 2);
+        var wordLine = letterMean is not { } l ? gapDit * UnmeasuredWordRatio
+            : word is null && l < fiveDits ? fiveDits
+            : l * LetterWordRatio;
+
+        return new CwGapLines(gapDit, character, wordLine, inside, letter, word);
+    }
+
+    /// <summary>
+    /// A sender's dit from its gaps alone, where its marks show only one length: a gap inside a letter is a dit and a
+    /// gap between letters three (unit 500). NaN where it has shown no gap.
+    /// </summary>
+    public static double DitFromGaps(IReadOnlyList<double> elementGaps, IReadOnlyList<double> runGaps)
+        => elementGaps.Count > 0 ? Median(elementGaps)
+            : runGaps.Count > 0 ? runGaps.Min() / 3
+            : double.NaN;
+
+    /// <summary>
+    /// A sender's letter gaps and word gaps as two clusters, or nulls before it has shown <see cref="MeasuredRunGaps"/>
+    /// gaps between runs (work instructions 501, 504, 510 and 513; moved here from the reader by work instruction 525).
+    /// </summary>
+    /// <remarks>
+    /// <para>**A GAP UNDER THE SENDER'S OWN LETTER LINE IS NOT A LETTER GAP** (unit 510, HM-DEC-214): runs closed
+    /// before the sender's dit was known can end at a gap inside a letter; what sits under gap dits times √3 measures
+    /// neither.</para>
+    /// <para>**THE LOWEST CLUSTER OF AT LEAST THREE, THEN THE NEXT** (unit 504): sorted, the gaps are walked up and
+    /// split where two neighbors differ by √(7/3), and the letter gaps are the lowest cluster holding
+    /// <see cref="MeasuredRunGaps"/> or more, the word gaps the next one up; a pause between two calls is above
+    /// them, and one odd gap under them is read against them rather than measuring them.</para>
+    /// <para>**THEN SETTLED BY THE NEARER CLUSTER** (unit 513, HM-DEC-217): a fist's letter and word gaps overlap
+    /// where a walk finds no clean jump, so the two clusters are settled so each gap is the kind it sits fewer
+    /// spreads from.</para>
+    /// </remarks>
+    private static (List<double>? Letter, List<double>? Word) GapClusters(IReadOnlyList<double> runGaps, double line)
+    {
+        var sorted = runGaps.Where(g => !(g < line)).OrderBy(g => g).ToList();
+
+        if (sorted.Count < MeasuredRunGaps)
+        {
+            return (null, null);
+        }
+
+        var clusters = new List<List<double>> { new() { sorted[0] } };
+
+        for (var i = 1; i < sorted.Count; i++)
+        {
+            if (sorted[i] / sorted[i - 1] >= LetterWordRatio)
+            {
+                clusters.Add(new List<double>());
+            }
+
+            clusters[^1].Add(sorted[i]);
+        }
+
+        var at = clusters.FindIndex(c => c.Count >= MeasuredRunGaps);
+
+        at = at < 0 ? 0 : at;
+
+        if (at + 1 >= clusters.Count)
+        {
+            return (clusters[at], null);
+        }
+
+        var (letter, word) = CwRunReader.Refine(clusters[at], clusters[at + 1]);
+
+        return letter.Count == 0 ? (clusters[at], clusters[at + 1])
+            : word.Count == 0 ? (letter, null)
+            : (letter, word);
+    }
+
+    private static double Median(IReadOnlyList<double> values)
+    {
+        var sorted = values.OrderBy(v => v).ToList();
+
+        return sorted.Count == 0 ? double.NaN : sorted[sorted.Count / 2];
+    }
 
     /// <summary>The marks a sequence's height and lengths are read over.</summary>
     private const int RecentMarks = 16;
@@ -522,4 +673,50 @@ internal sealed class CwPatternGate
             return handKinds && lengths.Count >= 2 * MarksToStand && CwRunReader.TwoKindsOfAHand(lengths);
         }
     }
+}
+
+/// <summary>What kind of gap a gap between two marks of one sender is (work instruction 525, HM-DEC-229).</summary>
+internal enum CwGapKind
+{
+    /// <summary>Inside a letter.</summary>
+    Element,
+
+    /// <summary>Between two letters of one word.</summary>
+    Letter,
+
+    /// <summary>Between two words.</summary>
+    Word,
+}
+
+/// <summary>
+/// The lines the gate draws between a sender's three kinds of gap, and the gaps it measured them from (work instruction
+/// 525, HM-DEC-229).
+/// </summary>
+/// <param name="GapDitSeconds">One dit of gap: the marks' dit and the detector's smear on a gap (unit 500).</param>
+/// <param name="CharacterSeconds">Between a gap inside a letter and one between letters.</param>
+/// <param name="WordSeconds">Between a gap between letters and one between words.</param>
+/// <param name="InsideGaps">The sender's gaps inside letters, under the element line.</param>
+/// <param name="LetterGaps">Its letter gaps as a cluster, or null before it has shown enough of them.</param>
+/// <param name="WordGaps">Its word gaps as a cluster, or null where none shows.</param>
+internal sealed record CwGapLines(
+    double GapDitSeconds,
+    double CharacterSeconds,
+    double WordSeconds,
+    IReadOnlyList<double> InsideGaps,
+    IReadOnlyList<double>? LetterGaps,
+    IReadOnlyList<double>? WordGaps)
+{
+    /// <summary>The mean letter gap, or null.</summary>
+    public double? LetterSeconds => LetterGaps?.Average();
+
+    /// <summary>The mean of the word gap cluster, or null.</summary>
+    public double? WordClusterSeconds => WordGaps?.Average();
+
+    /// <summary>The kind of a gap, from these lines: past the word line a word, past the letter line a letter.</summary>
+    /// <param name="gapSeconds">The gap.</param>
+    /// <returns>Its kind.</returns>
+    public CwGapKind KindOf(double gapSeconds)
+        => gapSeconds > WordSeconds ? CwGapKind.Word
+            : gapSeconds > CharacterSeconds ? CwGapKind.Letter
+            : CwGapKind.Element;
 }
