@@ -295,9 +295,23 @@ public sealed class CwEnvelopeDetector
         _minBarHops = Math.Max(1, (int)Math.Ceiling(((ShortestBarMs / HopMs) - (EnvelopeWindowSamples / (double)HopSamples)) + 1));
         _keyingHops = (int)Math.Round(KeyingSeconds * 1000 / HopMs);
         HistoryHops = (int)Math.Ceiling(HistorySeconds * 1000 / HopMs);
+        SettleHops = (int)Math.Round((ShortestBarMs + (1000.0 * EnvelopeWindowSamples / SampleRate)) / HopMs);
 
         SetPassband(null, null);
     }
+
+    /// <summary>
+    /// How many hops after its rise a mark's top may settle before it is held to one level: the shortest dit anyone
+    /// sends and the detector's own window, 35 ms, seven hops at five milliseconds (work instruction 525, task 2).
+    /// </summary>
+    /// <remarks>
+    /// The IC-7300's AGC attack time is not stated in the Full Manual, `A7292-4EX-6`, so the figure is not taken from
+    /// the radio. It is the author's, from what a keyed tone has to do: an AGC that has not settled by the end of the
+    /// shortest dit, <see cref="ShortestBarMs"/>, leaves no dit with a level at all, and the window smears the rise
+    /// over one more window's length after that. A slower AGC would still break a dah, and this does not claim
+    /// otherwise.
+    /// </remarks>
+    public int SettleHops { get; }
 
     /// <summary>Samples per second.</summary>
     public int SampleRate { get; }
@@ -372,7 +386,7 @@ public sealed class CwEnvelopeDetector
             }
 
             _bins = Enumerable.Range(first, last - first + 1)
-                .Select(k => new Bin(k * BinSpacingHz, SampleRate, HistoryHops + (2 * _keyingHops), _keyingHops))
+                .Select(k => new Bin(k * BinSpacingHz, SampleRate, HistoryHops + (2 * _keyingHops), _keyingHops) { SettleHops = SettleHops, RiseHops = (EnvelopeWindowSamples / HopSamples) + 1 })
                 .ToArray();
             _band = new Bin(0, SampleRate, HistoryHops + (2 * _keyingHops), _keyingHops);
             _bandPrev1 = _bandPrev2 = 0;
@@ -587,7 +601,7 @@ public sealed class CwEnvelopeDetector
             var db = Level(bin);
             var under = !double.IsNaN(_loudestGapDb) ? _loudestGapDb : bin.LowestLastSecond(hop, db);
 
-            bin.Add(hop, db, bin.ContrastDb, under);
+            bin.Add(hop, db, bin.ContrastDb, under, !double.IsNaN(bin.ContrastDb) ? bin.ContrastDb : db - _loudestGapDb);
             bin.Prune(hop - HistoryHops - _keyingHops);
         }
 
@@ -1348,7 +1362,7 @@ public sealed class CwEnvelopeDetector
             total += Math.Pow(10, bin.Level(hop) / 10);
         }
 
-        _band.Add(hop, 10 * Math.Log10(Math.Max(1e-30, total)), double.NaN, double.NaN);
+        _band.Add(hop, 10 * Math.Log10(Math.Max(1e-30, total)), double.NaN, double.NaN, double.NaN);
 
         var pad = FitPadHops;
         var end = hop - pad;
@@ -2768,18 +2782,46 @@ public sealed class CwEnvelopeDetector
         List<Span> Marked, int Bars, int Gaps, int BarsLastSecond, bool Keying, double BarDb, double GapDb, double LoudestBarDb, double LoudestGapDb, List<Span> AllBars);
 
     /// <summary>A stretch of hops held at one level.</summary>
+    /// <remarks>
+    /// <para>**A MARK'S TOP IS JUDGED FROM WHERE IT SETTLES, NOT FROM WHERE IT STARTS** (work instruction 525, task 2,
+    /// HM-DEC-229). The IC-7300's AGC lets the first milliseconds of a mark through at full strength and then pulls the
+    /// gain down, so a top starts a few dB high and settles. Held to the flatness tolerance from its first hop, the
+    /// settling ended the run at the overshoot's end and a dah read as a fragment and a dit: at 3 dB of overshoot
+    /// `THE QUICK BROWN FOX` read `HE E I INEE SE E I E U E`.</para>
+    /// <para>So for a run that began by rising, its first <see cref="Bin.SettleHops"/> may step down, each no further
+    /// under the hop before it than a flat top's wobble; those hops count toward the run's length and not toward its
+    /// level, which is read from the hops after them. A step larger than that is the fall, judged as before, and a
+    /// rise is judged as before. A top that does not overshoot is within the tolerance from its first hop and reads
+    /// as it did, its level now read from the hops after its first few.</para>
+    /// </remarks>
     private sealed class Run
     {
         public long Start;
         public int Count;
-        public double Sum;
-        public double Min = double.PositiveInfinity;
-        public double Max = double.NegativeInfinity;
+
+        // How many more hops the run may settle for: set when it began by rising (work instruction 525).
+        public int SettleLeft;
+
+        // The level, read from the hops after the settling where there are any, and from the settling hops where not.
+        private double _sum;
+        private int _levelCount;
+        private double _min = double.PositiveInfinity;
+        private double _max = double.NegativeInfinity;
+        private double _settleSum;
+        private int _settleCount;
+        private double _settleMin = double.PositiveInfinity;
+        private double _settleMax = double.NegativeInfinity;
+        private double _last = double.NaN;
+
         public double PowerSum;
 
         public long End => Start + Count - 1;
 
-        public double Mean => Sum / Count;
+        public double Mean => _levelCount > 0 ? _sum / _levelCount : _settleSum / _settleCount;
+
+        public double Min => _levelCount > 0 ? _min : _settleMin;
+
+        public double Max => _levelCount > 0 ? _max : _settleMax;
 
         /// <summary>Take a hop if the run still holds one level with it; say whether it did.</summary>
         /// <param name="db">The hop's level.</param>
@@ -2787,22 +2829,57 @@ public sealed class CwEnvelopeDetector
         /// <param name="underDb">Before it has one, the level the run's own contrast is read over.</param>
         public bool TryAdd(double db, double contrastDb, double underDb)
         {
-            if (Count > 0)
+            var settling = SettleLeft > 0;
+            var (sum, count, min, max) = settling ? (_settleSum, _settleCount, _settleMin, _settleMax) : (_sum, _levelCount, _min, _max);
+
+            if (count > 0)
             {
-                var mean = (Sum + db) / (Count + 1);
+                var mean = (sum + db) / (count + 1);
                 var toleranceDb = ToleranceDb(!double.IsNaN(contrastDb) ? contrastDb : mean - underDb);
 
-                if (Math.Max(Max, db) - mean > toleranceDb || mean - Math.Min(Min, db) > toleranceDb)
+                if (Math.Max(max, db) - mean > toleranceDb)
+                {
+                    return false;
+                }
+
+                // Settling: a step down no larger than a flat top's wobble is the AGC pulling the gain in; the level
+                // the run settles to is read after it. Anything else under the band is the fall, as before.
+                if (mean - Math.Min(min, db) > toleranceDb && !(settling && _last - db <= toleranceDb))
+                {
+                    return false;
+                }
+            }
+            else if (_settleCount > 0)
+            {
+                // The first hop after the settling is held to the last settling hop and to the settling's top: a fall
+                // there is still the fall.
+                var toleranceDb = ToleranceDb(!double.IsNaN(contrastDb) ? contrastDb : db - underDb);
+
+                if (_last - db > toleranceDb || db - _settleMax > toleranceDb)
                 {
                     return false;
                 }
             }
 
             Count++;
-            Sum += db;
-            Min = Math.Min(Min, db);
-            Max = Math.Max(Max, db);
+            _last = db;
             PowerSum += Math.Pow(10, db / 10);
+
+            if (settling)
+            {
+                SettleLeft--;
+                _settleSum += db;
+                _settleCount++;
+                _settleMin = Math.Min(_settleMin, db);
+                _settleMax = Math.Max(_settleMax, db);
+            }
+            else
+            {
+                _sum += db;
+                _levelCount++;
+                _min = Math.Min(_min, db);
+                _max = Math.Max(_max, db);
+            }
 
             return true;
         }
@@ -2833,6 +2910,36 @@ public sealed class CwEnvelopeDetector
         }
 
         public double Hz { get; }
+
+        /// <summary>How many hops after a rise a run may settle for (work instruction 525): the detector's <see cref="CwEnvelopeDetector.SettleHops"/>.</summary>
+        public int SettleHops { get; init; }
+
+        /// <summary>
+        /// Whether a hop that ends the open run is a key-down: a rise, from the lowest level over the window before it,
+        /// of at least half the bin's measured keying contrast, or where it has none yet, of its height over the loudest
+        /// gap any keying bin measured (work instruction 525). A mark rises from its gap by its contrast, and the window
+        /// smears the rise over a hop or two, so it is measured from before the window began to rise. Where nobody is
+        /// keying there is neither figure, so noise never settles, and its small rises are not key-downs.
+        /// </summary>
+        private bool KeyDown(long hop, double db, double contrastDb)
+        {
+            if (Open is null || !double.IsFinite(contrastDb) || !(contrastDb > 0))
+            {
+                return false;
+            }
+
+            var low = double.PositiveInfinity;
+
+            for (var k = 1; k <= RiseHops && hop - k >= 0; k++)
+            {
+                low = Math.Min(low, Level(hop - k));
+            }
+
+            return db - low >= contrastDb / 2;
+        }
+
+        /// <summary>How many hops a rise is measured back over: the detector's window in hops, and one (work instruction 525).</summary>
+        public int RiseHops { get; init; } = 1;
 
         public double Coefficient { get; }
 
@@ -2893,7 +3000,7 @@ public sealed class CwEnvelopeDetector
             return db;
         }
 
-        public void Add(long hop, double db, double contrastDb, double underDb)
+        public void Add(long hop, double db, double contrastDb, double underDb, double keyDownContrastDb)
         {
             _levels[(int)(hop % _levels.Length)] = db;
 
@@ -2922,7 +3029,7 @@ public sealed class CwEnvelopeDetector
 
             if (Open is not { } open || !open.TryAdd(db, contrastDb, underDb))
             {
-                var run = new Run { Start = hop };
+                var run = new Run { Start = hop, SettleLeft = KeyDown(hop, db, keyDownContrastDb) ? SettleHops : 0 };
                 run.TryAdd(db, contrastDb, underDb);
                 Runs.Add(run);
             }
@@ -2939,7 +3046,7 @@ public sealed class CwEnvelopeDetector
 
                 if (Open is not { } open || !open.TryAdd(db, ContrastDb, double.NaN))
                 {
-                    var run = new Run { Start = hop };
+                    var run = new Run { Start = hop, SettleLeft = KeyDown(hop, db, ContrastDb) ? SettleHops : 0 };
                     run.TryAdd(db, ContrastDb, double.NaN);
                     Runs.Add(run);
                 }
