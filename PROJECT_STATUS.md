@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: COMPLETED
-TASK: 3 of 3
-WORK_INSTRUCTION: 527 - the record button is on the screen (run by hand)
+TASK: 5 of 5
+WORK_INSTRUCTION: 528 - read the recording the owner made (run by hand)
 BALL: tim
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-10-02T15:01:51-04:00
-NOTE: Unit 527 - Record is on the screen beside Clear and Copy; task 3 dropped with its count
+UPDATED: 2026-10-02T17:19:48-04:00
+NOTE: Unit 528 done - CHAT reads, word-line floor needs a ruling
 
 ---
 

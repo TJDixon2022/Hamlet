@@ -1610,3 +1610,39 @@ Version 1.13.211 to 1.13.212. HM-DEC-231.
 There is no single shared sender to change, and the training radio uses the same generator.
 
 Build 0 warnings 0 errors. App carry-forward 278 of 278, one 1 ms headless loss green alone.
+
+## UNIT 528 - STEP 12
+
+Run by hand, outside the loop:
+- SESSION.lock taken and released;
+- nothing written to RUN_LEDGER.md and nothing under tools\arbiter\ touched;
+- no box ticked and no ruling added to either plan;
+- no scratch file committed;
+- nothing keyed or transmitted. R88 was lifted by the owner for cw-2026-10-02-200157.wav alone, and no other recording, fixture or telemetry was read.
+
+Version 1.13.212 to 1.13.213. HM-DEC-232.
+
+**Task 1, the faults found.** Read through the live path (detector, gate and reader, passband 600 and 500): `F ER C H ET<BT> BESEMSVE Y <SK> KC4 Z GP D`.
+- The A of CHAT, detector: its top rose over six hops, the settle rule took the rise as the top, and the run began 40 ms early and read 250 ms. The 35 ms gap it left to the next dit failed the gate's Crowds check.
+- The T of BEST, detector: a 210 ms top wobbling 3 to 4 dB at 13 dB contrast broke the per-hop flatness, and only its last 40 ms was called.
+- The 73 after the pause, detector: the 7 drew no candidate, and the 3 read Y.
+- KC4 Z, gate: the gaps of 425 and 405 ms passed the five-dit floor of 375 ms.
+- Also found: the 7 before V read M S in the reader, the G of GP lost its dit, and early words split on a two-gap letter cluster.
+
+**Task 2, a settling top only comes down.** A settling run refuses a hop that climbs past the highest of its first window by more than its tolerance. CHAT reads, and the closing EWA now prints; the G of GP lost its dit and reads M. The between-bin case at 612.5, 637.5 and 662.5 Hz, through the filter with a 1 dB overshoot, reads whole. Every existing case reads as before; only candidate counts and shape scores moved, by 0.001.
+
+**Task 3, built, measured, and not kept.** The word line between the sender's own letter and word clusters came out at:
+- 563 ms through the body of the recording, where KC4ZGP read whole;
+- 220, 731, 1648, 600 to 712 and 276 ms elsewhere, on clusters mis-measured: two gaps at the start, a 2.3 s pause as the only word, and letter gaps split at 215 to 405 ms at the end.
+It broke six existing cases: BROWNFOX and 2024AND on the drifting hand, and DEN0CALLN0CALL on the straight key. The five-dit floor is kept. The test now reports the line and both clusters at every letter.
+
+**Task 4, dropped with its cause.** The 7 after the 1.23 s pause draws no candidate in the detector. It is the same per-hop flatness as the T of BEST.
+
+**Task 5, bench AGC 1 dB.** The premise was false: no shared default exists. The 3 dB was in AHandIsReadAgainstItselfTests' own conditions, which are now 1 dB, with agc2-filter and agc3-filter as named stress rows. Effects:
+- the weak drifting hand and the weak straight key now read whole;
+- the weak 25-35-25 WPM row prints 81 of 194 marks and is red;
+- every stress row reads whole.
+
+TheOwnersRecordingReads is red, reading `F ER C H AT<BT> BESEMSV E Y <SK> KC4 Z MPDEWA`.
+
+Build 0 warnings 0 errors. App carry-forward 278 of 278.

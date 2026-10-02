@@ -4,6 +4,52 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-232
+date: 2026-10-02
+refs: work instruction 528, src/Hamlet.RadioEngine/Cw/CwEnvelopeDetector.cs, src/Hamlet.RadioEngine/Cw/CwRunReader.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheOwnersRecordingReadsTests.cs, tests/Hamlet.RadioEngine.Tests/Cw/AHandIsReadAgainstItselfTests.cs, tests/fixtures/cw/captured/cw-2026-10-02-200157.wav
+---
+
+**The owner's recording reads; the word gap is the sender's own.** Work instruction 528's headline. Half of it is
+met. The A of CHAT reads, and a station between two bins reads its dahs. The word line was built as ruled and not
+kept, because it broke six existing cases. The recording still misreads.
+
+**The R88 exception.** The owner lifted R88 on 2026-10-02 for `cw-2026-10-02-200157.wav` alone, thirty seconds on
+7.0549 MHz at 20:01 UTC. He made the recording for this unit. `TheOwnersRecordingReadsTests` is the one test that
+reads a recording, and its remark says so. No other recording is read.
+
+**A settling top only comes down** (task 2). The A's dah rose over six hops. The settle rule of unit 525 took the
+rise as the top, so the run began 40 ms early and read 250 ms. The 35 ms gap it left before the next dit failed the
+gate's Crowds check. A settling run now refuses a hop that climbs past the highest of its first window by more than
+its tolerance; an AGC overshoot only comes down. On the recording:
+- CHAT reads, and the closing EWA prints;
+- the G of GP lost its dit and reads M.
+A clean sender at 612.5, 637.5 and 662.5 Hz, through the 500 Hz filter with a 1 dB overshoot, reads whole. Every
+existing case reads as before.
+
+**The five-dit floor's retirement, at the owner's word, built and not kept** (task 3). The word line was drawn as
+the boundary between the sender's own letter and word clusters, or √(7/3) of the letter centre where only that
+cluster shows. On the recording it came out at:
+- 563 ms through the body, where KC4ZGP read whole, inside the 430 to 580 asked;
+- 220, 731, 1648, 600 to 712 and 276 ms elsewhere.
+The clusters it is drawn between are mis-measured for this hand: two gaps at the start, a 2.3 s pause standing as
+the only word gap, and the letter gaps split at 215 to 405 ms at the end. It broke six existing cases:
+- `BROWNFOX` and `2024AND` on the drifting hand, three rows;
+- `DEN0CALLN0CALLK` on the straight key, three rows.
+Those are what unit 526's floor (HM-DEC-230) fixed. The order also requires every existing case to read as at HEAD or better, so the session kept the floor. **That is the session's report, not the owner's ruling**, and the conflict is his.
+
+**The bench AGC correction** (task 5). The order's premise was false. Unit 527 dropped the shared default and none
+exists. The 3 dB was in `AHandIsReadAgainstItselfTests`' own conditions, set by unit 526. Those are now 1 dB, what
+the air measured (median 0.65, worst 2.1), and `agc2-filter` and `agc3-filter` are named stress rows. At 1 dB:
+- the weak drifting hand and the weak straight key read whole;
+- the weak 25-35-25 WPM row prints 81 of 194 marks and is red;
+- every stress row reads whole.
+
+**Left.**
+- The T of BEST and the 7 after the 1.23 s pause: a top that wobbles 3 to 4 dB at 13 dB contrast breaks the per-hop
+  flatness. Task 4 was dropped with that cause.
+- The 7 before V reads M S: its 120 ms inner gap is over the element line.
+
+---
 id: HM-DEC-231
 date: 2026-10-02
 refs: work instruction 527, src/Hamlet.App/Views/MainWindow.axaml, src/Hamlet.App/ViewModels/MainWindowViewModel.cs, tests/Hamlet.App.Tests/Views/TheRecordButtonIsOnTheScreenTests.cs
