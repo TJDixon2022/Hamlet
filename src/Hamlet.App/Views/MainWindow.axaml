@@ -1587,6 +1587,19 @@
                      cannot collapse the panel on its way past. -->
                 <ctl:CollapsiblePanel.HeaderAction>
                     <StackPanel Orientation="Horizontal" Spacing="6">
+                        <!-- RECORD, BESIDE COPY AND CLEAR (work instruction 527, HM-DEC-231). Tim,
+                             2026-10-02: "I can't record it anymore. You took the record button away."
+                             It was the capture row's "I hear a station", pushed below the CW
+                             workspace's fixed height by the rows added above it. Here it is always
+                             shown, live while listening, and greyed with its hover saying why. -->
+                        <Button x:Name="RecordButton"
+                                Content="Record"
+                                FontSize="11" Padding="10,2"
+                                IsEnabled="{Binding IsDecoding}"
+                                Command="{Binding CaptureAudioCommand}"
+                                ToolTip.Tip="{Binding CaptureTip}"
+                                ToolTip.ShowOnDisabled="True"
+                                ToolTip.ShowDelay="300" />
                         <!-- COPY, BESIDE CLEAR (work instruction numbered 509, run as unit
                              510, task 2). The clipboard is this window's own, handed in. -->
                         <Button Content="Copy"
@@ -2000,30 +2013,8 @@
                         </StackPanel>
                     </Border>
 
-                    <!-- KEEP WHAT IT HEARD (HM-DEC-088). Everything about the
-                         faint-signal problem is a hypothesis until one of these
-                         exists: a wrong decode with its input attached is a
-                         regression test, and without one it is an argument that
-                         runs for three sessions. -->
-                    <Grid ColumnDefinitions="*,Auto" Margin="0,2,0,0">
-                        <ctl:HintMarkControl Grid.Column="0" Kind="Boundary"
-                            HorizontalAlignment="Left" VerticalAlignment="Center"
-                            Margin="0,0,10,0"
-                            Text="Press this whenever you can hear a station, whether or not anything appeared here. It keeps the last half minute and puts the station on tonight's list, and the list is the only place the ones Hamlet missed are counted at all." />
-
-                        <!-- **THE PRESS ASSERTS SOMETHING HAMLET CANNOT KNOW.**
-                             Every other number it holds is downstream of its own
-                             decoder, so a station it misses is a case it never
-                             counts. The operator's ear is the denominator, which
-                             is why the label says what he heard rather than what
-                             the button writes. -->
-                        <Button Grid.Column="1" Content="I hear a station"
-                                FontSize="11" Padding="10,4"
-                                VerticalAlignment="Center"
-                                IsEnabled="{Binding IsDecoding}"
-                                ToolTip.Tip="{Binding CaptureTip}"
-                                Command="{Binding CaptureAudioCommand}" />
-                    </Grid>
+                    <!-- KEEP WHAT IT HEARD (HM-DEC-088) moved to the terminal's header as Record (work instruction
+                         527, HM-DEC-231): here it sat below the CW workspace's fixed height, out of sight. -->
 
                     <!-- THE OFFER WHERE THE PROBLEM SHOWS (HM-DEC-084). A
                          popup somebody has to know to open is one they will not

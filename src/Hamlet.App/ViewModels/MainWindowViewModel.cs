@@ -1103,6 +1103,7 @@ public partial class MainWindowViewModel : ObservableObject
     [NotifyPropertyChangedFor(nameof(TerminalSummary))]
     [NotifyPropertyChangedFor(nameof(TerminalIdleText))]
     [NotifyPropertyChangedFor(nameof(ShowKeyingMeter))]
+    [NotifyPropertyChangedFor(nameof(CaptureTip))]
     private bool _isDecoding;
 
     /// <summary>What the decoder is listening to, in words.</summary>
@@ -12095,8 +12096,13 @@ public partial class MainWindowViewModel : ObservableObject
     /// *"I can't record it anymore. You took the record button away."* It had not gone; it says "I hear a station", and
     /// its hover never said it records, so the words now do.
     /// </summary>
-    public string CaptureTip =>
-        "Records the last half minute of what the decoder heard, as cw- and the time .wav, with what the radio was "
+    /// <remarks>
+    /// Since work instruction 527 the press says `Record` and sits beside Clear and Copy, always shown: it was on screen
+    /// in the code and not on his, pushed below the CW workspace's fixed height by the rows added above it. Greyed while
+    /// Hamlet is not listening, its hover says why.
+    /// </remarks>
+    public string CaptureTip => (IsDecoding ? string.Empty : "Grayed because Hamlet is not listening; start listening and it can record. ")
+        + "Records the last half minute of what the decoder heard, as cw- and the time .wav, with what the radio was "
         + "doing beside it in a .txt of the same name, in " + CaptureFolder + ". It also puts the station on tonight's "
         + "list, so press it whenever you can hear CW here, whether or not Hamlet read any of it.";
 

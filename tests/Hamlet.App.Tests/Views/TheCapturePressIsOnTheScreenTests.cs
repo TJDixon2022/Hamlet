@@ -66,7 +66,7 @@ public sealed class TheCapturePressIsOnTheScreenTests
 
             var buttons = window.GetVisualDescendants()
                 .OfType<Button>()
-                .Where(b => b.Content as string == "I hear a station")
+                .Where(b => b.Content as string == "Record")
                 .ToList();
 
             // **THE METER WENT MISSING IN THE SAME CUT**, so it is checked in the

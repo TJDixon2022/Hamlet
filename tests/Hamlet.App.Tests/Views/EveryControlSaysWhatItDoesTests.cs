@@ -47,14 +47,15 @@ public sealed class EveryControlSaysWhatItDoesTests
         "send line",
         "header of CW terminal",
 
+        // Record, beside Copy and Clear (work instruction 527).
+        "RecordButton",
+
         // Copy, beside Clear (work instruction numbered 509, run as unit 510, task 2).
         "\"Copy\"",
         "\"Clear\" (ClearTerminalCommand)",
         "mark ? \"what the radio is hearing, as it arrives\"",
         "\"I agree with you\"",
         "\"You're an idiot\"",
-        "mark ⊣ \"Press this whenever you can hear a stati…\"",
-        "\"I hear a station\"",
         "ReceiveHelpOfferButton",
         "\"No thanks\"",
         "mark ⊣ \"a dimmed character is one Hamlet is not …\"",
