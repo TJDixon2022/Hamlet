@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: COMPLETED
-TASK: 9 of 9
-WORK_INSTRUCTION: 526 - the hand is read against itself (run by hand)
+TASK: 3 of 3
+WORK_INSTRUCTION: 527 - the record button is on the screen (run by hand)
 BALL: tim
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-10-02T14:15:53-04:00
-NOTE: Unit 526 - eight of nine tasks landed, task 3 dropped, AGC fixed first by the owner's choice
+UPDATED: 2026-10-02T15:01:51-04:00
+NOTE: Unit 527 - Record is on the screen beside Clear and Copy; task 3 dropped with its count
 
 ---
 

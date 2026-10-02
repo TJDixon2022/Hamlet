@@ -4,6 +4,42 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-231
+date: 2026-10-02
+refs: work instruction 527, src/Hamlet.App/Views/MainWindow.axaml, src/Hamlet.App/ViewModels/MainWindowViewModel.cs, tests/Hamlet.App.Tests/Views/TheRecordButtonIsOnTheScreenTests.cs
+---
+
+**The record button is on the screen; bench audio carrying the radio's AGC and filter is measured and not yet the
+default.** Tim, 2026-10-02: *"I can't record it anymore. You took the record button away."* Work instruction 527
+asked for both halves of the headline; the second was its drop candidate and was dropped, with its count.
+
+**What hid it: a fixed height, not a binding.**
+- On the real window built headless, the capture press was visible and enabled while decoding, at y 832.
+- That is below the receive widget's bottom (813) at 1600 by 900, and outside the window at 1100 by 800.
+- Since unit 373 (e352dcb6, 2026-09-20) the CW workspace's height has been set by the window and its widgets'
+  content clipped at it.
+- The rows added above the press since, unit 476's scope row (1d398861, 2026-09-28) and unit 521's shape light
+  (4c4bf565, 2026-10-01), pushed it below that line.
+- Unit 526 checked the code and not the screen.
+
+**Record, beside Clear and Copy.**
+- The press is `Record`, in the CW terminal's header, always shown.
+- It is live while listening, and grayed otherwise with its hover saying why.
+- It writes `cw-<time>.wav` and `cw-<time>.txt` in the capture folder as before, and still adds the station to
+  tonight's list. The capture row it sat in is gone.
+- **The label `Record` supersedes the ruling of 2026-08-26 (`I hear a station`) at the owner's request.**
+- `TheRecordButtonIsOnTheScreenTests` holds it inside the window and the workspace at 1600 by 900 and 1100 by 800,
+  and writes both files from a press over the training radio's audio.
+
+**Bench audio with the radio's AGC and filter, dropped with its count.** No single shared sender exists: each test
+class builds its audio through `CwSignal.Generate`, and the training radio uses it too. As an uncommitted
+experiment, a 3 dB overshoot at every key-down and the 500 Hz filter on 600 were put into `CwSignal.Generate`:
+- 12 reading tests turned red, and seven of them, the AGC and fading bulletins, applied their own AGC and filter
+  on top;
+- one turned green, the call at 8 dB;
+- 150 printed reading lines changed.
+
+---
 id: HM-DEC-230
 date: 2026-10-02
 refs: work instruction 526, src/Hamlet.RadioEngine/Cw/CwEnvelopeDetector.cs, src/Hamlet.RadioEngine/Cw/CwPatternGate.cs, src/Hamlet.RadioEngine/Cw/CwRunReader.cs, src/Hamlet.RadioEngine/Cw/CwShapeLight.cs, src/Hamlet.App/Controls/CwScopeControl.cs, src/Hamlet.App/Views/MainWindow.axaml, tests/Hamlet.RadioEngine.Tests/Cw/AHandIsReadAgainstItselfTests.cs

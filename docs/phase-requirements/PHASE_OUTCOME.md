@@ -850,3 +850,26 @@ Version 1.13.210 to 1.13.211. HM-DEC-230.
 **Dropped:** task 3. Its condition cannot occur with one split per letter.
 
 Build 0 warnings 0 errors. App carry-forward 278 of 278.
+
+## UNIT 527 - STEP 12
+
+Run by hand, outside the loop:
+- SESSION.lock taken and released;
+- nothing written to RUN_LEDGER.md and nothing under tools\arbiter\ touched;
+- no box ticked and no ruling added to either plan;
+- no scratch file committed;
+- nothing keyed or transmitted, and no recording, fixture or telemetry read.
+
+Version 1.13.211 to 1.13.212. HM-DEC-231.
+
+**Task 1, why the button was not visible.** On the real window built headless, the capture press was visible, enabled only while decoding, and drawn at y 832. That is below the receive widget's bottom (813) at 1600 by 900, and outside the window at 1100 by 800. Since unit 373 (e352dcb6) the CW workspace's height has been set by the window and its content clipped. Unit 476's scope row (1d398861) and unit 521's light (4c4bf565) pushed the press below it.
+
+**Task 2, a Record button.** It sits in the terminal header beside Copy and Clear, inside the window and the workspace at both sizes. It is live while listening, grayed otherwise with its hover saying why. A press over the training radio's audio writes cw-<time>.wav and cw-<time>.txt. The old row is gone, and Record supersedes the ruling of 2026-08-26 at the owner's request.
+
+**Task 3, dropped with its count.** With a 3 dB AGC overshoot and the 500 Hz filter put into every CwSignal sender, as an uncommitted experiment:
+- 12 reading tests turned red, and seven of them doubled their own AGC and filter;
+- one turned green, the call at 8 dB;
+- 150 printed reading lines changed.
+There is no single shared sender to change, and the training radio uses the same generator.
+
+Build 0 warnings 0 errors. App carry-forward 278 of 278, one 1 ms headless loss green alone.
