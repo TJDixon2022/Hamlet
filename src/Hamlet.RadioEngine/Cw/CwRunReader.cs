@@ -674,13 +674,26 @@ public sealed class CwRunReader
                 // A quieter mark taken by the sender's pattern is the sender's, and not its level: it would
                 // drag the reference under the sender's next mark (work instruction 511, task 2).
                 var open = Open.Where(m => !m.BySendersPattern).ToList();
+
+                // **THE REFERENCE IS LOCAL TO THE MARK** (work instruction 525, task 3, HM-DEC-229). A mark's level is judged
+                // against the mean of the sender's last three marks (CwPatternGate.LevelMarks, a letter's worth, inside a
+                // letter or across a gap), and no longer against the open run's mean or the last eight marks'. Its pitch,
+                // which a fade does not move, is still read over them. Eight marks are two seconds at 18 WPM, and a slow
+                // fade of 6 dB over four seconds moves a station by up to 4.7 dB in a second, so their mean sat several
+                // decibels behind the next letter, past the level tolerance: a second sender began at the J of JUMPS and
+                // the bulletin's letters were dealt between the two, and a digit's five elements lagged their own mean the
+                // same way. The last mark alone was local enough, and at 12 dB its own noise split N0CALL; three marks
+                // are half a second at 18 WPM, across which such a fade moves their mean about a decibel.
                 var recent = _recent.Where(m => !m.BySendersPattern).TakeLast(8).ToList();
+                var level = recent.Count > 0 ? recent.TakeLast(CwPatternGate.LevelMarks).Average(m => m.LevelDb)
+                    : open.Count > 0 ? open.Average(m => m.LevelDb)
+                    : double.NaN;
                 var over = open.Count > 0 ? open
                     : recent.Count > 0 ? recent
                     : Open.Count > 0 ? (IReadOnlyList<CwMark>)Open : _recent.TakeLast(8).ToList();
                 var contrasts = over.Select(m => m.ContrastDb).Where(c => !double.IsNaN(c)).ToList();
 
-                return (over.Average(m => m.PitchHz), over.Average(m => m.LevelDb), contrasts.Count > 0 ? contrasts.Average() : double.NaN);
+                return (over.Average(m => m.PitchHz), double.IsNaN(level) ? over.Average(m => m.LevelDb) : level, contrasts.Count > 0 ? contrasts.Average() : double.NaN);
             }
         }
 

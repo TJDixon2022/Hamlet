@@ -332,6 +332,13 @@ public sealed class TheRectangleIsFittedTests
             Assert.EndsWith(Bulletin[1..], off.Text, StringComparison.Ordinal);
         }
 
+        // A slow 6 dB fade over four seconds reads whole since every level reference is local to the mark (work
+        // instruction 525, task 3): the reader's eight-mark mean had dealt the letters between two senders.
+        if (through == "fading")
+        {
+            Assert.Equal(Bulletin, off.Text);
+        }
+
         Assert.Equal(off.Text, on.Text);
         Assert.Equal(off.Stood, on.Stood);
     }

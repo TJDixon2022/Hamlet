@@ -79,6 +79,19 @@ internal sealed class CwPatternGate
     public const int MeasuredRunGaps = 3;
 
     /// <summary>
+    /// **A MARK'S LEVEL IS JUDGED AGAINST THE SENDER'S LAST LETTER** (work instruction 525, task 3, HM-DEC-229): the
+    /// mean of a sequence's last three marks, where it was eight.
+    /// </summary>
+    /// <remarks>
+    /// Eight marks are two seconds at 18 WPM, and a slow fade of 6 dB over four seconds moves a station by up to 4.7 dB
+    /// in a second, so the eight's mean sat behind the next mark by more than the level tolerance and the mark began a
+    /// sequence of its own. Three is a letter's worth: the average Morse letter is about three elements, half a second
+    /// at 18 WPM, across which such a fade moves the mean by about a decibel. The author's, from what a letter is; not
+    /// tuned after a result.
+    /// </remarks>
+    public const int LevelMarks = 3;
+
+    /// <summary>
     /// **A WORD GAP IS FIVE DITS OR MORE** where a sender's gaps above the element gap form only one cluster (work
     /// instruction 525, HM-DEC-229).
     /// </summary>
@@ -436,7 +449,7 @@ internal sealed class CwPatternGate
             }
 
             var pitch = _recent.Average(r => r.PitchHz);
-            var level = _recent.TakeLast(8).Average(r => r.LevelDb);
+            var level = _recent.TakeLast(LevelMarks).Average(r => r.LevelDb);
             var heights = _recent.Select(r => r.OwnContrastDb).Where(double.IsFinite).OrderBy(c => c).ToList();
             var height = heights.Count > 0 ? heights[heights.Count / 2] : double.NaN;
 
@@ -485,7 +498,7 @@ internal sealed class CwPatternGate
                 return false;
             }
 
-            var level = kind.TakeLast(8).Average(r => r.LevelDb);
+            var level = kind.TakeLast(LevelMarks).Average(r => r.LevelDb);
             var heights = _recent.Select(r => r.OwnContrastDb).Where(double.IsFinite).OrderBy(c => c).ToList();
             var tolerance = CwRunReader.LevelToleranceDb(heights.Count > 0 ? heights[heights.Count / 2] : double.NaN);
             var under = level - m.LevelDb;
