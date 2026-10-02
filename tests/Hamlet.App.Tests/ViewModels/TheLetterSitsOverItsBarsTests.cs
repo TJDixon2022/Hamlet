@@ -84,23 +84,6 @@ public sealed class TheLetterSitsOverItsBarsTests
     }
 
     /// <remarks>
-    /// Proves the hover over a letter says where it came from and how sure the decoder was.
-    /// </remarks>
-    [Fact]
-    public void TheHoverOverALetterSaysTheDecoderMadeItFromTheBarsBeneathIt()
-    {
-        var run = TheScopeDrawsLiveTests.Listen(seconds: 12);
-        var letter = CwScopeControl.Items(run.Keyed, Width).Last(i => i.Kind == CwScopeItemKind.Letter);
-
-        var tip = CwScopeControl.TipAt(run.Keyed, Width, new Point((letter.X + letter.X2) / 2, CwScopeControl.LetterTop + 6));
-
-        _output.WriteLine(tip);
-
-        Assert.StartsWith(letter.Text + ": " + CwScopeControl.LetterTipWords, tip, StringComparison.Ordinal);
-        Assert.Contains("sure", tip, StringComparison.Ordinal);
-    }
-
-    /// <remarks>
     /// Proves the three odd cases: an unreadable character settles as the placeholder glyph, a
     /// prosign as its bracketed name, and a word gap draws nothing.
     /// </remarks>

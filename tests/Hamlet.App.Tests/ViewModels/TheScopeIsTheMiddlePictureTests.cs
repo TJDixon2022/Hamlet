@@ -98,35 +98,6 @@ public sealed class TheScopeIsTheMiddlePictureTests
             CwScopeFrame.From(detector.History(), detector.HopMs, detector.Reading, double.NaN, null).MixingLine);
     }
 
-    /// <remarks>
-    /// Proves the hover over a bar says its length and whether it read as a dit or a dah, and
-    /// the hover off every bar and letter says what the graph is (§0.6). Until work instruction
-    /// 480 the bar's hover was the words "a mark" and the trace had its own.
-    /// </remarks>
-    [Fact]
-    public void TheHoverSaysWhatABarIs()
-    {
-        var detector = Keyed(742, 500, CwKeyedSeconds);
-        var now = DateTime.UtcNow;
-        var graph = new CwTrainingGraph();
-        graph.Update(detector.History(), detector.HopMs, now);
-
-        var frame = CwScopeFrame.From(detector.History(), detector.HopMs, detector.Reading, 742, null) with
-        {
-            Training = graph.Frame(now),
-        };
-
-        const double width = 800;
-        var bar = CwScopeControl.Items(frame, width).First(i => i.Kind == CwScopeItemKind.Bar);
-
-        Assert.Matches(
-            @"^(dit|dah), \d+ ms, (shape \d\.\d\d of 1|not handed out as a mark)$",
-            CwScopeControl.TipAt(frame, width, new Point((bar.X + bar.X2) / 2, CwScopeControl.BarTop + 2)));
-        Assert.Equal(
-            CwHearingViewModel.ScopeTip,
-            CwScopeControl.TipAt(frame, width, new Point((bar.X + bar.X2) / 2, CwScopeControl.BarTop + CwScopeControl.TrainingBarHeight + 6)));
-    }
-
     /// <summary>How long the keyed pattern below runs, in seconds.</summary>
     private const double CwKeyedSeconds = 3.54;
 

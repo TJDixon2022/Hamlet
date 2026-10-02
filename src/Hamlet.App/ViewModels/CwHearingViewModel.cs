@@ -263,29 +263,6 @@ public sealed partial class CwHearingViewModel : ObservableObject
         State = state;
     }
 
-    /// <summary>What the oscilloscope shows, on hover.</summary>
-    public const string ScopeTip =
-        "The last eight seconds of what Hamlet hears, newest at the right (work instruction 485)." + "\n"
-        + "Blocks: every mark the detector found, drawn as long as it lasted. A dit is a short block "
-        + "and a dah a long one, with flat tops, and a gap is empty space as long as the gap was." + "\n"
-        + "Letters: each character the decoder settled, written over the blocks it made it from, "
-        + "with a thin line as long as that stretch, and scrolling left with them. A letter is drawn "
-        + "only where there are blocks beneath it. Bold is sure, faint and slanted is unsure, and the "
-        + "square is heard but unreadable; a prosign is its bracketed name." + "\n"
-        + "While nobody is keying nothing new is drawn here. The terminal reads the same marks this "
-        + "picture draws, and a letter is only read from marks that agree on their pitch and their "
-        + "loudness, so the two tell the same story; what is already drawn stays until it scrolls "
-        + "off the left." + "\n"
-        + "Top left: the pitch the detector found while it says keying, or no keying, and when the "
-        + "radio's scope has gone quiet it says so; beside it the pitch the decoder is mixing at, "
-        + "which is the pitch of the station whose letters the terminal and this picture show, or no "
-        + "station when neither is showing anybody." + "\n"
-        + "Hover a block for its length, or a letter for how sure the decoder was. This shows what "
-        + "Hamlet hears and changes nothing about how it decodes.";
-
-    /// <summary>What a bar is, on hover over one.</summary>
-    public const string ScopeBarTip = "a mark - the level held flat for at least a dit";
-
     /// <summary>What the oscilloscope draws.</summary>
     [ObservableProperty]
     private CwScopeFrame _scope = CwScopeFrame.Empty;

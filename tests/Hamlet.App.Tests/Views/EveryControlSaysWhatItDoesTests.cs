@@ -99,11 +99,44 @@ public sealed class EveryControlSaysWhatItDoesTests
         "band 10 m",
     };
 
+    /// <summary>
+    /// **DELIBERATELY SILENT** (work instruction 526, task 9, HM-DEC-230): controls that say nothing on hover on
+    /// purpose. Tim, 2026-10-02: *"Remove the hover text from the listening panel - not the buttons, the panel itself."*
+    /// </summary>
+    internal static readonly string[] DeliberatelySilent =
+    {
+        // The CW tab's listening panel: the blocks, the letters over them and the area they are drawn in.
+        "CwScope",
+    };
+
     private readonly ITestOutputHelper _output;
 
     /// <summary>Creates the tests.</summary>
     /// <param name="output">Where each control and its tip are printed.</param>
     public EveryControlSaysWhatItDoesTests(ITestOutputHelper output) => _output = output;
+
+    /// <summary>**The listening panel says nothing on hover**, by the owner's word; every button beside it still does.</summary>
+    [AvaloniaFact]
+    public void TheListeningPanelIsDeliberatelySilent()
+    {
+        var (window, _) = TheControlsTimCanPress.Open();
+
+        try
+        {
+            foreach (var name in DeliberatelySilent)
+            {
+                var control = TheTopRowTests.Named<Grid>(window, "CwWorkspace").GetVisualDescendants().OfType<Control>().SingleOrDefault(c => c.Name == name);
+
+                Assert.NotNull(control);
+                Assert.Null(ToolTip.GetTip(control));
+                _output.WriteLine($"{name}: no hover, as Tim asked");
+            }
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
 
     /// <summary>**Not connected: every named control has hover text.**</summary>
     [AvaloniaFact]

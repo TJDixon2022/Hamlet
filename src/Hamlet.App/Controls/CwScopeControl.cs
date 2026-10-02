@@ -292,32 +292,9 @@ public sealed class CwScopeControl : Control
         return training.Listening ? Array.Empty<CwGraphLetter>() : training.Letters;
     }
 
-    /// <summary>What a letter's hover says, first of all.</summary>
-    public const string LetterTipWords = "the decoder made this letter from the bars beneath it";
-
     /// <summary>What a settled character is drawn as: the placeholder glyph where it was unreadable.</summary>
     private static string Shown(CwGraphLetter letter)
         => letter.Confidence == CwConfidence.Unreadable ? MorseAlphabet.Unreadable : letter.Text;
-
-    /// <summary>What a letter's hover says: where it came from, its class and its confidence.</summary>
-    private static string LetterTip(CwGraphLetter letter)
-    {
-        var word = letter.Confidence switch
-        {
-            CwConfidence.High => "sure",
-            CwConfidence.Low => "unsure",
-            _ => "heard but unreadable",
-        };
-
-        var confidence = double.IsFinite(letter.Probability)
-            ? string.Create(CultureInfo.InvariantCulture, $", {letter.Probability * 100:0}% likely right")
-            : "";
-
-        return letter.HasSpan
-            ? Shown(letter) + ": " + LetterTipWords + "; " + word + confidence
-            : Shown(letter) + ": drawn where the decoder finished it, because it gave no span, so the bars it "
-              + "came from are not known; " + word + confidence;
-    }
 
     /// <summary>The small word on an empty graph.</summary>
     public const string ListeningWords = "listening";
@@ -349,70 +326,11 @@ public sealed class CwScopeControl : Control
             $"{(bar.Dah ? "dah" : "dit")}, {bar.LengthMs:0} ms, {(double.IsNaN(bar.ShapeScore) ? "not handed out as a mark" : $"shape {bar.ShapeScore:0.00} of 1")}");
     }
 
-    /// <summary>What the hover says at a point: a block's words over a block, a letter's over a letter.</summary>
-    /// <param name="frame">The frame.</param>
-    /// <param name="width">The control's width.</param>
-    /// <param name="point">The pointer, in the control's pixels.</param>
-    /// <returns>The words.</returns>
-    public static string TipAt(CwScopeFrame frame, double width, Point point)
-    {
-        ArgumentNullException.ThrowIfNull(frame);
-
-        var items = Items(frame, width);
-
-        if (point.Y >= LetterTop && point.Y < LetterTop + LetterHeight)
-        {
-            var letters = items.Where(i => i.Kind == CwScopeItemKind.Letter).ToList();
-
-            for (var i = 0; i < letters.Count; i++)
-            {
-                var item = letters[i];
-                var center = (item.X + item.X2) / 2;
-
-                if ((point.X >= item.X && point.X <= item.X2) || Math.Abs(point.X - center) <= LetterSize / 2)
-                {
-                    return LetterTip(DrawnLetters(frame)[i]);
-                }
-            }
-        }
-
-        if (point.Y >= BarTop && point.Y < BarTop + TrainingBarHeight)
-        {
-            foreach (var item in items.Where(i => i.Kind == CwScopeItemKind.Bar))
-            {
-                if (point.X >= item.X && point.X <= Math.Max(item.X2, item.X + 1))
-                {
-                    return item.Text;
-                }
-            }
-        }
-
-        return CwHearingViewModel.ScopeTip;
-    }
-
     /// <inheritdoc/>
     protected override Size MeasureOverride(Size availableSize)
         => new(
             double.IsInfinity(availableSize.Width) ? 400 : availableSize.Width,
             BarTop + TrainingBarHeight + BarLabelHeight);
-
-    /// <inheritdoc/>
-    protected override void OnPointerMoved(PointerEventArgs e)
-    {
-        base.OnPointerMoved(e);
-
-        if (Frame is { } frame)
-        {
-            ToolTip.SetTip(this, TipAt(frame, Bounds.Width, e.GetPosition(this)));
-        }
-    }
-
-    /// <inheritdoc/>
-    protected override void OnPointerExited(PointerEventArgs e)
-    {
-        base.OnPointerExited(e);
-        ToolTip.SetTip(this, CwHearingViewModel.ScopeTip);
-    }
 
     /// <inheritdoc/>
     public override void Render(DrawingContext context)

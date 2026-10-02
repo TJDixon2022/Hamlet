@@ -90,32 +90,8 @@ public sealed class TheScopeShowsTheMarksTests
     }
 
     /// <remarks>
-    /// Proves the hover says what the blocks and the letters are and what is in the corner, that
-    /// nothing new is drawn with nobody keying and what is drawn stays, and names no trace, dashed or solid line (work
-    /// instruction 485).
-    /// </remarks>
-    [Fact]
-    public void TheHoverSaysWhatTheBlocksAndTheLettersAre()
-    {
-        // Since work instruction 485 (R97) there is no trace; the hover names what is drawn: the
-        // blocks, the letters over them, the empty panel, and the two lines.
-        var tip = CwHearingViewModel.ScopeTip;
-
-        Assert.DoesNotContain("Trace", tip, StringComparison.Ordinal);
-        Assert.Contains("Blocks", tip, StringComparison.Ordinal);
-        Assert.Contains("nothing new is drawn", tip, StringComparison.Ordinal);
-        Assert.Contains("flat tops", tip, StringComparison.Ordinal);
-        Assert.Contains("Letters", tip, StringComparison.Ordinal);
-        Assert.Contains("a gap is empty space as long as the gap was", tip, StringComparison.Ordinal);
-        Assert.Contains("mixing at", tip, StringComparison.Ordinal);
-        Assert.Contains("eight seconds", tip, StringComparison.Ordinal);
-        Assert.DoesNotContain("Dashed line", tip, StringComparison.Ordinal);
-        Assert.DoesNotContain("Solid line", tip, StringComparison.Ordinal);
-    }
-
-    /// <remarks>
     /// Proves the scope is on the CW tab with the two verdict buttons beside it and no light
-    /// or pitch strip left (work instruction 478 task 2), with its hover and tone line, and
+    /// or pitch strip left (work instruction 478 task 2), with no hover (work instruction 526) and its tone line, and
     /// paints a driven detector's frame without throwing.
     /// </remarks>
     [AvaloniaFact]
@@ -156,7 +132,9 @@ public sealed class TheScopeShowsTheMarksTests
                 cw.GetVisualDescendants(),
                 v => v.GetType().Name.Contains("PitchStrip", StringComparison.Ordinal)
                      || v.Name is "CwHearingLight" or "CwHearingDark");
-            Assert.Equal(CwHearingViewModel.ScopeTip, ToolTip.GetTip(scope));
+            // The listening panel says nothing on hover (work instruction 526, task 9): Tim, "Remove the hover text from
+            // the listening panel - not the buttons, the panel itself."
+            Assert.Null(ToolTip.GetTip(scope));
             Assert.Contains(
                 cw.GetVisualDescendants().OfType<TextBlock>(),
                 t => (t.Inlines?.Text ?? t.Text) is { } text

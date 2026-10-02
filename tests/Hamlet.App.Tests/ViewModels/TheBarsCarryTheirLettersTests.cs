@@ -100,31 +100,6 @@ public sealed class TheBarsCarryTheirLettersTests
         Assert.Single(CwScopeControl.Items(frame, Width), i => i.Kind == CwScopeItemKind.Letter && i.Text == "E");
     }
 
-    /// <remarks>
-    /// Proves the hovers: over a block its length and dit or dah, over the empty plot the scope's
-    /// own words, over a letter where it came from and how sure the decoder was.
-    /// </remarks>
-    [Fact]
-    public void TheHoverSaysABarsLengthAndWhereALetterCameFrom()
-    {
-        var (frame, items) = KeyedC(settle: true);
-        var dah = items.First(i => i.Kind == CwScopeItemKind.Bar);
-
-        var barTip = CwScopeControl.TipAt(frame, Width, new Avalonia.Point((dah.X + dah.X2) / 2, CwScopeControl.BarTop + 2));
-        var plotTip = CwScopeControl.TipAt(frame, Width, new Avalonia.Point((dah.X + dah.X2) / 2, CwScopeControl.TraceTop + 10));
-
-        var letter = items.Single(i => i.Kind == CwScopeItemKind.Letter);
-        var letterTip = CwScopeControl.TipAt(frame, Width, new Avalonia.Point((letter.X + letter.X2) / 2, CwScopeControl.LetterTop + 4));
-
-        _output.WriteLine($"bar: {barTip}; plot: {plotTip}; letter: {letterTip}");
-
-        Assert.StartsWith("dah, ", barTip, StringComparison.Ordinal);
-        // Since work instruction 502 the length is followed by the shape score, or by the words for none.
-        Assert.Matches(@" ms, (shape \d\.\d\d of 1|not handed out as a mark)$", barTip);
-        Assert.Equal(CwHearingViewModel.ScopeTip, plotTip);
-        Assert.Equal("C: " + CwScopeControl.LetterTipWords + "; sure, 93% likely right", letterTip);
-    }
-
     private static (CwScopeFrame Frame, IReadOnlyList<CwScopeItem> Items) KeyedC(bool settle)
     {
         // Half a second of noise, then C at 20 words a minute (dah dit dah dit, 60 ms units),

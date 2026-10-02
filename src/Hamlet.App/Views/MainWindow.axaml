@@ -1789,10 +1789,10 @@
                     <Grid x:Name="CwScopeRow" ColumnDefinitions="*,Auto"
                           Margin="0,2,0,0">
                         <StackPanel Grid.Column="0" Spacing="1">
+                            <!-- NO HOVER TEXT (work instruction 526, task 9, HM-DEC-230). Tim, 2026-10-02: "Remove the hover
+                                 text from the listening panel - not the buttons, the panel itself." -->
                             <ctl:CwScopeControl x:Name="CwScope"
-                                                Frame="{Binding CwHearing.Scope}"
-                                                ToolTip.Tip="{x:Static vm:CwHearingViewModel.ScopeTip}"
-                                                ToolTip.ShowDelay="300" />
+                                                Frame="{Binding CwHearing.Scope}" />
                             <!-- THE FILTER'S EDGE, NAMED BESIDE THE TONE (work instruction 514, task 3):
                                  shown only while the printed station sits within 75 Hz of the radio's
                                  passband edge, on the same line so nothing moves when it appears. -->
