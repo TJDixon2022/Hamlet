@@ -29,7 +29,7 @@ public sealed class TheOwnersRecordingReadsTests
         => Path.Combine(Path.GetDirectoryName(here)!, "..", "..", "fixtures", "cw", "captured", "cw-2026-10-02-200157.wav");
 
     /// <summary>The recording read as the app reads it: the text, the characters, and every mark that stood.</summary>
-    internal static (string Text, IReadOnlyList<CwCharacter> Characters, IReadOnlyList<CwMark> Marks) Read()
+    internal static (string Text, IReadOnlyList<CwCharacter> Characters, IReadOnlyList<CwMark> Marks, IReadOnlyList<(double At, double Line, string Clusters)> Lines) Read()
     {
         var audio = WavAudio.Read(Wav());
         var detector = new CwEnvelopeDetector(audio.SampleRate);
@@ -41,7 +41,13 @@ public sealed class TheOwnersRecordingReadsTests
         var sequence = 0L;
         var chunk = audio.SampleRate / 100;
 
-        reader.CharacterRead += characters.Add;
+        var lines = new List<(double At, double Line, string Clusters)>();
+
+        reader.CharacterRead += c =>
+        {
+            characters.Add(c);
+            lines.Add((c.At.TotalSeconds, reader.StationWordLineSeconds, $"letter gaps {Ms(reader.StationLines?.LetterGaps)}, word gaps {Ms(reader.StationLines?.WordGaps)}"));
+        };
 
         for (var at = 0; at + chunk <= audio.Samples.Length; at += chunk)
         {
@@ -57,17 +63,20 @@ public sealed class TheOwnersRecordingReadsTests
 
         var text = string.Join(' ', string.Concat(characters.Select(c => c.Text)).Split(' ', StringSplitOptions.RemoveEmptyEntries));
 
-        return (text, characters, detector.MarksSince(0).Marks);
+        return (text, characters, detector.MarksSince(0).Marks, lines);
     }
+
+    private static string Ms(IReadOnlyList<double>? gaps)
+        => gaps is null ? "none" : "[" + string.Join(", ", gaps.Select(g => (g * 1000).ToString("0", System.Globalization.CultureInfo.InvariantCulture))) + "] ms";
 
     /// <remarks>
     /// The letters read as sent, spaces ignored, and no space inside KC4ZGP. The text, the characters and every mark
-    /// that stood are printed.
+    /// that stood are printed, and the sender's word line with its two clusters at each letter (task 3).
     /// </remarks>
     [Fact]
     public void TheOwnersRecordingReads()
     {
-        var (text, characters, marks) = Read();
+        var (text, characters, marks, lines) = Read();
 
         _output.WriteLine($"sent `FER CHAT<BT> BEST 7V 73 <SK> KC4ZGP DEWA`");
         _output.WriteLine($"read `{text}`");
@@ -83,7 +92,18 @@ public sealed class TheOwnersRecordingReadsTests
             last = m;
         }
 
+        // Task 3: the sender's own word line at each printed letter, with its letter and word cluster centres.
+        foreach (var (at, line, clusters) in lines)
+        {
+            _output.WriteLine($"  at {at:0.00} s: word line {line * 1000:0} ms; {clusters}");
+        }
+
+        var final = lines[^1].Line * 1000;
+
+        _output.WriteLine($"the word line for this sender: {final:0} ms");
+
         Assert.Equal(Sent, text.Replace(" ", string.Empty, StringComparison.Ordinal));
         Assert.Contains("KC4ZGP", text, StringComparison.Ordinal);
+        Assert.InRange(final, 430, 580);
     }
 }

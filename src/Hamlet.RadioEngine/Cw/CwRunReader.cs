@@ -210,6 +210,12 @@ public sealed class CwRunReader
     /// <summary>The printed sender's measured letter and word gaps, in seconds, or nulls: for the tests' report (work instruction 501).</summary>
     internal (double? Letter, double? Word) StationGaps => _station?.LetterAndWordGaps() ?? (null, null);
 
+    /// <summary>The printed sender's word line, in seconds, or NaN: for the tests' report (work instruction 528).</summary>
+    internal double StationWordLineSeconds => _station?.WordGapSeconds ?? double.NaN;
+
+    /// <summary>The printed sender's gap lines and clusters, or null: for the tests' report (work instruction 528).</summary>
+    internal CwGapLines? StationLines => _station?.Lines;
+
     /// <summary>
     /// The printed sender's clusters as last measured on this thread, in words: for the tests' report
     /// (work instruction 513).
