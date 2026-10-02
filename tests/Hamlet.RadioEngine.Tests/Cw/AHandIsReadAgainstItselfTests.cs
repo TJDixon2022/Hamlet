@@ -31,7 +31,7 @@ public sealed class AHandIsReadAgainstItselfTests
     /// <summary>
     /// The text keyed letter by letter as <paramref name="sending"/> says for each letter's index, with noise added after.
     /// </summary>
-    internal static float[] Keyed(string text, Func<int, Sending> sending, int seed, double db = 24, double overshootDb = 0)
+    internal static float[] Keyed(string text, Func<int, Sending> sending, int seed, double db = 24, double overshootDb = 0, double pitch = Pitch)
     {
         var random = new Random(seed);
         var keyed = new List<(double Seconds, bool On)> { (3.0, false) };
@@ -93,7 +93,7 @@ public sealed class AHandIsReadAgainstItselfTests
 
                     var agc = Math.Pow(10, overshootDb * Math.Exp(-i / (0.025 * Rate)) / 20);
 
-                    samples[at + i] = (float)(amplitude * agc * shape * Math.Sin(2 * Math.PI * Pitch * (at + i) / Rate));
+                    samples[at + i] = (float)(amplitude * agc * shape * Math.Sin(2 * Math.PI * pitch * (at + i) / Rate));
                 }
             }
 
@@ -247,5 +247,26 @@ public sealed class AHandIsReadAgainstItselfTests
         {
             Assert.StartsWith("CQ CQ SKCC DE N0CALL N0CALL", r.Text, StringComparison.Ordinal);
         }
+    }
+
+    /// <remarks>
+    /// Task 2 of work instruction 528: the case unit 521 lacked. A clean sender at 16 WPM halfway between two bins,
+    /// through the 500 Hz filter on 600, with a 1 dB AGC overshoot - what the owner's recording on 7.0549 measured, its
+    /// station at 662.8 Hz - reads whole, every dah a dah.
+    /// </remarks>
+    /// <param name="pitch">The station's pitch, halfway between two bins.</param>
+    [Theory]
+    [InlineData(612.5)]
+    [InlineData(637.5)]
+    [InlineData(662.5)]
+    public void AStationBetweenTwoBinsReadsItsDahs(double pitch)
+    {
+        const string Text = "FER CHAT BEST 73 KC4ZGP DE WA";
+        var samples = NarrownessReadsTheFiltersBandTests.ThroughTheFilter(Keyed(Text, _ => new Sending(16, 0), 5280, 24, 1, pitch));
+        var r = ThePatternIsTheGateTests.Read(samples, pitch, d => d.SetPassband(600, 500));
+
+        _output.WriteLine($"{pitch} Hz, between bins, filter and 1 dB AGC: {r.Stood} stood; reads `{r.Text}`");
+
+        Assert.Equal(Text, r.Text);
     }
 }

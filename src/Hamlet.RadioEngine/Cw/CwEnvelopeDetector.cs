@@ -2815,6 +2815,10 @@ public sealed class CwEnvelopeDetector
         private int _settleCount;
         private double _settleMin = double.PositiveInfinity;
         private double _settleMax = double.NegativeInfinity;
+        private double _settleFirst = double.NaN;
+
+        // How many of the settling hops the window is still rising over the key-down edge (work instruction 528).
+        public int SettleRiseHops;
         private double _last = double.NaN;
 
         public double PowerSum;
@@ -2841,7 +2845,12 @@ public sealed class CwEnvelopeDetector
                 var mean = (sum + db) / (count + 1);
                 var toleranceDb = ToleranceDb(!double.IsNaN(contrastDb) ? contrastDb : mean - underDb);
 
-                if (Math.Max(max, db) - mean > toleranceDb)
+                // **A SETTLING TOP ONLY COMES DOWN** (work instruction 528, HM-DEC-232): an overshoot's first hop is its
+                // highest once the window has risen over the edge (its first SettleRiseHops hops). On the owner's recording a
+                // dah rose over six hops from 13 dB under its top, each step inside the
+                // tolerance, and settled on that rise its start moved 40 ms early, onto the dit before it, and the gate dropped
+                // it as the same tone read twice: CHAT read CHET. A hop more than the tolerance over the first is a rise.
+                if (Math.Max(max, db) - mean > toleranceDb || (settling && _settleCount >= SettleRiseHops && db - _settleFirst > toleranceDb))
                 {
                     return false;
                 }
@@ -2872,6 +2881,7 @@ public sealed class CwEnvelopeDetector
             if (settling)
             {
                 SettleLeft--;
+                _settleFirst = _settleCount < SettleRiseHops ? Math.Max(double.IsNaN(_settleFirst) ? db : _settleFirst, db) : _settleFirst;
                 _settleSum += db;
                 _settleCount++;
                 _settleMin = Math.Min(_settleMin, db);
@@ -3050,7 +3060,7 @@ public sealed class CwEnvelopeDetector
 
             if (Open is not { } open || !open.TryAdd(db, contrastDb, underDb))
             {
-                var run = new Run { Start = hop, SettleLeft = KeyDown(hop, db, keyDownContrastDb) ? SettleHops : 0 };
+                var run = new Run { Start = hop, SettleLeft = KeyDown(hop, db, keyDownContrastDb) ? SettleHops : 0, SettleRiseHops = RiseHops - 1 };
                 run.TryAdd(db, contrastDb, underDb);
                 Runs.Add(run);
             }
@@ -3067,7 +3077,7 @@ public sealed class CwEnvelopeDetector
 
                 if (Open is not { } open || !open.TryAdd(db, ContrastDb, double.NaN))
                 {
-                    var run = new Run { Start = hop, SettleLeft = KeyDown(hop, db, ContrastDb) ? SettleHops : 0 };
+                    var run = new Run { Start = hop, SettleLeft = KeyDown(hop, db, ContrastDb) ? SettleHops : 0, SettleRiseHops = RiseHops - 1 };
                     run.TryAdd(db, ContrastDb, double.NaN);
                     Runs.Add(run);
                 }
