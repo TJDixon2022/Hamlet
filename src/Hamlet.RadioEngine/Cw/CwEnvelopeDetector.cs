@@ -377,6 +377,7 @@ public sealed class CwEnvelopeDetector
             _band = new Bin(0, SampleRate, HistoryHops + (2 * _keyingHops), _keyingHops);
             _bandPrev1 = _bandPrev2 = 0;
             _bandLen1 = 0;
+            _ownTracks.Clear();
             _watched = _bins.Length / 2;
             _hop = 0;
             _loudestGapDb = double.NaN;
@@ -1391,6 +1392,104 @@ public sealed class CwEnvelopeDetector
         _bandPrev2 = _bandPrev1;
         _bandPrev1 = score;
         _bandLen1 = length;
+
+        OwnMarks(evals, end, hop, nowSeconds);
+    }
+
+    // Each standing sender's own bin, followed as the whole band is: its best score at the last two ends, and the
+    // length at the last (work instruction 524, case 3).
+    private readonly Dictionary<int, (double Prev1, double Prev2, int Len1)> _ownTracks = new();
+
+    /// <summary>
+    /// **A STANDING SENDER IS FOLLOWED ON ITS OWN BIN** (work instruction 524, case 3): each hop, the bin nearest each
+    /// standing sender's pitch is fitted at the whole band's lengths, and a rectangle at its best end in time is offered
+    /// as that sender's mark.
+    /// </summary>
+    /// <remarks>
+    /// A louder sender's mark that starts or ends inside this one's sets the whole band's span. Beside a 24 dB carrier
+    /// 400 Hz away, a 12 dB sender's dah that outlasted a carrier mark ended where no span of the whole band ended, and
+    /// was never offered; where a span held three blobs, its marks were offered at 725 Hz, the pitch measure finding
+    /// the energy between them. Two senders found at once are already searched on their own bins (unit 523); a sender
+    /// that stands is searched on its own whether or not the whole band sees it. Before anyone stands, the whole band
+    /// alone finds the marks, as before.
+    /// </remarks>
+    private void OwnMarks(Evaluation[] evals, long end, long hop, double nowSeconds)
+    {
+        var pad = FitPadHops;
+        var followed = new HashSet<int>();
+        var lengths = BandLengths(nowSeconds);
+
+        foreach (var sender in _pattern.Standing(nowSeconds, HoldSeconds))
+        {
+            var centre = Nearest(sender.PitchHz);
+
+            if (!followed.Add(centre))
+            {
+                continue;
+            }
+
+            var (score, length) = BestEndingAt(_bins[centre], end, hop, lengths);
+
+            _ownTracks.TryGetValue(centre, out var track);
+
+            if (track.Prev1 >= FitThreshold && track.Prev1 >= track.Prev2 && track.Prev1 > score)
+            {
+                var e = end - 1;
+                var s = e - track.Len1 + 1;
+
+                if (s - pad >= 0)
+                {
+                    OfferBand(evals, centre, sender.PitchHz, s, e, track.Prev1, hop, nowSeconds);
+                }
+            }
+
+            _ownTracks[centre] = (score, track.Prev1, length);
+        }
+
+        foreach (var gone in _ownTracks.Keys.Where(k => !followed.Contains(k)).ToList())
+        {
+            _ownTracks.Remove(gone);
+        }
+    }
+
+    /// <summary>
+    /// A bin's best rectangle ending at one hop: the score and length of the best of the lengths whose step is taller
+    /// than a flat top's wobble; nought where none is (work instructions 523 and 524).
+    /// </summary>
+    private (double Score, int Length) BestEndingAt(Bin trace, long end, long hop, SortedSet<int> lengths)
+    {
+        var pad = FitPadHops;
+        var best = 0.0;
+        var length = 0;
+
+        foreach (var l in lengths)
+        {
+            var s = end - l + 1;
+
+            if (s - pad < 0 || hop - (s - pad) >= trace.SumsKept)
+            {
+                continue;
+            }
+
+            var (nT, sT, _) = trace.Sums(s, end);
+            var (n1, s1, _) = trace.Sums(s - pad, s - 1);
+            var (n2, s2, _) = trace.Sums(end + 1, end + pad);
+
+            if (!((sT / nT) - ((s1 + s2) / (n1 + n2)) > FlatToleranceDb))
+            {
+                continue;
+            }
+
+            var score = FitTrace(trace, s, end, pad);
+
+            if (score > best)
+            {
+                best = score;
+                length = l;
+            }
+        }
+
+        return (best, length);
     }
 
     /// <summary>The lengths, in hops, the whole-band trace is fitted at: the sweep and the standing senders' (work instruction 522).</summary>
@@ -1722,38 +1821,7 @@ public sealed class CwEnvelopeDetector
 
         for (var e = start; e <= last + 1; e++)
         {
-            var best = 0.0;
-            var length = 0;
-
-            if (e <= last)
-            {
-                foreach (var l in lengths)
-                {
-                    var s = e - l + 1;
-
-                    if (s - pad < 0 || _hop - 1 - (s - pad) >= trace.SumsKept)
-                    {
-                        continue;
-                    }
-
-                    var (nT, sT, _) = trace.Sums(s, e);
-                    var (n1, s1, _) = trace.Sums(s - pad, s - 1);
-                    var (n2, s2, _) = trace.Sums(e + 1, e + pad);
-
-                    if (!((sT / nT) - ((s1 + s2) / (n1 + n2)) > FlatToleranceDb))
-                    {
-                        continue;
-                    }
-
-                    var score = FitTrace(trace, s, e, pad);
-
-                    if (score > best)
-                    {
-                        best = score;
-                        length = l;
-                    }
-                }
-            }
+            var (best, length) = e <= last ? BestEndingAt(trace, e, _hop - 1, lengths) : (0.0, 0);
 
             if (prev1 >= FitThreshold && prev1 >= prev2 && prev1 > best)
             {
