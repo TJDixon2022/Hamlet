@@ -4,6 +4,62 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-228
+date: 2026-10-01
+refs: work instruction 524, tag before-shape-first, src/Hamlet.RadioEngine/Cw/CwPatternGate.cs, src/Hamlet.RadioEngine/Cw/CwRunReader.cs, src/Hamlet.RadioEngine/Cw/CwEnvelopeDetector.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheShapePicksTheSenderTests.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheLightSaysHoldStillTests.cs
+---
+
+**A sequence stands only on its shape; shape-first stays an experiment.** Tim, work instruction 524. The
+switch stays off at the tag `before-shape-first`. With it on, two cases still read worse than the per-bin path.
+
+**The rule.** The pattern gate stands a sequence only when its shape is 0.2 or better, the line the light uses.
+- **It did not keep the random carrier out on its own.** Over the carrier's first twelve to fifteen marks its
+  shape scored 0.21 to 0.24, and it stood. As more marks came it fell to about 0.1. Real senders were at 0.36 to
+  0.58 when picked.
+- **So the reader prints a sender only while it holds the same line.** The carrier now prints `NOAM` at 100, 150
+  and 200 Hz, then nothing, and it no longer fills the gauge past the mark.
+- **A sender's shape is judged over the marks its dit and dah come from (unit 523), with those marks' own
+  evidence.** Over forty marks spanning two speeds, a real sender who sped up fell under the line on the per-bin
+  path. A carrier's newest handful must not borrow the evidence of the forty.
+- **What stands now.** The 12 WPM fist stood at 0.203, the 30% fist and the tightening fist at 0.230, the clean
+  sender at 0.224 and the 5 WPM Farnsworth call at 0.244, and all read whole. Noise stood nothing on shape-first,
+  and 31 marks in three minutes on the per-bin path, where it stood 80.
+- **The low-scoring light test is re-pinned.** Its sloppy sequence no longer stands at all, so it now asserts that
+  the sequence never stands, never turns green and never fills past the mark.
+
+**1. The speed change's first word gap** (green). When the reader's newer-speed retry fires, the letter and word
+gap clusters are taken from the gaps between runs that ended after the newer marks began. A 10 WPM letter gap had
+put the word line at 555 ms, above the new 420 ms word gap. The case reads `… K TEST DE W1AW K`. Gaps inside letters
+are not re-taken: a run closed at the old line holds the new speed's letter gaps, and re-taking them merged `TEST`
+into one letter.
+
+**2. The quiet dit inside a letter** (green). Unit 511 admits a sender's quieter mark down to twice the level
+tolerance, 6 dB at the floor. The fit's height read the dit 6.012 dB under, against a dit taken 6.02 dB down. The
+quieter mark's own wobble at its contrast (unit 479's formula) is now taken off before the line. The call and 511's
+dah case read whole.
+
+**3. A clean sender beside a carrier 400 Hz away** (not whole). Every clean mark that was found was found exactly.
+Every missing one was cut by a carrier mark starting or ending inside it, where the whole band's span and excess are
+the carrier's. Each hop, a standing sender's own bin is now fitted at the whole band's lengths, and a rectangle at
+its best end is offered as its mark.
+- At 400 Hz, 63 of 65 marks stood (41 before), and it reads `E EQ CQ DE N0CALL N0CALL K`. The first C's two dahs
+  were cut before anyone stood, and nothing is followed until someone does.
+- At 200 Hz it reads `KDEN0CALL N0CALL K`, and the carrier no longer prints.
+
+**4. Unit 519's switch case** (green, by case 3). The fist reads whole, and the clean sender takes over at the
+pause.
+
+**5. Unit 519's edge case** (red). The clean sender ends at 0.782 and the fist at 0.152. The fist's skirt covers
+most of the 500 Hz passband, which lifts the median excess (about -21 dB) over the clean sender's own (-26 dB). So
+the clean sender has no marks until 10 s, the fist is printed from 5.2 s, and the clean sender takes over at
+11.4 s: `TEST DE W1AW TES ALL N0CALL K`.
+
+**The switch stays off.** With shape-first on, the edge case and the first CQ beside the 400 Hz carrier read
+worse than the per-bin path. On the per-bin path, every asserted reading is as before. One report-only row is
+worse: the bulletin through a 6 dB AGC overshoot and the filter, fit on, reads `EIE I SI SE IE ES E S` where it
+read `JAMP OVER THE LA DY DOG 0123IA56789`.
+
+---
 id: HM-DEC-227
 date: 2026-10-01
 refs: work instruction 523, tag before-shape-first, src/Hamlet.RadioEngine/Cw/CwEnvelopeDetector.cs, src/Hamlet.RadioEngine/Cw/CwPatternGate.cs, src/Hamlet.RadioEngine/Cw/CwRunReader.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheShapePicksTheSenderTests.cs

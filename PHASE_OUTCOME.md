@@ -1491,3 +1491,41 @@ Run by hand, outside the loop; SESSION.lock taken and released, nothing written 
 ## UNIT 523 - STEP 12
 
 Run by hand, outside the loop; SESSION.lock taken and released, nothing written to RUN_LEDGER.md, nothing under tools\arbiter\ touched, no box ticked, no ruling added to either plan, no scratch file committed. Version 1.13.207 to 1.13.208. **Five of six cases read with shape-first on; the switch stays off (HM-DEC-227).** Case 1: the gate stands a hand's two kinds on ten marks on the shape-first path and the whole-band fit steps by a tenth - the 12, 27 and 35 WPM fists, the rough and tightening fists, read whole. Case 2: two senders in a span are searched on their own bins, one pitch with two rectangles on its bin is two marks, and the pitch weighs every sample alike - two stations read whole. Case 3: the reader takes its dit and dah from its newest marks when its recent ones are two speeds - the speed change reads `... K TESTDE W1AW K`, one space short. Cases 4 and 5 follow from case 1. Case 6, the neighbour, is dropped: the carrier's junk prints where unit 522's end printed nothing. With shape-first on the strength table reads whole at 8, 10, 12, 16 and 24 dB, the gauge runs 0.40, 0.60, 0.80, crossing at 4.05 s and full at the first letter, and noise stands nothing; but the speed change, the quiet dit (`N0CA DL`), a clean sender beside a carrier 400 Hz away and unit 519's switch and edge cases read worse than the per-bin path, so ShapeFirst stays off. The per-bin path reads every case as at HEAD; its only changes are junk-text rows. Build 0 warnings 0 errors; app carry-forward 278 of 278, two 1 ms losses green alone. Nothing keyed or transmitted. No recording, fixture or telemetry read.
+
+## UNIT 524 - STEP 12
+
+Run by hand, outside the loop:
+- SESSION.lock taken and released;
+- nothing written to RUN_LEDGER.md and nothing under tools\arbiter\ touched;
+- no box ticked and no ruling added to either plan;
+- no scratch file committed;
+- nothing keyed or transmitted, and no recording, fixture or telemetry read.
+
+Version 1.13.208 to 1.13.209. **A sequence stands only on its shape; shape-first stays an experiment at the tag (HM-DEC-228).**
+
+The rule: the gate stands a sequence only at a shape of 0.2 or better. The reader prints a sender only while it holds that line, judged on the marks at its speed now with those marks' evidence.
+- The random carrier stood on 0.21 to 0.24 over its first twelve to fifteen marks, then fell to about 0.1. It printed `NOAM` at 100, 150 and 200 Hz, then nothing.
+- Real senders stood at 0.203 to 0.244 and read whole.
+- Noise stood nothing on shape-first. On the per-bin path it stood 31 marks in three minutes, where it had stood 80.
+
+Case 1: gap clusters at the newer speed. The speed change reads `... K TEST DE W1AW K`.
+
+Case 2: the quiet dit's own wobble is taken off before 511's line. The quiet dit and 511's dah read whole.
+
+Case 3: a standing sender is followed on its own bin each hop.
+- Beside a carrier 400 Hz away: 63 of 65 marks stood, reads `E EQ CQ DE N0CALL N0CALL K`. The first two dahs are cut before anyone stands.
+- At 200 Hz: `KDEN0CALL N0CALL K`.
+
+Case 4 follows from case 3: the fist reads whole and the clean sender takes over.
+
+Case 5 is red:
+- Scores: the clean sender 0.782 and the fist 0.152 at the end.
+- The fist's skirt lifts the median excess over the clean sender's own, so the clean sender has no marks until 10 s. The fist prints first.
+
+The switch stays off. With shape-first on, the edge case and the first CQ beside the carrier still read worse than the per-bin path.
+
+Per-bin path:
+- Every asserted case reads as at HEAD.
+- One report-only row is worse: the bulletin through an AGC overshoot of 6 dB and the filter, fit on.
+
+Build 0 warnings 0 errors. App carry-forward 278 of 278.

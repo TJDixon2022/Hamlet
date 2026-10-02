@@ -2,12 +2,12 @@ PROTOCOL: 2
 PROJECT: Hamlet
 STATE: COMPLETED
 TASK: 7 of 7
-WORK_INSTRUCTION: 523 - shape-first reads everything, then it is the path (run by hand)
+WORK_INSTRUCTION: 524 - the last five, and the switch (run by hand)
 BALL: tim
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-10-01T17:30:28-04:00
-NOTE: Unit 523 - five of six cases read with shape-first on; switch stays off, five still worse
+UPDATED: 2026-10-01T23:34:29-04:00
+NOTE: Unit 524 - partial: the rule and cases 1 to 4 done, case 5 red, shape-first stays an experiment
 
 ---
 
