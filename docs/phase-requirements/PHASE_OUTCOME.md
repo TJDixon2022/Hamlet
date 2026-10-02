@@ -824,3 +824,29 @@ Version 1.13.209 to 1.13.210. HM-DEC-229.
 - The faded bulletin reads whole.
 
 Build 0 warnings 0 errors. App carry-forward 278 of 278.
+
+## UNIT 526 - STEP 12
+
+Run by hand, outside the loop:
+- SESSION.lock taken and released;
+- nothing written to RUN_LEDGER.md and nothing under tools\arbiter\ touched;
+- no box ticked and no ruling added to either plan;
+- no scratch file committed;
+- nothing keyed or transmitted, and no recording, fixture or telemetry read.
+
+Version 1.13.210 to 1.13.211. HM-DEC-230.
+
+**First finding.** The speed change, the drifting hand, the 13 WPM hand, Farnsworth at 5 and the straight key all read at HEAD on clean bench audio. They failed only with a 3 dB AGC overshoot, and through the 500 Hz filter with AGC. The owner ruled to fix that first, then build tasks 1 and 2.
+
+**What landed:**
+- **Task 7:** the first rise above everything a bin heard in the last second is a key-down and settles. The AGC bulletins read whole, the 13 WPM hand stands through the filter, and the openings are kept.
+- **Task 4:** the hand test is on the per-bin gate. The straight key at 12 dB with AGC stands, and noise is unchanged.
+- **Tasks 1 and 2:** marks and gaps are judged against three neighbours either side wherever two on each side show a clean jump, and five dits is a floor. The drifting hand's BROWN FOX parts.
+- **Task 5:** a printed sender is released only under shape 0.1.
+- **Task 6:** the gauge says "not yet" past five.
+- **Task 8:** no unit removed the record press. It says "I hear a station" by the ruling of 2026-08-26, and its hover now says it records and where.
+- **Task 9:** the listening panel has no hover.
+
+**Dropped:** task 3. Its condition cannot occur with one split per letter.
+
+Build 0 warnings 0 errors. App carry-forward 278 of 278.

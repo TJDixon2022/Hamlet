@@ -4,6 +4,60 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-230
+date: 2026-10-02
+refs: work instruction 526, src/Hamlet.RadioEngine/Cw/CwEnvelopeDetector.cs, src/Hamlet.RadioEngine/Cw/CwPatternGate.cs, src/Hamlet.RadioEngine/Cw/CwRunReader.cs, src/Hamlet.RadioEngine/Cw/CwShapeLight.cs, src/Hamlet.App/Controls/CwScopeControl.cs, src/Hamlet.App/Views/MainWindow.axaml, tests/Hamlet.RadioEngine.Tests/Cw/AHandIsReadAgainstItselfTests.cs
+---
+
+**A hand is read against itself.** Tim, 2026-10-02: *"Our biggest struggle is in changes of words per minute. Hand
+keyers are going to be all over the place."* Each mark and each gap is judged against its neighbours in the same
+sender, and **five dits stays a floor**: a gap of five dits or more is a word wherever the sender's letter gaps sit
+under five dits.
+
+**Measured first.** On clean bench audio at HEAD, every case read: the 25-35-25 WPM speed change, a hand drifting
+13-18-13 WPM, the 13 WPM hand, W1AW's 5 WPM Farnsworth section and an SKCC straight key.
+- **With a 3 dB AGC overshoot** at each key-down, the openings were lost (TEXT, CQ CQ).
+- **Through the 500 Hz filter with AGC as well**, the 13 WPM hand stood nothing at 24 dB.
+- **At 12 dB with AGC**, the straight key stood nothing, which is the SKCC station on 7.0549 at 14:42.
+
+The owner chose to fix that first and then build the neighbour rules.
+
+**Task 7: the first rise above the floor is a key-down.** Before anybody is keying there is no contrast to measure a
+rise against. A rise above everything the bin heard in the second before it, by more than a flat top's wobble, is
+now a key-down and settles as unit 525's do. Noise seldom beats its own second-long top. The AGC +3 and +4
+bulletins read whole, including the first letter.
+
+**Task 4: the hand test on the per-bin gate**, behind unit 524's 0.2 shape line.
+- The straight key at 12 dB with AGC stands and reads.
+- Noise stands 0 marks in 30 s and 31 in three minutes, as before.
+- The narrowness noise probe now counts before the pattern gate, as unit 498 measured.
+
+**Tasks 1 and 2: neighbours.**
+- A letter's dit and dah are split by its own marks and the sender's three either side; a gap is judged inside or
+  between letters by the three gaps either side.
+- Either applies only where at least two on each side show a clean 2:1 jump. Otherwise the sender's running
+  clusters decide, as before.
+- Five dits is a floor for a word wherever the letter cluster is under five dits. A hand drifting 13 to 18 WPM had
+  run BROWN FOX together on its old letter gaps.
+- At 12 dB, a 25 WPM J just after 35 WPM still read W T: one dah measured 7 dB low began a second sender. That is a
+  level grouping, not the speed.
+
+**Task 5: the reader holds a standing sender.** A printed sender is released on shape only under 0.1, half the 0.2
+it stood at. What dropped a 0.50 sender on 7.031 was found by reading, not reproduced: the gauge reads the gate's
+sequence, while the reader released on its own sender's shape. Since unit 524 that shape is judged over the newest
+marks with only their evidence.
+
+**Task 6:** the forming count stops at five and says "not yet".
+
+**Task 8:** no unit removed the record press. It has said "I hear a station" since the ruling of 2026-08-26, and is
+enabled while decoding. Its hover now says it records, what and where.
+
+**Task 9:** the listening panel has no hover. Tim: *"Remove the hover text from the listening panel - not the
+buttons, the panel itself."*
+
+**Task 3 dropped:** with one split per letter, a dah shorter than a dit in the same letter cannot occur.
+
+---
 id: HM-DEC-229
 date: 2026-10-02
 refs: work instruction 525, src/Hamlet.RadioEngine/Cw/CwPatternGate.cs, src/Hamlet.RadioEngine/Cw/CwRunReader.cs, src/Hamlet.RadioEngine/Cw/CwEnvelopeDetector.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheSpacesComeFromTheShapeTests.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheRectangleIsFittedTests.cs

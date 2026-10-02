@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: COMPLETED
-TASK: 3 of 3
-WORK_INSTRUCTION: 525 - the word gap is five dits, and a mark survives AGC and a fade (run by hand)
+TASK: 9 of 9
+WORK_INSTRUCTION: 526 - the hand is read against itself (run by hand)
 BALL: tim
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-10-02T10:39:25-04:00
-NOTE: Unit 525 - partial: three tasks landed, unit 519's edge case turns red
+UPDATED: 2026-10-02T14:15:53-04:00
+NOTE: Unit 526 - eight of nine tasks landed, task 3 dropped, AGC fixed first by the owner's choice
 
 ---
 

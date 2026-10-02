@@ -1,136 +1,151 @@
 ```
-UNIT: 525 - partial (three tasks landed; the 5-dit row and +6 dB stay short; unit 519's edge case turns red) - 2026-10-02
-UNIT GOAL: the word gap is five dits, and a mark survives AGC and a fade
-NUMBER: AGC +2 to +4 dB and the 6 dB fade read the bulletin whole (AGC after its first letter), and the 7-dit call reads whole
+UNIT: 526 - partial (eight of nine tasks landed, task 3 dropped; the order's red cases read at HEAD, so the bench reds under AGC were fixed first by the owner's choice) - 2026-10-02
+UNIT GOAL: a hand is read against itself
+NUMBER: through the filter with a 3 dB AGC overshoot the 13 WPM hand reads whole (0 marks stood at HEAD); the straight key at 12 dB with AGC stands 77 to 78 marks (0 at HEAD)
 ```
 
 ## 1. What Claude did
 
-Claude Code on the development machine, branch `main`. The prompt claimed `PROJECT: Hamlet`, and the order's gate held: `SHACK_FACTS.md`, `CwRunReader.cs` and `CW_REQUIREMENTS.md` exist, there is no `CoreHMI.sln` or `MURC.sln`, and the root is `C:\Source\HamLet`. Hamlet confirmed. Nothing in this report is evidence about the radio. Unit 525 and HM-DEC-229 were free.
+Claude Code on the development machine, branch `main`. The prompt claimed `PROJECT: Hamlet`, and the order's gate held: `SHACK_FACTS.md`, `CwPatternGate.cs` and `CW_REQUIREMENTS.md` exist, there is no `CoreHMI.sln` or `MURC.sln`, and the root is `C:\Source\HamLet`. Hamlet confirmed. Nothing in this report is evidence about the radio. HM-DEC-230 was free.
 
 **How the session ran:**
 - It took SESSION.lock and released it at the end.
 - It wrote nothing to `RUN_LEDGER.md`, touched nothing under `tools\arbiter\`, and ticked no box.
-- It read no recording, fixture or telemetry; every case is synthetic audio written in its test.
+- It read no recording, fixture or telemetry.
 - Nothing keys, transmits or writes to the radio.
-- **Unit 517's word-gap ask is answered** by this order and the owner's ruling below, so it leaves the outstanding queue.
-- **One question was put to the owner** mid-run. The order's five-dit rule and its 5-dit green contradict each other on the test's own audio, and the owner chose the literal five dits.
 
-**Task 1: the word gap is five dits, decided in the gate.** Commit `8fe70d70`.
-- **`CwPatternGate.cs`:**
-  - `GapLines` draws a sender's element, letter and word lines from its dit, its gaps inside letters and its gaps between runs.
-  - `CwGapLines.KindOf` labels a gap element, letter or word, and `DitFromGaps` reads a one-length sender's dit from its gaps.
-  - New constants: `WordGapDits`, plus `MeasuredRunGaps` and `SlowestFarnsworthWordGapSeconds`, both moved from the reader.
-- **`CwRunReader.cs`:**
-  - The arithmetic of units 500, 501, 504, 510 and 513 moved into the gate unchanged.
-  - A new letter, a new word and the re-split of unprinted runs all ask `KindOf`.
-  - The cluster helpers stay shared, because the mark kinds use them too.
-  - Not moved: the waits built on the lines (twice the word gap to release or confirm, the calling lag) and the mark-length √3. These are times and mark kinds, not gap kinds.
-- **The new line.** Where only the letter cluster shows and it sits under five dits, a word gap is five dits or more, counted on the true dit.
-  - A mark reads short and a gap long by the same smear, so the true dit is the marks' dit plus half the smear.
-  - Otherwise √(7/3) of the letter gap, as before: for Farnsworth senders, and wherever three clusters show.
-- **The owner's ruling, 2026-10-02:** the literal five dits, over the nearer of three and five (3.87) and over five less the sender's scatter.
-- **Test:** `TheSpacesComeFromTheShapeTests` now asserts no space inside either callsign at 4, 5 and 7 dits, and the 7-dit row whole. The 5-dit row is printed.
+**First, the failing cases did not fail.**
+- On clean bench audio at HEAD, five cases all read whole: the 25 → 35 → 25 WPM speed change, a hand drifting 13 → 18 → 13 WPM, the 13 WPM hand, W1AW's 5 WPM Farnsworth section, and the SKCC straight key (scatter two fifths, dahs 2 to 4 dits). Only the straight key's last word gap ran together.
+- With a 3 dB AGC overshoot at each key-down, the openings were lost: `TEXT`, `CQ CQ`.
+- Through the 500 Hz filter with AGC, the 13 WPM hand stood **nothing** at 24 dB, and at 12 dB the straight key stood nothing.
+- So the bench says the air's stale-speed symptoms are at least partly AGC handling upstream of the reader. I asked once.
+- **The owner chose to fix AGC first, then build tasks 1 and 2.**
+- The work order was worked in this order: 7, 4, 1+2, 9, 6, 8, 5, with task 3 dropped.
 
-**Task 2: a mark's top is judged from where it settles.** Commit `3b476768`, `CwEnvelopeDetector.cs`.
-- **`Run`.** A run that began with a key-down may step down, for its first `SettleHops`, by no more than the flatness tolerance per hop. Those hops count toward length, not level. A larger step is the fall, and a rise is judged as before.
-- **`SettleHops` = 7.** That is the shortest dit, 25 ms, plus the 10 ms window. The IC-7300's AGC attack time is not in `A7292-4EX-6`, so this is the author's figure from what a keyed tone must do: an AGC not settled by the end of the shortest dit leaves no dit a level.
-- **A key-down** is a rise, measured from before the window began to rise, of at least half the bin's keying contrast, or of its height over the loudest keying gap.
-  - Without the key-down guard, noise settled too, and the noise-bar narrowness test turned nothing away.
-  - Without measuring from before the window, a half-risen first hop kept the guard from firing.
-- **Test:** the AGC +2, +3 and +4 rows, plain and through the filter, are now asserted. +6 is printed.
+**Task 7: the first mark of a transmission settles.** `CwEnvelopeDetector.Bin.KeyDown`, commit `b53dc847`.
+- **The rule:** before anybody is keying there is no contrast. A rise above everything the bin heard in the second before the window began to rise, by more than a flat top's wobble, is now a key-down and settles.
+- **The figure:** the second is the bin's existing one-second memory, and the wobble is the 1.5 dB flatness floor.
+- **AGC bulletin:** the +3 and +4 rows read whole, first T included; the test now asserts the whole bulletin.
+- **The weak call** reads `CQ` where it read `CGE`.
+- **Noise bars:** unchanged, 38 / 30 / 27.
 
-**Task 3: every level reference is local to the mark.** Commit `b4842321`.
-- **Found first:**
-  - Under the 6 dB fade every mark stood at its right length; I compared all 154 against the plain bulletin, and only their levels differed.
-  - The fault was the reader's level reference: the mean of the sender's last eight marks, about two seconds at 18 WPM, while the fade moves the station up to 4.7 dB a second.
-  - A second 625 Hz sender began at 15.7 s, the J of JUMPS, and the letters were dealt between the two.
-  - The gate's agreement uses the same eight-mark mean, and it refused a few fade-sized marks.
-  - The other references were checked and are not the fault. The bars' level pairing reaches back a second, but neighbouring bars sit a quarter-second apart. The gap wander decides the keying light, not delivery. The contrast fades with the signal.
-- **Fixed:** the reader (`Sender.Reference`) and the gate (`Agrees`, `TakesQuieter`) judge level against the sender's last three marks, `CwPatternGate.LevelMarks`, a letter's worth.
-  - The last mark alone fixed the fade but split `N0CALL` at 600 Hz, 12 dB, on its own noise.
-  - Three marks are half a second at 18 WPM, across which the fade moves the mean about a decibel.
-  - Pitch is still read over the eight, since a fade does not move it.
-- **Test:** the fading row now asserts the bulletin whole.
+**Task 4: the hand test on the per-bin gate.** Commit `bb78474d`.
+- **The change:** `_pattern.HandKinds = true` on both paths, guarded by unit 524's 0.2 shape line.
+- **The straight key** at 12 dB with AGC stands 77 to 78 marks; it stood 0.
+- **Noise** stands 0 marks in 30 s and 31 in 3 minutes, as at HEAD, and prints nothing.
+- **The narrowness noise probe** (`MostEdgedNoiseBarsAreNotNarrow`) now counts before the pattern gate, the gate unit 498 measured before. Counted after, it was measuring whichever noise sequences stood.
+
+**Tasks 1 and 2: every mark and gap judged against its neighbours.** Commit `76d95527`, one commit because both live in the reader's run code.
+- **Marks.** `CwRunReader.Sender.SplitAround` splits a letter's marks by its own marks and the sender's three either side.
+- **Gaps.** `CwPatternGate.KindAmongNeighbours` judges a gap inside or between letters by the three gaps either side. It is used for the next gap (`KindOfNext`) and in the re-split.
+- **When neighbours decide.** Both act only where at least two on each side show a clean 2:1 jump; otherwise the sender's running clusters decide, as before. Requiring two on each side came after the straight key's K read O: a single 35 ms dit made its own "cluster".
+- **Five dits is a floor** in `GapLines` wherever three clusters show and the letter gaps sit under five dits. The drifting hand's `BROWNFOX` now parts.
+- **Neighbour count:** `NeighbourGaps` = 3, a letter's worth either side.
+
+**Task 9: the listening panel has no hover.** Commit `a5289744`.
+- Removed: the scope's tip in `MainWindow.axaml`; `CwScopeControl`'s pointer handlers, `TipAt`, `LetterTip` and `LetterTipWords`; and `CwHearingViewModel.ScopeTip` and `ScopeBarTip`.
+- The four tests that read those tips are gone, and the tab test asserts no tip.
+- `EveryControlSaysWhatItDoesTests.DeliberatelySilent` names `CwScope` with Tim's words, and a test holds it.
+
+**Task 6: the gauge cannot count past five.** Commit `56b079d9`. `CwShapeLights.Words` says `shape forming · not yet` at five or more, and the fill already stopped at the mark. New test `TheGaugeCannotCountPastFive`.
+
+**Task 8: the record button.** Commit `fd96d4ee`.
+- **No unit removed it.** The press began as `Keep this audio` (`49b844c6`). It was deleted with the old decoder on 2026-08-21 (`4bc3bce8`) and put back the same day (`c32f0634`).
+- It has said `I hear a station` since your ruling of 2026-08-26 (`979d85d0`). It is enabled only while decoding, and it writes `cw-<time>.wav` and `cw-<time>.txt` to the capture folder.
+- Its hover now says it records, what and where (`MainWindowViewModel.CaptureTip`). The label stands as ruled.
+
+**Task 5: the reader holds a standing sender.** Commit `da4f45b8`.
+- **The rule:** a printed sender is released on shape only under `ReleaseScore` = 0.1.
+- **What released it at 0.50, found by reading, not reproduced.**
+  - The gauge reads the gate's sequence shape, but the reader released on its own sender's shape.
+  - Since unit 524 that shape is judged over the marks at the sender's speed now, with only those marks' evidence.
+  - Where a hand's forty marks look like two speeds, that is its newest ten or five, whose evidence alone takes a 0.5 shape under 0.2.
+
+**Task 3 dropped.** With one split per letter, a dah shorter than a dit in the same letter cannot occur, so it would fire 0 times on every case.
 
 **Records:**
-- HM-DEC-229 in `DECISIONS.md`.
+- HM-DEC-230 in `DECISIONS.md`.
 - The `CLAUDE.md` index row.
-- `PHASE_OUTCOME` (both copies) has `## UNIT 525 - STEP 12`.
-- `PHASE_STATUS` (both copies) names 525.
-- Version 1.13.209 to 1.13.210.
+- `PHASE_OUTCOME` (both copies) has `## UNIT 526 - STEP 12`.
+- `PHASE_STATUS` (both copies) names 526.
+- Version 1.13.210 to 1.13.211.
 
 **Build and app line:** build 0 warnings, 0 errors. App carry-forward 278 of 278.
 
 ## 2. What the owner should expect
 
 - **Rebuild.**
-- **Hand senders who pause five dits between words get their spaces.** Four-dit pausers still run together, and that is the limit of what timing can tell. A hand that wanders under five dits loses that space; the test hand at "five dits" wanders to 4.2, so half its spaces still go.
-- **A strong station through AGC FAST no longer loses its dahs** at the start of each mark, for overshoots up to 4 dB. Only the very first letter of a transmission still can, because it comes before Hamlet knows anybody is keying. A 6 dB overshoot is still too much without the fit.
-- **A station fading slowly reads whole.**
-- **One thing reads differently.** Beside a louder hand sender at the filter's centre, a clean station at the edge no longer prints first. The hand sender's first word (`TEST`, correctly read) prints, then the clean station takes over, two letters later than before.
-- **Nothing else changed.** The strong bulletin still reads identically with the fit on and off, and every other existing case reads as before. Only the shipped path (shape-first off) was measured.
+- **The opening of a transmission is no longer lost to AGC FAST.** On the bench, a strong station's first letters through the filter read where they were dropped. A 13 WPM hand through the filter stood nothing and now reads whole.
+- **A straight key stands within ten marks** instead of thirty seconds of "forming". The hand test needs ten marks, so that is when it stands.
+- **A speed change reads with no stretch of wrong letters** on the bench, and a drifting hand is read against its own last few marks and gaps. On clean audio this already read before today; what changed is the AGC opening and the drifting hand's word space.
+- **W1AW's 5 WPM section reads as words** on the bench, with AGC or without. It did before, except with AGC, where the first word was lost.
+- **A station that is being read is not dropped** until its shape falls under 0.1.
+- **The gauge never counts past five.** It says "not yet" instead.
+- **The record button was never gone.** It is the button that says `I hear a station`, live while decoding, and its hover now says it records the last half minute and where it puts it.
+- **The listening panel no longer pops up text.** The buttons beside it still do.
 
 ## 3. What you should see
 
-**The word-gap rows** (18 WPM, a hand's scatter of a sixth):
+**The straight key and the speed change:**
 
-| word gaps | true gaps, dits | reads |
-|---|---|---|
-| 4 dits | 3.38 to 4.63 | `KI1MMDEVE2JDNAMEISJEANQTHQUEBECHW` (as at HEAD) |
-| 5 dits | 4.22 to 5.76 | `KI1MM DEVE2JD NAME ISJEANQTHQUEBECHW` (as at HEAD; line 352 ms, was 362) |
-| 7 dits | 5.87 to 7.98 | `KI1MM DE VE2JD NAME IS JEAN QTH QUEBEC HW`, whole |
+| case | condition | HEAD | now |
+|---|---|---|---|
+| straight key, two fifths | 12 dB, AGC | stood 0, reads nothing | 78 stood, `CQ CQ SKCC DE N0CALL N0CALLN` |
+| straight key, two fifths | 24 dB, AGC, filter | `E■■ SKCC DEN0CALLN0CALLK` | `CQ CQ SKCC DE N0CALL N0CALLK` |
+| straight key, two fifths | 12 dB, AGC, filter | stood 0 | 77 stood, `CK■ASKCC DE N0CALL N0CALLK` |
+| speed 25 → 35 → 25 | plain, AGC, AGC+filter, 12 dB AGC+filter | whole | whole |
+| speed 25 → 35 → 25 | 12 dB plain | `… FOX W TUMPS …` | the same (a level split, not the speed) |
 
-- No space inside `KI1MM` or `VE2JD` at any of them.
-- Letter gaps reach 3.49 dits.
-- The fist scattered by a third now reads `CQ CQ DE N0CALL N0CALL K` (it read `N0CALLK`).
-- The 5 WPM Farnsworth call reads `CK CQ DE N0CALL N0CALL K` at 10 dB, as at HEAD.
+- The straight key's last word gap is drawn at 4.35 dits, under the five-dit floor, so `N0CALL K` reads `N0CALLK`.
 
-**The AGC rows** (the bulletin at 24 dB, 18 WPM):
+**The 13 WPM hand and Farnsworth:**
 
-| overshoot | HEAD, fit off | now, fit off and on |
-|---|---|---|
-| +2, plain and filter | whole | whole |
-| +3 | `HE E I INEE SE E I E U E …` | `HE QUICK BROWN FOX JUMPS OVER THE LAZY DOG 0123456789` |
-| +3 filter, +4, +4 filter | dits | the same, all four ways |
-| +6 | nothing | nothing (fit off); `IE G UICK BROWN FOX …` with the fit on (was `IEN I I MW …`) |
-| +6 filter | nothing | nothing (fit off); `EIE UE CK BROWN FOX JUMPS OVER THE LAZY DOG 0123456789` with the fit on (was `EIE I SI SE IE ES E S`) |
-
-**The fade rows:**
-
-| case | HEAD | now |
-|---|---|---|
-| bulletin, 6 dB over 4 s | `THE G NK D ERO WN U EOD T JU MP …` | `THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG 0123456789`, fit on and off |
-| station 24 to 10 dB and back | whole | whole |
+| case | condition | HEAD | now |
+|---|---|---|---|
+| 13 WPM hand, a fifth | 24 dB, AGC, filter | stood 0 | `THIS CONNECTION IS GOOD TNX FER CALL ES QSO` |
+| 13 WPM hand | 24 dB, AGC | `HIS CONNECTION …` | whole |
+| drifting 13-18-13 | AGC | `E U IS FROM SEPTEMBER 2024 … BROWNFOX …` | whole |
+| drifting 13-18-13 | 12 dB, AGC, filter | `E U IS FROM … BROWNFOX … TIOG` | `TEXT IS FROM SEPTEMBER 2024 A E I HE QUICK BROWN FOX … TIOG` |
+| Farnsworth 5 | AGC, AGC+filter | `IS FROM SEPTEMBER 2024` | `TEXT IS FROM SEPTEMBER 2024` |
+| Farnsworth 5 | plain | whole | whole |
+| 4-dit word gaps | plain | runs together | runs together |
 
 **Existing cases, shipped path:**
-- **Reds as at HEAD:** `TheCallReadsAtEveryStrength(8)`, `FarnsworthAndFastReadAtTenDecibels`, `ALetterReadFromNoiseDoesNotReachTheScreen(blocks: True)`, and the carrier tests at 725 and 775, which set shape-first themselves.
-- **New red:** `ACleanSenderAtTheEdgeOutranksALouderFistAtTheCentre`. It prints at 600 `TEST`, at 825 `ACKEEN■CALAEN■KAEILK`; it printed nothing at 600 and `RTACKEN■CALAEN■KAEILK` at 825 before.
 - **Better:**
-  - the burst with blocks asked reads `CQ CQSHDE N0CALL K` (was `NCAL`);
-  - the 8 dB "before" row reads `CQ NIQ DE N0CALL N0NIALL K`.
-- **Report-only rows** that moved between junk readings:
-  - the 10 and 12 dB fit-off rows (12 dB now `CQ CQ DE N0CALL E0CALL K`, was `CT A CQ DE N0CALL N0CALL K`);
-  - the 8 dB fit-on row (`CQ IIQ` for `CQ NIQ`);
-  - the carrier junk.
-- **Unchanged:** the strength table (24, 16, 12 and 10 dB whole), the speed change, the fists, the two stations, the five pitches, the quiet dit and dah, `TEST DE W1AW K`, `DE DE`, and the lone marks.
-- **Noise:** 30 s and 3 min stand nothing. `DecisionLogOrderTests` gaps check is red as at HEAD; the order check passes.
+  - the AGC +3 and +4 bulletins read whole including the first T;
+  - the weak call reads `CQ`;
+  - +6 with the fit on gains its T.
+- **Reds as at HEAD:**
+  - `TheCallReadsAtEveryStrength(8)`, `FarnsworthAndFastReadAtTenDecibels`, `ALetterReadFromNoiseDoesNotReachTheScreen(blocks: True)`;
+  - `ACleanSenderAtTheEdgeOutranksALouderFistAtTheCentre`, now `TESTD` at 600 and `KEEN■CALAEN■KAEILK` at 825;
+  - the shape-first carrier tests at 725 and 775. The 725 Hz one, 100 Hz away, prints `NOAM■ZTE■` for `NOAM■`, held by the 0.1 release.
+- **Changed diagnostic and junk rows:**
+  - the W1AW all-gates-off rows print `CTK TRQ DE NOMERALL NO` where they printed nothing (the hand test on the pattern gate);
+  - one carrier junk row.
+- **App tests outside the carry-forward line, red at unit 525's end too and not touched:**
+  - `TheScopeShowsTheMarksTests.TheToneLineReadsThePitchWhileAMarkIsUp` and `TheScopeIsOnTheCwTabBesideTheButtonsAndPaints` (the tone line reads `no keying`);
+  - `VoiceTests.NoOperatorFacingStringUsesABritishSpelling`, two `centre`s in the tone-line text.
+- `DecisionLogOrderTests` gaps check is red as at HEAD.
 
 ## 4. What's blocking us
 
-1. **Unit 519's edge case is red on the shipped path.** Settling let the louder fist's marks through the filter stand whole, so it qualifies before the clean sender and prints its first word. The fist is a real station and the word is right, but the case asked that it print nothing. The next unit should decide whether the first pick should wait for a second sender's evidence.
-2. **The 5-dit row reads as at HEAD** under your literal five-dit ruling. Its own audio sends half its word gaps under five dits.
-3. **A 6 dB AGC overshoot** still breaks the per-hop path with the fit off. Seven settle hops are not enough, and the radio's attack time is not published.
-4. **The first mark of a transmission** gets no settling, since nobody is keying yet.
-5. **Shape-first (off) was not re-measured** against these changes. Task 2's settling and task 3's references sit on paths it shares.
+1. **Task 3 dropped.** One split per letter makes its condition impossible.
+2. **The air's speed-change symptom is not reproduced on clean bench audio.** Two 12 dB cases still fail:
+   - `W TUMPS`: a dah measured 7 dB low starts a second reader sender, so the reader's level grouping at low SNR is the next lead.
+   - The drifting hand through the filter with AGC.
+3. **Task 5's release was diagnosed by reading.** It needs a capture or an air report to confirm.
+4. **The record press is labelled `I hear a station`** by your ruling of 2026-08-26. Renaming it `Record` would change that ruling, so it's yours.
+5. **Pre-existing app reds** (the scope tone line, two British spellings) are outside the carry-forward line and were left, per §12.6.
+6. **Shape-first (off)** was not re-measured beyond the carrier rows.
 
 ### Asks still outstanding
 
-- **Unit 522, 2026-10-01:** whether to switch shape-first on before its failures are fixed. Still off. Two cases remained at unit 524.
-- **Unit 520, 2026-10-01:** how a mark finds its own tone beside a louder one. Partly answered by following a standing sender on its own bin (unit 524). Before it stands, it is still open.
+- **Unit 522, 2026-10-01:** whether to switch shape-first on before its failures are fixed. Still off.
+- **Unit 520, 2026-10-01:** how a mark finds its own tone beside a louder one. Partly answered by unit 524; open before a sender stands.
 - **Unit 440's item 1:** MET-COVERAGE counts wrong sure characters. Raised 2026-09-25 and waiting on the owner. No change for it sits in the tree.
 - **Unit 440's item 2:** R72 is cited as HM-DEC-175. Raised 2026-09-25 and scheduled as step 8 record work under R80.
 - **Unit 487, 2026-09-28:** whether the terminal shows only settled text, at the cost of seconds of lag.
   - The run path, the only path to the screen, already shows only settled text.
   - The ask stands only for the timing-only path.
   - No change for it sits in the tree.
+- **Unit 526, 2026-10-02:** whether the record press should say `Record` rather than `I hear a station`. Waiting on the owner. Its hover already says it records; no label change sits in the tree.
