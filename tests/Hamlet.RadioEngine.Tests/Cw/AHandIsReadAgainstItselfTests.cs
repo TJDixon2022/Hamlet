@@ -125,13 +125,19 @@ public sealed class AHandIsReadAgainstItselfTests
     };
 
     /// <summary>
-    /// The conditions the air showed on 2026-10-02 and the bench did not: `plain` at 24 dB; `agc`, a 3 dB AGC overshoot
+    /// The conditions the air showed on 2026-10-02 and the bench did not: `plain` at 24 dB; `agc`, a 1 dB AGC overshoot
     /// at each key-down; `agc-filter`, that through the 500 Hz filter on 600; and `weak-agc-filter`, that at 12 dB.
+    /// `agc2-filter` and `agc3-filter` are named stress cases at 2 and 3 dB through the filter.
     /// </summary>
+    /// <remarks>
+    /// **ONE DECIBEL, WHAT THE AIR MEASURED** (work instruction 528, task 5, HM-DEC-232): unit 526 set 3 dB; the owner's
+    /// recording on 7.0549 measured a median overshoot of 0.65 dB, 90% under 1.3 and 2.1 at worst.
+    /// </remarks>
     internal static float[] Under(string condition, string text, Func<int, Sending> sending, int seed)
     {
         var db = condition.StartsWith("weak", StringComparison.Ordinal) ? 12 : 24;
-        var samples = Keyed(text, sending, seed, db, condition == "plain" ? 0 : 3);
+        var overshoot = condition == "plain" ? 0 : condition.StartsWith("agc3", StringComparison.Ordinal) ? 3 : condition.StartsWith("agc2", StringComparison.Ordinal) ? 2 : 1;
+        var samples = Keyed(text, sending, seed, db, overshoot);
 
         return condition.EndsWith("filter", StringComparison.Ordinal) ? NarrownessReadsTheFiltersBandTests.ThroughTheFilter(samples) : samples;
     }
@@ -160,6 +166,8 @@ public sealed class AHandIsReadAgainstItselfTests
     [InlineData("agc")]
     [InlineData("agc-filter")]
     [InlineData("weak-agc-filter")]
+    [InlineData("agc2-filter")]
+    [InlineData("agc3-filter")]
     public void ASpeedChangeHasNoAdjustmentPeriod(string condition)
         => Assert.Equal(Bulletin, Reads("25, 35, 25 WPM", condition, Bulletin, i => new Sending(i < Letters / 3 || i >= 2 * Letters / 3 ? 25 : 35, 0)).Text);
 
@@ -174,6 +182,8 @@ public sealed class AHandIsReadAgainstItselfTests
     [InlineData("agc")]
     [InlineData("agc-filter")]
     [InlineData("weak-agc-filter")]
+    [InlineData("agc2-filter")]
+    [InlineData("agc3-filter")]
     public void AHandThatDriftsReadsWhole(string condition)
     {
         var r = Reads("13, 18, 13 WPM, drifting", condition, Bulletin, i => new Sending(13 + (5 * Math.Sin(Math.PI * i / Letters)), 1.0 / 6));
@@ -196,6 +206,8 @@ public sealed class AHandIsReadAgainstItselfTests
     [InlineData("agc")]
     [InlineData("agc-filter")]
     [InlineData("weak-agc-filter")]
+    [InlineData("agc2-filter")]
+    [InlineData("agc3-filter")]
     public void A13WpmHandReadsItsWords(string condition)
         => Assert.Equal(Hand, Reads("13 WPM hand, a fifth", condition, Hand, _ => new Sending(13, 0.2)).Text);
 
@@ -211,6 +223,8 @@ public sealed class AHandIsReadAgainstItselfTests
     [InlineData("agc")]
     [InlineData("agc-filter")]
     [InlineData("weak-agc-filter")]
+    [InlineData("agc2-filter")]
+    [InlineData("agc3-filter")]
     public void FarnsworthAtFiveReadsAsWords(string condition)
     {
         var unit = ((60.0 / 5) - (31 * 1.2 / 18)) / 19;
@@ -237,6 +251,8 @@ public sealed class AHandIsReadAgainstItselfTests
     [InlineData("agc")]
     [InlineData("agc-filter")]
     [InlineData("weak-agc-filter")]
+    [InlineData("agc2-filter")]
+    [InlineData("agc3-filter")]
     public void AStraightKeyStands(string condition)
     {
         var r = Reads("straight key, two fifths", condition, Skcc, _ => new Sending(18, 0.4, DahScatter: 1.0 / 3));
