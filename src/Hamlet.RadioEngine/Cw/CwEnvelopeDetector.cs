@@ -650,7 +650,11 @@ public sealed class CwEnvelopeDetector
         // and 514's follow-the-meter are gone.
         var nowSeconds = _samplesSeen / (double)SampleRate;
 
-        _pattern.HandKinds = ShapeFirst;
+        // **THE HAND TEST IS ON BOTH PATHS** (work instruction 526, task 4, HM-DEC-230): unit 523 put it on shape-first only,
+        // because on the per-bin path it let noise stand 159 marks in three minutes; since unit 524 a sequence stands only
+        // on a shape of 0.2 or better, and that line now guards the per-bin path too. An SKCC straight key on 7.0549 at
+        // 14:42 stood nothing for thirty seconds: its dits and dahs overlap, and no clean 2:1 jump is left.
+        _pattern.HandKinds = true;
 
         if (ShapeFirst)
         {

@@ -413,10 +413,11 @@ public sealed class ACharacterIsARunOfMarksThatAgreeTests
     }
 
     /// <summary>Every mark the detector calls on the audio, with the edge test on or off.</summary>
-    private static IReadOnlyList<CwMark> Marks(float[] samples, bool edges, bool narrow = true)
+    private static IReadOnlyList<CwMark> Marks(float[] samples, bool edges, bool narrow = true, bool pattern = true)
     {
-        // The shape (work instruction 502) is a later gate and is off here, so these counts stay what unit 498 measured.
-        var detector = new CwEnvelopeDetector(Rate) { MarksNeedEdges = edges, MarksNeedNarrowness = narrow, MarksNeedShape = false };
+        // The shape (work instruction 502) is a later gate and is off here, so these counts stay what unit 498 measured. The
+        // pattern across marks (work instruction 507) is on unless a probe asks for it off.
+        var detector = new CwEnvelopeDetector(Rate) { MarksNeedEdges = edges, MarksNeedNarrowness = narrow, MarksNeedShape = false, MarksNeedPattern = pattern };
 
         for (var at = 0; at + Chunk <= samples.Length; at += Chunk)
         {
@@ -529,15 +530,17 @@ public sealed class ACharacterIsARunOfMarksThatAgreeTests
     /// <remarks>
     /// Case 1 of work instruction 498, and its reason: of the loud-noise bars that pass every test
     /// the tree had before, and unit 497's edges, how many are narrow - standing clear of the band
-    /// three hundred hertz either side. Asserts that fewer are.
+    /// three hundred hertz either side. Asserts that fewer are. Measured before the pattern gate: since work instruction
+    /// 526 it takes a hand's two kinds on the per-bin path, and counted after it the narrowness test was measured through
+    /// whichever noise sequences happened to stand.
     /// </remarks>
     [Fact]
     public void MostEdgedNoiseBarsAreNotNarrow()
     {
         var samples = NoiseAlone();
-        var passing = Marks(samples, edges: false, narrow: false).Count;
-        var edged = Marks(samples, edges: true, narrow: false).Count;
-        var narrow = Marks(samples, edges: true, narrow: true).Count;
+        var passing = Marks(samples, edges: false, narrow: false, pattern: false).Count;
+        var edged = Marks(samples, edges: true, narrow: false, pattern: false).Count;
+        var narrow = Marks(samples, edges: true, narrow: true, pattern: false).Count;
 
         _output.WriteLine($"thirty seconds of loud noise: passing every older test {passing}, with edges {edged}, of those narrow {narrow}");
 
