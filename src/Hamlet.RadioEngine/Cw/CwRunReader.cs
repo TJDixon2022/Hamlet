@@ -554,11 +554,36 @@ public sealed class CwRunReader
     {
         private readonly List<CwMark> _recent = new();
         private readonly List<double> _elementGaps = new();
-        private readonly List<double> _runGaps = new();
+
+        // Each gap between runs with the time it ended, the start of the mark after it (work instruction 524).
+        private readonly List<(double At, double Seconds)> _runGapsAt = new();
 
         // How much longer each gap inside a letter read than the dit of the marks at the time, once
         // the sender has shown two kinds (work instruction 500).
         private readonly List<double> _gapOverDit = new();
+
+        /// <summary>
+        /// The sender's gaps between runs at its speed now (work instruction 524, case 1).
+        /// </summary>
+        /// <remarks>
+        /// **THE GAP CLUSTERS AT THE SPEED NOW ARE THE NEWER MARKS' GAPS.** Where the sender's recent marks are two
+        /// speeds and its dit and dah are taken from the newer ones (unit 523), its letter and word gaps are taken from
+        /// the same stretch: those that ended after the first of those marks began. A 10 WPM letter gap kept among a 20
+        /// WPM sender's put the word line at 555 ms, above its new 420 ms word gap, and `TEST DE` read as one word.
+        /// Until the newer stretch has shown its own letter gaps the line is counted in its gap dits, as for any sender.
+        /// The gaps inside letters are not taken again: a run closed at the old speed's line holds the new speed's
+        /// letter gaps among them, and they are what the run is split again by.
+        /// </remarks>
+        private List<double> RunGaps
+        {
+            get
+            {
+                var now = MarksNow();
+                var since = ReferenceEquals(now, _recent) || now.Count == 0 ? double.NegativeInfinity : now[0].FromSeconds;
+
+                return _runGapsAt.Where(g => g.At > since).Select(g => g.Seconds).ToList();
+            }
+        }
 
         public List<CwMark> Open { get; } = new();
 
@@ -679,7 +704,7 @@ public sealed class CwRunReader
                 // One length only: the gaps inside a letter are a dit each, and the gaps between
                 // letters three.
                 return _elementGaps.Count > 0 ? Median(_elementGaps)
-                    : _runGaps.Count > 0 ? _runGaps.Min() / 3
+                    : RunGaps.Count > 0 ? RunGaps.Min() / 3
                     : Median(_recent.Select(m => m.ToSeconds - m.FromSeconds).ToList());
             }
         }
@@ -824,7 +849,7 @@ public sealed class CwRunReader
         private (List<double>? Letter, List<double>? Word) GapClusters()
         {
             var line = ElementLetterLineSeconds;
-            var sorted = _runGaps.Where(g => !(g < line)).OrderBy(g => g).ToList();
+            var sorted = RunGaps.Where(g => !(g < line)).OrderBy(g => g).ToList();
 
             if (sorted.Count < MeasuredRunGaps)
             {
@@ -914,7 +939,7 @@ public sealed class CwRunReader
             }
             else if (!double.IsNegativeInfinity(LastToSeconds))
             {
-                _runGaps.Add(mark.FromSeconds - LastToSeconds);
+                _runGapsAt.Add((mark.FromSeconds, mark.FromSeconds - LastToSeconds));
             }
 
             Open.Add(mark);
@@ -924,7 +949,7 @@ public sealed class CwRunReader
 
             Trim(_recent);
             Trim(_elementGaps);
-            Trim(_runGaps);
+            Trim(_runGapsAt);
             Trim(_gapOverDit);
         }
 
