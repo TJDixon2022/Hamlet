@@ -2021,7 +2021,7 @@
                                 FontSize="11" Padding="10,4"
                                 VerticalAlignment="Center"
                                 IsEnabled="{Binding IsDecoding}"
-                                ToolTip.Tip="Says you heard CW here, whether or not Hamlet read any of it. It keeps the last half minute of audio and adds a row to tonight's list, and you mark afterwards which ones it actually read."
+                                ToolTip.Tip="{Binding CaptureTip}"
                                 Command="{Binding CaptureAudioCommand}" />
                     </Grid>
 

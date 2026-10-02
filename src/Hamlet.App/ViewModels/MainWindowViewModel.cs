@@ -12091,6 +12091,16 @@ public partial class MainWindowViewModel : ObservableObject
     }
 
     /// <summary>
+    /// What the record press says on hover: what it saves and where (work instruction 526, task 8). Tim, 2026-10-02:
+    /// *"I can't record it anymore. You took the record button away."* It had not gone; it says "I hear a station", and
+    /// its hover never said it records, so the words now do.
+    /// </summary>
+    public string CaptureTip =>
+        "Records the last half minute of what the decoder heard, as cw- and the time .wav, with what the radio was "
+        + "doing beside it in a .txt of the same name, in " + CaptureFolder + ". It also puts the station on tonight's "
+        + "list, so press it whenever you can hear CW here, whether or not Hamlet read any of it.";
+
+    /// <summary>
     /// Keep the last half minute the decoder heard, as a file (HM-DEC-088).
     /// </summary>
     /// <remarks>
