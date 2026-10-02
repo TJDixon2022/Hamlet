@@ -339,7 +339,16 @@ internal sealed class CwPatternGate
             var tolerance = CwRunReader.LevelToleranceDb(heights.Count > 0 ? heights[heights.Count / 2] : double.NaN);
             var under = level - m.LevelDb;
 
-            return under > tolerance && under <= QuieterShare * tolerance;
+            // **THE QUIETER MARK'S OWN LEVEL WOBBLES AS ANY TONE'S DOES** (work instruction 524, case 2): a tone S dB over
+            // its gap reads up to 20·log10(1 + 10^(-S/20)) from its true level (unit 479), and a mark within that of
+            // the line cannot be told from it. On the shape-first path a mark's level is the fit's height, near exact:
+            // a dit taken 6.02 dB down read 6.012 under the sender's dits against a line of 6, where the per-bin path,
+            // its level lifted by the noise in its bin, read it inside.
+            var wobble = double.IsFinite(m.OwnContrastDb) && m.OwnContrastDb > 0
+                ? 20 * Math.Log10(1 + Math.Pow(10, -m.OwnContrastDb / 20))
+                : 0;
+
+            return under > tolerance && under - wobble <= QuieterShare * tolerance;
         }
 
         /// <summary>
