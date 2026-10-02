@@ -688,6 +688,89 @@ public sealed class TheShapePicksTheSenderTests
 
         Assert.Equal(Call, run.Text);
     }
+
+    /// <remarks>
+    /// **A SEQUENCE STANDS ONLY ON ITS SHAPE** (work instruction 524): with shape-first on, a random carrier beside a
+    /// clean 12 dB sender at 625 Hz never prints, at 400, 200, 150 and 100 Hz; what the clean sender reads and how many
+    /// of its 65 marks stood at its own pitch are printed.
+    /// </remarks>
+    /// <param name="carrierHz">The carrier's pitch.</param>
+    [Theory]
+    [InlineData(1025.0)]
+    [InlineData(825.0)]
+    [InlineData(775.0)]
+    [InlineData(725.0)]
+    public void ARandomCarrierNeverPrints(double carrierHz)
+    {
+        var clean = Morse(Call, 20, 0, 3, 5191);
+        var end = clean[^1].To + 3;
+        var samples = Noise(end, 5192);
+        var carrier = RandomKeying(2.5, end - 2, 5193);
+
+        Key(samples, clean, 625, 12);
+        Key(samples, carrier, carrierHz, 24);
+
+        var detector = new CwEnvelopeDetector(Rate) { ShapeFirst = true };
+
+        for (var at = 0; at + Chunk <= samples.Length; at += Chunk)
+        {
+            detector.Process(samples.AsSpan(at, Chunk));
+        }
+
+        var stood = detector.MarksSince(0).Marks;
+        var atCarrier = stood.Count(m => Math.Abs(m.PitchHz - carrierHz) <= 50);
+        var cleanStood = clean.Count(c => stood.Any(m => Math.Abs(m.PitchHz - 625) <= 50 && m.ToSeconds > c.From && m.FromSeconds < c.To));
+        var run = Read(samples, shape: true, d => d.ShapeFirst = true);
+
+        _output.WriteLine(string.Create(CultureInfo.InvariantCulture, $"carrier {carrierHz - 625:0} Hz away: {atCarrier} carrier marks stood; clean marks stood {cleanStood} of {clean.Count}; reads `{run.Text}`"));
+
+        // The carrier's first handful of marks can score the line by chance and stand, and it loses standing as its shape
+        // falls; what must hold is that nothing is printed at its pitch.
+        Assert.DoesNotContain(run.Letters, l => Math.Abs(l.PitchHz - carrierHz) <= 50);
+    }
+
+    /// <remarks>
+    /// **AND A REAL SENDER STILL STANDS** (work instruction 524): with shape-first on, the 12 WPM fist, both rough fists,
+    /// the 5 WPM Farnsworth call and the clean call stand; each one's shape score when it first stood, and what reads.
+    /// </remarks>
+    /// <param name="which">The sender.</param>
+    [Theory]
+    [InlineData("clean 20 WPM")]
+    [InlineData("12 WPM fist")]
+    [InlineData("27 WPM fist, 30%")]
+    [InlineData("27 WPM fist that tightens")]
+    [InlineData("5 WPM Farnsworth")]
+    public void ARealSenderStillStands(string which)
+    {
+        var samples = which switch
+        {
+            "12 WPM fist" => AFistIsReadByTheNearerClusterTests.Fist(Call, 12, _ => 0.2, 5144).Samples,
+            "27 WPM fist, 30%" => AFistIsReadByTheNearerClusterTests.Fist(Call, 27, _ => 0.3, 5131).Samples,
+            "27 WPM fist that tightens" => AFistIsReadByTheNearerClusterTests.Fist(Call, 27, letter => letter < 10 ? 0.3 : 0.1, 5140).Samples,
+            "5 WPM Farnsworth" => ThePatternIsTheGateTests.Farnsworth(Call, 5, 24, 5080),
+            _ => CwSignal.Generate(new CwSignalRequest(Call, WordsPerMinute: 20, ToneHz: 625, SampleRate: Rate, Amplitude: ThePatternIsTheGateTests.Over(24), NoiseAmplitude: 0.04, LeadInSeconds: 3, TailSeconds: 3, Seed: 5070)).Samples,
+        };
+        var detector = new CwEnvelopeDetector(Rate) { ShapeFirst = true };
+        var first = double.NaN;
+        var score = double.NaN;
+
+        for (var at = 0; at + Chunk <= samples.Length; at += Chunk)
+        {
+            detector.Process(samples.AsSpan(at, Chunk));
+
+            if (double.IsNaN(first) && detector.Reading.Keying)
+            {
+                first = (at + Chunk) / (double)Rate;
+                score = detector.Reading.ShapeScore;
+            }
+        }
+
+        var run = ThePatternIsTheGateTests.Read(samples, 625, d => d.ShapeFirst = true);
+
+        _output.WriteLine(string.Create(CultureInfo.InvariantCulture, $"{which}: stood at {first:0.00} s with shape {score:0.000}; reads `{run.Text}`"));
+
+        Assert.True(double.IsFinite(first), "it stands");
+    }
     /// <remarks>
     /// Case 5: thirty seconds and three minutes of loud noise print nothing; the highest shape score any noise
     /// sequence earned is printed beside the real senders' of cases 1 to 3.

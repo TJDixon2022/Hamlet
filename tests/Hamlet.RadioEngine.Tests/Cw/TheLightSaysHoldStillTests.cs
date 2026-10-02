@@ -100,9 +100,11 @@ public sealed class TheLightSaysHoldStillTests
     }
 
     /// <remarks>
-    /// **THE LIGHT READS THE SCORE** (work instruction 522, task 2): a short sloppy keyed sequence that stands with a
-    /// low shape score - five and then a few more marks of scattered lengths and gaps - never turns the light green;
-    /// it stays amber.
+    /// **THE LIGHT READS THE SCORE** (work instruction 522, task 2): a short sloppy keyed sequence - five and then a few
+    /// more marks of scattered lengths and gaps - never turns the light green; it stays amber. **And since work
+    /// instruction 524 it never stands at all** (HM-DEC-228): a sequence stands only on a shape of 0.2 or better, the line
+    /// the light uses, so the sloppy sequence that stood under the line in unit 522 now holds its marks, and the gauge
+    /// never fills past the mark.
     /// </remarks>
     [Fact]
     public void ALowScoringSequenceNeverTurnsTheLightGreen()
@@ -125,21 +127,21 @@ public sealed class TheLightSaysHoldStillTests
         }
 
         var detector = new CwEnvelopeDetector(Rate);
-        var steps = new List<(double Seconds, CwShapeLight Light, double Score)>();
+        var steps = new List<(double Seconds, CwShapeLight Light, double Score, double Fill)>();
 
         for (var k = 0; k + Chunk <= samples.Length; k += Chunk)
         {
             detector.Process(samples.AsSpan(k, Chunk));
-            steps.Add(((k + Chunk) / (double)Rate, detector.Reading.ShapeLight, detector.Reading.ShapeScore));
+            steps.Add(((k + Chunk) / (double)Rate, detector.Reading.ShapeLight, detector.Reading.ShapeScore, detector.Reading.ShapeFill));
         }
 
         var standing = steps.Where(s => double.IsFinite(s.Score)).ToList();
 
-        _output.WriteLine(string.Create(CultureInfo.InvariantCulture, $"a sloppy sequence: stood with shape {(standing.Count > 0 ? standing.Max(s => s.Score) : double.NaN):0.000} at best; green {steps.Count(s => s.Light is CwShapeLight.Found or CwShapeLight.Reading)} steps, amber {steps.Count(s => s.Light == CwShapeLight.Forming)}"));
+        _output.WriteLine(string.Create(CultureInfo.InvariantCulture, $"a sloppy sequence: stood with shape {(standing.Count > 0 ? standing.Max(s => s.Score) : double.NaN):0.000} at best; green {steps.Count(s => s.Light is CwShapeLight.Found or CwShapeLight.Reading)} steps, amber {steps.Count(s => s.Light == CwShapeLight.Forming)}, fullest gauge {steps.Max(s => s.Fill):0.00}"));
 
-        Assert.NotEmpty(standing);
-        Assert.True(standing.Max(s => s.Score) <= CwShapeLights.GreenScore, "the sequence stands with a shape under the bar");
+        Assert.Empty(standing);
         Assert.DoesNotContain(steps, s => s.Light is CwShapeLight.Found or CwShapeLight.Reading);
+        Assert.DoesNotContain(steps, s => s.Fill > CwShapeLights.Mark);
     }
 
     /// <remarks>

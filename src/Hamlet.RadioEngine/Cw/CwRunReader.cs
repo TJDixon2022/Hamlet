@@ -281,6 +281,15 @@ public sealed class CwRunReader
             _station = null;
         }
 
+        // **A SENDER IS PRINTED ONLY WHILE IT SOUNDS LIKE CODE** (work instruction 524, HM-DEC-228): a random carrier's
+        // first marks can score the line by chance and stand, and as more arrive its lengths and gaps do not hold
+        // together and its shape falls, where a sender's rises with the evidence. A printed sender whose shape is under
+        // the line the light uses is let go, as a silent one is, and its letters not yet printed are not printed.
+        if (ShapePicks && _station is not null && _station.Shape.Score < CwShapeLights.GreenScore)
+        {
+            _station = null;
+        }
+
         // Senders long silent and not printed are forgotten: one that never made two runs of two marks
         // after its own silence (work instruction 501: at least the slowest Farnsworth word gap until
         // it has shown its own gaps), one that did after the minute the detector keeps its marks.
@@ -299,9 +308,9 @@ public sealed class CwRunReader
             .Where(s => s.Ended.Count(r => r.Length >= 2 && r.Any(m => m.Keyed)) >= QualifyingRuns && s.TwoKindsSeen && s.LetterGapSeconds is not null)
             .Select(s => (Sender: s, Score: s.Shape.Score))
 
-            // A sender whose marks and gaps do not sound like code at all - nought - is not a sender to print
-            // (work instruction 519): a carrier keyed at random qualified by its lengths and was held forever.
-            .Where(s => !ShapePicks || s.Score > 0)
+            // A sender whose marks and gaps do not sound like code - under the line the light uses - is not a sender
+            // to print (work instructions 519 and 524): a carrier keyed at random qualified by its lengths and was held.
+            .Where(s => !ShapePicks || s.Score >= CwShapeLights.GreenScore)
             .OrderByDescending(s => ShapePicks ? s.Score : s.Sender.Marks)
             .ThenByDescending(s => ShapePicks ? 0 : s.Sender.Reference.Level)
             .ToList();
@@ -612,8 +621,21 @@ public sealed class CwRunReader
                 $"dit {Of(split is null ? null : shorts)}, dah {Of(longs)}, split {SplitSeconds * 1000:0} ms; gaps element {Of(inside)}, letter {Of(letter)}, word {Of(word)}; boundaries {CharacterGapSeconds * 1000:0} and {WordGapSeconds * 1000:0} ms");
         }
 
-        /// <summary>How much this sender's recent marks sound like code (work instruction 519, R116).</summary>
-        public CwSequenceShape Shape => CwSequenceShape.Of(_recent, Marks);
+        /// <summary>
+        /// How much this sender's marks at its speed now sound like code (work instructions 519 and 524): judged over the
+        /// marks its dit and dah are taken from, and with the evidence of those marks alone. Where its recent forty are
+        /// two speeds, the newer few are all that is known of the speed now, and a random carrier's newest handful must
+        /// not borrow the evidence of the forty.
+        /// </summary>
+        public CwSequenceShape Shape
+        {
+            get
+            {
+                var now = MarksNow();
+
+                return CwSequenceShape.Of(now, ReferenceEquals(now, _recent) ? Marks : now.Count);
+            }
+        }
 
         public int PrintedRuns { get; set; }
 
@@ -1016,25 +1038,40 @@ public sealed class CwRunReader
         // their spreads each side of the boundary. The short side, and the boundary.
         private (List<double> Shorts, double? Split) Kinds()
         {
+            var kinds = KindsOf(MarksNow());
+
+            return (kinds.Shorts, kinds.Split);
+        }
+
+        /// <summary>
+        /// The marks that are the sender's speed now: its recent forty, or where those are two speeds the newest
+        /// half, quarter and so on whose split is as tight as a hand makes (work instruction 523, case 3).
+        /// </summary>
+        private IReadOnlyList<CwMark> MarksNow()
+        {
             // **TWO SPEEDS: THE NEWER IS THE SENDER'S NOW** (work instruction 523, case 3). A sender who steps from 10 to
             // 20 WPM leaves 60, 120, 180 and 360 ms marks among its recent forty, two jumps of two, and the widest put
             // 60, 120 and 180 together as dits, so a 20 WPM dah read short. A side wider than a hand makes is two speeds
             // (unit 513); where the split over the recent marks has one, it is taken again over the newest half, then the
             // newest quarter, down to the five marks a sequence needs to stand, and the first split as tight as a hand
             // makes is the sender's now.
-            var kinds = KindsOf(_recent);
-
-            for (var n = _recent.Count / 2; kinds.TwoSpeeds && n >= CwPatternGate.MarksToStand; n /= 2)
+            if (!KindsOf(_recent).TwoSpeeds)
             {
-                var newer = KindsOf(_recent.Skip(_recent.Count - n).ToList());
+                return _recent;
+            }
+
+            for (var n = _recent.Count / 2; n >= CwPatternGate.MarksToStand; n /= 2)
+            {
+                var marks = _recent.Skip(_recent.Count - n).ToList();
+                var newer = KindsOf(marks);
 
                 if (!newer.TwoSpeeds && newer.Split is not null && newer.Shorts.Count > 0)
                 {
-                    return (newer.Shorts, newer.Split);
+                    return marks;
                 }
             }
 
-            return (kinds.Shorts, kinds.Split);
+            return _recent;
         }
 
         private static (List<double> Shorts, double? Split, bool TwoSpeeds) KindsOf(IReadOnlyList<CwMark> marks)

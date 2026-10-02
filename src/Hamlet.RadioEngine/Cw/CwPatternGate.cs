@@ -471,7 +471,12 @@ internal sealed class CwPatternGate
 
             _held.Add(m);
 
-            if (_held.Count < MarksToStand || !TwoLengths(_held, owner.HandKinds))
+            // **A SEQUENCE STANDS ONLY ON ITS SHAPE** (work instruction 524, HM-DEC-228): a random carrier is flat-topped and
+            // sharp-edged and passes every test on one mark; what makes it not Morse - no two lengths, no 1:3:7, no
+            // consistency - shows only across marks, in the sequence's shape score. It stands at 0.2 or better, the line the
+            // light uses: above anything noise has produced (0.173) and under a rough fist's 0.374.
+            if (_held.Count < MarksToStand || !TwoLengths(_held, owner.HandKinds)
+                || CwSequenceShape.Of(_held.Count > RecentMarks ? _held.GetRange(_held.Count - RecentMarks, RecentMarks) : _held, _held.Count).Score < CwShapeLights.GreenScore)
             {
                 return Array.Empty<CwMark>();
             }

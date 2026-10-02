@@ -41,7 +41,7 @@ public sealed class ThePatternIsTheGateTests
             NoiseAmplitude: noise, LeadInSeconds: 3, TailSeconds: 3, Seed: seed)).Samples;
 
     /// <summary>18 WPM letters with the spaces stretched by PARIS to the overall speed (unit 501's build).</summary>
-    private static float[] Farnsworth(string text, double overallWpm, double db, int seed)
+    internal static float[] Farnsworth(string text, double overallWpm, double db, int seed)
     {
         const int letterWpm = 18;
         var unit = ((60 / overallWpm) - (31 * 1.2 / letterWpm)) / 19;
