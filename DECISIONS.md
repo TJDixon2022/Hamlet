@@ -4,6 +4,62 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-229
+date: 2026-10-02
+refs: work instruction 525, src/Hamlet.RadioEngine/Cw/CwPatternGate.cs, src/Hamlet.RadioEngine/Cw/CwRunReader.cs, src/Hamlet.RadioEngine/Cw/CwEnvelopeDetector.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheSpacesComeFromTheShapeTests.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheRectangleIsFittedTests.cs
+---
+
+**The word gap is five dits, decided in the gate; a mark's top is judged from where it settles; every reference
+is local to the mark.** Work instruction 525 answers unit 517's three findings: the word-gap line was waiting on
+a ruling, an AGC overshoot of 3 dB or more broke the per-hop path into dits, and a slow fade broke it with no fit
+involved.
+
+**1. The word gap** (unit 517's ruling ask, answered by the order).
+- `CwPatternGate.GapLines` draws a sender's element, letter and word lines, and the reader places letters and
+  spaces from `CwGapLines.KindOf`. The reader no longer holds gap arithmetic.
+- The arithmetic of units 500, 501, 504, 510 and 513 moved into the gate unchanged, with the slowest Farnsworth
+  word gap. The waits built on those lines (twice the word gap to release or confirm, the calling lag) stay in
+  the reader.
+- **Where only the letter cluster shows and it sits under five dits, a word gap is five dits or more**, counted on
+  the true dit: a mark reads short and a gap long by the same smear, so the true dit is the marks' dit and half
+  of what a gap inside a letter runs over it.
+- A Farnsworth sender's letter gaps are past five dits, so its √(7/3) line stands. Three clusters keep the letter
+  gap times √(7/3).
+- **The owner chose the literal five dits** over the nearer of three and five (about 3.87 dits) and over five
+  less the sender's scatter, 2026-10-02.
+- Result:
+  - The order's 5-dit row cannot read whole, since its generator scatters word gaps by a sixth (4.22 to 5.76
+    dits on that seed). It reads as at HEAD, with its line at 352 ms where it was 362.
+  - The 7-dit row reads whole, and no callsign takes a space at 4, 5 or 7 dits.
+  - The fist scattered by a third gains its last word space, and the 5 WPM Farnsworth call reads as at HEAD.
+
+**2. A mark's top is judged from where it settles.**
+- **The rule.** A run that began with a key-down may step down, for its first `SettleHops`, by no more than the
+  flatness tolerance per hop. Those hops count toward its length and not its level. A larger step is the fall,
+  and a rise is judged as before.
+- **`SettleHops` is seven hops**: the shortest dit, 25 ms, and the detector's 10 ms window. The IC-7300's AGC
+  attack time is not in `A7292-4EX-6`, so the figure is the author's, from what a keyed tone must do.
+- **A key-down** is a rise, measured from before the window began to rise, of at least half the bin's keying
+  contrast, or of its height over the loudest keying gap. Where nobody is keying there is neither, so noise
+  never settles; letting every rise settle took the noise bars' narrowness test to nothing turned away.
+- **Result:**
+  - At 2, 3 and 4 dB of overshoot the bulletin reads whole after its first letter, plain and through the
+    filter, the same with the fit on and off.
+  - The first mark comes before anybody is keying and is held to one level as before.
+  - At 6 dB the fit-on rows read most of the bulletin, and the fit-off rows read nothing, as at HEAD.
+- **Cost:** unit 519's edge case now prints the fist's first word, `TEST`, before the clean sender, and its
+  assertion that the fist prints nothing fails.
+
+**3. Every reference is local to the mark.**
+- **What broke.** Under a 6 dB fade over four seconds every mark stood at its right length. The reader judged a
+  new letter's level against the mean of the sender's last eight marks, two seconds at 18 WPM, while the fade
+  moved the station up to 4.7 dB a second. A second sender began at the J of JUMPS and the letters were dealt
+  between the two. The gate's eight-mark agreement lagged the same way.
+- **The fix.** Both now judge level against the sender's last three marks, a letter's worth. The last mark
+  alone split `N0CALL` at 12 dB.
+- **Result:** the faded bulletin reads whole, and the fading station still reads.
+
+---
 id: HM-DEC-228
 date: 2026-10-01
 refs: work instruction 524, tag before-shape-first, src/Hamlet.RadioEngine/Cw/CwPatternGate.cs, src/Hamlet.RadioEngine/Cw/CwRunReader.cs, src/Hamlet.RadioEngine/Cw/CwEnvelopeDetector.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheShapePicksTheSenderTests.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheLightSaysHoldStillTests.cs

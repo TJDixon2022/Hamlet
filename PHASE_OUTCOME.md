@@ -1529,3 +1529,35 @@ Per-bin path:
 - One report-only row is worse: the bulletin through an AGC overshoot of 6 dB and the filter, fit on.
 
 Build 0 warnings 0 errors. App carry-forward 278 of 278.
+
+## UNIT 525 - STEP 12
+
+Run by hand, outside the loop:
+- SESSION.lock taken and released;
+- nothing written to RUN_LEDGER.md and nothing under tools\arbiter\ touched;
+- no box ticked and no ruling added to either plan;
+- no scratch file committed;
+- nothing keyed or transmitted, and no recording, fixture or telemetry read.
+
+Version 1.13.209 to 1.13.210. HM-DEC-229.
+
+**Task 1: the word gap is five dits, decided in the gate.**
+- `CwPatternGate.GapLines` draws the element, letter and word lines, and the reader places letters and spaces from `CwGapLines.KindOf`.
+- Units 500 to 513's gap arithmetic moved there unchanged.
+- Where only a letter cluster under five dits shows, a word gap is five dits or more, counted on the true dit. The owner chose the literal five over the nearer of three and five.
+- The 7-dit row is whole and no callsign takes a space at 4, 5 or 7 dits.
+- The 5-dit row is unchanged, because half its word gaps arrive under five dits.
+- The Farnsworth calls read as before.
+
+**Task 2: a mark's top is judged from where it settles.**
+- A run that began with a key-down may step down for seven hops (the shortest dit and the window).
+- At 2, 3 and 4 dB of AGC overshoot the bulletin reads whole after its first letter, plain and through the filter, with the fit on and off.
+- At 6 dB it reads most of the bulletin with the fit on, and nothing with it off, as before.
+- Cost: unit 519's edge case now prints the fist's first word.
+
+**Task 3: every level reference is local to the mark.**
+- The fade broke the reader's eight-mark level mean, two seconds long, and dealt the letters between two senders.
+- The reader and the gate now judge level against the sender's last three marks.
+- The faded bulletin reads whole.
+
+Build 0 warnings 0 errors. App carry-forward 278 of 278.
