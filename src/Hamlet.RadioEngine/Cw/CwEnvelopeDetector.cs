@@ -2923,7 +2923,7 @@ public sealed class CwEnvelopeDetector
         /// </summary>
         private bool KeyDown(long hop, double db, double contrastDb)
         {
-            if (Open is null || !double.IsFinite(contrastDb) || !(contrastDb > 0))
+            if (Open is null)
             {
                 return false;
             }
@@ -2935,7 +2935,24 @@ public sealed class CwEnvelopeDetector
                 low = Math.Min(low, Level(hop - k));
             }
 
-            return db - low >= contrastDb / 2;
+            if (double.IsFinite(contrastDb) && contrastDb > 0)
+            {
+                return db - low >= contrastDb / 2;
+            }
+
+            // **THE FIRST RISE ABOVE THE FLOOR IS A KEY-DOWN** (work instruction 526, task 7, HM-DEC-230). Before anybody
+            // is keying there is no contrast to measure a rise against, so a transmission's first marks were held to one
+            // level from their first hop and an AGC overshoot broke them: `TEXT` and `CQ CQ` were lost. A rise above
+            // everything this bin heard in the second before the window began to rise, by more than a flat top's wobble,
+            // is a key-down: a station's first mark always makes one, and noise seldom beats its own second-long top.
+            var high = double.NegativeInfinity;
+
+            for (var h = Math.Max(0, hop - _secondHops); h < hop - RiseHops; h++)
+            {
+                high = Math.Max(high, Level(h));
+            }
+
+            return double.IsFinite(high) && db - high > FlatToleranceDb;
         }
 
         /// <summary>How many hops a rise is measured back over: the detector's window in hops, and one (work instruction 525).</summary>

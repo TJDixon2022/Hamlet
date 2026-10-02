@@ -317,10 +317,10 @@ public sealed class TheRectangleIsFittedTests
         _output.WriteLine($"bulletin, {through}, fit on : {on.Stood} stood, {on.Fitted} of them fitted; reads `{on.Text}`");
 
         // An AGC overshoot breaks the per-hop path into dits where the top is held to one level from its first hop.
-        // Since work instruction 525 a top that rose by a key-down's height is judged from where it settles, and at 2,
-        // 3 and 4 dB the bulletin reads the same with the fit on and off, every letter after the first: the first mark
-        // comes before anybody is keying, when nothing tells its rise from noise's, and it is held to one level from its
-        // first hop as before. At 6 dB the overshoot is still over the flatness tolerance when the settling ends, so
+        // Since work instruction 525 a top that rose by a key-down's height is judged from where it settles, and since
+        // work instruction 526 the first rise above the floor is a key-down too: at 2, 3 and 4 dB the bulletin reads whole,
+        // the same with the fit on and off.
+        // At 6 dB the overshoot is still over the flatness tolerance when the settling ends, so
         // those rows are printed for the report rather than held.
         if (through is "agc-6" or "agc-6-filter")
         {
@@ -329,7 +329,7 @@ public sealed class TheRectangleIsFittedTests
 
         if (through.StartsWith("agc", StringComparison.Ordinal))
         {
-            Assert.EndsWith(Bulletin[1..], off.Text, StringComparison.Ordinal);
+            Assert.Equal(Bulletin, off.Text);
         }
 
         // A slow 6 dB fade over four seconds reads whole since every level reference is local to the mark (work
