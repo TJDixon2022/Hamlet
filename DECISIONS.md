@@ -4,6 +4,47 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-236
+date: 2026-10-03
+refs: work instruction 532, src/Hamlet.RadioEngine/Cw/CwRunReader.cs, src/Hamlet.RadioEngine/Cw/CwSenderGate.cs, src/Hamlet.RadioEngine/Cw/CwSymbol.cs, src/Hamlet.RadioEngine/Cw/CwPatternGate.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheReaderIsALookupTableTests.cs
+---
+
+**The reader is a lookup table.** The owner, 2026-10-02: *"If you do shape right, we should be able to pass the decoder
+nothing but a pattern that says dash dash dot dot space dash dot dot space dot dot dot dash. And it doesn't have to look at
+anything. It should just take our pattern and turn it into characters. Trivial."* And: *"I want to really get to this
+lookup table and get rid of the decoder logic."* The tag `before-lookup-table` (dc80c0e6) holds the tree before it.
+
+**What moved to the gate** (`CwSenderGate`, the gate's sender stage), every rule unchanged:
+- **Whether a mark is a dot or a dash:**
+  - the sender's two length clusters and the spread-weighted line between them;
+  - a hand's two kinds when no clean jump shows;
+  - the split of a letter's marks against its neighbours;
+  - the retry over the sender's newer marks when its speed changes.
+- **How sure the gate is of each letter's dots and dashes.**
+- **Which marks make a run and where a word ends.**
+- **Which sender is printed:** the best shape after the first word gap, held until silent for its word gap and a dah,
+  let go only under a shape of 0.1.
+- **The lone-letter rule:** a one-mark letter held until a letter of two marks or more from the same sender confirms
+  it, three in a row dropped. A one-mark letter never confirmed never leaves the gate.
+
+**What the reader keeps** (`CwRunReader`, 76 lines from 1,122): it takes the gate's stream of `CwSymbol` - dot, dash,
+letter end, word end - and looks each letter up in the Morse table with its prosigns. A pattern the table does not hold
+is the placeholder, nothing printed is revised, and each character goes on as one event. `TheReaderIsALookupTable` fails
+if its source holds a numeric literal other than 0 or 1, or a word for a time, a length, a level, a pitch or a score.
+
+**The move was a move.** After each of tasks 1, 2 and 3, every printed reading line in every set was identical to HEAD:
+55, 19, 43, 27, 13 and 36 lines.
+
+**The recording test expects the sender's timing** (task 4): `FER C HAT<BT> BEST 7V 73 <SK> KC4ZGP DEWA`. The sender
+paused 579 ms between the C and the H, past a word gap by 1:3:7. Green.
+
+**Noise agrees within half a bin** (task 5). A mark agrees with a sequence's pitch within half a bin either side, now
+that pitch is measured to the hertz.
+- Noise stands nothing, in 30 s and in three minutes, and the random carrier no longer prints at 775 Hz.
+- The three tests that measured the single-mark gates by counting standing noise count candidates instead.
+- Every reading case reads as before.
+
+---
 id: HM-DEC-235
 date: 2026-10-03
 supersedes: HM-DEC-217 (for the line between a gap inside a letter and one between letters only)

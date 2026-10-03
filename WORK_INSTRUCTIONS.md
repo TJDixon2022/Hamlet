@@ -1,16 +1,15 @@
-# Work instruction 531 - the recording reads whole
+# Work instruction 532 - the reader becomes a lookup table
 
-**Hand run. One small unit, four tasks, commit per task. Tasks 1 and 2 are the unit; 3 and 4 drop
-from the back.**
+**Hand run. One unit, five tasks, commit per task. Tasks 1 to 3 are the unit and are a move: what
+is read does not change, only where it is decided. Tasks 4 and 5 are small; 5 drops from the back.**
 
 Earlier unit numbers are not cited: each part of the tree is described by what it does.
 
 **R88 stays lifted for `tests\fixtures\cw\captured\cw-2026-10-02-200157.wav` alone** (the owner,
 2026-10-02). No other recording is read. Synthetic hops written in a test are allowed. Verify by
-building `Hamlet.sln` with warnings as errors and running the app carry-forward line. **Every
-existing reading case reads as at HEAD or better**, or the report says what changed and why.
+building `Hamlet.sln` with warnings as errors and running the app carry-forward line.
 
-**Numbering.** This is unit 531, ruling HM-DEC-235. If taken, use the next free and say so.
+**Numbering.** This is unit 532, ruling HM-DEC-236. If taken, use the next free and say so.
 
 ---
 
@@ -23,7 +22,7 @@ PROJECT: Hamlet
 
 Check the repository root:
   MUST EXIST:      SHACK_FACTS.md
-  MUST EXIST:      src\Hamlet.RadioEngine\Cw\CwSenderLane.cs
+  MUST EXIST:      src\Hamlet.RadioEngine\Cw\CwRunReader.cs
   MUST EXIST:      tests\fixtures\cw\captured\cw-2026-10-02-200157.wav
   MUST NOT EXIST:  CoreHMI.sln
   MUST NOT EXIST:  MURC.sln
@@ -43,90 +42,102 @@ If all five hold, say "Hamlet confirmed" and continue.
   to `RUN_LEDGER.md`. Touch nothing under `tools\arbiter\`. Tick nothing in `PHASE_PLAN.md`.
 - One `dotnet test` invocation per line, filtered, with a `timeout`. Never background and poll.
 - Apostrophes in quoted heredocs break; `;` is refused; Python cannot run here; `-m` more than
-  once for a multi-line commit. Scripts go in `.run-unit\unit531-<name>.sh`, not committed.
+  once for a multi-line commit. Scripts go in `.run-unit\unit532-<name>.sh`, not committed.
 - Nothing that keys or transmits. Nothing written to the radio.
-- **Nothing is tuned to the recording.** Every figure comes from Morse's own 1:3:7.
+- **Tag HEAD `before-lookup-table`** before any change, pushed.
+- **Tasks 1 to 3 move code; they do not change it.** After each, **every printed reading in every
+  set is identical to HEAD**, character for character, and the report says so. If one changes, the
+  move was not a move: find why and put it right before going on.
 - `output.md` at the root, four headings exactly: `## 1. What Claude did`, `## 2. What the owner
   should expect`, `## 3. What you should see`, `## 4. What's blocking us`.
 
 ---
 
-## 2. Where it stands
+## 2. Why
 
-The owner's recording reads `F ER C H AT<BT> BEST MSV 73 <SK> KC4ZGP DEWA` against the sent
-`FER CHAT<BT> BEST 7V 73 <SK> KC4ZGP DEWA`. **Every letter is right but the 7 before V.** Both
-remaining faults are a line drawn from too little evidence.
+**The owner, 2026-10-02:** *"If you do shape right, we should be able to pass the decoder nothing
+but a pattern that says dash dash dot dot space dash dot dot space dot dot dot dash. And it doesn't
+have to look at anything. It should just take our pattern and turn it into characters. Trivial."*
+And: *"I want to really get to this lookup table and get rid of the decoder logic."*
 
----
-
-## 3. Task 1 - the line inside a letter sits at Morse's midpoint
-
-**The 7 before V reads `M S`.** Its one gap inside the letter is 120 ms, 1.6 dits. The line between
-a gap inside a letter and a gap between letters is drawn weighted by each cluster's spread. Through
-the sender's window the gaps inside letters measure as tight as the detector reads, so the
-weighting pulls the line down to 1.4 dits, and the 7's gap falls on the letter side.
-
-**The last report asked for a ruling; it is answered here as a CW question from Morse itself, not
-raised to the owner: yes.** **For gaps, the line between the inside-letter cluster and the
-letter cluster is their midpoint in log-length, each side weighed alike** - Morse's own 1:3 puts it
-at √3, 1.73 dits. The spread-weighted boundary stays for dit and dah; it is superseded for gaps
-only.
-
-Green: `7V`. Every existing case as at HEAD or better.
-
-## 4. Task 2 - the first seconds of a transmission
-
-**`F ER C H AT`.** In the first seconds a sender's word line is drawn from one or two letter gaps,
-so it lands too low: the 285 ms gap after the F (3.8 dits) reads as a word.
-
-**The rule:** **until the sender's word cluster is trusted, its word line is never under Morse's
-own midpoint between a letter gap and a word gap, √21 = 4.58 of its element gaps.** Once the word
-cluster is trusted, the line is the sender's own, as now.
-
-- A **Farnsworth** sender's own line sits above that and is unchanged.
-- The **five-dit floor** stays as it is.
-- **`KC4ZGP`** must still hold together, and the straight key still read `SKCC DE`.
-
-Green: `FER CHAT`.
-
-**And the recording now asserts its spacing.** `TheOwnersRecordingReads` asserts the whole text,
-spaces included: **`FER CHAT<BT> BEST 7V 73 <SK> KC4ZGP DEWA`**. If it reads every letter right and a
-space is still off, say which and why; do not loosen the assertion to pass it.
-
-## 5. Task 3 - noise stands more marks since pitch went continuous
-
-`MostNoiseBarsHaveNoEdges` is red: with each mark's pitch now measured to the hertz, thirty seconds
-of loud noise stands 44 marks with the edge test on, where it stood 30. Nothing prints. **Find
-why** - most likely the gate's "within one bin" agreement now groups noise marks at scattered
-pitches it used to split across bins - **and fix that**, so the agreement means one bin's width
-around the sequence's own pitch. Green: the test's own figure; noise prints nothing. **Drop
-candidate.**
-
-## 6. Task 4 - the random carrier prints
-
-The random carrier, keyed with marks of random length at random gaps, now prints at 775 and 825 Hz
-on the grid. A carrier passes every test on a single mark; what makes it not CW is that its gaps
-form **no letter and word clusters** and its marks no steady pair of lengths. **Find which rule
-lets it print** and close it from the pattern - never by a decibel. Green: it never prints, and the
-clean sender beside it reads as at HEAD. **Drop candidate.**
+**Where the decisions are now.** The shape side - the detector, the sender's window, the pattern
+gate - decides whether a stretch is a mark, whether a sequence is a station, a mark's pitch, and
+each gap's kind. **The reader still decides four things:** whether a mark is a dit or a dah; which
+standing sender to print and when to let it go; and whether a one-mark letter, `E` or `T`, prints.
+After this unit it decides none of them.
 
 ---
 
-## 7. Record
+## 3. Task 1 - dit or dah is decided in the gate
 
-- `PHASE_OUTCOME.md`, both copies: `## UNIT 531 - STEP 12`, one paragraph.
-- `PHASE_STATUS.md`, both copies: names 531.
+**Every mark leaves the gate labelled `.` or `-`.** The rules move from the reader to the gate
+**unchanged**: the sender's two length clusters and the spread-weighted line between them, the
+hand's two kinds when no clean jump shows, the split of a letter's marks against its neighbours,
+and the retry over the sender's newer marks when its speed changes. The reader receives labels, not
+lengths.
+
+## 4. Task 2 - the sender and the lone letter are decided in the gate
+
+- **Which sender is printed** - the best shape after the first word gap, held until silent for its
+  word gap and a dah, released on shape only under 0.1 - **moves to the gate unchanged.** The gate
+  hands the reader one sender's stream.
+- **The lone-letter rule** - a one-mark letter held until a letter of two marks or more from the same
+  sender confirms it, and three one-mark letters in a row dropped - **moves to the gate unchanged.**
+  The gate already knows where letters end. A one-mark letter that is never confirmed never leaves
+  the gate.
+
+## 5. Task 3 - what is left is the table
+
+**The reader takes a stream of `.`, `-`, letter-end and word-end from the gate and looks each
+letter up.** It keeps the Morse table, the prosigns, printed-stays-printed, and handing each
+character to the transcript and the scroll as one event. **Nothing else.**
+
+- **A test, `TheReaderIsALookupTable`, fails if the reader's source holds a numeric literal other
+  than 0 or 1, or any time, length, level, pitch or score.** Name the file it reads.
+- **`TheReaderReadsSymbols`**: `--..  -..  ...-` in, `ZDV` out; `.-.-.` is `<AR>`; an unknown pattern
+  is the placeholder, as now.
+- Say how many lines the reader is before and after.
+
+## 6. Task 4 - the recording test expects the sender's timing
+
+**The owner's recording reads every letter right.** The test's expected text was the web session's
+mistake: the sender paused **579 ms** between the `C` and the `H` of `CHAT`, about 7.4 of his element
+gaps - longer than a word gap by Morse's 1:3:7, and longer than he leaves between some of his words.
+The web session's own element list showed it (`-.-. [580] ....`) and then wrote `CHAT` because it
+knew the word. Timing cannot.
+
+**`TheOwnersRecordingReads` expects the sender's timing:**
+`FER C HAT<BT> BEST 7V 73 <SK> KC4ZGP DEWA`. Its remark says why. Green.
+
+## 7. Task 5 - noise agrees within half a bin
+
+**The last report asked; answered here as a CW question, not raised to the owner: yes.** A mark
+agrees with a sequence's pitch **within half a bin either side**, one bin's width, now that pitch is
+measured to the hertz. Noise then stands nothing at all. **The three tests that measured the
+single-mark gates by counting standing noise** (`MostNoiseBarsHaveNoEdges`,
+`RealMarksScoreInsideTheShapeAndNoiseOutside`, `TheShapeTurnsAwayNoiseThatPassedFiveLines`)
+**count candidates instead**, and say so. Every reading case as at HEAD or better; report any that
+changes. **Drop candidate.**
+
+---
+
+## 8. Record
+
+- `PHASE_OUTCOME.md`, both copies: `## UNIT 532 - STEP 12`, one paragraph.
+- `PHASE_STATUS.md`, both copies: names 532.
 - Patch-bump `Directory.Build.props`.
 - `CLAUDE.md` §1 index row.
-- `DECISIONS.md`, newest first, **HM-DEC-235**, headline *A gap is judged at Morse's own midpoints
-  until the sender has shown its own*, naming that it supersedes the spread-weighted gap line.
+- `DECISIONS.md`, newest first, **HM-DEC-236**, headline *The reader is a lookup table*, quoting
+  the owner, naming the tag, and listing every decision that moved to the gate.
 - **Touch no checkbox in `PHASE_PLAN.md`**, and add no ruling.
 
 ---
 
-## 8. Report
+## 9. Report
 
-Section 2, for the owner, in plain words: rebuild; what the recording reads now beside what was
-sent; that a station tuned into mid-sentence is spaced right from its first letters. Section 1: per
-task, what was found and changed. **Section 3: the recording's text first, then each task's
-cases, then the existing cases.** Section 4: anything left, a line each.
+Section 2, for the owner, in plain words: rebuild; nothing you read changes; the reader is now a
+lookup table - every decision is made where the shape is found; your recording's test passes, on
+your sender's own timing. Section 1: per task, what moved where; the reader's size before and
+after. **Section 3: the identical-readings check for tasks 1 to 3 first, then the recording, then
+task 5's counts.** Section 4: anything left, a line each - and what still stands between this tree
+and removing the old decoder.

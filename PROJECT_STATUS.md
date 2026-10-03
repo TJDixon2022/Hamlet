@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: COMPLETED
-TASK: 4 of 4
-WORK_INSTRUCTION: 531 - the recording reads whole (run by hand)
+TASK: 5 of 5
+WORK_INSTRUCTION: 532 - the reader becomes a lookup table (run by hand)
 BALL: tim
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-10-03T00:40:04-04:00
-NOTE: Unit 531 done - every letter right; C HAT is the sender's own gap
+UPDATED: 2026-10-03T14:42:58-04:00
+NOTE: Unit 532 done - the reader is a lookup table; every reading identical
 
 ---
 

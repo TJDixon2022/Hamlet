@@ -1,112 +1,117 @@
 ```
-UNIT: 531 - tasks 1 and 2 done; tasks 3 and 4 dropped - 2026-10-03
-UNIT GOAL: the recording reads whole
-NUMBER: every letter right; one space off, the sender's own 579 ms between C and H
+UNIT: 532 - all five tasks done - 2026-10-03
+UNIT GOAL: the reader becomes a lookup table
+NUMBER: the reader is 76 lines, from 1,122; every reading identical to HEAD after each move
 ```
 
 ## 1. What Claude did
 
-Claude Code on the development machine, branch `main`. The prompt claimed `PROJECT: Hamlet`, and the order's gate held: `SHACK_FACTS.md`, `CwSenderLane.cs` and the recording exist, there is no `CoreHMI.sln` or `MURC.sln`, and the root is `C:\Source\HamLet`. Hamlet confirmed. Nothing in this report is evidence about the radio beyond the owner's one recording. HM-DEC-235 was free.
+Claude Code on the development machine, branch `main`. The prompt claimed `PROJECT: Hamlet`, and the order's gate held: `SHACK_FACTS.md`, `CwRunReader.cs` and the recording exist, there is no `CoreHMI.sln` or `MURC.sln`, and the root is `C:\Source\HamLet`. Hamlet confirmed. Nothing in this report is evidence about the radio beyond the owner's one recording. HM-DEC-236 was free.
 
 **How the session ran:**
 - It took SESSION.lock and released it at the end.
 - It wrote nothing to `RUN_LEDGER.md`, touched nothing under `tools\arbiter\`, and ticked no box.
-- R88 stayed lifted for the one recording. Nothing keys, transmits or writes to the radio.
+- **HEAD was tagged `before-lookup-table` (dc80c0e6) and pushed** before any change.
+- R88 stayed lifted for the one recording. Four more recordings appeared in `tests\fixtures\cw\captured` on 2026-10-03 (`cw-2026-10-03-143906` and three after it); they were not read or committed.
+- Nothing keys, transmits or writes to the radio.
 
-**Task 1: the line inside a letter sits at Morse's midpoint.** Commit `c778efd5`.
-- **The change:** the line between a gap inside a letter and one between letters is now the geometric midpoint of the two clusters, each side weighed equally. That is √3 for Morse's 1:3. It applies in the sender's own lines and in the check of a gap against its neighbours.
-- **What it replaces:** the spread-weighted boundary of HM-DEC-217, for these gaps only. The dit-or-dah line keeps the spread-weighted boundary.
-- **Result:** the owner's 7 now reads `7V`. Every other case reads as before. Only noise readings in two random-carrier diagnostic rows moved.
+**Task 1: every mark leaves the gate labelled `.` or `-`.** Commit `5cbd53a4`.
+- When a letter is released, the gate hands on a stream of `CwSymbol`, the new symbol type:
+  - each mark as a dot or a dash, decided by the sender's own line between its two lengths;
+  - a letter end, carrying how sure the gate is of the dots and dashes, the signal, the speed, the time and the marks;
+  - a word end before the letter wherever the gap was a word.
+- A separate step looks the letter up from those symbols.
+- The rules moved unchanged: the two length clusters and the spread-weighted line between them, a hand's two kinds, the split against neighbours, and the retry over newer marks when the speed changes.
+- Labels are final when a letter is released, because a sender's unprinted runs are still re-split at its newer dit up to then.
 
-**Task 2: the first seconds of a transmission.** Commit `93fb73d1`.
-- **The change:** until a sender's word cluster is trusted (three word gaps), its word line is never under √21 = 4.58 of its element gaps, Morse's midpoint between a 3-unit letter gap and a 7-unit word gap.
-  - The element gap is the centre of the sender's inside-letter gaps once three show, and its gap dits before that.
-  - The five-dit floor stays.
-- **Result:** `FER` now reads together; KC4ZGP holds; the straight key still reads `SKCC DE`.
-- **What it costs:** the 27 WPM fist that tightens from 30% scatter now reads `CQCQ DE` (was `CQ CQ DE`). Its first word gap is 240 ms, 4.4 of its element gaps, under the 249 ms floor. Before, the line drawn from its two letter gaps sat at 202 ms and caught it. That is the order's rule working as written, so the report names it.
-- **The recording test now asserts the whole text, spaces included.** It reads `FER C HAT<BT> BEST 7V 73 <SK> KC4ZGP DEWA`: every letter right, one space off. The sender left 579 ms between the C and the H, about 7.4 of his gap dits, longer than a 7-unit word gap. No line drawn from 1:3:7 can read that as inside a word. The assertion was not loosened, so the test stays red.
+**Task 2: the sender and the lone letter are decided in the gate.** Commit `e2413cb2`. The class that decides is now `CwSenderGate`, the gate's sender stage, with every rule unchanged:
+- which sender is printed: the best shape after the first word gap, held until silent for its word gap and a dah, let go only under a shape of 0.1;
+- the lone-letter rule: a one-mark letter is held until a letter of two marks or more confirms it, and three in a row are dropped;
+- the runs, and where words end.
 
-**Task 3: dropped.**
-- **The cause:** the gate accepts a mark into a sequence within one bin spacing either side of its mean pitch, a window 50 Hz wide. While pitches were bin centres that took in three bins; measured to the hertz, noise marks fill the whole window.
-- **The fix tried:** half a bin either side (one bin's width). Loud noise then stood nothing at all, in 30 s and in three minutes.
-- **Why it was reverted:** three tests measure the single-mark gates by counting the noise that stands. With none standing their figures can't be taken, and two more of them went red.
+All 20 files that used the old reader now use the gate.
 
-**Task 4: dropped.** The random carrier still prints at 775 and 825 Hz.
+**Task 3: what is left is the table.** Commit `38ea5891`.
+- **`CwRunReader` now only takes the gate's symbols and looks each letter up:** the Morse table with its prosigns, the placeholder for an unknown pattern, printed-stays-printed, and one event per character.
+- **The gate passes it the stream** and passes its characters on, so every caller is unchanged.
+- **Tests:**
+  - `TheReaderIsALookupTable` reads `src\Hamlet.RadioEngine\Cw\CwRunReader.cs` with its comments removed. It fails on any number other than 0 or 1, or any word for a time, length, level, pitch or score. It finds none.
+  - `TheReaderReadsSymbols` reads `--.. -.. ...-` as `ZDV`, `.-.-.` as `<AR>`, and an unknown pattern as the placeholder.
+- **Size: the reader is 76 lines (45 of code), down from 1,122.** The gate's stage is 1,151.
+
+**Task 4: the recording test expects the sender's timing.** Commit `1533f550`. It expects `FER C HAT<BT> BEST 7V 73 <SK> KC4ZGP DEWA`, and its remark explains the 579 ms pause between C and H. Green.
+
+**Task 5: noise agrees within half a bin.** Commit `5f43df74`.
+- A mark joins a sequence only within half a bin of its pitch (`CwPatternGate.AgreeHz`).
+- The three noise tests (`MostNoiseBarsHaveNoEdges`, `RealMarksScoreInsideTheShapeAndNoiseOutside`, `TheShapeTurnsAwayNoiseThatPassedFiveLines`) now count candidates instead of marks that stood, and each says so. All three are green.
 
 **Records:**
-- HM-DEC-235 in `DECISIONS.md` (dated 2026-10-03, as the session crossed midnight), naming what it supersedes.
-- The `CLAUDE.md` row.
-- `PHASE_OUTCOME` (both copies) has `## UNIT 531 - STEP 12`.
-- `PHASE_STATUS` (both copies) names 531.
-- Version 1.13.215 to 1.13.216.
+- HM-DEC-236 in `DECISIONS.md`, and the `CLAUDE.md` row.
+- `PHASE_OUTCOME` (both copies) has `## UNIT 532 - STEP 12`.
+- `PHASE_STATUS` (both copies) names 532.
+- Version 1.13.216 to 1.13.217.
 
-**Build and app line:** build 0 warnings, 0 errors. App carry-forward 278 of 278.
+**Build and app line:** build 0 warnings, 0 errors. App carry-forward 277 of 278. The one loss is `TheStarIsDrawnAndHittableAtAllNineSizes…`, at 1 ms ("You've caused dispatcher loop"); it passes alone.
 
 ## 2. What the owner should expect
 
 - **Rebuild.**
-- **Your recording now reads:**
-  - sent: `FER CHAT<BT> BEST 7V 73 <SK> KC4ZGP DEWA`
-  - now: `FER C HAT<BT> BEST 7V 73 <SK> KC4ZGP DEWA`
-- **Every letter is right.** The 7 is a 7, and FER is one word.
-- **The one space Hamlet adds, after the C, is in your sender's own timing.** He paused 579 ms there, longer than he leaves between some of his words.
-- **A station tuned into mid-sentence is now spaced from its first letters by Morse's own proportions,** not by a guess drawn from one or two gaps. The cost: a very rough fist whose first word gap is sent short can run its first two words together.
+- **Nothing you read changes.**
+- **The reader is now a lookup table.** It is handed dots, dashes, letter ends and word ends, and turns them into letters, and that's all it does. Every decision is made where the shape is found: dot or dash, which station to print, whether a lone E or T belongs to something, where a word ends. A test now fails if any measurement creeps back into the reader.
+- **Your recording's test passes,** on your sender's own timing: `FER C HAT<BT> BEST 7V 73 <SK> KC4ZGP DEWA`. Every letter is right, and the space after the C is his own 579 ms pause.
+- **Noise no longer forms even a passing sequence,** and the random carrier test passes at 775 Hz.
 
 ## 3. What you should see
 
-**The recording's text:**
+**The identical-readings check**, every printed reading line in every set against HEAD, character for character:
 
-| | text |
-|---|---|
-| sent | `FER CHAT<BT> BEST 7V 73 <SK> KC4ZGP DEWA` |
-| before 531 | `F ER C H AT<BT> BEST MSV 73 <SK> KC4ZGP DEWA` |
-| after task 1 | `F ER C H AT<BT> BEST 7V 73 <SK> KC4ZGP DEWA` |
-| now | `FER C HAT<BT> BEST 7V 73 <SK> KC4ZGP DEWA` |
+| set | after task 1 | after task 2 | after task 3 |
+|---|---|---|---|
+| a (53 tests) | 55 of 55 identical | 55 of 55 | 55 of 55 |
+| b1 (27) | 19 of 19 | 19 of 19 | 19 of 19 |
+| b3 (29) | 43 of 43 | 43 of 43 | 43 of 43 |
+| b4, first half (31) | 27 of 27 | 27 of 27 | 27 of 27 |
+| b4, second half (8) | 13 of 13 | 13 of 13 | 13 of 13 |
+| b5 with the recording (40) | 34 of 34, plus the recording as at HEAD | 36 of 36 | 36 of 36 |
 
-**Task 1, the 7:** its inside gap is 120 ms. The line sat at 100–114 ms; it now sits at the midpoint of the sender's 74 ms and roughly 300 ms clusters.
+**The recording:** reads `FER C HAT<BT> BEST 7V 73 <SK> KC4ZGP DEWA`. The test expects exactly that and passes.
 
-**Task 2:**
+**Task 5's counts:**
 
-| case | before | now |
+| | before | now |
 |---|---|---|
-| the recording's start | `F ER C H AT` | `FER C HAT` |
-| straight key, six conditions | `CQ CQ SKCC DE N0CALL N0CALLK` | same |
-| 4-dit word gaps | `KI1MMDEVE2JDNAMEISJEANQTHQUEBECHW` | same |
-| Farnsworth 5 WPM, six conditions | `TEXT IS FROM SEPTEMBER 2024` | same |
-| 27 WPM fist, 30% then 10% | `CQ CQ DE N0CALL N0CALL K` | `CQCQ DE N0CALL N0CALL K` |
+| 30 s of loud noise, marks that stood with edges / without | 44 / 0 | 0 / 0 |
+| 3 minutes of loud noise, marks that stood | 12 | 0 |
+| 30 s of noise, candidates past the older tests, with edges, narrow, inside the shape | — | 1,456, 1,339, 1,108, 663 |
+| random carrier prints at | 775 and 825 Hz | 825 Hz |
 
-**Task 3 (reverted):** with half a bin either side, noise stood 0 marks in 30 s (44 now) and 0 in three minutes (12 now). Then `MostNoiseBarsHaveNoEdges` read 0 against 0, and `RealMarksScoreInsideTheShapeAndNoiseOutside` and `TheShapeTurnsAwayNoiseThatPassedFiveLines` had nothing to measure.
+Every reading case reads as before. The only lines that changed are noise:
+- the clean sender's garbage beside a carrier 150 Hz away (`NOAM E E N DT…` became `NAEENI DT…`);
+- one shape score in a "before" diagnostic.
 
-**The existing cases:**
-- Sets a, b1, b3, b4 and b5 read as at HEAD, except the 27 WPM fist above and two random-carrier diagnostic rows whose noise reading moved.
-- Noise prints nothing.
-- The strength table through the filter reads `CTU NIG DE N0CALL N0CALL K` at 8 dB and `CTU CQ DE N0CALL N0CALL K` at 10 dB, and whole at 12, 16 and 24 dB.
-- The between-bin cases read whole.
-- **Reds:**
-  - the 8 dB call;
-  - Farnsworth and fast at 10 dB;
-  - a letter from noise (blocks);
-  - the random carrier at 775 and 825 Hz;
-  - the clean sender at the edge;
-  - the radio strength table at 8 and 10 dB;
-  - `MostNoiseBarsHaveNoEdges`;
-  - `AFistThatTightensIsFollowed` (new);
-  - `TheOwnersRecordingReads` (the C HAT space).
+**Reds:**
+- the 8 dB call;
+- Farnsworth and fast at 10 dB;
+- a letter from noise (blocks);
+- the random carrier at 825 Hz;
+- the clean sender at the edge;
+- the radio strength table at 8 and 10 dB;
+- `AFistThatTightensIsFollowed`.
 
 ## 4. What's blocking us
 
-1. **`C HAT`:** the sender's 579 ms is a word gap by 1:3:7. Reading it as one word would take knowing English, not Morse timing.
-2. **The 27 WPM fist that tightens reads `CQCQ`:** its first word gap, sent at 4.4 element gaps, falls under Morse's midpoint.
-3. **Noise standing:**
-   - The gate's pitch agreement spans two bins.
-   - At one bin, noise stands nothing, but three tests that count standing noise to measure a single-mark gate then have nothing to count.
-   - Ruling asked: *the gate agrees a mark with its sequence within half a bin of its pitch, and the three tests count candidates rather than marks that stood.* Rejected: leaving the agreement as it is, which stands 44 noise marks in 30 s.
-4. **The random carrier prints at 775 and 825 Hz** (task 4 not worked).
-5. **Pre-existing app reds** outside the line are untouched: the scope's tone-line tests, two `centre` spellings, `DecisionLogOrderTests`' gaps check.
+1. **The random carrier prints at 825 Hz.**
+2. **The 27 WPM fist that tightens reads `CQCQ DE`:** its first word gap falls under Morse's own midpoint.
+3. **The strength table through the filter reads `CTU NIG` and `CTU CQ` at 8 and 10 dB,** before the sender's window opens.
+4. **Labels are final at a letter's release, not at each mark:** a sender's unprinted runs are re-split at its newer dit until then. Labelling each mark as it arrives would change readings, so it was not done in a move.
+5. **Between this tree and removing the old decoder:**
+   - `CwDecoder` still builds the tone tracker (`CwToneTracker`, 1,568 lines), the probabilistic stream (`CwProbabilisticStream` over `CwProbabilisticDecoder`, 1,743 lines) and the optional second reader (`CwSecondReader`) beside the gate.
+   - The app reads the timing-only path's output in places. The tag `before-cw-cleanup` names them.
+   - Each needs its callers moved to the gate's stream before it can go. Nothing here removed any of them.
+6. **Pre-existing app reds** outside the line are untouched: the scope's tone-line tests, two `centre` spellings, `DecisionLogOrderTests`' gaps check.
 
 ### Asks still outstanding
 
-- **Unit 531, 2026-10-03:** the gate's pitch agreement and the noise-count tests (item 3 above). No change for it sits in the tree.
 - **Unit 520, 2026-10-01:** how a mark finds its own tone beside a louder one. Partly answered by unit 524; still open before a sender stands.
 - **Unit 440's item 1:** MET-COVERAGE counts wrong sure characters. Raised 2026-09-25 and waiting on the owner. No change for it sits in the tree.
 - **Unit 440's item 2:** R72 is cited as HM-DEC-175. Raised 2026-09-25 and scheduled as step 8 record work under R80.

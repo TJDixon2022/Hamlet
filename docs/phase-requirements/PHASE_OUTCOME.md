@@ -983,3 +983,22 @@ Version 1.13.215 to 1.13.216. HM-DEC-235.
 **Task 4, dropped.**
 
 Build 0 warnings 0 errors. App carry-forward 278 of 278.
+
+## UNIT 532 - STEP 12
+
+Run by hand, outside the loop:
+- SESSION.lock taken and released;
+- nothing written to RUN_LEDGER.md and nothing under tools\arbiter\ touched;
+- no box ticked and no ruling added to either plan;
+- no scratch file committed;
+- nothing keyed or transmitted. R88 stayed lifted for the one recording, and the recordings that appeared beside it on 2026-10-03 were not read.
+
+HEAD was tagged before-lookup-table (dc80c0e6) and pushed. Version 1.13.216 to 1.13.217. HM-DEC-236.
+
+**Tasks 1 to 3, the move.** Every mark is labelled dot or dash in the gate. The sender printed, the lone-letter rule and the runs are decided in CwSenderGate, the gate's sender stage. CwRunReader takes its stream and looks each letter up: 76 lines from 1,122, with TheReaderIsALookupTable and TheReaderReadsSymbols green. After each task, every printed reading in every set was identical to HEAD.
+
+**Task 4.** The recording test expects FER C HAT<BT> BEST 7V 73 <SK> KC4ZGP DEWA, the sender's own timing, and is green.
+
+**Task 5.** Noise agrees within half a bin and stands nothing. The random carrier no longer prints at 775 Hz. The three noise tests count candidates and are green.
+
+Build 0 warnings 0 errors. App carry-forward 277 of 278; the one loss, a dispatcher loop at 1 ms, passes alone.
