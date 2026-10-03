@@ -53,8 +53,12 @@ public sealed record CwSequenceShape(
     /// <param name="marks">Its recent marks, oldest first.</param>
     /// <param name="count">How many marks it has had in all, for the evidence.</param>
     /// <param name="againstAHand">Whether tightness is scored against a hand (work instruction 520), or, false, unit 519's machine scale, kept for the tests' before.</param>
+    /// <param name="wordLineSeconds">
+    /// The sender's own word line (work instruction 530, HM-DEC-234): its letter gaps are its longer gaps under it, walked
+    /// as before; NaN, and all its longer gaps are walked, where no word line has been drawn.
+    /// </param>
     /// <returns>The shape; <see cref="None"/> where its marks do not split into two lengths.</returns>
-    public static CwSequenceShape Of(IReadOnlyList<CwMark> marks, int count, bool againstAHand = true)
+    public static CwSequenceShape Of(IReadOnlyList<CwMark> marks, int count, bool againstAHand = true, double wordLineSeconds = double.NaN)
     {
         var lengths = marks.Select(m => m.ToSeconds - m.FromSeconds).ToList();
         var sorted = lengths.OrderBy(l => l).ToList();
@@ -115,7 +119,11 @@ public sealed record CwSequenceShape(
             .OrderBy(g => g)
             .ToList();
         var inside = gaps.Where(g => g < CwPatternGate.InsideLetterShare * dit).ToList();
-        var between = LowestCluster(gaps.Where(g => g >= CwPatternGate.InsideLetterShare * dit).ToList());
+        // **THE SENDER'S OWN LETTER CLUSTER** (work instruction 530, HM-DEC-234): where its word line is drawn, its letter gaps
+        // are its longer gaps under that line, walked as before. A hand whose letter gaps run from two dits to 5.7 with no jump
+        // to its words read all its longer gaps as one cluster, scored nought for tightness and was let go before its last
+        // word.
+        var between = LowestCluster(gaps.Where(g => g >= CwPatternGate.InsideLetterShare * dit && !(g >= wordLineSeconds)).ToList());
 
         var consistent = lengths.Count(l =>
             Math.Min(Math.Abs(Math.Log(l / dit)), Math.Abs(Math.Log(l / dah))) <= Math.Log(CwPatternGate.LengthRatio));

@@ -737,7 +737,7 @@ public sealed class CwRunReader
             {
                 var now = MarksNow();
 
-                return CwSequenceShape.Of(now, ReferenceEquals(now, _recent) ? Marks : now.Count);
+                return CwSequenceShape.Of(now, ReferenceEquals(now, _recent) ? Marks : now.Count, wordLineSeconds: Lines.WordSeconds);
             }
         }
 
