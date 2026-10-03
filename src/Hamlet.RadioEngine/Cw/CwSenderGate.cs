@@ -86,11 +86,25 @@ public sealed class CwSenderGate
     private readonly List<Sender> _senders = new();
 
     /// <summary>Raised once for each character read, in time order, and never revised.</summary>
-    public event Action<CwCharacter>? CharacterRead;
+    public event Action<CwCharacter>? CharacterRead
+    {
+        add => _table.CharacterRead += value;
+        remove => _table.CharacterRead -= value;
+    }
 
     /// <summary>Raised with each letter, beside <see cref="CharacterRead"/>, with the marks its run was made of.</summary>
     /// <remarks>The evidence travels with the letter (§0.0.1): what it was read from, pitch, level and length.</remarks>
-    public event Action<CwCharacter, IReadOnlyList<CwMark>>? RunRead;
+    public event Action<CwCharacter, IReadOnlyList<CwMark>>? RunRead
+    {
+        add => _table.RunRead += value;
+        remove => _table.RunRead -= value;
+    }
+
+    // **THE GATE HANDS THE READER ONE SENDER'S STREAM** (work instruction 532): the table it is read through.
+    private readonly CwRunReader _table = new();
+
+    /// <summary>The reader the gate's stream is read through: the Morse table alone (work instruction 532).</summary>
+    public CwRunReader Reader => _table;
 
     /// <summary>
     /// How far a mark's level may sit from its run's mean and be the same sender's, in dB, for a
@@ -576,52 +590,9 @@ public sealed class CwSenderGate
 
         _lastClusters = sender.Describe();
 
-        Look(symbols);
+        _table.Take(symbols);
 
         _printed.Add((sender, run));
-    }
-
-    // The dots and dashes since the last letter end.
-    private readonly System.Text.StringBuilder _letter = new();
-
-    /// <summary>
-    /// **THE TABLE** (work instruction 532, task 1): each letter looked up from its dots and dashes, and handed on with the
-    /// gate's reading; a pattern the table does not hold is the placeholder; a word end is a space.
-    /// </summary>
-    private void Look(IEnumerable<CwSymbol> symbols)
-    {
-        foreach (var symbol in symbols)
-        {
-            switch (symbol.Kind)
-            {
-                case CwSymbolKind.Dot:
-                    _letter.Append('.');
-                    break;
-
-                case CwSymbolKind.Dash:
-                    _letter.Append('-');
-                    break;
-
-                case CwSymbolKind.WordEnd:
-                    CharacterRead?.Invoke(symbol.Reading!);
-                    break;
-
-                case CwSymbolKind.LetterEnd:
-                    var pattern = _letter.ToString();
-                    var text = MorseAlphabet.Lookup(pattern);
-                    var character = symbol.Reading! with
-                    {
-                        Text = text ?? MorseAlphabet.Unreadable,
-                        Pattern = pattern,
-                        Confidence = text is null ? CwConfidence.Unreadable : symbol.Reading.Confidence,
-                    };
-
-                    _letter.Clear();
-                    CharacterRead?.Invoke(character);
-                    RunRead?.Invoke(character, symbol.Marks!);
-                    break;
-            }
-        }
     }
 
     /// <summary>The runs that agree with one another on pitch and level: one sender.</summary>
