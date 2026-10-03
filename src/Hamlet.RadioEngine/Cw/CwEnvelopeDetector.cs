@@ -265,6 +265,31 @@ public sealed class CwEnvelopeDetector
 
     private IAudioSource? _attached;
 
+    // **THE SENDER'S OWN WINDOW** (work instruction 529, HM-DEC-233): once a sender stands, its envelope is taken at its
+    // own pitch through a filter that fits its dit, and its marks are found there. Null while no sender stands.
+    private readonly CwSenderLane _lane;
+    private Bin? _laneBin;
+    private long _laneScan;
+    private long _laneSpan = -1;
+    private int _laneId = -1;
+    private int _laneCount;
+    private long _laneFromHop;
+    private double _laneFromSeconds;
+    private int _laneEdgeHops;
+    private int _laneRiseHops;
+
+    /// <summary>
+    /// Whether a standing sender is read through its own window (work instruction 529); on by default. Off, every mark is
+    /// found on the grid as before, so the difference can be counted.
+    /// </summary>
+    internal bool OwnWindow { get; set; } = true;
+
+    /// <summary>The pitch the sender's own window is mixed at, or NaN while none is open: for the tests' report (work instruction 529).</summary>
+    internal double OwnWindowPitchHz => _laneBin is null ? double.NaN : _lane.PitchHz;
+
+    /// <summary>The sender's own window as last tuned, open or not: for the tests' report (work instruction 529).</summary>
+    internal CwSenderLane OwnWindowLane => _lane;
+
     /// <summary>Creates a detector for one sample rate.</summary>
     /// <param name="sampleRate">Samples per second of the audio it will be fed.</param>
     public CwEnvelopeDetector(int sampleRate)
@@ -282,6 +307,7 @@ public sealed class CwEnvelopeDetector
 
         _ring = new float[EnvelopeWindowSamples];
         _raw = new float[2 * sampleRate];
+        _lane = new CwSenderLane(SampleRate);
         _window = new float[EnvelopeWindowSamples];
         _hann = new float[EnvelopeWindowSamples];
 
@@ -392,6 +418,8 @@ public sealed class CwEnvelopeDetector
             _bandPrev1 = _bandPrev2 = 0;
             _bandLen1 = 0;
             _ownTracks.Clear();
+            _laneBin = null;
+            _laneId = -1;
             _watched = _bins.Length / 2;
             _hop = 0;
             _loudestGapDb = double.NaN;
@@ -446,7 +474,8 @@ public sealed class CwEnvelopeDetector
         {
             return new CwMarkBatch(
                 _marks.Where(m => m.Sequence > sequence).ToArray(),
-                _samplesSeen / (double)SampleRate);
+                _samplesSeen / (double)SampleRate,
+                _laneBin is null ? 0 : _lane.DelaySeconds + ((_laneEdgeHops - EdgeHops) * HopMs / 1000));
         }
     }
 
@@ -498,6 +527,11 @@ public sealed class CwEnvelopeDetector
                 _ringWrite = (_ringWrite + 1) % _ring.Length;
                 _samplesSeen++;
                 _ringFill = Math.Min(_ringFill + 1, _ring.Length);
+
+                if (_laneBin is not null)
+                {
+                    _lane.Push(s);
+                }
 
                 if (++_hopFill == HopSamples)
                 {
@@ -641,6 +675,13 @@ public sealed class CwEnvelopeDetector
             }
         }
 
+        // **THE SENDER'S OWN WINDOW** (work instruction 529): its level this hop, kept as a bin keeps its levels.
+        if (_laneBin is { } lane)
+        {
+            lane.Add(hop, _lane.LevelDb, double.NaN, double.NaN, double.NaN);
+            lane.Prune(hop - HistoryHops - _keyingHops);
+        }
+
         // **THE SHAPE IS FOUND WHEREVER IT APPEARS; THE WATCHED BIN RETIRES** (work instruction 515,
         // R114, HM-DEC-219). Tim: *"Pitch almost doesn't matter. It's shape."* Every bin on every hop
         // already offers its bars as marks and the pattern gate already stands them from any pitch; now
@@ -680,6 +721,8 @@ public sealed class CwEnvelopeDetector
             .OrderByDescending(s => ShapePicks ? s.Shape.Score : s.LevelDb).FirstOrDefault();
 
         _readingShape = chosen?.Shape.Score ?? double.NaN;
+
+        FollowSender(chosen, hop);
 
         foreach (var s in standing)
         {
@@ -790,6 +833,315 @@ public sealed class CwEnvelopeDetector
             light,
             forming,
             CwShapeLights.Fill(light, forming, _readingShape));
+    }
+
+    /// <summary>
+    /// **A STANDING SENDER IS MEASURED THROUGH ITS OWN WINDOW** (work instruction 529, HM-DEC-233): the window opens on the
+    /// standing sender the terminal prints; while that sender is silent it stays on it, for as long as the gate keeps
+    /// it; and it closes when the gate has let it go.
+    /// </summary>
+    /// <remarks>
+    /// Its pitch is measured again from the sender's own samples, and its dit read again, each time the sender takes a
+    /// mark, so it follows a sender whose pitch or speed moves as unit 524 follows one on its own bin. Before any sender
+    /// stands nothing here runs, and the per-bin path finds marks exactly as before.
+    /// </remarks>
+    private void FollowSender(CwPatternGate.StandingSequence? chosen, long hop)
+    {
+        if (!OwnWindow || ShapeFirst)
+        {
+            _laneBin = null;
+            _laneId = -1;
+            return;
+        }
+
+        // **ONLY THE SENDER THE TERMINAL PRINTS** (work instruction 529): a sequence of noise can stand now and then, and a
+        // narrow low-pass smooths noise into humps a dit long, so the window opens on a sender the reader has taken as one,
+        // and on nothing it has not. Noise never prints, so noise is read as before.
+        var printed = PrintedPitch?.Invoke() ?? double.NaN;
+        var id = chosen is not null && double.IsFinite(printed) && Math.Abs(chosen.PitchHz - printed) <= BinSpacingHz ? chosen.Id : _laneId;
+
+        if (id < 0 || _pattern.Sender(id) is not { } sender || !(sender.DitSeconds > 0))
+        {
+            _laneBin = null;
+            _laneId = -1;
+            return;
+        }
+
+        if (_laneBin is not null && id == _laneId && sender.Count == _laneCount)
+        {
+            return;
+        }
+
+        var pitch = OwnPitch(sender.Recent, sender.PitchHz);
+
+        if (_laneBin is not null && id == _laneId)
+        {
+            _laneCount = sender.Count;
+            _lane.Tune(pitch, sender.DitSeconds);
+            return;
+        }
+
+        OpenLane(id, sender.Count, pitch, sender.DitSeconds, hop);
+    }
+
+    /// <summary>
+    /// Open the sender's own window: tune it, and read the last two seconds of audio through it, so its first marks are
+    /// judged against the level and the gaps that came before them. Only marks ending after this hop are called from it.
+    /// </summary>
+    private void OpenLane(int id, int count, double pitchHz, double ditSeconds, long hop)
+    {
+        _lane.Reset();
+        _lane.Tune(pitchHz, ditSeconds);
+        _laneId = id;
+        _laneCount = count;
+        _laneFromHop = hop;
+        _laneFromSeconds = _samplesSeen / (double)SampleRate;
+
+        // The filter's rise in hops sets how far a key's edge is smeared on this trace, as the window's two hops do on a bin; an
+        // edge has fallen to a mark's half height in dB, its whole step, within two rises, which is how far its edges are read.
+        _laneRiseHops = Math.Max(1, (int)Math.Ceiling(_lane.RiseSeconds * 1000 / HopMs));
+        _laneEdgeHops = Math.Max(EdgeHops, (2 * _laneRiseHops) + 1);
+
+        var lane = new Bin(pitchHz, SampleRate, HistoryHops + (2 * _keyingHops), _keyingHops);
+        var from = Math.Max(0, _samplesSeen - _raw.Length);
+
+        for (var n = from; n < _samplesSeen; n++)
+        {
+            _lane.Push(_raw[(int)(n % _raw.Length)]);
+
+            if ((n + 1) % HopSamples == 0 && ((n + 1) / HopSamples) - 2 is var h && h >= 0 && h <= hop)
+            {
+                lane.Add(h, _lane.LevelDb, double.NaN, double.NaN, double.NaN);
+            }
+        }
+
+        // The hops the backfill covers are scanned again, so a mark under way when the window opened is found whole; only
+        // one ending after the window opened is called from it.
+        _laneScan = Math.Max(0, hop - (long)Math.Round(KeyingSeconds * 1000 / HopMs));
+        _laneSpan = -1;
+        _laneBin = lane;
+    }
+
+    /// <summary>
+    /// The sender's pitch, measured on its own samples (work instruction 522's centroid): over each of its last four marks
+    /// still in the raw audio, the excess peak within 50 Hz of its pitch nearest it, and the median of those. Its marks'
+    /// mean pitch where none can be read.
+    /// </summary>
+    private double OwnPitch(IReadOnlyList<CwMark> recent, double pitchHz)
+    {
+        var peaks = new List<double>();
+        var hopSeconds = HopSamples / (double)SampleRate;
+
+        foreach (var m in recent.TakeLast(4))
+        {
+            var start = (long)Math.Round(m.FromSeconds / hopSeconds) - 1;
+            var end = (long)Math.Round(m.ToSeconds / hopSeconds) - 1;
+
+            if (start < 1 || end <= start)
+            {
+                continue;
+            }
+
+            var near = SamplePeaks(pitchHz - (2 * BinSpacingHz), pitchHz + (2 * BinSpacingHz), start, end);
+
+            if (near.Count > 0)
+            {
+                peaks.Add(near.MinBy(p => Math.Abs(p - pitchHz)));
+            }
+        }
+
+        return peaks.Count == 0 ? pitchHz : peaks.OrderBy(p => p).ElementAt(peaks.Count / 2);
+    }
+
+    /// <summary>Whether a grid mark sits where the sender's own window now calls marks: within two bins of it, ending after it opened.</summary>
+    private bool AtOwnWindow(double pitchHz, double toSeconds)
+        => _laneBin is not null && Math.Abs(pitchHz - _lane.PitchHz) <= 2 * BinSpacingHz && toSeconds > _laneFromSeconds;
+
+    /// <summary>
+    /// How far either side of the sender's pitch the band beside a mark is read on its own samples, in Hz (work instruction
+    /// 529): 150, past a dit's own spread at any speed this reads (a 25 ms dit spreads about 40 Hz) and inside the radio's
+    /// 500 Hz filter around a pitch near its middle. The author's.
+    /// </summary>
+    public const double ToneSideHz = 150;
+
+    /// <summary>
+    /// **A MARK'S ENERGY IS AT ITS PITCH, ON ITS OWN SAMPLES** (work instruction 529): the power at the sender's pitch over
+    /// the mark's own span stands at least <see cref="NarrowDepthDb"/> over the power <see cref="ToneSideHz"/> either side
+    /// of it, the louder side, every sample weighed alike; true where the span has left the raw audio.
+    /// </summary>
+    /// <remarks>
+    /// The sender's window low-passes at a few tens of hertz, so a click of five or ten milliseconds comes out of it as a
+    /// hump a dit long, and the grid's narrowness, its side bins averaged over the hump's hops, barely sees a click one hop
+    /// long. On the mark's own samples a click is as loud beside the pitch as at it, and a keyed tone is not.
+    /// </remarks>
+    private bool IsToneHere(double fromSeconds, double toSeconds, double pitchHz)
+    {
+        var from = (long)Math.Round(fromSeconds * SampleRate);
+        var to = (long)Math.Round(toSeconds * SampleRate);
+
+        if (from < Math.Max(0, _samplesSeen - _raw.Length) || to > _samplesSeen || to - from < 8)
+        {
+            return true;
+        }
+
+        var at = Power(pitchHz, from, to);
+        var beside = Math.Max(Power(pitchHz - ToneSideHz, from, to), Power(pitchHz + ToneSideHz, from, to));
+
+        return 10 * Math.Log10((at + 1e-30) / (beside + 1e-30)) >= NarrowDepthDb;
+    }
+
+    /// <summary>Half amplitude, in dB of power: where a key's edge crosses on an envelope that rises and falls about it.</summary>
+    private static readonly double HalfAmplitudeDb = 20 * Math.Log10(0.5);
+
+    /// <summary>
+    /// **THE SENDER'S MARKS, FOUND ON ITS OWN ENVELOPE** (work instruction 529): every stretch where the sender's own
+    /// window stands over half the sender's amplitude, put through the tests a bin's bar meets - its length, the key-up,
+    /// its own height over the gaps beside it, the edges, the narrowness beside it, and the shape, whose flatness term is
+    /// the flatness test - and timed where it crosses half its own amplitude, less the filter's delay.
+    /// </summary>
+    /// <remarks>
+    /// <para>**WHY A STRETCH OVER HALF AMPLITUDE AND NOT A RUN.** The per-bin path finds a bar as a run held to one level,
+    /// standing wholly above the runs either side, which suits a window whose edges take two hops. The sender's window rises
+    /// over its filter's rise, three or four hops, and the last hops of a rise sit inside the top's own range, so a run
+    /// built hop by hop does not stand wholly above them and a whole dit is refused (the A of CHAT, measured). A low-pass of
+    /// a keyed rectangle crosses half its amplitude at the key's edges, late by the filter's own delay, so the stretch
+    /// over half the sender's level is the mark.</para>
+    /// <para>The line is half the amplitude of the sender's own level, from the gate's mean of its recent marks. Each
+    /// stretch is then timed at half its own top, so a mark a little quieter than the sender's is timed as truly as one
+    /// at its level.</para>
+    /// </remarks>
+    private void LaneMarks(long hop, double nowSeconds)
+    {
+        if (_pattern.Sender(_laneId) is not { } sender || !double.IsFinite(sender.LevelDb))
+        {
+            return;
+        }
+
+        var lane = _laneBin!;
+
+        // Half the sender's amplitude, less the wobble a flat top has (FlatToleranceDb): a mark of its own read a wobble quieter,
+        // or a dit sent quieter that the gate takes by the sender's pattern, still crosses it.
+        var line = sender.LevelDb + HalfAmplitudeDb - FlatToleranceDb;
+        var last = hop - _laneEdgeHops;
+
+        for (var h = _laneScan; h <= last; h++)
+        {
+            var above = lane.Level(h) >= line;
+
+            if (above && _laneSpan < 0)
+            {
+                _laneSpan = h;
+            }
+            else if (!above && _laneSpan >= 0)
+            {
+                OfferLaneSpan(_laneSpan, h - 1, hop, nowSeconds);
+                _laneSpan = -1;
+            }
+        }
+
+        _laneScan = Math.Max(_laneScan, last + 1);
+    }
+
+    /// <summary>One stretch of the sender's window over half its amplitude, offered as a candidate if it passes a mark's tests.</summary>
+    private void OfferLaneSpan(long a, long b, long hop, double nowSeconds)
+    {
+        var lane = _laneBin!;
+        var hopSeconds = HopMs / 1000;
+
+        if (b <= _laneFromHop)
+        {
+            return;
+        }
+
+        double Time(long h) => nowSeconds - ((hop - h) * hopSeconds);
+
+        // Its top: in from either crossing by half the filter's rise, where the edge has finished rising.
+        var inset = (_laneRiseHops + 1) / 2;
+        var start = a + inset;
+        var end = b - inset;
+
+        if (end < start)
+        {
+            start = end = (a + b) / 2;
+        }
+
+        var level = MeanLevel(lane, start, end);
+        var half = level + HalfAmplitudeDb;
+        var from0 = start;
+
+        while (from0 > 0 && from0 > start - _laneEdgeHops && lane.Level(from0 - 1) >= half)
+        {
+            from0--;
+        }
+
+        var to0 = end;
+
+        while (to0 < hop && to0 < end + _laneEdgeHops && lane.Level(to0 + 1) >= half)
+        {
+            to0++;
+        }
+
+        double Between(double under, double over) => over > under ? Math.Clamp((half - under) / (over - under), 0, 1) : 0;
+
+        var rise = from0 > 0 ? Time(from0 - 1) + (Between(lane.Level(from0 - 1), lane.Level(from0)) * hopSeconds) : Time(from0);
+        var fall = to0 < hop ? Time(to0) + ((1 - Between(lane.Level(to0 + 1), lane.Level(to0))) * hopSeconds) : Time(to0);
+        var from = rise - _lane.DelaySeconds;
+        var to = fall - _lane.DelaySeconds;
+
+        // The per-bin path's own shortest bar, as long as it reports one: a run of that many hops is that many hops long.
+        if (to - from < _minBarHops * HopMs / 1000)
+        {
+            return;
+        }
+
+        if (MarksNeedKeyUp && to0 + _laneRiseHops <= hop && lane.Level(to0 + _laneRiseHops) > level - FlatToleranceDb)
+        {
+            return;
+        }
+
+        var own = OwnContrast(lane, start, end, level, hop, (2 * inset) + 1, (2 * inset) + (2 * EdgeHops));
+
+        if (MarksNeedEdges && !HasEdges(lane, start, end, level, EdgeDepth(own.ContrastDb), _laneEdgeHops))
+        {
+            return;
+        }
+
+        var grid = Nearest(_lane.PitchHz);
+
+        if (MarksNeedNarrowness && (!IsNarrow(grid, start, end, level, own.ContrastDb, hop) || !IsToneHere(from, to, _lane.PitchHz)))
+        {
+            return;
+        }
+
+        var shape = Shape(lane, grid, start, end, level, own, hop, _laneEdgeHops, _laneRiseHops);
+
+        if (MarksNeedShape && shape.Score < ShapeThreshold)
+        {
+            return;
+        }
+
+        var pitch = _lane.PitchHz;
+
+        if (MarksNeedOneCall && AlreadyCalled(from, to, pitch, level))
+        {
+            return;
+        }
+
+        var candidate = new CwMark(
+            ++_candidateSequence, from, to, pitch, level, double.IsFinite(own.ContrastDb) ? own.ContrastDb : double.NaN)
+        {
+            Keyed = true,
+            Shape = shape,
+            OwnContrastDb = own.ContrastDb,
+            Stood = false,
+        };
+
+        _candidates.Add(candidate);
+
+        foreach (var stood in MarksNeedPattern ? _pattern.Offer(candidate) : new[] { candidate })
+        {
+            _marks.Add(stood with { Sequence = ++_markSequence, Stood = true, Keyed = true });
+        }
     }
 
     /// <summary>One bin's level this hop, as mean square: a full-scale sine reads -3 dB.</summary>
@@ -1047,6 +1399,11 @@ public sealed class CwEnvelopeDetector
     /// </remarks>
     private void CallMarks(Evaluation[] evals, long hop, double nowSeconds)
     {
+        if (_laneBin is not null)
+        {
+            LaneMarks(hop, nowSeconds);
+        }
+
         for (var i = 0; i < _bins.Length; i++)
         {
             var bin = _bins[i];
@@ -1141,6 +1498,13 @@ public sealed class CwEnvelopeDetector
                 var from = nowSeconds - ((hop - start + 1) * HopMs / 1000);
                 var to = nowSeconds - ((hop - m.End) * HopMs / 1000);
                 var pitch = _bins[StationBin(apex, start, m.End)].Hz;
+
+                // **THE SENDER'S OWN WINDOW CALLS ITS OWN MARKS** (work instruction 529): within two bins of it, after it
+                // opened, the grid is not asked again.
+                if (AtOwnWindow(pitch, to))
+                {
+                    continue;
+                }
 
                 if (MarksNeedOneCall && AlreadyCalled(from, to, pitch, level))
                 {
@@ -2201,7 +2565,8 @@ public sealed class CwEnvelopeDetector
 
             _fitPending.RemoveAt(p--);
 
-            if (hop - end > limit || OverlapsPerHopMark(mark) || Covered(mark.FromSeconds, mark.ToSeconds, mark.PitchHz))
+            // The sender's own window calls the marks at its pitch once it is open (work instruction 529), fitted ones too.
+            if (hop - end > limit || OverlapsPerHopMark(mark) || Covered(mark.FromSeconds, mark.ToSeconds, mark.PitchHz) || AtOwnWindow(mark.PitchHz, mark.ToSeconds))
             {
                 continue;
             }
@@ -2369,7 +2734,7 @@ public sealed class CwEnvelopeDetector
     /// At 35 WPM a gap inside a letter is seven hops, so the far hops can reach the next mark; the median
     /// keeps a hop or two of it from moving the figure.</para>
     /// </remarks>
-    private static (double ContrastDb, double BeforeDb, double AfterDb) OwnContrast(Bin peak, long start, long end, double level, long hop)
+    private static (double ContrastDb, double BeforeDb, double AfterDb) OwnContrast(Bin peak, long start, long end, double level, long hop, int near = 3, int far = 2 * EdgeHops)
     {
         static double Median(List<double> values)
             => values.Count == 0 ? double.NaN : values.OrderBy(v => v).ElementAt(values.Count / 2);
@@ -2377,7 +2742,7 @@ public sealed class CwEnvelopeDetector
         var before = new List<double>();
         var after = new List<double>();
 
-        for (var k = 3; k <= 2 * EdgeHops; k++)
+        for (var k = near; k <= far; k++)
         {
             if (start - k >= 0)
             {
@@ -2425,12 +2790,12 @@ public sealed class CwEnvelopeDetector
     /// Whether the level at the peak falls at least <see cref="EdgeDepthDb"/> below the mark's top
     /// within <see cref="EdgeHops"/> before its first hop, and again within as many after its last.
     /// </summary>
-    private static bool HasEdges(Bin peak, long start, long end, double level, double depthDb)
+    private static bool HasEdges(Bin peak, long start, long end, double level, double depthDb, int edgeHops = EdgeHops)
     {
         var rose = false;
         var fell = false;
 
-        for (var k = 1; k <= EdgeHops && !(rose && fell); k++)
+        for (var k = 1; k <= edgeHops && !(rose && fell); k++)
         {
             // Before the first hop there is no level, so no rise can be seen there.
             rose |= start - k >= 0 && peak.Level(start - k) <= level - depthDb;
@@ -2590,8 +2955,11 @@ public sealed class CwEnvelopeDetector
     /// half on either, whatever its shape. Every term is now a ratio a rectangle keeps at any height.</para>
     /// </remarks>
     private CwMarkShape Shape(int apex, long start, long end, double level, (double ContrastDb, double BeforeDb, double AfterDb) own, long hop)
+        => Shape(_bins[apex], apex, start, end, level, own, hop, EdgeHops, 2);
+
+    /// <summary>The shape of a bar on any trace: <paramref name="apex"/> is the grid bin its neighbours are read beside, and the edges are read over <paramref name="edgeHops"/>, scoring one within <paramref name="keyHops"/> (work instruction 529).</summary>
+    private CwMarkShape Shape(Bin peak, int apex, long start, long end, double level, (double ContrastDb, double BeforeDb, double AfterDb) own, long hop, int edgeHops, int keyHops)
     {
-        var peak = _bins[apex];
         var hops = end - start + 1;
         var tolerance = ToleranceDb(own.ContrastDb);
 
@@ -2621,13 +2989,13 @@ public sealed class CwEnvelopeDetector
                 return 1;
             }
 
-            for (var k = 1; k <= EdgeHops; k++)
+            for (var k = 1; k <= edgeHops; k++)
             {
                 var h = at(k);
 
                 if (h >= 0 && peak.Level(h) <= level - EdgeDepth(own.ContrastDb))
                 {
-                    return Math.Min(1, 2.0 / k);
+                    return Math.Min(1, keyHops / (double)k);
                 }
             }
 

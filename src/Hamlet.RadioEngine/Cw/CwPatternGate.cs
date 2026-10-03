@@ -425,6 +425,17 @@ internal sealed class CwPatternGate
             .DefaultIfEmpty(0)
             .Max();
 
+    /// <summary>
+    /// A standing sequence the gate still keeps, by id, silent within the hold or not: how many marks it has taken, its dit,
+    /// its level and its recent marks, for the window that fits it (work instruction 529). Null once it is gone or never stood.
+    /// </summary>
+    /// <param name="id">The sequence.</param>
+    /// <returns>Its count, dit in seconds, pitch and recent marks; or null.</returns>
+    public (int Count, double DitSeconds, double PitchHz, double LevelDb, IReadOnlyList<CwMark> Recent)? Sender(int id)
+        => _sequences.FirstOrDefault(s => s.Id == id && s.Standing) is { } s
+            ? (s.Count, s.DitSeconds, s.PitchHz, s.LevelDb, s.RecentList)
+            : null;
+
     /// <summary>One standing sequence as <see cref="Standing"/> reports it (work instruction 519).</summary>
     /// <param name="Id">Which sequence, the same for as long as it lives.</param>
     /// <param name="PitchHz">The mean of its recent marks' pitch.</param>
@@ -511,6 +522,12 @@ internal sealed class CwPatternGate
         public double LevelDb => _recent.Where(r => !r.BySendersPattern).TakeLast(8).Select(r => r.LevelDb).DefaultIfEmpty(double.NaN).Average();
 
         private CwMark? Last => _recent.Count > 0 ? _recent[^1] : null;
+
+        /// <summary>Its recent marks, oldest first (work instruction 529).</summary>
+        public IReadOnlyList<CwMark> RecentList => _recent.ToArray();
+
+        /// <summary>Its dit: the mean short mark where its lengths split in two, its shortest recent mark until then (work instruction 529).</summary>
+        public double DitSeconds => Lengths()?.DitSeconds ?? _recent.Select(r => r.ToSeconds - r.FromSeconds).DefaultIfEmpty(double.NaN).Min();
 
         /// <summary>Same pitch within a bin, same height within the reader's level tolerance, and not silent too long.</summary>
         public bool Agrees(CwMark m)

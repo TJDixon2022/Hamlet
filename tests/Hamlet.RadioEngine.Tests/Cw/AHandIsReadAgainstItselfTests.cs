@@ -285,4 +285,26 @@ public sealed class AHandIsReadAgainstItselfTests
 
         Assert.Equal(Text, r.Text);
     }
+
+    /// <remarks>
+    /// Work instruction 529, task 1: the strength table under the radio - the call at 20 WPM through the 500 Hz filter
+    /// on 600 with the bench's 1 dB AGC overshoot, at 8, 10, 12, 16 and 24 dB over the noise.
+    /// </remarks>
+    /// <param name="db">How far the station sits over the noise.</param>
+    [Theory]
+    [InlineData(8)]
+    [InlineData(10)]
+    [InlineData(12)]
+    [InlineData(16)]
+    [InlineData(24)]
+    public void TheCallReadsAtEveryStrengthThroughTheRadio(double db)
+    {
+        const string Call = "CQ CQ DE N0CALL N0CALL K";
+        var samples = NarrownessReadsTheFiltersBandTests.ThroughTheFilter(Keyed(Call, _ => new Sending(20, 0), 5290 + (int)db, db, 1));
+        var r = ThePatternIsTheGateTests.Read(samples, Pitch, d => d.SetPassband(600, 500));
+
+        _output.WriteLine($"20 WPM at {db} dB through the filter, 1 dB AGC: {r.Candidates} candidates, {r.Stood} stood, {r.Printed} printed; reads `{r.Text}`");
+
+        Assert.Equal(Call, r.Text);
+    }
 }

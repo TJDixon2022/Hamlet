@@ -92,6 +92,11 @@ public sealed class ThePatternIsTheGateTests
         setUp?.Invoke(detector);
 
         var reader = new CwRunReader();
+
+        // The terminal tells the detector which sender it prints, as the app wires it (work instruction 529): the sender's own
+        // window opens on that sender and on nothing else.
+        detector.PrintedPitch = () => reader.StationPitchHz;
+
         var characters = new List<CwCharacter>();
         var printedMarks = 0;
         var sequence = 0L;

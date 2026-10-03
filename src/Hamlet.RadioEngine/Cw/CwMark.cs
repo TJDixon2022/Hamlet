@@ -102,4 +102,8 @@ public sealed record CwMarkShape(double Flatness, double Edges, double Narrownes
 /// <summary>The marks called since a reader last asked, and how much audio the detector has heard.</summary>
 /// <param name="Marks">The marks, in the order they were called.</param>
 /// <param name="HeardSeconds">The detector's audio clock now, in seconds.</param>
-public sealed record CwMarkBatch(IReadOnlyList<CwMark> Marks, double HeardSeconds);
+/// <param name="LateSeconds">
+/// How much later than a bin the detector calls the marks it calls now, in seconds: nought, or the sender's own window's
+/// extra lag while one is open (work instruction 529). A reader judges a silence from <paramref name="HeardSeconds"/> less this.
+/// </param>
+public sealed record CwMarkBatch(IReadOnlyList<CwMark> Marks, double HeardSeconds, double LateSeconds = 0);

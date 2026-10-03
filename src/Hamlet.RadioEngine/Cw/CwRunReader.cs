@@ -108,6 +108,10 @@ public sealed class CwRunReader
     {
         ArgumentNullException.ThrowIfNull(batch);
 
+        // **WHAT HAS BEEN CALLED, NOT WHAT HAS BEEN HEARD** (work instruction 529): a sender read through its own window
+        // has its marks called later than a bin calls them, by the window's delay, so a silence is judged that much later.
+        var heard = batch.HeardSeconds - batch.LateSeconds;
+
         foreach (var mark in batch.Marks.OrderBy(m => m.FromSeconds))
         {
             Take(mark);
@@ -116,13 +120,13 @@ public sealed class CwRunReader
         foreach (var sender in _senders)
         {
             if (sender.Open.Count > 0
-                && batch.HeardSeconds - sender.Open[^1].ToSeconds > sender.CharacterGapSeconds + sender.LongestMarkSeconds + CallingLagSeconds)
+                && heard - sender.Open[^1].ToSeconds > sender.CharacterGapSeconds + sender.LongestMarkSeconds + CallingLagSeconds)
             {
                 End(sender);
             }
         }
 
-        Print(batch.HeardSeconds);
+        Print(heard);
     }
 
     /// <summary>End every run and print what they read: the audio is over.</summary>

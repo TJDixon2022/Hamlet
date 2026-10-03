@@ -17,6 +17,9 @@ namespace Hamlet.RadioEngine.Tests.Cw;
 /// </remarks>
 public sealed class TheOwnersRecordingReadsTests
 {
+    // The reader's senders and their shapes before the last flush, for the report.
+    private static string LastSenders = string.Empty;
+
     private const string Sent = "FERCHAT<BT>BEST7V73<SK>KC4ZGPDEWA";
 
     private readonly ITestOutputHelper _output;
@@ -29,7 +32,7 @@ public sealed class TheOwnersRecordingReadsTests
         => Path.Combine(Path.GetDirectoryName(here)!, "..", "..", "fixtures", "cw", "captured", "cw-2026-10-02-200157.wav");
 
     /// <summary>The recording read as the app reads it: the text, the characters, and every mark that stood.</summary>
-    internal static (string Text, IReadOnlyList<CwCharacter> Characters, IReadOnlyList<CwMark> Marks, IReadOnlyList<(double At, double Line, string Clusters)> Lines) Read()
+    internal static (string Text, IReadOnlyList<CwCharacter> Characters, IReadOnlyList<CwMark> Marks, IReadOnlyList<(double At, double Line, string Clusters)> Lines, IReadOnlyList<CwMark> Candidates) Read()
     {
         var audio = WavAudio.Read(Wav());
         var detector = new CwEnvelopeDetector(audio.SampleRate);
@@ -37,6 +40,9 @@ public sealed class TheOwnersRecordingReadsTests
         detector.SetPassband(600, 500);
 
         var reader = new CwRunReader();
+
+        // The terminal tells the detector which sender it prints, as the app wires it.
+        detector.PrintedPitch = () => reader.StationPitchHz;
         var characters = new List<CwCharacter>();
         var sequence = 0L;
         var chunk = audio.SampleRate / 100;
@@ -46,7 +52,7 @@ public sealed class TheOwnersRecordingReadsTests
         reader.CharacterRead += c =>
         {
             characters.Add(c);
-            lines.Add((c.At.TotalSeconds, reader.StationWordLineSeconds, $"letter gaps {Ms(reader.StationLines?.LetterGaps)}, word gaps {Ms(reader.StationLines?.WordGaps)}"));
+            lines.Add((c.At.TotalSeconds, reader.StationWordLineSeconds, $"letter line {reader.StationLines?.CharacterSeconds * 1000:0} ms, gap dit {reader.StationLines?.GapDitSeconds * 1000:0} ms, inside gaps {Ms(reader.StationLines?.InsideGaps)}, letter gaps {Ms(reader.StationLines?.LetterGaps)}, word gaps {Ms(reader.StationLines?.WordGaps)}"));
         };
 
         for (var at = 0; at + chunk <= audio.Samples.Length; at += chunk)
@@ -59,11 +65,14 @@ public sealed class TheOwnersRecordingReadsTests
             reader.Read(batch);
         }
 
+        var shapes = string.Join("; ", reader.SenderShapes.Select(s => $"{s.PitchHz:0} Hz {s.Marks} marks{(s.Printed ? " printed" : string.Empty)}: {s.Shape}"));
+
         reader.Flush();
+        LastSenders = shapes;
 
         var text = string.Join(' ', string.Concat(characters.Select(c => c.Text)).Split(' ', StringSplitOptions.RemoveEmptyEntries));
 
-        return (text, characters, detector.MarksSince(0).Marks, lines);
+        return (text, characters, detector.MarksSince(0).Marks, lines, detector.CandidatesKept.ToList());
     }
 
     private static string Ms(IReadOnlyList<double>? gaps)
@@ -76,10 +85,11 @@ public sealed class TheOwnersRecordingReadsTests
     [Fact]
     public void TheOwnersRecordingReads()
     {
-        var (text, characters, marks, lines) = Read();
+        var (text, characters, marks, lines, candidates) = Read();
 
         _output.WriteLine($"sent `FER CHAT<BT> BEST 7V 73 <SK> KC4ZGP DEWA`");
         _output.WriteLine($"read `{text}`");
+        _output.WriteLine($"senders before the end: {LastSenders}");
         _output.WriteLine("characters: " + string.Concat(characters.Select(c => $"{c.Text}[{c.Pattern}]@{c.At.TotalSeconds:0.00} ")));
 
         CwMark? last = null;
@@ -90,6 +100,16 @@ public sealed class TheOwnersRecordingReadsTests
 
             _output.WriteLine($"  mark {m.FromSeconds:0.000} s, {(m.ToSeconds - m.FromSeconds) * 1000:0} ms, gap before {gap:0} ms, {m.PitchHz:0} Hz, level {m.LevelDb:0.0} dB{(m.Fitted ? ", fitted" : string.Empty)}");
             last = m;
+        }
+
+        // Work instruction 529, task 1: the candidates the single-mark gates passed for the 7 after the pause.
+        var seven = candidates.Where(c => c.FromSeconds >= 14.9 && c.ToSeconds <= 17.0).OrderBy(c => c.FromSeconds).ToList();
+
+        _output.WriteLine($"candidates 14.9 to 17.0 s: {seven.Count}");
+
+        foreach (var c in seven)
+        {
+            _output.WriteLine($"  candidate {c.FromSeconds:0.000} s, {(c.ToSeconds - c.FromSeconds) * 1000:0} ms, {c.PitchHz:0.0} Hz, level {c.LevelDb:0.0} dB{(c.Stood ? string.Empty : ", not stood")}");
         }
 
         // Task 3: the sender's own word line at each printed letter, with its letter and word cluster centres.
@@ -105,5 +125,123 @@ public sealed class TheOwnersRecordingReadsTests
         Assert.Equal(Sent, text.Replace(" ", string.Empty, StringComparison.Ordinal));
         Assert.Contains("KC4ZGP", text, StringComparison.Ordinal);
         Assert.InRange(final, 430, 580);
+    }
+
+    /// <remarks>
+    /// <para>**THE TOP OF ONE DAH THROUGH TWO WINDOWS** (work instruction 529, task 1, HM-DEC-233): the T of BEST, 11.48 to
+    /// 11.69 s, read hop by hop through the per-bin path's ten millisecond Hann window at the 650 and 675 Hz bins, and
+    /// through <see cref="CwSenderLane"/> tuned to the dah's own pitch with a cutoff from the sender's dit. Its top is
+    /// taken 20 ms in from either edge, and the lane's hops are taken back by its delay.</para>
+    /// <para>The pitch is measured here from the dah's own samples, the strongest of a 0.5 Hz scan from 600 to 725 Hz;
+    /// the dit is the shortest mark the reading found. Nothing is asserted: it is the measurement the unit starts from.</para>
+    /// </remarks>
+    [Fact]
+    public void TheTopOfADahThroughTwoWindows()
+    {
+        var audio = WavAudio.Read(Wav());
+        var rate = audio.SampleRate;
+        var x = audio.Samples;
+        var hop = rate / 200;
+        var window = 2 * hop;
+
+        double Goertzel(double hz, int from, int n, bool hann)
+        {
+            var c = 2 * Math.Cos(2 * Math.PI * hz / rate);
+            double s1 = 0, s2 = 0, sum = 0;
+
+            for (var i = 0; i < n; i++)
+            {
+                var w = hann ? 0.5 - (0.5 * Math.Cos(2 * Math.PI * (i + 0.5) / n)) : 1;
+                var s0 = (x[from + i] * w) + (c * s1) - s2;
+
+                s2 = s1;
+                s1 = s0;
+                sum += w;
+            }
+
+            return 2 * ((s1 * s1) + (s2 * s2) - (c * s1 * s2)) / (sum * sum);
+        }
+
+        var marks = Read().Marks;
+        var dit = marks.Select(m => m.ToSeconds - m.FromSeconds).Where(l => l > 0.05).Min();
+
+        double Scan(double from, double to)
+            => Enumerable.Range(0, 251).Select(k => 600 + (k * 0.5)).MaxBy(hz => Goertzel(hz, (int)(from * rate), (int)((to - from) * rate), false));
+
+        // The lane's level each hop, at its time on the audio: the sample it came out at, taken back by its delay.
+        List<(double At, double Db)> Lane(double pitchHz, out CwSenderLane lane)
+        {
+            lane = new CwSenderLane(rate);
+            lane.Tune(pitchHz, dit);
+
+            var levels = new List<(double, double)>();
+
+            for (var i = 0; i < (int)(12.2 * rate); i++)
+            {
+                lane.Push(x[i]);
+
+                if (i >= (int)(11.0 * rate) && i % hop == 0)
+                {
+                    levels.Add(((i / (double)rate) - lane.DelaySeconds, lane.LevelDb));
+                }
+            }
+
+            return levels;
+        }
+
+        // The dah: the loudest hop between 11.3 and 11.95 s on the lane, and out from it while within half amplitude.
+        (double From, double To) Edges(List<(double At, double Db)> levels)
+        {
+            var peak = levels.Select((l, k) => (l, k)).Where(p => p.l.At > 11.3 && p.l.At < 11.95).MaxBy(p => p.l.Db).k;
+            var line = levels[peak].Db - 6.02;
+            var a = peak;
+            var b = peak;
+
+            while (a > 0 && levels[a - 1].Db >= line)
+            {
+                a--;
+            }
+
+            while (b < levels.Count - 1 && levels[b + 1].Db >= line)
+            {
+                b++;
+            }
+
+            return (levels[a].At, levels[b].At);
+        }
+
+        var rough = Scan(11.3, 11.95);
+        var first = Edges(Lane(rough, out _));
+        var pitch = Scan(first.From, first.To);
+        var laneLevels = Lane(pitch, out var lane);
+        var (dahFrom, dahTo) = Edges(laneLevels);
+        var topFrom = dahFrom + 0.02;
+        var topTo = dahTo - 0.02;
+
+        (double Sd, double Range, int Hops) Top(IEnumerable<double> levels)
+        {
+            var l = levels.ToList();
+            var mean = l.Average();
+
+            return (Math.Sqrt(l.Average(v => (v - mean) * (v - mean))), l.Max() - l.Min(), l.Count);
+        }
+
+        // A bin's level is its ten millisecond window; the window's middle is its time.
+        IEnumerable<double> Bin(double hz)
+        {
+            for (var middle = (int)(topFrom * rate); middle <= (int)(topTo * rate); middle += hop)
+            {
+                yield return 10 * Math.Log10(Goertzel(hz, middle - (window / 2), window, true) + 1e-20);
+            }
+        }
+
+        var b650 = Top(Bin(650));
+        var b675 = Top(Bin(675));
+        var own = Top(laneLevels.Where(l => l.At >= topFrom && l.At <= topTo).Select(l => l.Db));
+
+        _output.WriteLine($"the T of BEST, found on the lane from {dahFrom:0.000} to {dahTo:0.000} s ({(dahTo - dahFrom) * 1000:0} ms at half amplitude); its top {topFrom:0.000} to {topTo:0.000} s; its pitch {pitch:0.0} Hz; the sender's dit {dit * 1000:0} ms");
+        _output.WriteLine($"  650 Hz bin, 10 ms Hann:   sd {b650.Sd:0.00} dB, range {b650.Range:0.00} dB over {b650.Hops} hops");
+        _output.WriteLine($"  675 Hz bin, 10 ms Hann:   sd {b675.Sd:0.00} dB, range {b675.Range:0.00} dB over {b675.Hops} hops");
+        _output.WriteLine($"  own window, {lane.CutoffHz:0.0} Hz cutoff: sd {own.Sd:0.00} dB, range {own.Range:0.00} dB over {own.Hops} hops; rise {lane.RiseSeconds * 1000:0.0} ms, delay {lane.DelaySeconds * 1000:0.0} ms");
     }
 }
