@@ -20,7 +20,10 @@ public sealed class TheOwnersRecordingReadsTests
     // The reader's senders and their shapes before the last flush, for the report.
     private static string LastSenders = string.Empty;
 
-    private const string Sent = "FER CHAT<BT> BEST 7V 73 <SK> KC4ZGP DEWA";
+    // **THE SENDER'S TIMING, NOT THE WORD** (work instruction 532): he paused 579 ms between the C and the H of CHAT, about
+    // 7.4 of his element gaps, longer than a word gap by Morse's 1:3:7 and longer than he leaves between some of his
+    // words. The element list showed it (-.-. [580] ....); CHAT was written because the word was known. Timing cannot know it.
+    private const string Sent = "FER C HAT<BT> BEST 7V 73 <SK> KC4ZGP DEWA";
 
     private readonly ITestOutputHelper _output;
 
@@ -89,7 +92,7 @@ public sealed class TheOwnersRecordingReadsTests
     {
         var (text, characters, marks, lines, candidates) = Read();
 
-        _output.WriteLine($"sent `FER CHAT<BT> BEST 7V 73 <SK> KC4ZGP DEWA`");
+        _output.WriteLine($"sent `FER CHAT<BT> BEST 7V 73 <SK> KC4ZGP DEWA`, spaced by its timing `{Sent}`");
         _output.WriteLine($"read `{text}`");
         _output.WriteLine($"senders before the end: {LastSenders}");
         _output.WriteLine("characters: " + string.Concat(characters.Select(c => $"{c.Text}[{c.Pattern}]@{c.At.TotalSeconds:0.00} ")));
@@ -128,7 +131,7 @@ public sealed class TheOwnersRecordingReadsTests
         Assert.Contains("KC4ZGP", text, StringComparison.Ordinal);
         Assert.InRange(final, 430, 580);
 
-        // **AND ITS SPACING** (work instruction 531): the whole text, spaces included, as the sender spaced it.
+        // **AND ITS SPACING** (work instructions 531 and 532): the whole text, spaces included, as the sender's timing spaced it.
         Assert.Equal(Sent, text);
     }
 
