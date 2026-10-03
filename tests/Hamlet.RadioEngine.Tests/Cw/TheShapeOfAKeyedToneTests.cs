@@ -49,6 +49,22 @@ public sealed class TheShapeOfAKeyedToneTests
         return detector.MarksSince(0).Marks;
     }
 
+    /// <summary>
+    /// Every candidate the single-mark gates passed, stood or not (work instruction 532, task 5): what those gates are
+    /// measured by now that noise agreeing within half a bin stands nothing at all.
+    /// </summary>
+    private static IReadOnlyList<CwMark> Candidates(float[] samples, bool edges = true, bool narrow = true, bool shape = true)
+    {
+        var detector = new CwEnvelopeDetector(Rate) { MarksNeedEdges = edges, MarksNeedNarrowness = narrow, MarksNeedShape = shape };
+
+        for (var at = 0; at + Chunk <= samples.Length; at += Chunk)
+        {
+            detector.Process(samples.AsSpan(at, Chunk));
+        }
+
+        return detector.CandidatesKept;
+    }
+
     /// <summary>The call's own marks: within a bin of its pitch and within 6 dB of the loudest there, as unit 498 picks them.</summary>
     private static List<CwMark> CallsOwn(IReadOnlyList<CwMark> marks)
     {
@@ -69,10 +85,11 @@ public sealed class TheShapeOfAKeyedToneTests
     {
         var samples = NoiseAlone();
         var seconds = samples.Length / (double)Rate;
-        var older = Marks(samples, edges: false, narrow: false, shape: false).Count;
-        var edged = Marks(samples, narrow: false, shape: false).Count;
-        var narrow = Marks(samples, shape: false).Count;
-        var shaped = Marks(samples).Count;
+        // **CANDIDATES, NOT MARKS THAT STOOD** (work instruction 532, task 5): noise agreeing within half a bin stands nothing.
+        var older = Candidates(samples, edges: false, narrow: false, shape: false).Count;
+        var edged = Candidates(samples, narrow: false, shape: false).Count;
+        var narrow = Candidates(samples, shape: false).Count;
+        var shaped = Candidates(samples).Count;
 
         _output.WriteLine($"thirty seconds of loud noise: passing the older tests {older}, with edges {edged}, narrow {narrow}, inside the shape {shaped}");
         _output.WriteLine($"marks handed out a second: {narrow / seconds:0.0} before, {shaped / seconds:0.0} after");
@@ -92,7 +109,8 @@ public sealed class TheShapeOfAKeyedToneTests
         // The per-hop bars' own shape is what is measured; a rectangle the fit found has none (work instruction 516).
         var real = CallsOwn(Marks(CleanCall(), shape: false)).Where(m => !m.Fitted).ToList();
         var weak = CallsOwn(Marks(WeakCall(), shape: false)).Where(m => !m.Fitted).ToList();
-        var noise = Marks(NoiseAlone(), shape: false);
+        // The noise is the candidates the single-mark gates passed (work instruction 532, task 5): it stands nothing now.
+        var noise = Candidates(NoiseAlone(), shape: false);
 
         void Print(string name, IReadOnlyList<CwMark> marks)
         {

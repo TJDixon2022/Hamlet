@@ -489,6 +489,18 @@ internal sealed class CwPatternGate
     public const double QuieterShare = 2;
 
     /// <summary>
+    /// How far a mark's pitch may sit from its sequence's own and agree with it: half a bin either side, one bin's width
+    /// around the sequence's pitch (work instruction 532, task 5, HM-DEC-236).
+    /// </summary>
+    /// <remarks>
+    /// A bin either side was right while every mark's pitch was a bin's centre: it took the bin and its two neighbours.
+    /// Measured to the hertz, a mark's pitch fills that whole span, twice a bin wide, and noise marks scattered across it
+    /// were grouped into sequences that stood: 44 in thirty seconds of loud noise. A keyed station's own marks sit within
+    /// a few hertz of one another.
+    /// </remarks>
+    public const double AgreeHz = CwEnvelopeDetector.BinSpacingHz / 2;
+
+    /// <summary>
     /// How far a gap inside a letter may run, as a share of the sender's dit: two, between Morse's one
     /// dit inside a letter and three between letters, with the detector's smear on the long side (work
     /// instruction 511). The author's, overrulable.
@@ -642,7 +654,7 @@ internal sealed class CwPatternGate
             var heights = _recent.Select(r => r.OwnContrastDb).Where(double.IsFinite).OrderBy(c => c).ToList();
             var height = heights.Count > 0 ? heights[heights.Count / 2] : double.NaN;
 
-            return Math.Abs(m.PitchHz - pitch) <= CwEnvelopeDetector.BinSpacingHz
+            return Math.Abs(m.PitchHz - pitch) <= AgreeHz
                 && Math.Abs(m.LevelDb - level) <= CwSenderGate.LevelToleranceDb(height);
         }
 
@@ -663,7 +675,7 @@ internal sealed class CwPatternGate
 
             var pitch = _recent.Average(r => r.PitchHz);
 
-            if (Math.Abs(m.PitchHz - pitch) > CwEnvelopeDetector.BinSpacingHz)
+            if (Math.Abs(m.PitchHz - pitch) > AgreeHz)
             {
                 return false;
             }

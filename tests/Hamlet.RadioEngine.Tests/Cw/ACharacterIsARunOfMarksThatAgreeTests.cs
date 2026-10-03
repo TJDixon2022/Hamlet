@@ -427,6 +427,22 @@ public sealed class ACharacterIsARunOfMarksThatAgreeTests
         return detector.MarksSince(0).Marks;
     }
 
+    /// <summary>
+    /// Every candidate the single-mark gates passed, stood or not (work instruction 532, task 5): what those gates are
+    /// measured by now that noise agreeing within half a bin stands nothing at all.
+    /// </summary>
+    private static IReadOnlyList<CwMark> Candidates(float[] samples, bool edges, bool narrow = true)
+    {
+        var detector = new CwEnvelopeDetector(Rate) { MarksNeedEdges = edges, MarksNeedNarrowness = narrow, MarksNeedShape = false };
+
+        for (var at = 0; at + Chunk <= samples.Length; at += Chunk)
+        {
+            detector.Process(samples.AsSpan(at, Chunk));
+        }
+
+        return detector.CandidatesKept;
+    }
+
     /// <remarks>
     /// Case 1 of work instruction 497, and its reason: thirty seconds of loud noise, the bars that
     /// pass every test the tree already had - height, duration, flatness, delivered as marks - and
@@ -436,8 +452,10 @@ public sealed class ACharacterIsARunOfMarksThatAgreeTests
     public void MostNoiseBarsHaveNoEdges()
     {
         var samples = NoiseAlone();
-        var passing = Marks(samples, edges: false, narrow: false).Count;
-        var edged = Marks(samples, edges: true, narrow: false).Count;
+        // **CANDIDATES, NOT MARKS THAT STOOD** (work instruction 532, task 5): noise agreeing within half a bin stands nothing,
+        // so the edge test is measured on what the single-mark gates pass.
+        var passing = Candidates(samples, edges: false, narrow: false).Count;
+        var edged = Candidates(samples, edges: true, narrow: false).Count;
 
         _output.WriteLine($"thirty seconds of loud noise: bars passing every other test {passing}, of them with edges {edged}");
 
