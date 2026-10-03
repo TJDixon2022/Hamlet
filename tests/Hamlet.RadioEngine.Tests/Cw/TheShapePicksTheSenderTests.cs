@@ -290,6 +290,8 @@ public sealed class TheShapePicksTheSenderTests
     /// Case 4: a fist at 24 dB at 625 is being printed when a clean sender at 825 begins mid-call. The fist
     /// is printed whole, nothing of the clean one before the fist falls silent, and then the clean one.
     /// The switch time is the clean one's first letter less the fist's last.
+    /// <para>Since work instruction 533 (HM-DEC-237) the clean one prints from its first letter that stood, so "after"
+    /// is the order letters are printed in, not when they were sent: its earlier letters follow the fist's last.</para>
     /// </remarks>
     [Fact]
     public void ABetterShapeTakesTheTerminalAtTheNextSilence()
@@ -323,7 +325,7 @@ public sealed class TheShapePicksTheSenderTests
 
         Assert.True(Enumerable.Range(1, words.Length).Any(k => string.Concat(words.Take(k)) == fistText), $"the fist printed `{fistText}`, not whole words of its call");
         Assert.True(cleanLetters.Count > 0, "the clean sender is printed after the fist falls silent");
-        Assert.True(cleanLetters.Min(l => l.Seconds) > fistLetters.Max(l => l.Seconds), "the clean sender is printed only after the fist's last letter");
+        Assert.True(run.Letters.FindIndex(l => Math.Abs(l.PitchHz - 825) <= 50) > run.Letters.FindLastIndex(l => Math.Abs(l.PitchHz - 625) <= 50), "the clean sender is printed only after the fist's last letter");
     }
 
 

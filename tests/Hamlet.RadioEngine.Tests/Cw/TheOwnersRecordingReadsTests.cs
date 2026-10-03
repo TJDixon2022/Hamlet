@@ -31,13 +31,13 @@ public sealed class TheOwnersRecordingReadsTests
     /// <param name="output">Where the reading and its marks are printed.</param>
     public TheOwnersRecordingReadsTests(ITestOutputHelper output) => _output = output;
 
-    private static string Wav([System.Runtime.CompilerServices.CallerFilePath] string here = "")
-        => Path.Combine(Path.GetDirectoryName(here)!, "..", "..", "fixtures", "cw", "captured", "cw-2026-10-02-200157.wav");
+    internal static string Wav(string name = "cw-2026-10-02-200157", [System.Runtime.CompilerServices.CallerFilePath] string here = "")
+        => Path.Combine(Path.GetDirectoryName(here)!, "..", "..", "fixtures", "cw", "captured", name + ".wav");
 
     /// <summary>The recording read as the app reads it: the text, the characters, and every mark that stood.</summary>
-    internal static (string Text, IReadOnlyList<CwCharacter> Characters, IReadOnlyList<CwMark> Marks, IReadOnlyList<(double At, double Line, string Clusters)> Lines, IReadOnlyList<CwMark> Candidates) Read()
+    internal static (string Text, IReadOnlyList<CwCharacter> Characters, IReadOnlyList<CwMark> Marks, IReadOnlyList<(double At, double Line, string Clusters)> Lines, IReadOnlyList<CwMark> Candidates) Read(string name = "cw-2026-10-02-200157")
     {
-        var audio = WavAudio.Read(Wav());
+        var audio = WavAudio.Read(Wav(name));
         var detector = new CwEnvelopeDetector(audio.SampleRate);
 
         detector.SetPassband(600, 500);

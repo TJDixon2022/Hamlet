@@ -1,0 +1,79 @@
+captured   2026-10-03 14:39:07 UTC
+audioSeen  37077120 samples
+fingerprint e46426be34e5
+seconds    30.0
+sampleRate 48000
+frequency  7061900 Hz  (read from the radio a moment ago)
+band       40 m  (from the frequency the radio reported)
+broadcast  the radio volunteered nothing while this recording was being made, and the setting reads on; 67 of 83231 frames since the link came up were the radio announcing something
+
+inputPeak  -13.1 dBFS  (over the whole recording)
+meterPeak  -13.3 dBFS  (the moment it was kept)
+inputFloor -21.9 dBFS  (the level meter's running floor at the moment it was kept, carried across everything heard, falling quickly to a quiet stretch and rising slowly to a loud one; not a figure about this recording alone)
+clipping   False  (over the 0.2 seconds the level meter last measured when it was kept, the stretch meterPeak is over; not the whole recording)
+toneHz     525.0 Hz  (HYPOTHESIS, NOT PROVED NOW: keying was found at this pitch earlier, the centre of the survey bin it was admitted in, and the survey's latest verdict does not confirm it. The number is held, not measured from keying now)
+tonePeak   33.1  (a figure about this recording: over the 30.0 seconds in this file, the highest the tone at 525.0 Hz stood above the noise beside it, in dB)
+heldPeak   31.1  (the highest the tracked tone ever stood above the noise beside it, held and decaying across everything heard since listening started; not a figure about this recording, and the one the roster's tonePeakDb column carries)
+inThis     0 characters emitted, 0 unsure, 0 elements seen, 0 resolved  (in the 30.0 seconds of audio in this file)
+unkeyed    no  (the pitch being followed now is one the survey admitted keying at; 2 characters reached the screen since the decoder started listening, about 14 minutes ago, from whatever pitch was being followed at the time)
+elements   4 seen, 4 resolved  (since the decoder started listening, about 14 minutes ago)
+characters 2 emitted, 0 unsure  (since the decoder started listening, about 14 minutes ago)
+decoderWpm none, not proved (the window read nothing; the search's winner over a window that read nothing was 18 WPM, which describes nobody)
+text       AA
+textCovers everything read since the decoder started listening, about 14 minutes ago
+spanLlr    unmeasured (no character carried a span ratio)
+arbiter    2 characters, each with both readings of its span (since the decoder started listening, about 14 minutes ago)
+           A:unrecorded A:unrecorded
+competing  none found, and the survey found nothing else either — which is not the same as the frequency being clear
+reading    18 WPM won out of 8 to 40, 1.14 better than silence per hop against a gate of 1.40; the speed is none: the window read nothing  (this is the last 12 second window alone, as it stood when this sheet was written just after the recording was saved, and not the whole recording)
+keying     keying (held through a quiet stretch, so nothing was measured)  (an independent sweep of 300 to 900 Hz in 25 Hz steps over the 6 seconds the meter last read before the press, taking the same audio as the decoder and the tracker's own range, and none of the decoder's code or its choice of pitch)
+duty       28.9%  (of the 30.0 seconds in this file, the key was down at 525.0 Hz)
+elementHz  each element's own pitch not measured  (read again for this line, the audio in this file gave no characters, which is too few elements to say anything about how they spread; the counts above are for the stretch they name)
+
+sinceLast  2 characters, 4 elements  (since the decoder started listening, about 14 minutes ago; this is the first capture of the session)
+
+Frequency            7.061900 MHz
+Mode                 CW
+DataMode             off
+FilterSelection      FIL2
+FilterBandwidth      500 Hz
+SMeter               S3
+TransmitStatus       receiving
+Overflow             not overloading
+TwinPbtOuter         unknown
+TwinPbtInner         undocumented
+Rit                  undocumented
+Swr                  unknown
+PowerOut             unknown
+RfPower              31%
+RfGain               100%
+Squelch              0%
+SquelchStatus        open
+Agc                  FAST
+Preamp               off
+Attenuator           off
+NoiseBlanker         off
+NoiseBlankerLevel    50%
+NoiseReduction       off
+NoiseReductionLevel  28%
+AutoNotch            off
+ManualNotch          off
+BreakIn              full
+KeyerSpeed           20 WPM
+CwPitch              600 Hz
+AccUsbOutputSelect   AF
+AccUsbAfLevel        80%
+NotchPosition        unknown
+FilterShape          unknown
+AfLevel              unknown
+RfSqlFunction        unknown
+BreakInDelay         unknown
+AntennaTuner         unknown
+Alc                  unknown
+AccUsbSquelch        open regardless of squelch
+Split                off
+ScopeOn              on
+ScopeOutput          on
+CivUsbPort           unknown
+CivTransceive        on
+Vfo                  undocumented

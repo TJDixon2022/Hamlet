@@ -341,6 +341,10 @@ public sealed class CwSenderGate
         // shape of nought prints nothing.
         var qualified = _senders
             .Where(s => s.Ended.Count(r => r.Length >= 2 && r.Any(m => m.Keyed)) >= QualifyingRuns && s.TwoKindsSeen && s.LetterGapSeconds is not null)
+            // **A SENDER SILENT PAST ITS RELEASE IS NOT A CANDIDATE** (work instruction 533, HM-DEC-237): the silence that let
+            // it go keeps it from being picked again. On the owner's QSO of 2026-10-03 the first station, released, still
+            // outranked the reply on shape, was picked again, released again, and the reply never had the terminal.
+            .Where(s => s == _station || !(double.IsFinite(heardSeconds) && s.Open.Count == 0 && heardSeconds - s.LastToSeconds > s.SilenceSeconds))
             .Select(s => (Sender: s, Score: s.Shape.Score))
 
             // A sender whose marks and gaps do not sound like code - under the line the light uses - is not a sender
@@ -442,15 +446,12 @@ public sealed class CwSenderGate
 
             station.PrintedRuns++;
 
-            // What another sender was printed over is not printed afterward: the terminal runs
-            // forward in time and nothing is inserted behind what it shows.
-            if (run[0].FromSeconds <= _printedThrough)
-            {
-                continue;
-            }
-
+            // **THE NEW SENDER'S LETTERS ARE KEPT** (work instruction 533, HM-DEC-237): a sender given the terminal prints the
+            // letters it had already sent since it stood, in order, after what is printed, then its live letters. They used to
+            // be dropped as printed over, and in a QSO that fell at the start of every reply. Nothing printed is revised: the
+            // backlog follows the first sender's text.
             Raise(station, run);
-            _printedThrough = run[^1].ToSeconds;
+            _printedThrough = Math.Max(_printedThrough, run[^1].ToSeconds);
         }
     }
 
