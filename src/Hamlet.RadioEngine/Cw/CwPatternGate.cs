@@ -154,7 +154,13 @@ internal sealed class CwPatternGate
         // gaps sit under five dits, a gap of five dits is a word whatever the letter cluster says. A hand that drifts from
         // 13 to 18 WPM carries its 13 WPM letter gaps for a while, their √(7/3) line sat over its new 5.8-dit word gaps, and
         // BROWN FOX read as one word.
+        //
+        // **AND RETIRES WHERE THE SENDER'S OWN WORD CLUSTER IS TRUSTED** (work instruction 529, task 2, HM-DEC-233): from
+        // three word gaps, its pauses out, the line is the boundary between its own letter and word clusters; before that the
+        // floor and √(7/3) of its letter centre stand. The owner's sender spaced letters to 5.7 dits and words from 7.7, and
+        // five dits split KC4ZGP; with the floor gone everywhere, the SKCC straight key's first letters split.
         var wordLine = letterMean is not { } l ? gapDit * UnmeasuredWordRatio
+            : word is { Count: >= MeasuredRunGaps } ? CwRunReader.Boundary(CwRunReader.LogStats(letter!), CwRunReader.LogStats(word))
             : word is null && l < fiveDits ? fiveDits
             : l < fiveDits ? Math.Min(fiveDits, l * LetterWordRatio)
             : l * LetterWordRatio;
@@ -238,9 +244,64 @@ internal sealed class CwPatternGate
             : runGaps.Count > 0 ? runGaps.Min() / 3
             : double.NaN;
 
+    private static (List<double>? Letter, List<double>? Word) GapClusters(IReadOnlyList<double> runGaps, double line)
+        => LetterAndWordGaps(runGaps.Where(g => !(g < line)).ToList());
+
     /// <summary>
-    /// A sender's letter gaps and word gaps as two clusters, or nulls before it has shown <see cref="MeasuredRunGaps"/>
-    /// gaps between runs (work instructions 501, 504, 510 and 513; moved here from the reader by work instruction 525).
+    /// **A GAP LONGER THAN THREE OF THE SENDER'S WORD GAPS IS A PAUSE** (work instruction 529, task 2, HM-DEC-233): the
+    /// sender stopping, not spacing, and it is not counted in its word cluster.
+    /// </summary>
+    /// <remarks>
+    /// The sender's word gap is seven units where its letter gap is three, Farnsworth stretched or not (unit 501), so it
+    /// is 7/3 of the centre of the sender's own letter gaps. Nothing in Morse spacing is longer than a word gap, and a
+    /// hand stretches one kind of gap by less than a factor of two (unit 513's widest fist, a quarter in log-length either
+    /// side); three of them is past anything a hand spaces with. On the owner's recording of 2026-10-02 the 2.3 s silence
+    /// before BEST was taken as the sender's only word gap and pulled the word line to 1.6 s.
+    /// </remarks>
+    public const double PauseWordGaps = 3;
+
+    /// <summary>
+    /// A sender's letter gaps and word gaps as two clusters, the gaps given being those above its element line; nulls
+    /// before it has shown <see cref="MeasuredRunGaps"/>, and a null word cluster where none shows (work instruction 529,
+    /// task 2).
+    /// </summary>
+    /// <param name="gaps">The gaps above the element line, in any order.</param>
+    /// <returns>The letter cluster, and the word cluster where one shows.</returns>
+    /// <remarks>
+    /// <para>**SPLIT, THEN THE PAUSES OUT, THEN SETTLED AGAIN.** The gaps are split as before (<see cref="Split"/>); the
+    /// split's letter centre gives the sender's word gap, and every gap longer than <see cref="PauseWordGaps"/> of those is
+    /// a pause, taken out before the two clusters are settled again from the first split.</para>
+    /// <para>**A WORD CLUSTER IS TRUSTED FROM THREE GAPS** (<see cref="MeasuredRunGaps"/>), and that is decided where the
+    /// word line is drawn (<see cref="GapLines"/>): two gaps that agree are not yet a sender's word spacing.</para>
+    /// </remarks>
+    internal static (List<double>? Letter, List<double>? Word) LetterAndWordGaps(IReadOnlyList<double> gaps)
+    {
+        var sorted = gaps.OrderBy(g => g).ToList();
+
+        if (sorted.Count < MeasuredRunGaps)
+        {
+            return (null, null);
+        }
+
+        var (letter, word) = Split(sorted);
+        var pause = PauseWordGaps * LetterWordRatio * LetterWordRatio * Centre(letter);
+        var kept = sorted.Where(g => g <= pause).ToList();
+
+        if (kept.Count < sorted.Count && kept.Count >= MeasuredRunGaps)
+        {
+            // Settled again from the first split, its pauses out: the walk alone finds no jump in a hand whose letter and
+            // word gaps run into each other, and the first split already parted them.
+            var words = word.Where(g => g <= pause).ToList();
+
+            (letter, word) = words.Count > 0 ? Settle(letter.Where(g => g <= pause).ToList(), words) : Split(kept);
+        }
+
+        return word.Count > 0 ? (letter, word) : (letter, null);
+    }
+
+    /// <summary>
+    /// The gaps, sorted, as a letter and a word cluster (work instructions 501, 504, 510 and 513; moved here from the reader
+    /// by work instruction 525): the word cluster empty where none shows.
     /// </summary>
     /// <remarks>
     /// <para>**A GAP UNDER THE SENDER'S OWN LETTER LINE IS NOT A LETTER GAP** (unit 510, HM-DEC-214): runs closed
@@ -254,15 +315,8 @@ internal sealed class CwPatternGate
     /// where a walk finds no clean jump, so the two clusters are settled so each gap is the kind it sits fewer
     /// spreads from.</para>
     /// </remarks>
-    private static (List<double>? Letter, List<double>? Word) GapClusters(IReadOnlyList<double> runGaps, double line)
+    private static (List<double> Letter, List<double> Word) Split(List<double> sorted)
     {
-        var sorted = runGaps.Where(g => !(g < line)).OrderBy(g => g).ToList();
-
-        if (sorted.Count < MeasuredRunGaps)
-        {
-            return (null, null);
-        }
-
         var clusters = new List<List<double>> { new() { sorted[0] } };
 
         for (var i = 1; i < sorted.Count; i++)
@@ -281,14 +335,43 @@ internal sealed class CwPatternGate
 
         if (at + 1 >= clusters.Count)
         {
-            return (clusters[at], null);
+            return (clusters[at], new List<double>());
         }
 
-        var (letter, word) = CwRunReader.Refine(clusters[at], clusters[at + 1]);
+        var (letter, word) = Settle(clusters[at], clusters[at + 1]);
 
-        return letter.Count == 0 ? (clusters[at], clusters[at + 1])
-            : word.Count == 0 ? (letter, null)
-            : (letter, word);
+        return letter.Count == 0 ? (clusters[at], clusters[at + 1]) : (letter, word);
+    }
+
+    // The centre of some lengths: their geometric mean.
+    private static double Centre(IReadOnlyList<double> lengths) => Math.Exp(lengths.Average(l => Math.Log(l)));
+
+    /// <summary>
+    /// Two clusters of gaps settled by the nearer centre (unit 513), each side weighed by its own spread once it has shown
+    /// <see cref="MeasuredRunGaps"/> gaps and by none before (work instruction 529): a pause alone above a hand's gaps has no
+    /// spread of its own, and weighed by the floor spread it drew the boundary to itself and parted nothing.
+    /// </summary>
+    private static (List<double> Low, List<double> High) Settle(List<double> low, List<double> high)
+    {
+        var all = low.Concat(high).OrderBy(g => g).ToList();
+
+        for (var i = 0; i < 8 && low.Count > 0 && high.Count > 0; i++)
+        {
+            var boundary = low.Count >= MeasuredRunGaps && high.Count >= MeasuredRunGaps
+                ? CwRunReader.Boundary(CwRunReader.LogStats(low), CwRunReader.LogStats(high))
+                : Math.Sqrt(Centre(low) * Centre(high));
+            var next = all.Where(g => g < boundary).ToList();
+
+            if (next.Count == low.Count)
+            {
+                break;
+            }
+
+            low = next;
+            high = all.Skip(next.Count).ToList();
+        }
+
+        return (low, high);
     }
 
     private static double Median(IReadOnlyList<double> values)
