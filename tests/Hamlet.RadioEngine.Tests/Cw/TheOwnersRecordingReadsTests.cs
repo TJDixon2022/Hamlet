@@ -20,7 +20,7 @@ public sealed class TheOwnersRecordingReadsTests
     // The reader's senders and their shapes before the last flush, for the report.
     private static string LastSenders = string.Empty;
 
-    private const string Sent = "FERCHAT<BT>BEST7V73<SK>KC4ZGPDEWA";
+    private const string Sent = "FER CHAT<BT> BEST 7V 73 <SK> KC4ZGP DEWA";
 
     private readonly ITestOutputHelper _output;
 
@@ -81,7 +81,7 @@ public sealed class TheOwnersRecordingReadsTests
         => gaps is null ? "none" : "[" + string.Join(", ", gaps.Select(g => (g * 1000).ToString("0", System.Globalization.CultureInfo.InvariantCulture))) + "] ms";
 
     /// <remarks>
-    /// The letters read as sent, spaces ignored, and no space inside KC4ZGP. The text, the characters and every mark
+    /// The letters read as sent, no space inside KC4ZGP, and the whole text with its spaces (work instruction 531). The text, the characters and every mark
     /// that stood are printed, and the sender's word line with its two clusters at each letter (task 3).
     /// </remarks>
     [Fact]
@@ -124,9 +124,12 @@ public sealed class TheOwnersRecordingReadsTests
 
         _output.WriteLine($"the word line for this sender: {final:0} ms");
 
-        Assert.Equal(Sent, text.Replace(" ", string.Empty, StringComparison.Ordinal));
+        Assert.Equal(Sent.Replace(" ", string.Empty, StringComparison.Ordinal), text.Replace(" ", string.Empty, StringComparison.Ordinal));
         Assert.Contains("KC4ZGP", text, StringComparison.Ordinal);
         Assert.InRange(final, 430, 580);
+
+        // **AND ITS SPACING** (work instruction 531): the whole text, spaces included, as the sender spaced it.
+        Assert.Equal(Sent, text);
     }
 
     /// <remarks>

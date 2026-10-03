@@ -162,11 +162,17 @@ internal sealed class CwPatternGate
         // three word gaps, its pauses out, the line is the boundary between its own letter and word clusters; before that the
         // floor and √(7/3) of its letter centre stand. The owner's sender spaced letters to 5.7 dits and words from 7.7, and
         // five dits split KC4ZGP; with the floor gone everywhere, the SKCC straight key's first letters split.
+        //
+        // **NEVER UNDER MORSE'S OWN MIDPOINT UNTIL THEN** (work instruction 531, task 2, HM-DEC-235): until the word cluster is
+        // trusted, the line is never under √21 of the sender's element gaps (their centre once three show, its gap dits
+        // before), the midpoint between a letter gap of three and a word
+        // gap of seven. In a transmission's first seconds it was drawn from one or two letter gaps and landed low, and the
+        // owner's 3.8-dit gap after the F of FER read as a word.
         var wordLine = letterMean is not { } l ? gapDit * UnmeasuredWordRatio
             : word is { Count: >= MeasuredRunGaps } ? CwRunReader.Boundary(CwRunReader.LogStats(letter!), CwRunReader.LogStats(word))
-            : word is null && l < fiveDits ? fiveDits
+            : Math.Max((inside.Count >= MeasuredRunGaps ? Centre(inside) : gapDit) * UnmeasuredWordRatio, word is null && l < fiveDits ? fiveDits
             : l < fiveDits ? Math.Min(fiveDits, l * LetterWordRatio)
-            : l * LetterWordRatio;
+            : l * LetterWordRatio);
 
         return new CwGapLines(gapDit, character, wordLine, inside, letter, word);
     }
