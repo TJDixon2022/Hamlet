@@ -4,6 +4,69 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-233
+date: 2026-10-02
+refs: work instruction 529, src/Hamlet.RadioEngine/Cw/CwSenderLane.cs, src/Hamlet.RadioEngine/Cw/CwEnvelopeDetector.cs, src/Hamlet.RadioEngine/Cw/CwPatternGate.cs, src/Hamlet.RadioEngine/Cw/CwRunReader.cs, src/Hamlet.RadioEngine/Cw/CwMark.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheOwnersRecordingReadsTests.cs, tests/Hamlet.RadioEngine.Tests/Cw/ThePatternIsTheGateTests.cs
+---
+
+**A standing sender is measured through a window that fits it.** Work instruction 529's headline. R88 stays lifted
+for `cw-2026-10-02-200157.wav` alone.
+
+**The measurement.** The T of BEST, found on the new envelope at 11.570 to 11.775 s, its top 20 ms in from each edge.
+- On Hamlet's 650 and 675 Hz bins, through the ten millisecond window, it wobbled 3.4 and 3.7 dB from top to bottom,
+  0.8 dB standard deviation.
+- Mixed at its own pitch, 662.5 Hz, and low-passed at a cutoff from its dit, it wobbled 1.5 dB, 0.4 dB standard
+  deviation: the 0.4 the web session measured.
+- The order's window for that dah, 11.48 to 11.69 s, reaches into the gap before it, which alone reads 15 dB of range.
+
+**The window** (`CwSenderLane`).
+- Mixed at the sender's pitch, measured on its own samples, and low-passed by a fourth-order Butterworth, causal.
+- **The cutoff, author's:** where the filter's 10 to 90 per cent rise is a quarter of the sender's dit, so a dit's top
+  stays flat over its middle half. On the recording the dit read 74 ms: 19.5 Hz, a 19.8 ms rise.
+- **The delay:** an edge's half-amplitude crossing comes out 23.0 ms late on the recording, taken off every mark's times.
+- It follows the sender's pitch and dit at each mark it takes.
+
+**Where it opens.** Only on the standing sender the terminal prints. A noise sequence stood on one bench case, and a
+narrow low-pass smooths noise into humps a dit long; noise never prints, so noise is read as before. Before a sender
+is printed the per-bin path finds every mark, unchanged. The shared bench helper now tells the detector which sender
+it prints, as the app does.
+
+**Its marks.** The stretches over half the sender's amplitude less one flat-top wobble, timed at half their own top.
+- They meet the same tests a bin's bar meets: key-up, edges (read over two rises), own height, narrowness, and the
+  shape, whose flatness is the flatness test.
+- Narrowness is also read on the mark's own samples, the pitch against 150 Hz either side, so a click that the
+  low-pass stretches into a dit-long hump stays out.
+- The grid leaves the sender's pitch alone while the window is open, its fitted rectangles too.
+- The reader judges a silence from what has been called (`CwMarkBatch.LateSeconds`), since the window calls a mark
+  later than a bin does.
+- The run-and-bar machinery was not used on this trace: its bar must stand wholly above the runs beside it, and the
+  window's slower rise put a rise's last hops inside a top's range, refusing whole dits.
+
+**A pause is not a word** (task 2).
+- A gap longer than three of the sender's word gaps, its word gap being 7/3 of its own letter centre, is a pause and
+  is not counted in its word cluster.
+- The clusters settle with equal spreads until each side has shown three gaps, since a lone pause has no spread of
+  its own and drew the boundary to itself.
+
+**The five-dit floor retires where the sender's own word cluster is trusted, from three gaps**, and the line there is
+the boundary between its letter and word clusters. **Before that the floor stands**, with √(7/3) of the letter centre.
+Retired everywhere, the SKCC straight key read `S KCC` and `SKCCDE`, so the floor was not retired there, as the order
+said. On the recording the word line comes out at 508 ms, between 430 and 580, and KC4ZGP holds together.
+
+**What reads.**
+- The recording: `F ER C H AT<BT> BEST MSV 73 <SK> KC4ZGP`. Before this unit it read
+  `F ER C H AT<BT> BESEMSV E Y <SK> KC4 Z MPDEWA`.
+- The radio strength table at 8 dB reads `N0CALL` where it read `N0CEELL`, and the weak 25-35-25 WPM row at 1 dB
+  reads whole.
+- Every other bench case reads as before.
+
+**Left.**
+- The 7 before V reads M S: its 120 ms inner gap is over the reader's letter line of 100 to 114 ms.
+- The closing DEWA is lost: the reader lets the sender go when its shape falls under 0.1, and this hand's letter gaps,
+  2 to 5.7 dits with no jump to a word, score nought for tightness. Scoring them on task 2's split restored DEWA and
+  read the straight key `SKCCDE`, so it is not kept.
+
+---
 id: HM-DEC-232
 date: 2026-10-02
 refs: work instruction 528, src/Hamlet.RadioEngine/Cw/CwEnvelopeDetector.cs, src/Hamlet.RadioEngine/Cw/CwRunReader.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheOwnersRecordingReadsTests.cs, tests/Hamlet.RadioEngine.Tests/Cw/AHandIsReadAgainstItselfTests.cs, tests/fixtures/cw/captured/cw-2026-10-02-200157.wav

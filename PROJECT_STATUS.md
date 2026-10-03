@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: COMPLETED
-TASK: 5 of 5
-WORK_INSTRUCTION: 528 - read the recording the owner made (run by hand)
+TASK: 3 of 3
+WORK_INSTRUCTION: 529 - look at a sender through a window that fits it (run by hand)
 BALL: tim
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-10-02T17:19:48-04:00
-NOTE: Unit 528 done - CHAT reads, word-line floor needs a ruling
+UPDATED: 2026-10-02T21:19:16-04:00
+NOTE: Unit 529 done - own window in; floor retires where word gaps are trusted
 
 ---
 

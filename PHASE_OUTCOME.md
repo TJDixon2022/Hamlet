@@ -1646,3 +1646,31 @@ It broke six existing cases: BROWNFOX and 2024AND on the drifting hand, and DEN0
 TheOwnersRecordingReads is red, reading `F ER C H AT<BT> BESEMSV E Y <SK> KC4 Z MPDEWA`.
 
 Build 0 warnings 0 errors. App carry-forward 278 of 278.
+
+## UNIT 529 - STEP 12
+
+Run by hand, outside the loop:
+- SESSION.lock taken and released;
+- nothing written to RUN_LEDGER.md and nothing under tools\arbiter\ touched;
+- no box ticked and no ruling added to either plan;
+- no scratch file committed;
+- nothing keyed or transmitted. R88 stayed lifted for cw-2026-10-02-200157.wav alone, and no other recording, fixture or telemetry was read.
+
+Version 1.13.213 to 1.13.214. HM-DEC-233.
+
+**Task 1, a standing sender through its own window.** The T of BEST's top, found at 11.570 to 11.775 s, wobbled 3.4 and 3.7 dB on the 650 and 675 bins (0.8 dB standard deviation). Through its own window at 662.5 Hz it wobbled 1.5 dB (0.4). The window:
+- mixes at the printed sender's measured pitch;
+- low-passes with a fourth-order Butterworth whose rise is a quarter of the dit, 19.5 Hz and 19.8 ms on the recording's 74 ms dit;
+- takes its 23.0 ms delay off every mark;
+- finds marks as stretches over half the sender's amplitude, and puts them through the same tests, with narrowness also read on the mark's own samples.
+
+The 7 after the pause went from no candidate to all five elements. The radio strength table at 8 dB now reads N0CALL, and the weak 25-35-25 WPM row reads whole. Every other case reads as before.
+
+**Task 2, a pause is not a word.** A gap over three of the sender's word gaps (7/3 of its letter centre) is not counted, and the clusters settle with equal spreads until each side has three. The five-dit floor retires where the word cluster has three gaps; there the line is the boundary between the two clusters, 508 ms on the recording, and KC4ZGP holds. Retired everywhere, the straight key read S KCC and SKCCDE, so the floor stands before three word gaps.
+
+**Task 3, what is left.** The recording reads F ER C H AT<BT> BEST MSV 73 <SK> KC4ZGP.
+- The G of GP reads whole, and the weak 25-35-25 row reads whole.
+- The 7 before V still reads M S: a 120 ms gap inside the letter, against a letter line of 100 to 114 ms.
+- DEWA is lost to the reader's shape release: this hand's letter gaps score nought for tightness. Scoring them on task 2's split restored DEWA and read the straight key SKCCDE, so it was not kept.
+
+Build 0 warnings 0 errors. App carry-forward 278 of 278.

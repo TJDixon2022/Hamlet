@@ -68,7 +68,9 @@ public sealed class TheOwnersRecordingReadsTests
         var shapes = string.Join("; ", reader.SenderShapes.Select(s => $"{s.PitchHz:0} Hz {s.Marks} marks{(s.Printed ? " printed" : string.Empty)}: {s.Shape}"));
 
         reader.Flush();
-        LastSenders = shapes;
+        var own = detector.OwnWindowLane;
+
+        LastSenders = $"{shapes}; own window at {own.PitchHz:0.0} Hz, dit {own.DitSeconds * 1000:0} ms, cutoff {own.CutoffHz:0.0} Hz, rise {own.RiseSeconds * 1000:0.0} ms, delay {own.DelaySeconds * 1000:0.0} ms";
 
         var text = string.Join(' ', string.Concat(characters.Select(c => c.Text)).Split(' ', StringSplitOptions.RemoveEmptyEntries));
 
