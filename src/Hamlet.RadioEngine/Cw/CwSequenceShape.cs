@@ -87,7 +87,7 @@ public sealed record CwSequenceShape(
         var dits = sorted.Take(at).ToList();
         var dahs = sorted.Skip(at).ToList();
 
-        for (var i = 0; i < 8 && widest < CwRunReader.TwoKindsRatio && dits.Count > 0 && dahs.Count > 0; i++)
+        for (var i = 0; i < 8 && widest < CwSenderGate.TwoKindsRatio && dits.Count > 0 && dahs.Count > 0; i++)
         {
             var line = Math.Sqrt(Centre(dits) * Centre(dahs));
             var next = sorted.Where(l => l < line).ToList();
@@ -101,7 +101,7 @@ public sealed record CwSequenceShape(
             dahs = sorted.Skip(next.Count).ToList();
         }
 
-        if (dits.Count == 0 || dahs.Count == 0 || Centre(dahs) / Centre(dits) < CwRunReader.TwoKindsRatio)
+        if (dits.Count == 0 || dahs.Count == 0 || Centre(dahs) / Centre(dits) < CwSenderGate.TwoKindsRatio)
         {
             return None;
         }

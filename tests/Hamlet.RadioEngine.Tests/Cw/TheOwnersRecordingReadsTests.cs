@@ -39,7 +39,7 @@ public sealed class TheOwnersRecordingReadsTests
 
         detector.SetPassband(600, 500);
 
-        var reader = new CwRunReader();
+        var reader = new CwSenderGate();
 
         // The terminal tells the detector which sender it prints, as the app wires it.
         detector.PrintedPitch = () => reader.StationPitchHz;

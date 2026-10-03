@@ -1386,7 +1386,7 @@ public sealed class CwEnvelopeDetector
     /// the last second, so a burst in that second held a station's dit back 435 ms past its end
     /// (unit 491) and the reader had closed its letter. Pairing and the wander check are untouched
     /// and still decide the keying verdict, the light and the scope; they no longer decide
-    /// delivery. The noise guard for letters is in <see cref="CwRunReader"/>.
+    /// delivery. The noise guard for letters is in <see cref="CwSenderGate"/>.
     /// </remarks>
     private void CallMarks(Evaluation[] evals, long hop, double nowSeconds)
     {

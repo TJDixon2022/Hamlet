@@ -52,7 +52,7 @@ public sealed class TheShapeOfAKeyedToneTests
     /// <summary>The call's own marks: within a bin of its pitch and within 6 dB of the loudest there, as unit 498 picks them.</summary>
     private static List<CwMark> CallsOwn(IReadOnlyList<CwMark> marks)
     {
-        var near = marks.Where(m => Math.Abs(m.PitchHz - Pitch) <= CwRunReader.PitchToleranceHz).ToList();
+        var near = marks.Where(m => Math.Abs(m.PitchHz - Pitch) <= CwSenderGate.PitchToleranceHz).ToList();
         var loudest = near.Max(m => m.LevelDb);
 
         return near.Where(m => m.LevelDb >= loudest - 6).ToList();

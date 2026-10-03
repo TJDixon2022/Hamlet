@@ -146,7 +146,7 @@ public sealed class ACharacterIsARunOfMarksThatAgreeTests
     /// </summary>
     private static List<CwMark> CallsOwnMarks()
     {
-        var near = Marks(CleanCall()).Where(m => Math.Abs(m.PitchHz - 625) <= CwRunReader.PitchToleranceHz).ToList();
+        var near = Marks(CleanCall()).Where(m => Math.Abs(m.PitchHz - 625) <= CwSenderGate.PitchToleranceHz).ToList();
         var loudest = near.Max(m => m.LevelDb);
 
         return near.Where(m => m.LevelDb >= loudest - 6).ToList();
@@ -176,7 +176,7 @@ public sealed class ACharacterIsARunOfMarksThatAgreeTests
         var callLevel = clean.Select(m => m.LevelDb).OrderBy(l => l).ElementAt(clean.Count / 2);
         var callContrast = clean.Select(m => m.ContrastDb).Where(c => !double.IsNaN(c)).Average();
         var detector = new CwEnvelopeDetector(Rate);
-        var reader = new CwRunReader();
+        var reader = new CwSenderGate();
         var sequence = 0L;
         var strangers = 0;
         var used = 0;
@@ -187,8 +187,8 @@ public sealed class ACharacterIsARunOfMarksThatAgreeTests
             {
                 used++;
 
-                if (Math.Abs(m.PitchHz - 625) > CwRunReader.PitchToleranceHz
-                    || Math.Abs(m.LevelDb - callLevel) > CwRunReader.LevelToleranceDb(callContrast))
+                if (Math.Abs(m.PitchHz - 625) > CwSenderGate.PitchToleranceHz
+                    || Math.Abs(m.LevelDb - callLevel) > CwSenderGate.LevelToleranceDb(callContrast))
                 {
                     strangers++;
                     _output.WriteLine($"  not the call's: {m.FromSeconds:0.000} s, {m.PitchHz:0} Hz, {m.LevelDb:0.0} dB, in `{c.Text}`");
@@ -310,8 +310,8 @@ public sealed class ACharacterIsARunOfMarksThatAgreeTests
         foreach (var (name, samples) in new[] { ("clean call", CleanCall()), ("call with blips", CallWithBlips()), ("two stations", TwoStations()) })
         {
             var calls = Marks(samples).Where(m =>
-                Math.Abs(m.PitchHz - 625) <= CwRunReader.PitchToleranceHz
-                && Math.Abs(m.LevelDb - callLevel) <= CwRunReader.LevelToleranceDb(callContrast)).ToList();
+                Math.Abs(m.PitchHz - 625) <= CwSenderGate.PitchToleranceHz
+                && Math.Abs(m.LevelDb - callLevel) <= CwSenderGate.LevelToleranceDb(callContrast)).ToList();
 
             // A mark of the clean call is called when a mark of the call overlaps at least half of it.
             static double Overlap(CwMark x, CwMark y)

@@ -91,7 +91,7 @@ public sealed class ThePatternIsTheGateTests
 
         setUp?.Invoke(detector);
 
-        var reader = new CwRunReader();
+        var reader = new CwSenderGate();
 
         // The terminal tells the detector which sender it prints, as the app wires it (work instruction 529): the sender's own
         // window opens on that sender and on nothing else.
@@ -120,8 +120,8 @@ public sealed class ThePatternIsTheGateTests
 
         var all = detector.MarksSince(0).Marks;
         var kept = detector.CandidatesKept;
-        var candidates = kept.Count(m => Math.Abs(m.PitchHz - pitch) <= CwRunReader.PitchToleranceHz);
-        var stood = all.Count(m => Math.Abs(m.PitchHz - pitch) <= CwRunReader.PitchToleranceHz);
+        var candidates = kept.Count(m => Math.Abs(m.PitchHz - pitch) <= CwSenderGate.PitchToleranceHz);
+        var stood = all.Count(m => Math.Abs(m.PitchHz - pitch) <= CwSenderGate.PitchToleranceHz);
         var text = string.Join(' ', string.Concat(characters.Select(c => c.Text)).Split(' ', StringSplitOptions.RemoveEmptyEntries));
 
         return new Reading(text, candidates, stood, printedMarks, characters, most);
@@ -147,7 +147,7 @@ public sealed class ThePatternIsTheGateTests
     {
         var samples = Standard(Call, 20, 16, 5086);
         var detector = new CwEnvelopeDetector(Rate);
-        var reader = new CwRunReader();
+        var reader = new CwSenderGate();
 
         // The reading follows what the terminal prints (work instruction 519), as the app wires it.
         detector.PrintedPitch = () => reader.StationPitchHz;
@@ -225,7 +225,7 @@ public sealed class ThePatternIsTheGateTests
         var noise = CwSignal.Generate(new CwSignalRequest(
             " ", SampleRate: Rate, Amplitude: 0, NoiseAmplitude: 0.3, LeadInSeconds: seconds / 2.0, TailSeconds: seconds / 2.0, Seed: 5100 + seconds)).Samples;
         var detector = new CwEnvelopeDetector(Rate);
-        var reader = new CwRunReader();
+        var reader = new CwSenderGate();
         var printed = new List<CwCharacter>();
         var sequence = 0L;
         var candidates = 0;

@@ -945,7 +945,7 @@ public sealed class CwDecoder
     /// <remarks>
     /// **A CHARACTER IS A RUN OF MARKS THAT AGREE** (work instruction 490, R103, HM-DEC-195). While
     /// this is set and <see cref="ReadsRuns"/> is on, what reaches the terminal and the scope is
-    /// what <see cref="CwRunReader"/> reads from the marks - pitch, level and length together -
+    /// what <see cref="CwSenderGate"/> reads from the marks - pitch, level and length together -
     /// and the timing-only path's letters and leading edge are not let out. A letter appears only
     /// if the run that made it exists, so the terminal and the scope agree by construction; the
     /// keying gate and the block rule are not needed for this path and their switches stay off
@@ -963,7 +963,7 @@ public sealed class CwDecoder
 
     private bool RunsRead => ReadsRuns && DetectorMarks is not null;
 
-    private readonly CwRunReader _runs = new();
+    private readonly CwSenderGate _runs = new();
 
     // The last mark sequence number taken from the detector.
     private long _markSequence;

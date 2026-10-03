@@ -33,7 +33,7 @@ public sealed class TheLightSaysHoldStillTests
     internal static (List<Step> Steps, List<double> Letters, List<CwMark> Candidates) Run(float[] samples)
     {
         var detector = new CwEnvelopeDetector(Rate);
-        var reader = new CwRunReader();
+        var reader = new CwSenderGate();
         var steps = new List<Step>();
         var letters = new List<double>();
         var sequence = 0L;

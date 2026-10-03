@@ -37,7 +37,7 @@ public sealed class TheGapsBelongToTheSendersOwnDitTests
     internal static (string Text, double DitSeconds, double GapDitSeconds) Read(float[] samples)
     {
         var detector = new CwEnvelopeDetector(Rate);
-        var reader = new CwRunReader();
+        var reader = new CwSenderGate();
         var characters = new List<CwCharacter>();
         var sequence = 0L;
         var dit = double.NaN;

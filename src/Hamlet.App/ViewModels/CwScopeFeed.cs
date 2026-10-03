@@ -52,7 +52,7 @@ public sealed class CwScopeFeed
 
             foreach (var mark in batch.Marks)
             {
-                if (Math.Abs(mark.PitchHz - mixingHz) <= CwRunReader.PitchToleranceHz
+                if (Math.Abs(mark.PitchHz - mixingHz) <= CwSenderGate.PitchToleranceHz
                     && batch.HeardSeconds - mark.ToSeconds <= CwTrainingGraph.WindowSeconds)
                 {
                     _graph.Stand(mark, batch.HeardSeconds, nowUtc);

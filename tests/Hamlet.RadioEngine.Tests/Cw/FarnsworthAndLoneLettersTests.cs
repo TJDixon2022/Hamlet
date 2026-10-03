@@ -76,7 +76,7 @@ public sealed class FarnsworthAndLoneLettersTests
     private static (string Text, double? Letter, double? Word) Read(float[] samples)
     {
         var detector = new CwEnvelopeDetector(Rate);
-        var reader = new CwRunReader();
+        var reader = new CwSenderGate();
         var characters = new List<CwCharacter>();
         var sequence = 0L;
         (double? Letter, double? Word) gaps = (null, null);

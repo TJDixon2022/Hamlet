@@ -38,7 +38,7 @@ public sealed class TheShapeIsFoundWhereverItAppearsTests
 
         detector.SetPassband(passbandPitch, passbandWidth);
 
-        var reader = new CwRunReader();
+        var reader = new CwSenderGate();
         var characters = new List<CwCharacter>();
         var pitches = new List<double>();
         var keying = 0;

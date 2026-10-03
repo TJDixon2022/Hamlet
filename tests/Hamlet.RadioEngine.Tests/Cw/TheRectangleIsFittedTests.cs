@@ -75,7 +75,7 @@ public sealed class TheRectangleIsFittedTests
     internal static Run Read(float[] samples, bool fit)
     {
         var detector = new CwEnvelopeDetector(Rate) { MarksMayBeFitted = fit };
-        var reader = new CwRunReader();
+        var reader = new CwSenderGate();
         var characters = new List<CwCharacter>();
         var sequence = 0L;
 
@@ -93,7 +93,7 @@ public sealed class TheRectangleIsFittedTests
 
         reader.Flush();
 
-        var marks = detector.MarksSince(0).Marks.Where(m => Math.Abs(m.PitchHz - Pitch) <= CwRunReader.PitchToleranceHz).ToList();
+        var marks = detector.MarksSince(0).Marks.Where(m => Math.Abs(m.PitchHz - Pitch) <= CwSenderGate.PitchToleranceHz).ToList();
         var text = string.Join(' ', string.Concat(characters.Select(c => c.Text)).Split(' ', StringSplitOptions.RemoveEmptyEntries));
 
         return new Run(text, marks.Count, marks.Count(m => m.Fitted), detector.CandidateCount, detector.CandidatesKept.Count(m => m.Fitted), detector.StoodCount);

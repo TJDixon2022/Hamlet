@@ -9,7 +9,7 @@ namespace Hamlet.RadioEngine.Cw;
 /// <para>**THE OWNER, R112**: *"You're still focused on dB. We need to be focused on the shapes in the
 /// noise. They're predictable. They're full of good patterns. Chaos and noise have no patterns."*</para>
 /// <para>**A SEQUENCE IS THE MARKS OF ONE SENDER**: within one bin of its pitch, within the reader's own
-/// level tolerance of its height (<see cref="CwRunReader.LevelToleranceDb"/>, unit 490's figure,
+/// level tolerance of its height (<see cref="CwSenderGate.LevelToleranceDb"/>, unit 490's figure,
 /// restated as a ratio of heights), and near enough in time to be the same sending. Every test is a
 /// ratio between marks; none is a decibel figure, so a station 8 dB over the noise satisfies them as
 /// well as one 38 dB over.</para>
@@ -169,7 +169,7 @@ internal sealed class CwPatternGate
         // gap of seven. In a transmission's first seconds it was drawn from one or two letter gaps and landed low, and the
         // owner's 3.8-dit gap after the F of FER read as a word.
         var wordLine = letterMean is not { } l ? gapDit * UnmeasuredWordRatio
-            : word is { Count: >= MeasuredRunGaps } ? CwRunReader.Boundary(CwRunReader.LogStats(letter!), CwRunReader.LogStats(word))
+            : word is { Count: >= MeasuredRunGaps } ? CwSenderGate.Boundary(CwSenderGate.LogStats(letter!), CwSenderGate.LogStats(word))
             : Math.Max((inside.Count >= MeasuredRunGaps ? Centre(inside) : gapDit) * UnmeasuredWordRatio, word is null && l < fiveDits ? fiveDits
             : l < fiveDits ? Math.Min(fiveDits, l * LetterWordRatio)
             : l * LetterWordRatio);
@@ -194,7 +194,7 @@ internal sealed class CwPatternGate
     /// memory for a hand: just after a step from 35 back to 25 WPM a 25 WPM gap inside the J of JUMPS read longer than the
     /// line the 35 WPM gaps had drawn, and the J printed as W and T.</para>
     /// <para>So the gaps within <see cref="NeighbourGaps"/> either side, word gaps left out, are split where two
-    /// neighbours in length differ by <see cref="CwRunReader.TwoKindsRatio"/> or more, the clean jump the marks are
+    /// neighbours in length differ by <see cref="CwSenderGate.TwoKindsRatio"/> or more, the clean jump the marks are
     /// split at, and the gap is the kind it sits nearer by the two sides' spreads. Gaps inside a letter and gaps between
     /// letters are one and three dits; a hand scattered so far that no clean jump is left, or a stretch of one kind,
     /// falls back to the sender's own lines. A word is still decided by the lines, five dits staying a floor.</para>
@@ -234,7 +234,7 @@ internal sealed class CwPatternGate
             }
         }
 
-        if (at < 0 || widest < CwRunReader.TwoKindsRatio)
+        if (at < 0 || widest < CwSenderGate.TwoKindsRatio)
         {
             return kind;
         }
@@ -375,7 +375,7 @@ internal sealed class CwPatternGate
         for (var i = 0; i < 8 && low.Count > 0 && high.Count > 0; i++)
         {
             var boundary = low.Count >= MeasuredRunGaps && high.Count >= MeasuredRunGaps
-                ? CwRunReader.Boundary(CwRunReader.LogStats(low), CwRunReader.LogStats(high))
+                ? CwSenderGate.Boundary(CwSenderGate.LogStats(low), CwSenderGate.LogStats(high))
                 : Math.Sqrt(Centre(low) * Centre(high));
             var next = all.Where(g => g < boundary).ToList();
 
@@ -643,7 +643,7 @@ internal sealed class CwPatternGate
             var height = heights.Count > 0 ? heights[heights.Count / 2] : double.NaN;
 
             return Math.Abs(m.PitchHz - pitch) <= CwEnvelopeDetector.BinSpacingHz
-                && Math.Abs(m.LevelDb - level) <= CwRunReader.LevelToleranceDb(height);
+                && Math.Abs(m.LevelDb - level) <= CwSenderGate.LevelToleranceDb(height);
         }
 
         // A quieter mark of this sender's, waiting for its next mark (work instruction 511, task 2).
@@ -669,8 +669,8 @@ internal sealed class CwPatternGate
             }
 
             var dit = Dit(m);
-            var dahs = _recent.Where(r => r.ToSeconds - r.FromSeconds >= CwRunReader.TwoKindsRatio * dit).ToList();
-            var dits = _recent.Where(r => r.ToSeconds - r.FromSeconds < CwRunReader.TwoKindsRatio * dit).ToList();
+            var dahs = _recent.Where(r => r.ToSeconds - r.FromSeconds >= CwSenderGate.TwoKindsRatio * dit).ToList();
+            var dits = _recent.Where(r => r.ToSeconds - r.FromSeconds < CwSenderGate.TwoKindsRatio * dit).ToList();
             var length = m.ToSeconds - m.FromSeconds;
 
             bool Near(double of) => length >= of / LengthRatio && length <= of * LengthRatio;
@@ -689,7 +689,7 @@ internal sealed class CwPatternGate
 
             var level = kind.TakeLast(LevelMarks).Average(r => r.LevelDb);
             var heights = _recent.Select(r => r.OwnContrastDb).Where(double.IsFinite).OrderBy(c => c).ToList();
-            var tolerance = CwRunReader.LevelToleranceDb(heights.Count > 0 ? heights[heights.Count / 2] : double.NaN);
+            var tolerance = CwSenderGate.LevelToleranceDb(heights.Count > 0 ? heights[heights.Count / 2] : double.NaN);
             var under = level - m.LevelDb;
 
             // **THE QUIETER MARK'S OWN LEVEL WOBBLES AS ANY TONE'S DOES** (work instruction 524, case 2): a tone S dB over
@@ -781,7 +781,7 @@ internal sealed class CwPatternGate
 
             for (var i = 1; i < lengths.Count; i++)
             {
-                if (lengths[i] / lengths[i - 1] >= CwRunReader.TwoKindsRatio)
+                if (lengths[i] / lengths[i - 1] >= CwSenderGate.TwoKindsRatio)
                 {
                     return (lengths.Take(i).Average(), lengths.Skip(i).Average());
                 }
@@ -805,7 +805,7 @@ internal sealed class CwPatternGate
 
             for (var i = 1; i < lengths.Count; i++)
             {
-                if (lengths[i] / lengths[i - 1] >= CwRunReader.TwoKindsRatio)
+                if (lengths[i] / lengths[i - 1] >= CwSenderGate.TwoKindsRatio)
                 {
                     return lengths.Take(i).Average();
                 }
@@ -852,14 +852,14 @@ internal sealed class CwPatternGate
             return released;
         }
 
-        /// <summary>Whether the lengths split in two at a ratio of <see cref="CwRunReader.TwoKindsRatio"/> or wider.</summary>
+        /// <summary>Whether the lengths split in two at a ratio of <see cref="CwSenderGate.TwoKindsRatio"/> or wider.</summary>
         private static bool TwoLengths(IReadOnlyList<CwMark> marks, bool handKinds)
         {
             var lengths = marks.Select(m => m.ToSeconds - m.FromSeconds).OrderBy(l => l).ToList();
 
             for (var i = 1; i < lengths.Count; i++)
             {
-                if (lengths[i] / lengths[i - 1] >= CwRunReader.TwoKindsRatio)
+                if (lengths[i] / lengths[i - 1] >= CwSenderGate.TwoKindsRatio)
                 {
                     return true;
                 }
@@ -872,7 +872,7 @@ internal sealed class CwPatternGate
             // **ON TEN MARKS, NOT FIVE**: two clusters of five lengths always look tight, and noise stood on them - eight
             // marks in thirty seconds where none stood before. A clean jump is evidence on five marks; overlapping
             // clusters need twice that before they are a hand rather than chance.
-            return handKinds && lengths.Count >= 2 * MarksToStand && CwRunReader.TwoKindsOfAHand(lengths);
+            return handKinds && lengths.Count >= 2 * MarksToStand && CwSenderGate.TwoKindsOfAHand(lengths);
         }
     }
 }

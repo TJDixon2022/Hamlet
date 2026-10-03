@@ -55,7 +55,7 @@ public sealed class TheLetterGapHoldsTests
     private static string Read(float[] samples)
     {
         var detector = new CwEnvelopeDetector(Rate);
-        var reader = new CwRunReader();
+        var reader = new CwSenderGate();
         var characters = new List<CwCharacter>();
         var sequence = 0L;
 

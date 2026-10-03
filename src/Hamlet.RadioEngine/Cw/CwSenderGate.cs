@@ -1,11 +1,15 @@
 namespace Hamlet.RadioEngine.Cw;
 
 /// <summary>
-/// Reads characters from the detector's marks: a character is a run of consecutive marks that
-/// agree on pitch and on level, and the lengths and gaps inside it say which letter it is (work
-/// instruction 490, R103, HM-DEC-195).
+/// **THE GATE'S SENDER STAGE** (work instruction 532, HM-DEC-236): from the detector's marks, which sender is printed and
+/// when it is let go, which marks make a letter, whether each mark is a dot or a dash, whether a one-mark letter is
+/// printed, and where words end; handed on as one sender's stream of dots, dashes, letter ends and word ends, which the
+/// reader looks up. A character is a run of consecutive marks that agree on pitch and on level (work instruction 490, R103,
+/// HM-DEC-195).
 /// </summary>
 /// <remarks>
+/// <para>**THE OWNER, 2026-10-02**: *"I want to really get to this lookup table and get rid of the decoder logic."* Every
+/// decision the reader made moved here unchanged, and the reader keeps the table alone.</para>
 /// <para>**THE OWNER, 2026-09-28**: *"An E followed by a T, if it's a real person doing CW, they
 /// will have the same amplitude. They will have the same pitch or frequency. They'll have a
 /// different duration. A dot or a dash is the only thing that varies."*</para>
@@ -28,7 +32,7 @@ namespace Hamlet.RadioEngine.Cw;
 /// <para>**NOTHING PRINTED IS TAKEN BACK** (R100). A character is raised once, when its run has
 /// ended, and never revised.</para>
 /// </remarks>
-public sealed class CwRunReader
+public sealed class CwSenderGate
 {
     /// <summary>How far a mark's pitch may sit from its run's and be the same sender's, in Hz: one bin.</summary>
     /// <remarks>

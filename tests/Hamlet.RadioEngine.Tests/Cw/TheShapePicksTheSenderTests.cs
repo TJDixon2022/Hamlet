@@ -135,7 +135,7 @@ public sealed class TheShapePicksTheSenderTests
 
         setUp?.Invoke(detector);
 
-        var reader = new CwRunReader { ShapePicks = shape };
+        var reader = new CwSenderGate { ShapePicks = shape };
         var characters = new List<CwCharacter>();
         var letters = new List<(double, double, string)>();
         var sequence = 0L;

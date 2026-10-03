@@ -82,7 +82,7 @@ public sealed class WhichGateTurnsAwayW1awTests
         // Since unit 515 nothing points the detector (R114): the pointed rows read as the unpointed ones.
         _ = pointed;
 
-        var reader = new CwRunReader();
+        var reader = new CwSenderGate();
         var characters = new List<CwCharacter>();
         var sequence = 0L;
         var most = 0;
@@ -107,7 +107,7 @@ public sealed class WhichGateTurnsAwayW1awTests
 
         reader.Flush();
 
-        var near = detector.MarksSince(0).Marks.Where(m => Math.Abs(m.PitchHz - Pitch) <= CwRunReader.PitchToleranceHz).ToList();
+        var near = detector.MarksSince(0).Marks.Where(m => Math.Abs(m.PitchHz - Pitch) <= CwSenderGate.PitchToleranceHz).ToList();
         var loudest = near.Count > 0 ? near.Max(m => m.LevelDb) : double.NaN;
         var own = near.Where(m => m.LevelDb >= loudest - 6).ToList();
         var text = string.Join(' ', string.Concat(characters.Select(c => c.Text)).Split(' ', StringSplitOptions.RemoveEmptyEntries));

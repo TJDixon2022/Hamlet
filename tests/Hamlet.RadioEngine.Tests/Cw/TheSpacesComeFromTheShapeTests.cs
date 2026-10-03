@@ -46,7 +46,7 @@ public sealed class TheSpacesComeFromTheShapeTests
         var dit = 1.2 / 18;
 
         _output.WriteLine(
-            $"18 WPM, word gaps {wordGapDits} dits (true letter gaps up to {truth.LetterGaps.Max() / dit:0.00} dits, word gaps {string.Join(" ", truth.WordGaps.Select(g => (g / dit).ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)))} dits): reads `{read.Text}`; {CwRunReader.LastClusters}");
+            $"18 WPM, word gaps {wordGapDits} dits (true letter gaps up to {truth.LetterGaps.Max() / dit:0.00} dits, word gaps {string.Join(" ", truth.WordGaps.Select(g => (g / dit).ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)))} dits): reads `{read.Text}`; {CwSenderGate.LastClusters}");
 
         foreach (var call in Callsigns)
         {

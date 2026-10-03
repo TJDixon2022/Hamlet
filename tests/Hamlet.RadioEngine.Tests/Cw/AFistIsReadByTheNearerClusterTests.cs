@@ -175,7 +175,7 @@ public sealed class AFistIsReadByTheNearerClusterTests
 
         _output.WriteLine($"{name}: {r.Candidates} candidates, {r.Stood} stood, {r.Printed} printed; reads `{r.Text}`");
         _output.WriteLine($"   true   : dit {Stats(truth.Dits)}, dah {Stats(truth.Dahs)}; gaps element {Stats(truth.ElementGaps)}, letter {Stats(truth.LetterGaps)}, word {Stats(truth.WordGaps)} (centre as a geometric mean, spread as the SD of the log)");
-        _output.WriteLine($"   reader : {CwRunReader.LastClusters}");
+        _output.WriteLine($"   reader : {CwSenderGate.LastClusters}");
 
         return r.Text;
     }
