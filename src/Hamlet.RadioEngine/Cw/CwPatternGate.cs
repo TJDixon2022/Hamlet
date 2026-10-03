@@ -128,7 +128,10 @@ internal sealed class CwPatternGate
     /// long, each by its window's smear, so the unit a gap is counted in is the marks' dit plus the median of what
     /// the sender's gaps inside letters have run over it.</para>
     /// <para>**ELEMENT AGAINST LETTER** (units 500 and 513): gap dits times √3 until the sender has shown its letter
-    /// gaps and three gaps inside letters, then the boundary between those two clusters of its own.</para>
+    /// gaps and three gaps inside letters, then the midpoint of those two clusters of its own in log-length, each side
+    /// weighed alike (work instruction 531, HM-DEC-235): Morse's own 1:3 puts it at √3. Weighed by their spreads, as the
+    /// dit-or-dah line still is, a sender read through its own window had gaps inside letters as tight as the detector
+    /// reads, the line was pulled to 1.4 dits, and the 1.6-dit gap inside the owner's 7 read as a letter gap.</para>
     /// <para>**LETTER AGAINST WORD.** Where three clusters show, the sender's letter gap times √(7/3), its geometric
     /// mean with a word gap in a Farnsworth sender's stretched units (units 501 and 513). Where only the letter
     /// cluster shows and it sits under five dits, a word gap is five dits or more (work instruction 525). Five dits
@@ -147,7 +150,7 @@ internal sealed class CwPatternGate
         var inside = elementGaps.Where(g => g < line).ToList();
         var character = letter is null || inside.Count < MeasuredRunGaps
             ? line
-            : CwRunReader.Boundary(CwRunReader.LogStats(inside), CwRunReader.LogStats(letter));
+            : Midpoint(inside, letter);
         var letterMean = letter?.Average();
         var fiveDits = (WordGapDits * (ditSeconds + (smear / 2))) + (smear / 2);
         // **FIVE DITS STAYS A FLOOR** (work instruction 526, task 2, HM-DEC-230): where three clusters show and the letter
@@ -230,7 +233,7 @@ internal sealed class CwPatternGate
             return kind;
         }
 
-        var boundary = CwRunReader.Boundary(CwRunReader.LogStats(window.Take(at).ToList()), CwRunReader.LogStats(window.Skip(at).ToList()));
+        var boundary = Midpoint(window.Take(at).ToList(), window.Skip(at).ToList());
 
         return gap > boundary ? CwGapKind.Letter : CwGapKind.Element;
     }
@@ -345,6 +348,14 @@ internal sealed class CwPatternGate
 
     // The centre of some lengths: their geometric mean.
     private static double Centre(IReadOnlyList<double> lengths) => Math.Exp(lengths.Average(l => Math.Log(l)));
+
+    /// <summary>
+    /// **THE LINE INSIDE A LETTER SITS AT THE MIDPOINT** (work instruction 531, HM-DEC-235): between a gap inside a letter and
+    /// one between letters, the geometric mean of the two clusters' centres, each weighed alike, as Morse's own 1:3 sits at
+    /// √3. It supersedes the spread-weighted boundary for these gaps; the dit-or-dah line keeps it.
+    /// </summary>
+    private static double Midpoint(IReadOnlyList<double> inside, IReadOnlyList<double> letter)
+        => Math.Sqrt(Centre(inside) * Centre(letter));
 
     /// <summary>
     /// Two clusters of gaps settled by the nearer centre (unit 513), each side weighed by its own spread once it has shown
