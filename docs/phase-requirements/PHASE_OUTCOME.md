@@ -1002,3 +1002,15 @@ HEAD was tagged before-lookup-table (dc80c0e6) and pushed. Version 1.13.216 to 1
 **Task 5.** Noise agrees within half a bin and stands nothing. The random carrier no longer prints at 775 Hz. The three noise tests count candidates and are green.
 
 Build 0 warnings 0 errors. App carry-forward 277 of 278; the one loss, a dispatcher loop at 1 ms, passes alone.
+
+## UNIT 533 - STEP 12
+
+Run by hand, outside the loop: SESSION.lock taken and released; nothing written to RUN_LEDGER.md and nothing under tools\arbiter\ touched; no box ticked and no ruling added to either plan; no scratch file committed; nothing keyed or transmitted. R88 was lifted for the owner's five recordings and no other; seven recordings that appeared on 2026-10-03 from 22:15 were not read. Version 1.13.217 to 1.13.218. HM-DEC-237.
+
+**Task 1.** When the terminal passes to a sender, its letters since it stood print first, in order, then its live letters, and a sender silent past its release is not picked again. The QSO of 14:40:20 read `ES OK ON PA <BT>` and now reads `ES OK ON PA <BT> WX IN N E TA GIT IEN TEMP`; its test is red on one letter, a U whose last two marks never stand. The synthetic QSO reads the reply from its first letter and is red on two dahs lost under the first sender's dah. A sender that never takes over prints nothing. Every existing reading is identical to unit 532 except two lines with shape picking off; case 4 of TheShapePicksTheSender now checks print order.
+
+**Task 2.** 14:40:45 reads `N TEMP 57 57<BT>BTUBOB D`; its letters test is red where the sender is let go, letter-gap tightness falling to 0.10. 14:39:51 and 14:39:06 print nothing.
+
+**Task 3.** TheOwnersRecordingReads passes as at HEAD.
+
+Build 0 warnings 0 errors. App carry-forward 275 of 278; the three losses, a dispatcher loop at 1 ms, pass alone.

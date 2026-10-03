@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: COMPLETED
-TASK: 5 of 5
-WORK_INSTRUCTION: 532 - the reader becomes a lookup table (run by hand)
+TASK: 3 of 3
+WORK_INSTRUCTION: 533 - a reply is read from its first letter (run by hand)
 BALL: tim
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-10-03T14:42:58-04:00
-NOTE: Unit 532 done - the reader is a lookup table; every reading identical
+UPDATED: 2026-10-03T19:12:01-04:00
+NOTE: Unit 533 done - a reply is read from its first letter, HM-DEC-237, 1.13.218
 
 ---
 

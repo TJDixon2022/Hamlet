@@ -1,114 +1,151 @@
 ```
-UNIT: 532 - all five tasks done - 2026-10-03
-UNIT GOAL: the reader becomes a lookup table
-NUMBER: the reader is 76 lines, from 1,122; every reading identical to HEAD after each move
+UNIT: 533 - all three tasks done - 2026-10-03
+UNIT GOAL: a reply is read from its first letter
+NUMBER: the QSO of 14:40:20 printed 5 words of 2 stations; it prints both, the reply from its W, with 1 letter of 18 wrong
 ```
 
 ## 1. What Claude did
 
-Claude Code on the development machine, branch `main`. The prompt claimed `PROJECT: Hamlet`, and the order's gate held: `SHACK_FACTS.md`, `CwRunReader.cs` and the recording exist, there is no `CoreHMI.sln` or `MURC.sln`, and the root is `C:\Source\HamLet`. Hamlet confirmed. Nothing in this report is evidence about the radio beyond the owner's one recording. HM-DEC-236 was free.
+Claude Code on the development machine, branch `main`. The prompt claimed `PROJECT: Hamlet`, and the gate held: `SHACK_FACTS.md`, the recordings the order names and `CwSenderGate.cs` exist, there is no `CoreHMI.sln` or `MURC.sln`, and the root is `C:\Source\HamLet`. Hamlet confirmed. Nothing in this report is evidence about the radio beyond the owner's five recordings. HM-DEC-237 was free.
 
 **How the session ran:**
 - It took SESSION.lock and released it at the end.
 - It wrote nothing to `RUN_LEDGER.md`, touched nothing under `tools\arbiter\`, and ticked no box.
-- **HEAD was tagged `before-lookup-table` (dc80c0e6) and pushed** before any change.
-- R88 stayed lifted for the one recording. Four more recordings appeared in `tests\fixtures\cw\captured` on 2026-10-03 (`cw-2026-10-03-143906` and three after it); they were not read or committed.
+- **R88 was lifted for the owner's five recordings and no other.** Seven more recordings (`cw-2026-10-03-221502` to `-221851`) and two `cases-*.txt` sheets appeared in `tests\fixtures\cw\captured`; they were not read or committed.
 - Nothing keys, transmits or writes to the radio.
 
-**Task 1: every mark leaves the gate labelled `.` or `-`.** Commit `5cbd53a4`.
-- When a letter is released, the gate hands on a stream of `CwSymbol`, the new symbol type:
-  - each mark as a dot or a dash, decided by the sender's own line between its two lengths;
-  - a letter end, carrying how sure the gate is of the dots and dashes, the signal, the speed, the time and the marks;
-  - a word end before the letter wherever the gap was a word.
-- A separate step looks the letter up from those symbols.
-- The rules moved unchanged: the two length clusters and the spread-weighted line between them, a hand's two kinds, the split against neighbours, and the retry over newer marks when the speed changes.
-- Labels are final when a letter is released, because a sender's unprinted runs are still re-split at its newer dit up to then.
+**Task 1: the new sender's letters are kept.** Commit `eeb27676`. It also carries the four recordings of 2026-10-03 and their sheets, beside the tests that read them.
 
-**Task 2: the sender and the lone letter are decided in the gate.** Commit `e2413cb2`. The class that decides is now `CwSenderGate`, the gate's sender stage, with every rule unchanged:
-- which sender is printed: the best shape after the first word gap, held until silent for its word gap and a dah, let go only under a shape of 0.1;
-- the lone-letter rule: a one-mark letter is held until a letter of two marks or more confirms it, and three in a row are dropped;
-- the runs, and where words end.
+**What the fault was.** Two causes in the gate's sender stage (`CwSenderGate.Print`):
+- **The released first station was picked again.** At 14:40:20 the 500 Hz station ends its over at 11.3 s and is let go. It still had the better shape (0.49, against the reply's 0.15 to 0.39), so the next sweep picked it again, then let it go again, and the reply never held the terminal.
+  - **Change:** a sender silent past its release is no longer a candidate.
+- **The reply's letters sent while another held the terminal were skipped** as "printed over".
+  - **Change:** they are printed, in order, after what is already printed, then its live letters.
 
-All 20 files that used the old reader now use the gate.
+**What did not change:**
+- Nothing printed is revised.
+- The lone-letter rule and word ends apply to the backlog as they do to live letters.
+- A sender that never stands has nothing to print.
+- The handover itself.
 
-**Task 3: what is left is the table.** Commit `38ea5891`.
-- **`CwRunReader` now only takes the gate's symbols and looks each letter up:** the Morse table with its prosigns, the placeholder for an unknown pattern, printed-stays-printed, and one event per character.
-- **The gate passes it the stream** and passes its characters on, so every caller is unchanged.
-- **Tests:**
-  - `TheReaderIsALookupTable` reads `src\Hamlet.RadioEngine\Cw\CwRunReader.cs` with its comments removed. It fails on any number other than 0 or 1, or any word for a time, length, level, pitch or score. It finds none.
-  - `TheReaderReadsSymbols` reads `--.. -.. ...-` as `ZDV`, `.-.-.` as `<AR>`, and an unknown pattern as the placeholder.
-- **Size: the reader is 76 lines (45 of code), down from 1,122.** The gate's stage is 1,151.
+**The scroll needed no change.** It places each letter by its own time (`CwTrainingGraph.Settle`), so backlog letters land over their blocks while those are still on screen.
 
-**Task 4: the recording test expects the sender's timing.** Commit `1533f550`. It expects `FER C HAT<BT> BEST 7V 73 <SK> KC4ZGP DEWA`, and its remark explains the 579 ms pause between C and H. Green.
+**The three cases:**
+1. **`cw-2026-10-03-144020`, read from the reply's first mark.**
+   - **When the reply starts.** On the 600 Hz lane the reply's first mark is the dit of its W, at 13.57 s (dit 90 ms, then two dahs of 240 ms). Nothing of it is above the noise before that, so the opening is not cut by the overlap.
+   - **The true text, measured from the marks at each pitch:** `ES OK ON PA <BT> WX I N N E T A G I T I U N TEMP`. It agrees with the web session's element list.
+   - **One letter Hamlet cannot read.** The U at 24.09 s is a dit, a 40 ms gap, then 270 ms of tone. The only break where its second gap belongs is a 2 dB notch at 24.29 s. The dit stands. The two pieces of tone are turned away by the single-mark shape test, because a 2 dB notch is not a key edge. So the letter prints as E.
+   - **Result:** the test asserts the true text and is **red on that one letter**.
+2. **Synthetic QSO** (`CQ CQ DE W1AW W1AW K`, 15 WPM at 550 Hz; then `W1AW DE K3ZZ K3ZZ K` at 650 Hz, starting 2 s before the first ends; through the filter, 1 dB AGC):
+   - **Before:** `… K AW DE K3ZZ K3ZZ K`.
+   - **After:** `… K WE MAW DE K3ZZ K3ZZ K`.
+   - **Why it is still red:** the reply now prints from its W. Its `1` loses two dahs keyed under the first sender's dah, 100 Hz away. In those dahs the beat between the two tones breaks the top into pieces. The key-up test ("a mark ends where its tone ends") turns each piece away because the tone carries on after it, so they never become candidates. That is the beat HM-DEC-225 left open, not the handover, so the detector was not touched.
+3. **A sender beside the printed one that stops first** (`TEST TEST` at 650 Hz, 6 to 13 s, under a 27 s call at 550 Hz) prints nothing. Green.
+   - **Right for the owner's screen?** Yes for a station that never takes over, since it would interleave a second conversation into the first.
+   - **But:** when it is the other half of a QSO, its letters are lost. Not changed, as ordered.
 
-**Task 5: noise agrees within half a bin.** Commit `5f43df74`.
-- A mark joins a sequence only within half a bin of its pitch (`CwPatternGate.AgreeHz`).
-- The three noise tests (`MostNoiseBarsHaveNoEdges`, `RealMarksScoreInsideTheShapeAndNoiseOutside`, `TheShapeTurnsAwayNoiseThatPassedFiveLines`) now count candidates instead of marks that stood, and each says so. All three are green.
+**One existing test changed its yardstick.** `TheShapePicksTheSenderTests.ABetterShapeTakesTheTerminalAtTheNextSilence` required the clean sender's first letter to end, in audio time, after the fist's last. Its backlog now prints those earlier letters after the fist's whole call. The check is now **print order**, which is what "nothing of the clean one before the fist falls silent" means on the screen. Green.
+
+**Task 2: the other recordings, reported.**
+- The `-144045` letters test (`TheNextOverReadsItsLetters`) is in the same test file, so it went in with task 1's commit; there is no separate task 2 commit.
+- **`-144045`** reads `N TEMP 57 57<BT>BTUBOB D`, the same as at HEAD. The leading N is the end of `IUN` from the recording before.
+  - **The 940 ms gap (`TU BOB`).** This sender's word line is drawn at 1,121 to 1,194 ms, the boundary between its own letter and word clusters. The hand's gaps overlap: its letter gaps run up to 709 ms and its word gaps start at 639 ms. So the word gaps of 925, 945 and 1,015 ms fall under the line and count as letter gaps, and `57 <BT> B TU BOB` runs together. Only gaps over about 1.1 s print a space.
+  - **The missing `E KG8V K`.** The same overlap stretches the letter-gap cluster from 195 ms to about 1 s, and letter-gap tightness falls to 0.17 at 18.65 s and 0.10 at 21.80 s.
+    - The shape drops to 0.089, then 0.052, both under the 0.1 release line.
+    - The sender is let go twice. The first time it is picked again at 20.32 s and its backlog `B` prints. The second time it never comes back.
+  - **Result:** the letters test is red: `NTEMP5757<BT>BTUBOBD` against `NTEMP5757<BT>BTUBOBDEKG8VK`.
+- **`-143951`** prints nothing. The 500 Hz station stands 34 marks from 15.76 s, but its shape never reaches the 0.2 needed to qualify; it peaks at 0.169, held down by letter gaps (0.24 to 0.48) and dit-to-dah separation (0.69). The weaker signal at 700 Hz stands nothing.
+- **`-143906`** prints nothing. The 515 Hz station reaches 0.21 to 0.26 between 17.3 and 19.0 s. Its letter-gap tightness then falls to nought before the first pick's word-gap wait ends, and it never qualifies again.
+
+**Task 3.** `TheOwnersRecordingReads` passes as at HEAD: `FER C HAT<BT> BEST 7V 73 <SK> KC4ZGP DEWA`.
 
 **Records:**
-- HM-DEC-236 in `DECISIONS.md`, and the `CLAUDE.md` row.
-- `PHASE_OUTCOME` (both copies) has `## UNIT 532 - STEP 12`.
-- `PHASE_STATUS` (both copies) names 532.
-- Version 1.13.216 to 1.13.217.
+- HM-DEC-237 in `DECISIONS.md`, and the `CLAUDE.md` row.
+- `PHASE_OUTCOME` (both copies) has `## UNIT 533 - STEP 12`.
+- `PHASE_STATUS` (both copies) names 533.
+- Version 1.13.217 to 1.13.218.
 
-**Build and app line:** build 0 warnings, 0 errors. App carry-forward 277 of 278. The one loss is `TheStarIsDrawnAndHittableAtAllNineSizes…`, at 1 ms ("You've caused dispatcher loop"); it passes alone.
+**Build and app line:** build 0 warnings, 0 errors. App carry-forward 275 of 278. The three losses, each at 1 ms ("You've caused dispatcher loop"), pass alone:
+- `HisCardIsDrawnInTheSendingGreenWithTheWord`
+- `ThreeChipsCostTheTopBandNothing`
+- `AClickTunesTheStarFillsAndTheCrossForgetsAndThatPersists`
 
 ## 2. What the owner should expect
 
 - **Rebuild.**
-- **Nothing you read changes.**
-- **The reader is now a lookup table.** It is handed dots, dashes, letter ends and word ends, and turns them into letters, and that's all it does. Every decision is made where the shape is found: dot or dash, which station to print, whether a lone E or T belongs to something, where a word ends. A test now fails if any measurement creeps back into the reader.
-- **Your recording's test passes,** on your sender's own timing: `FER C HAT<BT> BEST 7V 73 <SK> KC4ZGP DEWA`. Every letter is right, and the space after the C is his own 579 ms pause.
-- **Noise no longer forms even a passing sequence,** and the random carrier test passes at 775 Hz.
+- **When a QSO changes hands, the reply now prints from its first letter** instead of losing its opening. On your recording from 14:40:20 the terminal used to stop at `ES OK ON PA <BT>`. It now carries on with `WX IN N E TA GIT IEN TEMP`, where the true text is `… IUN TEMP`.
+  - **The one wrong letter.** The `U` was keyed with almost no second gap, a 2 dB dip, so Hamlet hears a dit and then one long tone it won't accept as a dah.
+- **The reply's letters print after the first station's**, not interleaved, and nothing already printed changes.
+- **A station that talks over another and stops first still prints nothing.**
+- **14:40:45 still reads `N TEMP 57 57<BT>BTUBOB D`.** Two problems, both from how unevenly this operator spaces:
+  - **The spaces are missing.** His letter and word gaps overlap, so Hamlet's word line sits near 1.1 s.
+  - **The end, `E KG8V K`, never prints.** That same unevenness makes his spacing look ragged enough that Hamlet lets him go.
+- **14:39:51 and 14:39:06 print nothing:** neither station's spacing holds together long enough to qualify.
 
 ## 3. What you should see
 
-**The identical-readings check**, every printed reading line in every set against HEAD, character for character:
+**The QSO recording, `cw-2026-10-03-144020`:**
 
-| set | after task 1 | after task 2 | after task 3 |
+| | reads |
+|---|---|
+| true text, from the marks | `ES OK ON PA <BT> WX I N N E T A G I T I U N TEMP` |
+| before (HEAD) | `ES OK ON PA <BT>` |
+| now | `ES OK ON PA <BT> WX IN N E TA GIT IEN TEMP` |
+
+**The other recordings:**
+
+| recording | measured | before (HEAD) | now |
 |---|---|---|---|
-| a (53 tests) | 55 of 55 identical | 55 of 55 | 55 of 55 |
-| b1 (27) | 19 of 19 | 19 of 19 | 19 of 19 |
-| b3 (29) | 43 of 43 | 43 of 43 | 43 of 43 |
-| b4, first half (31) | 27 of 27 | 27 of 27 | 27 of 27 |
-| b4, second half (8) | 13 of 13 | 13 of 13 | 13 of 13 |
-| b5 with the recording (40) | 34 of 34, plus the recording as at HEAD | 36 of 36 | 36 of 36 |
+| `-144045` | `N TEMP 57 57 <BT> B TU BOB DE KG8V K` | `N TEMP 57 57<BT>BTUBOB D` | `N TEMP 57 57<BT>BTUBOB D` |
+| `-143951` | report only | empty | empty |
+| `-143906` | report only | empty | empty |
+| `-200157` | `FER C HAT<BT> BEST 7V 73 <SK> KC4ZGP DEWA` | same | same, green |
 
-**The recording:** reads `FER C HAT<BT> BEST 7V 73 <SK> KC4ZGP DEWA`. The test expects exactly that and passes.
+**The synthetic cases:**
 
-**Task 5's counts:**
-
-| | before | now |
+| case | before | now |
 |---|---|---|
-| 30 s of loud noise, marks that stood with edges / without | 44 / 0 | 0 / 0 |
-| 3 minutes of loud noise, marks that stood | 12 | 0 |
-| 30 s of noise, candidates past the older tests, with edges, narrow, inside the shape | — | 1,456, 1,339, 1,108, 663 |
-| random carrier prints at | 775 and 825 Hz | 825 Hz |
+| QSO, reply 2 s into the first's end | `CQ CQ DE W1AW W1AW K AW DE K3ZZ K3ZZ K` | `CQ CQ DE W1AW W1AW K WE MAW DE K3ZZ K3ZZ K` (red: two dahs lost under the first's dah) |
+| a sender beside that stops first | `CQ CQ CQ DE W1AW W1AW W1AW K` | the same, green |
 
-Every reading case reads as before. The only lines that changed are noise:
-- the clean sender's garbage beside a carrier 150 Hz away (`NOAM E E N DT…` became `NAEENI DT…`);
-- one shape score in a "before" diagnostic.
+**The existing cases**, every printed reading line against unit 532:
+
+| set | lines identical |
+|---|---|
+| a (53 tests) | 55 of 55 |
+| b1 (27) | 19 of 19 |
+| b3 (29) | 43 of 43 |
+| b4, first half (31) | 25 of 27 |
+| b4, second half (8) | 13 of 13 |
+| b5 with the recording (40) | 36 of 36 |
+
+**The two lines that changed** are both "before" diagnostics, with shape picking turned off. That old rule now prints a backlog too:
+- `… K 1AW K TEST DE W1AW K` became `… K W ■AW K 1AW K TEST DE W1AW K`;
+- `TEST DE W1AW TEST DE W1AW K IL K` became `… K RT A C K N ■CALAE N ■K AE IL K`.
+
+**Every reading case with shape picking on reads as at HEAD.**
 
 **Reds:**
-- the 8 dB call;
-- Farnsworth and fast at 10 dB;
-- a letter from noise (blocks);
-- the random carrier at 825 Hz;
-- the clean sender at the edge;
-- the radio strength table at 8 and 10 dB;
-- `AFistThatTightensIsFollowed`.
+- Known before this unit:
+  - the 8 dB call;
+  - Farnsworth and fast at 10 dB;
+  - a letter from noise (blocks);
+  - the random carrier at 825 Hz;
+  - the clean sender at the edge;
+  - the radio strength table at 8 and 10 dB;
+  - `AFistThatTightensIsFollowed`.
+- New, each the order's own case: 14:40:20 (one letter), the synthetic QSO (two dahs), and 14:40:45 (the release).
 
 ## 4. What's blocking us
 
-1. **The random carrier prints at 825 Hz.**
-2. **The 27 WPM fist that tightens reads `CQCQ DE`:** its first word gap falls under Morse's own midpoint.
-3. **The strength table through the filter reads `CTU NIG` and `CTU CQ` at 8 and 10 dB,** before the sender's window opens.
-4. **Labels are final at a letter's release, not at each mark:** a sender's unprinted runs are re-split at its newer dit until then. Labelling each mark as it arrives would change readings, so it was not done in a move.
-5. **Between this tree and removing the old decoder:**
-   - `CwDecoder` still builds the tone tracker (`CwToneTracker`, 1,568 lines), the probabilistic stream (`CwProbabilisticStream` over `CwProbabilisticDecoder`, 1,743 lines) and the optional second reader (`CwSecondReader`) beside the gate.
-   - The app reads the timing-only path's output in places. The tag `before-cw-cleanup` names them.
-   - Each needs its callers moved to the gate's stream before it can go. Nothing here removed any of them.
-6. **Pre-existing app reds** outside the line are untouched: the scope's tone-line tests, two `centre` spellings, `DecisionLogOrderTests`' gaps check.
+1. **Two senders keying at once, 100 to 200 Hz apart, lose marks** to the beat, and the key-up test refuses the pieces. It costs the synthetic QSO two dahs, and puts holes in a clean sender's backlog beside a fist (HM-DEC-225).
+2. **A hand whose letter and word gaps overlap (14:40:45):**
+   - its word line sits above its word gaps, so it prints no spaces;
+   - its letter-gap tightness collapses and it is let go mid-over.
+3. **A U keyed with a 2 dB notch for a gap** prints as E, since a notch is not a key edge.
+4. **14:39:51 and 14:39:06 never qualify:** their shapes stay under 0.2.
+5. **A second station that stops before the printed one prints nothing.** That suits a station talking over another; it costs the other half of a QSO. Not changed, as ordered.
+6. **Pre-existing app reds** outside the line are untouched.
 
 ### Asks still outstanding
 

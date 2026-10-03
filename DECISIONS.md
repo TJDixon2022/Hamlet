@@ -4,6 +4,34 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-237
+date: 2026-10-03
+refs: work instruction 533, src/Hamlet.RadioEngine/Cw/CwSenderGate.cs, tests/Hamlet.RadioEngine.Tests/Cw/AReplyIsReadFromItsFirstLetterTests.cs, tests/fixtures/cw/captured/cw-2026-10-03-144020.wav
+---
+
+**A reply is read from its first letter.** When the terminal passes to a sender, the letters that sender had already sent
+since it stood print first, in order, after what is printed, then its live letters. Tim, 2026-10-03.
+
+**The recording.** `cw-2026-10-03-144020`, the owner's QSO on 7.054 MHz changing hands between a station at 500 Hz,
+whose over ends at 11.3 s, and a reply at 600 Hz, whose first mark, the dit of its W, is at 13.57 s. The terminal printed
+`ES OK ON PA <BT>` and nothing after it. It now prints `ES OK ON PA <BT> WX IN N E TA GIT IEN TEMP`.
+
+**Two causes, both in the gate's sender stage:**
+- **The released station was picked again.** Silent and let go, it still had the better shape, 0.49 against the reply's
+  0.15 to 0.39, so it was picked again at the next sweep and let go again, and the reply never had the terminal. A sender
+  silent past its release is no longer a candidate.
+- **The new sender's letters sent while another held the terminal were skipped** as printed over. They are kept and
+  printed in order behind the first sender's text. Nothing printed is revised, the lone-letter rule and the word ends
+  apply to them as to live letters, and a sender that never stands still has nothing to print. The scroll places each
+  letter by its own time, so the backlog lands over its blocks where they are still on screen.
+
+**The handover itself is unchanged:** at the printed sender's silence, to the best-shaped sender standing.
+
+**R88 is lifted for the owner's five recordings,** `cw-2026-10-02-200157` and `cw-2026-10-03-143906`, `-143951`,
+`-144020` and `-144045` (the owner, 2026-10-03: *"add them to the next couple rounds"*). The four of 2026-10-03 are
+committed beside the tests that read them. No other recording is read.
+
+---
 id: HM-DEC-236
 date: 2026-10-03
 refs: work instruction 532, src/Hamlet.RadioEngine/Cw/CwRunReader.cs, src/Hamlet.RadioEngine/Cw/CwSenderGate.cs, src/Hamlet.RadioEngine/Cw/CwSymbol.cs, src/Hamlet.RadioEngine/Cw/CwPatternGate.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheReaderIsALookupTableTests.cs
