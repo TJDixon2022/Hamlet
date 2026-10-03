@@ -2,12 +2,12 @@ PROTOCOL: 2
 PROJECT: Hamlet
 STATE: COMPLETED
 TASK: 4 of 4
-WORK_INSTRUCTION: 530 - one front end, and the last four faults on the owner's recording (run by hand)
+WORK_INSTRUCTION: 531 - the recording reads whole (run by hand)
 BALL: tim
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-10-02T22:46:44-04:00
-NOTE: Unit 530 done - one front end, DEWA held; letter-line weighting needs a ruling
+UPDATED: 2026-10-03T00:40:04-04:00
+NOTE: Unit 531 done - every letter right; C HAT is the sender's own gap
 
 ---
 

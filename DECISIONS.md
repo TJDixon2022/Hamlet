@@ -4,6 +4,49 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-235
+date: 2026-10-03
+supersedes: HM-DEC-217 (for the line between a gap inside a letter and one between letters only)
+refs: work instruction 531, src/Hamlet.RadioEngine/Cw/CwPatternGate.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheOwnersRecordingReadsTests.cs
+---
+
+**A gap is judged at Morse's own midpoints until the sender has shown its own.** Work instruction 531 answered the
+last report's ask as a CW question from Morse itself.
+
+**The line inside a letter sits at the midpoint** (task 1). Between a gap inside a letter and one between letters, the
+line is the geometric midpoint of the two clusters, each weighed alike, as 1:3 sits at √3. It is drawn so in the
+sender's lines and in the judgement of a gap against its neighbours.
+- **It supersedes the spread-weighted boundary of HM-DEC-217 for these gaps.** The dit-or-dah line keeps it.
+- Weighed by spread, the sender's window read the gaps inside letters as tight as the detector reads, and the line was
+  pulled to 1.4 dits; the 1.6-dit gap inside the owner's 7 read as a letter gap.
+- The 7 before V now reads `7V`. Every other case reads as before.
+
+**The first seconds are spaced at Morse's own midpoint** (task 2). Until a sender's word cluster is trusted, from
+three word gaps, its word line is never under √21 of its element gaps, the midpoint between a letter gap of three and
+a word gap of seven.
+- Its element gaps are their centre once three show, and its gap dits before that.
+- The five-dit floor stays as it is, and a trusted word cluster's line is the sender's own.
+- Drawn from one or two letter gaps, the line had landed low, and the owner's 3.8-dit gap after the F read as a word.
+  `FER` now reads.
+- **What it costs:** the 27 WPM fist that tightens from 30% scatter reads `CQCQ DE`. Its first word gap, 240 ms, is
+  4.4 of its element gaps, under the midpoint at 249 ms. The line drawn from its two letter gaps had caught it.
+- KC4ZGP holds, and the straight key reads `SKCC DE`.
+
+**The recording asserts its spacing.** `TheOwnersRecordingReads` asserts `FER CHAT<BT> BEST 7V 73 <SK> KC4ZGP DEWA`.
+It reads `FER C HAT<BT> BEST 7V 73 <SK> KC4ZGP DEWA`: every letter right, and one space off. Between the C and the H
+the sender left 579 ms, about 7.4 of his gap dits, past a seven-unit word gap. No line drawn from 1:3:7 reads that as
+inside a word, and the assertion was not loosened.
+
+**Task 3, dropped.**
+- The gate agrees a mark with a sequence within a bin either side of its mean pitch. That window is 50 Hz wide, and it
+  took three bin centres while pitches were bins; measured to the hertz, noise marks fill all of it.
+- Half a bin either side, one bin's width, made loud noise stand nothing at all, in 30 s and in three minutes.
+- But three tests measure a single-mark gate by counting the noise that stands, and with none standing their figures
+  could not be taken. Two of them went red, so it was reverted.
+
+**Task 4, dropped:** the random carrier still prints at 775 and 825 Hz.
+
+---
 id: HM-DEC-234
 date: 2026-10-02
 refs: work instruction 530, src/Hamlet.RadioEngine/Cw/CwEnvelopeDetector.cs, src/Hamlet.RadioEngine/Cw/CwSequenceShape.cs, src/Hamlet.RadioEngine/Cw/CwRunReader.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheShapePicksTheSenderTests.cs

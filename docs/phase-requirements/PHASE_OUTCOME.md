@@ -960,3 +960,26 @@ HEAD was tagged before-one-front-end (053b8fb6) and pushed. Version 1.13.214 to 
 The recording reads F ER C H AT<BT> BEST MSV 73 <SK> KC4ZGP DEWA.
 
 Build 0 warnings 0 errors. App carry-forward 276 of 278; the two losses (the chip tests, FT8 and Olivia, 1 ms, a dispatcher loop) pass alone.
+
+## UNIT 531 - STEP 12
+
+Run by hand, outside the loop:
+- SESSION.lock taken and released;
+- nothing written to RUN_LEDGER.md and nothing under tools\arbiter\ touched;
+- no box ticked and no ruling added to either plan;
+- no scratch file committed;
+- nothing keyed or transmitted. R88 stayed lifted for the one recording.
+
+Version 1.13.215 to 1.13.216. HM-DEC-235.
+
+**Task 1.** The line between a gap inside a letter and one between letters is the clusters' geometric midpoint, each weighed alike, superseding the spread-weighted line for those gaps; the owner's 7 reads 7V.
+
+**Task 2.** Until three word gaps are shown, the word line is never under √21 of the sender's element gaps. FER reads. The 27 WPM fist that tightens from 30% scatter reads CQCQ DE: its first word gap is 240 ms against a floor of 249.
+
+**The recording test asserts its spacing** and reads FER C HAT<BT> BEST 7V 73 <SK> KC4ZGP DEWA: every letter right, and the sender's own 579 ms (7.4 gap dits) between C and H read as a word.
+
+**Task 3, dropped.** Half a bin either side in the gate's pitch agreement made loud noise stand nothing, which emptied three tests that count the noise that stands; it was reverted.
+
+**Task 4, dropped.**
+
+Build 0 warnings 0 errors. App carry-forward 278 of 278.
