@@ -1,146 +1,117 @@
 ```
-UNIT: 529 - tasks 1 and 2 done; task 3 measured, nothing further changed - 2026-10-02
-UNIT GOAL: look at a sender through a window that fits it
-NUMBER: the T of BEST's top wobbles 1.5 dB through its own window against 3.4 to 3.7 dB on the grid
+UNIT: 530 - tasks 1 and 2 done; task 3 not built (premise false); task 4 dropped - 2026-10-02
+UNIT GOAL: one front end, and the last four faults on the owner's recording
+NUMBER: one front end, the grid; the recording reads every letter but the 7 before V
 ```
 
 ## 1. What Claude did
 
-Claude Code on the development machine, branch `main`. The prompt claimed `PROJECT: Hamlet`, and the order's gate held: `SHACK_FACTS.md`, `CwPatternGate.cs` and `tests\fixtures\cw\captured\cw-2026-10-02-200157.wav` exist, there is no `CoreHMI.sln` or `MURC.sln`, and the root is `C:\Source\HamLet`. Hamlet confirmed. Nothing in this report is evidence about the radio beyond the owner's one recording. HM-DEC-233 was free.
+Claude Code on the development machine, branch `main`. The prompt claimed `PROJECT: Hamlet`, and the order's gate held: `SHACK_FACTS.md`, `CwSenderLane.cs` and `tests\fixtures\cw\captured\cw-2026-10-02-200157.wav` exist, there is no `CoreHMI.sln` or `MURC.sln`, and the root is `C:\Source\HamLet`. Hamlet confirmed. Nothing in this report is evidence about the radio beyond the owner's one recording. HM-DEC-234 was free.
 
 **How the session ran:**
 - It took SESSION.lock and released it at the end.
 - It wrote nothing to `RUN_LEDGER.md`, touched nothing under `tools\arbiter\`, and ticked no box.
-- R88 stayed lifted for `cw-2026-10-02-200157.wav` alone. No other recording, fixture or telemetry was read.
-- Nothing keys, transmits or writes to the radio.
+- **HEAD was tagged `before-one-front-end` (053b8fb6) and pushed** before any engine change.
+- R88 stayed lifted for the one recording. Nothing keys, transmits or writes to the radio.
 
-**Task 1: a standing sender through its own window.** Commit `3371d63c`.
-- **Measured first** (`TheTopOfADahThroughTwoWindows`):
-  - The T of BEST, found on the new envelope, runs 11.570 to 11.775 s; its top was read 20 ms in from each edge.
-  - The order's 11.48 to 11.69 s window reaches into the gap before the dah, which alone reads 15 dB of range.
-  - On the 650 and 675 Hz bins through the 10 ms window, the top wobbled 3.4 and 3.7 dB top to bottom (0.8 dB standard deviation).
-  - Through its own window at 662.5 Hz it wobbled 1.5 dB (0.4).
-- **The window, `CwSenderLane`:**
-  - It mixes at the sender's pitch, measured on its own samples, and low-passes with a fourth-order Butterworth. It is causal.
-  - **The cutoff (my choice, with its reason):** set where the filter's 10 to 90 per cent rise is a quarter of the dit, so a dit's top stays flat over its middle half.
-  - On the recording the dit read 74 ms, giving a 19.5 Hz cutoff, a 19.8 ms rise, and a **23.0 ms delay** taken off every mark's times.
-  - It retunes at each mark the sender takes.
-- **Where it opens:** only on the standing sender the terminal prints.
-  - A noise sequence stood in one bench case, and a narrow low-pass turns noise into dit-long humps. Noise never prints, so noise reads as before.
-  - The shared bench helper (`ThePatternIsTheGateTests.Read`) never told the detector what it prints; it now does, as the app does.
-- **Its marks:**
-  - A mark is a stretch over half the sender's amplitude less one flat-top wobble, timed where it crosses half its own top.
-  - Each meets the same tests a bin's bar meets: key-up, edges (read over two rises), own height, narrowness, and the shape score, whose flatness term is the flatness test.
-  - Narrowness is also read on the mark's own samples, comparing the pitch with 150 Hz either side. This keeps out one of the recording's clicks, which the low-pass stretched into a 56 ms, 7.6 dB hump.
-  - The run-and-bar method doesn't fit this envelope. A bar must sit wholly above its neighbouring runs, and the slower rise put the last hops of a rise inside the top's range, so whole dits were refused.
-- **The grid and the reader:**
-  - The grid, including its fitted rectangles, leaves the sender's pitch alone while the window is open.
-  - The reader now judges a silence from what has been called (`CwMarkBatch.LateSeconds`), since the window calls a mark later than a bin does.
+**Task 1: one front end, pitch as a result.** Commit `23937fc7`.
+- **Pitch:** a grid mark's pitch is now its energy's centroid over its own samples: the strongest excess peak within two bins of the bin its bar peaked in. The walk to the louder neighbour still picks the bin a mark's level is read in, but no longer names its pitch.
+- **The comparison:** both paths were run with the sender's window on (it was hooked into shape-first for this).
+  - **Shape-first read the owner's recording as nothing.** It joined this hand's dits across their 75 ms gaps into 120 ms spans, so the sender's shape scored nought and nothing printed.
+  - It did read the radio strength table whole at 8 and 10 dB, which the grid doesn't.
+  - **The deciding case was the recording, so shape-first came out.** The grid is the only front end, and the tag holds shape-first.
+- **Tests:**
+  - Five tests that only compared shape-first with the grid were removed with it.
+  - Two moved onto the grid: a random carrier never prints, and a real sender stands.
+- **Results:** every reading case reads as at HEAD. One new red, `MostNoiseBarsHaveNoEdges`:
+  - 30 s of loud noise now stands 44 marks with the edge test on (30 before) and none with it off (38 before).
+  - Three minutes of noise stands 12 (31 before).
+  - Nothing prints in either. The centroid spreads noise marks over continuous pitches, so the gate groups them differently.
 
-**Task 2: a pause is not a word.** Commit `dae23143`.
-- **The pause rule:** a gap longer than three of the sender's word gaps is a pause and is left out of its word cluster. The word gap is taken as 7/3 of the sender's own letter centre.
-- **Settling:** the clusters settle with equal spreads until each side has shown three gaps. A lone pause has no spread of its own, and before this it drew the boundary to itself.
-- **The five-dit floor:**
-  - It retires where the word cluster holds three gaps; there the line is the boundary between the sender's own letter and word clusters.
-  - Before that, the floor and √(7/3) of the letter centre stand.
-- **The line for this sender comes out at 508 ms**, between 430 and 580.
-- **Retiring the floor everywhere broke the SKCC straight key** (`S KCC`, `SKCCDE`), so, as the order said, the floor stands until the word cluster is trusted.
+**Task 2: a sender is held to its last word.** Commit `153ddf45`.
+- A sender's letter-gap tightness is now scored on its longer gaps under its own word line, walked as before.
+- The owner's hand had all its longer gaps (2 to 5.7 dits, no jump to its words) walked as one cluster. It scored nought, and the reader let it go before DEWA.
+- **Why the straight key moved:** I traced it here. Scoring the word line's letter cluster whole holds the SKCC key, its gaps scattered by two fifths, to 0.25 tightness from 8.3 s. Its shape falls under 0.1 and it's let go after `CQ CQ S`. Walking only the gaps under the line keeps its first jump where it was.
+- **Green:** DEWA prints, and the straight key reads `SKCC DE` in all six conditions.
 
-**Task 3: measured, no change.**
-- The G of GP now reads whole.
-- The weak 25-35-25 WPM row now reads whole.
-- Both came from task 1. The two faults left are in section 4.
+**Task 3: not built, the premise is false.**
+- The letter line is already the spread-weighted boundary, the same function as the dit-or-dah line.
+- It leans toward the gaps inside letters because, through the sender's window, they measure at the 0.1 spread floor (70 to 82 ms), while this hand's letter gaps are wide.
+- The 7's 120 ms gap sits fewer spreads from the letter cluster, so it reads as a letter. A fix is a ruling (section 4).
+
+**Task 4: dropped.** Its first rule (a gap under three of the sender's inside-letter gaps is inside the letter) is about 225 ms here. The owner's E and R are 170 ms apart, so they would merge into one letter. The bench helpers were not rewired either.
 
 **Records:**
-- HM-DEC-233 in `DECISIONS.md`, and the `CLAUDE.md` row.
-- `PHASE_OUTCOME` (both copies) has `## UNIT 529 - STEP 12`.
-- `PHASE_STATUS` (both copies) names 529.
-- Version 1.13.213 to 1.13.214.
+- HM-DEC-234 in `DECISIONS.md`, and the `CLAUDE.md` row.
+- `PHASE_OUTCOME` (both copies) has `## UNIT 530 - STEP 12`.
+- `PHASE_STATUS` (both copies) names 530.
+- Version 1.13.214 to 1.13.215.
 
-**Build and app line:** build 0 warnings, 0 errors. App carry-forward 278 of 278.
+**Build and app line:** build 0 warnings, 0 errors. App carry-forward 276 of 278. The two losses are `TheChipSaysTheChosenModeTests` FT8 and Olivia, at 1 ms ("You've caused dispatcher loop"); they pass alone.
 
 ## 2. What the owner should expect
 
 - **Rebuild.**
 - **Your recording now reads:**
   - sent: `FER CHAT<BT> BEST 7V 73 <SK> KC4ZGP DEWA`
-  - now: `F ER C H AT<BT> BEST MSV 73 <SK> KC4ZGP`
-  - Every dah is a dah. The 73 after the pause is there. The callsign holds together.
-- **What changed:** once Hamlet has a station it's printing, it listens to that station through a window tuned to its exact note and narrowed to its speed. So a dah that looked wobbly stays whole, and a weak signal stands further out of the noise. On the bench, a 20 WPM call 8 dB over the noise through your filter now reads `N0CALL` where it read `N0CEELL`.
-- **A long letter gap no longer splits a callsign** once the sender has shown three of its word gaps. Before that, five dits still makes a word, so a very slow-spaced hand can still split a word in its first seconds.
-- **Two faults are still on screen:**
-  - The 7 before V shows as `M S`.
-  - The closing DEWA doesn't print.
+  - now: `F ER C H AT<BT> BEST MSV 73 <SK> KC4ZGP DEWA`
+  - Every letter is right except the 7 before V, which still shows as M S. The spacing at the very start is still loose.
+- **Hamlet has one way of finding marks now:** the per-pitch path. A mark's pitch is measured from its own sound rather than snapped to the nearest 25 Hz. The other way is kept under the tag `before-one-front-end` in case it's ever wanted.
+- **A station is no longer dropped before its last word.** DEWA now prints, and the straight-key test still reads `SKCC DE`.
 
 ## 3. What you should see
-
-**The wobble, the T of BEST's top (11.590 to 11.755 s):**
-
-| how it is read | standard deviation | top to bottom |
-|---|---|---|
-| 650 Hz bin, 10 ms window (today's path) | 0.79 dB | 3.44 dB |
-| 675 Hz bin, 10 ms window | 0.79 dB | 3.69 dB |
-| its own window, 662.5 Hz | 0.41 dB | 1.48 dB |
-
-The 7 after the pause, 14.9 to 17.0 s:
-- **before:** seven candidates, none of them its own (25–50 ms bits at 550 to 800 Hz);
-- **after:** all five of its elements, at 211, 213, 79, 78 and 77 ms, 662.9 Hz.
 
 **The recording's text:**
 
 | | text |
 |---|---|
 | sent | `FER CHAT<BT> BEST 7V 73 <SK> KC4ZGP DEWA` |
-| before 529 | `F ER C H AT<BT> BESEMSV E Y <SK> KC4 Z MPDEWA` |
-| after task 1 | `F ER C H AT<BT> BEST7V 73 <SK> KC4ZGP` |
-| after task 2 (now) | `F ER C H AT<BT> BEST MSV 73 <SK> KC4ZGP` |
+| before 530 | `F ER C H AT<BT> BEST MSV 73 <SK> KC4ZGP` |
+| now | `F ER C H AT<BT> BEST MSV 73 <SK> KC4ZGP DEWA` |
 
-Task 2 drew the 7's inner line differently, so the 7 before V reads `M S` again.
+**The front-end decision, both paths with the sender's window:**
 
-**The strength table, 20 WPM through the 500 Hz filter, 1 dB AGC:**
-
-| dB | before | now |
+| case | grid | shape-first |
 |---|---|---|
-| 8 | `CTU NIG DE N0CEELL N0CALL K` | `CTU NIG DE N0CALL N0CALL K` |
-| 10 | `CTU CQ DE N0CALL N0CALL K` | same |
-| 12, 16, 24 | whole | whole |
+| **owner's recording** | `F ER C H AT<BT> BEST MSV 73 <SK> KC4ZGP` | **nothing** (dits joined into 120 ms spans) |
+| strength table 8 dB | `CTU NIG DE N0CALL N0CALL K` | `CQ CQ DE N0CALL N0CALL K` |
+| strength table 10 dB | `CTU CQ DE N0CALL N0CALL K` | `CQ CQ DE N0CALL N0CALL K` |
+| the other hand cases | whole | whole |
 
-The opening `CTU` comes before the window opens; it's the grid's.
+**The strength table now**, 20 WPM through the filter, 1 dB AGC:
 
-**The between-bin cases** at 612.5, 637.5 and 662.5 Hz: whole, 70 stood, as before.
+| dB | reads |
+|---|---|
+| 8 | `CTU NIG DE N0CALL N0CALL K` |
+| 10 | `CTU CQ DE N0CALL N0CALL K` |
+| 12, 16, 24 | whole |
+
+The between-bin cases (612.5, 637.5, 662.5 Hz) read whole, 70 stood. Noise, 30 s and three minutes, prints nothing.
 
 **The existing cases:**
-- **Noise:** 30 s and 3 minutes, nothing printed, as before.
-- **Changed for the better:** the weak 25-35-25 WPM row at 1 dB now reads whole (was `… AND I SFE`).
-- **Changed in a red diagnostic:** in the random carrier's gate table, the key-up-off row reads `NOAM TTN I T AEEN E` (was `… AE E N`).
-- **Everything else** in sets a, b1, b3, b4 and b5 reads as before.
-- **The known reds:**
-  - the call at 8 dB;
-  - Farnsworth and fast at 10 dB;
-  - a letter from noise (blocks);
-  - the random carrier at 725 and 775 Hz;
-  - the clean sender at the edge;
-  - the radio strength table at 8 and 10 dB;
-  - `TheOwnersRecordingReads`.
+- **Same text as at HEAD** in every set: a, b1, b3, b4 and b5.
+- **Changed:**
+  - Mark pitches now read to the hertz: a 612 Hz station stands at 611–612, where it stood at 600 and 625.
+  - The noise stand counts, given in section 1.
+  - The gate table beside a carrier, a diagnostic that reads noise: `NOAM T N I T AE E N` became `NOAM N I AEEN E`.
+- **The random carrier test, now on the grid,** prints at 775 and 825 Hz (shape-first printed at 725 and 775).
+- **Reds:** 8 dB call, Farnsworth/fast at 10 dB, letter from noise (blocks), random carrier at 775 and 825, clean sender at the edge, radio strength 8 and 10 dB, `MostNoiseBarsHaveNoEdges` (new), `TheOwnersRecordingReads`.
 
 ## 4. What's blocking us
 
-1. **DEWA is lost.**
-   - The reader lets a sender go when its shape falls under 0.1. This hand's letter gaps (2 to 5.7 dits, with no jump to its words) score nought for tightness.
-   - Scoring them on task 2's split brings DEWA back, but the straight key then reads `SKCCDE` in four of six conditions, because the first pick moves.
-   - Ruling asked: *the shape's letter-gap tightness is scored on the sender's own letter cluster, split as the word line is, and the straight key's first pick is fixed separately.* Rejected: keeping it as it is, which loses a sender's closing words whenever its letter gaps spread past a hand's widest.
-2. **The 7 before V reads `M S`.** Its 120 ms inner gap is over the reader's letter line of 100 to 114 ms, which leans toward the tight element gaps (70 to 82 ms). The cause is in the reader, not the envelope.
-3. **`F ER` at the start:** the first gaps are judged before any letter cluster exists.
-4. **Bench helpers that don't wire the printed pitch** (`TheLetterGapHoldsTests`, `WhichGateTurnsAwayW1awTests`, and others) never open the window, so they test the grid alone.
-5. **Pre-existing app reds** outside the carry-forward line were not touched:
-   - the scope's tone-line tests;
-   - two `centre` spellings;
-   - `DecisionLogOrderTests`' gaps check.
+1. **The 7 before V.** Ruling asked: *the line between a gap inside a letter and one between letters is the midpoint of the two clusters in log-length, each side weighed alike, rather than by spread.*
+   - Why: through the sender's window the gaps inside letters are as tight as the detector reads, so weighing by spread pulls the line to 1.4 dits. A 1.6-dit gap inside this hand's 7 then reads as a letter. Morse's own 1:3 midpoint is 1.73 dits.
+   - It supersedes the spread rule (HM-DEC-217) for gaps only.
+   - Rejected: leaving it, which keeps `M S`.
+2. **`MostNoiseBarsHaveNoEdges` is red** since the centroid pitch: 44 noise marks stand in 30 s with the edge test, 30 before. Nothing prints.
+3. **`F ER C H AT` at the start.** Task 4's rule needs rewording: as written it merges letters under three inside-letter gaps.
+4. **Bench helpers that don't tell the detector what it prints** (`TheLetterGapHoldsTests`, `WhichGateTurnsAwayW1awTests` and others) still test the grid without the window.
+5. **The random carrier prints at 775 and 825 Hz** on the grid.
+6. **Pre-existing app reds** outside the line are untouched: the scope's tone-line tests, two `centre` spellings, `DecisionLogOrderTests`' gaps check.
 
 ### Asks still outstanding
 
-- **Unit 529, 2026-10-02:** the shape's letter-gap tightness (item 1 above). No change for it sits in the tree.
-- **Unit 522, 2026-10-01:** whether to switch shape-first on before its failures are fixed. Still off.
+- **Unit 530, 2026-10-02:** the letter line's weighting (item 1 above). No change for it sits in the tree.
 - **Unit 520, 2026-10-01:** how a mark finds its own tone beside a louder one. Partly answered by unit 524; still open before a sender stands.
 - **Unit 440's item 1:** MET-COVERAGE counts wrong sure characters. Raised 2026-09-25 and waiting on the owner. No change for it sits in the tree.
 - **Unit 440's item 2:** R72 is cited as HM-DEC-175. Raised 2026-09-25 and scheduled as step 8 record work under R80.

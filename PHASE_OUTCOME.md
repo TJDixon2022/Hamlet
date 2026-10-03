@@ -1674,3 +1674,26 @@ The 7 after the pause went from no candidate to all five elements. The radio str
 - DEWA is lost to the reader's shape release: this hand's letter gaps score nought for tightness. Scoring them on task 2's split restored DEWA and read the straight key SKCCDE, so it was not kept.
 
 Build 0 warnings 0 errors. App carry-forward 278 of 278.
+
+## UNIT 530 - STEP 12
+
+Run by hand, outside the loop:
+- SESSION.lock taken and released;
+- nothing written to RUN_LEDGER.md and nothing under tools\arbiter\ touched;
+- no box ticked and no ruling added to either plan;
+- no scratch file committed;
+- nothing keyed or transmitted. R88 stayed lifted for cw-2026-10-02-200157.wav alone.
+
+HEAD was tagged before-one-front-end (053b8fb6) and pushed. Version 1.13.214 to 1.13.215. HM-DEC-234.
+
+**Task 1, one front end.** A mark's pitch is its energy's centroid over its own samples. With the sender's window on both paths, shape-first read the owner's recording as nothing (its rectangles joined the hand's dits across their gaps), though it read the radio strength table whole at 8 and 10 dB. So shape-first came out and the grid is the only front end. Five comparison tests went with it; the random carrier and real-sender cases moved onto the grid. Every reading case reads as before. In 30 s of noise 44 marks stand with the edge test on (30 before) and none with it off (38 before), so MostNoiseBarsHaveNoEdges is red; in three minutes 12 stand (31 before). Nothing prints.
+
+**Task 2, held to the last word.** A reader sender's letter-gap tightness is scored on its longer gaps under its own word line. The recording prints DEWA, and the straight key reads SKCC DE in all six conditions. Scoring the line's letter cluster whole had held the straight key to 0.25 and let it go after CQ CQ S.
+
+**Task 3, not built.** The letter line is already spread-weighted, the same as the dit-or-dah line; it leans to the tight gaps inside letters because they are tight. The 7 still reads M S.
+
+**Task 4, dropped.** Its first rule would merge the owner's E and R, 170 ms apart, against three gaps inside a letter, about 225 ms.
+
+The recording reads F ER C H AT<BT> BEST MSV 73 <SK> KC4ZGP DEWA.
+
+Build 0 warnings 0 errors. App carry-forward 276 of 278; the two losses (the chip tests, FT8 and Olivia, 1 ms, a dispatcher loop) pass alone.

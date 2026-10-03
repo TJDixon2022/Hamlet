@@ -4,6 +4,56 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-234
+date: 2026-10-02
+refs: work instruction 530, src/Hamlet.RadioEngine/Cw/CwEnvelopeDetector.cs, src/Hamlet.RadioEngine/Cw/CwSequenceShape.cs, src/Hamlet.RadioEngine/Cw/CwRunReader.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheShapePicksTheSenderTests.cs
+---
+
+**One front end; a sender is held to its last word.** The grid path is the only front end. The tag
+`before-one-front-end` (053b8fb6) holds shape-first.
+
+**A mark's pitch is its energy's centroid** (task 1). Over the mark's own samples, the strongest excess peak within
+two bins of the bin its bar peaked in, placed at its centroid. The walk to the louder neighbour still finds the bin a
+mark's level and edges are read in, and no longer names the pitch. A station at 612 Hz now stands at 611 and 612 where
+it stood at 600 and 625.
+
+**The front-end decision.** Both paths were read with the sender's window on.
+- **Shape-first read the owner's recording as nothing.** Its rectangles, fitted across the passband, joined the hand's
+  dits across their 75 ms gaps into 120 ms spans; its element gaps vanished, its shape scored nought, and it never
+  printed.
+- Shape-first did read the radio strength table whole at 8 and 10 dB, where the grid reads `CTU NIG` and `CTU CQ` in
+  the call's opening, before the window opens.
+- One case worse decided it, as the order said: **shape-first comes out**. Five tests that only compared it with the
+  grid went with it. The random carrier and real-sender cases moved onto the grid: the carrier prints at 775 and 825 Hz
+  there, where shape-first printed at 725 and 775, so the test stays red at two pitches.
+
+**A sender is held to its last word** (task 2). A reader sender's letter-gap tightness is scored on its own letter
+gaps: its longer gaps under its own word line, walked as before.
+- The owner's hand spaces letters two to 5.7 dits with no jump to its words. Walked as one cluster, they scored
+  nought, its shape fell under 0.1, and it was let go before DEWA.
+- **The straight key's first pick.** Scoring the line's letter cluster whole held the SKCC straight key, its gaps
+  scattered by two fifths, to 0.25 for tightness from 8.3 s; its shape fell under 0.1 and it was let go after `CQ CQ S`.
+  Walking the gaps under the line leaves its first jump where it was. That is what moved the straight key when this was
+  tried before: the letter cluster scored was wider than the walk's.
+- The recording prints DEWA, and the straight key reads `SKCC DE` in all six conditions.
+
+**Task 3, not built: the premise is false.** The line between a gap inside a letter and one between letters is
+already the boundary weighted by both clusters' spreads, the same function the dit-or-dah line uses. It leans toward
+the gaps inside letters because they measure tight through the sender's window, at the 0.1 spread floor, and this
+hand's letter gaps are wide. The 7's 120 ms gap sits fewer spreads from the letter cluster. Weighing the two sides
+equally would read it inside the letter, which reverses unit 513's rule (HM-DEC-217); that is the owner's to rule.
+
+**Task 4, dropped.** As written, its first rule makes a gap under three of the sender's gaps inside letters, about 225
+ms here, inside the letter. The owner's E and R are 170 ms apart and would merge.
+
+**What reads.**
+- The recording: `F ER C H AT<BT> BEST MSV 73 <SK> KC4ZGP DEWA`. Every letter but the 7 is right.
+- Every other reading case reads as before.
+- Noise prints nothing. 30 s of loud noise stands 44 marks with the edge test on, against 30 before, and none with it
+  off, against 38, so `MostNoiseBarsHaveNoEdges` is red. Three minutes stands 12, against 31. The centroid spreads noise
+  marks across continuous pitches, and the gate groups them differently.
+
+---
 id: HM-DEC-233
 date: 2026-10-02
 refs: work instruction 529, src/Hamlet.RadioEngine/Cw/CwSenderLane.cs, src/Hamlet.RadioEngine/Cw/CwEnvelopeDetector.cs, src/Hamlet.RadioEngine/Cw/CwPatternGate.cs, src/Hamlet.RadioEngine/Cw/CwRunReader.cs, src/Hamlet.RadioEngine/Cw/CwMark.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheOwnersRecordingReadsTests.cs, tests/Hamlet.RadioEngine.Tests/Cw/ThePatternIsTheGateTests.cs

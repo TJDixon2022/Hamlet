@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: COMPLETED
-TASK: 3 of 3
-WORK_INSTRUCTION: 529 - look at a sender through a window that fits it (run by hand)
+TASK: 4 of 4
+WORK_INSTRUCTION: 530 - one front end, and the last four faults on the owner's recording (run by hand)
 BALL: tim
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-10-02T21:19:16-04:00
-NOTE: Unit 529 done - own window in; floor retires where word gaps are trusted
+UPDATED: 2026-10-02T22:46:44-04:00
+NOTE: Unit 530 done - one front end, DEWA held; letter-line weighting needs a ruling
 
 ---
 
