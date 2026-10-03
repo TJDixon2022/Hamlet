@@ -512,8 +512,14 @@ public sealed class CwRunReader
         return before || after;
     }
 
+    /// <summary>
+    /// **EVERY MARK LEAVES LABELLED** (work instruction 532, task 1, HM-DEC-236): the run's marks as dots and dashes, by the
+    /// sender's own line between its two lengths, its letter end with the reading of everything but the letter, and a word
+    /// end before it where the gap before it is a word. The labels are decided here and the letter is looked up from them.
+    /// </summary>
     private void Raise(Sender sender, CwMark[] run)
     {
+        var symbols = new List<CwSymbol>();
         var dit = sender.DitSeconds;
         var split = sender.SplitAround(run);
         var at = run[^1].ToSeconds;
@@ -525,45 +531,93 @@ public sealed class CwRunReader
 
             if (lastSender != sender || sender.Lines.KindOf(run[0].FromSeconds - lastRun[^1].ToSeconds) == CwGapKind.Word)
             {
-                CharacterRead?.Invoke(new CwCharacter(
-                    MorseAlphabet.WordGap, CwConfidence.High, 1, string.Empty, double.NaN, wpm,
-                    TimeSpan.FromSeconds(run[0].FromSeconds))
+                symbols.Add(new CwSymbol(CwSymbolKind.WordEnd)
                 {
-                    Stage = CwReadingStage.Settled,
+                    Reading = new CwCharacter(
+                        MorseAlphabet.WordGap, CwConfidence.High, 1, string.Empty, double.NaN, wpm,
+                        TimeSpan.FromSeconds(run[0].FromSeconds))
+                    {
+                        Stage = CwReadingStage.Settled,
+                    },
                 });
             }
         }
+
+        symbols.AddRange(run.Select(m => new CwSymbol(m.ToSeconds - m.FromSeconds >= split ? CwSymbolKind.Dash : CwSymbolKind.Dot)));
 
         var pattern = string.Concat(run.Select(m => m.ToSeconds - m.FromSeconds >= split ? "-" : "."));
 
         // How far the most doubtful mark sits from the split, against the half-width of a
         // textbook three-to-one fist in log length: one at a clean dit or dah, nought at the split.
         var score = run.Min(m => Math.Clamp(Math.Abs(Math.Log((m.ToSeconds - m.FromSeconds) / split)) / Math.Log(Math.Sqrt(3)), 0, 1));
-        var text = MorseAlphabet.Lookup(pattern);
-        var confidence = text is null ? CwConfidence.Unreadable
-            : sender.TwoKindsSeen && score >= Math.Log(1.25) / Math.Log(Math.Sqrt(3)) ? CwConfidence.High
-            : CwConfidence.Low;
+        var sure = sender.TwoKindsSeen && score >= Math.Log(1.25) / Math.Log(Math.Sqrt(3));
         var contrasts = run.Select(m => m.ContrastDb).Where(c => !double.IsNaN(c)).ToList();
 
-        var character = new CwCharacter(
-            text ?? MorseAlphabet.Unreadable,
-            confidence,
-            score,
-            pattern,
-            contrasts.Count > 0 ? contrasts.Min() : double.NaN,
-            wpm,
-            TimeSpan.FromSeconds(at))
+        symbols.Add(new CwSymbol(CwSymbolKind.LetterEnd)
         {
-            Stage = CwReadingStage.Settled,
-            SpanHops = (int)Math.Round((at - run[0].FromSeconds) * 1000 / CwProbabilisticDecoder.HopMilliseconds),
-        };
+            Reading = new CwCharacter(
+                MorseAlphabet.Unreadable,
+                sure ? CwConfidence.High : CwConfidence.Low,
+                score,
+                pattern,
+                contrasts.Count > 0 ? contrasts.Min() : double.NaN,
+                wpm,
+                TimeSpan.FromSeconds(at))
+            {
+                Stage = CwReadingStage.Settled,
+                SpanHops = (int)Math.Round((at - run[0].FromSeconds) * 1000 / CwProbabilisticDecoder.HopMilliseconds),
+            },
+            Marks = run,
+        });
 
         _lastClusters = sender.Describe();
 
-        CharacterRead?.Invoke(character);
-        RunRead?.Invoke(character, run);
+        Look(symbols);
 
         _printed.Add((sender, run));
+    }
+
+    // The dots and dashes since the last letter end.
+    private readonly System.Text.StringBuilder _letter = new();
+
+    /// <summary>
+    /// **THE TABLE** (work instruction 532, task 1): each letter looked up from its dots and dashes, and handed on with the
+    /// gate's reading; a pattern the table does not hold is the placeholder; a word end is a space.
+    /// </summary>
+    private void Look(IEnumerable<CwSymbol> symbols)
+    {
+        foreach (var symbol in symbols)
+        {
+            switch (symbol.Kind)
+            {
+                case CwSymbolKind.Dot:
+                    _letter.Append('.');
+                    break;
+
+                case CwSymbolKind.Dash:
+                    _letter.Append('-');
+                    break;
+
+                case CwSymbolKind.WordEnd:
+                    CharacterRead?.Invoke(symbol.Reading!);
+                    break;
+
+                case CwSymbolKind.LetterEnd:
+                    var pattern = _letter.ToString();
+                    var text = MorseAlphabet.Lookup(pattern);
+                    var character = symbol.Reading! with
+                    {
+                        Text = text ?? MorseAlphabet.Unreadable,
+                        Pattern = pattern,
+                        Confidence = text is null ? CwConfidence.Unreadable : symbol.Reading.Confidence,
+                    };
+
+                    _letter.Clear();
+                    CharacterRead?.Invoke(character);
+                    RunRead?.Invoke(character, symbol.Marks!);
+                    break;
+            }
+        }
     }
 
     /// <summary>The runs that agree with one another on pitch and level: one sender.</summary>
