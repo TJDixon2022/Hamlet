@@ -4,6 +4,51 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-241
+date: 2026-10-04
+refs: work instruction 537, tag before-cleanup-2026-10-04, .gitignore, docs/archive/, src/Hamlet.RadioEngine/Cw/CwShapeSideReading.cs, src/Hamlet.App/ViewModels/MainWindowViewModel.cs, tests/Hamlet.App.Tests/DecisionLogOrderTests.cs
+---
+
+**The cleanup: the repo, the capture sheet and the red tests.** Nothing that reads changed; the scoreboard read 205 of
+244 after every task. The tag `before-cleanup-2026-10-04` holds everything removed.
+
+**The repo.**
+- **Deleted:** the `TestResults` folders, the `.unit` scratch folders, `artifacts\`, `tools\arbiter.bak-*`, and
+  `.run-unit\` except its reports, allowed list and denials. At the root, the commit stubs, one-off scripts, stray
+  outputs, `.trx`, `.obj` and `.bak` files.
+- **Moved to `docs\archive\`:** 31 documents from the root, the old analyses, briefs and records `DECISIONS.md`
+  cites. The 67 unit files and folders from `docs\` went to `docs\archive\units\`.
+- **`.gitignore`** gains `.unit*/` and `.run-unit/*` with its three exceptions.
+- **The numbers:**
+
+  | | before | after |
+  |---|---|---|
+  | tracked files | 11,056 | 2,499 |
+  | working tree | 19,673 files, 6.9 GB | 8,355 files, 4.7 GB |
+
+  Most of what remains is build output under `src\` and `tests\`.
+- Eighteen arbiter state files under `.run-unit\` had uncommitted changes, which the tag does not hold. They were copied
+  aside before removal.
+
+**The capture sheet tells the truth.** The sheet and the roster take their pitch, speed, counts, tone peak, duty and
+since-last figures from the shape side's reading at the press (`CwShapeSideReading`). A `senders` line names every
+sender the gate held and which one it printed.
+- **Dropped:** `toneHz`, `heldPeak`, `unkeyed`, `elements`, `characters`, `decoderWpm`, `spanLlr`, `arbiter`,
+  `competing`, `reading` and `elementHz`.
+- **Removed with their last callers:** the old decoder's counter history and fit line.
+- **The tests of the dropped lines are retired.**
+
+**The long-standing reds:**
+- **Spelling:** the two `centre`s went with the old pitch line, and the test passes.
+- **The scope's tone line:** said `no keying` because its tests stopped before a sequence of five marks stood. They are
+  re-pinned to Q's last dah.
+- **The decision log:** 22 rulings gain their `CLAUDE.md` rows. The six ids with no ruling are named as known gaps:
+  105, 136, 182, 216, 220 and 222.
+
+**The red-test census (task 4) was dropped.** It needs whole-suite runs, which HM-DEC-155 rules out and which the
+engine suite has never completed.
+
+---
 id: HM-DEC-240
 date: 2026-10-04
 refs: work instruction 536, src/Hamlet.RadioEngine/Cw/CwSenderGate.cs, src/Hamlet.RadioEngine/Cw/CwRules.cs, docs/cw-scoreboard.md

@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: COMPLETED
-TASK: 2 of 2
-WORK_INSTRUCTION: 536 - a sender shows its dit and its dah again and again (run by hand)
+TASK: 4 of 4
+WORK_INSTRUCTION: 537 - the cleanup (run by hand)
 BALL: tim
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-10-04T17:10:36-04:00
-NOTE: Unit 536 done - carriers 1 of 20, scoreboard 205 of 244, HM-DEC-240, 1.13.221
+UPDATED: 2026-10-04T19:30:45-04:00
+NOTE: Unit 537 done: repo cleaned, sheet on the shape side, three reds green; scoreboard 205 of 244
 
 ---
 

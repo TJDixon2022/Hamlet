@@ -1787,3 +1787,17 @@ Run by hand, outside the loop: SESSION.lock taken and released; nothing written 
 **Task 2.** The gap jump at 2 cost 13 letters, all on 22:15:48 at 498 Hz, whose letter gaps sit 1.87 times its gaps inside letters. At √3, Morse's own midpoint, it costs none and silences seed 5206, leaving 1 of 20.
 
 A transmission of fewer than ten marks no longer prints (`DE DE`). Build 0 warnings 0 errors. App carry-forward 276 of 278; the two losses, a dispatcher loop at 1 ms, pass alone.
+
+## UNIT 537 - STEP 12
+
+Run by hand, outside the loop: SESSION.lock taken and released; nothing written to RUN_LEDGER.md and nothing under the live tools\arbiter\ touched; no box ticked and no ruling added to either plan; nothing keyed or transmitted; tests\fixtures\cw\captured\ untouched. HEAD was tagged before-cleanup-2026-10-04 and pushed. Version 1.13.221 to 1.13.222. HM-DEC-241.
+
+**Task 1.** The repo is cleaned. Tracked files went from 11,056 to 2,499, and the working tree from 19,673 files and 6.9 GB to 8,355 and 4.7 GB, the rest build output. Old documents moved to docs\archive\, and .gitignore gains the scratch folders.
+
+**Task 2.** The capture sheet and roster read the shape side, through CwShapeSideReading: pitch, speed, counts, tone peak, duty, since-last and senders. The old decoder's lines, its counter history and its fit line are gone, and their tests are retired.
+
+**Task 3.** The spelling, scope tone-line and decision-log reds pass; 22 index rows were added, and six ids are named as known gaps.
+
+**Task 4.** Dropped: it needs whole-suite runs, which HM-DEC-155 rules out.
+
+The scoreboard read 205 of 244 after every task. Build 0 warnings 0 errors. App carry-forward 276 of 278; the two losses, a dispatcher loop at 1 ms, pass alone.

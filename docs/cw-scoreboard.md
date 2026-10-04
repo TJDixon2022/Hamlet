@@ -34,6 +34,7 @@ references.
 | 535 task 4 | 2026-10-04 | 205 of 244 | carrier limit red, as before | a mark is not dropped as the last one read again unless it overlaps it or is itself a piece under half a dit: the F of FER keeps its second dit on heavy keying, and FER reads |
 | 536 task 1 | 2026-10-04 | 205 of 244 | carrier limit red: 1 of 5 seeds print (2 of 20 in the test) | a sender qualifies only on two kinds held over its last ten marks, each kind recurring |
 | 536 task 2 | 2026-10-04 | 205 of 244 | carrier limit red: 1 of 5 seeds print (1 of 20 in the test) | and its gaps fall into kinds: a clean jump of √3 among the nine gaps, at least two either side |
+| 537 | 2026-10-04 | 205 of 244 | carrier limit red: 1 of 5, as before | the cleanup: the repo, the capture sheet and three reds; nothing that reads was changed, and the scoreboard read 205 after every task |
 
 ## Stretches at the baseline (unit 534, before any change)
 
