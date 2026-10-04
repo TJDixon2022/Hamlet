@@ -97,16 +97,25 @@ public sealed class TheRecordingsScoreboardTests
     ];
 
     /// <summary>One letter the reader printed: when its last mark ended, its pitch, its text.</summary>
-    internal readonly record struct Printed(double Seconds, double PitchHz, string Text);
+    internal readonly record struct Printed(double Seconds, double PitchHz, string Text, bool SpaceBefore = false);
 
     /// <summary>A stretch's score: what printed there, its letters, and how many of the reference's letters were read right.</summary>
-    internal sealed record Scored(Stretch Stretch, string PrintedText, int ReferenceLetters, int Right);
+    internal sealed record Scored(Stretch Stretch, string PrintedText, int ReferenceLetters, int Right, Spaces Spaces = default);
 
     /// <summary>The whole board: each stretch, the total over the stretches of medium confidence or better, and the hard limits.</summary>
     internal sealed record Board(IReadOnlyList<Scored> Stretches, IReadOnlyDictionary<string, string> Unassigned, int Total, int OutOf, string FirstReads, IReadOnlyList<(string What, string Reads)> Noise)
     {
         /// <summary>Whether the first recording reads as it must and every noise run printed nothing.</summary>
         public bool LimitsHold => FirstReads == FirstRecording && Noise.All(n => n.Reads.Length == 0);
+
+        /// <summary>Spaces right over the stretches of medium confidence or better (work instruction 538).</summary>
+        public int SpacesRight => Stretches.Where(s => s.Stretch.Confidence >= Confidence.Medium).Sum(s => s.Spaces.Right);
+
+        /// <summary>The reference's spaces over the same stretches.</summary>
+        public int SpacesOutOf => Stretches.Where(s => s.Stretch.Confidence >= Confidence.Medium).Sum(s => s.Spaces.OfReference);
+
+        /// <summary>Spaces printed where the reference has none, over the same stretches.</summary>
+        public int SpacesAdded => Stretches.Where(s => s.Stretch.Confidence >= Confidence.Medium).Sum(s => s.Spaces.Added);
     }
 
     private static string Sheet(string recording)
@@ -151,8 +160,19 @@ public sealed class TheRecordingsScoreboardTests
         var sequence = 0L;
         var chunk = rate / 100;
 
-        gate.CharacterRead += characters.Add;
-        gate.RunRead += (c, run) => letters.Add(new Printed(run[^1].ToSeconds, run.Average(m => m.PitchHz), c.Text));
+        // A word end comes before the letter it opens, so it is carried to that letter (work instruction 538).
+        var space = false;
+
+        gate.CharacterRead += c =>
+        {
+            characters.Add(c);
+            space |= c.Text == MorseAlphabet.WordGap;
+        };
+        gate.RunRead += (c, run) =>
+        {
+            letters.Add(new Printed(run[^1].ToSeconds, run.Average(m => m.PitchHz), c.Text, space));
+            space = false;
+        };
 
         for (var at = 0; at + chunk <= samples.Length; at += chunk)
         {
@@ -215,6 +235,121 @@ public sealed class TheRecordingsScoreboardTests
         return Math.Max(0, key.Length - CwScorer.Within(decode, key, CwKeyKind.Exact).Edits);
     }
 
+    /// <summary>A stretch's spaces: a space in both, one in the reference only, one printed only (work instruction 538).</summary>
+    internal readonly record struct Spaces(int Right, int Missing, int Added, int OfReference);
+
+    /// <summary>A text's letters, one character each as <see cref="Letters"/> has them, and whether a space follows each.</summary>
+    internal static (string Letters, bool[] SpaceAfter) Breaks(string text)
+    {
+        var letters = new StringBuilder();
+        var after = new List<bool>();
+
+        foreach (var word in text.Split(' ', StringSplitOptions.RemoveEmptyEntries))
+        {
+            if (after.Count > 0)
+            {
+                after[^1] = true;
+            }
+
+            var w = Letters(word);
+
+            letters.Append(w);
+            after.AddRange(Enumerable.Repeat(false, w.Length));
+        }
+
+        return (letters.ToString(), after.ToArray());
+    }
+
+    /// <summary>
+    /// **THE SCOREBOARD SCORES SPACES** (work instruction 538, task 1): the printed letters are aligned to the reference's
+    /// letter by letter, as the letters score aligns them, and each boundary between two reference letters is read on the
+    /// printed side between the letters aligned to them. A space in both is right; in the reference only, missing. A space
+    /// printed between two aligned letters where the reference has none is added.
+    /// </summary>
+    internal static Spaces SpacesOf(string printed, string reference)
+    {
+        var (key, keyAfter) = Breaks(reference);
+        var (decode, decodeAfter) = Breaks(printed);
+        var ofReference = keyAfter.Count(b => b);
+
+        if (decode.Length == 0 || key.Length == 0)
+        {
+            return new Spaces(0, ofReference, 0, ofReference);
+        }
+
+        var score = CwScorer.Within(decode, key, CwKeyKind.Exact);
+
+        // Each reference letter's printed letter, where the alignment gives it one.
+        var at = new int?[key.Length];
+        var ki = 0;
+        var di = score.Start;
+
+        foreach (var step in score.Steps)
+        {
+            switch (step.Edit)
+            {
+                case CwEdit.Same:
+                case CwEdit.Wrong:
+                    at[ki++] = di++;
+                    break;
+
+                case CwEdit.Missing:
+                    ki++;
+                    break;
+
+                default:
+                    di++;
+                    break;
+            }
+        }
+
+        int right = 0, missing = 0, added = 0;
+
+        for (var i = 0; i + 1 < key.Length; i++)
+        {
+            // The printed letters either side of this boundary: the nearest aligned on each side.
+            var left = Enumerable.Range(0, i + 1).Reverse().Select(j => at[j]).FirstOrDefault(d => d is not null);
+            var rightOf = Enumerable.Range(i + 1, key.Length - i - 1).Select(j => at[j]).FirstOrDefault(d => d is not null);
+            var printedSpace = left is { } l && rightOf is { } r && r > l && Enumerable.Range(l, r - l).Any(d => decodeAfter[d]);
+
+            if (keyAfter[i])
+            {
+                if (printedSpace)
+                {
+                    right++;
+                }
+                else
+                {
+                    missing++;
+                }
+            }
+            else if (printedSpace && at[i] is { } a && at[i + 1] is { } b && b == a + 1)
+            {
+                added++;
+            }
+        }
+
+        return new Spaces(right, missing, added, ofReference);
+    }
+
+    /// <summary>A stretch's printed letters, a space before each that opened a word, the stretch's first excepted.</summary>
+    internal static string Text(IEnumerable<Printed> letters)
+    {
+        var sb = new StringBuilder();
+
+        foreach (var letter in letters)
+        {
+            if (sb.Length > 0 && letter.SpaceBefore)
+            {
+                sb.Append(' ');
+            }
+
+            sb.Append(letter.Text);
+        }
+
+        return sb.ToString();
+    }
+
     /// <summary>Scores every recording, and runs the two hard limits.</summary>
     internal static Board Score(bool limits = true)
     {
@@ -225,7 +360,7 @@ public sealed class TheRecordingsScoreboardTests
         {
             var mine = Stretches.Where(s => s.Recording == recording).ToList();
             var (letters, _) = ReadLive(recording);
-            var by = mine.ToDictionary(s => s, _ => new StringBuilder());
+            var by = mine.ToDictionary(s => s, _ => new List<Printed>());
             var none = new StringBuilder();
 
             foreach (var letter in letters.OrderBy(l => l.Seconds))
@@ -235,14 +370,21 @@ public sealed class TheRecordingsScoreboardTests
                     .OrderBy(s => Math.Abs(s.PitchHz - letter.PitchHz))
                     .FirstOrDefault();
 
-                (home is null ? none : by[home]).Append(letter.Text);
+                if (home is null)
+                {
+                    none.Append(letter.Text);
+                }
+                else
+                {
+                    by[home].Add(letter);
+                }
             }
 
             foreach (var s in mine)
             {
-                var printed = by[s].ToString();
+                var printed = Text(by[s]);
 
-                scored.Add(new Scored(s, printed, Letters(s.Reference).Length, Right(printed, s.Reference)));
+                scored.Add(new Scored(s, printed, Letters(s.Reference).Length, Right(printed, s.Reference), SpacesOf(printed, s.Reference)));
             }
 
             if (none.Length > 0)
@@ -292,15 +434,15 @@ public sealed class TheRecordingsScoreboardTests
     {
         var sb = new StringBuilder();
 
-        sb.AppendLine("| recording | pitch | stretch | confidence | reference | printed | right |");
-        sb.AppendLine("|---|---|---|---|---|---|---|");
+        sb.AppendLine("| recording | pitch | stretch | confidence | reference | printed | right | spaces right | missing | added |");
+        sb.AppendLine("|---|---|---|---|---|---|---|---|---|---|");
 
         foreach (var s in board.Stretches)
         {
-            sb.AppendLine(CultureInfo.InvariantCulture, $"| `{s.Stretch.Recording}` | {s.Stretch.PitchHz:0.0} | {s.Stretch.From:0.#}-{s.Stretch.To:0.#} s | {s.Stretch.Confidence.ToString().ToLowerInvariant()} | `{s.Stretch.Reference}` | `{s.PrintedText}` | {s.Right} of {s.ReferenceLetters} |");
+            sb.AppendLine(CultureInfo.InvariantCulture, $"| `{s.Stretch.Recording}` | {s.Stretch.PitchHz:0.0} | {s.Stretch.From:0.#}-{s.Stretch.To:0.#} s | {s.Stretch.Confidence.ToString().ToLowerInvariant()} | `{s.Stretch.Reference}` | `{s.PrintedText}` | {s.Right} of {s.ReferenceLetters} | {s.Spaces.Right} of {s.Spaces.OfReference} | {s.Spaces.Missing} | {s.Spaces.Added} |");
         }
 
-        sb.AppendLine(CultureInfo.InvariantCulture, $"total (medium or better): **{board.Total} of {board.OutOf}**");
+        sb.AppendLine(CultureInfo.InvariantCulture, $"total (medium or better): **{board.Total} of {board.OutOf}** letters; **{board.SpacesRight} of {board.SpacesOutOf}** spaces, {board.SpacesAdded} added");
 
         return sb.ToString();
     }
@@ -330,6 +472,21 @@ public sealed class TheRecordingsScoreboardTests
 
         Assert.Equal(FirstRecording, board.FirstReads);
         Assert.All(board.Noise, n => Assert.Equal(string.Empty, n.Reads));
+    }
+
+    /// <remarks>
+    /// Work instruction 538, task 1: the spaces score counts a space in both as right, one in the reference only as missing,
+    /// and one printed between two letters the reference runs together as added, through the letters' own alignment.
+    /// </remarks>
+    [Fact]
+    public void TheSpacesScoreCountsWhereTheWordsBreak()
+    {
+        Assert.Equal(new Spaces(2, 0, 0, 2), SpacesOf("CQ DE W1AW", "CQ DE W1AW"));
+        Assert.Equal(new Spaces(0, 2, 0, 2), SpacesOf("CQDEW1AW", "CQ DE W1AW"));
+        Assert.Equal(new Spaces(2, 0, 3, 2), SpacesOf("C Q DE W 1 AW", "CQ DE W1AW"));
+        Assert.Equal(new Spaces(1, 1, 0, 2), SpacesOf("CQ DEXW1AW", "CQ DE W1AW"));
+        Assert.Equal(new Spaces(1, 0, 0, 1), SpacesOf("57<BT> B", "57<BT> B"));
+        Assert.Equal(new Spaces(0, 3, 0, 3), SpacesOf(string.Empty, "A B C D"));
     }
 
     /// <summary>Scores the board with some rules off, and prints one row of the rule table.</summary>
@@ -576,6 +733,78 @@ public sealed class TheRecordingsScoreboardTests
             _output.WriteLine($"{name} {from}-{to}: {elements} => {letters}");
             var (e2, l2) = ReadOffline(s with { From = from, To = to, LetterMs = 300, WordMs = 600 }, audio.Samples, audio.SampleRate);
             _output.WriteLine($"  letter line 300: {e2} => {l2}");
+        }
+    }
+
+    /// <summary>
+    /// An offline element list's word breaks drawn from its own gaps: the gaps between letters split in two by log-length
+    /// 2-means, the word line at the geometric middle of the two centres. Returns the line and the text with its spaces.
+    /// </summary>
+    internal static (double WordLineMs, double LetterCentreMs, double WordCentreMs, string Text) OwnWordBreaks(string elements)
+    {
+        var tokens = elements.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        var gaps = tokens.Where(t => t.StartsWith('[')).Select(t => double.Parse(t.Trim('[', ']'), CultureInfo.InvariantCulture)).Where(g => g > 0).ToList();
+
+        if (gaps.Count < 2)
+        {
+            return (double.NaN, double.NaN, double.NaN, Decode(elements));
+        }
+
+        var logs = gaps.Select(g => Math.Log(g)).Order().ToArray();
+        var lo = logs[0];
+        var hi = logs[^1];
+
+        for (var it = 0; it < 30; it++)
+        {
+            var mid = (lo + hi) / 2;
+            var below = logs.Where(v => v < mid).ToList();
+            var above = logs.Where(v => v >= mid).ToList();
+
+            if (below.Count == 0 || above.Count == 0)
+            {
+                break;
+            }
+
+            lo = below.Average();
+            hi = above.Average();
+        }
+
+        var line = Math.Exp((lo + hi) / 2);
+        var sb = new StringBuilder();
+
+        foreach (var t in tokens)
+        {
+            if (t.StartsWith('['))
+            {
+                if (double.Parse(t.Trim('[', ']'), CultureInfo.InvariantCulture) >= line && sb.Length > 0)
+                {
+                    sb.Append(' ');
+                }
+            }
+            else
+            {
+                sb.Append(MorseAlphabet.Lookup(t) ?? "■");
+            }
+        }
+
+        return (line, Math.Exp(lo), Math.Exp(hi), sb.ToString());
+    }
+
+    /// <remarks>
+    /// Work instruction 538, task 1: each stretch's word gaps read here, offline, from section 8's element list with a word
+    /// line drawn from its own gaps, beside the reference's spaces. Where they differ both are printed; the reference is not
+    /// changed and is what the score uses.
+    /// </remarks>
+    [Fact]
+    public void EachStretchsWordBreaksReadOffline()
+    {
+        foreach (var s in Stretches.Where(s => s.Confidence != Confidence.None))
+        {
+            var (line, letter, word, text) = OwnWordBreaks(s.Elements);
+            var against = SpacesOf(text, s.Reference);
+            var same = against.Missing == 0 && against.Added == 0;
+
+            _output.WriteLine($"{s.Recording} at {s.PitchHz:0}: letter gaps near {letter:0} ms, word gaps near {word:0} ms, line {line:0} ms; read `{text}`; reference `{s.Reference}`{(same ? ", the same breaks" : $", {against.Right} of {against.OfReference} reference spaces here, {against.Missing} not, {against.Added} more")}");
         }
     }
 

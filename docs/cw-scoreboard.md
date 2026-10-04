@@ -23,18 +23,19 @@ references.
 
 ## Totals
 
-| unit | date | total (medium or better) | hard limits | what changed |
-|---|---|---|---|---|
-| 534 baseline | 2026-10-03 | 169 of 240 | hold | before any change; tag `before-scoreboard` |
-| 534 after | 2026-10-03 | 185 of 240 | hold | thirteen shape-side rules removed, each measured (see below); tag `before-scoreboard` holds them |
-| 535 task 1 | 2026-10-04 | 185 of 240 | hold | the light reads the gate: green only while a sender is printed or qualified and waiting; display only, the reading unchanged |
-| 535 task 2 | 2026-10-04 | 185 of 240 | carrier limit red: 2 of 5 seeds print | a carrier keyed at random added as a third hard limit; no rule found closes it without lowering the total, so none shipped (best: two kinds held over the last ten marks, each kind recurring, 185 and 2 of 20 seeds still printing) |
-| 535 task 3, before the correction | 2026-10-04 | 185 of 240 | carrier limit red | the yardstick as it was |
-| 535 task 3, after the correction | 2026-10-04 | 185 of 244 | carrier limit red | two references corrected, not Hamlet: the sign-off of 221828 and 221851 reads 73 <AR> W2L where the web session wrote EEV CW; 221828 gains 4 reference letters and reads 26 of 41 |
-| 535 task 4 | 2026-10-04 | 205 of 244 | carrier limit red, as before | a mark is not dropped as the last one read again unless it overlaps it or is itself a piece under half a dit: the F of FER keeps its second dit on heavy keying, and FER reads |
-| 536 task 1 | 2026-10-04 | 205 of 244 | carrier limit red: 1 of 5 seeds print (2 of 20 in the test) | a sender qualifies only on two kinds held over its last ten marks, each kind recurring |
-| 536 task 2 | 2026-10-04 | 205 of 244 | carrier limit red: 1 of 5 seeds print (1 of 20 in the test) | and its gaps fall into kinds: a clean jump of √3 among the nine gaps, at least two either side |
-| 537 | 2026-10-04 | 205 of 244 | carrier limit red: 1 of 5, as before | the cleanup: the repo, the capture sheet and three reds; nothing that reads was changed, and the scoreboard read 205 after every task |
+| unit | date | total (medium or better) | hard limits | what changed | spaces right (medium or better) |
+|---|---|---|---|---|---|
+| 534 baseline | 2026-10-03 | 169 of 240 | hold | before any change; tag `before-scoreboard` | not scored |
+| 534 after | 2026-10-03 | 185 of 240 | hold | thirteen shape-side rules removed, each measured (see below); tag `before-scoreboard` holds them | not scored |
+| 535 task 1 | 2026-10-04 | 185 of 240 | hold | the light reads the gate: green only while a sender is printed or qualified and waiting; display only, the reading unchanged | not scored |
+| 535 task 2 | 2026-10-04 | 185 of 240 | carrier limit red: 2 of 5 seeds print | a carrier keyed at random added as a third hard limit; no rule found closes it without lowering the total, so none shipped (best: two kinds held over the last ten marks, each kind recurring, 185 and 2 of 20 seeds still printing) | not scored |
+| 535 task 3, before the correction | 2026-10-04 | 185 of 240 | carrier limit red | the yardstick as it was | not scored |
+| 535 task 3, after the correction | 2026-10-04 | 185 of 244 | carrier limit red | two references corrected, not Hamlet: the sign-off of 221828 and 221851 reads 73 <AR> W2L where the web session wrote EEV CW; 221828 gains 4 reference letters and reads 26 of 41 | not scored |
+| 535 task 4 | 2026-10-04 | 205 of 244 | carrier limit red, as before | a mark is not dropped as the last one read again unless it overlaps it or is itself a piece under half a dit: the F of FER keeps its second dit on heavy keying, and FER reads | not scored |
+| 536 task 1 | 2026-10-04 | 205 of 244 | carrier limit red: 1 of 5 seeds print (2 of 20 in the test) | a sender qualifies only on two kinds held over its last ten marks, each kind recurring | not scored |
+| 536 task 2 | 2026-10-04 | 205 of 244 | carrier limit red: 1 of 5 seeds print (1 of 20 in the test) | and its gaps fall into kinds: a clean jump of √3 among the nine gaps, at least two either side | not scored |
+| 537 | 2026-10-04 | 205 of 244 | carrier limit red: 1 of 5, as before | the cleanup: the repo, the capture sheet and three reds; nothing that reads was changed, and the scoreboard read 205 after every task | not scored |
+| 538 task 1 | 2026-10-04 | 205 of 244 | carrier limit red: 1 of 5, as before | the scoreboard scores spaces: printed letters aligned to the reference letter by letter, and each reference boundary read between the letters aligned either side; nothing that reads was changed | **54 of 77**, 6 added |
 
 ## Stretches at the baseline (unit 534, before any change)
 
@@ -140,3 +141,12 @@ Task 3, gap lines from the sender's own gaps rather than its dit (the gap unit f
 
 **Total (medium or better): 205 of 244.** Loud noise prints nothing and the first recording reads whole. The carrier limit
 is red: seeds 5195 and 5197 of the five print.
+
+## Stretches at unit 538 task 1 (spaces scored)
+
+A stretch's spaces: each boundary between two reference letters, read on the printed side between the letters aligned to them. The references' spaces are the sender's timing as the web session read it, less certain than their letters.
+
+| recording | pitch | stretch | confidence | reference | printed | right | spaces right | missing | added |
+|---|---|---|---|---|---|---|---|---|---|
+
+**Total (medium or better): 205 of 244 letters; 54 of 77 spaces, 6 added.** Hard limits as before: the first recording reads whole with its spaces, noise prints nothing, the carrier prints on seed 5195.
