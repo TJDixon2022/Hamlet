@@ -80,6 +80,14 @@ public sealed class CwSenderGate
     /// <summary>The shape under which a printed sender is let go: half the 0.2 it stood at (work instruction 526, task 5).</summary>
     internal const double ReleaseScore = CwShapeLights.GreenScore / 2;
 
+    /// <summary>
+    /// How many of a sender's last marks its two kinds must hold over before it may print: ten, two sequences' worth (work
+    /// instruction 535). Five marks stand a sequence, and overlapping clusters needed twice that before they were a hand
+    /// rather than chance (work instruction 523). Over the sixteen a sequence's lengths are read over, real hands showed
+    /// a side wider than a hand makes and the scoreboard fell from 185 to 156.
+    /// </summary>
+    internal const int KindsHeldMarks = 2 * CwPatternGate.MarksToStand;
+
     // The marks a sender's length and gap figures are read over.
     private const int RecentMarks = 40;
 
@@ -323,6 +331,9 @@ public sealed class CwSenderGate
             // **A SENDER SILENT PAST ITS RELEASE IS NOT A CANDIDATE** (work instruction 533, HM-DEC-237): the silence that let
             // it go keeps it from being picked again. On the owner's QSO of 2026-10-03 the first station, released, still
             // outranked the reply on shape, was picked again, released again, and the reply never had the terminal.
+            // **AND ITS TWO KINDS HOLD** (work instructions 535 and 536, HM-DEC-240): a carrier keyed at random qualified on two kinds seen over its
+            // newest five marks and printed.
+            .Where(s => s == _station || !CwRules.On(CwRules.KindsHeld) || s.KindsHeld)
             .Where(s => s == _station || !CwRules.On(CwRules.SilentNotCandidate) || !(double.IsFinite(heardSeconds) && s.Open.Count == 0 && heardSeconds - s.LastToSeconds > s.SilenceSeconds))
             .Select(s => (Sender: s, Score: s.Shape.Score))
 
@@ -751,6 +762,31 @@ public sealed class CwSenderGate
 
         /// <summary>Whether this sender's marks fall into two lengths, dits and dahs.</summary>
         public bool TwoKindsSeen => Kinds().Split is not null;
+
+        /// <summary>
+        /// **ITS TWO KINDS HOLD OVER ITS LAST TEN MARKS** (work instruction 536, HM-DEC-240): a sender keys two lengths, dit and
+        /// dah, across every stretch of its sending, so its last <see cref="KindsHeldMarks"/> marks split with a clean jump of
+        /// <see cref="TwoKindsRatio"/>, neither side is wider than a hand makes, and each kind recurs, two marks or more. A carrier
+        /// keyed at random shows two kinds only over a handful of its newest marks, where the speed retry looks, or by one odd
+        /// mark against the rest.
+        /// </summary>
+        public bool KindsHeld
+        {
+            get
+            {
+                if (_recent.Count < KindsHeldMarks)
+                {
+                    return false;
+                }
+
+                var kinds = KindsOf(_recent.Skip(_recent.Count - KindsHeldMarks).ToList());
+
+                // Each kind recurs: one mark is not a kind, and a carrier keyed at random qualified on one 45 ms mark against
+                // nine spread from 135 to 275.
+                return kinds.Split is not null && !kinds.TwoSpeeds
+                    && kinds.Shorts.Count >= 2 && KindsHeldMarks - kinds.Shorts.Count >= 2;
+            }
+        }
 
         /// <summary>The sender's dit, in seconds.</summary>
         public double DitSeconds

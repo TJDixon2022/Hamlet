@@ -32,6 +32,7 @@ references.
 | 535 task 3, before the correction | 2026-10-04 | 185 of 240 | carrier limit red | the yardstick as it was |
 | 535 task 3, after the correction | 2026-10-04 | 185 of 244 | carrier limit red | two references corrected, not Hamlet: the sign-off of 221828 and 221851 reads 73 <AR> W2L where the web session wrote EEV CW; 221828 gains 4 reference letters and reads 26 of 41 |
 | 535 task 4 | 2026-10-04 | 205 of 244 | carrier limit red, as before | a mark is not dropped as the last one read again unless it overlaps it or is itself a piece under half a dit: the F of FER keeps its second dit on heavy keying, and FER reads |
+| 536 task 1 | 2026-10-04 | 205 of 244 | carrier limit red: 1 of 5 seeds print (2 of 20 in the test) | a sender qualifies only on two kinds held over its last ten marks, each kind recurring |
 
 ## Stretches at the baseline (unit 534, before any change)
 

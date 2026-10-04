@@ -44,6 +44,9 @@ internal static class CwRules
     /// <summary>A mark rises and falls like a key.</summary>
     public const string Edges = "edges";
 
+    /// <summary>A sender prints only where its two kinds hold over its last ten marks, each kind recurring.</summary>
+    public const string KindsHeld = "two kinds held over the last ten marks";
+
     /// <summary>A mark sits inside the shape of a keyed tone, on its own.</summary>
     public const string MarkShape = "a mark's own shape";
 
@@ -51,7 +54,7 @@ internal static class CwRules
     public static readonly IReadOnlyList<string> All =
     [
         LoneLetter, ColdStartWordLine, SpeedRetry, Settle, OwnWindow, Release, FirstPickWait, Backlog, SilentNotCandidate, Edges,
-        MarkShape,
+        MarkShape, KindsHeld,
     ];
 
     [ThreadStatic]
