@@ -89,7 +89,7 @@ public sealed class EverySentenceOnTheSheetTests
             var meter = Meter(audio);
 
             var clock = Stopwatch.StartNew();
-            var tonePeak = MainWindowViewModel.TonePeakRecordLine(audio, report);
+            var tonePeak = MainWindowViewModel.TonePeakRecordLine(audio, decoder.ShapeSide);
             clock.Stop();
 
             var sheet = Sheet(decoder, meter.Reading, audio, report, tonePeak);
@@ -204,7 +204,7 @@ public sealed class EverySentenceOnTheSheetTests
         Assert.NotNull(writer);
 
         return (string)writer!.Invoke(
-            model, [audio, decoder.Tap.SamplesSeen, report, tonePeak])!;
+            model, [audio, decoder.Tap.SamplesSeen, report, decoder.ShapeSide, tonePeak])!;
     }
 
     /// <summary>The keying meter over this file, one six-second window a second.</summary>

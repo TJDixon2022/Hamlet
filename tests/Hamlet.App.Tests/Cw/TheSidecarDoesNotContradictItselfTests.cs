@@ -68,34 +68,6 @@ public sealed class TheSidecarDoesNotContradictItselfTests
         Assert.Contains("needs", line, StringComparison.Ordinal);
     }
 
-    /// <summary>
-    /// **ELEMENTHZ.** Under a line that resolves elements, the element pitch line
-    /// does not say nothing was measured; it says what was not measured.
-    /// </summary>
-    [Fact]
-    public void TheElementPitchLineDoesNotDenyTheElementsAboveIt()
-    {
-        var audio = WavAudio.Read(Fixture("unadjudicated/cw-2026-09-23-173723.wav"));
-        var report = new CwDecodeReport
-        {
-            ToneHz = 575,
-            ElementsSeen = 169,
-            ElementsResolved = 169,
-        };
-
-        var elements = $"elements   {report.ElementsSeen} seen, {report.ElementsResolved} resolved";
-        var line = MainWindowViewModel.ElementPitchLine(audio, report);
-
-        _output.WriteLine(elements);
-        _output.WriteLine($"elementHz  {line}");
-
-        Assert.False(
-            line.StartsWith("not measured", StringComparison.Ordinal),
-            "a bare 'not measured' under a line that resolved elements reads as "
-            + "no element having been measured");
-        Assert.Contains("element's own pitch", line, StringComparison.Ordinal);
-    }
-
     private static KeyingReading MeterAsTheLivePathRunsIt(MonoAudio audio)
     {
         var meter = new CwKeyingMeter();

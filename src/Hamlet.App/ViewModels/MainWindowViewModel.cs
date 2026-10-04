@@ -251,9 +251,6 @@ public partial class MainWindowViewModel : ObservableObject
     private IAudioSource? _audioInput;
     private CwDecoder? _decoder;
 
-    /// <summary>Where the decoder's counters stood, recently, on the audio clock.</summary>
-    private CwCounterTrail? _counters;
-
     /// <summary>
     /// Whether Hamlet can hear keying at all, said independently of the decoder.
     /// </summary>
@@ -11571,15 +11568,7 @@ public partial class MainWindowViewModel : ObservableObject
         // on the capture sheet, never on the tab.
         _decoder = new CwDecoder(_audioInput.SampleRate, _settings.CwPitchHz, secondReader: true);
 
-        // **A COUNT WRITTEN BESIDE A RECORDING IS READ AS BEING ABOUT THE
-        // RECORDING** (HM-DEC-091). The decoder's counters run from here until
-        // listening stops, so a capture taken seven hours in carried a character
-        // count earned hours earlier on another band. This keeps a short history
-        // of them against the audio clock, so a figure can be quoted for the
-        // thirty seconds in the file rather than for the evening.
         _decoderStartedUtc = DateTime.UtcNow;
-        _counters = new CwCounterTrail(
-            (long)_audioInput.SampleRate * AudioTap.SecondsKept * 2);
 
         // **THE INSTRUMENT FOR THE FAULT NOBODY HAS FOUND YET** (HM-DEC-091).
         // The operator hears stations Hamlet does not, and finds out the next
@@ -11769,7 +11758,6 @@ public partial class MainWindowViewModel : ObservableObject
         // The trail belongs to one decoder. A new one starts at nought samples
         // with nought counted, and a history carried across the seam would make
         // a window straddle two of them.
-        _counters = null;
         _decoderStartedUtc = null;
         _keyingMeter = null;
         _meterWork = null;
@@ -11856,15 +11844,6 @@ public partial class MainWindowViewModel : ObservableObject
 
         RunKeyingMeter();
         ObserveHearing(_decoder);
-
-        // Sampled here, on the same tick as the readouts, so the two ends of any
-        // window a capture asks about are each accurate to one tick.
-        _counters?.Note(new CwCounterSample(
-            _decoder.Tap.SamplesSeen,
-            DecodeReport.ElementsSeen,
-            DecodeReport.ElementsResolved,
-            DecodeReport.CharactersEmitted,
-            DecodeReport.CharactersUnsure));
 
         // **A STALLED AUDIO PIPELINE USED TO LOOK EXACTLY LIKE A QUIET BAND**
         // (HM-DEC-090). Nothing anywhere said the samples had stopped arriving,
@@ -12133,6 +12112,10 @@ public partial class MainWindowViewModel : ObservableObject
         // saying which instant either belonged to.
         var pressed = DecodeReport;
 
+        // **AND WHAT THE SHAPE SIDE HELD AT THE SAME PRESS** (work instruction 537): the sheet and the roster take their
+        // pitch, speed, counts and senders from it, since it is the path that reaches the screen.
+        var shapeAtPress = _decoder?.ShapeSide ?? CwShapeSideReading.Nothing;
+
         // **THE PRESS NOW ASSERTS A STATION, NOT ONLY A CASE** (Tim's ruling of
         // 2026-08-26). The operator saying he can hear one is evidence that one
         // is there, and it is the only evidence in this system that has never
@@ -12231,11 +12214,11 @@ public partial class MainWindowViewModel : ObservableObject
             // **MEASURED OFF THE UI THREAD, AFTER THE RECORDING IS SAFE ON DISK**
             // (work instruction 417): the whole file is read at every grid pitch,
             // which costs far more than the 50 ms a press may hold the window for.
-            var tonePeak = await Task.Run(() => TonePeakRecordLine(audio, pressed));
+            var (tonePeak, tonePeakDb) = await Task.Run(() => TonePeakFor(audio, shapeAtPress));
 
             File.WriteAllText(
                 Path.Combine(folder, $"cw-{stamp}.txt"),
-                CaptureNotes(audio, seen, pressed, tonePeak));
+                CaptureNotes(audio, seen, pressed, shapeAtPress, tonePeak));
 
             _lastCaptureSamples = seen;
 
@@ -12250,7 +12233,9 @@ public partial class MainWindowViewModel : ObservableObject
             MarkCase(
                 wav: Path.GetFileName(wav),
                 refusal: "",
-                inRecording: _counters?.Over(seen, audio.Samples.Length));
+                atPress: shapeAtPress,
+                recordingSeconds: audio.Duration.TotalSeconds,
+                tonePeakDb: tonePeakDb);
 
             AppEvents.AudioCaptured(
                 _telemetry, audio.Duration.TotalSeconds, CapturedHz, worked: true);
@@ -12276,8 +12261,12 @@ public partial class MainWindowViewModel : ObservableObject
     /// <param name="tonePeak">
     /// The `tonePeak` line, measured over <paramref name="audio"/> off the UI thread.
     /// </param>
+    /// <param name="shape">
+    /// What the shape side held at the moment of the press (work instruction 537): the source of the pitch, the speed,
+    /// the counts and the senders, since it is the path that reaches the screen.
+    /// </param>
     private string CaptureNotes(
-        MonoAudio audio, long samplesSeen, CwDecodeReport report, string tonePeak)
+        MonoAudio audio, long samplesSeen, CwDecodeReport report, CwShapeSideReading shape, string tonePeak)
     {
         var state = RigState;
 
@@ -12344,87 +12333,21 @@ public partial class MainWindowViewModel : ObservableObject
                 + "it was kept, the stretch meterPeak is over; not the whole recording)",
                 report.Clipping,
                 AudioTap.LevelSeconds),
-            // **TWO PITCHES ON ONE SHEET, AND THEY ARE NOT THE SAME
-            // MEASUREMENT** (HM-DEC-091). This one and the `keying` line below
-            // differ by up to 250 Hz on the same file, which reads as two
-            // instruments contradicting each other and is not: this is the bin
-            // the decoder is following right now, moved to continuously from
-            // wherever it started and confirmed by two agreeing surveys
-            // (HM-DEC-095), and the other is a fresh sweep of the whole range in
-            // 25 Hz steps over the last six seconds that shares nothing with the
-            // decoder. Where they disagree, the decoder is reading one pitch
-            // while something louder or better keyed sits at another, and that is
-            // worth knowing rather than worth hiding.
-            // **A BANK CENTRE IS NOT A MEASUREMENT AND THIS SHEET USED TO PRINT
-            // IT AS ONE** (§0.0, HM-DEC-009). Until the survey admits a keying
-            // candidate the tracker answers with the middle of whatever bank it
-            // is pointed at, and that number went out here to a tenth of nothing:
-            // measured across the corpus it read 300 Hz on a station at 499.8 and
-            // 825 Hz on a recording holding nothing at all. The pitch is now
-            // written to a tenth of a hertz because that is what it is measured
-            // to, and an unmeasured one says which bank it came from instead.
-            $"toneHz     {ToneForTheRecord(report)}",
-            // **THIS FIELD WAS CALLED `snrDb` AND IT IS NOT ONE** (HM-DEC-091:
-            // one source, and it says which). It is a held peak of how far the
-            // tracked bin stood above the noise beside it, rising at once and
-            // falling about a decibel a second, which is what HM-DEC-090 built it
-            // to be so that a station keying for a second and a half inside
-            // thirty would not average away to nothing. What it is not is a
-            // figure about this recording, and read as one it is badly wrong:
-            // measured across this repository's captures it rates
-            // `cw-2026-08-20-014854` at 41.7 and `cw-2026-08-20-014935` at 38.4,
-            // neither of which holds keying at any pitch, above
-            // `cw-2026-08-17-013347` at 34.7, which is the one this decoder reads
-            // a callsign out of. **A work order was written from that reading.**
-            //
-            // **SO `tonePeak` IS NOW MEASURED OVER THIS RECORDING** (R63, work
-            // instruction 417), off the UI thread before this sheet is composed,
-            // and the held number follows it on its own line under its own name.
-            // That number is not deleted and not changed, because it measures
-            // something real and something else was built on it.
+            // **THE SHEET READS THE PATH THAT REACHES THE SCREEN** (work instruction 537, HM-DEC-241). The pitch, the speed,
+            // the counts and the senders come from the shape side - the detector's marks, the gate and the reader - as the
+            // press found them. The old decoder's survey bin, tracked speed, counters, span ratios, arbiter, fit and
+            // element pitches described a path that no longer reaches the screen, and came off this sheet.
+            $"pitch      {PitchForTheRecord(shape)}",
+
+            // **AND THE TONE'S STRENGTH IS MEASURED AT THAT PITCH, OVER THIS RECORDING** (R63, work instruction 417),
+            // off the UI thread before this sheet is composed.
             tonePeak,
-            HeldPeakRecordLine(report),
 
-            // **THE FIGURE FOR THIS RECORDING, WHICH IS WHAT EVERY NUMBER ON THIS
-            // SHEET IS READ AS BEING** (HM-DEC-091). Derived, by taking the
-            // decoder's own counters at the two ends of the audio in this file.
-            // A count that cannot be derived says so and does not print a number.
-            $"inThis     {InThisRecording(audio, samplesSeen)}",
+            $"speed      {SpeedForTheRecord(shape)}",
 
-            // **TASK 5 OF WORK INSTRUCTION 034.** The conjunction nothing on this
-            // sheet could state: characters on screen from a pitch the survey
-            // never admitted keying at.
-            $"unkeyed    {EmittedWithoutKeying(report, DecoderCountsCover())}",
-
-            // **AND THE RUNNING TOTALS, WHICH NOW SAY WHAT THEY COVER.** They
-            // were always cumulative from the moment listening started; what they
-            // never did was admit it. A capture written seven hours into an
-            // evening carried a character count earned hours earlier on another
-            // band, and nothing beside it said the number was not about the
-            // thirty seconds it sat next to.
-            $"elements   {report.ElementsSeen} seen, {report.ElementsResolved} resolved"
-                + $"  ({DecoderCountsCover()})",
-            $"characters {report.CharactersEmitted} emitted, "
-                + $"{report.CharactersUnsure} unsure  ({DecoderCountsCover()})",
-
-            // **THE SPEED THE DECODER WAS TRACKING**, which is the first thing
-            // anybody asks of a recording Hamlet could not read. Unread stays
-            // unread: a fixture labelled with a speed nobody measured is worse
-            // than one labelled with nothing (§0.0, HM-DEC-090).
-            // **`not tracking` AND `the number was withdrawn` ARE DIFFERENT
-            // FACTS AND THIS FIELD SAID THE FIRST FOR BOTH** (HM-DEC-091). The
-            // panel showed 29 words a minute and the file written moments later
-            // said the decoder was not tracking, which reads as two instruments
-            // disagreeing and is not: the guard on the speed had withdrawn the
-            // number between the two, and nothing on the sheet could say so.
-            //
-            // The reading is taken here, at the press, from the same decoder the
-            // rest of this sheet comes from, rather than from the polled snapshot
-            // the header happens to be holding. And where there is no number it
-            // says which of the guard's conditions was not met, because that is
-            // the difference between nothing being on the air and a station being
-            // heard whose speed had not yet been proved.
-            $"decoderWpm {SpeedForTheRecord()}",
+            // **THE FIGURES FOR THIS RECORDING**, from the shape side's own times: what ended in the last so many
+            // seconds of its clock, which runs on the same audio this file holds.
+            $"inThis     {InThisRecording(audio, shape)}",
 
             // **THE SIDECAR RECORDED COUNTS AND NEVER A CHARACTER OF TEXT**, so
             // nothing beside a kept recording said what Hamlet had made of it.
@@ -12433,106 +12356,26 @@ public partial class MainWindowViewModel : ObservableObject
             //
             // It is called `text` and not `read` deliberately: `read` is the name
             // of the roster's own column, which is the operator's verdict and is
-            // never written by Hamlet. Two fields one letter apart, one a machine's
-            // output and one a person's judgement, is a confusion waiting for the
-            // evening somebody scores thirty of them.
+            // never written by Hamlet.
             $"text       {CwCaseRoster.Readable(Transcript.PlainText)}",
 
-            // **AND THE TRANSCRIPT HAS THE SAME SHAPE OF PROBLEM AS THE COUNTS**,
-            // so it gets the same treatment. It is everything read since
-            // listening started, not what was read from this recording, and a
-            // reader who takes it for the second has been misled by the layout.
+            // **AND THE TRANSCRIPT SAYS WHAT IT COVERS**: everything read since
+            // listening started or since the last clear, not this recording alone.
             $"textCovers everything read {CountsCover()}",
 
-            // **AND EVERY CHARACTER'S OWN EVIDENCE BESIDE IT, WHICH NOTHING ON
-            // THIS SHEET HAS EVER CARRIED.** `reading` gives the window's
-            // likelihood ratio, which is one number for everything read out of
-            // that window, so a letter lifted out of a clean fade and a letter
-            // assembled from the gaps between two other stations arrive here
-            // looking identical. The per-character figure is measured over that
-            // character's own marks against the key having been up throughout
-            // them, so a wrong decode now comes with the evidence that produced
-            // it and can be argued about with numbers (§0.0.1, HM-DEC-007).
-            //
-            // Large and positive is a character with a signal behind it. Near
-            // zero is one that all-key-up explains just as well. `unmeasured` is
-            // a pass that does not compute it, which is not the same as nought.
-            $"spanLlr    {SpanRatiosForTheRecord()}",
-
-            // **BOTH READINGS OF EVERY CHARACTER, WHICH THE TAB NEVER SHOWS**
-            // (HM-REQ-121, 126, 127; work instruction 465). The tab shows one
-            // transcript and names no decoder; this says which decoder each
-            // character came from, what the other read on the same span and how
-            // sure each was, and marks a tie.
-            $"arbiter    {ArbitrationForTheRecord()}",
-
-            // **WHETHER SOMEBODY ELSE WAS KEYING IN THE SAME PASSBAND**, which
-            // the survey has always known and no sheet has ever carried. Two
-            // stations inside one filter arrive in one envelope, and amplitude is
-            // what the decoder measures, so a recording that reads badly with a
-            // competitor in it and a recording that reads badly on its own are
-            // different faults that have looked identical on every sheet written
-            // so far.
-            //
-            // **`none found` IS NOT `THE FREQUENCY WAS CLEAR`** (HM-DEC-009). The
-            // survey wants three seconds and eight clean marks before it admits
-            // anything, so a station that had just started is absent here and was
-            // present on the air.
-            $"competing  {CompetitorForTheRecord(report)}",
-
-            // **WHETHER HAMLET COULD HEAR KEYING AT ALL, BESIDE WHAT IT READ**
-            // (HM-DEC-091). The two answer different questions and only one of
-            // them has ever been on a sheet. A capture where the operator heard a
-            // station and this line says no keying is the signal going missing
-            // before the decoder saw it, which is a fault nothing else here can
-            // point at. Measured by sweeping this recording's own pitches and
-            // sharing nothing with the decoder.
-            // **HOW GOOD THE CLOCK FIT WAS, WHICH HAS NEVER BEEN ON A SHEET.**
-            // A speed is one number out of a fit, and a fit that is not a fist
-            // produces one just as readily as a fit that is. These are the three
-            // figures that tell them apart, and every one of them is measured
-            // rather than judged: nothing in the decoder reads them (§0.0.1).
-            // **WHAT THE WORKING DECODER DID**, and it says so rather than
-            // carrying a fitted dah-to-dit ratio that belongs to a decoder whose
-            // output nobody sees (HM-DEC-091).
-            $"reading    {FitLine()}",
+            // **EVERY SENDER THE GATE HELD AT THE PRESS**, and which one it printed: where the operator heard a station
+            // and the gate held it under the shape it needs, or held something else, this is where that shows.
+            $"senders    {SendersForTheRecord(shape)}",
 
             KeyingRecordLine(_keyingReading),
 
-            // **THE ONE NUMBER THAT SORTED THE EVENING OF 2026-08-25 AND WAS
-            // NOWHERE ON THIS SHEET.** Thirteen captures, one band, one input
-            // level, the tone locked within a few hertz on twelve of them; sorted
-            // by how much of the recording had the key down, the outcomes sort
-            // themselves. Ten between 38 and 47 per cent read back with nought to
-            // eight characters unsure. One at 24 per cent buried its real content
-            // in forty-eight characters of noise. One at 18 per cent gave eight
-            // seconds of station and twenty-two of invented text.
-            //
-            // **IT IS MEASURED OVER THE AUDIO IN THIS FILE**, at the pitch the
-            // decoder was following, which is what every other figure on this
-            // sheet is read as being and what the `keying` line above is not.
-            // **And it is not written at all where the pitch was never measured**
-            // (§0.0): the duty at the middle of whatever bank the decoder happens
-            // to be pointed at is a fact about a bank rather than about a station,
-            // and this sheet has printed one of those before.
-            $"duty       {DutyForTheRecord(audio, report)}",
-
-            // **WHAT PITCH EACH ELEMENT WAS ACTUALLY SENT AT**, which nothing on
-            // this sheet has ever carried and which the decoder could not have
-            // told it until work instruction 056. Every other pitch here is a
-            // pitch for the whole recording, so two operators a few hertz apart
-            // arrive as one number and the sheet cannot say they were two.
-            //
-            // **IT IS A MEASUREMENT AND NOT A VERDICT** (see `CwStreamSplit`,
-            // whose verdict is withheld because no criterion measured across this
-            // corpus divides the two-sender case from the clean ones). The line
-            // says how far the elements spread and how far apart the two heaps
-            // stand, and it says nothing at all about whether they are two people.
-            ElementHzRecordLine(audio, report),
+            // **HOW MUCH OF THE RECORDING HAD THE KEY DOWN**, at the printed sender's pitch, and not written at all where
+            // nobody was printed (§0.0).
+            $"duty       {DutyForTheRecord(audio, shape)}",
             "",
         };
 
-        // WHAT THE DECODER HAS DONE SINCE THE LAST CAPTURE, beside the totals.
+        // WHAT THE SHAPE SIDE HAS DONE SINCE THE LAST CAPTURE (work instruction 537), beside the totals.
         // The totals are cumulative over the whole session, so two captures
         // showing the same ones mean nothing was decoded in between, and a reader
         // should not have to work that out by subtraction.
@@ -12543,16 +12386,16 @@ public partial class MainWindowViewModel : ObservableObject
         // too, because on the first capture of a session there is no previous one
         // and the difference is the whole session.
         lines.Add(
-            $"sinceLast  {report.CharactersEmitted - _lastCaptureCharacters} characters, "
-            + $"{report.ElementsSeen - _lastCaptureElements} elements  "
+            $"sinceLast  {shape.LettersPrinted - _lastCaptureLetters} letters printed, "
+            + $"{shape.MarksStood - _lastCaptureMarks} marks stood  "
             + (_hasPreviousCapture
                 ? "(since the previous capture)"
-                : $"({DecoderCountsCover()}; this is the first capture of the session)"));
+                : "(since the decoder started listening; this is the first capture of the session)"));
 
         lines.Add("");
 
-        _lastCaptureCharacters = report.CharactersEmitted;
-        _lastCaptureElements = report.ElementsSeen;
+        _lastCaptureLetters = shape.LettersPrinted;
+        _lastCaptureMarks = shape.MarksStood;
         _hasPreviousCapture = true;
 
         // EVERY FIELD WITH ITS PROVENANCE, and unread stays unread rather than
@@ -12991,178 +12834,9 @@ public partial class MainWindowViewModel : ObservableObject
     internal static string Share(double value)
         => double.IsNaN(value) ? "unmeasured" : $"{value:0.000}";
 
-    private string SpanRatiosForTheRecord()
-        => SpanRatioLine(Transcript.Recent(), CountsCover());
-
-    private string ArbitrationForTheRecord()
-        => ArbitrationLine(Transcript.Recent(), CountsCover());
-
-    /// <summary>The arbiter's record of each recent character, for the sheet (HM-REQ-121, 126, 127).</summary>
-    /// <param name="recent">The transcript's recent tail, word gaps included.</param>
-    /// <param name="covers">What the tail covers, in the sheet's own words.</param>
-    /// <returns>Each character with both readings, or why there are none.</returns>
-    /// <remarks>
-    /// <para>**WHAT THE TAB NEVER SAYS, THE SHEET ALWAYS DOES** (HM-REQ-121). Each
-    /// character as `K:port/disagree/ours R 0.700/port K 0.900`: the character
-    /// shown, which decoder it came from, how the two readings of its span stood
-    /// (agree, disagree, tie, or one-sided), and each decoder's character and p,
-    /// `none` where it read nothing there. A tie is written `tie` (HM-REQ-127);
-    /// a disagreement carries both characters and both p's (HM-REQ-126).</para>
-    /// <para>**A CHARACTER THAT PASSED THROUGH NO ARBITER SAYS SO**, rather than
-    /// printing a reading nobody took.</para>
-    /// </remarks>
-    public static string ArbitrationLine(IReadOnlyList<CwCharacter> recent, string covers)
-    {
-        var characters = recent.Where(character => !character.IsWordGap).ToArray();
-
-        if (characters.Length == 0)
-        {
-            return "nothing read yet";
-        }
-
-        var body = string.Join(" ", characters.Select(character =>
-        {
-            var text = CwCaseRoster.Readable(character.Text);
-
-            if (character.Arbitration is not { } a)
-            {
-                return $"{text}:unrecorded";
-            }
-
-            var emitted = a.Emitted switch
-            {
-                CwReader.Ours => "ours",
-                CwReader.Second => "port",
-                _ => "neither",
-            };
-            var kase = a.Case switch
-            {
-                CwArbitrationCase.Agree => "agree",
-                CwArbitrationCase.Disagree => "disagree",
-                CwArbitrationCase.Tie => "tie",
-                CwArbitrationCase.OneSidedOurs => "ours-only",
-                _ => "port-only",
-            };
-
-            // HM-REQ-128: where the arbitration is switched off on the condition, the sheet says which decoder alone was used.
-            var switched = a.Switch switch
-            {
-                CwArbitrationSwitch.OursAlone => "/switch ours-alone",
-                CwArbitrationSwitch.PortAlone => "/switch port-alone",
-                _ => string.Empty,
-            };
-
-            return $"{text}:{emitted}/{kase}/ours {Reading(a.OursText, a.OursP)}/port {Reading(a.SecondText, a.SecondP)}{switched}";
-        }));
-
-        return $"{characters.Length} characters, each with both readings of its span ({covers})"
-               + Environment.NewLine
-               + "           " + body;
-
-        static string Reading(string? text, double p)
-            => text is null ? "none" : $"{CwCaseRoster.Readable(text)} {(double.IsNaN(p) ? "unmeasured" : p.ToString("0.000", CultureInfo.InvariantCulture))}";
-    }
-
-    /// <summary>The span-ratio line itself, from the characters it describes.</summary>
-    /// <param name="recent">The transcript's recent tail, word gaps included.</param>
-    /// <param name="covers">What the tail covers, in the sheet's own words.</param>
-    /// <returns>The characters and their span ratios, or why there are none.</returns>
-    /// <remarks>
-    /// Static and separate from the view model for the reason
-    /// <see cref="KeyingLine"/> is: what a record a person reads months later
-    /// says is worth a test of its own, and a test that has to build a window to
-    /// read one line will not be written.
-    /// </remarks>
-    public static string SpanRatioLine(
-        IReadOnlyList<CwCharacter> recent, string covers)
-    {
-        var measured = recent
-            .Where(character => !character.IsWordGap
-                && !double.IsNaN(character.SpanLogLikelihoodRatio))
-            .ToArray();
-
-        if (measured.Length == 0)
-        {
-            return recent.Count == 0
-                ? "nothing read yet"
-                : "unmeasured (no character carried a span ratio)";
-        }
-
-        var body = string.Join(
-            " ",
-            measured.Select(character =>
-                $"{CwCaseRoster.Readable(character.Text)}"
-                + $":{Clamped(character.SpanLogLikelihoodRatio)}"
-                + $"/{Clamped(character.MarginLlr)}"
-                // **AND THE QUOTIENT, BECAUSE THE CLAMP DESTROYS IT.** Both
-                // figures above are clamped at a million before they are
-                // printed, and on the captures where the raw margin runs to
-                // hundreds of millions that is exactly what happens — so the
-                // one form of this quantity that means the same thing on two
-                // recordings cannot be recovered from the two beside it.
-                + $"/{Share(character.MarginShareForRecord)}"));
-
-        return $"{measured.Length} of the last {recent.Count} characters read, "
-               + "each against the key having been up throughout its own span "
-               + $"({covers})"
-               + Environment.NewLine
-               + "           " + body;
-    }
-
-    /// <summary>
-    /// Somebody else keying in the same passband, for the sheet.
-    /// </summary>
-    /// <param name="report">The decoder's reading at the moment of the press.</param>
-    /// <returns>What was found, or that nothing was.</returns>
-    /// <remarks>
-    /// **THE FACT AND ITS CONSEQUENCE, NOT THE ADVICE.** The sentence naming the
-    /// filter and the passband controls belongs on the screen, where the operator
-    /// is sitting in front of the radio; a file read the next morning wants the
-    /// measurement (HM-DEC-148 is the ruling that a diagnosis in a text file is
-    /// not help).
-    /// </remarks>
-    private static string CompetitorForTheRecord(CwDecodeReport report)
-    {
-        if (report.Competitor is { } other)
-        {
-            return $"{Math.Abs(other.OffsetHz):0} Hz {other.Side} at "
-                + $"{other.RelativeDb:+0.0;-0.0} dB relative "
-                + $"({other.ToneHz:0} Hz)";
-        }
-
-        // **A FIELD THAT ALWAYS SAYS THE SAME THING IS WORSE THAN NO FIELD.**
-        // Every sidecar written this week said `none found`, including files with
-        // eight admitted tones and a station 2.4 dB from the tracked one, because
-        // the competitor search only looks at candidates the survey admitted and
-        // the survey admits almost nothing. The absence was real and the sentence
-        // was useless.
-        //
-        // So it now says what the survey did see. The strongest thing in the band
-        // is not a competitor — nobody has judged it to be keying — and saying so
-        // is the difference between "the frequency is clear" and "nothing here
-        // passed the bar that would have made it a competitor" (§0.0).
-        // **IT WAS NEITHER THE LOUDEST THING NOR KEYED** (work instruction 418).
-        // `PresentFraction` is how much of the time the tone stood above the band
-        // at all, and the line called it keyed in the same breath as saying nothing
-        // judged it a station. And where the survey has admitted a station the
-        // field is the loudest thing that is *not* keying, while with nothing
-        // admitted it can be the loudest thing overall; the report does not say
-        // which, so the line says only that the survey names it.
-        if (report.Interference is { } loudest)
-        {
-            return "none admitted, and the survey is not silent: it names a tone "
-                + $"at {loudest.ToneHz:0} Hz, {loudest.LiftDb:+0.0;-0.0} dB over the "
-                + $"band floor and above it {loudest.PresentFraction * 100:0}% of the "
-                + "time. Nothing has judged it to be a station";
-        }
-
-        return "none found, and the survey found nothing else either — which is "
-            + "not the same as the frequency being clear";
-    }
-
     /// <summary>The sidecar's `tonePeak` line, label and caption included.</summary>
     /// <param name="audio">The recording being written, and nothing else.</param>
-    /// <param name="report">What the decoder had at the moment of the press.</param>
+    /// <param name="shape">What the shape side held at the press: the printed sender's pitch is where the tone is measured.</param>
     /// <returns>The line exactly as the sheet writes it.</returns>
     /// <remarks>
     /// <para>**THE SHEET'S THREE SIGNAL LINES ARE COMPOSED HERE AND NOWHERE ELSE**
@@ -13180,43 +12854,106 @@ public partial class MainWindowViewModel : ObservableObject
     /// at 862 ms on the longest capture in the tree, thirty seconds at 48 kHz, which
     /// the press would otherwise spend with the window frozen.</para>
     /// </remarks>
-    internal static string TonePeakRecordLine(MonoAudio audio, CwDecodeReport report)
+    internal static string TonePeakRecordLine(MonoAudio audio, CwShapeSideReading shape)
+        => TonePeakFor(audio, shape).Line;
+
+    /// <summary>The `tonePeak` line and its number, at the printed sender's pitch (work instruction 537).</summary>
+    /// <param name="audio">The recording.</param>
+    /// <param name="shape">What the shape side held at the press.</param>
+    /// <returns>The line exactly as the sheet writes it, and the peak in dB, or null where none was measured.</returns>
+    internal static (string Line, double? Peak) TonePeakFor(MonoAudio audio, CwShapeSideReading shape)
     {
-        if (!report.HasTone || !report.PitchWasMeasured
-            || double.IsNaN(report.ToneHz) || report.ToneHz <= 0)
+        var pitch = shape.PrintedPitchHz;
+
+        if (!(pitch > 0))
         {
-            return "tonePeak   not measured  (no pitch was measured, so there is no "
-                   + "tone in this recording to say the strength of)";
+            return ("tonePeak   not measured  (nobody was printed, so there is no "
+                    + "tone in this recording to say the strength of)", null);
         }
 
-        var peak = RecordingToneOverNoise.Peak(audio, report.ToneHz);
+        var peak = RecordingToneOverNoise.Peak(audio, pitch);
 
         if (double.IsNaN(peak))
         {
-            return "tonePeak   not measured  (this recording holds too little audio "
-                   + "to measure the tone over)";
+            return ("tonePeak   not measured  (this recording holds too little audio "
+                    + "to measure the tone over)", null);
         }
 
-        return $"tonePeak   {peak:0.0}  (a figure about this recording: over the "
-               + $"{audio.Duration.TotalSeconds:0.0} seconds in this file, the highest "
-               + $"the tone at {report.ToneHz:0.0} Hz stood above the noise beside it, "
-               + "in dB)";
+        return ($"tonePeak   {peak:0.0}  (a figure about this recording: over the "
+                + $"{audio.Duration.TotalSeconds:0.0} seconds in this file, the highest "
+                + $"the printed sender's tone at {pitch:0} Hz stood above the noise beside it, "
+                + "in dB)", peak);
     }
 
-    /// <summary>The sidecar's `heldPeak` line, label and caption included.</summary>
-    /// <param name="report">What the decoder had at the moment of the press.</param>
-    /// <returns>The line exactly as the sheet writes it.</returns>
+    /// <summary>The printed sender's pitch to the hertz, or that nobody was printed (work instruction 537).</summary>
+    /// <param name="shape">What the shape side held at the press.</param>
+    /// <returns>The value of the `pitch` line.</returns>
+    private static string PitchForTheRecord(CwShapeSideReading shape)
+        => shape.PrintedPitchHz > 0
+            ? $"{shape.PrintedPitchHz:0} Hz  (the printed sender's, from its own marks)"
+            : "nobody printed";
+
+    /// <summary>The printed sender's speed from its dit, or that nobody was printed (work instruction 537).</summary>
+    /// <param name="shape">What the shape side held at the press.</param>
+    /// <returns>The value of the `speed` line.</returns>
+    private static string SpeedForTheRecord(CwShapeSideReading shape)
+        => shape.PrintedWpm is { } wpm
+            ? $"{wpm} WPM  (the printed sender's dit, {shape.PrintedDitSeconds * 1000:0} ms)"
+            : "nobody printed";
+
+    /// <summary>
+    /// Letters printed and marks that stood over this recording, from the shape side's own times (work instruction 537):
+    /// what ended in the last so many seconds of its clock, which runs on the same audio this file holds.
+    /// </summary>
+    /// <param name="audio">The recording.</param>
+    /// <param name="shape">What the shape side held at the press.</param>
+    /// <returns>The value of the `inThis` line.</returns>
+    private static string InThisRecording(MonoAudio audio, CwShapeSideReading shape)
+    {
+        var seconds = audio.Duration.TotalSeconds;
+
+        return double.IsNaN(shape.HeardSeconds)
+            ? "nothing heard  (the shape side has read no audio)"
+            : $"{shape.LettersInLast(seconds)} letters printed, {shape.MarksInLast(seconds)} marks stood  "
+              + $"(in the {seconds:0.0} seconds of audio in this file)";
+    }
+
+    /// <summary>Every sender the gate held at the press, and which one it printed (work instruction 537).</summary>
+    /// <param name="shape">What the shape side held at the press.</param>
+    /// <returns>The value of the `senders` line.</returns>
+    private static string SendersForTheRecord(CwShapeSideReading shape)
+        => shape.Senders.Count == 0
+            ? "none held"
+            : string.Join(
+                "; ",
+                shape.Senders
+                    .OrderByDescending(s => s.Printed)
+                    .ThenByDescending(s => s.ShapeScore)
+                    .Select(s => string.Create(
+                        CultureInfo.InvariantCulture,
+                        $"{s.PitchHz:0} Hz shape {s.ShapeScore:0.00}, {s.Marks} marks{(s.Printed ? ", printed" : string.Empty)}")));
+
+    /// <summary>How much of the recording had the key down at the printed sender's pitch (work instruction 537).</summary>
+    /// <param name="audio">The recording.</param>
+    /// <param name="shape">What the shape side held at the press.</param>
+    /// <returns>The value of the `duty` line.</returns>
     /// <remarks>
-    /// **THE HELD FIGURE STAYS ON THE SHEET, ON ITS OWN LINE AND UNDER ITS OWN
-    /// NAME** (HM-DEC-091, work instruction 417). It is the number the roster's
-    /// `tonePeakDb` column carries, so a reader holding both can still match them.
+    /// **A TENTH OF A PER CENT, BECAUSE THAT IS WHAT SEPARATES THE OUTCOMES.** The evening this was written for spread
+    /// from 18 to 47 per cent across thirteen recordings and the boundary between readable and mostly invented sat around a
+    /// quarter. Not written at all where nobody was printed (§0.0).
     /// </remarks>
-    internal static string HeldPeakRecordLine(CwDecodeReport report)
-        => $"heldPeak   {(double.IsNaN(report.SnrDb) ? "unread" : report.SnrDb.ToString("0.0"))}"
-           + "  (the highest the tracked tone ever stood above the noise "
-           + "beside it, held and decaying across everything heard since "
-           + "listening started; not a figure about this recording, and the "
-           + "one the roster's tonePeakDb column carries)";
+    private static string DutyForTheRecord(MonoAudio audio, CwShapeSideReading shape)
+    {
+        if (!(shape.PrintedPitchHz > 0))
+        {
+            return "not measured  (nobody was printed, so there is no station to measure the keying of)";
+        }
+
+        var profile = KeyingEnvelope.Measure(audio, shape.PrintedPitchHz);
+
+        return $"{profile.Duty * 100:0.0}%  (of the {audio.Duration.TotalSeconds:0.0} seconds in "
+            + $"this file, the key was down at {shape.PrintedPitchHz:0} Hz)";
+    }
 
     /// <summary>The sidecar's `keying` line, label and caption included.</summary>
     /// <param name="reading">What the meter said.</param>
@@ -13244,375 +12981,6 @@ public partial class MainWindowViewModel : ObservableObject
                KeyingEnvelope.HighestToneHz,
                KeyingEnvelope.ToneStepHz,
                CwKeyingThresholds.Window.TotalSeconds);
-
-    /// <summary>The sidecar's `elementHz` line, label included.</summary>
-    /// <param name="audio">The recording being written.</param>
-    /// <param name="report">What the decoder had at the moment of the press.</param>
-    /// <returns>The line exactly as the sheet writes it.</returns>
-    internal static string ElementHzRecordLine(MonoAudio audio, CwDecodeReport report)
-        => $"elementHz  {ElementPitchLine(audio, report)}";
-
-    /// <summary>
-    /// What pitch each element was sent at, spread and heaps, or why there is
-    /// nothing to say.
-    /// </summary>
-    /// <param name="audio">The recording being written.</param>
-    /// <param name="report">What the decoder had at the moment of the press.</param>
-    /// <returns>The line, in the sheet's own voice.</returns>
-    /// <remarks>
-    /// <para>**MEASURED OVER THE AUDIO IN THIS FILE**, at the pitch the decoder
-    /// was following, like every other figure on this sheet that is about the
-    /// recording rather than about the evening.</para>
-    /// <para>**AND NOT WRITTEN AT ALL WHERE THE PITCH WAS NEVER MEASURED**
-    /// (§0.0). An element pitch taken relative to the middle of whatever bank the
-    /// decoder happens to be pointed at is a fact about a bank, and this sheet has
-    /// printed one of those before.</para>
-    /// <para>**IT REPORTS AND DOES NOT CONCLUDE.** `CwStreamSplit` returns no
-    /// split today, on evidence recorded in its own remarks, so the line gives the
-    /// two heaps and their separation and leaves the question where it is. Saying
-    /// two people are sending on the strength of an untested criterion is the
-    /// guess dressed as an answer §0.0 exists to forbid.</para>
-    /// </remarks>
-    public static string ElementPitchLine(MonoAudio audio, CwDecodeReport report)
-    {
-        ArgumentNullException.ThrowIfNull(audio);
-        ArgumentNullException.ThrowIfNull(report);
-
-        // **EVERY BRANCH SAYS WHAT WAS NOT MEASURED, WHICH IS EACH ELEMENT'S OWN
-        // PITCH** (work instruction 411, HM-DEC-170). A bare `not measured` sat
-        // directly under `elements 169 seen, 169 resolved` on 17:37 and read as
-        // no element having been measured at all. The elements were measured, by
-        // their timing; their pitch one at a time was not.
-        if (double.IsNaN(report.ToneHz) || report.ToneHz <= 0)
-        {
-            return "each element's own pitch not measured  (no pitch was measured, "
-                   + "so there is nothing for an element's own pitch to be measured "
-                   + "against)";
-        }
-
-        var envelope = CwProbabilisticDecoder.Envelope(
-            audio.Samples, audio.SampleRate, report.ToneHz);
-
-        var read = CwProbabilisticDecoder.Decode(envelope, report.ToneHz);
-
-        if (read.Text.Length == 0)
-        {
-            return "each element's own pitch not measured  (read again for this "
-                   + "line, the audio in this file gave no characters, which is too "
-                   + "few elements to say anything about how they spread; the "
-                   + "counts above are for the stretch they name)";
-        }
-
-        // **NO ELEMENT PITCHES IN THIS BUILD, AND THE LINE SAYS SO** (work
-        // instruction 392, §0.0). The decoder is 2026-08-25's: it chooses where
-        // every element begins and ends but does not hand those places out, and
-        // the per-element measurement came with the August rework that step 4
-        // judges on numbers. A spread printed without them would be a
-        // measurement nobody made.
-        return "each element's own pitch not measured  (the elements counted above "
-               + "were measured by their timing, but the decoder in this build does "
-               + "not say where each one began and ended, so none of them had its "
-               + "own pitch taken)";
-    }
-
-    /// <summary>
-    /// How much of this recording had the key down, at the pitch the decoder was
-    /// following, or why there is no figure.
-    /// </summary>
-    /// <param name="audio">The audio in this file, and nothing else.</param>
-    /// <param name="report">What the decoder believed at the press.</param>
-    /// <returns>The line for the sheet.</returns>
-    /// <remarks>
-    /// **A TENTH OF A PER CENT, BECAUSE THAT IS WHAT SEPARATES THE OUTCOMES.**
-    /// The evening this was written for spread from 18 to 47 per cent across
-    /// thirteen recordings and the boundary between readable and mostly invented
-    /// sat around a quarter.
-    /// </remarks>
-    private static string DutyForTheRecord(MonoAudio audio, CwDecodeReport report)
-    {
-        if (!report.HasTone || !report.PitchWasMeasured)
-        {
-            return "not measured  (no pitch was measured, so there is no station "
-                + "to measure the keying of)";
-        }
-
-        var profile = KeyingEnvelope.Measure(audio, report.ToneHz);
-
-        return $"{profile.Duty * 100:0.0}%  (of the {audio.Duration.TotalSeconds:0.0} seconds in "
-            + $"this file, the key was down at {report.ToneHz:0.0} Hz)";
-    }
-
-    /// <summary>The pitch the decoder was following, and whether it measured it.</summary>
-    /// <param name="report">The decoder's reading at the moment of the press.</param>
-    /// <returns>The pitch, or where the unmeasured number came from.</returns>
-    /// <remarks>
-    /// **UNREAD IS NOT NOUGHT AND A STARTING POINT IS NOT A READING.** The three
-    /// states a reader has to be able to tell apart are a measured pitch, a bank
-    /// centre nobody keyed at, and no tone at all.
-    /// </remarks>
-    private static string ToneForTheRecord(CwDecodeReport report)
-    {
-        if (!report.HasTone)
-        {
-            return "none";
-        }
-
-        // **THE OPERATOR'S OWN ASSERTION IS SAID AS ONE** (Tim's ruling of
-        // 2026-08-26). Nothing here may read as Hamlet having found what a human
-        // found: it says the pitch is the loudest bin, that a person supplied the
-        // evidence there was a station on it, and that Hamlet measured no keying.
-        if (report.PitchWasAsserted)
-        {
-            return $"{report.ToneHz:0.0} Hz  (NOT MEASURED: you said you could "
-                + "hear a station, so this is the loudest bin in the band at that "
-                + "moment. Hamlet did not find keying here)";
-        }
-
-        // **NO RANKING IN THIS BUILD** (work instruction 392). The decoder is
-        // 2026-08-25's and never decodes the band at every candidate pitch, so the
-        // ranked sentence of Tim's ruling of 2026-08-28 has nothing to report
-        // until step 4 judges the ranking on numbers.
-        // **A BIN CENTRE, NOT AN INTERPOLATION** (work instruction 418). The survey
-        // admits keying at `_binHz[bin]` (CwToneSurvey.cs) and the tracker reports
-        // that number unchanged; 17:37 reads 600.000 and 013347 625.000, both on
-        // the five hertz grid.
-        // **PROVED OR A HYPOTHESIS, AND THE SHEET SAYS WHICH** (HM-REQ-093, work
-        // instruction 450). This line used to print every held pitch as measured
-        // from keying, and a held pitch outlives its keying: the station stops, the
-        // survey finds nothing, and the number stays. The operator was reading more
-        // certainty than the decoder had.
-        if (report.PitchProof == CwPitchProof.Proved)
-        {
-            return $"{report.ToneHz:0.0} Hz  (proved: the survey's latest verdict "
-                + "confirms keying at this pitch. Measured from that keying: the "
-                + "centre of the survey bin it was admitted in, not interpolated "
-                + "between bins)";
-        }
-
-        if (report.PitchProof == CwPitchProof.Hypothesis)
-        {
-            return $"{report.ToneHz:0.0} Hz  (HYPOTHESIS, NOT PROVED NOW: keying "
-                + "was found at this pitch earlier, the centre of the survey bin it "
-                + "was admitted in, and the survey's latest verdict does not confirm "
-                + "it. The number is held, not measured from keying now)";
-        }
-
-        // **"THE MIDDLE OF THE BANK" STOPPED BEING TRUE ON 2026-08-27** and this
-        // sheet went on saying it. Tim's ruling of that date lets the strongest
-        // bin choose the note at acquisition, so an unmeasured pitch is now
-        // sometimes a bin that was picked for being the loudest thing in the
-        // band and sometimes still a bank centre nobody chose. **Those are
-        // different claims and a sheet that blurs them is the fault this whole
-        // field exists to prevent** (§0.0).
-        return report.PitchChoice == CwPitchChoice.StrongestBin
-            ? $"{report.ToneHz:0.0} Hz  (NOT MEASURED: the survey has admitted "
-              + "no keying, so this is the loudest bin in the band rather than a "
-              + "station)"
-            : $"{report.ToneHz:0.0} Hz  (NOT MEASURED: the survey has admitted "
-              + "no keying and nothing has chosen a bin, so this is the middle "
-              + "of the bank the decoder is pointed at rather than a station)";
-    }
-
-    /// <summary>
-    /// Whether characters reached the screen from a pitch nobody measured, and
-    /// what was behind them.
-    /// </summary>
-    /// <remarks>
-    /// <para>**THE LINE THAT MAKES THE OPERATOR'S JUNK CAPTURABLE** (work
-    /// instruction 034 task 5). He is watching an empty frequency fill with
-    /// characters and **no recording in this repository reproduces it** — both
-    /// that hold nothing emit nought through the real decoder. So the next time
-    /// it happens, the capture has to carry enough to say what state produced
-    /// it.</para>
-    /// <para>**IT IS A CONJUNCTION AND THAT IS THE POINT.** Characters from a
-    /// measured pitch are an ordinary decode. Characters from a pitch the survey
-    /// never admitted keying at are the case worth catching, and until now the
-    /// sheet recorded both halves and never the pair.</para>
-    /// <para>**THE COUNT IS THE EVENING'S AND THE PITCH IS THIS MOMENT'S** (work
-    /// instruction 418). `cw-2026-08-28-005051` said 252 characters reached the
-    /// screen from a pitch chosen by the loudest bin while the same sheet counted 29
-    /// in its own file: the count runs from when the decoder started and the pitch
-    /// state is only the one at the press. The line now says both halves as what
-    /// they are.</para>
-    /// </remarks>
-    /// <param name="report">The decoder's reading at the moment of the press.</param>
-    /// <param name="covers">What the decoder's running counts cover, in words.</param>
-    /// <returns>The line.</returns>
-    private static string EmittedWithoutKeying(CwDecodeReport report, string covers)
-    {
-        if (report.CharactersEmitted == 0)
-        {
-            return "nothing emitted";
-        }
-
-        var count = $"{report.CharactersEmitted} characters reached the screen {covers}, "
-            + "from whatever pitch was being followed at the time";
-
-        if (report.PitchWasMeasured)
-        {
-            return "no  (the pitch being followed now is one the survey admitted "
-                + $"keying at; {count})";
-        }
-
-        var how = report.PitchChoice switch
-        {
-            CwPitchChoice.OperatorAssertion => "you said you could hear a station",
-            CwPitchChoice.StrongestBin => "the loudest bin in the band",
-            CwPitchChoice.Ranked => "decoding at every candidate and keeping the best",
-            CwPitchChoice.Keying => "keying, though the pitch reads unmeasured",
-            _ => "the middle of the bank, which nothing chose",
-        };
-
-        return $"YES  (the pitch being followed now was chosen by {how}, with no "
-            + $"keying admitted here; {count}. This is the sheet to send back)";
-    }
-
-    /// <summary>
-    /// The speed at the moment of the press, or why there is not one.
-    /// </summary>
-    /// <remarks>
-    /// <para>The guard on <see cref="CwDecoder.WordsPerMinute"/> withholds a number
-    /// until the window has read a character, the clock is not being re-acquired,
-    /// and the speed is within the plausible range; the lines below also say
-    /// whether a tone was located. All the failures used to print the same three
-    /// words (HM-DEC-091).</para>
-    /// <para>**AND A NUMBER IT NAMES SAYS WHETHER IT WAS PROVED** (HM-REQ-034, work
-    /// instruction 451). Every line opens with the state, proved, hypothesis or
-    /// none. A named number that is a hypothesis says so in capitals and why, and
-    /// the grid's winner over a window that read nothing is no longer called the
-    /// decoder's hypothesis: there is no reading for it to be a hypothesis of.</para>
-    /// </remarks>
-    private string SpeedForTheRecord()
-    {
-        if (_decoder is not { } decoder)
-        {
-            return "not tracking (nothing is listening)";
-        }
-
-        var proof = decoder.SpeedProof;
-
-        if (decoder.WordsPerMinute is { } wpm)
-        {
-            if (proof == CwSpeedProof.Proved)
-            {
-                return $"{wpm}  (proved: the dit was measured on keying still arriving "
-                    + "at the pitch being read)";
-            }
-
-            var why = decoder.Stream.UnitWasMeasured
-                ? "no keying has been found at the pitch being read for six surveys, "
-                  + "so it is held from a window whose sender has stopped"
-                : $"it won the search across {CwProbabilisticDecoder.SlowestWpm:0} to "
-                  + $"{CwProbabilisticDecoder.FastestWpm:0} and no dit was measured from "
-                  + "the keying";
-
-            return $"{wpm}  HYPOTHESIS, NOT PROVED NOW ({why})";
-        }
-
-        var report = decoder.Report;
-        var rolling = decoder.Reading.WordsPerMinute <= 0
-            ? "the decoder had no hypothesis worth naming"
-            : proof == CwSpeedProof.Hypothesis
-                ? $"the decoder's own best hypothesis was "
-                  + $"{decoder.Reading.WordsPerMinute:0} WPM"
-                : $"the search's winner over a window that read nothing was "
-                  + $"{decoder.Reading.WordsPerMinute:0} WPM, which describes nobody";
-        var state = proof == CwSpeedProof.Hypothesis ? "hypothesis" : "none";
-
-        if (!report.HasTone)
-        {
-            return $"{state}, not tracking (no tone was located; {rolling})";
-        }
-
-        if (report.CharactersEmitted == 0)
-        {
-            return $"{state}, not proved (a tone but no resolved character; {rolling})";
-        }
-
-        return decoder.SpeedIsReacquiring
-            ? $"{state}, withdrawn (the clock is being re-acquired; {rolling})"
-            : $"{state}, not proved (the window read nothing; {rolling})";
-    }
-
-    /// <summary>What the clock fit looked like, as one line.</summary>
-    /// <remarks>
-    /// **THE RATIO IS NOT A VERDICT.** A dah of four and a quarter dits is a real
-    /// fist somebody sent on the air and this project read by hand (HM-DEC-144),
-    /// so a number far from three is a thing to look at rather than a fault. What
-    /// it sits beside is the separation, which is what HM-DEC-095 measured as the
-    /// statistic that tells a fist from a smear.
-    /// </remarks>
-    private string FitLine()
-    {
-        if (_decoder is not { } decoder)
-        {
-            return "not fitted";
-        }
-
-        var reading = decoder.Reading;
-
-        if (reading.WordsPerMinute <= 0)
-        {
-            return "nothing fitted yet";
-        }
-
-        // **THIS LINE USED TO QUOTE A DECODER NOBODY CAN SEE THE OUTPUT OF.** It
-        // read `CwSpeedEstimator`, which fits a clock by clustering run lengths
-        // and has decoded nothing since the decoder was replaced, so a sheet
-        // reported a dah of 15.7 dits beside text produced by something else
-        // entirely — and four evenings of captures were read as evidence about
-        // the clock behind the words. They were not.
-        //
-        // **THE WORKING DECODER HAS NO FITTED RATIO TO REPORT**, and that is not
-        // a gap: it never measures one. A dah is three dits in its model, the
-        // speed is whichever hypothesis explained the audio best, and how well
-        // that explanation did is the likelihood ratio against silence. Those are
-        // the numbers behind the text and they are what this line carries now.
-        // **A WINNER AT EITHER END OF THE SEARCH SAYS SO** (§0.0). A hypothesis
-        // at the edge of a range wins by default rather than on evidence,
-        // because there is nothing beyond it to lose to. On 2026-08-25 two
-        // operators measured 30.9 and 30.8 words a minute and this line said 32
-        // for both, which was the top of the grid, and nothing on the sheet
-        // could tell a ceiling from a measurement.
-        var atEdge =
-            reading.WordsPerMinute >= CwProbabilisticDecoder.FastestWpm - 1e-9
-                ? "  (AT THE TOP OF THE SEARCH: the sender may be faster than "
-                  + "Hamlet can look)"
-                : reading.WordsPerMinute <= CwProbabilisticDecoder.SlowestWpm + 1e-9
-                    ? "  (AT THE BOTTOM OF THE SEARCH: the sender may be slower "
-                      + "than Hamlet can look)"
-                    : "";
-
-        // **A GATE OF 1.40 PRINTED AS 1, READ 871 MS AFTER THE PRESS** (work
-        // instruction 418). The gate was rounded to a whole number, so a ratio of
-        // 1.2 would have read as clearing it; both now carry two decimals. And the
-        // reading is taken here, when the sheet is composed, which since unit 417
-        // is after the press has waited for the tone measurement while the
-        // decoder reads its window again every half second.
-        // **THE WINNER IS NOT A PROOF, AND THE LINE SAYS WHICH IT IS** (HM-REQ-034,
-        // work instruction 451): the same state the decoderWpm line opens with.
-        var proof = decoder.SpeedProof switch
-        {
-            CwSpeedProof.Proved => "; the speed is proved",
-            CwSpeedProof.Hypothesis => "; the speed is a HYPOTHESIS, NOT PROVED NOW",
-            _ => "; the speed is none: the window read nothing",
-        };
-
-        return string.Format(
-            CultureInfo.InvariantCulture,
-            "{0:0} WPM won out of {1} to {2}, {3:0.00} better than silence per "
-            + "hop against a gate of {4:0.00}{5}{7}  (this is the last {6:0} second "
-            + "window alone, as it stood when this sheet was written just after the "
-            + "recording was saved, and not the whole recording)",
-            reading.WordsPerMinute,
-            CwProbabilisticDecoder.SlowestWpm,
-            CwProbabilisticDecoder.FastestWpm,
-            reading.LikelihoodRatio,
-            CwProbabilisticDecoder.Gate,
-            atEdge,
-            CwProbabilisticStream.WindowSeconds,
-            proof);
-    }
 
     /// <summary>What the meter said, as one line for a record.</summary>
     /// <param name="reading">The reading.</param>
@@ -13745,30 +13113,6 @@ public partial class MainWindowViewModel : ObservableObject
             why);
     }
 
-    /// <summary>
-    /// What the decoder made of the audio in this file, and nothing else
-    /// (HM-DEC-091).
-    /// </summary>
-    /// <param name="audio">The recording being written.</param>
-    /// <param name="samplesSeen">Where the audio clock stood when it was taken.</param>
-    /// <returns>The figures, or why they could not be derived.</returns>
-    private string InThisRecording(MonoAudio audio, long samplesSeen)
-    {
-        var window = _counters?.Over(samplesSeen, audio.Samples.Length);
-
-        if (window is not { } inIt)
-        {
-            return "not derived (the decoder's own history does not reach back "
-                   + $"over these {audio.Duration.TotalSeconds:0.0} seconds)";
-        }
-
-        return $"{inIt.CharactersEmitted} characters emitted, "
-               + $"{inIt.CharactersUnsure} unsure, "
-               + $"{inIt.ElementsSeen} elements seen, "
-               + $"{inIt.ElementsResolved} resolved  "
-               + $"(in the {audio.Duration.TotalSeconds:0.0} seconds of audio in this file)";
-    }
-
     /// <summary>What the decoder's running totals cover, in words.</summary>
     /// <returns>The interval, as a clause.</returns>
     /// <remarks>
@@ -13799,21 +13143,6 @@ public partial class MainWindowViewModel : ObservableObject
         return "since the decoder started listening, "
                + SpokenAge(DateTime.UtcNow - started);
     }
-
-    /// <summary>What the decoder's running counts cover, in words.</summary>
-    /// <returns>The interval, as a clause.</returns>
-    /// <remarks>
-    /// **A CLEAR MOVES THE TRANSCRIPT AND NOT THE COUNTS** (work instruction 418).
-    /// <see cref="ClearTerminal"/> resets the transcript and nothing else, so the
-    /// element and character counts run on from when the decoder started. They
-    /// used to take <see cref="CountsCover"/>, which is the transcript's, and
-    /// `cw-2026-08-28-004844` said 245 elements since a clear 39 seconds before the
-    /// press while the tap had heard 92.
-    /// </remarks>
-    private string DecoderCountsCover()
-        => _decoderStartedUtc is { } started
-            ? "since the decoder started listening, " + SpokenAge(DateTime.UtcNow - started)
-            : "since the decoder started listening";
 
     /// <summary>When the operator last cleared the transcript, if he has.</summary>
     private DateTime? _clearedUtc;
@@ -13884,11 +13213,11 @@ public partial class MainWindowViewModel : ObservableObject
               + "radio announcing something";
     }
 
-    /// <summary>What the decoder had emitted at the last capture.</summary>
-    private int _lastCaptureCharacters;
+    /// <summary>Letters the shape side had printed at the last capture (work instruction 537).</summary>
+    private long _lastCaptureLetters;
 
-    /// <summary>What the decoder had measured at the last capture.</summary>
-    private int _lastCaptureElements;
+    /// <summary>Marks that had stood at the last capture (work instruction 537).</summary>
+    private long _lastCaptureMarks;
 
     /// <summary>
     /// A short fingerprint of the audio, so two identical captures are visibly
@@ -14317,17 +13646,6 @@ public partial class MainWindowViewModel : ObservableObject
         {
             _decoderTunedAtHz = clamped;
             _decoder?.Retuned();
-
-            // **THE TRAIL IS A HISTORY OF COUNTERS THAT HAVE JUST RESTARTED**
-            // (work instruction 055, task 1), so what it holds is about another
-            // frequency. Dropping it is what makes the next window derivable
-            // rather than merely non-negative; `CwCounterTrail.Over` refuses a
-            // window whose counters went backwards, and this is what stops that
-            // refusal being the answer for the next thirty seconds.
-            _counters = _audioInput is { } input
-                ? new CwCounterTrail(
-                    (long)input.SampleRate * AudioTap.SecondsKept * 2)
-                : null;
         }
 
         if (_arrivedOnHz != clamped)
@@ -21704,10 +21022,9 @@ public partial class MainWindowViewModel : ObservableObject
     /// </summary>
     /// <param name="wav">The recording written, or "" when none was.</param>
     /// <param name="refusal">Why none was, or "" when one was.</param>
-    /// <param name="inRecording">
-    /// What the decoder did over the audio that was kept, or null when there is
-    /// no recording or its figures could not be derived.
-    /// </param>
+    /// <param name="atPress">What the shape side held at the press, or null to take it now (a refusal).</param>
+    /// <param name="recordingSeconds">How long the recording kept is, or null when none was.</param>
+    /// <param name="tonePeakDb">The printed sender's tone over the recording, or null where it was not measured.</param>
     /// <remarks>
     /// <para>**THE PRESS ASSERTS SOMETHING THE APPLICATION CANNOT KNOW**: that
     /// there was a station there to hear. Every other number Hamlet holds is
@@ -21717,25 +21034,34 @@ public partial class MainWindowViewModel : ObservableObject
     /// <para>Called on every exit from the capture command, including both
     /// refusals. **A case with no evidence is still a case** and belongs in the
     /// denominator.</para>
+    /// <para>**THE ROW FOLLOWS THE SHEET'S SOURCES** (work instruction 537): the pitch, the speed, the letters and the
+    /// shape come from the shape side, and the columns keep their names so a roster started before this build and one
+    /// started after it are the same shape. `tonePeakDb` is the printed sender's tone over this recording, `fit` carries
+    /// its shape, and `chars` its letters printed and those that printed as the placeholder.</para>
     /// </remarks>
     private void MarkCase(
-        string wav, string refusal, CwCounterDelta? inRecording = null)
+        string wav, string refusal, CwShapeSideReading? atPress = null, double? recordingSeconds = null, double? tonePeakDb = null)
     {
-        var report = _decoder?.Report;
+        var shape = atPress ?? _decoder?.ShapeSide ?? CwShapeSideReading.Nothing;
 
-        // **THE ROW IS SCORED, SO ITS COUNT HAS TO BE ABOUT THE CASE**
-        // (HM-DEC-091). Where the recording's own figures could be derived they
-        // go in; where there is no recording, or the decoder's history does not
-        // reach back over it, the session totals go in **and the cell says so**
-        // rather than passing for an answer about this station.
-        var emitted = inRecording?.CharactersEmitted ?? report?.CharactersEmitted ?? 0;
-        var unsure = inRecording?.CharactersUnsure ?? report?.CharactersUnsure ?? 0;
+        // **THE ROW IS SCORED, SO ITS COUNT HAS TO BE ABOUT THE CASE** (HM-DEC-091). Over the recording where there is one;
+        // the session's totals otherwise, and the cell says so.
+        var inRecording = recordingSeconds is not null && !double.IsNaN(shape.HeardSeconds);
+        var letters = inRecording
+            ? shape.LettersInLast(recordingSeconds!.Value)
+            : (int)shape.LettersPrinted;
 
-        var covers = inRecording is not null
+        var unreadable = inRecording
+            ? shape.UnreadableInLast(recordingSeconds!.Value)
+            : (int)shape.LettersUnreadable;
+
+        var covers = inRecording
             ? CwCountsCover.Recording
             : wav.Length == 0
                 ? CwCountsCover.NoRecording
                 : CwCountsCover.Session;
+
+        var printed = shape.Senders.FirstOrDefault(s => s.Printed);
 
         CwCaseRoster.Append(
             CaptureFolder,
@@ -21745,36 +21071,25 @@ public partial class MainWindowViewModel : ObservableObject
                 CapturedBandName(),
                 wav,
                 refusal,
-                report is { HasTone: true } tone ? tone.ToneHz : null,
-                report is { } r && !double.IsNaN(r.SnrDb) ? r.SnrDb : null,
-                // **ONE SOURCE, TAKEN HERE** (HM-DEC-091). This was the polled
-                // snapshot the header happens to be holding, which is a different
-                // instant from every other figure on the row.
-                _decoder?.WordsPerMinute,
-                emitted,
-                unsure,
+                shape.PrintedPitchHz > 0 ? shape.PrintedPitchHz : null,
+                tonePeakDb,
+                shape.PrintedWpm,
+                letters,
+
+                unreadable,
 
                 // **THE TAIL AT THE MOMENT OF THE PRESS**, which is what he was
-                // looking at when he decided there was a station there. A hundred
-                // and twenty characters carries several overs at any speed and
-                // still leaves the row one line in a text editor.
+                // looking at when he decided there was a station there.
                 Transcript.Tail(RosterTextLength),
                 covers,
                 KeyingLine(_keyingReading),
 
-                // **THE SEED COLUMN IS ALWAYS EMPTY NOW.** The control that
-                // filled it was inert and came out; the column stays so a roster
-                // started before this build and one started after it are the same
-                // shape, and a later ruling can retire it.
+                // **THE SEED COLUMN IS ALWAYS EMPTY NOW.** The control that filled it was inert and came out; the column
+                // stays so rosters before and after are the same shape.
                 null,
 
-                // And what the fit behind the speed looked like, so a row with no
-                // speed on it can be told from a row whose speed came out of a
-                // fit that was not a fist.
-                FitLine(),
-
-                // Whether the speed column's number was proved (HM-REQ-034).
-                _decoder?.SpeedProof));
+                // **THE PRINTED SENDER'S SHAPE**, where the old clock fit used to stand.
+                printed is { } p ? string.Create(CultureInfo.InvariantCulture, $"shape {p.ShapeScore:0.00}") : "nobody printed"));
     }
 
     /// <summary>

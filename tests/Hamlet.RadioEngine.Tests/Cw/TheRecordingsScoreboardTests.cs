@@ -353,6 +353,47 @@ public sealed class TheRecordingsScoreboardTests
     }
 
     /// <remarks>
+    /// The shape side's reading, which the capture sheet now takes its pitch, speed, counts and senders from (work
+    /// instruction 537): on the first recording, every letter the gate printed is counted, the printed sender is the one
+    /// at its pitch, and the gate holds it.
+    /// </remarks>
+    [Fact]
+    public void TheShapeSideReadingCountsWhatThePrinterPrinted()
+    {
+        var audio = WavAudio.Read(TheOwnersRecordingReadsTests.Wav("cw-2026-10-02-200157"));
+        var detector = new CwEnvelopeDetector(audio.SampleRate);
+
+        detector.SetPassband(600, 500);
+
+        var gate = new CwSenderGate();
+        var letters = 0;
+        var sequence = 0L;
+        var chunk = audio.SampleRate / 100;
+
+        detector.PrintedPitch = () => gate.StationPitchHz;
+        gate.RunRead += (_, _) => letters++;
+
+        for (var at = 0; at + chunk <= audio.Samples.Length; at += chunk)
+        {
+            detector.Process(audio.Samples.AsSpan(at, chunk));
+
+            var batch = detector.MarksSince(sequence);
+
+            sequence = batch.Marks.Count > 0 ? batch.Marks.Max(m => m.Sequence) : sequence;
+            gate.Read(batch);
+        }
+
+        var reading = gate.ShapeReading;
+
+        _output.WriteLine($"letters {reading.LettersPrinted} ({letters} raised), marks {reading.MarksStood}, printed {reading.PrintedPitchHz:0.0} Hz at {reading.PrintedWpm} WPM; senders {string.Join("; ", reading.Senders.Select(s => $"{s.PitchHz:0} {s.ShapeScore:0.00} {s.Marks}{(s.Printed ? " printed" : "")}"))}");
+
+        Assert.Equal(letters, reading.LettersPrinted);
+        Assert.InRange(reading.PrintedPitchHz, 640, 685);
+        Assert.Contains(reading.Senders, s => s.Printed);
+        Assert.True(reading.MarksStood >= reading.LettersPrinted);
+    }
+
+    /// <remarks>
     /// Task 2: what each rule kept is worth, switched off alone, the first six. Thirteen rules came out of the tree in
     /// work instruction 534, each because the total held or rose without it; these stay because it fell, or a hard limit
     /// broke. Asserts nothing; the table is the result.

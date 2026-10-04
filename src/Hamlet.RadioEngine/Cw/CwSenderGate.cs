@@ -111,6 +111,70 @@ public sealed class CwSenderGate
         remove => _table.RunRead -= value;
     }
 
+    /// <summary>Creates the gate, counting each letter the table prints for the shape side's reading.</summary>
+    public CwSenderGate()
+    {
+        _table.RunRead += (c, run) =>
+        {
+            _lettersPrinted++;
+            if (c.Text == MorseAlphabet.Unreadable)
+            {
+                _lettersUnreadable++;
+                _unreadableTimes.Add(run[^1].ToSeconds);
+            }
+
+            _letterTimes.Add(run[^1].ToSeconds);
+        };
+    }
+
+    // The shape side's counts and recent times (work instruction 537), written and read on the audio thread.
+    private readonly List<double> _letterTimes = new();
+    private readonly List<double> _markTimes = new();
+    private readonly List<double> _unreadableTimes = new();
+    private long _lettersPrinted;
+    private long _lettersUnreadable;
+    private long _marksStood;
+    private double _heard = double.NaN;
+
+    // Written by Publish on the audio thread, read by ShapeReading on any.
+    private CwShapeSideReading _shapeReading = CwShapeSideReading.Nothing;
+
+    /// <summary>
+    /// **WHAT THE SHAPE SIDE HELD AT THE END OF THE LAST BATCH** (work instruction 537, HM-DEC-241): the printed sender's
+    /// pitch and dit, letters and marks with their times, and every sender held. Safe to read from any thread: one
+    /// reference, replaced whole on the audio thread.
+    /// </summary>
+    public CwShapeSideReading ShapeReading => Volatile.Read(ref _shapeReading);
+
+    private void Publish(double heardSeconds)
+    {
+        if (double.IsFinite(heardSeconds))
+        {
+            _heard = heardSeconds;
+            _letterTimes.RemoveAll(t => t < heardSeconds - CwShapeSideReading.KeptSeconds);
+            _markTimes.RemoveAll(t => t < heardSeconds - CwShapeSideReading.KeptSeconds);
+            _unreadableTimes.RemoveAll(t => t < heardSeconds - CwShapeSideReading.KeptSeconds);
+        }
+
+        var senders = _senders
+            .Select(s => new CwSenderStanding(s.Reference.Pitch, s.Shape.Score, s.Marks, s == _station))
+            .ToList();
+
+        Volatile.Write(
+            ref _shapeReading,
+            new CwShapeSideReading(
+                _heard,
+                _station?.Reference.Pitch ?? double.NaN,
+                _station?.DitSeconds ?? double.NaN,
+                _lettersPrinted,
+                _lettersUnreadable,
+                _marksStood,
+                _letterTimes.ToArray(),
+                _markTimes.ToArray(),
+                _unreadableTimes.ToArray(),
+                senders));
+    }
+
     // **THE GATE HANDS THE READER ONE SENDER'S STREAM** (work instruction 532): the table it is read through.
     private readonly CwRunReader _table = new();
 
@@ -156,6 +220,7 @@ public sealed class CwSenderGate
         }
 
         Print(heard);
+        Publish(heard);
     }
 
     /// <summary>End every run and print what they read: the audio is over.</summary>
@@ -170,9 +235,17 @@ public sealed class CwSenderGate
         }
 
         Print(double.PositiveInfinity);
+        Publish(_heard);
     }
 
     private void Take(CwMark mark)
+    {
+        _marksStood++;
+        _markTimes.Add(mark.ToSeconds);
+        TakeMark(mark);
+    }
+
+    private void TakeMark(CwMark mark)
     {
         Sender? best = null;
         var bestDistance = double.PositiveInfinity;

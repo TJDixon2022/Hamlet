@@ -537,6 +537,12 @@ public sealed class CwDecoder
     public double RunsWaitingHz => RunsRead ? _runs.WaitingPitchHz : double.NaN;
 
     /// <summary>
+    /// What the shape side held at the end of its last batch (work instruction 537): the printed sender, its letters and
+    /// marks, and every sender the gate holds; nothing where runs are not read. Safe to read from any thread.
+    /// </summary>
+    public CwShapeSideReading ShapeSide => RunsRead ? _runs.ShapeReading : CwShapeSideReading.Nothing;
+
+    /// <summary>
     /// The last half minute of exactly what the decoder was fed (HM-DEC-088).
     /// </summary>
     /// <remarks>

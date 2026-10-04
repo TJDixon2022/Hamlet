@@ -79,36 +79,6 @@ public sealed class TheOperatorSeesOneTranscriptTests
         }
     }
 
-    /// <remarks>HM-REQ-121 with 126: the sheet for the same read carries both characters, both p's, the case and which decoder was emitted.</remarks>
-    [Fact]
-    public void HmReq121_TheSheetForTheSameReadCarriesBoth()
-    {
-        var transcript = new CwTranscript();
-
-        transcript.Settle(Disagreement().Characters.Single());
-
-        var line = MainWindowViewModel.ArbitrationLine(transcript.Recent(), "since listening started");
-
-        _output.WriteLine(line);
-
-        Assert.Contains("K:port/disagree", line, StringComparison.Ordinal);
-        Assert.Contains("ours R 0.700", line, StringComparison.Ordinal);
-        Assert.Contains("port K 0.900", line, StringComparison.Ordinal);
-    }
-
-    /// <remarks>HM-REQ-127 on the sheet: a tie is marked; HM-REQ-121: a character that passed through no arbiter says so rather than printing nothing.</remarks>
-    [Fact]
-    public void HmReq121_TheSheetMarksATieAndSaysWhereNothingWasRecorded()
-    {
-        var ours = new CwCharacter("R", CwConfidence.High, 1, ".-.", double.NaN, 18, TimeSpan.FromSeconds(1.0)) { SpanHops = 60, Probability = 0.88 };
-        var port = new CwSecondReading("K", CwConfidence.High, "-.-", 0.90, 0.705, 0.995, 18);
-        var tie = CwArbiter.Arbitrate(new[] { ours }, new[] { port }, new CwVote(true, true)).Characters.Single();
-
-        Assert.Contains("K:port/tie", MainWindowViewModel.ArbitrationLine(new[] { tie }, "x"), StringComparison.Ordinal);
-        Assert.Contains("unrecorded", MainWindowViewModel.ArbitrationLine(new[] { ours }, "x"), StringComparison.Ordinal);
-        Assert.Equal("nothing read yet", MainWindowViewModel.ArbitrationLine(Array.Empty<CwCharacter>(), "x"));
-    }
-
     private static string Root()
     {
         var dir = new DirectoryInfo(AppContext.BaseDirectory);

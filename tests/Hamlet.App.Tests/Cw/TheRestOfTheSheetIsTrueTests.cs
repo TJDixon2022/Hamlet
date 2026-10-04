@@ -50,52 +50,6 @@ public sealed class TheRestOfTheSheetIsTrueTests
         Assert.Contains("not the whole recording", line, StringComparison.Ordinal);
     }
 
-    /// <summary>A measured `toneHz` says it is a bin centre (17:37).</summary>
-    [Fact]
-    public void TheMeasuredPitchSaysItIsTheBinItWasAdmittedIn()
-    {
-        var line = Line(Sheet("cw-2026-09-23-173723"), "toneHz ");
-
-        Assert.Contains("the centre of the survey bin it was admitted in", line, StringComparison.Ordinal);
-        Assert.DoesNotContain(", interpolated between bins", line, StringComparison.Ordinal);
-    }
-
-    /// <summary>`unkeyed` does not credit the whole count to today's pitch (005051, 17:37).</summary>
-    [Fact]
-    public void TheUnkeyedLineSaysTheCountIsNotAllFromThisPitch()
-    {
-        var yes = Line(
-            Sheet("cw-2026-08-28-005051", r => r with { CharactersEmitted = 252, PitchProof = CwPitchProof.None }),
-            "unkeyed ");
-        var no = Line(Sheet("cw-2026-09-23-173723"), "unkeyed ");
-
-        Assert.DoesNotContain("characters reached the screen from a pitch", yes, StringComparison.Ordinal);
-        Assert.Contains("the pitch being followed now was chosen by", yes, StringComparison.Ordinal);
-        Assert.Contains("from whatever pitch was being followed at the time", yes, StringComparison.Ordinal);
-        Assert.Contains("the pitch being followed now is one the survey admitted keying at", no, StringComparison.Ordinal);
-        Assert.Contains("from whatever pitch was being followed at the time", no, StringComparison.Ordinal);
-    }
-
-    /// <summary>After a clear, `elements` still says the decoder's span (004844).</summary>
-    [Fact]
-    public void TheElementsCountSaysItRunsFromTheDecodersStartAfterAClear()
-    {
-        var sheet = Cleared();
-
-        Assert.Contains("since the decoder started listening", Line(sheet, "elements "), StringComparison.Ordinal);
-        Assert.DoesNotContain("cleared", Line(sheet, "elements "), StringComparison.Ordinal);
-    }
-
-    /// <summary>After a clear, `characters` still says the decoder's span (004844).</summary>
-    [Fact]
-    public void TheCharactersCountSaysItRunsFromTheDecodersStartAfterAClear()
-    {
-        var sheet = Cleared();
-
-        Assert.Contains("since the decoder started listening", Line(sheet, "characters "), StringComparison.Ordinal);
-        Assert.DoesNotContain("cleared", Line(sheet, "characters "), StringComparison.Ordinal);
-    }
-
     /// <summary>After a clear, the first `sinceLast` says the decoder's span (004844).</summary>
     [Fact]
     public void TheFirstSinceLastSaysItRunsFromTheDecodersStartAfterAClear()
@@ -108,39 +62,6 @@ public sealed class TheRestOfTheSheetIsTrueTests
 
         // The transcript's own cover is the one that moves with a clear, and stays.
         Assert.Contains("since the transcript was cleared", Line(sheet, "textCovers"), StringComparison.Ordinal);
-    }
-
-    /// <summary>`competing` does not call a present fraction keyed (014113).</summary>
-    [Fact]
-    public void TheCompetingLineDoesNotCallAnUnkeyedToneKeyed()
-    {
-        var line = Line(Sheet("cw-2026-08-22-014113"), "competing ");
-
-        Assert.DoesNotContain("keyed ", line, StringComparison.Ordinal);
-        Assert.DoesNotContain("the loudest thing in the band", line, StringComparison.Ordinal);
-        Assert.Contains("over the band floor and above it", line, StringComparison.Ordinal);
-    }
-
-    /// <summary>`reading` prints the gate as it is (17:37).</summary>
-    [Fact]
-    public void TheReadingLinePrintsTheGateAsItIs()
-    {
-        var line = Line(Sheet("cw-2026-09-23-173723"), "reading ");
-
-        Assert.Contains(
-            string.Format(CultureInfo.InvariantCulture, "against a gate of {0:0.00}", CwProbabilisticDecoder.Gate),
-            line,
-            StringComparison.Ordinal);
-    }
-
-    /// <summary>`reading` says when it was read (17:37).</summary>
-    [Fact]
-    public void TheReadingLineSaysWhenItWasRead()
-    {
-        var line = Line(Sheet("cw-2026-09-23-173723"), "reading ");
-
-        Assert.DoesNotContain("at the moment of the press", line, StringComparison.Ordinal);
-        Assert.Contains("as it stood when this sheet was written", line, StringComparison.Ordinal);
     }
 
     private string Cleared() => Sheet("cw-2026-08-28-004844", clearedAgo: TimeSpan.FromSeconds(39));
@@ -174,7 +95,7 @@ public sealed class TheRestOfTheSheetIsTrueTests
             EverySentenceOnTheSheetTests.Meter(audio).Reading,
             audio,
             report,
-            MainWindowViewModel.TonePeakRecordLine(audio, report),
+            MainWindowViewModel.TonePeakRecordLine(audio, decoder.ShapeSide),
             clearedAgo is { } ago ? DateTime.UtcNow - ago : null);
 
         _output.WriteLine($"== {stamp}");
