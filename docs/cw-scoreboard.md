@@ -114,3 +114,26 @@ For a removed rule, "after" is the total once it came out; for a kept rule, the 
 
 Task 3, gap lines from the sender's own gaps rather than its dit (the gap unit from the median of its gaps inside letters):
 185 of 240, held, did not rise, so not kept.
+
+## Stretches after unit 535 (references corrected at the sign-off; FER keeps its F)
+
+| recording | pitch | stretch | confidence | reference | printed | right |
+|---|---|---|---|---|---|---|
+| `cw-2026-10-02-200157` | 662.8 | 0-30 s | verified | `FER C HAT<BT> BEST 7V 73 <SK> KC4ZGP DEWA` | `FERCHAT<BT>BEST7V73<SK>KC4ZGPDEWA` | 27 of 27 |
+| `cw-2026-10-03-143906` | 514.2 | 0-30 s | none | `` | `SEIIENUVIQSYQSYDEWB2FUHEE5` | 0 of 0 |
+| `cw-2026-10-03-143951` | 499.5 | 14.5-30 s | low | `O WAEIIEURD U AGN ES` | `EOMTTTOOOTMGEES` | 4 of 16 |
+| `cw-2026-10-03-144020` | 499.5 | 0-12.5 s | medium | `ES OK ON PA <BT>` | `ESOKONPA<BT>` | 9 of 9 |
+| `cw-2026-10-03-144020` | 599.9 | 9.5-30 s | medium | `WX IN NETAGIT IUN TEMP E` | `WXINNETAGITIENTEMP` | 17 of 19 |
+| `cw-2026-10-03-144045` | 599.9 | 0-30 s | high | `N TEMP 57 57<BT> BTU BOB DE KG8V K` | `NEMP5757<BT>BTUBOBDEKG8VK` | 22 of 23 |
+| `cw-2026-10-03-221502` | 491.5 | 0-30 s | low | `ED OF ITS OWN HEE BK BK WHAT BUG AE US E ENIE EE ITS A 66 K` | `EDOFITSMTWNHEEBKBKWHATBUGAEIEUIE■■` | 27 of 42 |
+| `cw-2026-10-03-221530` | 491.5 | 0-9.5 s | medium | `6 CHAMPION BK` | `HCHAMPIMTNBK` | 8 of 11 |
+| `cw-2026-10-03-221530` | 598.4 | 9-30 s | medium | `EN FB WHEN I WAS AGE 12 I LEARNED CW USING A V` | `IHESMHENI■SAGE12ILEAREDCWUSINGAV` | 27 of 34 |
+| `cw-2026-10-03-221548` | 597.7 | 0-18.5 s | low | `2 I LEARNED CW USING A V BPLX Z EPS` | `IMEEEAREDCWUSINGAVBPLXZEPS` | 22 of 26 |
+| `cw-2026-10-03-221548` | 498.0 | 18-30 s | medium | `YRHEE MY SCOUT MASTER` | `EWRHEEMYSCOETTQSTEN` | 13 of 18 |
+| `cw-2026-10-03-221745` | 501.7 | 0-28 s | medium | `E E DAND ON 40M TONITE . EUR EE H RD TOO` | `TEMMTONITE.EUROWEEHIRDTOO` | 17 of 29 |
+| `cw-2026-10-03-221805` | 601.3 | 5-30 s | medium | `ET ON 40T S THESE DAYS . TNX FER ANOTHER FT` | `E40TUTHESEDAYS.TNXFERANOTHERF` | 28 of 33 |
+| `cw-2026-10-03-221828` | 601.3 | 0-30 s | medium | `FER ANOTHER FB QSO ES HOPE U HAVE AGN ED ES BEST 73 <AR> W` | `FERANOTHERFBQSOESHOPEUHAVEAGNEDESBESTEVAMU` | 37 of 41 |
+| `cw-2026-10-03-221851` | 601.3 | 0-30 s | low | `BEST 73 <AR> W2L CQ DE NA8SB K` | `TTTMEESSTEARWJLCQDENA8SBN■DET■EIETEERHIESESEEIEEIISEEI` | 13 of 20 |
+
+**Total (medium or better): 205 of 244.** Loud noise prints nothing and the first recording reads whole. The carrier limit
+is red: seeds 5195 and 5197 of the five print.

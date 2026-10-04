@@ -1,207 +1,187 @@
 ```
-UNIT: 534 - tasks 1 and 2 done, task 3 measured and not kept - 2026-10-03
-UNIT GOAL: the owner's recordings are the scoreboard
-NUMBER: scoreboard 169 to 185 of 240; thirteen rules removed; both hard limits hold
+UNIT: 535 - tasks 1, 3 and 4 done; task 2 measured, red, not shipped - 2026-10-04
+UNIT GOAL: the light claims no more than the printer, and a random carrier never prints
+NUMBER: scoreboard 185 to 205 of 244 (240 before the references were corrected); the carrier limit is red
 ```
 
 ## 1. What Claude did
 
-Claude Code on the development machine, branch `main`. The prompt claimed `PROJECT: Hamlet`, and the order's gate held: `SHACK_FACTS.md`, `CwRunReader.cs` and `cw-2026-10-03-221828.wav` exist, there is no `CoreHMI.sln` or `MURC.sln`, and the root is `C:\Source\HamLet`. Hamlet confirmed. Nothing in this report is evidence about the radio beyond the owner's twelve recordings. HM-DEC-238 was free.
+Claude Code on the development machine, branch `main`. The prompt claimed `PROJECT: Hamlet`, and the order's gate held: `SHACK_FACTS.md`, `docs\cw-scoreboard.md` and `cw-2026-10-03-221828.wav` exist, there is no `CoreHMI.sln` or `MURC.sln`, and the root is `C:\Source\HamLet`. Hamlet confirmed. Nothing in this report is evidence about the radio beyond the owner's twelve recordings. HM-DEC-239 was free.
 
 **How the session ran:**
 - It took SESSION.lock and released it at the end.
 - It wrote nothing to `RUN_LEDGER.md`, touched nothing under `tools\arbiter\`, and ticked no box.
-- **HEAD was tagged `before-scoreboard` (331cb73e) and pushed** before any change.
-- R88 was lifted for the twelve recordings and no other. The seven of 22:15 to 22:18 were committed with their sheets (`6c42860c`). The untracked `cases-*.txt` sheets were not read or committed.
-- Nothing keys, transmits or writes to the radio.
+- R88 was lifted for the twelve recordings and no other. Nothing keys, transmits or writes to the radio.
+- The scoreboard was run after every task, and its row is appended to `docs\cw-scoreboard.md`.
 
-**Task 1: the scoreboard.** Commit `2eb80ea0`.
-- **`TheRecordingsScoreboard`** reads every recording through the live path as the app wires it: detector, sender's window, gate and reader, at the CW pitch and filter width from each sheet. Every sheet reads 600 Hz and 500 Hz.
-- **Scoring:** what printed is scored against §8 as written. Letters right means the reference's letters less the edit distance with free ends, spaces ignored, a prosign counting as one letter. A printed letter belongs to the stretch of its recording nearest its pitch, within 60 Hz and a second.
-- **The hard limits are asserted:** the first recording's exact text, and four noise runs (30 s and 180 s at two seeds each) that print nothing.
-- **Baseline: 169 of 240** over the medium-or-better stretches, written to `docs\cw-scoreboard.md`.
-- **`EachStretchReadOffline`** reads each stretch non-causally at its pitch, through a 40 Hz two-pole low-pass run forward and back, cut at the midpoint of its own two level clusters. The differences from §8 are in section 3; no reference was changed.
+**Task 1: the light is green only when Hamlet would print.** Commit `f28f8865`.
+- The gate now publishes the pitch of the sender that has qualified and is waiting out its first word gap (`WaitingPitchHz`), beside the printed one. The decoder passes it on, and the app wires it to the detector as it wires the printed pitch.
+- The light reads only those:
+  - **`reading`** while a sender is printed;
+  - **`shape found · hold here`** while one waits;
+  - **amber** while marks stand or form;
+  - **dark** otherwise.
 
-**Task 2: every rule measured against the recordings.** Commit `067f763b`.
-- **The method:**
-  - `CwRules` gives each shape-side rule a switch, and every one of 24 rules was switched off alone (the rule table is in section 3).
-  - The rules whose removal raised or held the total were then removed one at a time, best gain first, re-measuring after each.
-  - Every remaining rule was then switched off again with the removed ones out, twice more, until no removal raised or held the total.
-- **Removed, in order, with the total after each:**
-  1. the 0.2 standing line, 182;
-  2. three lone letters dropped together, 184;
-  3. quieter-mark admission inside a letter, 184;
-  4. the pause that is not a word, 184;
-  5. a hand's two kinds, 185;
-  6. key-up, 185;
-  7. the five-dit floor, 185;
-  8. the shape's inside-letter gap tightness, 185;
-  9. the rectangle fit, 185;
-  10. narrowness, 185;
-  11. the neighbour judgement of gaps, 185;
-  12. the shape's letter-gap tightness, 185;
-  13. the neighbour split of marks, 185.
-- **Removed from the code, not switched off:**
-  - The scoreboard read 185 with the code gone, the same as the switches gave.
-  - `TheRectangleIsFittedTests` and `MostEdgedNoiseBarsAreNotNarrow` were deleted with their rules; the "before" rows that switched key-up, narrowness or the fit off were removed from three diagnostics.
-  - Removing a hand's two kinds also removes it from the light's "shape forming" count.
-- **Eleven rules kept**, each lowering the total or breaking a hard limit when off (section 3). `CwRules` keeps a switch for each so the next unit can measure again.
-- **The handover backlog holds the total when off and stays:** switching it off means putting back the skip it replaced, a rule added rather than removed. No recording has a reply that overlaps the first station's last letter, so nothing here exercises it.
+  Green also needs a mark to have stood within the hold, so the light goes dark when the sender stops.
+- No new number. The gauge stays at or under the mark while amber.
+- **Watched fail first:** `LoudNoiseIsNeverGreen` (seed 5212) was red, green for 377 steps; it now passes with 0 green steps.
+- **The scoreboard is unchanged by this task, 185 of 240**, as it should be for a display change.
 
-**Task 3: heavy keying.**
-- The one line still drawn from the dit is the gap unit before the sender's gaps settle it (`gapDit = dit + smear`).
-- Taking it from the median of the sender's own gaps inside letters held the total at 185. That is not a rise, so it was reverted and nothing was committed.
-- The 22:17 QSO's `FER` still reads `ENER`; the fault is not that line.
+**Task 2: a carrier keyed at random never prints.** Commit `78449f4e` (tests and the limit only; the engine unchanged).
+- **The limit is in place:**
+  - `ARandomCarrierAloneNeverPrints` at twenty seeds;
+  - five carrier runs in the scoreboard's hard limits.
+
+  **Both are red.** At HEAD, 9 of 20 seeds print alone, and 2 of the scoreboard's 5.
+- **Which rule lets it print.** The carrier qualifies on two kinds that it shows only:
+  - over its newest five marks, where the speed retry looks;
+  - or as one odd mark against the rest: seed 5197 qualified on one 45 ms mark against nine from 135 to 275 ms.
+- **Rules built and measured** (each from what CW is; none tuned to a seed):
+
+| rule | scoreboard | carrier alone, of 20 | fate |
+|---|---|---|---|
+| none (HEAD) | 185 | 9 print | |
+| two kinds held over the last ten marks | 185 | not run at 20 (1 of the first 5 seeds, 5197) | |
+| ... over the last sixteen marks | 156 | not run at 20 (0 of the first 5) | lowers the total |
+| ... ten, and a pick floor at the release line (0.1) | 180 | not run at 20 (5197 still printed) | lowers the total |
+| **... ten, each kind recurring (two marks or more)** | **185** | **2 print** (5195, 5206) | **best; does not close the case** |
+| ... and over the ten before as well | 150 (first recording broken) | 0 print | lowers the total |
+| ... ten, each recurring, and the gaps showing a clean 2:1 jump | 181 | 1 prints (5195) | lowers the total |
+
+  **No rule closes the case without lowering the total, so none ships, as the order requires.** The best rule costs nothing and leaves 2 of 20 printing; it is described in HM-DEC-239 and is not in the tree.
+- **Beside a clean sender at 100, 150 and 200 Hz:**
+  - At HEAD the carrier prints at 100 Hz (`ARandomCarrierNeverPrints(725)` red); the best rule closed it.
+  - The clean sender reads as at HEAD: at 400 Hz it reads whole; closer, it reads garbage as before.
+
+**Task 3: two references corrected.** Commit `09f512d1`.
+- **What the audio says.** Read element by element offline, the sign-off of `cw-2026-10-03-221828` and the start of `-221851` is a 7: a 175 ms dah, a 147 ms gap, a 20 ms fragment, then 119, 87, 62 and 80 ms. It is followed by `...--`, `.-.-.`, `.--`, `..---` and `.-..`: `73 <AR> W2L`. The web session had written `EEV CW`.
+- **What changed:**
+  - 221828's reference ends `ES BEST 73 <AR> W`; its `2` is cut off by the end of the recording.
+  - 221851's reference is `BEST 73 <AR> W2L CQ DE NA8SB K`.
+  - Each element list now carries the corrected span, and confidence is unchanged. No other reference changed.
+- **The yardstick moved, not Hamlet:** 185 of 240 before the correction, 185 of 244 after.
+
+**Task 4: heavy keying turns FER into ENER.** Commit `97247000`.
+- **Where the F's marks go**, on `cw-2026-10-03-221805` at 22.87 s:
+
+| | dit | gap | dit | gap | dah | gap | dit |
+|---|---|---|---|---|---|---|---|
+| offline | 73 | 17 | 103 | 27 | 251 | 39 | 94 |
+| detector's candidates | 66 | | 94 | | 243 | | 87 |
+| stood | 66 | | - | | 243 | | 87 |
+| gate's letters | `E` (66) | 161 ms gap | | | `N` (243, 87) | | |
+
+- **The cause is plain.** The pattern gate's crowds test drops a mark that starts within half a dit of the last one as "the same tone read twice". On heavy keying, gaps inside a letter are a quarter to a half of a dit, so the F's 94 ms second dit, 27 ms after the first, was dropped.
+- **The fix:** a mark crowds the last only where it overlaps it, or where it is both under half a dit after it and under half a dit long. A tone read twice overlaps or touches itself, and a piece of a tone is short.
+- **`FER` reads** on both recordings, and **the scoreboard rose from 185 to 205 of 244.**
 
 **Records:**
-- HM-DEC-238 in `DECISIONS.md`, and the `CLAUDE.md` row.
-- `PHASE_OUTCOME` (both copies) has `## UNIT 534 - STEP 12`.
-- `PHASE_STATUS` (both copies) names 534.
-- Version 1.13.218 to 1.13.219.
-- `docs\cw-scoreboard.md` holds both board tables and the rule table.
+- HM-DEC-239 in `DECISIONS.md`, and the `CLAUDE.md` row.
+- `PHASE_OUTCOME` (both copies) has `## UNIT 535 - STEP 12`.
+- `PHASE_STATUS` (both copies) names 535.
+- Version 1.13.219 to 1.13.220.
+- `docs\cw-scoreboard.md` has five new rows and the unit's stretch table.
 
-**Build and app line:** build 0 warnings, 0 errors. App carry-forward 276 of 278. The two losses, both `ThePsk31ConversationCardTests` at 1 ms ("You've caused dispatcher loop"), pass alone.
+**Build and app line:** build 0 warnings, 0 errors. App carry-forward 277 of 278. The one loss, `TheStopIsAlwaysOnScreenTests…` at 1 ms ("You've caused dispatcher loop"), passes alone.
 
 ## 2. What the owner should expect
 
 - **Rebuild.**
-- **The scoreboard went from 169 to 185 of 240 letters right** on your own recordings. Loud noise still prints nothing, and your first recording still reads `FER C HAT<BT> BEST 7V 73 <SK> KC4ZGP DEWA`.
-- **Thirteen rules came out.** Each had been added to fix a synthetic signal, and on your recordings Hamlet read as well or better without it:
-  - the 0.2 shape line a station had to clear before it could print;
-  - how evenly a sender spaced its letters, which counted against hand senders;
-  - the five-dit word floor;
-  - key-up, narrowness and the rectangle fit;
-  - the rest are listed in section 1.
-- **What your QSOs read now:**
-  - **14:40:45** reaches `DE KG8V K` (was cut off after `D`), but the T of TEMP is lost: `NEMP5757<BT>BTUBOBDEKG8VK`.
-  - **14:39:06** now prints `SEIIENUVIQSYQSYDEWB2FUVEE`, the `QSY DE W` fragments you heard.
-  - **22:15:48** reads `MY SCOET` (was `SCOMASTEN`).
-  - **22:17:45** reads `TONITE.EIEEMESIRDTOTT` (was 8 letters right, now 14).
-  - **22:18:05** and **22:18:28** are about the same, and `FER` still reads `ENER` on the heavy keying.
-  - **14:40:20** is unchanged.
-- **Two things look worse and need you** (section 4):
-  - On loud noise the light now turns green ("shape found · hold here") for a few seconds at one noise seed, though nothing prints.
-  - A carrier keyed at random now also prints beside a clean sender, and at 725 Hz instead of 825.
-- **Synthetic cases read worse in places**, mostly word spaces: a drifting hand runs `BROWNFOX` together, and the straight key runs `SKCCDEN0CALL` together. Section 3 lists them.
-- **Some of your references may be wrong.** Reading each stretch offline, a few letters come out differently from the web session's references. The biggest is the end of 22:18:28 and the start of 22:18:51, where the web session wrote `EEV CW` and the audio looks like `73 <AR> W`. Section 3 has both element lists; please listen.
+- **The light goes green only when Hamlet will print.**
+  - "Shape found · hold here" now means a station has qualified and its letters print within a word gap.
+  - "Reading" means it is printing.
+  - Amber "not yet" covers the seconds while a station qualifies.
+  - On loud noise it never goes green.
+- **A random carrier can still print.** It is now a hard limit, and the limit is red. The best rule I found cost nothing on your recordings but still let 2 of 20 random carriers through, so by your order it was not shipped. Your call is in section 4.
+- **Your recordings: 185 to 205 of 244.**
+  - **The 22:17 QSO reads `FER` again:**
+    - `TNX FER ANOTHER` on 22:18:05;
+    - `FER ANOTHER FB QSO ES HOPE U HAVE AGN ED ES BEST` on 22:18:28 (26 to 37 of 41 letters).
+  - **22:17:45** now ends `EUROWEEHIRDTOO`.
+  - **22:15:30** reads `HCHAMPIMTNBK` (was `HCSAMENIONNEN`).
+- **The scoreboard's yardstick changed once.** The end of 22:18:28 and the start of 22:18:51 are `73 <AR> W2L`, as you and the web session agreed, so the total is now out of 244 rather than 240.
 
 ## 3. What you should see
 
-**The scoreboard, before (`before-scoreboard`) and after:**
+**The scoreboard rows:**
 
-| recording | pitch | conf. | reference | printed before | right | printed after | right |
-|---|---|---|---|---|---|---|---|
-| 200157 | 662.8 | verified | `FER C HAT<BT> BEST 7V 73 <SK> KC4ZGP DEWA` | `FERCHAT<BT>BEST7V73<SK>KC4ZGPDEWA` | 27/27 | same | 27/27 |
-| 143906 | 514.2 | none | - | `` | - | `SEIIENUVIQSYQSYDEWB2FUVEE` | - |
-| 143951 | 499.5 | low | `O WAEIIEURD U AGN ES` | `` | 0/16 | `EOMTTTOMOTMOEES` | 4/16 |
-| 144020 | 499.5 | medium | `ES OK ON PA <BT>` | `ESOKONPA<BT>` | 9/9 | same | 9/9 |
-| 144020 | 599.9 | medium | `WX IN NETAGIT IUN TEMP E` | `WXINNETAGITIENTEMP` | 17/19 | same | 17/19 |
-| 144045 | 599.9 | high | `N TEMP 57 57<BT> BTU BOB DE KG8V K` | `NTEMP5757<BT>BTUBOBD` | 17/23 | `NEMP5757<BT>BTUBOBDEKG8VK` | 22/23 |
-| 221502 | 491.5 | low | `ED OF ITS OWN HEE BK BK WHAT BUG AE US E ENIE EE ITS A 66 K` | `EDOFITSOWNHEENEKESKESITHAHDEN` | 20/42 | `EDOFITSMTWNHEEBKBKWHATBUGAEIEUIE■■` | 27/42 |
-| 221530 | 491.5 | medium | `6 CHAMPION BK` | `BCSAMENION` | 5/11 | `HCSAMENIONNEN` | 5/11 |
-| 221530 | 598.4 | medium | `EN FB WHEN I WAS AGE 12 I LEARNED CW USING A V` | `IIESMHENI■SAGE12ILE<AR>EDCWUSINGAV` | 25/34 | `IHESMHENI■SAGE12ILEAREDCWUSINGAV` | 27/34 |
-| 221548 | 597.7 | low | `2 I LEARNED CW USING A V BPLX Z EPS` | `IMRIUSINGAVBPLXZEPS` | 17/26 | `IMEEEAREDCWUSINGAVBPLXZEPS` | 22/26 |
-| 221548 | 498.0 | medium | `YRHEE MY SCOUT MASTER` | `EYRHSCOMASTEN` | 11/18 | `EWRHEEMYSCOETTQSTEN` | 13/18 |
-| 221745 | 501.7 | medium | `E E DAND ON 40M TONITE . EUR EE H RD TOO` | `IANDTMN4MEMMTONI` | 8/29 | `TEMMTONITE.EIEEMESIRDTOTT` | 14/29 |
-| 221805 | 601.3 | medium | `ET ON 40T S THESE DAYS . TNX FER ANOTHER FT` | `MEUMTTSTHESEDAYI.TNXENERANOTHERF` | 24/33 | `E40TUTHESEDAYI.TNXENERANOTHERF` | 25/33 |
-| 221828 | 601.3 | medium | `FER ANOTHER FB QSO ES HOPE U HAVE AGN ED ES BEST` | `ENERANOTHERFNEQSMESHMWIEVEATNEDESBESTEHEEIER` | 26/37 | `ENERANOTHERFNEQSMESHMWETEIEVEATNEDESBEST` | 26/37 |
-| 221851 | 601.3 | low | `BEST EEV CW 2L CQ DE NA8SB K` | `SESTILCTADENAME` | 8/21 | `TTTMEEEUIEMTICWJLKTADENAMEEENEK■DETSKETEER5SEXIEEESIIIIEEEI` | 8/21 |
-| **total** | | | | | **169/240** | | **185/240** |
-
-**The rule table.** Each rule switched off alone at the baseline of 169. "After" is the total once a removed rule came out, or, for a kept rule, with all thirteen out and it off too. "Broke" means a hard limit broke.
-
-| rule | off alone | after | fate |
-|---|---|---|---|
-| the 0.2 standing line | 182 | 182 | removed |
-| three lone letters dropped | 172 | 184 | removed |
-| quieter-mark admission | 172 | 184 | removed |
-| the pause | 169 | 184 | removed |
-| a hand's two kinds | 165 | 185 | removed |
-| key-up | 159 | 185 | removed |
-| five-dit floor | 167 | 185 | removed |
-| shape: inside-letter gap tightness | 160 | 185 | removed |
-| rectangle fit | 165 | 185 | removed |
-| narrowness | 166 | 185 | removed |
-| neighbour judgement of gaps | 174 | 185 | removed |
-| shape: letter-gap tightness | 168 | 185 | removed |
-| neighbour split of marks | 169 | 185 | removed |
-| lone letter | 173, broke (`HA T`) | 182 | kept |
-| cold-start word line at √21 | 169, broke (`F ER C H AT`) | 185, broke | kept for a hard limit |
-| retry over newer marks | 161 | 152 | kept |
-| settle at key-down | 155 | 179 | kept |
-| the sender's own window | 149, broke | 148, broke | kept |
-| release under 0.1 | 181 | 180 | kept |
-| first pick waits a word gap | 169 | 181 | kept |
-| handover backlog | 169 | 185 | kept (off is a skip added) |
-| a silent sender is not a candidate | 141 | 155 | kept |
-| edges | 144 | 113, broke (noise prints) | kept |
-| a mark's own shape | 151 | 162, broke (noise prints) | kept |
-
-**References read differently offline** (§8's element list, then the reading here; the reference was not changed):
-
-| stretch | §8 | here | letters |
-|---|---|---|---|
-| 200157 at 662.8 | `- [670] -- [115] ... [360] ...-` | `- [662] --.... [351] ...-` | §8 corrected to 7V; here the 7 carries an extra dit |
-| 143951 at 499.5 | `.-. [525] -..` and `-. [1045] . [335] ...` | `.- [519] -.-` and `-. [638] . [373] . [329] ...` | `RD` / `AK`; an extra E |
-| 144020 at 499.5 | `-.- [1070] ---` | `-.- [742] . [298] ---` | an E between K and O |
-| 144020 at 599.9 | `.. [420] ..- [250] -.` | `.. [411] .- [240] -.` | `U` / `A`: the U's last two elements are keyed with a 2 dB notch for a gap; Hamlet prints `E`. Two dits before the W at 9.5 to 11 s here |
-| 144045 at 599.9 | `..- [940] -...` | `..- [298] . [612] -...` | a faint E in the 940 ms gap |
-| 221502 at 491.5 | `. [635] -...` … `. [685] ..- [265] ... [375] . [355] . [150] -. [170] .. [130] .` | `. [407] . [196] -...` … `.. [162] . [129] . [147] ..- [262] ..- [177] ... [129] .. [142] -. [167] --. [152] ..--..` | a rough fist; `HEE` / `HEEE`, `US E ENIE` / `IEEUUSING?` |
-| 221530 at 491.5 | `-...` (end) | `--.` | `BK` / `GK` |
-| 221530 at 598.4, 221548 at 597.7 | `.. [130] -.` | `..-.` | `USING` / `USFG` (a 130 ms gap at a 100 ms letter line); `.-.. [180] -..-` reads as one letter here |
-| 221548 at 498.0 | `- [150] . [170] .-.` | `- [149] ...-.` | `TER` / `T■` |
-| 221745 at 501.7 | `. [440] -.. [180] .-` | `- [367] .-.. [173] .-` | `E DA` / `T LA`: a 155 ms element read as a dah at the 150 ms split; further on `.---.-.` / `---.-.` and `.... [745] .-.` / `..- [252] .-. [161] .-.` |
-| 221805 at 601.3 | `-----` | `----` | `0` / `■` |
-| 221828 and 221851 at 601.3 | `- [790] . [145] . [195] ...- [510] -.-. [205] .-- [175] ..--` | `- [223] - [255] .... [191] ...-- [129] .-.-. [196] .-- [171] ..--` | `T E E V C W 2` / `T T H 3 <AR> W 2`: possibly `73 <AR> W2L`. The later part of 221851 differs throughout |
-
-**Synthetic cases that changed** (against unit 533's runs, which match `before-scoreboard`):
-
-| case | before | now |
+| row | total | hard limits |
 |---|---|---|
-| a lone `T E T T E` after a call | `CQ CQ DE N0CALL N0CALL K` | `CQ CQ DE N0CALL N0CALL K T` (three-lone drop removed; red) |
-| clean call, every mark's shape | lowest 0.43 | three fragments of shape near 0 stand (key-up and narrowness removed; red) |
-| a weak dit inside a letter | `CQ CQ DE N0CALL N0CALL K` | `CQ CQ DE N0CA DL N0CALL K` (quieter marks removed; red) |
-| 35 WPM at 10 dB | `CQ CQ DE N0CALL N0CALL K` | `CQ CQ SE N0CALL N0CALL K` (red) |
-| the call at 10 dB, weak | `CQ CQ DE N0CALL N0CALL K` | `CQ NEQDEN0CALL N0CAEIL A` (test passes on marks) |
-| loud noise, light (seed 5212) | never green | green for 377 steps (red) |
-| loud noise, 3 minutes | 0 marks stood | 37 stood; prints nothing |
-| a random carrier | printed at 825 Hz (red) | prints at 725 Hz, no longer at 825 (red) |
-| clean sender 100 Hz from a carrier | `` | `TTNOAM0TT ETMTTYTMTT` |
-| clean sender alone through the filter | `CQ CQ DE N0CALL N0CALL K` | `CQ CQ DE N■ CALL N0 RALL K` |
-| a fist scattered by a third | `CQ CQ DE N0CALL N0CALL K` | `CQ CQ DE N0NNALL N0CALLK` |
-| drifting hand 13/18/13 | `TEXT IS FROM SEPTEMBER 2024 AND THE QUICK BROWN FOX …` | `TEXT IS FROMSEPTEMBER 2024AND THE QUICK BROWNFOX …` (5 reds) |
-| straight key, two fifths | `CQ CQ SKCC DE N0CALL N0CALLK` | `CQCQ SKCCDEN0CALL N0CALLK` (5 reds) |
-| 25/35/25 WPM, weak through the filter | whole | `2024ANDTHEQUICKBROWNFOX` (red) |
-| the tightening fist | `CQCQ DE N0CALL N0CALL K` | `CQCQ DE N■CALL N0CALL K` |
-| synthetic QSO | `… K WE MAW DE K3ZZ …` | `… K TAW DE K3ZZ …` |
-| 14:40:45 letters test | `NTEMP5757<BT>BTUBOBD` | `NEMP5757<BT>BTUBOBDEKG8VK` (still red, on the T) |
+| 534 after (HEAD) | 185 of 240 | hold (no carrier limit then) |
+| 535 task 1 | 185 of 240 | hold |
+| 535 task 2 | 185 of 240 | carrier limit red: 2 of 5 print |
+| 535 task 3, before the correction | 185 of 240 | carrier limit red |
+| 535 task 3, after the correction | 185 of 244 | carrier limit red |
+| 535 task 4 | **205 of 244** | carrier limit red, as before |
 
-**Reds unchanged:**
-- the 8 dB call;
-- Farnsworth and fast at 10 dB;
-- a letter from noise (blocks);
-- the clean sender at the edge;
-- the strength table at 8 and 10 dB;
-- `AFistThatTightensIsFollowed`;
-- unit 533's three reply tests.
+**Every stretch, on the corrected references, before task 4 and after:**
+
+| recording | pitch | before | right | after | right |
+|---|---|---|---|---|---|
+| 200157 | 662.8 | `FERCHAT<BT>BEST7V73<SK>KC4ZGPDEWA` | 27/27 | same | 27/27 |
+| 143906 | 514.2 | `SEIIENUVIQSYQSYDEWB2FUVEE` | - | `SEIIENUVIQSYQSYDEWB2FUHEE5` | - |
+| 143951 | 499.5 | `EOMTTTOMOTMOEES` | 4/16 | `EOMTTTOOOTMGEES` | 4/16 |
+| 144020 | 499.5 | `ESOKONPA<BT>` | 9/9 | same | 9/9 |
+| 144020 | 599.9 | `WXINNETAGITIENTEMP` | 17/19 | same | 17/19 |
+| 144045 | 599.9 | `NEMP5757<BT>BTUBOBDEKG8VK` | 22/23 | same | 22/23 |
+| 221502 | 491.5 | `EDOFITSMTWNHEEBKBKWHATBUGAEIEUIE■■` | 27/42 | same | 27/42 |
+| 221530 | 491.5 | `HCSAMENIONNEN` | 5/11 | `HCHAMPIMTNBK` | 8/11 |
+| 221530 | 598.4 | `IHESMHENI■SAGE12ILEAREDCWUSINGAV` | 27/34 | same | 27/34 |
+| 221548 | 597.7 | `IMEEEAREDCWUSINGAVBPLXZEPS` | 22/26 | same | 22/26 |
+| 221548 | 498.0 | `EWRHEEMYSCOETTQSTEN` | 13/18 | same | 13/18 |
+| 221745 | 501.7 | `TEMMTONITE.EIEEMESIRDTOTT` | 14/29 | `TEMMTONITE.EUROWEEHIRDTOO` | 17/29 |
+| 221805 | 601.3 | `E40TUTHESEDAYI.TNXENERANOTHERF` | 25/33 | `E40TUTHESEDAYS.TNXFERANOTHERF` | 28/33 |
+| 221828 | 601.3 | `ENERANOTHERFNEQSMESHMWETEIEVEATNEDESBEST` | 26/41 | `FERANOTHERFBQSOESHOPEUHAVEAGNEDESBESTEVAMU` | 37/41 |
+| 221851 | 601.3 | `TTTMEEEUIEMTICWJLKTADENAMEEENEK■DETSKETEER5SEXIEEESIIIIEEEI` | 7/20 | `TTTMEESSTEARWJLCQDENA8SBN■DET■EIETEERHIESESEEIEEIISEEI` | 13/20 |
+| **total** | | | **185/244** | | **205/244** |
+
+**The light's sequence:**
+- **On loud noise (seed 5212):**
+  - before: green for 377 steps;
+  - now: green for 0 steps, amber while noise forms (26% of the time at one mark or more), never past the mark.
+- **On a clean call:**
+  - 3.32 to 3.68 s, `shape forming · 2, 3, 4 of 5`;
+  - 4.04 s, `shape forming · not yet`;
+  - 6.09 s, `shape found · hold here`;
+  - 6.39 s, `reading`, the first letter printed at 6.37 s;
+  - 19.34 s, amber;
+  - 19.48 s, `listening`.
+
+  Before, it went green at the fifth mark, two seconds before the gate would print.
+
+**The carrier cases at HEAD** (the engine was not changed for them):
+
+| case | reads |
+|---|---|
+| alone, 20 seeds | 9 print, e.g. seed 5205 `NITMTMT E NT MT E EMTEFETTUTTEAN`, seed 5206 `TTMET ETTMTNEEEAATAUTTAT TOMOTEG` |
+| scoreboard, 5 seeds | 5195 `TMTTTNEAITT ETANTTTTK`, 5197 `TTMTTIETET MTT T KT TM` |
+| beside a clean sender, 100 Hz | the carrier prints (red) |
+| beside, 150 / 200 / 400 Hz | the carrier prints nothing; the clean sender reads as at HEAD |
+
+**The references changed** (task 3):
+
+| recording | was | now | element list there |
+|---|---|---|---|
+| 221828 | `… ED ES BEST` | `… ED ES BEST 73 <AR> W` | `- [222] --... [190] ...-- [128] .-.-. [195] .-- [168] ..--` |
+| 221851 | `BEST EEV CW 2L CQ DE NA8SB K` | `BEST 73 <AR> W2L CQ DE NA8SB K` | `- [223] --... [190] ...-- [129] .-.-. [195] .-- [169] ..--- [160] .-..` |
+
+**The FER trace** is in section 1, task 4.
+
+**Synthetic sets, against unit 534:** sets a, b1, b4 and b5 read identically, line for line, except for the twenty new carrier lines and two untotalled recording lines. The reds are the same set as unit 534's, plus this unit's carrier cases.
 
 ## 4. What's blocking us
 
-1. **The light turns green on loud noise. Your ruling, because it is what the screen asserts (§0.0):**
-   - What happens: with the shape's gap terms gone, noise sequences can score over the light's 0.2 line, and at one seed the light read "shape found · hold here" for 377 steps. Nothing printed.
-   - Industry answer: a light should claim no more than the printer does. A means the light is green only while a sender is printed or qualified to print.
+1. **The random-carrier limit is red.** The best rule from CW's own pattern costs nothing on your recordings and closes 7 of the 9 seeds that print. Should it ship as a partial step?
 
    | option | for | against |
    |---|---|---|
-   | A. green only when the gate would print the sender | the light and the terminal agree; no new number | the light goes green a word gap later |
-   | B. raise the light's line until noise never reaches it | keeps the light early | a number fitted to noise seeds |
-   | C. put the 0.2 standing line back | restores the old light | gives back 13 letters on your recordings |
+   | A. ship it now | 7 of 9 printing seeds silenced, 100 Hz beside closed, 0 letters lost | the hard limit stays red at 2 seeds |
+   | B. keep the case red until one rule closes it | the order as written | carriers keep printing at 9 of 20 meanwhile |
 
-2. **A carrier keyed at random still prints**, now at 725 Hz rather than 825, and now also beside a clean sender 100 Hz away (synthetic). Loud noise, the hard limit, still prints nothing. Should a random-carrier case become a third hard limit for the scoreboard?
-3. **References to listen to**, section 3: above all the end of 22:18:28 and the start of 22:18:51 (`EEV CW` against what reads as `73 <AR> W`), and 14:40:45's 940 ms gap, where a faint E reads offline.
-4. **Heavy keying (22:17 QSO): `FER` reads `ENER`**, and gap lines from the sender's own gaps did not change the total. The F's first dit and its 40 ms gap are where to look next.
-5. **Word spacing on hand senders is worse on the synthetic cases**, with the five-dit floor gone. Your recordings did not miss it, and the word line now rests on √21 and √(7/3) alone.
-6. **Pre-existing app reds** outside the line are untouched.
+   The usual practice is A: a change that loses nothing and removes most of a fault ships, and the limit stays red to show what is left.
+2. **Gap kinds close one more seed but cost 4 letters** on your recordings. Where those 4 letters go is the next question if the carrier is to close fully.
+3. **The other reference differences** from unit 534 still wait for you to listen; only the sign-off changed.
+4. **Pre-existing app reds** outside the line are untouched.
 
 ### Asks still outstanding
 

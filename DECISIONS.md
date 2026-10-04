@@ -4,6 +4,41 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-239
+date: 2026-10-04
+refs: work instruction 535, src/Hamlet.RadioEngine/Cw/CwEnvelopeDetector.cs, src/Hamlet.RadioEngine/Cw/CwSenderGate.cs, src/Hamlet.RadioEngine/Cw/CwPatternGate.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheRecordingsScoreboardTests.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheShapePicksTheSenderTests.cs, docs/cw-scoreboard.md
+---
+
+**The light claims no more than the printer; a random carrier never prints.**
+
+The owner's two answers, 2026-10-03:
+- **Option A for the light.** It is green only while the gate would print a sender: `reading` while one prints, and
+  `shape found · hold here` while one has qualified and waits out its first word gap. It reads the gate's own state
+  and has no number of its own. At the noise seed where it had shown green for 377 steps, it never goes green.
+- **Yes, a third hard limit:** a carrier keyed at random prints nothing. It is in the scoreboard's limits at five seeds
+  and in a test at twenty. **It is red.** At HEAD 9 of the 20 seeds print, and 2 of the scoreboard's 5.
+
+**The rule built for the carrier, and not shipped.** The carrier qualifies on the speed retry's newest five marks, or on
+one odd mark against the rest. The rule built from CW's own pattern:
+- a sender's two kinds hold over its last ten marks, with a clean 2:1 jump and neither side wider than a hand makes;
+- each kind recurs, two marks or more.
+
+It kept the scoreboard at 185 and left 2 of 20 seeds printing. Adding gap kinds left 1 and cost 4 letters. Sixteen
+marks, two windows, and a pick floor at the release line each cost more. **No rule closed the case without lowering
+the total, so none ships, as the order requires.**
+
+**Two references corrected.** The sign-off of `cw-2026-10-03-221828` and `-221851` reads `73 <AR> W2L` where the web
+session wrote `EEV CW`, and the web session agrees. The scoreboard read 185 of 240 before and 185 of 244 after: the
+yardstick changed, not Hamlet.
+
+**Heavy keying keeps the F of FER.** The pattern gate dropped the F's second dit, 94 ms after a 27 ms gap, as the last
+mark read again. A mark now crowds the last only where it overlaps it, or is both under half a dit after it and under
+half a dit long. `FER` reads on both recordings of the 22:17 QSO.
+
+**The scoreboard rose from 185 to 205 of 244.** Loud noise prints nothing and the first recording reads whole; the
+carrier limit stays red.
+
+---
 id: HM-DEC-238
 date: 2026-10-03
 refs: work instruction 534, docs/cw-scoreboard.md, tests/Hamlet.RadioEngine.Tests/Cw/TheRecordingsScoreboardTests.cs, src/Hamlet.RadioEngine/Cw/CwRules.cs, src/Hamlet.RadioEngine/Cw/CwSenderGate.cs, src/Hamlet.RadioEngine/Cw/CwPatternGate.cs, src/Hamlet.RadioEngine/Cw/CwSequenceShape.cs, src/Hamlet.RadioEngine/Cw/CwEnvelopeDetector.cs

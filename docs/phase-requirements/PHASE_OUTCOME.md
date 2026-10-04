@@ -1026,3 +1026,17 @@ Run by hand, outside the loop: SESSION.lock taken and released; nothing written 
 **Task 3.** The sender's gap unit taken from its own gaps held the total at 185 and was not kept.
 
 Build 0 warnings 0 errors. App carry-forward 276 of 278; the two losses, a dispatcher loop at 1 ms, pass alone.
+
+## UNIT 535 - STEP 12
+
+Run by hand, outside the loop: SESSION.lock taken and released; nothing written to RUN_LEDGER.md and nothing under tools\arbiter\ touched; no box ticked and no ruling added to either plan; no scratch file committed; nothing keyed or transmitted. R88 was lifted for the owner's twelve recordings and no other. Version 1.13.219 to 1.13.220. HM-DEC-239.
+
+**Task 1.** The light reads the gate. It is green only while a sender is printed, or has qualified and is waiting out its first word gap, and the gate publishes that pitch. Loud noise at seed 5212 never goes green; a clean call goes green at 6.09 s and `reading` at 6.39 s, its first letter at 6.37 s. Scoreboard unchanged, 185 of 240.
+
+**Task 2.** A carrier keyed at random is a hard limit, red: 9 of 20 seeds print alone, and 2 of the scoreboard's 5. The best rule, two kinds held over the last ten marks with each kind recurring, kept 185 and left 2 of 20 printing, so it was not shipped.
+
+**Task 3.** The sign-off of 221828 and 221851 is corrected to `73 <AR> W2L`. The scoreboard reads 185 of 240 before the correction and 185 of 244 after.
+
+**Task 4.** A mark crowds the last only where it overlaps it or is itself a piece, and FER reads. The scoreboard rises to 205 of 244.
+
+Build 0 warnings 0 errors. App carry-forward 277 of 278; the one loss, a dispatcher loop at 1 ms, passes alone.

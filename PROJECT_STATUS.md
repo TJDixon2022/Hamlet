@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: COMPLETED
-TASK: 3 of 3
-WORK_INSTRUCTION: 534 - the owner recordings are the scoreboard (run by hand)
+TASK: 4 of 4
+WORK_INSTRUCTION: 535 - the light claims no more than the printer (run by hand)
 BALL: tim
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-10-03T21:27:12-04:00
-NOTE: Unit 534 done - the owner's recordings are the scoreboard, 169 to 185 of 240, HM-DEC-238, 1.13.219
+UPDATED: 2026-10-04T10:39:24-04:00
+NOTE: Unit 535 done - light reads the gate, FER reads, scoreboard 205 of 244, carrier limit red, HM-DEC-239, 1.13.220
 
 ---
 
