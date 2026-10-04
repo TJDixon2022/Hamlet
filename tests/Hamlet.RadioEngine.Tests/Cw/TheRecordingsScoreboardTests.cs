@@ -87,10 +87,13 @@ public sealed class TheRecordingsScoreboardTests
             ". [1310] . [440] -.. [180] .- [170] -. [185] -.. [680] --- [280] -. [400] ....- [215] ----- [250] -- [390] - [225] --- [180] -. [165] .. [215] - [175] . [485] .-.-.- [910] . [230] ..- [160] .-. [175] .---.-. [135] . [210] . [930] .... [745] .-. [185] -.. [545] - [200] --- [310] --- [1665]"),
         new("cw-2026-10-03-221805", 601.3, 5, 30, "ET ON 40T S THESE DAYS . TNX FER ANOTHER FT", Confidence.Medium, 150, 125, 330,
             ". [205] - [415] --- [190] -. [375] ....- [210] ----- [290] - [660] ... [670] - [190] .... [265] . [225] ... [255] . [400] -.. [245] .- [180] -.-- [140] ... [355] .-.-.- [710] - [165] -. [170] -..- [305] ..-. [190] . [160] .-. [370] .- [205] -. [215] --- [210] - [135] .... [270] . [180] .-. [420] ..-. [205] -"),
-        new("cw-2026-10-03-221828", 601.3, 0, 30, "FER ANOTHER FB QSO ES HOPE U HAVE AGN ED ES BEST", Confidence.Medium, 150, 125, 330,
-            "[310] ..-. [190] . [160] .-. [370] .- [205] -. [215] --- [210] - [135] .... [270] . [180] .-. [420] ..-. [205] -... [350] --.- [185] ... [205] --- [305] . [155] ... [505] .... [225] --- [140] .--. [275] . [565] ..- [445] .... [275] .- [245] ...- [180] . [425] .- [185] --. [195] -. [550] . [215] -.. [545] . [185] ... [285] -... [220] . [195] ... [225] - [790] . [145] . [195] ...- [510] -.-. [205] .-- [175] ..--"),
-        new("cw-2026-10-03-221851", 601.3, 0, 30, "BEST EEV CW 2L CQ DE NA8SB K", Confidence.Low, 150, 125, 330,
-            ".. [285] -... [220] . [195] ... [225] - [790] . [145] . [195] ...- [510] -.-. [205] .-- [175] ..--- [160] .-.. [230] -.-. [200] --.- [345] -.. [250] . [485] -. [180] .- [165] ---.. [245] ... [320] -... [155] -.- [1970] . [1070] . [370] . [475] -.....- [650] . [545] ... [900] . [235] ... [960] . [350] .. [250] .-. [265] .- [225] ...- [570] ... [160] . [190] . [675]"),
+        // The sign-off corrected (work instruction 535): the web session wrote EEV CW where the audio is 73 <AR> W2; the 7 is a
+        // 175 ms dah, a 147 ms gap, a 20 ms fragment, then 119, 87, 62 and 80 ms. The 2 is cut by the end of the recording.
+        new("cw-2026-10-03-221828", 601.3, 0, 30, "FER ANOTHER FB QSO ES HOPE U HAVE AGN ED ES BEST 73 <AR> W", Confidence.Medium, 150, 125, 330,
+            "[310] ..-. [190] . [160] .-. [370] .- [205] -. [215] --- [210] - [135] .... [270] . [180] .-. [420] ..-. [205] -... [350] --.- [185] ... [205] --- [305] . [155] ... [505] .... [225] --- [140] .--. [275] . [565] ..- [445] .... [275] .- [245] ...- [180] . [425] .- [185] --. [195] -. [550] . [215] -.. [545] . [185] ... [285] -... [220] . [195] ... [225] - [222] --... [190] ...-- [128] .-.-. [195] .-- [168] ..--"),
+        // The sign-off corrected (work instruction 535), as above: 73 <AR> W2L where the web session wrote EEV CW 2L.
+        new("cw-2026-10-03-221851", 601.3, 0, 30, "BEST 73 <AR> W2L CQ DE NA8SB K", Confidence.Low, 150, 125, 330,
+            ".. [285] -... [220] . [195] ... [225] - [223] --... [190] ...-- [129] .-.-. [195] .-- [169] ..--- [160] .-.. [230] -.-. [200] --.- [345] -.. [250] . [485] -. [180] .- [165] ---.. [245] ... [320] -... [155] -.- [1970] . [1070] . [370] . [475] -.....- [650] . [545] ... [900] . [235] ... [960] . [350] .. [250] .-. [265] .- [225] ...- [570] ... [160] . [190] . [675]"),
     ];
 
     /// <summary>One letter the reader printed: when its last mark ended, its pitch, its text.</summary>
@@ -520,6 +523,20 @@ public sealed class TheRecordingsScoreboardTests
         => string.Concat(elements.Split(' ', StringSplitOptions.RemoveEmptyEntries)
             .Where(t => !t.StartsWith('['))
             .Select(t => MorseAlphabet.Lookup(t) ?? "■"));
+
+    [Fact]
+    public void DiagSignOff()
+    {
+        foreach (var (name, from, to) in new[] { ("cw-2026-10-03-221828", 24.0, 30.0), ("cw-2026-10-03-221851", 0.0, 8.0) })
+        {
+            var s = Stretches.First(x => x.Recording == name);
+            var audio = WavAudio.Read(TheOwnersRecordingReadsTests.Wav(name));
+            var (elements, letters) = ReadOffline(s with { From = from, To = to }, audio.Samples, audio.SampleRate);
+            _output.WriteLine($"{name} {from}-{to}: {elements} => {letters}");
+            var (e2, l2) = ReadOffline(s with { From = from, To = to, LetterMs = 300, WordMs = 600 }, audio.Samples, audio.SampleRate);
+            _output.WriteLine($"  letter line 300: {e2} => {l2}");
+        }
+    }
 
     /// <remarks>
     /// Task 1: each stretch read here, offline, beside section 8's element list. Where the letters differ, both element
