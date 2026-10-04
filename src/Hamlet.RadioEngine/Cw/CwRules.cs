@@ -47,6 +47,9 @@ internal static class CwRules
     /// <summary>A sender prints only where its two kinds hold over its last ten marks, each kind recurring.</summary>
     public const string KindsHeld = "two kinds held over the last ten marks";
 
+    /// <summary>A sender's gaps show a clean jump of √3 between gaps inside a letter and gaps between letters.</summary>
+    public const string GapKinds = "gap kinds";
+
     /// <summary>A mark sits inside the shape of a keyed tone, on its own.</summary>
     public const string MarkShape = "a mark's own shape";
 
@@ -54,7 +57,7 @@ internal static class CwRules
     public static readonly IReadOnlyList<string> All =
     [
         LoneLetter, ColdStartWordLine, SpeedRetry, Settle, OwnWindow, Release, FirstPickWait, Backlog, SilentNotCandidate, Edges,
-        MarkShape, KindsHeld,
+        MarkShape, KindsHeld, GapKinds,
     ];
 
     [ThreadStatic]

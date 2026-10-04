@@ -88,6 +88,9 @@ public sealed class CwSenderGate
     /// </summary>
     internal const int KindsHeldMarks = 2 * CwPatternGate.MarksToStand;
 
+    // Morse's midpoint between a gap inside a letter and one between letters, one and three units (work instruction 536).
+    private static readonly double ElementLetterRatio = Math.Sqrt(3);
+
     // The marks a sender's length and gap figures are read over.
     private const int RecentMarks = 40;
 
@@ -783,7 +786,16 @@ public sealed class CwSenderGate
 
                 // Each kind recurs: one mark is not a kind, and a carrier keyed at random qualified on one 45 ms mark against
                 // nine spread from 135 to 275.
-                return kinds.Split is not null && !kinds.TwoSpeeds
+                // **AND ITS GAPS FALL INTO KINDS** (work instruction 536, task 2, HM-DEC-240): among the nine gaps between those
+                // marks a clean jump of √3, Morse's own midpoint between a gap inside a letter (one unit) and one between
+                // letters (three), at least two gaps either side. A carrier keyed at random spaces its marks evenly from 30 to
+                // 400 ms. A jump of 2, the marks' own, refused a sender on 22:15:48 whose letter gaps sit 1.87 times its gaps
+                // inside letters, and cost 13 letters.
+                var marks = _recent.Skip(_recent.Count - KindsHeldMarks).ToList();
+                var gaps = marks.Skip(1).Select((m, i) => m.FromSeconds - marks[i].ToSeconds).OrderBy(g => g).ToList();
+                var gapKinds = !CwRules.On(CwRules.GapKinds) || Enumerable.Range(2, Math.Max(0, gaps.Count - 3)).Any(i => gaps[i] / gaps[i - 1] >= ElementLetterRatio);
+
+                return gapKinds && kinds.Split is not null && !kinds.TwoSpeeds
                     && kinds.Shorts.Count >= 2 && KindsHeldMarks - kinds.Shorts.Count >= 2;
             }
         }
