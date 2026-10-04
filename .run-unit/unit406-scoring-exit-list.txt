@@ -1,2 +1,0 @@
-Passed Hamlet.RadioEngine.Tests.Cw.WhatDecodeScoringCostsTests.APitchWithNothingOnItIsTheCheapCase
-Passed Hamlet.RadioEngine.Tests.Cw.WhatDecodeScoringCostsTests.OneDecodeAtOnePitchCostsThis

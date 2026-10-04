@@ -1,7 +1,0 @@
-unit470 task 3: exit round - every entry figure as at entry, texts byte-identical; src, port and transmit diffs empty; output.md written - gate refused on MET-COVERAGE, 2.4's count 2 of 3 (2.4)
-
-Exit: build 0 errors; engine line 178/178; app line 278/278 first run; named 13/13, captures 51/51, adjudicated 13/13; real MET-CER-SURE 33/436, coverage 403/473, MET-WBE 37/113 (inferred); synthetic 14/173, 159/252, 44/84 (exact); arbitration (a) 5/5, (b) harness 1/1, live 2/2; channels 71/71, senders 16/16, interference 21/21; TheSpeedFollowsTheSendersMarkPairsTests red at 28 of 31, not required.
-
-git diff 1f6f20e8 -- src, the port against 19109b51 and the eleven transmit files against 7e209cb4 all print nothing; .run-unit/fldigi/ untracked. No tick.
-
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

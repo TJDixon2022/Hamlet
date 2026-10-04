@@ -1,9 +1,0 @@
-unit462 task 2: C, the two-dot class edge (cw.cxx 846-855), refused under R78 on 031838's MET-WBE and reverted; patch and numbers kept, nothing under src committed (9.4)
-
-With C in (a mark up to floor(2 x unit) hops only a dit, a longer one only a dah, in both lattices, at the read's dit):
-real (inferred) MET-CER-SURE 33/436 to 32/438, MET-INVENTED 33 to 32, coverage 403 to 406, MET-WBE 37 (29 ins, 8 del) to 38 (29 ins, 9 del) - the wrong way;
-synthetic (exact) 14/173, 14, 159, 44 unchanged; adjudicated 13 of 13; port byte-identical; decode 51.22 s against 51.65 s.
-V-11: 031838 worse on MET-WBE (deleted 1 to 2: `2 TT` read `2TT`); 032050, 032113 and 032129 better.
-Reverted with git checkout; git diff -- src prints nothing. Evidence: .run-unit/unit462-C-refused.patch and .run-unit/unit462-C-refused.txt.
-
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

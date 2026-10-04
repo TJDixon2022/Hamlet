@@ -1,1 +1,0 @@
-PHASE_PLAN.md step 12 criterion 12.2 asks that the CW tab draw the last four seconds as an oscilloscope with marks as bars, fed fast enough that the owner sees dits, and R94 rules that the letter the decoder made sits over the bars it came from

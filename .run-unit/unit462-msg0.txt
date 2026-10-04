@@ -1,9 +1,0 @@
-unit462 task 0: entry at step 9 - every figure as at 461's exit, both decoders' texts and the 35-row V-11 table saved; the runner's writes as they are (9.4)
-
-Build 0 errors; engine line 178 of 178; app line 278 of 278; named 13 of 13; captures 51 of 51; adjudicated 13 of 13.
-Real (inferred): MET-CER-SURE 33 of 436, MET-INVENTED 33 / 473, coverage 403 / 473, MET-WBE 37 (29 ins, 8 del) / 113.
-Synthetic (exact): 14 of 173, 14 / 252, 159 / 252, 44 (13 ins, 31 del) / 84.
-BothDecodersAreScoredAlikeTests 5 of 5; the port 8 of 8; the port's 74 text lines byte-identical to 459's save; ours 51.65 s over 690 s.
-UNIT 462 - STEP 9 in both copies of PHASE_OUTCOME.md; PHASE_STATUS.md names 462 at CURRENT_STEP 9 in both copies; version 1.13.148 to 1.13.149.
-
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

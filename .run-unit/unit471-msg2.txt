@@ -1,8 +1,0 @@
-unit471 task 2: the re-read refused on MET-CER-SURE - real 33/436 -> 33/436 (does not fall), synthetic 14/173 -> 14/173 with character gap 5 at 5 dB rising 11/25 -> 12/26; coverage real 403 -> 403 of 473, synthetic 159 -> 159 of 252; held as a patch, src not changed (2.4)
-
-No generated exact-key case shows a wrong letter unsettled at proof that reads right (33 cases, 126 letters unsettled at proof, wrong to right 0), so there was no red case and the change was judged on R78 alone.
-The change as registered: CwProbabilisticStream.ReadAgainAtProvedValues, called from CwDecoder.Step at the first read with both proof states proved after one without; the stretch that arrived while acquiring and is still unsettled settles as the window re-mixed at the proved pitch and decoded at the proved speed reads it.
-Under it: MET-INVENTED synthetic character gap 5, 5 dB 11 -> 12 over 21 (rises); TX-ITU 5 dB MET-CER-SURE 1/63 -> 0/62 (falls); MET-WBE unchanged; dim precision no dim letter either side; adjudicated 13 of 13; captures 44 of 51, named 11 of 13, engine line 176 of 178 (V-11 fails); app line 278 of 278 after one dispatcher rerun; TheArbitrationEarnsItsPlaceTests green; the 7.052 opening unchanged (20 sure while acquiring, 21 of 24 sure and right).
-The change and its test are .run-unit/unit471-reread.patch; src and tests restored to HEAD, identical to d0a1fc36, rebuilt with 0 errors. metrics.md carries the refusal under ## Unit 471.
-
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

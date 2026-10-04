@@ -1,5 +1,0 @@
-unit467: tick 9.8 - the three floor tests and both carry-forward lines green at exit, first run, no rerun (9.7)
-
-At the tree of 3fadb6f6 (src unchanged since d34a0563): build 0 errors; engine line 178/178; app line 278/278; captures 51/51; adjudicated 13/13; named 13/13. 9.7 ticked at 3fadb6f6. 9.4 stays open.
-
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

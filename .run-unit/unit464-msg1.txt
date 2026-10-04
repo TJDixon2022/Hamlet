@@ -1,8 +1,0 @@
-unit464 task 1: the trace - every character of both decoders with the scorer's verdict and what its decoder knew; the map fixed before any calibration number (9.5)
-
-WhatEachDecoderKnowsAboutEachCharacterFact (HM-REQ-124), a printer, prints to .run-unit/unit464-features.txt. Scored: ours 609 (562 right, 36 wrong, 11 added, all sure), the port 407 (311 right, 94 wrong, 2 added), as parity.md counts them.
-Ours: MarginLlr, never NaN; +Infinity on 97 short letters, 38 scored. The port: level 20 log10(sig_avg / noise_floor) at the last up event (cw.cxx:610, 612-616, 635-636) and timing min |element - two_dots| / (two_dots / 2) (811-812, 847, 502), from KeyEvents ordered by the decision rows; readable on every character.
-The map, fixed: a logistic per decoder pooled over both sets; ours on sign(m) ln(1 + |m|), a non-finite margin a constant fitted on those alone; the port on level and timing, linear.
-Gate: build 0 errors; engine line 178 of 178; app line 278 of 278 under DECIDED (8) (dispatcher took one test on the run and a different one on the rerun; BindingHealthTests passes alone); named 13 of 13, captures 51 of 51, adjudicated 13 of 13. Nothing under src changed.
-
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -1,3 +1,0 @@
-unit474 task 0: the record, 1.13.160, HM-DEC-184 and its CLAUDE.md row, the runner's writes; entry round under R88 - build 0 errors, app carry-forward line 278/278 first run; no engine line, no floors, no CW recording read (11.1)
-
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -1,9 +1,0 @@
-unit462 task 4: exit round - every figure as at entry, no src line changed, the port byte-identical; C, B and W all refused, 9.4 open; output.md written (9.4)
-
-Build 0 errors; engine line 178 of 178; app line 278 of 278; named 13 of 13; captures 51 of 51; adjudicated 13 of 13.
-Real (inferred) 33 of 436, 33 / 473, 403 / 473, 37 (29, 8) / 113; synthetic (exact) 14 of 173, 14 / 252, 159 / 252, 44 (13, 31) / 84 - no row moved.
-BothDecodersAreScoredAlikeTests 5 of 5; the port 8 of 8; TheSpeedFollowsTheSendersMarkPairsTests red at 28 of 31 as 459 left it; ours 51.88 s over 690 s.
-git diff 19109b51 over Cw/Second, git diff 7e209cb4 over the eleven transmit files and git diff 6de324b1 -- src all empty; both decoders' texts identical to task 0's.
-WhatFldigisEdgesWouldMoveFact: its refused-D word match now counts a stretch that opens mid-word (031905's DICTED); rerun, the ranking and forms unchanged.
-
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

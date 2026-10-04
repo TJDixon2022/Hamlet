@@ -1,2 +1,0 @@
-Preparing worktree (detached HEAD a91d8fe7)
-HEAD is now at a91d8fe7 feat(engine): a temperature on the path score, swept

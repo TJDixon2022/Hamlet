@@ -1,2 +1,0 @@
-Passed CwFixtureTests.TheCleanRecordingsDecodeExactly(name: "clean-12wpm")
-Passed CwFixtureTests.TheCleanRecordingsDecodeExactly(name: "clean-18wpm")

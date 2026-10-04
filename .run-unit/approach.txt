@@ -1,1 +1,0 @@
-find why the live CW tab hands the scope an empty frame and fix it so the trace and bars draw from live audio, remove the large T T rendering, and draw each settled character over the span of bars it rests on

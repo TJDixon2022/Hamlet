@@ -1,2 +1,0 @@
-Preparing worktree (detached HEAD 62a4648a)
-HEAD is now at 62a4648a fix(engine): turn the window clear off, and keep the machinery

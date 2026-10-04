@@ -57,3 +57,11 @@ scratch-audio/
 __pycache__/
 *.pyc
 CLAUDE_CODE.md.bak-*
+
+# The cleanup of work instruction 537: per-unit scratch folders, and the run folder except its
+# reports, the allowed list and the denials.
+.unit*/
+.run-unit/*
+!.run-unit/reports/
+!.run-unit/allowed.txt
+!.run-unit/denials.txt

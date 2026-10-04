@@ -1,8 +1,0 @@
-unit471 task 3: step 2 closed partial - three consecutive units with no kept change (460, 470, 471); MET-CER-SURE real 33/436 (inferred), synthetic 14/173 (exact) against HM-REQ-010's one in a hundred; the trace in PARKED.md, 2.4 ticked in both plans (2.4)
-
-metrics.md: "## Step 2 - closed partial at unit 471" - unit 439's baseline (real 67/426, 54 substituted and 13 added), 449's kept change (40/433 -> 33/436), today's figure, HM-REQ-010 per condition, what is left grouped as 470's and 471's traces group it, every step-2 route with its unit and verdict.
-PARKED.md: one line appended under 449 DECIDED (3), drift as the stop field; the launch time is not in PHASE_OUTCOME.md for this unit, so the field reads "not recorded". The header's "Written by run-phase.bat, never by a session" is reported as a mismatch.
-PHASE_PLAN.md, both copies: "- [ ] 2.4" -> "- [x] 2.4" and nothing else; the copies are identical.
-src and tests unchanged since d0a1fc36.
-
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

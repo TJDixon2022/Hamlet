@@ -1,3 +1,0 @@
-unit472 task 2: kept on MET-INVENTED - a letter beside a key-up under 0.62 of the character gap in force prints dim; real 33/473 -> 25/473 (inferred), synthetic 14/252 -> 7/252 (exact), character gap 5 at 5 dB 11 -> 4; MET-CER-SURE real 33/436 -> 25/428, synthetic 14/173 -> 7/166; coverage real 403, synthetic 159 held; MET-WBE unchanged; adjudicated 13/13, V-11 0 worse of 35; five green - build, engine 178/178, app 278/278, floors 13/13, 51/51, 13/13; step 3's count 0 of 3 (3.6)
-
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

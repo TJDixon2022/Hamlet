@@ -1,9 +1,0 @@
-          "control": "preamp",
-          "says": "the owner wants it off for Morse, and off is what he hears best by",
-          "field": "preamp",
-          "wanted": 0,
-          "wantedText": "off",
-          "confirmed": true,
-          "because": "The preamp is off for Morse because the owner ruled it so on 2026-09-28 (R98, HM-DEC-191): \"I still hate the preamp crap.\" Off costs a little gain on a faint signal and keeps a loud band from crowding the front end, and he would rather have the second. The radio's manual gives the other side, and it is kept here as history rather than acted on: IC-7300_ENG_FM_12b, page 4-3, calls P.AMP1 the wide dynamic range preamplifier and most effective for the HF low bands, and Icom's published receive sensitivity is quoted with Preamp 1 on from 1.8 to 29.999 MHz, which is why this row asked for preamp 1 from 2026-09-24 (HM-DEC-177) until the owner overrode it for Morse. The data modes do not state the preamp, and what he sets by hand holds until he changes it."
-        },
-        {

@@ -1,9 +1,0 @@
-unit463 task 3: nothing kept - A1 and A2 refused, 9.4 open; each form's refusing recording and metric recorded, nothing under src committed (9.4)
-
-A1 refused on the real set's coverage (403 to 38) and MET-WBE (37 to 89),
-first V-11 recording 004507 (coverage 43 to 0). A2 refused on the real set's
-MET-CER-SURE and MET-INVENTED (33 to 39) and all four synthetic metrics, first
-real V-11 recording 173723 (sure added 0 to 2). No test was written and 9.4 is
-not ticked. Record: .run-unit/unit463-refusals.txt.
-
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

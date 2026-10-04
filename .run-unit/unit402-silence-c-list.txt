@@ -1,4 +1,0 @@
-Passed CwSpeedSilenceTests.NoSpeedBetweenTwoStationsIsEverNamed
-Passed CwSpeedSilenceTests.NoSpeedFasterThanEitherStationIsNamed
-Passed CwSpeedSilenceTests.OneStationsSpeedIsStillNamed
-Passed CwSpeedSilenceTests.TheReacquiringStateIsReadable

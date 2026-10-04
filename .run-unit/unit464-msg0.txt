@@ -1,7 +1,0 @@
-unit464 task 0: entry at step 9 - every figure as at 463's exit, both decoders' texts and ours' classes saved; the runner's writes as they are; 1.13.151 (9.5)
-
-Build 0 errors. Engine line 178 of 178. App line 278 of 278 after DECIDED (8): the dispatcher loop took one test on the run and a different one on the rerun; both types pass alone.
-Floors: named 13 of 13, captures 51 of 51, adjudicated 13 of 13. Metrics: real 33 of 436, 33 over 473, 403 over 473, WBE 37 over 113; synthetic 14 of 173, 14 over 252, 159 over 252, 44 over 84. Port real 62 of 239 cov 177, synthetic 34 of 168 cov 134. Port tests 8 of 8.
-Texts, classes and the port's texts byte-identical to 463's saves. The runner's watched.rc named by the instruction is not in the tree; watched.cpu is deleted and committed as the runner left it.
-
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -1,3 +1,0 @@
-unit482 (the owner's press lands in the file) task 2, continued: the test file itself - tests/Hamlet.App.Tests/Views/TheOwnersPressLandsInTheFileTests.cs, the type 7d8e6f4a describes and ran (green at HEAD, watched red on a dropped trackerHz). 7d8e6f4a left it out because this unit's commit script stages tracked files only and the new file was untracked; added here rather than by amending a pushed commit. No src change. No recording read
-
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

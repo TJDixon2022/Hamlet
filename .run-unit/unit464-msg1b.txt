@@ -1,5 +1,0 @@
-unit464 task 1: the fact itself, WhatEachDecoderKnowsAboutEachCharacterFact, left out of 12252dcc by the commit helper (9.5)
-
-The printout committed at 12252dcc is this file's output, built and run as committed here; the gate figures in 12252dcc's message are this file's.
-
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

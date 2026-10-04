@@ -1,4 +1,0 @@
-Passed Hamlet.RadioEngine.Tests.Cw.CwSpeedSilenceTests.NoSpeedBetweenTwoStationsIsEverNamed
-Passed Hamlet.RadioEngine.Tests.Cw.CwSpeedSilenceTests.NoSpeedFasterThanEitherStationIsNamed
-Passed Hamlet.RadioEngine.Tests.Cw.CwSpeedSilenceTests.OneStationsSpeedIsStillNamed
-Passed Hamlet.RadioEngine.Tests.Cw.CwSpeedSilenceTests.TheReacquiringStateIsReadable

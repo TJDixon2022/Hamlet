@@ -1,5 +1,0 @@
-unit467 task 0: the record, 1.13.154, the runner's writes; entry round as at 466's exit, HM-REQ-128 (b) harness red on synthetic, all only; emitted transcript, harness and live, saved with class and p (9.7)
-
-Entry: build 0 errors; engine line 178/178; app line 276/278 then 278/278 on the one rerun (DECIDED (6), both losses dispatcher loop); captures 51/51, adjudicated 13/13, named 13/13; real 33 of 436, 33/473, 403/473, 37/113; synthetic 14 of 173, 14/252, 159/252, 44/84; parity 5/5; port 8/8; 465's three 3/3, 8/8, 3/3; HM-REQ-128 (a) 5/5, (b) live 2/2, (b) harness red on synthetic, all only. Decode time live 65.50 s over 690 s (466's exit 64.27 s). Both emitted saves byte-identical to 466's exit saves. .run-unit/watched.rc does not exist; watched.cpu is deleted by the runner and committed as it is.
-
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

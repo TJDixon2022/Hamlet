@@ -1,2 +1,0 @@
-Preparing worktree (detached HEAD 55362633)
-HEAD is now at 55362633 fix(engine): let the decoder say where it is in a character

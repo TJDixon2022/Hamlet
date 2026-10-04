@@ -1,3 +1,0 @@
-Passed Hamlet.RadioEngine.Tests.Cw.CwSurveyThresholdPinTests.FindingTheToneIsNotClaimingSomebodyIsSending
-Passed Hamlet.RadioEngine.Tests.Cw.CwSurveyThresholdPinTests.TheSurveyStillFindsRealKeyingWhereThereIsSome
-Passed Hamlet.RadioEngine.Tests.Cw.CwSurveyThresholdPinTests.TheToneInTheInterferenceCaptureIsStillFound
