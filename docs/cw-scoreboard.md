@@ -148,5 +148,20 @@ A stretch's spaces: each boundary between two reference letters, read on the pri
 
 | recording | pitch | stretch | confidence | reference | printed | right | spaces right | missing | added |
 |---|---|---|---|---|---|---|---|---|---|
+| `cw-2026-10-02-200157` | 662.8 | 0-30 s | verified | `FER C HAT<BT> BEST 7V 73 <SK> KC4ZGP DEWA` | `FER C HAT<BT> BEST 7V 73 <SK> KC4ZGP DEWA` | 27 of 27 | 8 of 8 | 0 | 0 |
+| `cw-2026-10-03-143906` | 514.2 | 0-30 s | none | `` | `IEE II E NIEEE IET TAEEKEEIEEII IMESE ITT` | 0 of 0 | 0 of 0 | 0 | 0 |
+| `cw-2026-10-03-143951` | 499.5 | 14.5-30 s | low | `O WAEIIEURD U AGN ES` | `EWAE IIEWRK I AGN ES` | 12 of 16 | 3 of 4 | 1 | 1 |
+| `cw-2026-10-03-144020` | 499.5 | 0-12.5 s | medium | `ES OK ON PA <BT>` | `ES OK ON PA <BT>` | 9 of 9 | 4 of 4 | 0 | 0 |
+| `cw-2026-10-03-144020` | 599.9 | 9.5-30 s | medium | `WX IN NETAGIT IUN TEMP E` | `WX IN NETAGIT IEN TEMP` | 17 of 19 | 4 of 5 | 1 | 0 |
+| `cw-2026-10-03-144045` | 599.9 | 0-30 s | high | `N TEMP 57 57<BT> BTU BOB DE KG8V K` | `N E MP 57 57<BT>BTUBOB DEKG8V K` | 22 of 23 | 5 of 8 | 3 | 1 |
+| `cw-2026-10-03-221502` | 491.5 | 0-30 s | low | `ED OF ITS OWN HEE BK BK WHAT BUG AE US E ENIE EE ITS A 66 K` | `ED OF ITS OWN HEE BK BK WHATBUGAEI EUI E■ ■` | 29 of 42 | 8 of 17 | 9 | 0 |
+| `cw-2026-10-03-221530` | 491.5 | 0-9.5 s | medium | `6 CHAMPION BK` | `H CHA MPIMTN` | 6 of 11 | 1 of 2 | 1 | 1 |
+| `cw-2026-10-03-221530` | 598.4 | 9-30 s | medium | `EN FB WHEN I WAS AGE 12 I LEARNED CW USING A V` | `IHES MHENI■S AGE 12ILEAR E D CW U SIN G A V` | 27 of 34 | 7 of 12 | 5 | 3 |
+| `cw-2026-10-03-221548` | 597.7 | 0-18.5 s | low | `2 I LEARNED CW USING A V BPLX Z EPS` | `I M IEE IEE E USINGA V BPLX Z E PS` | 18 of 26 | 6 of 9 | 3 | 3 |
+| `cw-2026-10-03-221548` | 498.0 | 18-30 s | medium | `YRHEE MY SCOUT MASTER` | `E WRHEE MYSCOA TQSTEN` | 13 of 18 | 1 of 3 | 2 | 1 |
+| `cw-2026-10-03-221745` | 501.7 | 0-28 s | medium | `E E DAND ON 40M TONITE . EUR EE H RD TOO` | `E IAND TMN 4MEMM TONITE . EUROWEE H IRD TOO` | 19 of 29 | 9 of 11 | 2 | 0 |
+| `cw-2026-10-03-221805` | 601.3 | 5-30 s | medium | `ET ON 40T S THESE DAYS . TNX FER ANOTHER FT` | `E 40T U THESE DAYS. TNX FERANOTHERF` | 28 of 33 | 7 of 10 | 3 | 0 |
+| `cw-2026-10-03-221828` | 601.3 | 0-30 s | medium | `FER ANOTHER FB QSO ES HOPE U HAVE AGN ED ES BEST 73 <AR> W` | `FER ANOTHER FBQSOES HOPE U HAVE AGN ED ESBEST EV A MU` | 37 of 41 | 8 of 14 | 6 | 0 |
+| `cw-2026-10-03-221851` | 601.3 | 0-30 s | low | `BEST 73 <AR> W2L CQ DE NA8SB K` | `SES E IE E IEA E I GE EI E NAFE I BK` | 5 of 20 | 3 of 7 | 4 | 6 |
 
 **Total (medium or better): 205 of 244 letters; 54 of 77 spaces, 6 added.** Hard limits as before: the first recording reads whole with its spaces, noise prints nothing, the carrier prints on seed 5195.
