@@ -171,14 +171,9 @@ public sealed class CwSenderGate
             var (pitch, level, contrast) = sender.Reference;
             var pitchOff = Math.Abs(mark.PitchHz - pitch);
             var levelOff = Math.Abs(mark.LevelDb - level);
-            // **A MARK THAT STOOD BY ITS SENDER'S PATTERN IS MATCHED ON PITCH ALONE** (work instruction
-            // 511, task 2, HM-DEC-215). The gate judged its level already, against that sender's own
-            // marks of its kind and within twice the tolerance; judged again here against dits and dahs
-            // mixed, a dit 6 dB down read a hair past it and began a sender of its own. No other mark
-            // is matched this way.
             var levelTolerance = LevelToleranceDb(contrast);
 
-            if (pitchOff > PitchToleranceHz || (!mark.BySendersPattern && levelOff > levelTolerance))
+            if (pitchOff > PitchToleranceHz || levelOff > levelTolerance)
             {
                 continue;
             }
@@ -254,33 +249,6 @@ public sealed class CwSenderGate
     /// <summary>The boundary between two clusters of lengths (unit 513): shared with the gate's gap clusters (work instruction 525).</summary>
     internal static double Boundary((double Mu, double Sd) low, (double Mu, double Sd) high) => Sender.Boundary(low, high);
 
-    /// <summary>Two clusters of lengths settled by the nearer centre (unit 513): shared with the gate's gap clusters (work instruction 525).</summary>
-    internal static (List<double> Low, List<double> High) Refine(List<double> low, List<double> high) => Sender.Refine(low, high);
-
-    /// <summary>
-    /// Whether some mark lengths with no clean jump of <see cref="TwoKindsRatio"/> are a hand's two kinds (work
-    /// instructions 513 and 523): the reader's own test, for the pattern gate.
-    /// </summary>
-    /// <param name="lengths">The lengths.</param>
-    /// <returns>True where they split as a hand's dits and dahs.</returns>
-    internal static bool TwoKindsOfAHand(IEnumerable<double> lengths)
-    {
-        var sorted = lengths.OrderBy(l => l).ToList();
-        var at = -1;
-        var widest = 0.0;
-
-        for (var i = 1; i < sorted.Count; i++)
-        {
-            if (sorted[i] / sorted[i - 1] > widest)
-            {
-                widest = sorted[i] / sorted[i - 1];
-                at = i;
-            }
-        }
-
-        return at > 0 && Sender.HandKinds(sorted, at) is not null;
-    }
-
     /// <summary>Every sender's pitch and shape, and whether it is the one printed: for the tests' report (work instruction 519).</summary>
     internal IReadOnlyList<(double PitchHz, CwSequenceShape Shape, bool Printed, int Marks)> SenderShapes
         => _senders.Select(s => (s.Reference.Pitch, s.Shape, s == _station, s.Marks)).ToList();
@@ -320,7 +288,7 @@ public sealed class CwSenderGate
         // with only their evidence, and where a hand's forty marks look like two speeds that is its newest ten or five,
         // whose evidence alone takes a 0.5 shape under 0.2. A sender stands at 0.2 and is let go only under 0.1: hysteresis,
         // so one dip does not drop a station that plainly stands. Found by reading, not reproduced on the bench.
-        if (ShapePicks && _station is not null && _station.Shape.Score < ReleaseScore)
+        if (ShapePicks && CwRules.On(CwRules.Release) && _station is not null && _station.Shape.Score < ReleaseScore)
         {
             _station = null;
         }
@@ -344,12 +312,14 @@ public sealed class CwSenderGate
             // **A SENDER SILENT PAST ITS RELEASE IS NOT A CANDIDATE** (work instruction 533, HM-DEC-237): the silence that let
             // it go keeps it from being picked again. On the owner's QSO of 2026-10-03 the first station, released, still
             // outranked the reply on shape, was picked again, released again, and the reply never had the terminal.
-            .Where(s => s == _station || !(double.IsFinite(heardSeconds) && s.Open.Count == 0 && heardSeconds - s.LastToSeconds > s.SilenceSeconds))
+            .Where(s => s == _station || !CwRules.On(CwRules.SilentNotCandidate) || !(double.IsFinite(heardSeconds) && s.Open.Count == 0 && heardSeconds - s.LastToSeconds > s.SilenceSeconds))
             .Select(s => (Sender: s, Score: s.Shape.Score))
 
-            // A sender whose marks and gaps do not sound like code - under the line the light uses - is not a sender
-            // to print (work instructions 519 and 524): a carrier keyed at random qualified by its lengths and was held.
-            .Where(s => !ShapePicks || s.Score >= CwShapeLights.GreenScore)
+            // A sender whose marks and gaps do not sound like code at all - a shape of nought - is not a sender to print.
+            // **THE 0.2 STANDING LINE CAME OUT** (work instruction 534, HM-DEC-238): on the owner's recordings it held back
+            // real stations whose letter spacing a hand makes uneven, and without it the scoreboard rose from 169 to 182 with
+            // loud noise still printing nothing. The light still turns green at 0.2.
+            .Where(s => !ShapePicks || s.Score > 0)
             .OrderByDescending(s => ShapePicks ? s.Score : s.Sender.Marks)
             .ThenByDescending(s => ShapePicks ? 0 : s.Sender.Reference.Level)
             .ToList();
@@ -374,7 +344,7 @@ public sealed class CwSenderGate
         // banked meanwhile and print a word late; at the end of the audio nothing waits.
         if (_station is null && qualified.Count > 0)
         {
-            if (!ShapePicks || !double.IsFinite(heardSeconds))
+            if (!ShapePicks || !double.IsFinite(heardSeconds) || !CwRules.On(CwRules.FirstPickWait))
             {
                 _station = qualified[0].Sender;
             }
@@ -424,11 +394,11 @@ public sealed class CwSenderGate
             // letter of one mark, E or T, is banked until it is known whether a letter of two marks or
             // more from the same sender stands beside it, before or after, within ConfirmSeconds; if
             // one does it is released in its own place, and if none does it is dropped and never
-            // printed. Another lone letter does not confirm it, and three or more lone letters in a
-            // row are not sending and are dropped together. It replaces unit 498's rule, under which
+            // printed. Another lone letter does not confirm it; three or more in a row are no longer
+            // dropped together (work instruction 534). It replaces unit 498's rule, under which
             // any following letter confirmed it, so a T confirmed an E confirmed a T and the whole
             // string printed.
-            if (run.Length == 1)
+            if (run.Length == 1 && CwRules.On(CwRules.LoneLetter))
             {
                 var belongs = LoneLetterBelongs(station, station.PrintedRuns, heardSeconds);
 
@@ -450,6 +420,11 @@ public sealed class CwSenderGate
             // letters it had already sent since it stood, in order, after what is printed, then its live letters. They used to
             // be dropped as printed over, and in a QSO that fell at the start of every reply. Nothing printed is revised: the
             // backlog follows the first sender's text.
+            if (!CwRules.On(CwRules.Backlog) && run[0].FromSeconds <= _printedThrough)
+            {
+                continue;
+            }
+
             Raise(station, run);
             _printedThrough = Math.Max(_printedThrough, run[^1].ToSeconds);
         }
@@ -520,11 +495,8 @@ public sealed class CwSenderGate
             return null;
         }
 
-        if (last - first + 1 >= 3)
-        {
-            return false;
-        }
-
+        // **THREE LONE LETTERS IN A ROW ARE NO LONGER DROPPED TOGETHER** (work instruction 534, HM-DEC-238): the owner's
+        // recordings read better without it. Each is still printed only where a longer letter beside it confirms it.
         var before = first > 0 && run[0].FromSeconds - runs[first - 1][^1].ToSeconds <= window;
         var after = nextFrom is { } from && from - run[^1].ToSeconds <= window;
 
@@ -540,7 +512,9 @@ public sealed class CwSenderGate
     {
         var symbols = new List<CwSymbol>();
         var dit = sender.DitSeconds;
-        var split = sender.SplitAround(run);
+        // **A MARK IS SPLIT AT ITS SENDER'S OWN LINE** (work instruction 534, HM-DEC-238): the split against its neighbours
+        // came out when the owner's recordings read as well without it.
+        var split = sender.SplitSeconds;
         var at = run[^1].ToSeconds;
         var wpm = (int)Math.Round(1.2 / dit);
 
@@ -638,61 +612,13 @@ public sealed class CwSenderGate
 
         /// <summary>Split the ended runs from one index on again, at the sender's character gap now.</summary>
         /// <summary>
-        /// What kind the gap before a mark just heard is, judged against the sender's gaps before it (work instruction
-        /// 526, task 2): the gaps between its recent marks, and this one.
+        /// What kind the gap before a mark just heard is, by the sender's own lines: the judgement against its gaps before
+        /// it (work instruction 526) came out in work instruction 534.
         /// </summary>
         /// <param name="gap">The gap from the sender's last mark to the new one.</param>
         public CwGapKind KindOfNext(double gap)
         {
-            var gaps = _recent.Skip(1).Select((m, i) => m.FromSeconds - _recent[i].ToSeconds).Append(gap).ToList();
-
-            return CwPatternGate.KindAmongNeighbours(gaps, gaps.Count - 1, Lines);
-        }
-
-        /// <summary>
-        /// **A MARK IS JUDGED AGAINST ITS NEIGHBOURS** (work instruction 526, task 1, HM-DEC-230): the split between dit and
-        /// dah for a letter's marks, from the letter's own marks and <see cref="CwPatternGate.NeighbourGaps"/> of the
-        /// sender's marks either side, where they show a clean jump of <see cref="TwoKindsRatio"/>; the sender's running
-        /// split (unit 513) where they do not, a letter of one kind among neighbours of that kind.
-        /// </summary>
-        /// <param name="run">The letter's marks.</param>
-        /// <remarks>
-        /// A change of speed has no adjustment period: the first letter at the new speed is split by its own marks and
-        /// those just after it, not by the forty before it.
-        /// </remarks>
-        public double SplitAround(IReadOnlyList<CwMark> run)
-        {
-            var first = _recent.IndexOf(run[0]);
-            var last = _recent.IndexOf(run[^1]);
-
-            if (first < 0 || last < 0)
-            {
-                return SplitSeconds;
-            }
-
-            var lengths = _recent
-                .Skip(Math.Max(0, first - CwPatternGate.NeighbourGaps))
-                .Take(Math.Min(_recent.Count, last + CwPatternGate.NeighbourGaps + 1) - Math.Max(0, first - CwPatternGate.NeighbourGaps))
-                .Select(m => m.ToSeconds - m.FromSeconds)
-                .OrderBy(l => l)
-                .ToList();
-            var at = -1;
-            var widest = 0.0;
-
-            // Each side at least two: one odd length is not a cluster, and a dit sent at three-fifths beside the K of
-            // N0CALL K took its true dit to be a dah.
-            for (var i = 2; i < lengths.Count - 1; i++)
-            {
-                if (lengths[i] / lengths[i - 1] > widest)
-                {
-                    widest = lengths[i] / lengths[i - 1];
-                    at = i;
-                }
-            }
-
-            return at < 0 || widest < TwoKindsRatio
-                ? SplitSeconds
-                : Boundary(LogStats(lengths.Take(at).ToList()), LogStats(lengths.Skip(at).ToList()));
+            return Lines.KindOf(gap);
         }
 
         /// <param name="from">The first run not yet printed.</param>
@@ -706,14 +632,14 @@ public sealed class CwSenderGate
             var lines = Lines;
             var marks = Ended.Skip(from).SelectMany(r => r).OrderBy(m => m.FromSeconds).ToList();
 
-            // Each gap judged against the gaps either side of it, now that both sides are known (work instruction 526).
+            // Each gap judged by the sender's own lines (the judgement against its neighbours came out, work instruction 534).
             var gaps = marks.Skip(1).Select((m, i) => m.FromSeconds - marks[i].ToSeconds).ToList();
             var runs = new List<CwMark[]>();
             var current = new List<CwMark> { marks[0] };
 
             for (var i = 1; i < marks.Count; i++)
             {
-                if (CwPatternGate.KindAmongNeighbours(gaps, i - 1, lines) != CwGapKind.Element)
+                if (lines.KindOf(gaps[i - 1]) != CwGapKind.Element)
                 {
                     runs.Add(current.ToArray());
                     current = new List<CwMark>();
@@ -767,7 +693,7 @@ public sealed class CwSenderGate
             {
                 var now = MarksNow();
 
-                return CwSequenceShape.Of(now, ReferenceEquals(now, _recent) ? Marks : now.Count, wordLineSeconds: Lines.WordSeconds);
+                return CwSequenceShape.Of(now, ReferenceEquals(now, _recent) ? Marks : now.Count);
             }
         }
 
@@ -782,9 +708,7 @@ public sealed class CwSenderGate
         {
             get
             {
-                // A quieter mark taken by the sender's pattern is the sender's, and not its level: it would
-                // drag the reference under the sender's next mark (work instruction 511, task 2).
-                var open = Open.Where(m => !m.BySendersPattern).ToList();
+                var open = Open.ToList();
 
                 // **THE REFERENCE IS LOCAL TO THE MARK** (work instruction 525, task 3, HM-DEC-229). A mark's level is judged
                 // against the mean of the sender's last three marks (CwPatternGate.LevelMarks, a letter's worth, inside a
@@ -795,7 +719,7 @@ public sealed class CwSenderGate
                 // the bulletin's letters were dealt between the two, and a digit's five elements lagged their own mean the
                 // same way. The last mark alone was local enough, and at 12 dB its own noise split N0CALL; three marks
                 // are half a second at 18 WPM, across which such a fade moves their mean about a decibel.
-                var recent = _recent.Where(m => !m.BySendersPattern).TakeLast(8).ToList();
+                var recent = _recent.TakeLast(8).ToList();
                 var level = recent.Count > 0 ? recent.TakeLast(CwPatternGate.LevelMarks).Average(m => m.LevelDb)
                     : open.Count > 0 ? open.Average(m => m.LevelDb)
                     : double.NaN;
@@ -956,17 +880,6 @@ public sealed class CwSenderGate
         public const double SpreadFloor = 0.1;
 
         /// <summary>
-        /// How many of their spreads two clusters' centres must stand apart to be two kinds: two each
-        /// side of the boundary (work instruction 513). The author's.
-        /// </summary>
-        /// <remarks>
-        /// Two spreads each side put the boundary where nineteen in twenty of either cluster fall on its
-        /// own side, which a fist a third either way still clears; noise's lengths, spread evenly, split
-        /// into two halves whose centres stand about three of their spreads apart, and fail it.
-        /// </remarks>
-        public const double SeparationSpreads = 2;
-
-        /// <summary>
         /// The widest a cluster of one kind can be, as the standard deviation of its lengths' logarithm:
         /// a quarter (work instruction 513). The author's.
         /// </summary>
@@ -1005,36 +918,11 @@ public sealed class CwSenderGate
         internal static double Boundary((double Mu, double Sd) low, (double Mu, double Sd) high)
             => Math.Exp(((low.Mu * high.Sd) + (high.Mu * low.Sd)) / (low.Sd + high.Sd));
 
-        /// <summary>
-        /// Two clusters settled: each length goes to the side of the boundary between the two it falls
-        /// on, and the boundary is measured again, until nothing moves (work instruction 513).
-        /// </summary>
-        internal static (List<double> Low, List<double> High) Refine(List<double> low, List<double> high)
-        {
-            var all = low.Concat(high).OrderBy(l => l).ToList();
-
-            for (var i = 0; i < 8 && low.Count > 0 && high.Count > 0; i++)
-            {
-                var boundary = Boundary(LogStats(low), LogStats(high));
-                var nextLow = all.Where(l => l < boundary).ToList();
-
-                if (nextLow.Count == low.Count)
-                {
-                    break;
-                }
-
-                low = nextLow;
-                high = all.Skip(nextLow.Count).ToList();
-            }
-
-            return (low, high);
-        }
-
         // **THE SENDER'S MARKS ARE TWO CLUSTERS, DIT AND DAH** (work instruction 513, R113, HM-DEC-217).
-        // Sorted lengths are first split at the widest ratio between neighbors, then settled as two
-        // clusters in log-length, each mark on the side of the boundary it sits fewer spreads from. They
-        // are two kinds when their centres stand at least TwoKindsRatio apart and SeparationSpreads of
-        // their spreads each side of the boundary. The short side, and the boundary.
+        // Sorted lengths are split at the widest ratio between neighbors, where two neighbors differ by
+        // TwoKindsRatio, with the boundary where a mark sits as many spreads from either centre; a hand's
+        // overlapping clusters are no longer taken as two kinds (work instruction 534, HM-DEC-238).
+        // The short side, and the boundary.
         private (List<double> Shorts, double? Split) Kinds()
         {
             var kinds = KindsOf(MarksNow());
@@ -1054,7 +942,7 @@ public sealed class CwSenderGate
             // (unit 513); where the split over the recent marks has one, it is taken again over the newest half, then the
             // newest quarter, down to the five marks a sequence needs to stand, and the first split as tight as a hand
             // makes is the sender's now.
-            if (!KindsOf(_recent).TwoSpeeds)
+            if (!CwRules.On(CwRules.SpeedRetry) || !KindsOf(_recent).TwoSpeeds)
             {
                 return _recent;
             }
@@ -1109,44 +997,10 @@ public sealed class CwSenderGate
                 return (shortSide, Boundary(shortStats, longStats), shortStats.Sd > HandSpread || longStats.Sd > HandSpread);
             }
 
-            // **A FIST'S LENGTHS OVERLAP, AND NO CLEAN GAP IS LEFT** (work instruction 513, R113). Its
-            // dits run long and its dahs short until no two neighbors differ by two, so the two kinds are
-            // found as two clusters settled by the nearer centre, and taken only where they are what a
-            // hand makes: centres TwoKindsRatio apart, SeparationSpreads each side of the boundary, and
-            // neither wider than HandSpread. A mix of two speeds is wider, and is not taken.
-            var hand = HandKinds(lengths, at);
-
-            // Refused as a hand's two kinds, a mix of lengths is two speeds as much as a wide side of a clean jump is.
-            return hand is { } h ? (h.Shorts, h.Split, false) : (lengths, null, true);
-        }
-
-        /// <summary>
-        /// Sorted lengths with no clean jump of <see cref="TwoKindsRatio"/>, split at the widest as a hand's two
-        /// kinds: two clusters settled by the nearer centre, taken where they are what a hand makes, or null (work
-        /// instruction 513; shared with the pattern gate by work instruction 523).
-        /// </summary>
-        /// <param name="lengths">The lengths, shortest first.</param>
-        /// <param name="at">Where the widest ratio between neighbours falls.</param>
-        /// <returns>The short side and the boundary, or null.</returns>
-        public static (List<double> Shorts, double? Split)? HandKinds(List<double> lengths, int at)
-        {
-            var (shorts, longs) = Refine(lengths.Take(at).ToList(), lengths.Skip(at).ToList());
-
-            if (shorts.Count == 0 || longs.Count == 0)
-            {
-                return null;
-            }
-
-            var dit = LogStats(shorts);
-            var dah = LogStats(longs);
-
-            if (Math.Exp(dah.Mu - dit.Mu) < TwoKindsRatio || dah.Mu - dit.Mu < SeparationSpreads * (dit.Sd + dah.Sd)
-                || dit.Sd > HandSpread || dah.Sd > HandSpread)
-            {
-                return null;
-            }
-
-            return (shorts, Boundary(dit, dah));
+            // **NO CLEAN JUMP IS ONE KIND** (work instruction 534, HM-DEC-238): a hand's overlapping lengths were taken as two
+            // kinds since unit 513, and that rule came out when the owner's recordings read better without it. Where no two
+            // neighbours differ by TwoKindsRatio, the marks are one kind, and a mix of lengths is two speeds.
+            return (lengths, null, true);
         }
     }
 }

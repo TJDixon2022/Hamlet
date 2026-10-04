@@ -386,12 +386,9 @@ public sealed class TheShapePicksTheSenderTests
         {
             ("all on", _ => { }),
             ("edges off", d => d.MarksNeedEdges = false),
-            ("narrowness off", d => d.MarksNeedNarrowness = false),
             ("shape off", d => d.MarksNeedShape = false),
-            ("key-up off", d => d.MarksNeedKeyUp = false),
             ("promptness off", d => d.MarksNeedPromptness = false),
             ("one-call off", d => d.MarksNeedOneCall = false),
-            ("fit off", d => d.MarksMayBeFitted = false),
             ("pattern gate off", d => d.MarksNeedPattern = false),
         };
 

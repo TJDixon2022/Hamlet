@@ -68,7 +68,8 @@ public sealed class NarrownessReadsTheFiltersBandTests
 
     /// <remarks>
     /// Task 2: the call at 425, 500, 600, 700 and 775 Hz through a 500 Hz passband centred on 600 reads
-    /// whole; the marks at its pitch with narrowness asked and not, and what stood, are reported.
+    /// whole; the candidates at its pitch and what stood are reported. The narrowness test itself came out in work
+    /// instruction 534 (HM-DEC-238).
     /// </remarks>
     /// <param name="pitchHz">The station's pitch.</param>
     [Theory]
@@ -81,14 +82,9 @@ public sealed class NarrownessReadsTheFiltersBandTests
     {
         var samples = CallAt(pitchHz, 5150 + (int)pitchHz);
         var with = ThePatternIsTheGateTests.Read(samples, pitchHz, d => d.SetPassband(600, 500));
-        var without = ThePatternIsTheGateTests.Read(samples, pitchHz, d =>
-        {
-            d.SetPassband(600, 500);
-            d.MarksNeedNarrowness = false;
-        });
 
         _output.WriteLine(
-            $"{pitchHz:0} Hz: {with.Candidates} candidates pass narrowness of {without.Candidates} without it; "
+            $"{pitchHz:0} Hz: {with.Candidates} candidates; "
             + $"{with.Stood} stood, {with.Printed} printed; reads `{with.Text}`");
 
         Assert.Equal(Call, with.Text);

@@ -413,11 +413,11 @@ public sealed class ACharacterIsARunOfMarksThatAgreeTests
     }
 
     /// <summary>Every mark the detector calls on the audio, with the edge test on or off.</summary>
-    private static IReadOnlyList<CwMark> Marks(float[] samples, bool edges, bool narrow = true, bool pattern = true)
+    private static IReadOnlyList<CwMark> Marks(float[] samples, bool edges, bool pattern = true)
     {
         // The shape (work instruction 502) is a later gate and is off here, so these counts stay what unit 498 measured. The
         // pattern across marks (work instruction 507) is on unless a probe asks for it off.
-        var detector = new CwEnvelopeDetector(Rate) { MarksNeedEdges = edges, MarksNeedNarrowness = narrow, MarksNeedShape = false, MarksNeedPattern = pattern };
+        var detector = new CwEnvelopeDetector(Rate) { MarksNeedEdges = edges, MarksNeedShape = false, MarksNeedPattern = pattern };
 
         for (var at = 0; at + Chunk <= samples.Length; at += Chunk)
         {
@@ -431,9 +431,9 @@ public sealed class ACharacterIsARunOfMarksThatAgreeTests
     /// Every candidate the single-mark gates passed, stood or not (work instruction 532, task 5): what those gates are
     /// measured by now that noise agreeing within half a bin stands nothing at all.
     /// </summary>
-    private static IReadOnlyList<CwMark> Candidates(float[] samples, bool edges, bool narrow = true)
+    private static IReadOnlyList<CwMark> Candidates(float[] samples, bool edges)
     {
-        var detector = new CwEnvelopeDetector(Rate) { MarksNeedEdges = edges, MarksNeedNarrowness = narrow, MarksNeedShape = false };
+        var detector = new CwEnvelopeDetector(Rate) { MarksNeedEdges = edges, MarksNeedShape = false };
 
         for (var at = 0; at + Chunk <= samples.Length; at += Chunk)
         {
@@ -454,8 +454,8 @@ public sealed class ACharacterIsARunOfMarksThatAgreeTests
         var samples = NoiseAlone();
         // **CANDIDATES, NOT MARKS THAT STOOD** (work instruction 532, task 5): noise agreeing within half a bin stands nothing,
         // so the edge test is measured on what the single-mark gates pass.
-        var passing = Candidates(samples, edges: false, narrow: false).Count;
-        var edged = Candidates(samples, edges: true, narrow: false).Count;
+        var passing = Candidates(samples, edges: false).Count;
+        var edged = Candidates(samples, edges: true).Count;
 
         _output.WriteLine($"thirty seconds of loud noise: bars passing every other test {passing}, of them with edges {edged}");
 
@@ -543,26 +543,6 @@ public sealed class ACharacterIsARunOfMarksThatAgreeTests
         _output.WriteLine($"a tone faded up over 100 ms, held 200 ms, cut off sharply: marks with the edge test off {off}, on {on}");
 
         Assert.Equal(0, on);
-    }
-
-    /// <remarks>
-    /// Case 1 of work instruction 498, and its reason: of the loud-noise bars that pass every test
-    /// the tree had before, and unit 497's edges, how many are narrow - standing clear of the band
-    /// three hundred hertz either side. Asserts that fewer are. Measured before the pattern gate: since work instruction
-    /// 526 it takes a hand's two kinds on the per-bin path, and counted after it the narrowness test was measured through
-    /// whichever noise sequences happened to stand.
-    /// </remarks>
-    [Fact]
-    public void MostEdgedNoiseBarsAreNotNarrow()
-    {
-        var samples = NoiseAlone();
-        var passing = Marks(samples, edges: false, narrow: false, pattern: false).Count;
-        var edged = Marks(samples, edges: true, narrow: false, pattern: false).Count;
-        var narrow = Marks(samples, edges: true, narrow: true, pattern: false).Count;
-
-        _output.WriteLine($"thirty seconds of loud noise: passing every older test {passing}, with edges {edged}, of those narrow {narrow}");
-
-        Assert.True(narrow < edged, "the narrowness test turned away no noise bar");
     }
 
     /// <remarks>

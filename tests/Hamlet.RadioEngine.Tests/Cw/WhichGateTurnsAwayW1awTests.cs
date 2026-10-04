@@ -49,18 +49,14 @@ public sealed class WhichGateTurnsAwayW1awTests
     {
         new("all on", _ => { }),
         new("492 promptness off", d => d.MarksNeedPromptness = false),
-        new("492 key-up off", d => d.MarksNeedKeyUp = false),
         new("492 one-call off", d => d.MarksNeedOneCall = false),
         new("497 edges off", d => d.MarksNeedEdges = false),
-        new("498 narrowness off", d => d.MarksNeedNarrowness = false),
         new("502 shape off", d => d.MarksNeedShape = false),
         new("all off", d =>
         {
             d.MarksNeedPromptness = false;
-            d.MarksNeedKeyUp = false;
             d.MarksNeedOneCall = false;
             d.MarksNeedEdges = false;
-            d.MarksNeedNarrowness = false;
             d.MarksNeedShape = false;
         }),
     };

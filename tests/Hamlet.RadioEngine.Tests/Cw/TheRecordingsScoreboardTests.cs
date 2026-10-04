@@ -319,6 +319,38 @@ public sealed class TheRecordingsScoreboardTests
         Assert.All(board.Noise, n => Assert.Equal(string.Empty, n.Reads));
     }
 
+    /// <summary>Scores the board with some rules off, and prints one row of the rule table.</summary>
+    private Board OffRow(string label, params string[] rules)
+    {
+        using var off = CwRules.Off(rules);
+        var board = Score();
+
+        _output.WriteLine($"| {label} | {board.Total} | limits {(board.LimitsHold ? "hold" : "BROKEN")} | first reads `{board.FirstReads}` | noise `{string.Join("/", board.Noise.Select(n => n.Reads))}` |");
+        _output.WriteLine("  " + string.Join("; ", board.Stretches.Where(s => s.Stretch.Confidence != Confidence.None).Select(s => $"{s.Stretch.Recording[^6..]}@{s.Stretch.PitchHz:0} {s.Right}/{s.ReferenceLetters} `{s.PrintedText}`")));
+
+        return board;
+    }
+
+    private void OffAlone(int from, int count)
+    {
+        foreach (var rule in CwRules.All.Skip(from).Take(count))
+        {
+            OffRow(rule + " off", rule);
+        }
+    }
+
+    /// <remarks>
+    /// Task 2: what each rule kept is worth, switched off alone, the first six. Thirteen rules came out of the tree in
+    /// work instruction 534, each because the total held or rose without it; these stay because it fell, or a hard limit
+    /// broke. Asserts nothing; the table is the result.
+    /// </remarks>
+    [Fact]
+    public void EachKeptRuleOffAloneFirst() => OffAlone(0, 6);
+
+    /// <remarks>Task 2: the last five.</remarks>
+    [Fact]
+    public void EachKeptRuleOffAloneSecond() => OffAlone(6, 5);
+
     /// <summary>
     /// A stretch read offline and non-causally: mixed to nought at its pitch, through a two-pole low-pass run forward and
     /// back, its level cut at the midpoint of its own two level clusters with a little hysteresis, and its marks and gaps

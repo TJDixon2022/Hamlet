@@ -37,9 +37,9 @@ public sealed class TheShapeOfAKeyedToneTests
     private static float[] NoiseAlone() => CwSignal.Generate(new CwSignalRequest(
         " ", SampleRate: Rate, Amplitude: 0, NoiseAmplitude: 0.3, LeadInSeconds: 15, TailSeconds: 15, Seed: 491)).Samples;
 
-    private static IReadOnlyList<CwMark> Marks(float[] samples, bool edges = true, bool narrow = true, bool shape = true)
+    private static IReadOnlyList<CwMark> Marks(float[] samples, bool edges = true, bool shape = true)
     {
-        var detector = new CwEnvelopeDetector(Rate) { MarksNeedEdges = edges, MarksNeedNarrowness = narrow, MarksNeedShape = shape };
+        var detector = new CwEnvelopeDetector(Rate) { MarksNeedEdges = edges, MarksNeedShape = shape };
 
         for (var at = 0; at + Chunk <= samples.Length; at += Chunk)
         {
@@ -53,9 +53,9 @@ public sealed class TheShapeOfAKeyedToneTests
     /// Every candidate the single-mark gates passed, stood or not (work instruction 532, task 5): what those gates are
     /// measured by now that noise agreeing within half a bin stands nothing at all.
     /// </summary>
-    private static IReadOnlyList<CwMark> Candidates(float[] samples, bool edges = true, bool narrow = true, bool shape = true)
+    private static IReadOnlyList<CwMark> Candidates(float[] samples, bool edges = true, bool shape = true)
     {
-        var detector = new CwEnvelopeDetector(Rate) { MarksNeedEdges = edges, MarksNeedNarrowness = narrow, MarksNeedShape = shape };
+        var detector = new CwEnvelopeDetector(Rate) { MarksNeedEdges = edges, MarksNeedShape = shape };
 
         for (var at = 0; at + Chunk <= samples.Length; at += Chunk)
         {
@@ -86,15 +86,14 @@ public sealed class TheShapeOfAKeyedToneTests
         var samples = NoiseAlone();
         var seconds = samples.Length / (double)Rate;
         // **CANDIDATES, NOT MARKS THAT STOOD** (work instruction 532, task 5): noise agreeing within half a bin stands nothing.
-        var older = Candidates(samples, edges: false, narrow: false, shape: false).Count;
-        var edged = Candidates(samples, narrow: false, shape: false).Count;
-        var narrow = Candidates(samples, shape: false).Count;
+        var older = Candidates(samples, edges: false, shape: false).Count;
+        var edged = Candidates(samples, shape: false).Count;
         var shaped = Candidates(samples).Count;
 
-        _output.WriteLine($"thirty seconds of loud noise: passing the older tests {older}, with edges {edged}, narrow {narrow}, inside the shape {shaped}");
-        _output.WriteLine($"marks handed out a second: {narrow / seconds:0.0} before, {shaped / seconds:0.0} after");
+        _output.WriteLine($"thirty seconds of loud noise: passing the older tests {older}, with edges {edged}, inside the shape {shaped}");
+        _output.WriteLine($"marks handed out a second: {edged / seconds:0.0} before, {shaped / seconds:0.0} after");
 
-        Assert.True(shaped < narrow, "the shape turned away no noise bar that passed all five");
+        Assert.True(shaped < edged, "the shape turned away no noise bar that passed the others");
     }
 
     /// <remarks>

@@ -9,8 +9,6 @@ namespace Hamlet.RadioEngine.Cw;
 /// <param name="Dits">How tightly its dits cluster: one less their spread in log-length over a hand's widest.</param>
 /// <param name="Dahs">The same for its dahs.</param>
 /// <param name="Separation">How far apart the two centres stand: nought at two to one, one at three to one or wider.</param>
-/// <param name="ElementGaps">How tightly its gaps inside letters cluster, as for the dits; one where it has shown fewer than two.</param>
-/// <param name="LetterGaps">The same for its gaps between letters.</param>
 /// <param name="Consistency">The share of its marks within √2 of the nearer of its two centres.</param>
 /// <param name="Evidence">How many marks have stood, saturating: one less e to the minus count over ten.</param>
 /// <remarks>
@@ -18,16 +16,18 @@ namespace Hamlet.RadioEngine.Cw;
 /// It's there. It was audible. Let's defocus pitch and emphasize shape."* And: *"I want this to be so
 /// much shape that I'm shocked."*</para>
 /// <para>**A PRODUCT, AS UNIT 502 CHOSE FOR A MARK.** A keyed tone is all of these at once: flat-topped
-/// marks, two lengths that each hold, three to one apart, a dit of silence inside a letter and three
-/// between, and every mark one of the two. Something crisp on four and wrong on one is not a keyed
-/// tone; a sum would let the four outvote the one, and a product does not. The author's, from what a
-/// keyed tone is, not from any result.</para>
+/// marks, two lengths that each hold, three to one apart, and every mark one of the two. Something
+/// crisp on four and wrong on one is not a keyed tone; a sum would let the four outvote the one, and a
+/// product does not. The author's, from what a keyed tone is, not from any result.</para>
+/// <para>**NO GAP TERMS** (work instruction 534, HM-DEC-238): the tightness of a sender's gaps inside letters and between
+/// them came out when the owner's recordings read better without them. A mark's shape says whether it is CW; how
+/// evenly a human spaces his letters does not.</para>
 /// <para>**A HAND'S WIDEST IS THE MEASURE** (unit 513's 0.25 in log-length, work instruction 520): a cluster
 /// as wide as the widest fist scores four-fifths for tightness, a machine's near one, and only past what any hand
 /// makes does it fall toward nought at twice that, so a machine ranks over a fist and a fist over noise.</para>
 /// </remarks>
 public sealed record CwSequenceShape(
-    double Rectangle, double Dits, double Dahs, double Separation, double ElementGaps, double LetterGaps, double Consistency, double Evidence)
+    double Rectangle, double Dits, double Dahs, double Separation, double Consistency, double Evidence)
 {
     /// <summary>A hand's widest spread in log-length (unit 513): tightness is four-fifths there and nought at twice it.</summary>
     public const double WidestSpread = 0.25;
@@ -36,16 +36,16 @@ public sealed record CwSequenceShape(
     public const double EvidenceMarks = 2 * CwPatternGate.MarksToStand;
 
     /// <summary>Nothing that splits in two: no score.</summary>
-    public static CwSequenceShape None { get; } = new(0, 0, 0, 0, 0, 0, 0, 0);
+    public static CwSequenceShape None { get; } = new(0, 0, 0, 0, 0, 0);
 
-    /// <summary>The product of all eight: how much it sounds like code, nought to one.</summary>
-    public double Score => Rectangle * Dits * Dahs * Separation * ElementGaps * LetterGaps * Consistency * Evidence;
+    /// <summary>The product of all six: how much it sounds like code, nought to one.</summary>
+    public double Score => Rectangle * Dits * Dahs * Separation * Consistency * Evidence;
 
-    /// <summary>The eight and the score, for the tests' report.</summary>
+    /// <summary>The six and the score, for the tests' report.</summary>
     public override string ToString()
         => string.Create(
             System.Globalization.CultureInfo.InvariantCulture,
-            $"shape {Score:0.000} (rectangle {Rectangle:0.00}, dits {Dits:0.00}, dahs {Dahs:0.00}, apart {Separation:0.00}, element gaps {ElementGaps:0.00}, letter gaps {LetterGaps:0.00}, consistent {Consistency:0.00}, evidence {Evidence:0.00})");
+            $"shape {Score:0.000} (rectangle {Rectangle:0.00}, dits {Dits:0.00}, dahs {Dahs:0.00}, apart {Separation:0.00}, consistent {Consistency:0.00}, evidence {Evidence:0.00})");
 
     /// <summary>
     /// Score some marks of one sender, in time order, and how many it has had standing in all.
@@ -53,12 +53,8 @@ public sealed record CwSequenceShape(
     /// <param name="marks">Its recent marks, oldest first.</param>
     /// <param name="count">How many marks it has had in all, for the evidence.</param>
     /// <param name="againstAHand">Whether tightness is scored against a hand (work instruction 520), or, false, unit 519's machine scale, kept for the tests' before.</param>
-    /// <param name="wordLineSeconds">
-    /// The sender's own word line (work instruction 530, HM-DEC-234): its letter gaps are its longer gaps under it, walked
-    /// as before; NaN, and all its longer gaps are walked, where no word line has been drawn.
-    /// </param>
     /// <returns>The shape; <see cref="None"/> where its marks do not split into two lengths.</returns>
-    public static CwSequenceShape Of(IReadOnlyList<CwMark> marks, int count, bool againstAHand = true, double wordLineSeconds = double.NaN)
+    public static CwSequenceShape Of(IReadOnlyList<CwMark> marks, int count, bool againstAHand = true)
     {
         var lengths = marks.Select(m => m.ToSeconds - m.FromSeconds).ToList();
         var sorted = lengths.OrderBy(l => l).ToList();
@@ -114,17 +110,6 @@ public sealed record CwSequenceShape(
             .Where(double.IsFinite)
             .ToList();
 
-        var gaps = marks.Zip(marks.Skip(1), (a, b) => b.FromSeconds - a.ToSeconds)
-            .Where(g => g > 0 && g < CwPatternGate.SilenceSeconds)
-            .OrderBy(g => g)
-            .ToList();
-        var inside = gaps.Where(g => g < CwPatternGate.InsideLetterShare * dit).ToList();
-        // **THE SENDER'S OWN LETTER CLUSTER** (work instruction 530, HM-DEC-234): where its word line is drawn, its letter gaps
-        // are its longer gaps under that line, walked as before. A hand whose letter gaps run from two dits to 5.7 with no jump
-        // to its words read all its longer gaps as one cluster, scored nought for tightness and was let go before its last
-        // word.
-        var between = LowestCluster(gaps.Where(g => g >= CwPatternGate.InsideLetterShare * dit && !(g >= wordLineSeconds)).ToList());
-
         var consistent = lengths.Count(l =>
             Math.Min(Math.Abs(Math.Log(l / dit)), Math.Abs(Math.Log(l / dah))) <= Math.Log(CwPatternGate.LengthRatio));
 
@@ -133,8 +118,6 @@ public sealed record CwSequenceShape(
             Tightness(dits, againstAHand),
             Tightness(dahs, againstAHand),
             Math.Clamp((Math.Log(dah / dit) - Math.Log(2)) / (Math.Log(3) - Math.Log(2)), 0, 1),
-            !againstAHand && inside.Count < 2 ? 1 : Tightness(inside, againstAHand),
-            !againstAHand && between.Count < 2 ? 1 : Tightness(between, againstAHand),
             lengths.Count > 0 ? consistent / (double)lengths.Count : 0,
             1 - Math.Exp(-count / EvidenceMarks));
     }
@@ -168,23 +151,4 @@ public sealed record CwSequenceShape(
 
     /// <summary>The lengths at a hand's widest that stand in for a cluster until it shows its own: two (work instruction 520). The author's.</summary>
     public const double PriorLengths = 2;
-
-    // The gaps between letters are the lowest cluster of the longer gaps, walked up and split where two
-    // neighbours differ by √(7/3), half of three to seven in log-length, as the reader finds them (unit 501).
-    private static List<double> LowestCluster(List<double> sorted)
-    {
-        var cluster = new List<double>();
-
-        foreach (var g in sorted)
-        {
-            if (cluster.Count > 0 && g / cluster[^1] >= Math.Sqrt(7.0 / 3))
-            {
-                break;
-            }
-
-            cluster.Add(g);
-        }
-
-        return cluster;
-    }
 }
