@@ -73,10 +73,12 @@ public sealed class TheScopeShowsTheMarksTests
     {
         var hearing = new CwHearingViewModel();
 
-        // Stopped 90 ms into Q's first dah. **Not C's first dah any more** (work instruction
+        // Stopped 90 ms into Q's last dah (work instruction 537): keying is said only once a sequence of five
+        // marks stands, so Q's first dah, the fifth mark, was still being keyed when the line said no keying.
+        // Before that, not C's first dah (work instruction
         // 477, R91): the first element of a transmission is a bar with no partner yet, and is
         // marked when the next element pairs with it across the gap.
-        var mid = Keyed(742, 500, 1.73);
+        var mid = Keyed(742, 500, 2.33);
         hearing.ObserveScope(CwScopeFrame.From(mid.History(), mid.HopMs, mid.Reading));
 
         Assert.True(hearing.Scope.Reading.Mark);
@@ -101,8 +103,8 @@ public sealed class TheScopeShowsTheMarksTests
 
         try
         {
-            // Mid-way through Q's first dah, where a mark is up (work instruction 477).
-            var detector = Keyed(742, 500, 1.73);
+            // Mid-way through Q's last dah, where a mark is up and a sequence stands (work instructions 477 and 537).
+            var detector = Keyed(742, 500, 2.33);
 
             panel.CwHearing.ObserveScope(CwScopeFrame.From(detector.History(), detector.HopMs, detector.Reading));
             TheControlsTimCanPress.Settle(window);

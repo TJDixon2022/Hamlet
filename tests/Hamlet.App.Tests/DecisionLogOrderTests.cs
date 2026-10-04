@@ -171,6 +171,10 @@ public sealed class DecisionLogOrderTests
             .Where(i => !ids.Contains(i))
             .ToList();
 
-        Assert.Equal(new[] { 105, 136 }, missing);
+        // **THE KNOWN GAPS, EACH NAMED** (work instruction 537): ids with no ruling in DECISIONS.md, so no index row.
+        // 105 and 136, as before. 182: ordered by work instruction 434 and never recorded (PHASE_PLAN.md criterion 8.1).
+        // 216: skipped when the orders numbered past unit 512, which never ran. 220: unit 516's ruling, reverted with it.
+        // 222: held for unit 518 and never used. Every ruling DECISIONS.md does hold has its row.
+        Assert.Equal(new[] { 105, 136, 182, 216, 220, 222 }, missing);
     }
 }
