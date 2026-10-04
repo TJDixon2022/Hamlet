@@ -39,6 +39,7 @@ public sealed class TheLightSaysHoldStillTests
         var sequence = 0L;
 
         detector.PrintedPitch = () => reader.StationPitchHz;
+        detector.WaitingPitch = () => reader.WaitingPitchHz;
         reader.CharacterRead += c =>
         {
             if (!c.IsWordGap)

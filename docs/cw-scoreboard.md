@@ -27,6 +27,7 @@ references.
 |---|---|---|---|---|
 | 534 baseline | 2026-10-03 | 169 of 240 | hold | before any change; tag `before-scoreboard` |
 | 534 after | 2026-10-03 | 185 of 240 | hold | thirteen shape-side rules removed, each measured (see below); tag `before-scoreboard` holds them |
+| 535 task 1 | 2026-10-04 | 185 of 240 | hold | the light reads the gate: green only while a sender is printed or qualified and waiting; display only, the reading unchanged |
 
 ## Stretches at the baseline (unit 534, before any change)
 

@@ -11652,6 +11652,10 @@ public partial class MainWindowViewModel : ObservableObject
         var printer = _decoder;
         detector.PrintedPitch = () => printer.RunsPrintingHz;
 
+        // **AND THE LIGHT CLAIMS NO MORE THAN THE PRINTER** (work instruction 535, HM-DEC-239): green only for the sender
+        // printed or the one qualified and waiting to print.
+        detector.WaitingPitch = () => printer.RunsWaitingHz;
+
         // **AND A LETTER NEEDS BLOCKS** (work instruction 487, R99): one block the detector called
         // under each dit and dah, or the letter does not reach the screen.
         _decoder.DetectorBlocks = detector.BlocksBetween;

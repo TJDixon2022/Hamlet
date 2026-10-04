@@ -218,6 +218,17 @@ public sealed class CwSenderGate
     /// <remarks>Safe to read from any thread: one double, written once per batch on the audio thread.</remarks>
     public double StationPitchHz => Volatile.Read(ref _stationHz);
 
+    // Written by Print on the audio thread, read by WaitingPitchHz on any.
+    private double _waitingHz = double.NaN;
+
+    /// <summary>
+    /// The pitch of the sender that has qualified to print and is waiting out its first word gap, or NaN when none is
+    /// (work instruction 535, HM-DEC-239): with <see cref="StationPitchHz"/>, everything the gate would print, which is
+    /// all the hold-still light may claim.
+    /// </summary>
+    /// <remarks>Safe to read from any thread: one double, written once per batch on the audio thread.</remarks>
+    public double WaitingPitchHz => Volatile.Read(ref _waitingHz);
+
     /// <summary>The dit of the sender being printed, in seconds, or NaN when none is: for the tests' report (work instruction 500).</summary>
     internal double StationDitSeconds => _station?.DitSeconds ?? double.NaN;
 
@@ -373,6 +384,12 @@ public sealed class CwSenderGate
             ref _stationHz,
             _station is { } printed
                 ? Math.Round(printed.Reference.Pitch / CwEnvelopeDetector.BinSpacingHz) * CwEnvelopeDetector.BinSpacingHz
+                : double.NaN);
+
+        Volatile.Write(
+            ref _waitingHz,
+            _station is null && !double.IsNaN(_waitingSince) && qualified.Count > 0
+                ? Math.Round(qualified[0].Sender.Reference.Pitch / CwEnvelopeDetector.BinSpacingHz) * CwEnvelopeDetector.BinSpacingHz
                 : double.NaN);
 
         if (_station is not { } station)

@@ -531,6 +531,12 @@ public sealed class CwDecoder
     public double RunsPrintingHz => RunsRead ? _runs.StationPitchHz : double.NaN;
 
     /// <summary>
+    /// The pitch of the sender the run reader has qualified and is waiting out its first word gap to print, or NaN (work
+    /// instruction 535): with <see cref="RunsPrintingHz"/>, all the hold-still light may claim. Safe to read from any thread.
+    /// </summary>
+    public double RunsWaitingHz => RunsRead ? _runs.WaitingPitchHz : double.NaN;
+
+    /// <summary>
     /// The last half minute of exactly what the decoder was fed (HM-DEC-088).
     /// </summary>
     /// <remarks>

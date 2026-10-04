@@ -223,6 +223,13 @@ public sealed class CwEnvelopeDetector
     /// </summary>
     public Func<double>? PrintedPitch { get; set; }
 
+    /// <summary>
+    /// The pitch of the sender the terminal has qualified and is waiting out its first word gap to print, or NaN (work
+    /// instruction 535, HM-DEC-239): with <see cref="PrintedPitch"/>, all the hold-still light may claim. Read on the
+    /// audio thread.
+    /// </summary>
+    public Func<double>? WaitingPitch { get; set; }
+
     // The shape score of the standing sequence the reading follows (work instruction 519).
     private double _readingShape = double.NaN;
 
@@ -725,14 +732,17 @@ public sealed class CwEnvelopeDetector
         // green while a sequence stands, amber while one is forming with marks in the last two seconds, dark else.
         var forming = _pattern.Forming(nowSeconds, CwShapeLights.FormingSeconds);
 
-        // **THE LIGHT READS THE SCORE** (work instruction 522, task 2): green only for a standing sequence whose shape
-        // passes CwShapeLights.GreenScore; one that stands under it stays amber at its full count, since a sequence of
-        // 0.06 went green on the air on 2026-10-01 at 18:20.
-        var sure = keying && _readingShape > CwShapeLights.GreenScore;
-        var light = sure && double.IsFinite(printed) ? CwShapeLight.Reading
-            : sure ? CwShapeLight.Found
+        // **THE LIGHT CLAIMS NO MORE THAN THE PRINTER** (work instruction 535, HM-DEC-239; the owner's answer, option A): green
+        // only while the gate would print the sender - `reading` while it prints one, `shape found` while one has qualified
+        // and waits out its first word gap - and only while a mark has stood within the hold. It read a sequence's shape
+        // score before, and with the standing line gone a noise sequence scored over 0.2 and the light said hold here for
+        // 377 steps while nothing printed. Amber while marks stand or form; no number of its own.
+        var waiting = WaitingPitch?.Invoke() ?? double.NaN;
+        var light = keying && double.IsFinite(printed) ? CwShapeLight.Reading
+            : keying && double.IsFinite(waiting) ? CwShapeLight.Found
             : keying || forming > 0 ? CwShapeLight.Forming
             : CwShapeLight.Listening;
+        var sure = light is CwShapeLight.Reading or CwShapeLight.Found;
 
         if (keying && !sure)
         {
