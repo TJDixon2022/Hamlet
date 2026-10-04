@@ -258,7 +258,7 @@ public sealed class TheRecordingsScoreboardTests
     /// <summary>What the first recording reads, spaces as printed.</summary>
     internal static string TheFirst() => ReadLive("cw-2026-10-02-200157").Text;
 
-    /// <summary>Loud noise, 30 s and three minutes, at the two seeds the noise tests use.</summary>
+    /// <summary>Loud noise, 30 s and three minutes, at the two seeds the noise tests use; and a carrier keyed at random at five seeds.</summary>
     internal static List<(string What, string Reads)> NoiseRuns()
     {
         var runs = new List<(string, string)>();
@@ -269,6 +269,16 @@ public sealed class TheRecordingsScoreboardTests
                 " ", SampleRate: 8000, Amplitude: 0, NoiseAmplitude: 0.3, LeadInSeconds: seconds / 2.0, TailSeconds: seconds / 2.0, Seed: seed)).Samples;
 
             runs.Add(($"{seconds} s of loud noise, seed {seed}", ReadLive(noise, 8000).Text));
+        }
+
+        // **A CARRIER KEYED AT RANDOM PRINTS NOTHING** (work instruction 535, the owner's third hard limit): alone at 24 dB, marks
+        // of 30 to 300 ms at gaps of 30 to 400 ms, at five seeds.
+        foreach (var seed in new[] { 5193, 5194, 5195, 5196, 5197 })
+        {
+            var carrier = TheShapePicksTheSenderTests.Noise(25, 5192);
+
+            TheShapePicksTheSenderTests.Key(carrier, TheShapePicksTheSenderTests.RandomKeying(2.5, 23, seed), 625, 24);
+            runs.Add(($"a carrier keyed at random, seed {seed},", ReadLive(carrier, 8000).Text));
         }
 
         return runs;

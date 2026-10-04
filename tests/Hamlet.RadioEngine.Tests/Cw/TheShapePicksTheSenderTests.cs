@@ -73,7 +73,7 @@ public sealed class TheShapePicksTheSenderTests
     }
 
     /// <summary>A carrier keyed at random: marks of 30 to 300 ms at gaps of 30 to 400 ms, no rhythm.</summary>
-    private static List<(double From, double To)> RandomKeying(double start, double end, int seed)
+    internal static List<(double From, double To)> RandomKeying(double start, double end, int seed)
     {
         var random = new Random(seed);
         var marks = new List<(double, double)>();
@@ -91,7 +91,7 @@ public sealed class TheShapePicksTheSenderTests
     }
 
     /// <summary>Add a keyed tone to some audio, with four millisecond raised-cosine edges.</summary>
-    private static void Key(float[] samples, IEnumerable<(double From, double To)> marks, double pitch, double db)
+    internal static void Key(float[] samples, IEnumerable<(double From, double To)> marks, double pitch, double db)
     {
         var amplitude = ThePatternIsTheGateTests.Over(db);
         var edge = 0.004 * Rate;
@@ -113,7 +113,7 @@ public sealed class TheShapePicksTheSenderTests
     }
 
     /// <summary>The band's noise, unit 502's level, for some seconds.</summary>
-    private static float[] Noise(double seconds, int seed)
+    internal static float[] Noise(double seconds, int seed)
     {
         var noise = CwSignal.Generate(new CwSignalRequest(
             " ", SampleRate: Rate, Amplitude: 0, NoiseAmplitude: 0.04, LeadInSeconds: seconds / 2, TailSeconds: seconds / 2, Seed: seed)).Samples;
@@ -558,6 +558,41 @@ public sealed class TheShapePicksTheSenderTests
         // The carrier's first handful of marks can score the line by chance and stand, and it loses standing as its shape
         // falls; what must hold is that nothing is printed at its pitch.
         Assert.DoesNotContain(run.Letters, l => Math.Abs(l.PitchHz - carrierHz) <= 50);
+    }
+
+    /// <remarks>
+    /// **A CARRIER KEYED AT RANDOM NEVER PRINTS** (work instruction 535, HM-DEC-239; the owner, 2026-10-03, a third hard
+    /// limit): alone at 24 dB, marks of 30 to 300 ms at gaps of 30 to 400 ms, at twenty seeds. Its lengths do not fall
+    /// into two kinds that hold over its last ten marks with each kind recurring, which every sender of Morse keys.
+    /// </remarks>
+    /// <param name="seed">The keying's seed.</param>
+    [Theory]
+    [MemberData(nameof(CarrierSeeds))]
+    public void ARandomCarrierAloneNeverPrints(int seed)
+    {
+        var end = 25.0;
+        var samples = Noise(end, 5192);
+
+        Key(samples, RandomKeying(2.5, end - 2, seed), 625, 24);
+
+        var run = Read(samples, shape: true);
+
+        _output.WriteLine($"random carrier alone, seed {seed}: reads `{run.Text}`");
+
+        Assert.Equal(string.Empty, run.Text);
+    }
+
+    /// <summary>Twenty seeds for the carrier alone.</summary>
+    public static TheoryData<int> CarrierSeeds()
+    {
+        var data = new TheoryData<int>();
+
+        for (var seed = 5193; seed < 5213; seed++)
+        {
+            data.Add(seed);
+        }
+
+        return data;
     }
 
     /// <remarks>
