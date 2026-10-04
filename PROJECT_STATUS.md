@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: COMPLETED
-TASK: 4 of 4
-WORK_INSTRUCTION: 535 - the light claims no more than the printer (run by hand)
+TASK: 2 of 2
+WORK_INSTRUCTION: 536 - a sender shows its dit and its dah again and again (run by hand)
 BALL: tim
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-10-04T10:39:24-04:00
-NOTE: Unit 535 done - light reads the gate, FER reads, scoreboard 205 of 244, carrier limit red, HM-DEC-239, 1.13.220
+UPDATED: 2026-10-04T17:10:36-04:00
+NOTE: Unit 536 done - carriers 1 of 20, scoreboard 205 of 244, HM-DEC-240, 1.13.221
 
 ---
 

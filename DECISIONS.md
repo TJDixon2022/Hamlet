@@ -4,6 +4,32 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-240
+date: 2026-10-04
+refs: work instruction 536, src/Hamlet.RadioEngine/Cw/CwSenderGate.cs, src/Hamlet.RadioEngine/Cw/CwRules.cs, docs/cw-scoreboard.md
+---
+
+**A sender shows its dit and its dah again and again.** The owner, 2026-10-04, said yes to shipping the partial step.
+A sender qualifies to print only where its last ten marks:
+- split into two length kinds with a clean 2:1 jump, neither side wider than a hand makes, and each kind recurring,
+  two marks or more;
+- and its nine gaps between them show a clean jump of √3, Morse's own midpoint between a gap inside a letter and one
+  between letters, with at least two gaps either side.
+
+**Why.** A carrier keyed at random shows two kinds only over its newest five marks, or as one odd mark against the
+rest, and it spaces its marks evenly.
+
+**What it measured:**
+- The scoreboard holds at 205 of 244. Loud noise prints nothing, and the first recording reads whole.
+- **Random carriers alone print at 1 of 20 seeds (5195), down from 9.** The carrier hard limit stays asserted and red
+  on that seed.
+- Beside a clean sender at 100 Hz, nothing prints at all.
+- The gap jump at 2, the marks' own ratio, cost 13 letters on 22:15:48 at 498 Hz, whose letter gaps sit 1.87 times its
+  gaps inside letters. At √3 it costs none.
+
+**The cost.** A transmission of fewer than ten marks never prints: `DE DE` alone reads nothing.
+
+---
 id: HM-DEC-239
 date: 2026-10-04
 refs: work instruction 535, src/Hamlet.RadioEngine/Cw/CwEnvelopeDetector.cs, src/Hamlet.RadioEngine/Cw/CwSenderGate.cs, src/Hamlet.RadioEngine/Cw/CwPatternGate.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheRecordingsScoreboardTests.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheShapePicksTheSenderTests.cs, docs/cw-scoreboard.md

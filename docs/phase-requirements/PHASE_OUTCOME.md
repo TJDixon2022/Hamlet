@@ -1040,3 +1040,13 @@ Run by hand, outside the loop: SESSION.lock taken and released; nothing written 
 **Task 4.** A mark crowds the last only where it overlaps it or is itself a piece, and FER reads. The scoreboard rises to 205 of 244.
 
 Build 0 warnings 0 errors. App carry-forward 277 of 278; the one loss, a dispatcher loop at 1 ms, passes alone.
+
+## UNIT 536 - STEP 12
+
+Run by hand, outside the loop: SESSION.lock taken and released; nothing written to RUN_LEDGER.md and nothing under tools\arbiter\ touched; no box ticked and no ruling added to either plan; no scratch file committed; nothing keyed or transmitted. R88 was lifted for the owner's twelve recordings and no other. Version 1.13.220 to 1.13.221. HM-DEC-240.
+
+**Task 1.** The carrier rule ships: a sender qualifies only on two length kinds held over its last ten marks, each kind recurring. The scoreboard holds at 205 of 244, and random carriers alone print at 2 of 20 seeds, from 9.
+
+**Task 2.** The gap jump at 2 cost 13 letters, all on 22:15:48 at 498 Hz, whose letter gaps sit 1.87 times its gaps inside letters. At √3, Morse's own midpoint, it costs none and silences seed 5206, leaving 1 of 20.
+
+A transmission of fewer than ten marks no longer prints (`DE DE`). Build 0 warnings 0 errors. App carry-forward 276 of 278; the two losses, a dispatcher loop at 1 ms, pass alone.
