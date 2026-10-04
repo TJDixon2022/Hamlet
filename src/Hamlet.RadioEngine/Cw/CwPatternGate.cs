@@ -514,10 +514,20 @@ internal sealed class CwPatternGate
             return null;
         }
 
-        /// <summary>Whether the mark sits on the last one, closer than half the sender's dit.</summary>
+        /// <summary>
+        /// Whether the mark is the last one read again, or a piece of it: it begins before the last one ended, or it sits
+        /// closer than half the sender's dit and is itself shorter than half a dit.
+        /// </summary>
+        /// <remarks>
+        /// **A FULL MARK AFTER A KEY-UP IS A MARK** (work instruction 535, HM-DEC-239): heavy keying leaves gaps inside a letter
+        /// of a quarter to a half of its dit, and the second dit of the F of FER, 94 ms after a 27 ms gap, was dropped as a
+        /// second reading of the first, so FER read ENER. A tone read twice overlaps or touches itself, and a piece of a tone
+        /// is short; neither is a dit-long tone after the key came up.
+        /// </remarks>
         public bool Crowds(CwMark m)
             => Last is { } last
-               && m.FromSeconds - last.ToSeconds < LeastGapShare * Dit(m);
+               && (m.FromSeconds <= last.ToSeconds
+                   || (m.FromSeconds - last.ToSeconds < LeastGapShare * Dit(m) && m.ToSeconds - m.FromSeconds < LeastGapShare * Dit(m)));
 
         /// <summary>
         /// The sender's dit, in seconds: the mean of its short marks once its lengths split in two, and
