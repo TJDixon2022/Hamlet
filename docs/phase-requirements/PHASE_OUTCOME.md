@@ -1014,3 +1014,15 @@ Run by hand, outside the loop: SESSION.lock taken and released; nothing written 
 **Task 3.** TheOwnersRecordingReads passes as at HEAD.
 
 Build 0 warnings 0 errors. App carry-forward 275 of 278; the three losses, a dispatcher loop at 1 ms, pass alone.
+
+## UNIT 534 - STEP 12
+
+Run by hand, outside the loop: SESSION.lock taken and released; nothing written to RUN_LEDGER.md and nothing under tools\arbiter\ touched; no box ticked and no ruling added to either plan; no scratch file committed; nothing keyed or transmitted. R88 was lifted for the owner's twelve recordings and no other, and the seven of 22:15 to 22:18 were committed with their sheets. HEAD was tagged before-scoreboard and pushed. Version 1.13.218 to 1.13.219. HM-DEC-238.
+
+**Task 1.** TheRecordingsScoreboard reads the twelve recordings through the live path and scores letters right; the baseline is 169 of 240 over the medium-or-better stretches, with both hard limits holding, and docs\cw-scoreboard.md holds it. Each stretch was also read offline; where that reading differs from the reference, both element lists are reported and the reference is unchanged.
+
+**Task 2.** Every shape-side rule was switched off alone and the scoreboard re-run. Thirteen rules came out, best first, re-measured after each: the 0.2 standing line, three lone letters dropped, quieter marks, the pause, a hand's two kinds, key-up, the five-dit floor, both shape gap terms, the rectangle fit, narrowness, and the neighbour judgements of gaps and marks. The total went from 169 to 185 of 240 with the hard limits holding. Eleven rules are kept, each worth letters or a hard limit. Synthetic cases read worse in places and are reported.
+
+**Task 3.** The sender's gap unit taken from its own gaps held the total at 185 and was not kept.
+
+Build 0 warnings 0 errors. App carry-forward 276 of 278; the two losses, a dispatcher loop at 1 ms, pass alone.

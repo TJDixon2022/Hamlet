@@ -2,12 +2,12 @@ PROTOCOL: 2
 PROJECT: Hamlet
 STATE: COMPLETED
 TASK: 3 of 3
-WORK_INSTRUCTION: 533 - a reply is read from its first letter (run by hand)
+WORK_INSTRUCTION: 534 - the owner recordings are the scoreboard (run by hand)
 BALL: tim
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-10-03T19:12:01-04:00
-NOTE: Unit 533 done - a reply is read from its first letter, HM-DEC-237, 1.13.218
+UPDATED: 2026-10-03T21:27:12-04:00
+NOTE: Unit 534 done - the owner's recordings are the scoreboard, 169 to 185 of 240, HM-DEC-238, 1.13.219
 
 ---
 

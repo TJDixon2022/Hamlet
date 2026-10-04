@@ -4,6 +4,61 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-238
+date: 2026-10-03
+refs: work instruction 534, docs/cw-scoreboard.md, tests/Hamlet.RadioEngine.Tests/Cw/TheRecordingsScoreboardTests.cs, src/Hamlet.RadioEngine/Cw/CwRules.cs, src/Hamlet.RadioEngine/Cw/CwSenderGate.cs, src/Hamlet.RadioEngine/Cw/CwPatternGate.cs, src/Hamlet.RadioEngine/Cw/CwSequenceShape.cs, src/Hamlet.RadioEngine/Cw/CwEnvelopeDetector.cs
+---
+
+**The owner's recordings are the scoreboard.** The owner, 2026-10-03: *"Right now we suck."* And: *"I want to run it
+against all the recordings that we've done over the last two days."* From this unit on the owner's recordings decide.
+The tag `before-scoreboard` holds the tree before any change.
+
+**The scoreboard.** `TheRecordingsScoreboard` reads the owner's twelve recordings through the live path at each sheet's
+radio state, and scores letters right, spaces ignored, against the web session's references, by the scorer's edit
+distance with free ends. The total is over the stretches of medium confidence or better. `docs\cw-scoreboard.md` is the
+yardstick and every later unit appends a row.
+
+- **Two hard limits, whatever the score:** loud noise, 30 s and three minutes, prints nothing; and
+  `cw-2026-10-02-200157` reads `FER C HAT<BT> BEST 7V 73 <SK> KC4ZGP DEWA`.
+- **R88 is lifted for those twelve recordings and no other.**
+
+**Baseline 169 of 240. After 185 of 240.** Every shape-side rule was switched off alone, then the ones whose removal raised
+or held the total were removed best first, re-measured after each, and every remaining rule was switched off again until
+no removal raised or held the total. Removed, in order, with the total after each:
+
+1. the 0.2 standing line, 182;
+2. three lone letters dropped together, 184;
+3. quieter-mark admission inside a letter, 184;
+4. the pause that is not a word, 184;
+5. a hand's two kinds, 185;
+6. key-up, 185;
+7. the five-dit floor, 185;
+8. the sequence shape's inside-letter gap tightness, 185;
+9. the rectangle fit, 185;
+10. narrowness, 185;
+11. the neighbour judgement of gaps, 185;
+12. the sequence shape's letter-gap tightness, 185;
+13. the neighbour split of marks, 185.
+
+**Kept**, each lowering the total or breaking a hard limit when off with the thirteen out:
+
+- lone letter (182 off);
+- the cold-start word line at √21 (breaks the first recording);
+- the retry over newer marks when speed changes (152);
+- settle at key-down (179);
+- the sender's own window (148, breaks);
+- release under 0.1 (180);
+- the first pick's wait (181);
+- a silent sender is not a candidate (155);
+- edges (113, noise prints);
+- a mark's own shape (162, noise prints);
+- the handover backlog, which holds the total (185) and stays because switching it off puts back the skip it replaced.
+
+`CwRules` keeps a switch for each kept rule so the next unit can measure again.
+
+**Task 3**, the sender's gap unit from its own gaps rather than its dit, held the total at 185 and was not kept.
+
+---
 id: HM-DEC-237
 date: 2026-10-03
 refs: work instruction 533, src/Hamlet.RadioEngine/Cw/CwSenderGate.cs, tests/Hamlet.RadioEngine.Tests/Cw/AReplyIsReadFromItsFirstLetterTests.cs, tests/fixtures/cw/captured/cw-2026-10-03-144020.wav
