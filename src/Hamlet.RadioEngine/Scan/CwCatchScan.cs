@@ -15,6 +15,12 @@ public enum CatchKind
 
     /// <summary>The scope showed energy and no shape formed.</summary>
     Negative,
+
+    /// <summary>
+    /// **EMPTY** (work instruction 542, task 3): no tone in the passband at the scope's peak, nor half a filter either side. Left
+    /// at once; the owner's negatives - a tone Hamlet cannot read - are kept apart from it.
+    /// </summary>
+    Empty,
 }
 
 /// <summary>Why the scan left a catch.</summary>
@@ -46,6 +52,9 @@ public enum CatchLeft
 
     /// <summary>The CW tab was left, or the radio transmitted, and the scan stopped.</summary>
     ScanStopped,
+
+    /// <summary>Nothing was heard: an empty stop, left at once (work instruction 542).</summary>
+    NothingHeard,
 }
 
 /// <summary>How a scan ended, or why it did not start.</summary>
@@ -117,6 +126,8 @@ public sealed record CatchRigField(string Field, string Value, bool Known);
 /// <param name="Wav">The WAV's file name.</param>
 /// <param name="SampleRate">The WAV's rate.</param>
 /// <param name="Seconds">How long it heard.</param>
+/// <param name="ScopeHz">Where the scope showed the peak, before the scan landed by ear (work instruction 542).</param>
+/// <param name="ToneHz">The tone the ear found there, before the dial was retuned to put it at the CW pitch; null where none.</param>
 public sealed record CwCatch(
     DateTime StartUtc,
     DateTime EndUtc,
@@ -133,7 +144,9 @@ public sealed record CwCatch(
     IReadOnlyList<CatchRigField> Radio,
     string Wav,
     int SampleRate,
-    double Seconds)
+    double Seconds,
+    long ScopeHz = 0,
+    double? ToneHz = null)
 {
     /// <summary>The catch's own JSON file name.</summary>
     [JsonIgnore]
@@ -682,13 +695,79 @@ public sealed class CwCatchScan
             return (null, CwScanEnd.LinkDropped);
         }
 
-        var start = _utcNow();
+        var name = "catch-" + _utcNow().ToString("HHmmss", CultureInfo.InvariantCulture) + "-" + peak.FrequencyHz.ToString(CultureInfo.InvariantCulture);
+
+        // **LANDING BY EAR** (work instruction 542, task 3, HM-DEC-246): at a wide span a scope bin is a few hundred hertz, so the
+        // scope's peak alone landed signals 6 to 241 Hz off the pitch, some outside the filter. So the scan listens, finds the
+        // strongest narrow tone in the passband, and retunes so that tone sits at the CW pitch; with none, it tries half a
+        // filter either side before it calls the stop empty.
+        var (pitch, width) = Hearing();
+        var landedAt = peak.FrequencyHz;
+        (double Hz, double OverDb)? tone = null;
+        var probeStart = _utcNow();
+        var retuned = false;
+        var heardFrom = probeStart;
+
+        try
+        {
+            foreach (var side in new[] { 0L, -(long)(width / 2), (long)(width / 2) })
+            {
+                if (side != 0)
+                {
+                    await Tune(peak.FrequencyHz + side, token).ConfigureAwait(false);
+                    await Wait(Settle, token).ConfigureAwait(false);
+                }
+
+                heardFrom = _utcNow();
+                _ear.Begin();
+                await Wait(Probe, token).ConfigureAwait(false);
+                tone = _ear.Tone(Probe.TotalSeconds, pitch - (width / 2), pitch + (width / 2));
+
+                if (tone is not null)
+                {
+                    landedAt = peak.FrequencyHz + side;
+                    break;
+                }
+            }
+
+            // In CW the dial reads the frequency of a signal heard at the CW pitch, so a tone heard at f is a signal at the dial
+            // plus f less the pitch. A tone already within a few hertz of the pitch is not retuned, and the catch keeps what the
+            // probe heard, so a station landed on squarely loses none of its first letter.
+            if (tone is { } heardTone && Math.Abs(heardTone.Hz - pitch) > LandedHz)
+            {
+                await Tune(landedAt + (long)Math.Round(heardTone.Hz - pitch), token).ConfigureAwait(false);
+                await Wait(Settle, token).ConfigureAwait(false);
+                retuned = true;
+            }
+        }
+        catch (OperationCanceledException)
+        {
+            var stopped = Ended(band, deadline) ?? CwScanEnd.Stopped;
+
+            return (Save(name, peak, probeStart, CatchKind.Empty, Leaving(stopped), tone, _ear.Sense(), []), stopped);
+        }
+        catch (Exception)
+        {
+            return (Save(name, peak, probeStart, CatchKind.Empty, CatchLeft.LinkDropped, tone, _ear.Sense(), []), CwScanEnd.LinkDropped);
+        }
+
+        if (tone is null)
+        {
+            // **EMPTY: LEFT AT ONCE.** No tone at the peak nor half a filter either side: the scope's peak held nothing to hear.
+            Say($"empty at {Mhz(peak.FrequencyHz)}");
+
+            return (Save(name, peak, probeStart, CatchKind.Empty, CatchLeft.NothingHeard, null, _ear.Sense(), []), null);
+        }
+
+        var start = retuned ? _utcNow() : heardFrom;
         var radio = _monitor.State.All()
             .Select(v => new CatchRigField(v.Field.ToString(), v.Text, v.IsKnown))
             .ToList();
-        var name = "catch-" + start.ToString("HHmmss", CultureInfo.InvariantCulture) + "-" + peak.FrequencyHz.ToString(CultureInfo.InvariantCulture);
 
-        _ear.Begin();
+        if (retuned)
+        {
+            _ear.Begin();
+        }
 
         CatchLeft left;
         CwScanEnd? ended = null;
@@ -770,14 +849,69 @@ public sealed class CwCatchScan
             heard = new CatchHeard([], string.Empty, [], [], 0, 0);
         }
 
+        long dial;
+
+        lock (_gate)
+        {
+            dial = _placedHz;
+        }
+
         var caught = new CwCatch(
-            start, _utcNow(), peak.FrequencyHz, peak.FrequencyHz, peak.Level, peak.Floor,
+            start, _utcNow(), dial, dial, peak.Level, peak.Floor,
             sense.ShapeSeen ? CatchKind.Positive : CatchKind.Negative, left,
-            heard.Stations, heard.Text, heard.Letters, heard.Lights, radio, wav, heard.SampleRate, heard.Seconds);
+            heard.Stations, heard.Text, heard.Letters, heard.Lights, radio, wav, heard.SampleRate, heard.Seconds,
+            peak.FrequencyHz, tone?.Hz);
 
         Write(caught.Json, caught);
 
         return (caught, ended);
+    }
+
+    /// <summary>How long the scan listens at each try for a tone before it judges: two seconds, a few of a station's marks.</summary>
+    public static readonly TimeSpan Probe = TimeSpan.FromSeconds(2);
+
+    /// <summary>How near the CW pitch a tone may sit and be landed on already, with no retune: ten hertz, two of the ear's steps.</summary>
+    public const double LandedHz = 10;
+
+    /// <summary>The CW pitch and filter width the scan hears through: the radio's own in CW, or the ear's where unread.</summary>
+    private (double PitchHz, double WidthHz) Hearing()
+    {
+        var (pitch, width) = Cw.CwChain.Passband(_monitor.State);
+
+        // A pitch or width read as nought is not a reading anybody could hear through.
+        return (pitch is > 0 and var p ? p : _ear.PitchHz, width is > 0 and var w ? w : _ear.WidthHz);
+    }
+
+    /// <summary>Save a catch the landing ended: an empty stop, or one stopped while the scan was still listening for a tone.</summary>
+    private CwCatch Save(string name, ScopePeak peak, DateTime start, CatchKind kind, CatchLeft left, (double Hz, double OverDb)? tone, CatchSense sense, IReadOnlyList<CatchRigField> radio)
+    {
+        var wav = name + ".wav";
+        CatchHeard heard;
+
+        try
+        {
+            heard = _ear.End(Path.Combine(ScanFolder!, wav));
+        }
+        catch (Exception)
+        {
+            heard = new CatchHeard([], string.Empty, [], [], 0, 0);
+        }
+
+        long dial;
+
+        lock (_gate)
+        {
+            dial = _placedHz;
+        }
+
+        var caught = new CwCatch(
+            start, _utcNow(), dial, kind == CatchKind.Empty ? peak.FrequencyHz : dial, peak.Level, peak.Floor, sense.ShapeSeen ? CatchKind.Positive : kind, left,
+            heard.Stations, heard.Text, heard.Letters, heard.Lights, radio, wav, heard.SampleRate, heard.Seconds,
+            peak.FrequencyHz, tone?.Hz);
+
+        Write(caught.Json, caught);
+
+        return caught;
     }
 
     private static CatchLeft Leaving(CwScanEnd end) => end switch

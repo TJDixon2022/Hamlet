@@ -51,8 +51,9 @@ public sealed class TheCatchScanTests : IDisposable
     internal static readonly CwScanSettings Short = new(TimeSpan.FromMinutes(4), TimeSpan.FromSeconds(90), TimeSpan.FromSeconds(30));
 
     /// <remarks>
-    /// Tests 1 and 3: the scan visits all three peaks in frequency order, catches the call as a positive and the noise and
-    /// the carrier as negatives, leaves each negative at 30 s, and writes each catch's WAV and JSON and the scan's
+    /// Tests 1 and 3: the scan visits all three peaks in frequency order, catches the call as a positive, the noise as empty
+    /// (no tone to hear, work instruction 542) and the carrier as a negative - a tone with no shape - and
+    /// leaves the negative at 30 s, and writes each catch's WAV and JSON and the scan's
     /// scan.json. The dial is put back where it was.
     /// </remarks>
     [Fact]
@@ -65,7 +66,7 @@ public sealed class TheCatchScanTests : IDisposable
 
         Assert.True(summary.Catches.Count >= 3, $"{summary.Catches.Count} catches");
         Assert.Equal([Call, Noise, Carrier], summary.Catches.Take(3).Select(c => Nearest(c.SignalHz)));
-        Assert.Equal([CatchKind.Positive, CatchKind.Negative, CatchKind.Negative], summary.Catches.Take(3).Select(c => c.Kind));
+        Assert.Equal([CatchKind.Positive, CatchKind.Empty, CatchKind.Negative], summary.Catches.Take(3).Select(c => c.Kind));
         Assert.Equal(CwScanEnd.LengthReached, summary.Ended);
 
         foreach (var entry in summary.Catches)
@@ -74,7 +75,13 @@ public sealed class TheCatchScanTests : IDisposable
             Assert.True(File.Exists(Path.Combine(scan.ScanFolder!, entry.Json)), entry.Json);
         }
 
-        var negative = Read<CwCatch>(scan, summary.Catches[1].Json);
+        var empty = Read<CwCatch>(scan, summary.Catches[1].Json);
+
+        // Steady noise at the scope's peak, no tone at it nor either side: empty, left after the three tries (work instruction 542).
+        Assert.Equal(CatchLeft.NothingHeard, empty.Left);
+        Assert.InRange((empty.EndUtc - empty.StartUtc).TotalSeconds, 0, 8);
+
+        var negative = Read<CwCatch>(scan, summary.Catches[2].Json);
 
         Assert.Equal(CatchLeft.StayRanOut, negative.Left);
         Assert.InRange((negative.EndUtc - negative.StartUtc).TotalSeconds, 30, 31);
@@ -91,6 +98,33 @@ public sealed class TheCatchScanTests : IDisposable
         Assert.True(File.Exists(Path.Combine(scan.ScanFolder!, "scan.json")));
         Assert.Equal(Home, world.Rig.FrequencyHz);
         Assert.Equal(0, world.Rig.KeyingAttempts);
+    }
+
+    /// <remarks>
+    /// Work instruction 542, task 3: **landing by ear.** The scope draws the call's peak 200 Hz from the call, a bin's error at
+    /// a wide span; the scan lands there, hears the call at a 400 Hz tone, and retunes the dial to put it at the 600 Hz pitch,
+    /// within 15 Hz. The empty stop beside it costs the three tries, not 30 s.
+    /// </remarks>
+    [Fact]
+    public async Task TheScanLandsByEar()
+    {
+        using var world = await ScanWorld.Ready(keepsSending: true);
+
+        world.Scope.CallOffsetHz = 200;
+
+        var (scan, summary) = await world.Run(_folder, Short with { Length = TimeSpan.FromSeconds(140) });
+        var first = Read<CwCatch>(scan, summary.Catches[0].Json);
+        var empty = Read<CwCatch>(scan, summary.Catches[1].Json);
+
+        _output.WriteLine($"scope peak {first.ScopeHz} Hz, tone heard {first.ToneHz:0.0} Hz, dial retuned to {first.DialHz} Hz: {first.DialHz - Call:+0;-0;0} Hz from the call; {first.Kind}, `{first.Text}`");
+        _output.WriteLine($"empty stop at {empty.ScopeHz} Hz: {(empty.EndUtc - empty.StartUtc).TotalSeconds:0.0} s");
+
+        Assert.InRange(first.ScopeHz, Call + 150, Call + 250);
+        Assert.InRange(first.ToneHz!.Value, 385, 415);
+        Assert.InRange(first.DialHz, Call - 15, Call + 15);
+        Assert.Equal(CatchKind.Positive, first.Kind);
+        Assert.Equal(CatchKind.Empty, empty.Kind);
+        Assert.InRange((empty.EndUtc - empty.StartUtc).TotalSeconds, 0, 8);
     }
 
     /// <remarks>Test 2: a positive that keeps sending is left when the positive stay, 90 s, runs out.</remarks>
@@ -120,11 +154,15 @@ public sealed class TheCatchScanTests : IDisposable
         var first = Read<CwCatch>(scan, summary.Catches[0].Json);
         var stayed = (first.EndUtc - first.StartUtc).TotalSeconds;
 
-        _output.WriteLine($"{first.Kind} left {first.Left} after {stayed:0.0} s, the call {world.CallSeconds:0.0} s long: `{first.Text}`");
+        // The call began when the dial first came near it; since the scan lands by ear (task 3) it may probe and retune before
+        // the catch begins, so the silence is counted from the end of the call itself.
+        var silent = (first.EndUtc - world.CallStartUtc!.Value.AddSeconds(world.CallSeconds)).TotalSeconds;
+
+        _output.WriteLine($"{first.Kind} left {first.Left} after {stayed:0.0} s, {silent:0.0} s after the call ended, the call {world.CallSeconds:0.0} s long, heard at {first.ToneHz:0} Hz: `{first.Text}`");
 
         Assert.Equal(CatchKind.Positive, first.Kind);
         Assert.Equal(CatchLeft.ReadOut, first.Left);
-        Assert.InRange(stayed, world.CallSeconds + CwCatchScan.SilentSeconds - 2, world.CallSeconds + CwCatchScan.SilentSeconds + 3);
+        Assert.InRange(silent, CwCatchScan.SilentSeconds - 2, CwCatchScan.SilentSeconds + 3);
     }
 
     /// <remarks>Test 4: the scan stops on its own at its length, set short here, and the catch under way says so.</remarks>
@@ -244,7 +282,23 @@ public sealed class TheCatchScanTests : IDisposable
 
         private const double ChunkSeconds = 0.01;
 
-        private readonly float[] _call;
+        private readonly Dictionary<int, float[]> _calls = new();
+
+        // The call keyed at a pitch, once per pitch: eight times over where it keeps sending.
+        private float[] CallAt(int pitch)
+        {
+            if (!_calls.TryGetValue(pitch, out var samples))
+            {
+                var once = CwSignal.Generate(new CwSignalRequest(
+                    "CQ CQ CQ DE W1AW W1AW W1AW K", WordsPerMinute: 18, ToneHz: pitch, SampleRate: Rate, Amplitude: 0.3,
+                    NoiseAmplitude: 0, LeadInSeconds: 0.5, TailSeconds: 1.5, Seed: 5402)).Samples;
+
+                samples = _keepsSending ? Enumerable.Repeat(once, 8).SelectMany(s => s).ToArray() : once;
+                _calls[pitch] = samples;
+            }
+
+            return samples;
+        }
         private readonly float[] _band;
         private readonly bool _keepsSending;
         private readonly List<(double At, Action Do)> _events = new();
@@ -262,12 +316,7 @@ public sealed class TheCatchScanTests : IDisposable
             Scope = new FakeScope();
             Audio = new FakeAudio();
 
-            var once = CwSignal.Generate(new CwSignalRequest(
-                "CQ CQ CQ DE W1AW W1AW W1AW K", WordsPerMinute: 18, ToneHz: 600, SampleRate: Rate, Amplitude: 0.3,
-                NoiseAmplitude: 0, LeadInSeconds: 0.5, TailSeconds: 1.5, Seed: 5402)).Samples;
-
-            CallSeconds = once.Length / (double)Rate;
-            _call = keepsSending ? Enumerable.Repeat(once, 8).SelectMany(s => s).ToArray() : once;
+            CallSeconds = CallAt(600).Length / (double)Rate / (keepsSending ? 8 : 1);
             _band = CwSignal.Generate(new CwSignalRequest(
                 " ", SampleRate: Rate, Amplitude: 0, NoiseAmplitude: 0.04, LeadInSeconds: 15, TailSeconds: 15, Seed: 5403)).Samples;
         }
@@ -283,6 +332,9 @@ public sealed class TheCatchScanTests : IDisposable
         public ListenOnlyLock ListenOnly { get; } = new();
 
         public DateTime Now { get; private set; } = new(2026, 10, 4, 23, 0, 0, DateTimeKind.Utc);
+
+        /// <summary>When the call began, the first time the dial came near it, or null where it never did.</summary>
+        public DateTime? CallStartUtc => _callFrom is { } from ? new DateTime(2026, 10, 4, 23, 0, 0, DateTimeKind.Utc).AddSeconds(from / (double)Rate) : null;
 
         public double CallSeconds { get; }
 
@@ -344,17 +396,22 @@ public sealed class TheCatchScanTests : IDisposable
                 var g = _sample + i;
                 var s = _band[g % _band.Length];
 
-                if (Math.Abs(dial - Call) <= 100)
+                // Each station is heard at the pitch its offset from the dial puts it at, inside the radio's filter, as on the air.
+                var call = Call - dial;
+                var carrier = Carrier - dial;
+
+                if (Math.Abs(call) < 250)
                 {
                     _callFrom ??= g;
 
                     var k = g - _callFrom.Value;
+                    var keyed = CallAt(600 + (int)call);
 
-                    s += k < _call.Length ? _call[k] : 0;
+                    s += k < keyed.Length ? keyed[k] : 0;
                 }
-                else if (Math.Abs(dial - Carrier) <= 100)
+                else if (Math.Abs(carrier) < 250)
                 {
-                    s += (float)(0.3 * Math.Sin(2 * Math.PI * 600 * g / Rate));
+                    s += (float)(0.3 * Math.Sin(2 * Math.PI * (600 + carrier) * g / Rate));
                 }
 
                 chunk[i] = s;
@@ -387,6 +444,9 @@ public sealed class TheCatchScanTests : IDisposable
         public const long Low = 6_995_000;
         public const long High = 7_130_000;
 
+        /// <summary>How far from the call the scope draws its peak: a bin's error at a wide span (work instruction 542).</summary>
+        public long CallOffsetHz { get; set; }
+
         public bool IsSimulated => true;
 
         public bool IsRunning => true;
@@ -411,7 +471,7 @@ public sealed class TheCatchScanTests : IDisposable
 
                 bins[i] = (byte)(20 + noise.Next(-3, 4));
 
-                foreach (var peak in new[] { Call, Noise, Carrier })
+                foreach (var peak in new[] { Call + CallOffsetHz, Noise, Carrier })
                 {
                     if (Math.Abs(at - peak) <= 150)
                     {

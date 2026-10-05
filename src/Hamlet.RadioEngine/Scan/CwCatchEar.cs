@@ -93,6 +93,12 @@ public sealed class CwCatchEar : IDisposable
 
     private readonly Func<Rig.RigState>? _radio;
 
+    /// <summary>The pitch the ear was given, used where the radio's own is unread.</summary>
+    public double PitchHz => _pitchHz;
+
+    /// <summary>The filter width the ear was given, used where the radio's own is unread.</summary>
+    public double WidthHz => _widthHz;
+
     /// <summary>Begin a catch: forget the last one, start recording and reading.</summary>
     public void Begin()
     {
@@ -129,6 +135,115 @@ public sealed class CwCatchEar : IDisposable
                 _letters.Count,
                 heard);
         }
+    }
+
+    /// <summary>How finely the tone finder steps through the passband, in hertz: five, the radio's own CW pitch step.</summary>
+    public const double ToneStepHz = 5;
+
+    /// <summary>
+    /// How far the strongest place in the passband must stand over the passband's median to be a tone: ten decibels. The
+    /// author's: the power is averaged over quarter-second pieces, so a bin of band noise wanders about its mean by a
+    /// decibel or two, and ten clears anything noise does while a keyed station at the edge of being heard stands well over it.
+    /// </summary>
+    public const double ToneOverDb = 10;
+
+    /// <summary>The widest a tone may be at six decibels under its top, in hertz: sixty. A CW signal is tens of hertz wide.</summary>
+    public const double ToneWidestHz = 60;
+
+    /// <summary>
+    /// **THE STRONGEST NARROW TONE IN THE PASSBAND** (work instruction 542, task 3, HM-DEC-246): the last
+    /// <paramref name="seconds"/> of the catch's audio, its power at every <see cref="ToneStepHz"/> from
+    /// <paramref name="lowHz"/> to <paramref name="highHz"/> averaged over quarter-second pieces, and the strongest place, where
+    /// it stands <see cref="ToneOverDb"/> over the median and is no wider than <see cref="ToneWidestHz"/>. Null where none does.
+    /// </summary>
+    /// <param name="seconds">How much of the audio to read.</param>
+    /// <param name="lowHz">The passband's lower edge.</param>
+    /// <param name="highHz">Its upper edge.</param>
+    /// <returns>The tone's pitch and how far it stands over the median, or null.</returns>
+    public (double Hz, double OverDb)? Tone(double seconds, double lowHz, double highHz)
+    {
+        float[] audio;
+        int rate;
+
+        lock (_gate)
+        {
+            rate = _rate > 0 ? _rate : _source.SampleRate;
+
+            var want = (int)(seconds * rate);
+            var all = _audio.SelectMany(a => a).ToArray();
+
+            audio = all.Length > want ? all[^want..] : all;
+        }
+
+        var piece = rate / 4;
+
+        if (audio.Length < piece || highHz <= lowHz)
+        {
+            return null;
+        }
+
+        var pitches = new List<double>();
+
+        for (var f = lowHz; f <= highHz; f += ToneStepHz)
+        {
+            pitches.Add(f);
+        }
+
+        var power = new double[pitches.Count];
+
+        for (var p = 0; p < pitches.Count; p++)
+        {
+            var coefficient = 2 * Math.Cos(2 * Math.PI * pitches[p] / rate);
+
+            for (var start = 0; start + piece <= audio.Length; start += piece)
+            {
+                double s1 = 0, s2 = 0;
+
+                for (var i = start; i < start + piece; i++)
+                {
+                    var s0 = audio[i] + (coefficient * s1) - s2;
+
+                    s2 = s1;
+                    s1 = s0;
+                }
+
+                power[p] += (s1 * s1) + (s2 * s2) - (coefficient * s1 * s2);
+            }
+        }
+
+        var db = power.Select(x => 10 * Math.Log10(x + 1e-20)).ToArray();
+        var median = db.OrderBy(d => d).ElementAt(db.Length / 2);
+        var top = Array.IndexOf(db, db.Max());
+
+        if (db[top] - median < ToneOverDb)
+        {
+            return null;
+        }
+
+        var left = top;
+        var right = top;
+
+        while (left > 0 && db[left - 1] >= db[top] - 6)
+        {
+            left--;
+        }
+
+        while (right < db.Length - 1 && db[right + 1] >= db[top] - 6)
+        {
+            right++;
+        }
+
+        if ((right - left) * ToneStepHz > ToneWidestHz)
+        {
+            return null;
+        }
+
+        // The top placed between its neighbours by the parabola through the three.
+        var offset = top > 0 && top < db.Length - 1
+            ? 0.5 * (db[top - 1] - db[top + 1]) / (db[top - 1] - (2 * db[top]) + db[top + 1])
+            : 0;
+
+        return (pitches[top] + (Math.Clamp(offset, -0.5, 0.5) * ToneStepHz), db[top] - median);
     }
 
     /// <summary>End the catch: stop recording, write the audio, and say what was heard.</summary>
