@@ -79,7 +79,8 @@ public sealed record ScopeSurvey(int Sweeps, double Floor, double Line, double B
 /// wider than a third of that.</item>
 /// </list>
 /// <para>**A PEAK IS EVERY TOP**, not one per run of bins over the line: on a clipped floor two stations' skirts can touch, and
-/// one run would hide the second.</para>
+/// one run would hide the second. A top's width stops where the bins rise again, so a neighbour's slope is not counted as
+/// its own; two such tops within <see cref="MergeHz"/> are then one station.</para>
 /// <para>**ONE STATION PER HALF A FILTER** (<see cref="MergeHz"/>): two stations closer than half the radio's 500 Hz CW filter
 /// land in one passband whichever the dial is tuned to, so the one that stood more is kept.</para>
 /// </remarks>
@@ -176,6 +177,8 @@ public sealed class ScopeWatch
         var seen = new int[count];
         var stood = new int[count];
         var weight = new double[count];
+        var seenWeight = new double[count];
+        var seenSum = new double[count];
         var sum = new double[count];
         var highest = new double[count];
         var widths = new List<double>[count];
@@ -193,12 +196,14 @@ public sealed class ScopeWatch
                 var a = i;
                 var b = i;
 
-                while (a > 0 && sweep[a - 1] >= half)
+                // Out from the top while the bins stand at half its height and keep falling: where they rise again, a neighbour
+                // begins, and its slope is not this peak's width.
+                while (a > 0 && sweep[a - 1] >= half && sweep[a - 1] <= sweep[a])
                 {
                     a--;
                 }
 
-                while (b < count - 1 && sweep[b + 1] >= half)
+                while (b < count - 1 && sweep[b + 1] >= half && sweep[b + 1] <= sweep[b])
                 {
                     b++;
                 }
@@ -209,19 +214,23 @@ public sealed class ScopeWatch
                 highest[i] = Math.Max(highest[i], sweep[i]);
                 (widths[i] ??= new List<double>()).Add(width);
 
-                if (width > widest)
-                {
-                    continue;
-                }
+                var narrow = width <= widest;
 
-                stood[i]++;
+                stood[i] += narrow ? 1 : 0;
 
+                // A station's place is the centroid of its narrow sweeps; a skipped peak's, of every sweep it showed in.
                 for (var k = a; k <= b; k++)
                 {
                     var excess = Math.Max(0, sweep[k] - floor);
 
-                    weight[i] += excess;
-                    sum[i] += excess * Centre(k);
+                    seenWeight[i] += excess;
+                    seenSum[i] += excess * Centre(k);
+
+                    if (narrow)
+                    {
+                        weight[i] += excess;
+                        sum[i] += excess * Centre(k);
+                    }
                 }
             }
         }
@@ -256,7 +265,8 @@ public sealed class ScopeWatch
             var all3 = Enumerable.Range(i - 1, 3).Where(k => k >= 0 && k < count && widths[k] is not null).SelectMany(k => widths[k]).OrderBy(w => w).ToList();
             var width = all3.Count > 0 ? all3[all3.Count / 2] : 0;
             var w = NearSum(weight, i);
-            var place = narrow > 0 && w > 0 ? (long)Math.Round(NearSum(sum, i) / w) : at;
+            var sw = NearSum(seenWeight, i);
+            var place = narrow > 0 && w > 0 ? (long)Math.Round(NearSum(sum, i) / w) : sw > 0 ? (long)Math.Round(NearSum(seenSum, i) / sw) : at;
 
             if (narrow >= least)
             {
