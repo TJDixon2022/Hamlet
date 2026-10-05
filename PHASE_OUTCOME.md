@@ -1833,3 +1833,15 @@ The scan is built. A Scan button beside Record on the CW terminal scans the CW s
 While it runs, one lock shuts every keying path, and the CW send buttons say why.
 
 Twelve tests on a fake radio pass. The scoreboard reads as at HEAD, 186. Build has no warnings; app carry-forward is 278 of 278. Nothing keyed or transmitted.
+
+## UNIT 541 - STEP 12
+
+Run by hand, outside the loop: SESSION.lock was taken and released, nothing was written to RUN_LEDGER.md, nothing under tools\arbiter\ was touched, and no box was ticked. Version 1.13.225 to 1.13.226. HM-DEC-245.
+
+Set A ships: narrowness, three lone letters dropped and the neighbour judgement of gaps. The score went from 186 to 191 (208 right, 15 wrong, 2 invented), with every hard limit as at HEAD.
+
+The ten rules that raised nothing are removed with their switches, 844 lines of decoder source net, and the scoreboard reads exactly as with set A.
+
+The scan now keeps its length and stays in Hamlet's settings.
+
+Build has no warnings. App carry-forward is 276 of 278; the two losses are the dispatcher loop and pass alone.

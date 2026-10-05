@@ -2,12 +2,12 @@ PROTOCOL: 2
 PROJECT: Hamlet
 STATE: COMPLETED
 TASK: 3 of 3
-WORK_INSTRUCTION: 540 - the scan: catch CW unattended (run by hand)
+WORK_INSTRUCTION: 541 - three rules earned their place, the rest go (run by hand)
 BALL: tim
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-10-04T23:29:23-04:00
-NOTE: Unit 540 done: the scan built, 12 tests pass on a fake radio, scoreboard unchanged; amber-or-green needs a ruling
+UPDATED: 2026-10-05T08:44:09-04:00
+NOTE: Unit 541 done: set A on, score 186 to 191; ten rules out, 844 lines; the scan remembers its settings
 
 ---
 

@@ -4,6 +4,54 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-245
+date: 2026-10-05
+refs: work instruction 541, HM-DEC-243, src/Hamlet.RadioEngine/Cw/CwRules.cs, docs/cw-scoreboard.md, tags before-scoreboard and before-false-characters
+---
+
+**Three rules earned their place; ten left the tree.** The owner, 2026-10-05, on set A: *ship it.*
+
+**The three, on by default:**
+- **narrowness:** a mark's energy is in its own bin, not spread across the band;
+- **three lone letters dropped:** three or more one-mark letters in a row are not sending;
+- **the neighbour judgement of gaps:** a gap is judged against the sender's gaps around it.
+
+**The score goes from 186 to 191:**
+
+| | right | wrong | invented | score |
+|---|---|---|---|---|
+| before | 206 | 18 | 2 | 186 |
+| after | 208 | 15 | 2 | 191 |
+
+Every hard limit reads as at HEAD:
+- the first recording reads `FER C HAT<BT> BEST 7V 73 <SK> KC4ZGP DEWA`;
+- loud noise prints nothing;
+- the random carrier prints at 1 of 20 seeds;
+- one letter prints in a silence.
+
+HM-DEC-243 did not ship set A only because its bar asked invented to fall, and invented was already 2; the owner overruled
+that bar.
+
+**The ten, removed from the code with their switches.** They were measured on the new score in work instruction 539 and
+raised nothing:
+- the 0.2 standing line
+- quieter marks
+- the pause
+- a hand's two kinds
+- key-up
+- the five-dit floor
+- the shape's inside-letter tightness
+- the shape's letter-gap tightness
+- the rectangle fit
+- the neighbour split of marks
+
+The tag `before-scoreboard` holds each as it stood before work instruction 534 removed it. The tag
+`before-false-characters` holds the tree before they were restored behind switches. 844 lines of decoder source came out
+net, and the scoreboard reads exactly as with set A alone.
+
+**The scan remembers its settings.** Its length and two stays are kept in Hamlet's settings.
+
+---
 id: HM-DEC-244
 date: 2026-10-04
 supersedes: HM-DEC-107 on two points for this scan only - a dial moved by hand, and where the fence comes from
