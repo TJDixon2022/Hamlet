@@ -91,14 +91,23 @@ public enum CwScanEnd
     NoScope,
 }
 
-/// <summary>A scan's three settings: its length, and how long it stays on a positive and on a negative.</summary>
+/// <summary>A scan's settings: its length, how long it stays on a positive and on a negative, and how long it watches a span.</summary>
 /// <param name="Length">How long the scan runs before it stops on its own; thirty minutes by default.</param>
 /// <param name="PositiveStay">The longest it stays where a shape formed; ninety seconds by default.</param>
 /// <param name="NegativeStay">How long it listens where none did; thirty seconds by default.</param>
 public sealed record CwScanSettings(TimeSpan Length, TimeSpan PositiveStay, TimeSpan NegativeStay)
 {
-    /// <summary>The owner's defaults, 2026-10-04.</summary>
+    /// <summary>The survey time's default: three seconds, the owner's *"two, three seconds"*, about thirteen of the radio's sweeps.</summary>
+    public static readonly TimeSpan DefaultSurveyTime = TimeSpan.FromSeconds(3);
+
+    /// <summary>The owner's defaults, 2026-10-04, and the survey time of 2026-10-05. Declared after the survey time, which it reads.</summary>
     public static CwScanSettings Defaults { get; } = new(TimeSpan.FromMinutes(30), TimeSpan.FromSeconds(90), TimeSpan.FromSeconds(30));
+
+    /// <summary>
+    /// **HOW LONG THE SCAN WATCHES EACH SPAN** before it visits what it saw (work instruction 543, HM-DEC-247); three seconds
+    /// by default.
+    /// </summary>
+    public TimeSpan SurveyTime { get; init; } = DefaultSurveyTime;
 }
 
 /// <summary>One field of the radio's state at landing, as the capture sheet has it.</summary>
@@ -128,6 +137,7 @@ public sealed record CatchRigField(string Field, string Value, bool Known);
 /// <param name="Seconds">How long it heard.</param>
 /// <param name="ScopeHz">Where the scope showed the peak, before the scan landed by ear (work instruction 542).</param>
 /// <param name="ToneHz">The tone the ear found there, before the dial was retuned to put it at the CW pitch; null where none.</param>
+/// <param name="Survey">The survey the station was listed in, counting from one (work instruction 543); nought where none.</param>
 public sealed record CwCatch(
     DateTime StartUtc,
     DateTime EndUtc,
@@ -146,7 +156,8 @@ public sealed record CwCatch(
     int SampleRate,
     double Seconds,
     long ScopeHz = 0,
-    double? ToneHz = null)
+    double? ToneHz = null,
+    int Survey = 0)
 {
     /// <summary>The catch's own JSON file name.</summary>
     [JsonIgnore]
@@ -161,7 +172,35 @@ public sealed record CwCatch(
 /// <param name="Text">What printed.</param>
 /// <param name="Wav">Its WAV.</param>
 /// <param name="Json">Its JSON.</param>
-public sealed record CwScanEntry(DateTime StartUtc, long SignalHz, CatchKind Kind, CatchLeft Left, string Text, string Wav, string Json);
+/// <param name="Survey">The survey the station was listed in, counting from one (work instruction 543).</param>
+public sealed record CwScanEntry(DateTime StartUtc, long SignalHz, CatchKind Kind, CatchLeft Left, string Text, string Wav, string Json, int Survey = 0);
+
+/// <summary>
+/// **ONE SURVEY OF ONE SPAN, AS SCAN.JSON KEEPS IT** (work instruction 543, task 3, HM-DEC-247): the span watched, the sweeps
+/// that came in, and every peak considered, listed or skipped and why. A station the owner sees on the waterfall and the scan
+/// skips has its reason here.
+/// </summary>
+/// <param name="Index">Which survey, counting from one; each catch names the survey it came from.</param>
+/// <param name="StartUtc">When the watching began.</param>
+/// <param name="LowHz">The span's lower edge, inside the CW segment.</param>
+/// <param name="HighHz">Its upper edge.</param>
+/// <param name="Sweeps">How many sweeps came in while the span was watched.</param>
+/// <param name="Floor">The scope's floor on its own scale.</param>
+/// <param name="Line">The line a bin must stand at or over to count.</param>
+/// <param name="BinHz">How wide a bin was.</param>
+/// <param name="Considered">Every peak considered, with its level, width at half its height, sweeps stood and verdict.</param>
+/// <param name="Listed">How many stations were listed to visit.</param>
+public sealed record CwScanSurvey(
+    int Index,
+    DateTime StartUtc,
+    long LowHz,
+    long HighHz,
+    int Sweeps,
+    double Floor,
+    double Line,
+    double BinHz,
+    IReadOnlyList<ScopeCandidate> Considered,
+    int Listed);
 
 /// <summary>A scan, as scan.json holds it.</summary>
 /// <param name="StartUtc">When it started.</param>
@@ -179,6 +218,8 @@ public sealed record CwScanEntry(DateTime StartUtc, long SignalHz, CatchKind Kin
 /// <param name="Ended">How it ended.</param>
 /// <param name="Sentence">What the line under the header said at the end.</param>
 /// <param name="ScopeFollowsDial">Whether the scope moved with the dial when the segment was wider than its span; null where it was not wider.</param>
+/// <param name="SurveySeconds">How long each span was watched (work instruction 543).</param>
+/// <param name="Surveys">Every survey, in order, with every peak it considered.</param>
 public sealed record CwScanSummary(
     DateTime StartUtc,
     DateTime? EndUtc,
@@ -194,7 +235,9 @@ public sealed record CwScanSummary(
     IReadOnlyList<CwScanEntry> Catches,
     CwScanEnd Ended,
     string Sentence,
-    bool? ScopeFollowsDial);
+    bool? ScopeFollowsDial,
+    double SurveySeconds = 0,
+    IReadOnlyList<CwScanSurvey>? Surveys = null);
 
 /// <summary>
 /// **THE SCAN: CATCH CW UNATTENDED, POSITIVES AND NEGATIVES, LISTEN ONLY** (work instruction 540, HM-DEC-244).
@@ -227,9 +270,6 @@ public sealed class CwCatchScan
 
     /// <summary>How often the scan looks at what it hears: a quarter of a second.</summary>
     public static readonly TimeSpan Tick = TimeSpan.FromMilliseconds(250);
-
-    /// <summary>How long the scope is held over at each place surveyed: two seconds, a few of a keyed station's marks.</summary>
-    public static readonly TimeSpan SurveyHold = TimeSpan.FromSeconds(2);
 
     /// <summary>How long after tuning the scan waits before it listens or reads the scope: half a second.</summary>
     public static readonly TimeSpan Settle = TimeSpan.FromMilliseconds(500);
@@ -403,7 +443,9 @@ public sealed class CwCatchScan
         _scope.FrameReady += OnFrame;
 
         var deadline = started + _settings.Length;
-        var cursor = band.CwLowHz;
+        var surveys = new List<CwScanSurvey>();
+        long? nextCentre = null;
+        long? carryFrom = null;
         bool? follows = null;
         CwScanEnd end;
 
@@ -411,10 +453,14 @@ public sealed class CwCatchScan
             started, at, band.Name, band.CwLowHz, band.CwHighHz, home,
             _settings.Length.TotalMinutes, _settings.PositiveStay.TotalSeconds, _settings.NegativeStay.TotalSeconds,
             SilentSeconds, ScopeWatch.MarginSpreads, catches.ToList(), ended,
-            ended == CwScanEnd.Running ? "scanning" : Line(ended, catches.Count), follows);
+            ended == CwScanEnd.Running ? "scanning" : Line(ended, catches.Count), follows,
+            _settings.SurveyTime.TotalSeconds, surveys.ToList());
 
         Write("scan.json", Summary(CwScanEnd.Running, null));
 
+        // **WATCH A SPAN, VISIT WHAT IT SAW, THEN MOVE ON** (work instruction 543, HM-DEC-247). The owner, watching a scan:
+        // *"Advance, scan the waterfall for maybe two, three seconds, see if there's any station, then lock into that station
+        // and try it."*
         try
         {
             while (true)
@@ -425,31 +471,73 @@ public sealed class CwCatchScan
                     break;
                 }
 
-                Say($"scanning {Mhz(cursor)}");
-
-                var (peaks, scopeFollows) = await Survey(band, linked.Token).ConfigureAwait(false);
-
-                follows ??= scopeFollows;
-
-                if (peaks is null)
+                if (!await FirstSweep(linked.Token).ConfigureAwait(false))
                 {
                     end = Ended(band, deadline) ?? CwScanEnd.NoScope;
                     break;
                 }
 
-                // Round and round, in frequency order, from where the scan is now.
-                var round = peaks.Where(p => p.FrequencyHz >= cursor).Concat(peaks.Where(p => p.FrequencyHz < cursor)).ToList();
+                // 1. **ADVANCE ONE SPAN** across the CW segment, wrapping at its end. Where the scope already shows the whole
+                // segment, or stays put when the dial moves (its fixed mode), there is one span and it is what the scope shows.
+                var (low, high) = Edges();
+                long watchLow, watchHigh;
 
-                if (round.Count == 0)
+                if ((low <= band.CwLowHz && high >= band.CwHighHz) || follows == false)
                 {
-                    await Wait(SurveyHold, linked.Token).ConfigureAwait(false);
-                    cursor = band.CwLowHz;
-                    continue;
+                    watchLow = Math.Max(band.CwLowHz, low);
+                    watchHigh = Math.Min(band.CwHighHz, high);
+                }
+                else
+                {
+                    var span = high - low;
+                    var centre = nextCentre ?? band.CwLowHz + (span / 2);
+
+                    if (centre - (span / 2) >= band.CwHighHz)
+                    {
+                        centre = band.CwLowHz + (span / 2);
+                    }
+
+                    if (surveys.Count > 0)
+                    {
+                        Say($"advancing to {Mhz(Math.Max(band.CwLowHz, centre - (span / 2)))}–{Mhz(Math.Min(band.CwHighHz, centre + (span / 2)))}");
+                    }
+
+                    await Tune(centre, linked.Token).ConfigureAwait(false);
+                    await Wait(Settle, linked.Token).ConfigureAwait(false);
+
+                    var (l, h) = Edges();
+
+                    follows = centre >= l && centre <= h;
+                    watchLow = Math.Max(band.CwLowHz, l);
+                    watchHigh = Math.Min(band.CwHighHz, h);
+                    nextCentre = centre + span;
                 }
 
+                // 2. **WATCH THE WATERFALL** for the survey time and list every station that keeps showing up.
+                var (survey, stopped) = await Watch(watchLow, watchHigh, band, deadline, linked.Token).ConfigureAwait(false);
+
+                surveys.Add(new CwScanSurvey(
+                    surveys.Count + 1, survey.StartUtc, watchLow, watchHigh, survey.Result.Sweeps, survey.Result.Floor, survey.Result.Line,
+                    survey.Result.BinHz, survey.Result.Considered, survey.Result.Listed.Count));
+                Write("scan.json", Summary(CwScanEnd.Running, null));
+
+                if (stopped is { } early)
+                {
+                    end = early;
+                    break;
+                }
+
+                // 3. **VISIT EACH STATION ON THE LIST, IN FREQUENCY ORDER**, landing by ear as before. 4. **When the list is
+                // done, advance**; a span with no station advances at once.
+                // After a hand on the dial, the visits begin at the station nearest where it was left, then wrap.
+                var listed = carryFrom is { } hand
+                    ? survey.Result.Listed.Where(p => p.FrequencyHz >= hand - ScopeWatch.MergeHz).Concat(survey.Result.Listed.Where(p => p.FrequencyHz < hand - ScopeWatch.MergeHz)).ToList()
+                    : survey.Result.Listed;
+
+                carryFrom = null;
                 CwScanEnd? stop = null;
 
-                foreach (var peak in round)
+                for (var i = 0; i < listed.Count; i++)
                 {
                     if (Ended(band, deadline) is { } now)
                     {
@@ -457,11 +545,11 @@ public sealed class CwCatchScan
                         break;
                     }
 
-                    var (caught, after) = await CatchAt(peak, band, deadline, linked.Token).ConfigureAwait(false);
+                    var (caught, after) = await CatchAt(listed[i], band, deadline, i + 1, listed.Count, surveys.Count, linked.Token).ConfigureAwait(false);
 
                     if (caught is not null)
                     {
-                        catches.Add(new CwScanEntry(caught.StartUtc, caught.SignalHz, caught.Kind, caught.Left, caught.Text, caught.Wav, caught.Json));
+                        catches.Add(new CwScanEntry(caught.StartUtc, caught.SignalHz, caught.Kind, caught.Left, caught.Text, caught.Wav, caught.Json, caught.Survey));
                         Write("scan.json", Summary(CwScanEnd.Running, null));
                         Caught?.Invoke(caught);
                     }
@@ -482,23 +570,18 @@ public sealed class CwCatchScan
 
                     if (moved is { } there)
                     {
-                        // **THE DIAL MOVED BY HAND: CARRY ON FROM THERE** (the owner, 2026-10-04).
-                        cursor = there;
+                        // **THE DIAL MOVED BY HAND: CARRY ON FROM THERE** (the owner, 2026-10-04): the next span is the one
+                        // centred where the hand left it.
+                        nextCentre = there;
+                        carryFrom = there;
                         break;
                     }
-
-                    cursor = peak.FrequencyHz + ScopeWatch.MergeHz;
                 }
 
                 if (stop is { } s)
                 {
                     end = s;
                     break;
-                }
-
-                if (cursor > band.CwHighHz)
-                {
-                    cursor = band.CwLowHz;
                 }
             }
         }
@@ -586,11 +669,8 @@ public sealed class CwCatchScan
         return _utcNow() >= deadline ? CwScanEnd.LengthReached : null;
     }
 
-    /// <summary>
-    /// The peaks of the CW segment: the scope as it is where the segment fits its span, or else the scope moved across
-    /// the segment by tuning the dial, a span at a time. Null where the scope sends nothing.
-    /// </summary>
-    private async Task<(List<ScopePeak>? Peaks, bool? Follows)> Survey(CwBand band, CancellationToken token)
+    /// <summary>Wait for the scope's first sweep; false where none comes within <see cref="ScopeWait"/>.</summary>
+    private async Task<bool> FirstSweep(CancellationToken token)
     {
         var waited = TimeSpan.Zero;
 
@@ -598,77 +678,56 @@ public sealed class CwCatchScan
         {
             if (waited >= ScopeWait)
             {
-                return (null, null);
+                return false;
             }
 
             await Wait(Tick, token).ConfigureAwait(false);
             waited += Tick;
         }
 
-        var (low, high) = Edges();
-
-        if (low <= band.CwLowHz && high >= band.CwHighHz)
-        {
-            return (await HeldPeaks(band.CwLowHz, band.CwHighHz, token).ConfigureAwait(false), null);
-        }
-
-        // **WIDER THAN THE SCOPE'S SPAN: THE SCOPE IS MOVED ACROSS IT** by tuning the dial, which in the scope's centre mode
-        // carries the span with it. Where it does not - the scope in its fixed mode - only what the scope shows is scanned,
-        // and the summary says so. No scope setting is written.
-        var span = high - low;
-        var peaks = new List<ScopePeak>();
-        bool? follows = null;
-
-        for (var centre = band.CwLowHz + (span / 2); ; centre += span * 9 / 10)
-        {
-            await Tune(Math.Min(centre, band.CwHighHz), token).ConfigureAwait(false);
-            await Wait(Settle, token).ConfigureAwait(false);
-
-            var (l, h) = Edges();
-
-            if (centre < l || centre > h)
-            {
-                follows = false;
-                peaks.AddRange(await HeldPeaks(Math.Max(band.CwLowHz, l), Math.Min(band.CwHighHz, h), token).ConfigureAwait(false));
-                break;
-            }
-
-            follows = true;
-            peaks.AddRange(await HeldPeaks(Math.Max(band.CwLowHz, l), Math.Min(band.CwHighHz, h), token).ConfigureAwait(false));
-
-            if (h >= band.CwHighHz)
-            {
-                break;
-            }
-        }
-
-        var merged = new List<ScopePeak>();
-
-        foreach (var p in peaks.OrderByDescending(p => p.Level))
-        {
-            if (merged.All(m => Math.Abs(m.FrequencyHz - p.FrequencyHz) > ScopeWatch.MergeHz))
-            {
-                merged.Add(p);
-            }
-        }
-
-        return (merged.OrderBy(p => p.FrequencyHz).ToList(), follows);
+        return true;
     }
 
-    private async Task<List<ScopePeak>> HeldPeaks(long fromHz, long toHz, CancellationToken token)
+    /// <summary>
+    /// **WATCH THE WATERFALL** (work instruction 543): forget what was watched, take the sweeps that come in for the survey
+    /// time, saying what it is doing as it goes, and list what they show. Returns early with what ended the scan, if anything did.
+    /// </summary>
+    private async Task<((DateTime StartUtc, ScopeSurvey Result) Survey, CwScanEnd? Ended)> Watch(long lowHz, long highHz, CwBand band, DateTime deadline, CancellationToken token)
     {
+        var start = _utcNow();
+
         lock (_gate)
         {
             _watch.Clear();
         }
 
-        await Wait(SurveyHold, token).ConfigureAwait(false);
-
-        lock (_gate)
+        ScopeSurvey Now()
         {
-            return _watch.Peaks(fromHz, toHz).ToList();
+            lock (_gate)
+            {
+                return _watch.Survey(lowHz, highHz);
+            }
         }
+
+        var watched = TimeSpan.Zero;
+
+        while (watched < _settings.SurveyTime)
+        {
+            await Wait(Tick, token).ConfigureAwait(false);
+            watched += Tick;
+
+            Say($"watching {Mhz(lowHz)}–{Mhz(highHz)} · {Clock(watched)} · {Stations(Now().Listed.Count)}");
+
+            if (Ended(band, deadline) is { } over)
+            {
+                return ((start, Now()), over);
+            }
+        }
+
+        return ((start, Now()), null);
     }
+
+    private static string Stations(int n) => n == 1 ? "1 station" : $"{n} stations";
 
     private (long Low, long High) Edges()
     {
@@ -679,7 +738,7 @@ public sealed class CwCatchScan
     }
 
     /// <summary>Land on a peak, listen, decide, and save the catch. Returns the catch, and what ended the scan, if anything did.</summary>
-    private async Task<(CwCatch? Catch, CwScanEnd? Ended)> CatchAt(ScopePeak peak, CwBand band, DateTime deadline, CancellationToken token)
+    private async Task<(CwCatch? Catch, CwScanEnd? Ended)> CatchAt(ScopePeak peak, CwBand band, DateTime deadline, int index, int total, int survey, CancellationToken token)
     {
         try
         {
@@ -696,6 +755,8 @@ public sealed class CwCatchScan
         }
 
         var name = "catch-" + _utcNow().ToString("HHmmss", CultureInfo.InvariantCulture) + "-" + peak.FrequencyHz.ToString(CultureInfo.InvariantCulture);
+
+        Say($"visiting {index} of {total} · {Mhz4(peak.FrequencyHz)} · landing");
 
         // **LANDING BY EAR** (work instruction 542, task 3, HM-DEC-246): at a wide span a scope bin is a few hundred hertz, so the
         // scope's peak alone landed signals 6 to 241 Hz off the pitch, some outside the filter. So the scan listens, finds the
@@ -744,19 +805,19 @@ public sealed class CwCatchScan
         {
             var stopped = Ended(band, deadline) ?? CwScanEnd.Stopped;
 
-            return (Save(name, peak, probeStart, CatchKind.Empty, Leaving(stopped), tone, _ear.Sense(), []), stopped);
+            return (Save(name, peak, survey, probeStart, CatchKind.Empty, Leaving(stopped), tone, _ear.Sense(), []), stopped);
         }
         catch (Exception)
         {
-            return (Save(name, peak, probeStart, CatchKind.Empty, CatchLeft.LinkDropped, tone, _ear.Sense(), []), CwScanEnd.LinkDropped);
+            return (Save(name, peak, survey, probeStart, CatchKind.Empty, CatchLeft.LinkDropped, tone, _ear.Sense(), []), CwScanEnd.LinkDropped);
         }
 
         if (tone is null)
         {
             // **EMPTY: LEFT AT ONCE.** No tone at the peak nor half a filter either side: the scope's peak held nothing to hear.
-            Say($"empty at {Mhz(peak.FrequencyHz)}");
+            Say($"visiting {index} of {total} · {Mhz4(peak.FrequencyHz)} · empty");
 
-            return (Save(name, peak, probeStart, CatchKind.Empty, CatchLeft.NothingHeard, null, _ear.Sense(), []), null);
+            return (Save(name, peak, survey, probeStart, CatchKind.Empty, CatchLeft.NothingHeard, null, _ear.Sense(), []), null);
         }
 
         var start = retuned ? _utcNow() : heardFrom;
@@ -793,8 +854,8 @@ public sealed class CwCatchScan
             var positive = sense.ShapeSeen;
 
             Say(positive
-                ? $"listening on {Mhz(peak.FrequencyHz)} · {LightWords(sense.Light)} · {Clock(stayed)}"
-                : $"negative on {Mhz(peak.FrequencyHz)} · {Clock(stayed)}");
+                ? $"visiting {index} of {total} · {Mhz4(Placed())} · {LightWords(sense.Light)} · {Clock(stayed)}"
+                : $"visiting {index} of {total} · {Mhz4(Placed())} · negative · {Clock(stayed)}");
 
             if (Ended(band, deadline) is { } over)
             {
@@ -860,7 +921,7 @@ public sealed class CwCatchScan
             start, _utcNow(), dial, dial, peak.Level, peak.Floor,
             sense.ShapeSeen ? CatchKind.Positive : CatchKind.Negative, left,
             heard.Stations, heard.Text, heard.Letters, heard.Lights, radio, wav, heard.SampleRate, heard.Seconds,
-            peak.FrequencyHz, tone?.Hz);
+            peak.FrequencyHz, tone?.Hz, survey);
 
         Write(caught.Json, caught);
 
@@ -883,7 +944,7 @@ public sealed class CwCatchScan
     }
 
     /// <summary>Save a catch the landing ended: an empty stop, or one stopped while the scan was still listening for a tone.</summary>
-    private CwCatch Save(string name, ScopePeak peak, DateTime start, CatchKind kind, CatchLeft left, (double Hz, double OverDb)? tone, CatchSense sense, IReadOnlyList<CatchRigField> radio)
+    private CwCatch Save(string name, ScopePeak peak, int survey, DateTime start, CatchKind kind, CatchLeft left, (double Hz, double OverDb)? tone, CatchSense sense, IReadOnlyList<CatchRigField> radio)
     {
         var wav = name + ".wav";
         CatchHeard heard;
@@ -907,7 +968,7 @@ public sealed class CwCatchScan
         var caught = new CwCatch(
             start, _utcNow(), dial, kind == CatchKind.Empty ? peak.FrequencyHz : dial, peak.Level, peak.Floor, sense.ShapeSeen ? CatchKind.Positive : kind, left,
             heard.Stations, heard.Text, heard.Letters, heard.Lights, radio, wav, heard.SampleRate, heard.Seconds,
-            peak.FrequencyHz, tone?.Hz);
+            peak.FrequencyHz, tone?.Hz, survey);
 
         Write(caught.Json, caught);
 
@@ -1005,6 +1066,16 @@ public sealed class CwCatchScan
     }
 
     private static string Mhz(long hz) => (hz / 1_000_000.0).ToString("0.000", CultureInfo.InvariantCulture);
+
+    private static string Mhz4(long hz) => (hz / 1_000_000.0).ToString("0.0000", CultureInfo.InvariantCulture);
+
+    private long Placed()
+    {
+        lock (_gate)
+        {
+            return _placedHz;
+        }
+    }
 
     private static string Clock(TimeSpan t) => $"{(int)t.TotalMinutes}:{t.Seconds:00}";
 

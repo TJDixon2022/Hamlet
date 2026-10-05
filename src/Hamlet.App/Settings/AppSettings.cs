@@ -145,6 +145,9 @@ public sealed class AppSettings
     /// <summary>The scan's negative stay, in seconds (work instruction 541): thirty unless the operator set another.</summary>
     public int ScanNegativeStaySeconds { get; set; } = 30;
 
+    /// <summary>How long the scan watches each span, in seconds (work instruction 543): three unless the operator set another.</summary>
+    public int ScanSurveySeconds { get; set; } = 3;
+
     /// <summary>Per-panel expand/collapse state, keyed by panel id. An absent
     /// key means expanded — a new panel arrives open (HM-DEC-021).</summary>
     public Dictionary<string, bool> PanelExpanded { get; set; } = new();

@@ -67,7 +67,7 @@ public sealed class WhyClearStationsAreSkippedTests : IDisposable
         // The first survey hold: the tune to the first span, the settle, and the hold.
         var tune = world.Tunes.First(t => Math.Abs(t.Hz - 7_010_000) < 1_000);
         var from = tune.At + CwCatchScan.Settle.TotalSeconds;
-        var until = from + CwCatchScan.SurveyHold.TotalSeconds;
+        var until = from + CwScanSettings.DefaultSurveyTime.TotalSeconds;
         var held = world.Sweeps.Where(s => s.At > from && s.At <= until && s.Low == tune.Hz - SpanWorld.HalfSpanHz).ToList();
         var next = world.Tunes.FirstOrDefault(t => t.At > tune.At);
 
@@ -89,12 +89,14 @@ public sealed class WhyClearStationsAreSkippedTests : IDisposable
 
         var rule = watch.Peaks(held[0].Low, held[0].High);
 
-        _output.WriteLine($"the rule's own peaks over these sweeps: {(rule.Count == 0 ? "none" : string.Join(", ", rule.Select(p => $"{p.FrequencyHz / 1e6:0.0000} MHz")))}");
+        _output.WriteLine($"the rule as it now is, over the same sweeps: {string.Join("; ", watch.Survey(held[0].Low, held[0].High).Considered.Where(c => c.Verdict != ScopeVerdict.NotRepeating).Select(c => $"{c.FrequencyHz / 1e6:0.0000} MHz level {c.Level} {c.WidthHz:0} Hz at half height, {c.Verdict}: {c.Why}"))}");
         _output.WriteLine($"catches in {summary.LengthMinutes * 60:0} s of scanning: {summary.Catches.Count}; tunes: {string.Join(", ", world.Tunes.Select(t => $"{t.Hz / 1e6:0.000}@{t.At:0.0}"))}");
 
-        Assert.Equal(trace.Kept, rule.Count);
-        Assert.InRange(held.Count, 8, 10);
-        Assert.DoesNotContain(summary.Catches, c => c.SignalHz is > 7_000_000 and < 7_020_000);
+        // **AT HEAD THE RULE REFUSED ALL THREE AS TOO WIDE**, the scan having watched 9 sweeps where 3 were needed
+        // (commit f42108f0). The trace keeps the old rule, counted at the line; the rule as it now is lists all three.
+        Assert.Equal(0, trace.Kept);
+        Assert.Equal(3, rule.Count);
+        Assert.InRange(held.Count, 12, 14);
     }
 
     /// <summary>The trace: each station, sweep by sweep, against the rule as it stands.</summary>

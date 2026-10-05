@@ -1602,7 +1602,7 @@
                                 ToolTip.ShowDelay="300" />
                         <!-- SCAN, BESIDE RECORD (work instruction 540, HM-DEC-244). Tim, 2026-10-04: "I want a scan,
                              like a radio scan ... I want this to run unattended." It reads Stop while a scan runs, and
-                             the small button beside it opens its three settings. It never transmits. -->
+                             the small button beside it opens its four settings. It never transmits. -->
                         <Button x:Name="ScanButton"
                                 Content="{Binding CatchScanLabel}"
                                 FontSize="11" Padding="10,2"
@@ -1613,13 +1613,13 @@
                                 Content="⋯"
                                 FontSize="11" Padding="6,2"
                                 IsEnabled="{Binding !IsCatchScanning}"
-                                ToolTip.Tip="The scan's length, and how long it stays where a shape forms and where none does."
+                                ToolTip.Tip="The scan's length, how long it watches each span, and how long it stays where a shape forms and where none does."
                                 ToolTip.ShowDelay="300">
                             <Button.Flyout>
                                 <Flyout Placement="BottomEdgeAlignedRight">
                                     <StackPanel Spacing="6" Width="250">
                                         <TextBlock Text="{Binding CatchScanSettingsLine}" TextWrapping="Wrap" FontSize="11" />
-                                        <Grid ColumnDefinitions="*,110" RowDefinitions="Auto,Auto,Auto" RowSpacing="4">
+                                        <Grid ColumnDefinitions="*,110" RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="4">
                                             <TextBlock Grid.Row="0" Text="scan length, minutes" VerticalAlignment="Center" FontSize="11" />
                                             <NumericUpDown Grid.Row="0" Grid.Column="1" Minimum="1" Maximum="600" Increment="5"
                                                            FormatString="0" Value="{Binding CatchScanMinutes}" />
@@ -1629,6 +1629,9 @@
                                             <TextBlock Grid.Row="2" Text="negative stay, seconds" VerticalAlignment="Center" FontSize="11" />
                                             <NumericUpDown Grid.Row="2" Grid.Column="1" Minimum="5" Maximum="600" Increment="5"
                                                            FormatString="0" Value="{Binding CatchNegativeStaySeconds}" />
+                                            <TextBlock Grid.Row="3" Text="watch each span, seconds" VerticalAlignment="Center" FontSize="11" />
+                                            <NumericUpDown Grid.Row="3" Grid.Column="1" Minimum="1" Maximum="30" Increment="1"
+                                                           FormatString="0" Value="{Binding CatchSurveySeconds}" />
                                         </Grid>
                                     </StackPanel>
                                 </Flyout>

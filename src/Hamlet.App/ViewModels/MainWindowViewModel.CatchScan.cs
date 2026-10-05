@@ -54,6 +54,12 @@ public sealed partial class MainWindowViewModel
     [ObservableProperty]
     private int _catchNegativeStaySeconds = (int)CwScanSettings.Defaults.NegativeStay.TotalSeconds;
 
+    /// <summary>
+    /// How long the scan watches each span before it visits what it saw, in seconds: three by default (work instruction 543).
+    /// </summary>
+    [ObservableProperty]
+    private int _catchSurveySeconds = (int)CwScanSettings.DefaultSurveyTime.TotalSeconds;
+
     /// <summary>The button's word: Scan, or Stop while one runs.</summary>
     public string CatchScanLabel => IsCatchScanning ? "Stop" : "Scan";
 
@@ -109,7 +115,10 @@ public sealed partial class MainWindowViewModel
         var settings = new CwScanSettings(
             TimeSpan.FromMinutes(Math.Max(1, CatchScanMinutes)),
             TimeSpan.FromSeconds(Math.Max(5, CatchPositiveStaySeconds)),
-            TimeSpan.FromSeconds(Math.Max(5, CatchNegativeStaySeconds)));
+            TimeSpan.FromSeconds(Math.Max(5, CatchNegativeStaySeconds)))
+        {
+            SurveyTime = TimeSpan.FromSeconds(Math.Clamp(CatchSurveySeconds, 1, 30)),
+        };
         var scan = new CwCatchScan(
             rig, monitor, scope, ear, _listenOnly, new FileScanHome(SettingsStore.ScanHomePath), CatchScansFolder, settings);
 
@@ -171,7 +180,7 @@ public sealed partial class MainWindowViewModel
     /// <summary>The scan's settings in words, for the popover's heading.</summary>
     public string CatchScanSettingsLine => string.Create(
         CultureInfo.InvariantCulture,
-        $"runs {CatchScanMinutes} min · stays up to {CatchPositiveStaySeconds} s on a shape · {CatchNegativeStaySeconds} s where none forms");
+        $"runs {CatchScanMinutes} min · watches each span {CatchSurveySeconds} s · stays up to {CatchPositiveStaySeconds} s on a shape · {CatchNegativeStaySeconds} s where none forms");
 
     // While the settings are being read in at start, a change is not a change to save.
     private bool _loadingCatchScanSettings;
@@ -189,6 +198,7 @@ public sealed partial class MainWindowViewModel
             CatchScanMinutes = _settings.ScanMinutes is >= 1 and <= 600 ? _settings.ScanMinutes : 30;
             CatchPositiveStaySeconds = _settings.ScanPositiveStaySeconds is >= 5 and <= 600 ? _settings.ScanPositiveStaySeconds : 90;
             CatchNegativeStaySeconds = _settings.ScanNegativeStaySeconds is >= 5 and <= 600 ? _settings.ScanNegativeStaySeconds : 30;
+            CatchSurveySeconds = _settings.ScanSurveySeconds is >= 1 and <= 30 ? _settings.ScanSurveySeconds : 3;
         }
         finally
         {
@@ -210,6 +220,7 @@ public sealed partial class MainWindowViewModel
         _settings.ScanMinutes = CatchScanMinutes;
         _settings.ScanPositiveStaySeconds = CatchPositiveStaySeconds;
         _settings.ScanNegativeStaySeconds = CatchNegativeStaySeconds;
+        _settings.ScanSurveySeconds = CatchSurveySeconds;
         SettingsStore.Save(_settings);
     }
 
@@ -218,4 +229,6 @@ public sealed partial class MainWindowViewModel
     partial void OnCatchPositiveStaySecondsChanged(int value) => SaveCatchScanSettings();
 
     partial void OnCatchNegativeStaySecondsChanged(int value) => SaveCatchScanSettings();
+
+    partial void OnCatchSurveySecondsChanged(int value) => SaveCatchScanSettings();
 }

@@ -37,7 +37,7 @@ public sealed class TheScanRemembersItsSettingsTests : IDisposable
         }
     }
 
-    /// <remarks>Set in the popover, the three come back in a new window read from the saved file.</remarks>
+    /// <remarks>Set in the popover, the four come back in a new window read from the saved file.</remarks>
     [Fact]
     public void WhatWasSetComesBackAfterARestart()
     {
@@ -46,6 +46,7 @@ public sealed class TheScanRemembersItsSettingsTests : IDisposable
             CatchScanMinutes = 45,
             CatchPositiveStaySeconds = 60,
             CatchNegativeStaySeconds = 20,
+            CatchSurveySeconds = 5,
         };
 
         Assert.Equal(45, first.CatchScanMinutes);
@@ -55,9 +56,10 @@ public sealed class TheScanRemembersItsSettingsTests : IDisposable
         Assert.Equal(45, again.CatchScanMinutes);
         Assert.Equal(60, again.CatchPositiveStaySeconds);
         Assert.Equal(20, again.CatchNegativeStaySeconds);
+        Assert.Equal(5, again.CatchSurveySeconds);
     }
 
-    /// <remarks>A fresh install starts at the owner's defaults: 30 minutes, 90 s and 30 s.</remarks>
+    /// <remarks>A fresh install starts at the owner's defaults: 30 minutes, 90 s and 30 s, and a survey of 3 s (work instruction 543).</remarks>
     [Fact]
     public void AFreshInstallStartsAtTheDefaults()
     {
@@ -66,5 +68,6 @@ public sealed class TheScanRemembersItsSettingsTests : IDisposable
         Assert.Equal(30, model.CatchScanMinutes);
         Assert.Equal(90, model.CatchPositiveStaySeconds);
         Assert.Equal(30, model.CatchNegativeStaySeconds);
+        Assert.Equal(3, model.CatchSurveySeconds);
     }
 }
