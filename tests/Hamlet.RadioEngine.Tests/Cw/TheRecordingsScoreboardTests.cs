@@ -106,7 +106,7 @@ public sealed class TheRecordingsScoreboardTests
     internal sealed record Board(IReadOnlyList<Scored> Stretches, IReadOnlyDictionary<string, string> Unassigned, int Total, int OutOf, string FirstReads, IReadOnlyList<(string What, string Reads)> Noise)
     {
         /// <summary>Whether the first recording reads as it must and every noise run printed nothing.</summary>
-        public bool LimitsHold => FirstReads == FirstRecording && Noise.All(n => n.Reads.Length == 0);
+        public bool LimitsHold => FirstReads == FirstRecording && Noise.All(n => n.Reads.Length == 0) && SilencePrints.Count == 0;
 
         /// <summary>Spaces right over the stretches of medium confidence or better (work instruction 538).</summary>
         public int SpacesRight => Stretches.Where(s => s.Stretch.Confidence >= Confidence.Medium).Sum(s => s.Spaces.Right);
@@ -558,6 +558,8 @@ public sealed class TheRecordingsScoreboardTests
         Assert.Equal(FirstRecording, board.FirstReads);
         Assert.All(board.Noise, n => Assert.Equal(string.Empty, n.Reads));
 
+        // **REAL SILENCE PRINTS NOTHING** (work instruction 539, task 2): a hard limit.
+        Assert.Empty(board.SilencePrints);
     }
 
     /// <summary>A stretch's word line beside its letter and word clusters, as the gate held them when its last letter printed.</summary>
