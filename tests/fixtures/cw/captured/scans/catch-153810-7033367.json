@@ -1,0 +1,1060 @@
+{
+  "startUtc": "2026-10-05T15:38:15.8560202Z",
+  "endUtc": "2026-10-05T15:39:46.1054533Z",
+  "dialHz": 7033247,
+  "signalHz": 7033247,
+  "signalLevel": 124,
+  "scopeFloor": 0,
+  "kind": "positive",
+  "left": "stay-ran-out",
+  "stations": [
+    {
+      "pitchHz": 860.274773054407,
+      "shapeScore": 0.13583055874636374,
+      "marks": 394,
+      "printed": false
+    }
+  ],
+  "text": "A S A H HE MATRESS ISSOFT ESCANT FIN IA SAFESAEMTWI IEOUT WAE EHEE\u003CBT\u003E IV VER H TG SACK PAIN SOTHIW TIEUGODAY HAVE WM OTINE6 KKUAEESMG STT FMEEU RMYT MSEE WHATITA ISTE IHEE\u003CBT\u003E \u003CBT\u003EIREMEMBER AT M",
+  "letters": [
+    {
+      "seconds": 0.32,
+      "text": "A"
+    },
+    {
+      "seconds": 3.815,
+      "text": "S"
+    },
+    {
+      "seconds": 4.58,
+      "text": "A"
+    },
+    {
+      "seconds": 7.260000000000001,
+      "text": "H"
+    },
+    {
+      "seconds": 8.882456448230839,
+      "text": "H"
+    },
+    {
+      "seconds": 9.115616541096177,
+      "text": "E"
+    },
+    {
+      "seconds": 9.814587027580535,
+      "text": "M"
+    },
+    {
+      "seconds": 10.235317928987707,
+      "text": "A"
+    },
+    {
+      "seconds": 10.557742060692696,
+      "text": "T"
+    },
+    {
+      "seconds": 11.076161822221254,
+      "text": "R"
+    },
+    {
+      "seconds": 11.258013375351284,
+      "text": "E"
+    },
+    {
+      "seconds": 11.687192185749902,
+      "text": "S"
+    },
+    {
+      "seconds": 12.119011920248747,
+      "text": "S"
+    },
+    {
+      "seconds": 12.741037823172991,
+      "text": "I"
+    },
+    {
+      "seconds": 13.136797119630954,
+      "text": "S"
+    },
+    {
+      "seconds": 13.721556896790458,
+      "text": "S"
+    },
+    {
+      "seconds": 14.483389804104755,
+      "text": "O"
+    },
+    {
+      "seconds": 15.094821223882398,
+      "text": "F"
+    },
+    {
+      "seconds": 15.390060171135143,
+      "text": "T"
+    },
+    {
+      "seconds": 15.657401710136014,
+      "text": "E"
+    },
+    {
+      "seconds": 16.102761752930952,
+      "text": "S"
+    },
+    {
+      "seconds": 16.882712145169894,
+      "text": "C"
+    },
+    {
+      "seconds": 17.284601133022964,
+      "text": "A"
+    },
+    {
+      "seconds": 17.686107561977185,
+      "text": "N"
+    },
+    {
+      "seconds": 18.01094833199814,
+      "text": "T"
+    },
+    {
+      "seconds": 18.764555303272537,
+      "text": "F"
+    },
+    {
+      "seconds": 19.080700330299475,
+      "text": "I"
+    },
+    {
+      "seconds": 19.532432173452257,
+      "text": "N"
+    },
+    {
+      "seconds": 20.071177312093262,
+      "text": "I"
+    },
+    {
+      "seconds": 20.50624062305496,
+      "text": "A"
+    },
+    {
+      "seconds": 21.463517095147655,
+      "text": "S"
+    },
+    {
+      "seconds": 21.867688720614634,
+      "text": "A"
+    },
+    {
+      "seconds": 22.4849730844779,
+      "text": "F"
+    },
+    {
+      "seconds": 22.688299085794867,
+      "text": "E"
+    },
+    {
+      "seconds": 23.236547053409055,
+      "text": "S"
+    },
+    {
+      "seconds": 23.63802870814197,
+      "text": "A"
+    },
+    {
+      "seconds": 23.940069514167355,
+      "text": "E"
+    },
+    {
+      "seconds": 24.650998830147735,
+      "text": "M"
+    },
+    {
+      "seconds": 24.934801356117212,
+      "text": "T"
+    },
+    {
+      "seconds": 25.64602794719679,
+      "text": "W"
+    },
+    {
+      "seconds": 25.947976670860786,
+      "text": "I"
+    },
+    {
+      "seconds": 26.572572735699268,
+      "text": "I"
+    },
+    {
+      "seconds": 26.747347449183234,
+      "text": "E"
+    },
+    {
+      "seconds": 27.53091431396439,
+      "text": "O"
+    },
+    {
+      "seconds": 28.009160445939926,
+      "text": "U"
+    },
+    {
+      "seconds": 28.289110294943544,
+      "text": "T"
+    },
+    {
+      "seconds": 29.095153871515425,
+      "text": "W"
+    },
+    {
+      "seconds": 29.594654677651604,
+      "text": "A"
+    },
+    {
+      "seconds": 29.873224817062876,
+      "text": "E"
+    },
+    {
+      "seconds": 30.276799677563275,
+      "text": "E"
+    },
+    {
+      "seconds": 30.824794636337327,
+      "text": "H"
+    },
+    {
+      "seconds": 31.052726972041004,
+      "text": "E"
+    },
+    {
+      "seconds": 31.24833169938237,
+      "text": "E"
+    },
+    {
+      "seconds": 32.077106929167726,
+      "text": "\u003CBT\u003E"
+    },
+    {
+      "seconds": 32.51029654061496,
+      "text": "I"
+    },
+    {
+      "seconds": 33.1100690100628,
+      "text": "V"
+    },
+    {
+      "seconds": 34.613200719145254,
+      "text": "V"
+    },
+    {
+      "seconds": 34.80577812777908,
+      "text": "E"
+    },
+    {
+      "seconds": 35.29862716759977,
+      "text": "R"
+    },
+    {
+      "seconds": 35.92214989635908,
+      "text": "H"
+    },
+    {
+      "seconds": 36.315614880397014,
+      "text": "T"
+    },
+    {
+      "seconds": 36.82514205403586,
+      "text": "G"
+    },
+    {
+      "seconds": 37.584398547161676,
+      "text": "S"
+    },
+    {
+      "seconds": 37.96681881151494,
+      "text": "A"
+    },
+    {
+      "seconds": 38.676338618451865,
+      "text": "C"
+    },
+    {
+      "seconds": 39.28485373350278,
+      "text": "K"
+    },
+    {
+      "seconds": 40.16136253434583,
+      "text": "P"
+    },
+    {
+      "seconds": 40.551818811514934,
+      "text": "A"
+    },
+    {
+      "seconds": 40.841915755287815,
+      "text": "I"
+    },
+    {
+      "seconds": 41.22512307232632,
+      "text": "N"
+    },
+    {
+      "seconds": 41.80847956484366,
+      "text": "S"
+    },
+    {
+      "seconds": 42.538805097134606,
+      "text": "O"
+    },
+    {
+      "seconds": 42.82181881151494,
+      "text": "T"
+    },
+    {
+      "seconds": 43.31497923910332,
+      "text": "H"
+    },
+    {
+      "seconds": 43.6338772774391,
+      "text": "I"
+    },
+    {
+      "seconds": 44.01170034178561,
+      "text": "W"
+    },
+    {
+      "seconds": 44.42551958184925,
+      "text": "T"
+    },
+    {
+      "seconds": 44.71786623356307,
+      "text": "I"
+    },
+    {
+      "seconds": 44.91167019312686,
+      "text": "E"
+    },
+    {
+      "seconds": 45.39781863738562,
+      "text": "U"
+    },
+    {
+      "seconds": 45.88905728347245,
+      "text": "G"
+    },
+    {
+      "seconds": 46.28682683772316,
+      "text": "O"
+    },
+    {
+      "seconds": 46.83014212828959,
+      "text": "D"
+    },
+    {
+      "seconds": 47.23906753598463,
+      "text": "A"
+    },
+    {
+      "seconds": 48.0382036823707,
+      "text": "Y"
+    },
+    {
+      "seconds": 48.646837390721466,
+      "text": "H"
+    },
+    {
+      "seconds": 49.038440096679196,
+      "text": "A"
+    },
+    {
+      "seconds": 49.63277007112065,
+      "text": "V"
+    },
+    {
+      "seconds": 49.83310810201248,
+      "text": "E"
+    },
+    {
+      "seconds": 50.52853078285135,
+      "text": "W"
+    },
+    {
+      "seconds": 51.006029584182706,
+      "text": "M"
+    },
+    {
+      "seconds": 51.699408949913,
+      "text": "O"
+    },
+    {
+      "seconds": 52.00384303709425,
+      "text": "T"
+    },
+    {
+      "seconds": 52.29448800522015,
+      "text": "I"
+    },
+    {
+      "seconds": 52.70906837397774,
+      "text": "N"
+    },
+    {
+      "seconds": 52.90026145636007,
+      "text": "E"
+    },
+    {
+      "seconds": 53.772008015738855,
+      "text": "6"
+    },
+    {
+      "seconds": 55.25586276033232,
+      "text": "K"
+    },
+    {
+      "seconds": 55.98458888327456,
+      "text": "K"
+    },
+    {
+      "seconds": 56.61719949707843,
+      "text": "U"
+    },
+    {
+      "seconds": 57.00916460451003,
+      "text": "A"
+    },
+    {
+      "seconds": 57.299753732825074,
+      "text": "E"
+    },
+    {
+      "seconds": 57.593147015299444,
+      "text": "E"
+    },
+    {
+      "seconds": 57.973147439290116,
+      "text": "S"
+    },
+    {
+      "seconds": 58.52327540772404,
+      "text": "M"
+    },
+    {
+      "seconds": 59.22072458919328,
+      "text": "G"
+    },
+    {
+      "seconds": 61.21946681004749,
+      "text": "S"
+    },
+    {
+      "seconds": 61.58320289174781,
+      "text": "T"
+    },
+    {
+      "seconds": 61.87166286374096,
+      "text": "T"
+    },
+    {
+      "seconds": 62.66105975450506,
+      "text": "F"
+    },
+    {
+      "seconds": 63.15979042175831,
+      "text": "M"
+    },
+    {
+      "seconds": 63.561213130591625,
+      "text": "E"
+    },
+    {
+      "seconds": 63.854967996312254,
+      "text": "E"
+    },
+    {
+      "seconds": 64.6787739676163,
+      "text": "U"
+    },
+    {
+      "seconds": 65.30419282047225,
+      "text": "R"
+    },
+    {
+      "seconds": 65.70297233604227,
+      "text": "M"
+    },
+    {
+      "seconds": 66.50151917964602,
+      "text": "Y"
+    },
+    {
+      "seconds": 66.89724976642107,
+      "text": "T"
+    },
+    {
+      "seconds": 67.6352112391206,
+      "text": "M"
+    },
+    {
+      "seconds": 68.08145127706777,
+      "text": "S"
+    },
+    {
+      "seconds": 68.2809337744427,
+      "text": "E"
+    },
+    {
+      "seconds": 68.47404179228552,
+      "text": "E"
+    },
+    {
+      "seconds": 69.20116297842496,
+      "text": "W"
+    },
+    {
+      "seconds": 69.69896592389999,
+      "text": "H"
+    },
+    {
+      "seconds": 70.08456268967467,
+      "text": "A"
+    },
+    {
+      "seconds": 70.33206653075491,
+      "text": "T"
+    },
+    {
+      "seconds": 70.70173672054703,
+      "text": "I"
+    },
+    {
+      "seconds": 71.0752451776939,
+      "text": "T"
+    },
+    {
+      "seconds": 71.46975153489934,
+      "text": "A"
+    },
+    {
+      "seconds": 71.97187807172952,
+      "text": "I"
+    },
+    {
+      "seconds": 72.36431362211272,
+      "text": "S"
+    },
+    {
+      "seconds": 72.66552141194863,
+      "text": "T"
+    },
+    {
+      "seconds": 72.87631999779013,
+      "text": "E"
+    },
+    {
+      "seconds": 73.39757575373069,
+      "text": "I"
+    },
+    {
+      "seconds": 73.96346423261348,
+      "text": "H"
+    },
+    {
+      "seconds": 74.16517579200608,
+      "text": "E"
+    },
+    {
+      "seconds": 74.39109843651627,
+      "text": "E"
+    },
+    {
+      "seconds": 75.21003480834243,
+      "text": "\u003CBT\u003E"
+    },
+    {
+      "seconds": 76.28251131346106,
+      "text": "\u003CBT\u003E"
+    },
+    {
+      "seconds": 76.63006549583923,
+      "text": "I"
+    },
+    {
+      "seconds": 77.19850176417468,
+      "text": "R"
+    },
+    {
+      "seconds": 77.41230712101743,
+      "text": "E"
+    },
+    {
+      "seconds": 77.92375782553064,
+      "text": "M"
+    },
+    {
+      "seconds": 78.12651065756627,
+      "text": "E"
+    },
+    {
+      "seconds": 78.6477007757376,
+      "text": "M"
+    },
+    {
+      "seconds": 79.25057054590053,
+      "text": "B"
+    },
+    {
+      "seconds": 79.45136191354017,
+      "text": "E"
+    },
+    {
+      "seconds": 79.96253239435995,
+      "text": "R"
+    },
+    {
+      "seconds": 80.4757228322352,
+      "text": "A"
+    },
+    {
+      "seconds": 80.77219112224797,
+      "text": "T"
+    },
+    {
+      "seconds": 81.25588914404302,
+      "text": "M"
+    }
+  ],
+  "lights": [
+    {
+      "seconds": 0,
+      "light": "listening"
+    },
+    {
+      "seconds": 0.4,
+      "light": "shape forming"
+    },
+    {
+      "seconds": 2.27,
+      "light": "listening"
+    },
+    {
+      "seconds": 2.35,
+      "light": "shape forming"
+    },
+    {
+      "seconds": 7.34,
+      "light": "shape found"
+    },
+    {
+      "seconds": 7.96,
+      "light": "reading"
+    },
+    {
+      "seconds": 14.97,
+      "light": "shape forming"
+    },
+    {
+      "seconds": 18.94,
+      "light": "shape found"
+    },
+    {
+      "seconds": 19.22,
+      "light": "reading"
+    },
+    {
+      "seconds": 20.72,
+      "light": "shape forming"
+    },
+    {
+      "seconds": 22.63,
+      "light": "shape found"
+    },
+    {
+      "seconds": 22.92,
+      "light": "reading"
+    },
+    {
+      "seconds": 23.19,
+      "light": "shape found"
+    },
+    {
+      "seconds": 23.29,
+      "light": "shape forming"
+    },
+    {
+      "seconds": 25.8,
+      "light": "reading"
+    },
+    {
+      "seconds": 34.8,
+      "light": "shape forming"
+    },
+    {
+      "seconds": 34.99,
+      "light": "shape found"
+    },
+    {
+      "seconds": 35.28,
+      "light": "reading"
+    },
+    {
+      "seconds": 35.47,
+      "light": "shape forming"
+    },
+    {
+      "seconds": 36.5,
+      "light": "shape found"
+    },
+    {
+      "seconds": 36.79,
+      "light": "reading"
+    },
+    {
+      "seconds": 43.27,
+      "light": "shape forming"
+    },
+    {
+      "seconds": 43.46,
+      "light": "shape found"
+    },
+    {
+      "seconds": 43.75,
+      "light": "reading"
+    },
+    {
+      "seconds": 46.86,
+      "light": "shape forming"
+    },
+    {
+      "seconds": 47.76,
+      "light": "shape found"
+    },
+    {
+      "seconds": 48.01,
+      "light": "reading"
+    },
+    {
+      "seconds": 52.21,
+      "light": "shape forming"
+    },
+    {
+      "seconds": 56.49,
+      "light": "shape found"
+    },
+    {
+      "seconds": 56.58,
+      "light": "shape forming"
+    },
+    {
+      "seconds": 57.77,
+      "light": "reading"
+    },
+    {
+      "seconds": 59.8,
+      "light": "shape forming"
+    },
+    {
+      "seconds": 60.14,
+      "light": "shape found"
+    },
+    {
+      "seconds": 60.52,
+      "light": "reading"
+    },
+    {
+      "seconds": 62.5,
+      "light": "shape forming"
+    },
+    {
+      "seconds": 62.79,
+      "light": "shape found"
+    },
+    {
+      "seconds": 63.06,
+      "light": "reading"
+    },
+    {
+      "seconds": 66.73,
+      "light": "shape forming"
+    },
+    {
+      "seconds": 68.2,
+      "light": "shape found"
+    },
+    {
+      "seconds": 68.49,
+      "light": "reading"
+    },
+    {
+      "seconds": 69.62,
+      "light": "shape found"
+    },
+    {
+      "seconds": 69.72,
+      "light": "shape forming"
+    },
+    {
+      "seconds": 72.57,
+      "light": "reading"
+    },
+    {
+      "seconds": 73.02,
+      "light": "shape forming"
+    },
+    {
+      "seconds": 75.38,
+      "light": "shape found"
+    },
+    {
+      "seconds": 75.65,
+      "light": "reading"
+    },
+    {
+      "seconds": 76.75,
+      "light": "shape forming"
+    },
+    {
+      "seconds": 77.57,
+      "light": "shape found"
+    },
+    {
+      "seconds": 77.86,
+      "light": "reading"
+    },
+    {
+      "seconds": 82.17,
+      "light": "shape forming"
+    }
+  ],
+  "radio": [
+    {
+      "field": "Frequency",
+      "value": "7.033247 MHz",
+      "known": true
+    },
+    {
+      "field": "Mode",
+      "value": "CW",
+      "known": true
+    },
+    {
+      "field": "DataMode",
+      "value": "off",
+      "known": true
+    },
+    {
+      "field": "FilterSelection",
+      "value": "FIL2",
+      "known": true
+    },
+    {
+      "field": "FilterBandwidth",
+      "value": "500 Hz",
+      "known": true
+    },
+    {
+      "field": "SMeter",
+      "value": "S3",
+      "known": true
+    },
+    {
+      "field": "TransmitStatus",
+      "value": "receiving",
+      "known": true
+    },
+    {
+      "field": "Overflow",
+      "value": "not overloading",
+      "known": true
+    },
+    {
+      "field": "TwinPbtOuter",
+      "value": "unknown",
+      "known": false
+    },
+    {
+      "field": "TwinPbtInner",
+      "value": "no documented command",
+      "known": false
+    },
+    {
+      "field": "Rit",
+      "value": "no documented command",
+      "known": false
+    },
+    {
+      "field": "Swr",
+      "value": "unknown",
+      "known": false
+    },
+    {
+      "field": "PowerOut",
+      "value": "unknown",
+      "known": false
+    },
+    {
+      "field": "RfPower",
+      "value": "31%",
+      "known": true
+    },
+    {
+      "field": "RfGain",
+      "value": "100%",
+      "known": true
+    },
+    {
+      "field": "Squelch",
+      "value": "0%",
+      "known": true
+    },
+    {
+      "field": "SquelchStatus",
+      "value": "open",
+      "known": true
+    },
+    {
+      "field": "Agc",
+      "value": "FAST",
+      "known": true
+    },
+    {
+      "field": "Preamp",
+      "value": "off",
+      "known": true
+    },
+    {
+      "field": "Attenuator",
+      "value": "off",
+      "known": true
+    },
+    {
+      "field": "NoiseBlanker",
+      "value": "off",
+      "known": true
+    },
+    {
+      "field": "NoiseBlankerLevel",
+      "value": "50%",
+      "known": true
+    },
+    {
+      "field": "NoiseReduction",
+      "value": "off",
+      "known": true
+    },
+    {
+      "field": "NoiseReductionLevel",
+      "value": "28%",
+      "known": true
+    },
+    {
+      "field": "AutoNotch",
+      "value": "off",
+      "known": true
+    },
+    {
+      "field": "ManualNotch",
+      "value": "off",
+      "known": true
+    },
+    {
+      "field": "BreakIn",
+      "value": "full",
+      "known": true
+    },
+    {
+      "field": "KeyerSpeed",
+      "value": "20 WPM",
+      "known": true
+    },
+    {
+      "field": "CwPitch",
+      "value": "600 Hz",
+      "known": true
+    },
+    {
+      "field": "AccUsbOutputSelect",
+      "value": "AF",
+      "known": true
+    },
+    {
+      "field": "AccUsbAfLevel",
+      "value": "80%",
+      "known": true
+    },
+    {
+      "field": "NotchPosition",
+      "value": "unknown",
+      "known": false
+    },
+    {
+      "field": "FilterShape",
+      "value": "unknown",
+      "known": false
+    },
+    {
+      "field": "AfLevel",
+      "value": "unknown",
+      "known": false
+    },
+    {
+      "field": "RfSqlFunction",
+      "value": "unknown",
+      "known": false
+    },
+    {
+      "field": "BreakInDelay",
+      "value": "unknown",
+      "known": false
+    },
+    {
+      "field": "AntennaTuner",
+      "value": "unknown",
+      "known": false
+    },
+    {
+      "field": "Alc",
+      "value": "unknown",
+      "known": false
+    },
+    {
+      "field": "AccUsbSquelch",
+      "value": "open regardless of squelch",
+      "known": true
+    },
+    {
+      "field": "Split",
+      "value": "off",
+      "known": true
+    },
+    {
+      "field": "ScopeOn",
+      "value": "on",
+      "known": true
+    },
+    {
+      "field": "ScopeOutput",
+      "value": "on",
+      "known": true
+    },
+    {
+      "field": "CivUsbPort",
+      "value": "unknown",
+      "known": false
+    },
+    {
+      "field": "CivTransceive",
+      "value": "on",
+      "known": true
+    },
+    {
+      "field": "Vfo",
+      "value": "no documented command",
+      "known": false
+    }
+  ],
+  "wav": "catch-153810-7033367.wav",
+  "sampleRate": 48000,
+  "seconds": 85.31,
+  "scopeHz": 7033367,
+  "toneHz": 730.1942277248767,
+  "survey": 14
+}

@@ -1,0 +1,436 @@
+{
+  "startUtc": "2026-10-05T15:48:27.0570101Z",
+  "endUtc": "2026-10-05T15:49:07.6106882Z",
+  "dialHz": 7051088,
+  "signalHz": 7051088,
+  "signalLevel": 19,
+  "scopeFloor": 0,
+  "kind": "positive",
+  "left": "read-out",
+  "stations": [
+    {
+      "pitchHz": 470.3417024314338,
+      "shapeScore": 0.5322712177831378,
+      "marks": 82,
+      "printed": true
+    }
+  ],
+  "text": "N E ANEI BTW\u25A0 I E GG IRIATE YOUR NICE KEYI N",
+  "letters": [
+    {
+      "seconds": 0.45999999999999996,
+      "text": "N"
+    },
+    {
+      "seconds": 1.1,
+      "text": "E"
+    },
+    {
+      "seconds": 2.585,
+      "text": "A"
+    },
+    {
+      "seconds": 3.225,
+      "text": "N"
+    },
+    {
+      "seconds": 3.575,
+      "text": "E"
+    },
+    {
+      "seconds": 3.955,
+      "text": "I"
+    },
+    {
+      "seconds": 5.365,
+      "text": "B"
+    },
+    {
+      "seconds": 5.845000000000001,
+      "text": "T"
+    },
+    {
+      "seconds": 6.805000000000001,
+      "text": "W"
+    },
+    {
+      "seconds": 8.183543507175605,
+      "text": "\u25A0"
+    },
+    {
+      "seconds": 9.149912278482846,
+      "text": "I"
+    },
+    {
+      "seconds": 9.899997900350575,
+      "text": "E"
+    },
+    {
+      "seconds": 11.094538449534937,
+      "text": "G"
+    },
+    {
+      "seconds": 12.112238884773545,
+      "text": "G"
+    },
+    {
+      "seconds": 13.591473931324714,
+      "text": "I"
+    },
+    {
+      "seconds": 14.337518859878653,
+      "text": "R"
+    },
+    {
+      "seconds": 14.816464381747963,
+      "text": "I"
+    },
+    {
+      "seconds": 15.456517490516964,
+      "text": "A"
+    },
+    {
+      "seconds": 15.937771325571411,
+      "text": "T"
+    },
+    {
+      "seconds": 16.25723009104328,
+      "text": "E"
+    },
+    {
+      "seconds": 17.98080636933165,
+      "text": "Y"
+    },
+    {
+      "seconds": 19.075953163146732,
+      "text": "O"
+    },
+    {
+      "seconds": 19.855787530789215,
+      "text": "U"
+    },
+    {
+      "seconds": 20.63699727474879,
+      "text": "R"
+    },
+    {
+      "seconds": 21.769497324707526,
+      "text": "N"
+    },
+    {
+      "seconds": 22.239910522569314,
+      "text": "I"
+    },
+    {
+      "seconds": 23.330913448892577,
+      "text": "C"
+    },
+    {
+      "seconds": 23.649566267253185,
+      "text": "E"
+    },
+    {
+      "seconds": 25.085526931961255,
+      "text": "K"
+    },
+    {
+      "seconds": 25.4043959968416,
+      "text": "E"
+    },
+    {
+      "seconds": 26.66583237250063,
+      "text": "Y"
+    },
+    {
+      "seconds": 27.126450846804502,
+      "text": "I"
+    },
+    {
+      "seconds": 28.69883552498035,
+      "text": "N"
+    }
+  ],
+  "lights": [
+    {
+      "seconds": 0,
+      "light": "listening"
+    },
+    {
+      "seconds": 0.51,
+      "light": "shape forming"
+    },
+    {
+      "seconds": 7.01,
+      "light": "shape found"
+    },
+    {
+      "seconds": 7.45,
+      "light": "reading"
+    },
+    {
+      "seconds": 10.08,
+      "light": "shape forming"
+    },
+    {
+      "seconds": 17.4,
+      "light": "shape found"
+    },
+    {
+      "seconds": 17.84,
+      "light": "reading"
+    },
+    {
+      "seconds": 28.27,
+      "light": "shape forming"
+    },
+    {
+      "seconds": 28.78,
+      "light": "shape found"
+    },
+    {
+      "seconds": 29.15,
+      "light": "reading"
+    },
+    {
+      "seconds": 29.87,
+      "light": "shape forming"
+    },
+    {
+      "seconds": 30.2,
+      "light": "listening"
+    }
+  ],
+  "radio": [
+    {
+      "field": "Frequency",
+      "value": "7.051088 MHz",
+      "known": true
+    },
+    {
+      "field": "Mode",
+      "value": "CW",
+      "known": true
+    },
+    {
+      "field": "DataMode",
+      "value": "off",
+      "known": true
+    },
+    {
+      "field": "FilterSelection",
+      "value": "FIL2",
+      "known": true
+    },
+    {
+      "field": "FilterBandwidth",
+      "value": "500 Hz",
+      "known": true
+    },
+    {
+      "field": "SMeter",
+      "value": "S5",
+      "known": true
+    },
+    {
+      "field": "TransmitStatus",
+      "value": "receiving",
+      "known": true
+    },
+    {
+      "field": "Overflow",
+      "value": "not overloading",
+      "known": true
+    },
+    {
+      "field": "TwinPbtOuter",
+      "value": "unknown",
+      "known": false
+    },
+    {
+      "field": "TwinPbtInner",
+      "value": "no documented command",
+      "known": false
+    },
+    {
+      "field": "Rit",
+      "value": "no documented command",
+      "known": false
+    },
+    {
+      "field": "Swr",
+      "value": "unknown",
+      "known": false
+    },
+    {
+      "field": "PowerOut",
+      "value": "unknown",
+      "known": false
+    },
+    {
+      "field": "RfPower",
+      "value": "31%",
+      "known": true
+    },
+    {
+      "field": "RfGain",
+      "value": "100%",
+      "known": true
+    },
+    {
+      "field": "Squelch",
+      "value": "0%",
+      "known": true
+    },
+    {
+      "field": "SquelchStatus",
+      "value": "open",
+      "known": true
+    },
+    {
+      "field": "Agc",
+      "value": "FAST",
+      "known": true
+    },
+    {
+      "field": "Preamp",
+      "value": "off",
+      "known": true
+    },
+    {
+      "field": "Attenuator",
+      "value": "off",
+      "known": true
+    },
+    {
+      "field": "NoiseBlanker",
+      "value": "off",
+      "known": true
+    },
+    {
+      "field": "NoiseBlankerLevel",
+      "value": "50%",
+      "known": true
+    },
+    {
+      "field": "NoiseReduction",
+      "value": "off",
+      "known": true
+    },
+    {
+      "field": "NoiseReductionLevel",
+      "value": "28%",
+      "known": true
+    },
+    {
+      "field": "AutoNotch",
+      "value": "off",
+      "known": true
+    },
+    {
+      "field": "ManualNotch",
+      "value": "off",
+      "known": true
+    },
+    {
+      "field": "BreakIn",
+      "value": "full",
+      "known": true
+    },
+    {
+      "field": "KeyerSpeed",
+      "value": "20 WPM",
+      "known": true
+    },
+    {
+      "field": "CwPitch",
+      "value": "600 Hz",
+      "known": true
+    },
+    {
+      "field": "AccUsbOutputSelect",
+      "value": "AF",
+      "known": true
+    },
+    {
+      "field": "AccUsbAfLevel",
+      "value": "80%",
+      "known": true
+    },
+    {
+      "field": "NotchPosition",
+      "value": "unknown",
+      "known": false
+    },
+    {
+      "field": "FilterShape",
+      "value": "unknown",
+      "known": false
+    },
+    {
+      "field": "AfLevel",
+      "value": "unknown",
+      "known": false
+    },
+    {
+      "field": "RfSqlFunction",
+      "value": "unknown",
+      "known": false
+    },
+    {
+      "field": "BreakInDelay",
+      "value": "unknown",
+      "known": false
+    },
+    {
+      "field": "AntennaTuner",
+      "value": "unknown",
+      "known": false
+    },
+    {
+      "field": "Alc",
+      "value": "unknown",
+      "known": false
+    },
+    {
+      "field": "AccUsbSquelch",
+      "value": "open regardless of squelch",
+      "known": true
+    },
+    {
+      "field": "Split",
+      "value": "off",
+      "known": true
+    },
+    {
+      "field": "ScopeOn",
+      "value": "on",
+      "known": true
+    },
+    {
+      "field": "ScopeOutput",
+      "value": "on",
+      "known": true
+    },
+    {
+      "field": "CivUsbPort",
+      "value": "unknown",
+      "known": false
+    },
+    {
+      "field": "CivTransceive",
+      "value": "on",
+      "known": true
+    },
+    {
+      "field": "Vfo",
+      "value": "no documented command",
+      "known": false
+    }
+  ],
+  "wav": "catch-154819-7050903.wav",
+  "sampleRate": 48000,
+  "seconds": 39.01,
+  "scopeHz": 7050903,
+  "toneHz": 535.182956063024,
+  "survey": 21
+}

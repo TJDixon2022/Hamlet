@@ -1,0 +1,287 @@
+{
+  "startUtc": "2026-10-05T15:46:16.6178482Z",
+  "endUtc": "2026-10-05T15:46:46.931454Z",
+  "dialHz": 7047225,
+  "signalHz": 7047225,
+  "signalLevel": 17,
+  "scopeFloor": 0,
+  "kind": "negative",
+  "left": "stay-ran-out",
+  "stations": [
+    {
+      "pitchHz": 650.7388522436931,
+      "shapeScore": 0.45371069535055963,
+      "marks": 38,
+      "printed": false
+    }
+  ],
+  "text": "",
+  "letters": [],
+  "lights": [
+    {
+      "seconds": 0,
+      "light": "listening"
+    },
+    {
+      "seconds": 12.8,
+      "light": "shape forming"
+    },
+    {
+      "seconds": 14.19,
+      "light": "listening"
+    },
+    {
+      "seconds": 16.3,
+      "light": "shape forming"
+    },
+    {
+      "seconds": 16.38,
+      "light": "listening"
+    },
+    {
+      "seconds": 17.86,
+      "light": "shape forming"
+    },
+    {
+      "seconds": 18.37,
+      "light": "listening"
+    },
+    {
+      "seconds": 19.92,
+      "light": "shape forming"
+    }
+  ],
+  "radio": [
+    {
+      "field": "Frequency",
+      "value": "7.047225 MHz",
+      "known": true
+    },
+    {
+      "field": "Mode",
+      "value": "CW",
+      "known": true
+    },
+    {
+      "field": "DataMode",
+      "value": "off",
+      "known": true
+    },
+    {
+      "field": "FilterSelection",
+      "value": "FIL2",
+      "known": true
+    },
+    {
+      "field": "FilterBandwidth",
+      "value": "500 Hz",
+      "known": true
+    },
+    {
+      "field": "SMeter",
+      "value": "S4",
+      "known": true
+    },
+    {
+      "field": "TransmitStatus",
+      "value": "receiving",
+      "known": true
+    },
+    {
+      "field": "Overflow",
+      "value": "not overloading",
+      "known": true
+    },
+    {
+      "field": "TwinPbtOuter",
+      "value": "unknown",
+      "known": false
+    },
+    {
+      "field": "TwinPbtInner",
+      "value": "no documented command",
+      "known": false
+    },
+    {
+      "field": "Rit",
+      "value": "no documented command",
+      "known": false
+    },
+    {
+      "field": "Swr",
+      "value": "unknown",
+      "known": false
+    },
+    {
+      "field": "PowerOut",
+      "value": "unknown",
+      "known": false
+    },
+    {
+      "field": "RfPower",
+      "value": "31%",
+      "known": true
+    },
+    {
+      "field": "RfGain",
+      "value": "100%",
+      "known": true
+    },
+    {
+      "field": "Squelch",
+      "value": "0%",
+      "known": true
+    },
+    {
+      "field": "SquelchStatus",
+      "value": "open",
+      "known": true
+    },
+    {
+      "field": "Agc",
+      "value": "FAST",
+      "known": true
+    },
+    {
+      "field": "Preamp",
+      "value": "off",
+      "known": true
+    },
+    {
+      "field": "Attenuator",
+      "value": "off",
+      "known": true
+    },
+    {
+      "field": "NoiseBlanker",
+      "value": "off",
+      "known": true
+    },
+    {
+      "field": "NoiseBlankerLevel",
+      "value": "50%",
+      "known": true
+    },
+    {
+      "field": "NoiseReduction",
+      "value": "off",
+      "known": true
+    },
+    {
+      "field": "NoiseReductionLevel",
+      "value": "28%",
+      "known": true
+    },
+    {
+      "field": "AutoNotch",
+      "value": "off",
+      "known": true
+    },
+    {
+      "field": "ManualNotch",
+      "value": "off",
+      "known": true
+    },
+    {
+      "field": "BreakIn",
+      "value": "full",
+      "known": true
+    },
+    {
+      "field": "KeyerSpeed",
+      "value": "20 WPM",
+      "known": true
+    },
+    {
+      "field": "CwPitch",
+      "value": "600 Hz",
+      "known": true
+    },
+    {
+      "field": "AccUsbOutputSelect",
+      "value": "AF",
+      "known": true
+    },
+    {
+      "field": "AccUsbAfLevel",
+      "value": "80%",
+      "known": true
+    },
+    {
+      "field": "NotchPosition",
+      "value": "unknown",
+      "known": false
+    },
+    {
+      "field": "FilterShape",
+      "value": "unknown",
+      "known": false
+    },
+    {
+      "field": "AfLevel",
+      "value": "unknown",
+      "known": false
+    },
+    {
+      "field": "RfSqlFunction",
+      "value": "unknown",
+      "known": false
+    },
+    {
+      "field": "BreakInDelay",
+      "value": "unknown",
+      "known": false
+    },
+    {
+      "field": "AntennaTuner",
+      "value": "unknown",
+      "known": false
+    },
+    {
+      "field": "Alc",
+      "value": "unknown",
+      "known": false
+    },
+    {
+      "field": "AccUsbSquelch",
+      "value": "open regardless of squelch",
+      "known": true
+    },
+    {
+      "field": "Split",
+      "value": "off",
+      "known": true
+    },
+    {
+      "field": "ScopeOn",
+      "value": "on",
+      "known": true
+    },
+    {
+      "field": "ScopeOutput",
+      "value": "on",
+      "known": true
+    },
+    {
+      "field": "CivUsbPort",
+      "value": "unknown",
+      "known": false
+    },
+    {
+      "field": "CivTransceive",
+      "value": "on",
+      "known": true
+    },
+    {
+      "field": "Vfo",
+      "value": "no documented command",
+      "known": false
+    }
+  ],
+  "wav": "catch-154614-7047190.wav",
+  "sampleRate": 48000,
+  "seconds": 27.52,
+  "scopeHz": 7047190,
+  "toneHz": 634.9203741008027,
+  "survey": 19
+}
