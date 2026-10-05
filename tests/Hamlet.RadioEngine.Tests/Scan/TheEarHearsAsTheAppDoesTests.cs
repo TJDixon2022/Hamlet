@@ -99,6 +99,98 @@ public sealed class TheEarHearsAsTheAppDoesTests
         Assert.True(ear.Green);
     }
 
+    /// <summary>Band noise through the radio's filter, with a steady carrier at a pitch where one is asked for.</summary>
+    private static float[] Band(double seconds, int seed, double? carrierHz)
+    {
+        var samples = RadioEngine.Training.CwSignal.Generate(new RadioEngine.Training.CwSignalRequest(
+            " ", SampleRate: Rate, Amplitude: 0, NoiseAmplitude: 0.04, LeadInSeconds: seconds / 2, TailSeconds: seconds / 2, Seed: seed)).Samples;
+
+        if (carrierHz is { } hz)
+        {
+            for (var i = 0; i < samples.Length; i++)
+            {
+                samples[i] += (float)(0.1 * Math.Sin(2 * Math.PI * hz * i / Rate));
+            }
+        }
+
+        return NarrownessReadsTheFiltersBandTests.ThroughTheFilter(samples, Pitch, Width);
+    }
+
+    /// <summary>The scan's ear on some audio: how long its light stood at each state, and whether it ever went green.</summary>
+    private static (double Amber, double Green, double Shape, string Text) Lit(float[] samples)
+    {
+        var source = new Pushed();
+        using var ear = new CwCatchEar(source, Pitch, Width);
+
+        ear.Begin();
+
+        for (var at = 0; at + (Rate / 100) <= samples.Length; at += Rate / 100)
+        {
+            source.Push(new AudioChunk(at, Rate, samples.AsSpan(at, Rate / 100)));
+        }
+
+        var heard = ear.End(null);
+        var end = samples.Length / (double)Rate;
+        double amber = 0, green = 0;
+
+        for (var i = 0; i < heard.Lights.Count; i++)
+        {
+            var until = i + 1 < heard.Lights.Count ? heard.Lights[i + 1].Seconds : end;
+            var span = until - heard.Lights[i].Seconds;
+
+            if (heard.Lights[i].Light == "shape forming")
+            {
+                amber += span;
+            }
+            else if (heard.Lights[i].Light is "shape found" or "reading")
+            {
+                green += span;
+            }
+        }
+
+        return (amber, green, heard.Stations.Select(s => s.ShapeScore).DefaultIfEmpty(0).Max(), heard.Text);
+    }
+
+    /// <remarks>
+    /// Task 4: a steady carrier at 750 Hz, 26 s, through the filter at five seeds of band noise, never reaches green and
+    /// prints nothing. The first real scan's carrier scored 0.41.
+    /// </remarks>
+    [Theory]
+    [InlineData(5421)]
+    [InlineData(5422)]
+    [InlineData(5423)]
+    [InlineData(5424)]
+    [InlineData(5425)]
+    public void ASteadyCarrierNeverGoesGreen(int seed)
+    {
+        var (amber, green, shape, text) = Lit(Band(26, seed, 750));
+
+        _output.WriteLine($"carrier at 750 Hz, seed {seed}: amber {amber:0.0} s, green {green:0.0} s, shape {shape:0.000}, `{text}`");
+
+        Assert.Equal(0, green);
+        Assert.Equal(string.Empty, text);
+    }
+
+    /// <remarks>
+    /// Task 4: 26 s of band noise through the filter, at five seeds: how long the light stands amber is printed, and it never
+    /// goes green. The first real scan held amber 9.8 s on noise.
+    /// </remarks>
+    [Theory]
+    [InlineData(5421)]
+    [InlineData(5422)]
+    [InlineData(5423)]
+    [InlineData(5424)]
+    [InlineData(5425)]
+    public void BandNoiseNeverGoesGreen(int seed)
+    {
+        var (amber, green, shape, text) = Lit(Band(26, seed, null));
+
+        _output.WriteLine($"band noise, seed {seed}: amber {amber:0.0} s, green {green:0.0} s, shape {shape:0.000}, `{text}`");
+
+        Assert.Equal(0, green);
+        Assert.Equal(string.Empty, text);
+    }
+
     private sealed class Pushed : IAudioSource
     {
         public string DeviceName => "bench";
