@@ -66,13 +66,97 @@ internal static class CwRules
         MarkShape, KindsHeld, GapKinds, OverlapSplit, GapCrossing,
     ];
 
+    /// <summary>A mark crowds the last one only where it overlaps it, or is a piece under half a dit (work instruction 535).</summary>
+    public const string CrowdsNarrowed = "a mark crowds the last only where it overlaps it or is a piece";
+
+    /// <summary>The rules added since the scoreboard began, each switchable (work instruction 539).</summary>
+    public static readonly IReadOnlyList<string> Added = [CrowdsNarrowed, KindsHeld, GapKinds, OverlapSplit, GapCrossing];
+
+    /// <summary>Removed in work instruction 534: a sender prints only at a shape of 0.2, and a sequence stands only there.</summary>
+    public const string StandingLine = "the 0.2 standing line";
+
+    /// <summary>Removed in work instruction 534: three or more lone letters in a row are dropped together.</summary>
+    public const string ThreeLone = "three lone letters dropped";
+
+    /// <summary>Removed in work instruction 534: a standing sender's quieter mark inside its letter is its own.</summary>
+    public const string QuieterMarks = "quieter marks";
+
+    /// <summary>Removed in work instruction 534: a gap over three of the sender's word gaps is a pause, out of its word cluster.</summary>
+    public const string Pause = "the pause";
+
+    /// <summary>Removed in work instruction 534: a hand's overlapping lengths are its two kinds.</summary>
+    public const string HandTwoKinds = "a hand's two kinds";
+
+    /// <summary>Removed in work instruction 534: a bar must end where its tone's peak drops.</summary>
+    public const string KeyUp = "key-up";
+
+    /// <summary>Removed in work instruction 534: a word gap is five dits or more where only the letter cluster shows.</summary>
+    public const string FiveDitFloor = "the five-dit floor";
+
+    /// <summary>Removed in work instruction 534: the shape scores how tightly the gaps inside letters cluster.</summary>
+    public const string InsideLetterTightness = "the shape's inside-letter tightness";
+
+    /// <summary>Removed in work instruction 534: the shape scores how tightly the gaps between letters cluster.</summary>
+    public const string LetterGapTightness = "the shape's letter-gap tightness";
+
+    /// <summary>Removed in work instruction 534: a rectangle fitted as a whole fills what the per-hop tests left.</summary>
+    public const string RectangleFit = "the rectangle fit";
+
+    /// <summary>Removed in work instruction 534: a mark's energy is narrow, in its own bin.</summary>
+    public const string Narrowness = "narrowness";
+
+    /// <summary>Removed in work instruction 534: a gap is judged against its neighbours.</summary>
+    public const string NeighbourGaps = "the neighbour judgement of gaps";
+
+    /// <summary>Removed in work instruction 534: a letter's marks are split against their neighbours.</summary>
+    public const string NeighbourMarks = "the neighbour split of marks";
+
+    /// <summary>
+    /// **THE THIRTEEN REMOVED IN WORK INSTRUCTION 534, BACK BEHIND A SWITCH** (work instruction 539, HM-DEC-243): restored from
+    /// the tag <c>before-scoreboard</c> to be measured on the new score, and off unless a test turns one on or it is listed in
+    /// <see cref="Restored"/>.
+    /// </summary>
+    public static readonly IReadOnlyList<string> Removed =
+    [
+        StandingLine, ThreeLone, QuieterMarks, Pause, HandTwoKinds, KeyUp, FiveDitFloor, InsideLetterTightness,
+        LetterGapTightness, RectangleFit, Narrowness, NeighbourGaps, NeighbourMarks,
+    ];
+
+    /// <summary>The removed rules that came back on the new score (work instruction 539): none, as for <see cref="TakenOut"/>.</summary>
+    public static readonly IReadOnlyList<string> Restored = [];
+
+    /// <summary>
+    /// **KEPT OR ADDED RULES TAKEN OUT ON THE NEW SCORE** (work instruction 539, HM-DEC-243): off unless a test turns one on.
+    /// None: no rule set measured met the order's bar (docs/cw-scoreboard.md), so the reading is HEAD's.
+    /// </summary>
+    public static readonly IReadOnlyList<string> TakenOut = [];
+
     [ThreadStatic]
     private static HashSet<string>? _off;
 
-    /// <summary>Whether a rule is on: always, unless a test turned it off on this thread.</summary>
+    [ThreadStatic]
+    private static HashSet<string>? _with;
+
+    /// <summary>
+    /// Whether a rule is on: a kept or added rule always, unless a test turned it off on this thread; a removed rule never,
+    /// unless it came back or a test turned it on.
+    /// </summary>
     /// <param name="rule">The rule.</param>
     /// <returns>Whether it applies.</returns>
-    public static bool On(string rule) => _off is null || !_off.Contains(rule);
+    public static bool On(string rule)
+    {
+        if (_off is not null && _off.Contains(rule))
+        {
+            return false;
+        }
+
+        if (_with is not null && _with.Contains(rule))
+        {
+            return true;
+        }
+
+        return !TakenOut.Contains(rule) && (!Removed.Contains(rule) || Restored.Contains(rule));
+    }
 
     /// <summary>Turns rules off on this thread until the returned handle is disposed.</summary>
     /// <param name="rules">The rules.</param>
@@ -84,11 +168,39 @@ internal static class CwRules
         _off = new HashSet<string>(before ?? [], StringComparer.Ordinal);
         _off.UnionWith(rules);
 
-        return new Restore(before);
+        return new Restore(() => _off = before);
     }
 
-    private sealed class Restore(HashSet<string>? before) : IDisposable
+    /// <summary>Turns removed or taken-out rules on on this thread until the returned handle is disposed (work instruction 539).</summary>
+    /// <param name="rules">The rules.</param>
+    /// <returns>The handle that turns them off again.</returns>
+    public static IDisposable With(params string[] rules)
     {
-        public void Dispose() => _off = before;
+        var before = _with;
+
+        _with = new HashSet<string>(before ?? [], StringComparer.Ordinal);
+        _with.UnionWith(rules);
+
+        return new Restore(() => _with = before);
+    }
+
+    /// <summary>This thread's switches, to carry to another thread (work instruction 539: the scoreboard reads in parallel).</summary>
+    internal static (HashSet<string>? Off, HashSet<string>? With) Current => (_off, _with);
+
+    /// <summary>Takes another thread's switches on this one until the returned handle is disposed.</summary>
+    /// <param name="state">The switches, from <see cref="Current"/>.</param>
+    /// <returns>The handle that puts this thread's own back.</returns>
+    internal static IDisposable Use((HashSet<string>? Off, HashSet<string>? With) state)
+    {
+        var (off, with) = (_off, _with);
+
+        (_off, _with) = state;
+
+        return new Restore(() => (_off, _with) = (off, with));
+    }
+
+    private sealed class Restore(Action undo) : IDisposable
+    {
+        public void Dispose() => undo();
     }
 }

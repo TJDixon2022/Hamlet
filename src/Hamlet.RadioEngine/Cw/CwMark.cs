@@ -60,6 +60,14 @@ public sealed record CwMark(
 
     /// <summary>Whether the rectangle fit found this mark (work instruction 516).</summary>
     public bool Fitted => double.IsFinite(FitScore);
+
+    /// <summary>
+    /// Whether the mark stood by its sender's pattern alone: at a standing sender's pitch, of its dit or
+    /// dah length, inside one of its letters, and quieter than the sender by more than the level
+    /// tolerance and no more than twice it (work instruction 511, task 2, HM-DEC-215). Set only while the quieter-marks
+    /// rule is on (work instruction 539).
+    /// </summary>
+    public bool BySendersPattern { get; init; }
 }
 
 /// <summary>

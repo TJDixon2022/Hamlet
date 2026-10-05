@@ -373,10 +373,21 @@ public sealed class TheRecordingsScoreboardTests
         var inventedBy = new Dictionary<string, List<Printed>>();
         var silencePrints = new List<(string, (double, double), Printed)>();
 
+        // Read in parallel, each worker on this thread's rule switches (work instruction 539): one board took 44 s on one thread.
+        var rules = CwRules.Current;
+        var reads = new System.Collections.Concurrent.ConcurrentDictionary<string, IReadOnlyList<Printed>>(StringComparer.Ordinal);
+        var limitsRead = limits ? Task.Run(() => { using var _ = CwRules.Use(rules); return (TheFirst(), NoiseRuns()); }) : null;
+
+        Parallel.ForEach(Stretches.Select(s => s.Recording).Distinct(), r =>
+        {
+            using var _ = CwRules.Use(rules);
+            reads[r] = ReadLive(r).Letters;
+        });
+
         foreach (var recording in Stretches.Select(s => s.Recording).Distinct())
         {
             var mine = Stretches.Where(s => s.Recording == recording).ToList();
-            var (letters, _) = ReadLive(recording);
+            var letters = reads[recording];
             var by = mine.ToDictionary(s => s, _ => new List<Printed>());
             var none = new StringBuilder();
 
@@ -427,8 +438,7 @@ public sealed class TheRecordingsScoreboardTests
         }
 
         var counted = scored.Where(s => s.Stretch.Confidence >= Confidence.Medium).ToList();
-        var first = limits ? TheFirst() : FirstRecording;
-        var noise = limits ? NoiseRuns() : [];
+        var (first, noise) = limitsRead is null ? (FirstRecording, new List<(string What, string Reads)>()) : limitsRead.Result;
 
         return new Board(scored, unassigned, counted.Sum(s => s.Right), counted.Sum(s => s.ReferenceLetters), first, noise)
         {
@@ -481,27 +491,40 @@ public sealed class TheRecordingsScoreboardTests
     /// <summary>Loud noise, 30 s and three minutes, at the two seeds the noise tests use; and a carrier keyed at random at five seeds.</summary>
     internal static List<(string What, string Reads)> NoiseRuns()
     {
-        var runs = new List<(string, string)>();
+        var rules = CwRules.Current;
+        var jobs = new List<(string What, Func<float[]> Audio)>();
 
         foreach (var (seconds, seed) in new[] { (30, 5190 + 30), (180, 5190 + 180), (30, 5100 + 30), (180, 5100 + 180) })
         {
-            var noise = CwSignal.Generate(new CwSignalRequest(
-                " ", SampleRate: 8000, Amplitude: 0, NoiseAmplitude: 0.3, LeadInSeconds: seconds / 2.0, TailSeconds: seconds / 2.0, Seed: seed)).Samples;
-
-            runs.Add(($"{seconds} s of loud noise, seed {seed}", ReadLive(noise, 8000).Text));
+            jobs.Add(($"{seconds} s of loud noise, seed {seed}", () => CwSignal.Generate(new CwSignalRequest(
+                " ", SampleRate: 8000, Amplitude: 0, NoiseAmplitude: 0.3, LeadInSeconds: seconds / 2.0, TailSeconds: seconds / 2.0, Seed: seed)).Samples));
         }
 
         // **A CARRIER KEYED AT RANDOM PRINTS NOTHING** (work instruction 535, the owner's third hard limit): alone at 24 dB, marks
-        // of 30 to 300 ms at gaps of 30 to 400 ms, at five seeds.
-        foreach (var seed in new[] { 5193, 5194, 5195, 5196, 5197 })
+        // of 30 to 300 ms at gaps of 30 to 400 ms, at the twenty seeds of its own test (five until work instruction 539, which found a
+        // change that printed at a seed the five did not hold).
+        foreach (var seed in Enumerable.Range(5193, 20))
         {
-            var carrier = TheShapePicksTheSenderTests.Noise(25, 5192);
+            jobs.Add(($"a carrier keyed at random, seed {seed},", () =>
+            {
+                var carrier = TheShapePicksTheSenderTests.Noise(25, 5192);
 
-            TheShapePicksTheSenderTests.Key(carrier, TheShapePicksTheSenderTests.RandomKeying(2.5, 23, seed), 625, 24);
-            runs.Add(($"a carrier keyed at random, seed {seed},", ReadLive(carrier, 8000).Text));
+                TheShapePicksTheSenderTests.Key(carrier, TheShapePicksTheSenderTests.RandomKeying(2.5, 23, seed), 625, 24);
+
+                return carrier;
+            }));
         }
 
-        return runs;
+        // Each run on the caller's rule switches, in parallel, kept in order (work instruction 539).
+        var reads = new string[jobs.Count];
+
+        Parallel.For(0, jobs.Count, i =>
+        {
+            using var _ = CwRules.Use(rules);
+            reads[i] = ReadLive(jobs[i].Audio(), 8000).Text;
+        });
+
+        return jobs.Select((j, i) => (j.What, reads[i])).ToList();
     }
 
     /// <summary>The board as the markdown rows of docs\cw-scoreboard.md.</summary>
@@ -641,7 +664,7 @@ public sealed class TheRecordingsScoreboardTests
             var board = Score();
             var carriers = board.Noise.Count(n => n.What.StartsWith("a carrier", StringComparison.Ordinal) && n.Reads.Length > 0);
 
-            _output.WriteLine($"| off: {(off.Length == 0 ? "none" : string.Join(", ", off))} | letters {board.Total} of {board.OutOf} | spaces {board.SpacesRight} of {board.SpacesOutOf}, {board.SpacesAdded} added | first `{board.FirstReads}` | noise prints {board.Noise.Count(n => !n.What.StartsWith("a carrier", StringComparison.Ordinal) && n.Reads.Length > 0)} | carriers print {carriers} of 5 |");
+            _output.WriteLine($"| off: {(off.Length == 0 ? "none" : string.Join(", ", off))} | letters {board.Total} of {board.OutOf} | spaces {board.SpacesRight} of {board.SpacesOutOf}, {board.SpacesAdded} added | first `{board.FirstReads}` | noise prints {board.Noise.Count(n => !n.What.StartsWith("a carrier", StringComparison.Ordinal) && n.Reads.Length > 0)} | carriers print {carriers} of 20 |");
 
             foreach (var s in board.Stretches.Where(s => s.Stretch.Confidence != Confidence.None))
             {
@@ -663,6 +686,68 @@ public sealed class TheRecordingsScoreboardTests
         Assert.Equal(new Spaces(1, 1, 0, 2), SpacesOf("CQ DEXW1AW", "CQ DE W1AW"));
         Assert.Equal(new Spaces(1, 0, 0, 1), SpacesOf("57<BT> B", "57<BT> B"));
         Assert.Equal(new Spaces(0, 3, 0, 3), SpacesOf(string.Empty, "A B C D"));
+    }
+
+    /// <summary>One board's row on the new score: right, wrong, invented, the score, spaces and the hard limits.</summary>
+    internal static string ScoreRow(string label, Board board)
+    {
+        var carriers = board.Noise.Count(n => n.What.StartsWith("a carrier", StringComparison.Ordinal) && n.Reads.Length > 0);
+        var noise = board.Noise.Count(n => !n.What.StartsWith("a carrier", StringComparison.Ordinal) && n.Reads.Length > 0);
+
+        return $"| {label} | {board.Total} | {board.Wrong} | {board.Invented} | **{board.Score}** | {board.SpacesRight} | {(board.FirstReads == FirstRecording ? "reads" : $"`{board.FirstReads}`")} | {noise} | {carriers} of 20 | {board.SilencePrints.Count} |";
+    }
+
+    /// <summary>The rules a search starts from, from the environment: kept rules taken out, and removed rules brought back.</summary>
+    private static (string[] Off, string[] With) SearchBase()
+    {
+        static string[] Read(string name)
+            => (Environment.GetEnvironmentVariable(name) ?? string.Empty).Split('|', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+
+        return (Read("HAMLET_RULES_OFF"), Read("HAMLET_RULES_WITH"));
+    }
+
+    /// <remarks>
+    /// Work instruction 539, task 3: from the rules in <c>HAMLET_RULES_OFF</c> and <c>HAMLET_RULES_WITH</c> (separated by
+    /// |), every single change - each kept or added rule taken out, each removed rule brought back, and each one already
+    /// changed changed back - scored on the new score, best first. Asserts nothing; the table is the result, and the search
+    /// is stepped by hand from it, one change at a time.
+    /// </remarks>
+    [Fact]
+    public void EveryChangeFromTheSearchBase()
+    {
+        var (off, with) = SearchBase();
+        Board Measure(string[] o, string[] w)
+        {
+            using var a = CwRules.Off(o);
+            using var b = CwRules.With(w);
+
+            return Score();
+        }
+
+        var start = Measure(off, with);
+        var rows = new List<(int Score, string Row)>();
+
+        _output.WriteLine($"base: off [{string.Join(", ", off)}], with [{string.Join(", ", with)}]");
+        _output.WriteLine("| change | right | wrong | invented | score | spaces | first | noise prints | carriers print | silence prints |");
+        _output.WriteLine("|---|---|---|---|---|---|---|---|---|---|");
+        _output.WriteLine(ScoreRow("none (the base)", start));
+
+        // On by default (kept, added, or restored): taken out with Off. Off by default (removed, or taken out): brought back with With.
+        foreach (var rule in CwRules.All.Concat(CwRules.Added).Concat(CwRules.Removed).Distinct())
+        {
+            var onByDefault = !CwRules.TakenOut.Contains(rule) && (!CwRules.Removed.Contains(rule) || CwRules.Restored.Contains(rule));
+            var board = onByDefault
+                ? (off.Contains(rule) ? Measure(off.Where(r => r != rule).ToArray(), with) : Measure(off.Append(rule).ToArray(), with))
+                : (with.Contains(rule) ? Measure(off, with.Where(r => r != rule).ToArray()) : Measure(off, with.Append(rule).ToArray()));
+            var label = onByDefault ? (off.Contains(rule) ? "back in: " : "out: ") : (with.Contains(rule) ? "out again: " : "back in: ");
+
+            rows.Add((board.Score, ScoreRow(label + rule, board)));
+        }
+
+        foreach (var (_, row) in rows.OrderByDescending(r => r.Score))
+        {
+            _output.WriteLine(row);
+        }
     }
 
     /// <summary>Scores the board with some rules off, and prints one row of the rule table.</summary>

@@ -38,14 +38,23 @@ public sealed record CwSequenceShape(
     /// <summary>Nothing that splits in two: no score.</summary>
     public static CwSequenceShape None { get; } = new(0, 0, 0, 0, 0, 0);
 
-    /// <summary>The product of all six: how much it sounds like code, nought to one.</summary>
-    public double Score => Rectangle * Dits * Dahs * Separation * Consistency * Evidence;
+    /// <summary>The product of all eight, the two gap terms one unless their rules are on: how much it sounds like code, nought to one.</summary>
+    public double Score => Rectangle * Dits * Dahs * Separation * Consistency * Evidence * ElementGaps * LetterGaps;
+
+    /// <summary>
+    /// How tightly its gaps inside letters cluster, as for the dits: one unless the inside-letter tightness rule is on
+    /// (removed in work instruction 534, restored behind a switch by work instruction 539).
+    /// </summary>
+    public double ElementGaps { get; init; } = 1;
+
+    /// <summary>The same for its gaps between letters, under its own word line: one unless the letter-gap tightness rule is on.</summary>
+    public double LetterGaps { get; init; } = 1;
 
     /// <summary>The six and the score, for the tests' report.</summary>
     public override string ToString()
         => string.Create(
             System.Globalization.CultureInfo.InvariantCulture,
-            $"shape {Score:0.000} (rectangle {Rectangle:0.00}, dits {Dits:0.00}, dahs {Dahs:0.00}, apart {Separation:0.00}, consistent {Consistency:0.00}, evidence {Evidence:0.00})");
+            $"shape {Score:0.000} (rectangle {Rectangle:0.00}, dits {Dits:0.00}, dahs {Dahs:0.00}, apart {Separation:0.00}, element gaps {ElementGaps:0.00}, letter gaps {LetterGaps:0.00}, consistent {Consistency:0.00}, evidence {Evidence:0.00})");
 
     /// <summary>
     /// Score some marks of one sender, in time order, and how many it has had standing in all.
@@ -53,8 +62,9 @@ public sealed record CwSequenceShape(
     /// <param name="marks">Its recent marks, oldest first.</param>
     /// <param name="count">How many marks it has had in all, for the evidence.</param>
     /// <param name="againstAHand">Whether tightness is scored against a hand (work instruction 520), or, false, unit 519's machine scale, kept for the tests' before.</param>
+    /// <param name="wordLineSeconds">The sender's own word line, for the letter-gap tightness: its letter gaps are its longer gaps under it.</param>
     /// <returns>The shape; <see cref="None"/> where its marks do not split into two lengths.</returns>
-    public static CwSequenceShape Of(IReadOnlyList<CwMark> marks, int count, bool againstAHand = true)
+    public static CwSequenceShape Of(IReadOnlyList<CwMark> marks, int count, bool againstAHand = true, double wordLineSeconds = double.NaN)
     {
         var lengths = marks.Select(m => m.ToSeconds - m.FromSeconds).ToList();
         var sorted = lengths.OrderBy(l => l).ToList();
@@ -113,13 +123,45 @@ public sealed record CwSequenceShape(
         var consistent = lengths.Count(l =>
             Math.Min(Math.Abs(Math.Log(l / dit)), Math.Abs(Math.Log(l / dah))) <= Math.Log(CwPatternGate.LengthRatio));
 
+        // **THE GAP TERMS, BEHIND A SWITCH** (removed in work instruction 534, restored to be measured by work instruction 539):
+        // how tightly the gaps inside letters, and the gaps between letters under the sender's own word line, cluster.
+        var gaps = marks.Zip(marks.Skip(1), (a, b) => b.FromSeconds - a.ToSeconds)
+            .Where(g => g > 0 && g < CwPatternGate.SilenceSeconds)
+            .OrderBy(g => g)
+            .ToList();
+        var inside = gaps.Where(g => g < CwPatternGate.InsideLetterShare * dit).ToList();
+        var between = LowestCluster(gaps.Where(g => g >= CwPatternGate.InsideLetterShare * dit && !(g >= wordLineSeconds)).ToList());
+
         return new CwSequenceShape(
             rectangles.Count > 0 ? rectangles.Average() : 1,
             Tightness(dits, againstAHand),
             Tightness(dahs, againstAHand),
             Math.Clamp((Math.Log(dah / dit) - Math.Log(2)) / (Math.Log(3) - Math.Log(2)), 0, 1),
             lengths.Count > 0 ? consistent / (double)lengths.Count : 0,
-            1 - Math.Exp(-count / EvidenceMarks));
+            1 - Math.Exp(-count / EvidenceMarks))
+        {
+            ElementGaps = !CwRules.On(CwRules.InsideLetterTightness) ? 1 : !againstAHand && inside.Count < 2 ? 1 : Tightness(inside, againstAHand),
+            LetterGaps = !CwRules.On(CwRules.LetterGapTightness) ? 1 : !againstAHand && between.Count < 2 ? 1 : Tightness(between, againstAHand),
+        };
+    }
+
+    // The gaps between letters are the lowest cluster of the longer gaps, walked up and split where two
+    // neighbours differ by √(7/3), half of three to seven in log-length, as the reader finds them (unit 501).
+    private static List<double> LowestCluster(List<double> sorted)
+    {
+        var cluster = new List<double>();
+
+        foreach (var g in sorted)
+        {
+            if (cluster.Count > 0 && g / cluster[^1] >= Math.Sqrt(7.0 / 3))
+            {
+                break;
+            }
+
+            cluster.Add(g);
+        }
+
+        return cluster;
     }
 
     private static double Centre(IReadOnlyList<double> lengths) => Math.Exp(lengths.Average(l => Math.Log(l)));

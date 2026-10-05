@@ -249,3 +249,58 @@ The owner, 2026-10-04: *"We are still having way too much false character."* Let
 | `cw-2026-10-03-221851` | 601.3 | 0-30 s | low | `BEST 73 <AR> W2L CQ DE NA8SB K` | `SES E IE E IEA E I GE EI E NAERE I BK` | 4 of 20 | 4 of 7 | 3 | 2 | 6 | 0 |
 
 Invented at the baseline: `143951`, an `E` at 16.6 s at 500 Hz, and `221502`, a `■` at 21.5 s at 500 Hz, the second printed 60 ms after the station's last mark, inside the silence that follows.
+
+### Every rule alone on the new score, from HEAD (work instruction 539, task 3)
+
+Each of the kept and added rules taken out, and each of the thirteen removed in work instruction 534 brought back from the tag `before-scoreboard` behind a switch, one at a time. The carrier is counted over the twenty seeds of its own test.
+
+| change | right | wrong | invented | score | spaces | first | noise prints | carriers print | silence prints |
+| none (the base) | 206 | 18 | 2 | **186** | 58 | reads | 0 | 1 of 20 | 1 |
+| out: first pick waits one word gap | 205 | 14 | 3 | **188** | 54 | reads | 0 | 2 of 20 | 2 |
+| back in: narrowness | 209 | 17 | 4 | **188** | 58 | reads | 0 | 1 of 20 | 1 |
+| back in: three lone letters dropped | 204 | 16 | 1 | **187** | 55 | reads | 0 | 1 of 20 | 1 |
+| back in: key-up | 207 | 17 | 3 | **187** | 59 | reads | 0 | 1 of 20 | 3 |
+| back in: the neighbour judgement of gaps | 207 | 18 | 2 | **187** | 58 | reads | 0 | 1 of 20 | 1 |
+| out: cold-start word line at √21 | 206 | 18 | 2 | **186** | 58 | `F ER C H AT<BT> BEST 7V 73 <SK> KC4ZGP DEWA` | 0 | 1 of 20 | 1 |
+| out: handover backlog | 206 | 18 | 2 | **186** | 58 | reads | 0 | 1 of 20 | 1 |
+| out: gap kinds | 206 | 18 | 2 | **186** | 58 | reads | 0 | 2 of 20 | 1 |
+| out: word line at the clusters' crossing | 206 | 18 | 2 | **186** | 59 | reads | 0 | 1 of 20 | 1 |
+| back in: the pause | 206 | 18 | 2 | **186** | 58 | reads | 0 | 1 of 20 | 1 |
+| back in: the five-dit floor | 206 | 18 | 2 | **186** | 59 | reads | 0 | 1 of 20 | 1 |
+| back in: the rectangle fit | 206 | 18 | 2 | **186** | 60 | reads | 0 | 1 of 20 | 1 |
+| back in: the neighbour split of marks | 206 | 18 | 2 | **186** | 58 | reads | 0 | 1 of 20 | 1 |
+| out: split overlapping letter and word gaps | 205 | 18 | 2 | **185** | 52 | reads | 0 | 1 of 20 | 1 |
+| back in: the shape's inside-letter tightness | 205 | 18 | 2 | **185** | 58 | reads | 0 | 1 of 20 | 1 |
+| back in: the shape's letter-gap tightness | 205 | 18 | 2 | **185** | 58 | reads | 0 | 1 of 20 | 1 |
+| out: lone letter | 208 | 21 | 4 | **183** | 58 | reads | 0 | 1 of 20 | 2 |
+| out: settle at key-down | 200 | 18 | 2 | **180** | 56 | reads | 0 | 1 of 20 | 1 |
+| out: release under 0.1 | 203 | 21 | 2 | **180** | 59 | reads | 0 | 1 of 20 | 1 |
+| back in: the 0.2 standing line | 197 | 15 | 5 | **177** | 53 | reads | 0 | 1 of 20 | 3 |
+| back in: quieter marks | 199 | 17 | 5 | **177** | 56 | reads | 0 | 1 of 20 | 4 |
+| out: a mark's own shape | 184 | 12 | 0 | **172** | 50 | reads | 0 | 1 of 20 | 0 |
+| out: two kinds held over the last ten marks | 206 | 16 | 21 | **169** | 55 | reads | 0 | 9 of 20 | 2 |
+| back in: a hand's two kinds | 210 | 18 | 24 | **168** | 58 | reads | 0 | 5 of 20 | 16 |
+| out: a silent sender is not a candidate | 175 | 14 | 2 | **159** | 52 | reads | 0 | 1 of 20 | 1 |
+| out: a mark crowds the last only where it overlaps it or is a piece | 187 | 38 | 2 | **147** | 60 | reads | 0 | 1 of 20 | 1 |
+| out: retry over newer marks when speed changes | 156 | 11 | 1 | **144** | 42 | reads | 0 | 0 of 20 | 1 |
+| out: edges | 95 | 3 | 3 | **89** | 27 | reads | 0 | 1 of 20 | 1 |
+| out: the sender's own window | 146 | 56 | 2 | **88** | 50 | `FER C HAT<BT> BESI THV EEE4 <SK>IDC4ZMPDEAA` | 0 | 1 of 20 | 0 |
+
+### The search, one change at a time
+
+A change is taken only where no hard limit is worse than at HEAD: the first recording reads, noise prints nothing, the carrier prints at no more than 1 of 20 seeds, and no more letters print in a silence.
+
+| step | change | right | wrong | invented | score | carriers print | silence prints |
+|---|---|---|---|---|---|---|---|
+| 0 | HEAD | 206 | 18 | 2 | 186 | 1 of 20 | 1 |
+| 1 | narrowness back in | 209 | 17 | 4 | 188 | 1 of 20 | 1 |
+| 2 | three lone letters dropped back in | 207 | 15 | 2 | 190 | 1 of 20 | 1 |
+| 3 | the neighbour judgement of gaps back in | 208 | 15 | 2 | **191** | 1 of 20 | 1 |
+| - | no further change raises the score with the limits held | | | | | | |
+| (B) | and gap kinds out | 208 | 15 | 0 | **193** | **2 of 20** | 0 |
+
+**Neither set meets the bar, so none shipped:** set A (step 3) raises the score to 191 but invented does not fall (2, as at HEAD) and one letter still prints in a silence; set B reaches 193 with nothing invented and nothing printed in a silence, but the carrier prints at seed 5206 as well as 5195. No single change from B brings the carrier back to 1 of 20. Taking out the handover backlog or the gap crossing leaves the score the same at every step; neither was taken out, since nothing shipped. The search's first pass counted the carrier over five seeds and walked to B; the twenty seeds caught it.
+
+| unit | date | right | wrong | invented | score | printed in silence | spaces right | what changed |
+|---|---|---|---|---|---|---|---|---|
+| 539 task 3 | 2026-10-04 | 206 of 244 | 18 | 2 | **186** | 1 | 58 of 77, 4 added | the thirteen removed rules back in the tree behind switches, off; every rule measured; no set met the bar, so the reading is HEAD's |
