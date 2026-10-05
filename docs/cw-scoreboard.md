@@ -307,3 +307,20 @@ A change is taken only where no hard limit is worse than at HEAD: the first reco
 | 541 task 1 | 2026-10-05 | 208 of 244 | 15 | 2 | **191** | 1 (`221502`, an `S` at 21.46 s) | 55 of 77, 2 added | set A ships: narrowness, three lone letters dropped, and a gap judged against its neighbours on by default (the owner, 2026-10-05: *ship it*); every hard limit as at HEAD |
 | 541 task 2 | 2026-10-05 | 208 of 244 | 15 | 2 | **191** | 1, as task 1 | 55 of 77, 2 added | the ten rules that did not earn their place leave the tree, 844 lines of decoder source net; every stretch reads as after task 1 |
 | 541 task 3 | 2026-10-05 | 208 of 244 | 15 | 2 | **191** | 1, as task 1 | 55 of 77, 2 added | the scan remembers its length and stays in Hamlet's settings; nothing that reads was changed |
+| 544 task 1 | 2026-10-05 | 208 of 244 | 15 | 2 | **191** | 1, as at HEAD | 55 of 77, 3 added | a sender keeps the dot and dash line it last showed while a few marks hide the jump between its two kinds, the line redrawn from the marks now; a piece of a mark left out of the line and joined to its neighbour was measured at 188 (and 190 without the join) and not shipped |
+
+## Scans (work instruction 544, HM-DEC-248)
+
+R88 is lifted for the scan catches work instruction 544 names; three are in the tree. `TheStrongStationsOverTests.TheScansTable` reads each station catch through the app's chain at the scan's passband (pitch 600 Hz, filter 500 Hz) and scores it against the session's offline read. **Every reference is pending until the owner confirms it by ear: pending stretches are scored and reported, never totalled.** When he confirms one, it joins the total.
+
+| unit | catch | tone | reference | right | wrong | printed |
+|---|---|---|---|---|---|---|
+| 544 before (as at HEAD) | `catch-153810-7033367` | 860 Hz | **pending** | 103 of 152 | 39 | `A S A H HE MATRESS ISSOFT ESCANT FIN IA SAFESAEMTWI IEOUT WAE EHEE<BT> IV VER H TG SACK PAIN SOTHIW TIEUGODAY HAVE RM OTINE6 KKUAEESMG STT FMEEU RMYT MSEE WHATITA ISTE IHEE<BT> <BT>IREMEMBER AT M` |
+| 544 task 1 | `catch-153810-7033367` | 860 Hz | **pending** | 109 of 152 | 33 | `A S A H HE MATRESS ISSOFT ESCANT FIN IA SAFESAEMTWI IEOUT WAE EHEE<BT> IV VER H TD SACK PAIN SOTHIS TIEURSDAY HAVE RM UTINE6 KKUAEESMG STT FMEEU RAYT MSEE WHATITA ISTE IHEE<BT> <BT>IREMEMBER AT I` |
+| 544 before (as at HEAD) | `catch-154819-7050903` | 470 Hz | **pending** | 25 of 35 | 6 | `N E ANEI BTW■ I E GG IRIATE YOUR NICE KEYI N` |
+| 544 task 1 | `catch-154819-7050903` | 470 Hz | **pending** | 25 of 35 | 6 | as before |
+
+**The references, for the owner to confirm by ear:**
+
+- `catch-153810-7033367`, 860 Hz: `THE MATRESS IS SOFT ES CANT FIND A SAFE SPOT WITHOUT PAIN HEE IVE NEVER HAD BACK PAIN SO THIS THURSDAY HAVE ROUTINE X EEE KK UW ESGG TO ASK FOR XRAY TO SEE WHAT I TWINTED HEE<BT> I REMEMBER AT AGE`
+- `catch-154819-7050903`, 470 Hz: `KS AND BTW, I AGGREIRIATE YOUR NICE KEYIE R`

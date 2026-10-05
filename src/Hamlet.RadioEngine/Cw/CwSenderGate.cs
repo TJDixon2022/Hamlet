@@ -316,6 +316,12 @@ public sealed class CwSenderGate
     /// <summary>The dit of the sender being printed, in seconds, or NaN when none is: for the tests' report (work instruction 500).</summary>
     internal double StationDitSeconds => _station?.DitSeconds ?? double.NaN;
 
+    /// <summary>The printed sender's line between dot and dash, in seconds, or NaN: for the tests' report (work instruction 544).</summary>
+    internal double StationSplitSeconds => _station?.SplitSeconds ?? double.NaN;
+
+    /// <summary>The level a mark must agree with to be the printed sender's, in dB, or NaN: for the tests' report (work instruction 544).</summary>
+    internal double StationLevelDb => _station?.Reference.Level ?? double.NaN;
+
     /// <summary>The printed sender's dit of gap, in seconds, or NaN: for the tests' report (work instruction 500).</summary>
     internal double StationGapDitSeconds => _station?.GapDitSeconds ?? double.NaN;
 
@@ -897,6 +903,18 @@ public sealed class CwSenderGate
                     return shorts.Average();
                 }
 
+                // **THE LINE IT LAST SHOWED** (work instruction 544): its dit is the mean of its marks under that line while a
+                // few marks hide the jump between its two kinds.
+                if (KeptSplit is { } kept)
+                {
+                    var under = _recent.Select(m => m.ToSeconds - m.FromSeconds).Where(l => l < kept).ToList();
+
+                    if (under.Count > 0)
+                    {
+                        return under.Average();
+                    }
+                }
+
                 // One length only: the dit from its gaps, where it has shown any (the gate's, work instruction 525).
                 var fromGaps = CwPatternGate.DitFromGaps(_elementGaps, RunGaps);
 
@@ -905,7 +923,41 @@ public sealed class CwSenderGate
         }
 
         /// <summary>Short against long: the geometric mean of the sender's short and long marks.</summary>
-        public double SplitSeconds => Kinds().Split ?? (DitSeconds * Math.Sqrt(3));
+        public double SplitSeconds => Kinds().Split ?? KeptSplit ?? (DitSeconds * Math.Sqrt(3));
+
+        private double? _lastSplit;
+
+        /// <summary>
+        /// **A SENDER KEEPS ITS LINE WHILE A FEW MARKS HIDE IT** (work instruction 544, task 1, HM-DEC-248): the line between
+        /// dot and dash it last showed, or null where it has shown none or the rule is off.
+        /// </summary>
+        /// <remarks>
+        /// **FOUND ON THE SCAN'S STRONG STATION** (`catch-153810-7033367`): a heavy fist, dits of 65 ms and dahs of 150, had
+        /// dahs broken by the detector into 85 and 107 ms marks that filled the jump between its two kinds, so no two
+        /// neighbouring lengths among its last forty differed by twice. The gate then took the dit from its gaps inside
+        /// letters, 36 ms where its dits are 65, and the line fell to 67 ms: fourteen letters had dits read as dahs. Nothing
+        /// said the sender had changed speed; where it has, the newer marks show their own jump and the line moves with them.
+        /// </remarks>
+        private double? KeptSplit
+        {
+            get
+            {
+                if (!CwRules.On(CwRules.KeptSplit) || _lastSplit is not { } kept)
+                {
+                    return null;
+                }
+
+                // **THE KEPT LINE SORTS THE MARKS NOW; THE MARKS NOW PLACE THE LINE**: the line kept only says which of the
+                // marks now are dits and which dahs, and the line between them is drawn again from the two, where a mark sits
+                // as many spreads from either centre, as a clean split's is. A straight key's lengths wander, and a line kept
+                // from a stretch where they sat elsewhere read the C of its second N0CALL as an F.
+                var lengths = MarksNow().Select(m => m.ToSeconds - m.FromSeconds).ToList();
+                var shorts = lengths.Where(l => l < kept).ToList();
+                var longs = lengths.Where(l => l >= kept).ToList();
+
+                return shorts.Count == 0 || longs.Count == 0 ? kept : Boundary(LogStats(shorts), LogStats(longs));
+            }
+        }
 
         /// <summary>
         /// **THE GATE DECIDES WHAT KIND EACH GAP IS** (work instruction 525, HM-DEC-229): the lines between the sender's
@@ -999,6 +1051,11 @@ public sealed class CwSenderGate
             Trim(_elementGaps);
             Trim(_runGapsAt);
             Trim(_gapOverDit);
+
+            if (Kinds().Split is { } split)
+            {
+                _lastSplit = split;
+            }
         }
 
         private static void Trim<T>(List<T> list)
