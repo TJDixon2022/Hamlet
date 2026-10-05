@@ -304,3 +304,4 @@ A change is taken only where no hard limit is worse than at HEAD: the first reco
 | unit | date | right | wrong | invented | score | printed in silence | spaces right | what changed |
 |---|---|---|---|---|---|---|---|---|
 | 539 task 3 | 2026-10-04 | 206 of 244 | 18 | 2 | **186** | 1 | 58 of 77, 4 added | the thirteen removed rules back in the tree behind switches, off; every rule measured; no set met the bar, so the reading is HEAD's |
+| 541 task 1 | 2026-10-05 | 208 of 244 | 15 | 2 | **191** | 1 (`221502`, an `S` at 21.46 s) | 55 of 77, 2 added | set A ships: narrowness, three lone letters dropped, and a gap judged against its neighbours on by default (the owner, 2026-10-05: *ship it*); every hard limit as at HEAD |

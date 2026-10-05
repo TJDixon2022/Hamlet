@@ -122,8 +122,12 @@ internal static class CwRules
         LetterGapTightness, RectangleFit, Narrowness, NeighbourGaps, NeighbourMarks,
     ];
 
-    /// <summary>The removed rules that came back on the new score (work instruction 539): none, as for <see cref="TakenOut"/>.</summary>
-    public static readonly IReadOnlyList<string> Restored = [];
+    /// <summary>
+    /// **SET A SHIPS** (work instruction 541, HM-DEC-245; the owner, 2026-10-05: *ship it*): narrowness, three lone letters
+    /// dropped, and a gap judged against its neighbours, measured in work instruction 539 to take the score from 186 to 191
+    /// with every hard limit as at HEAD.
+    /// </summary>
+    public static readonly IReadOnlyList<string> Restored = [Narrowness, ThreeLone, NeighbourGaps];
 
     /// <summary>
     /// **KEPT OR ADDED RULES TAKEN OUT ON THE NEW SCORE** (work instruction 539, HM-DEC-243): off unless a test turns one on.
