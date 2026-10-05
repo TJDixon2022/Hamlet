@@ -5,122 +5,115 @@
   - Present: `SHACK_FACTS.md`, `docs\cw-scoreboard.md`, `docs\cw-keying-map.md`.
   - Absent: `CoreHMI.sln`, `MURC.sln`.
 - **Nothing in this report is evidence about the radio.**
-- **Work instruction 541, run by hand on `main`:**
+- **Work instruction 542, run by hand on `main`:**
   - SESSION.lock was taken and released.
   - Nothing was written to RUN_LEDGER.md, nothing under `tools\arbiter\` was touched, and nothing in PHASE_PLAN.md was ticked.
-  - Nothing was keyed, transmitted or written to a radio.
-- **R88:** lifted for the owner's twelve recordings only.
-- **Version:** 1.13.225 → 1.13.226. **Ruling:** HM-DEC-245.
+  - Nothing keys or transmits. The only radio write in the new code is the frequency.
+  - No scan catch was read.
+- **R88:** lifted for the owner's twelve recordings only. They were read only by the scoreboard.
+- **Version:** 1.13.226 → 1.13.227. **Ruling:** HM-DEC-246, *One wiring for every listener; the scan lands by ear*.
+- **The scoreboard read 191 after every task.** Its test stays red only on the two hard limits red at HEAD: the carrier at seed 5195, and one letter in a silence.
 
-**Task 1: set A ships** (commit `c8b19f44`).
-- **What changed:** narrowness, three lone letters dropped, and the neighbour judgement of gaps are on by default.
-- **Re-measured at HEAD before shipping:** 191, as work instruction 539 measured.
-- **Every hard limit as at HEAD:**
-  - the first recording reads whole with its spaces;
-  - loud noise prints nothing;
-  - the carrier prints at 1 of 20 seeds;
-  - one letter prints in a silence.
+**Task 1: one wiring for every listener** (commit `7858b92d`).
+- **What was found:** three wiring differences, listed in section 3.
+- **What changed:** `CwChain` (`src/Hamlet.RadioEngine/Cw/CwChain.cs`) builds the decoder and the detector and wires them exactly as the app did.
+  - The app, the scan's ear, the scoreboard and the bench helpers in `ThePatternIsTheGateTests` and `TheOwnersRecordingReadsTests` all use it.
+  - The app's own wiring block is now one call to `CwChain.Wire`.
 
-**Task 2: ten rules leave the tree** (commit `5e46385a`).
-- **How:** the six decoder files were reset to their state before work instruction 539 restored the thirteen. Only the three that earned their place were re-added, with:
-  - the crowds-narrowing switch;
-  - the hook the parallel scoreboard uses.
-- **Removed, with their switches:**
-  - the 0.2 standing line
-  - quieter marks
-  - the pause
-  - a hand's two kinds
-  - key-up
-  - the five-dit floor
-  - the shape's inside-letter tightness
-  - the shape's letter-gap tightness
-  - the rectangle fit
-  - the neighbour split of marks
-- **Where they live now:**
-  - The tag `before-scoreboard` holds each as it stood before work instruction 534 removed it.
-  - The tag `before-false-characters` holds the tree before they were restored behind switches.
-- **Lines removed:** 901 lines out and 57 in, **844 lines of decoder source net**, across:
-  - `CwEnvelopeDetector`, `CwPatternGate`, `CwSenderGate`, `CwSequenceShape`, `CwMark` and `CwRules`.
-- **Tests:** none exercised only these rules; the rectangle-fit tests already left with work instruction 534. The scoreboard's search test now steps the kept rules only.
-- **The scoreboard reads exactly as after task 1:** every stretch identical, 191.
+**Task 2: a peak is what the scope really shows** (commit `8f180ed4`).
+- **What changed:** `ScopeWatch` replaces the level-only peak rule. A peak must repeat, be narrow, and stand over a floor the radio clips to nought. The figures are in section 3.
 
-**Task 3: the scan remembers its settings** (commit `92a188fa`).
-- **Where they are kept:** the scan's length and two stays are in Hamlet's settings file: `ScanMinutes`, `ScanPositiveStaySeconds`, `ScanNegativeStaySeconds`.
-- **When they are saved and read:** saved the moment they change, as the operating mode is, and read back when the window opens.
-- **Out-of-range values:** a value outside the popover's range reads as the default.
-- **Tests:** two new tests, plus the settings-upgrade tests, pass.
+**Task 3: the scan lands by ear** (commit `534812bd`).
+- **How it lands:**
+  - At each peak the scan listens two seconds for the strongest narrow tone in the passband.
+  - It retunes so that tone sits at the CW pitch.
+  - If no tone is heard, it tries half a filter width either side.
+  - A tone already within 10 Hz of the pitch is not retuned, and the catch keeps what the probe heard.
+- **The new `empty` kind:** a stop with no tone after all three tries is `empty`, left as `NothingHeard`, and left at once.
+- **Records:** a catch now records the scope's frequency and the tone heard.
+- **The pitch and filter the scan listens through** are the radio's own in CW. Where the radio's are unread or read as nought, it uses the ear's.
+- **One scan test was changed:** `APositiveThatStopsIsLeftAfterItsSilence` now counts the silence from the end of the call, not from the start of the catch.
+  - A scan that probes and retunes begins its catch after the call has started.
+  - In that test the scope's centroid put the dial 80 Hz off. The scan heard the call at 680 Hz and retuned onto it.
 
-**Recorded, at the owner's order:** HM-DEC-245, *Three rules earned their place; ten left the tree*, in `DECISIONS.md` and the `CLAUDE.md` §1 index. It names the score before and after, and every rule removed with its tags.
+**Task 4: the carrier and the noise** (commit `f8d9efae`).
+- **What was done:** measured through the shared wiring at five seeds.
+- **Result:** neither the carrier nor the noise reaches green. Both hold amber for a while. The figures are in section 3.
+- **No cause was plain, so nothing was changed.**
+
+**Records:** DECISIONS.md HM-DEC-246, the CLAUDE.md §1 row, PHASE_OUTCOME and PHASE_STATUS in both copies, and the version.
 
 ## 2. What the owner should expect
 
-- **Rebuild.**
-- **The score goes from 186 to 191:** two more letters right (206 to 208), three fewer wrong (18 to 15), and the same two invented. Nothing reads worse on any hard limit.
-- **The three rules now on:**
-  - **Narrowness:** a mark only counts if its energy sits in its own pitch rather than across the whole band, the way noise and clicks spread.
-  - **Three lone letters dropped:** three or more one-mark letters in a row (E, T, E…) are thrown away together, because a run of nothing but single dits and dahs is noise, not sending.
-  - **A gap judged against its neighbours:** a gap is called inside a letter or between letters by comparing it with the sender's gaps on either side, so a hand that speeds up or slows down is followed letter by letter.
-- **Code removed:** the ten rules that never raised the score are gone from the decoder, **844 lines**. They are kept at two tags if they're ever wanted again.
-- **The scan now remembers** its length and stays across restarts.
-- **What you'll see on the air:**
-  - The 14:40:45 station reads `N TEMP` where it read `N E MP`.
-  - The 22:15:30 station's opening reads `6 CHA MPION` where it read `H CHA MPIMTN`.
-  - Some noisy stretches print a little less.
-  - One low-confidence stretch, 22:18:51, prints more junk than before (section 4).
-- **Build:** clean.
-- **App carry-forward:** 276 of 278. The two losses are the known dispatcher-loop flake and both pass when run alone.
-- **Red tests, all red at HEAD too:**
-  - the scoreboard: the carrier at seed 5195, and the one letter in a silence;
-  - the 20-seed carrier test at seed 5195;
-  - two reply tests.
-- **One red at HEAD now passes:** `TheNextOverReadsItsLetters`.
-- **Pushed:** to `main`.
+- **Rebuild**, then run a scan as before.
+- **What was wrong with the scan's ear:** it was wired its own way. It listened through the pitch and filter Hamlet was given, not the radio's own.
+  - Now the ear, the app, the scoreboard and the bench all share one wiring, and it is the app's.
+- **That was not the whole fault:**
+  - On a synthetic 20 WPM call through the filter, the old ear and the app already found the same 70 marks and reached green.
+  - So this work does not show that your three real stations would now be positives. Only the radio can tell us that.
+  - What has changed for them is the landing: the scan now puts the tone it hears at your CW pitch, where before it trusted the scope to within a few hundred hertz.
+- **How the scan picks signals:** it keeps only a place on the scope that comes back sweep after sweep, is narrow, and stands above the floor. One-sweep noise blips at 6 or 7 are no longer stops.
+- **How it lands:** it listens two seconds and retunes onto the tone it hears. If it hears none, it looks half a filter either side.
+- **The new `empty` kind:** a stop with nothing to hear is marked `empty` and left after about 7 seconds. Before, it sat out the 30-second negative stay.
+- **How much faster a pass is:**
+  - In your first scan, 45 of 55 stops held nothing. At 30 s each that was about 22 minutes.
+  - At 7 s each it is about 5 minutes, before counting the blips the new peak rule no longer stops for.
+- **Green is still the line for a positive.** Amber still comes on over a steady carrier and over noise, and is not counted.
 
 ## 3. What you should see
 
-**The scoreboard rows:**
+**The wiring differences:**
+- **The passband.**
+  - The ear heard through the pitch and filter it was given, fixed at the start.
+  - The app hears through the radio's own CW pitch and filter, read live, and only in CW or CW-R.
+  - The ear now does the same.
+- **The order.**
+  - The app's decoder takes each chunk before its detector does, so the decoder reads the detector's marks one chunk behind.
+  - The scoreboard and the bench helpers ran the detector first. They now run the decoder first.
+- **The waiting pitch.** The scoreboard and the bench helpers never wired the detector's waiting pitch (a sender qualified but not yet printed). They do now.
+- **The scoreboard:** 191 before and after, 208 of 244 right, 15 wrong, 2 invented.
 
-| unit | right | wrong | invented | score | printed in silence | spaces right | what changed |
-|---|---|---|---|---|---|---|---|
-| HEAD | 206 of 244 | 18 | 2 | **186** | 1 | 58 of 77, 4 added | |
-| 541 task 1 | 208 of 244 | 15 | 2 | **191** | 1 (`221502`, an `S` at 21.46 s) | 55 of 77, 2 added | set A on |
-| 541 task 2 | 208 of 244 | 15 | 2 | **191** | 1 | 55 of 77, 2 added | ten rules out, 844 lines; every stretch identical |
-| 541 task 3 | 208 of 244 | 15 | 2 | **191** | 1 | 55 of 77, 2 added | the scan remembers its settings |
+**The synthetic call** (20 WPM, 12 dB, a 1 dB AGC overshoot, through the 500 Hz filter):
 
-Hard limits at every row:
-- the first recording reads `FER C HAT<BT> BEST 7V 73 <SK> KC4ZGP DEWA`;
-- loud noise prints nothing;
-- the carrier prints at seed 5195 alone, 1 of 20.
+| | marks | shape | green | text |
+|---|---|---|---|---|
+| app, before | 70 | 0.494 | yes | `CQ CQ CQ DE W1AW W1AW W1AW K` |
+| ear, before | 70 | 0.494 | yes | `CQ CQ CQ DE W1AW W1AW W1AW K` |
+| app, after | 70 | 0.494 | yes | `CQ CQ CQ DE W1AW W1AW W1AW K` |
+| ear, after | 70 | 0.494 | yes | `CQ CQ CQ DE W1AW W1AW W1AW K` |
 
-**Each stretch that changed with set A**, before → after:
+**The scope rule** (`APeakIsWhatTheScopeShowsTests`, 11 pass):
+- **The figures:**
+  - Where the median is above nought, a peak stands six of the floor's spreads over it. Where the median is nought, any value above nought counts.
+  - It must stand in a quarter of the sweeps watched, and three at least, within a bin of the same place.
+  - It may be three bins wide at most. Peaks within 250 Hz are one peak.
+- **The test sweeps:** 20 sweeps with a floor clipped to nought, two blips a sweep at 6 or 7, a keyed station at 6 up in half the sweeps, and a crash thirty bins wide in two sweeps.
+- **With the station:** exactly one peak at each of five seeds, 22 to 79 Hz from the station, standing in 8 to 14 of 20 sweeps.
+- **Without it:** no peak at any seed.
+- **An unclipped floor** keeps its six-spread margin.
 
-| stretch | confidence | before | after | right | wrong | invented |
-|---|---|---|---|---|---|---|
-| `143906` @514 | none | `IEE II E NIEEE IET TAEEKEEIEEII IMESE ITT` | `S II E NI ST TAEEKEEIEEII IMESE` | – | – | 0 → 0 |
-| `143951` @500 | low | `EWAE IIEWRK I AGN ES` | `O WAE IIEWR K T AG E ES` | 12 → 12 of 16 | 3 → 4 | 1 → 0 |
-| `144045` @600 | high | `N E MP 57 57<BT> BTU BOB DE KG8V K` | `N TEMP 57 57<BT> BTU BOB DE KG8V K` | **22 → 23** of 23 | 0 → 0 | 0 → 0 |
-| `221502` @492 | low | `ED OF ITS OWN HEE BK BK WHATBUGAEI EUI E■ ■` | `ED OF ITS OWN HEE BK BK WHATBUGAE EUI EINIEEI S` | 29 → 33 of 42 | 1 → 3 | 1 → 2 |
-| `221530` @492 | medium | `H CHA MPIMTN` | `6 CHA MPION` | **6 → 9** of 11 | 1 → 0 | 0 → 0 |
-| `221548` @598 | low | `I M IEE IEE E USINGA V BPLX Z EPS` | `I M I I USINGA V BPLX Z EPS` | 18 → 16 of 26 | 5 → 3 | 0 → 0 |
-| `221548` @498 | medium | `E WRHEE MYSCOET T MASTEN` | `E WRHEE MYSCO MASTEN` | 14 → 14 of 18 | 3 → 1 | 0 → 0 |
-| `221745` @502 | medium | `E IAND TMN 4MEMM TONITE . EUROWEE H IRD TOO` | `IAND TMN 4MEMM TONITE . EUROWEE H IRD TOO` | 19 → 18 of 29 | 9 → 9 | 0 → 0 |
-| `221805` @601 | medium | `E 40T U THESE DAYS. TNX FERANOTHERF` | `40T U THESE DAYS. TNX FERANOTHERF` | 28 → 27 of 33 | 1 → 1 | 0 → 0 |
-| `221851` @601 | low | `SES E IE E IEA E I GE EI E NAERE I BK` | `SES E IE E IEA I GE EI E NAFE I BTK ES5 I NEA EIR TU STRAY OTE` | 4 → 4 of 20 | 6 → 6 | 0 → 0 |
+**The landing test** (`TheScanLandsByEar`):
+- The scope peak was put 205 Hz above the call.
+- The scan heard the tone at 395 Hz, retuned, and landed **0 Hz** from the call. It read the call as a positive.
+- The empty stop was left in **7.0 s**.
+- All 9 catch-scan tests pass, and both never-transmits tests pass.
 
-Every other stretch reads as at HEAD.
+**The carrier and the noise** (`TheEarHearsAsTheAppDoesTests`, 26 s each, five seeds):
 
-**The two invented letters** moved:
-- **Before:** an `E` in `143951` and a `■` in `221502`.
-- **After:** an `E` and an `S`, both in `221502`.
-- **The silence print:** still one letter, now an `S` instead of the `■`, at the same 21.46 s, 60 ms after the station stops.
+| | green | amber | best shape | printed |
+|---|---|---|---|---|
+| steady carrier at 750 Hz | never | 0.1 to 12.2 s | 0.167 | nothing |
+| band noise | never | 0 to 5.0 s | 0.000 | nothing |
+
+**Build:** no warnings. **App carry-forward:** 277 of 278. The one loss, `ThreeChipsCostTheTopBandNothing`, is the dispatcher loop, and it passes alone.
 
 ## 4. What's blocking us
 
-- **The low-confidence 22:18:51 stretch prints more junk with set A:** `... BTK ES5 I NEA EIR TU STRAY OTE`.
-  - The score cannot see it. Its stretch is low confidence, so its wrong letters are not counted, and its letters sit over real keying, so none are invented.
-  - It is worth your ear on that recording.
-- **The silence limit stays red at one letter,** as at HEAD. A fragment prints 60 ms into the pause after `221502`'s station stops.
+- **Whether the three real stations now read green** is unknown until a scan on the air. The synthetic call already read green through the old ear, so the field miss is not explained.
+- **Amber on a carrier and on noise** holds up to 12.2 s and 5.0 s. Green is unaffected, so nothing was changed.
+- **The silence limit stays red at one letter,** as at HEAD.
 - **The carrier limit stays red at seed 5195,** as at HEAD.
+- **The low-confidence 22:18:51 stretch** still prints junk the score cannot see, as reported by unit 541.
 
 ### Asks still outstanding
 
@@ -131,6 +124,5 @@ Every other stretch reads as at HEAD.
   - The run path, the only path to the screen, already shows only settled text.
   - The ask stands only for the timing-only path.
   - No change for it sits in the tree.
-- **Unit 540, 2026-10-04:** does amber count as a positive? Waiting on the owner. The scan counts green; the change is one line in `CwCatchEar`.
 
-Unit 539's ask, set A or set B, is answered by the owner's *ship it* (HM-DEC-245) and is dropped.
+Unit 540's ask, whether amber counts as a positive, is answered by work instruction 542 (*green stays the line for a positive*) and is dropped.

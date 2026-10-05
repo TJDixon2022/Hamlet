@@ -4,6 +4,40 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-246
+date: 2026-10-05
+refs: work instruction 542, HM-DEC-245, HM-DEC-244, src/Hamlet.RadioEngine/Cw/CwChain.cs, src/Hamlet.RadioEngine/Scan/ScopePeaks.cs, src/Hamlet.RadioEngine/Scan/CwCatchScan.cs, src/Hamlet.RadioEngine/Scan/CwCatchEar.cs
+---
+
+**One wiring for every listener; the scan lands by ear.** Ordered by the owner in work instruction 542, 2026-10-05.
+
+**One wiring.** `CwChain` builds the decoder and the envelope detector and wires them once, the way the app always had. The app, the scan's ear, the scoreboard and the bench helpers all use it now. The differences found, wire by wire:
+- **The passband.** The ear heard through the pitch and filter it was given, fixed at the start. The app hears through the radio's own CW pitch and filter, read live, and only in CW or CW-R. The ear now reads the radio's the same way, and falls back to its own where the radio's are unread or read as nought.
+- **The order.** The app's decoder takes each chunk before its detector does, so the decoder reads the detector's marks one chunk behind. The scoreboard and the bench helpers ran the detector first. They now run the decoder first.
+- **The waiting pitch.** The scoreboard and the bench helpers never wired the detector's `WaitingPitch`, the pitch of a sender that has qualified but not yet printed. They do now.
+
+The scoreboard reads 191 before and after. On the synthetic call (20 WPM, 12 dB, a 1 dB AGC overshoot, through the 500 Hz filter), the app and the ear agree before and after: 70 marks, shape 0.494, green, `CQ CQ CQ DE W1AW W1AW W1AW K`. So the field's miss is not reproduced on synthetic audio.
+
+**A peak is what the scope really shows.** The IC-7300 clips its noise floor to nought, so a margin over a median of nought measured nothing. A scope peak must now pass three tests:
+- **It stands over the floor:** six of the floor's spreads over it where the median is above nought, and any value above nought where the median is nought.
+- **It repeats:** it stands in a quarter of the sweeps watched, three at least, within a bin of the same place.
+- **It is narrow:** three bins or fewer.
+
+Peaks within 250 Hz of each other are one peak, and its frequency is the centroid of its excess. Tested with a clipped floor, two blips a sweep at 6 or 7, a keyed station at 6 up in half the sweeps, and a crash thirty bins wide: the station is caught at five seeds and nothing else is.
+
+**The scan lands by ear.** At each peak the scan listens two seconds and finds the strongest narrow tone in the passband: 10 dB or more over the median, 60 Hz wide or less at 6 dB down. It then retunes so that tone sits at the CW pitch. A tone already within 10 Hz of the pitch is not retuned, and the catch keeps what the probe heard. With no tone, it tries half a filter width either side. A stop with no tone after all three tries is `empty`, its own kind, and is left at once.
+
+With the scope peak 200 Hz off, the call is heard at 395 Hz and the dial lands 0 Hz from it. An empty stop takes 7 s, where it took the 30 s negative stay.
+
+**Measured, not changed** (task 4), through the shared wiring at five seeds:
+- **A steady carrier at 750 Hz** never goes green and prints nothing; its best shape is 0.167. It holds amber 0.1 to 12.2 s of 26.
+- **26 s of band noise** never goes green and holds amber 0 to 5.0 s.
+
+No cause was plain, so nothing was changed.
+
+Nothing keys or transmits; the only radio write is the frequency.
+
+---
 id: HM-DEC-245
 date: 2026-10-05
 refs: work instruction 541, HM-DEC-243, src/Hamlet.RadioEngine/Cw/CwRules.cs, docs/cw-scoreboard.md, tags before-scoreboard and before-false-characters

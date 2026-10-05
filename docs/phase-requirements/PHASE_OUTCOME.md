@@ -1108,3 +1108,15 @@ The ten rules that raised nothing are removed with their switches, 844 lines of 
 The scan now keeps its length and stays in Hamlet's settings.
 
 Build has no warnings. App carry-forward is 276 of 278; the two losses are the dispatcher loop and pass alone.
+
+## UNIT 542 - STEP 12
+
+Run by hand, outside the loop: SESSION.lock was taken and released, nothing was written to RUN_LEDGER.md, nothing under tools\arbiter\ was touched, and no box was ticked. Version 1.13.226 to 1.13.227. HM-DEC-246.
+
+`CwChain` is now the one wiring for the app, the scan's ear, the scoreboard and the bench helpers. Three differences are gone: the ear's fixed passband, the detector-first order and the missing waiting pitch. The scoreboard reads 191 after every task. The synthetic call reads the same before and after in the app and the ear, so the field's miss is not reproduced on synthetic audio.
+
+A scope peak must now repeat, be narrow, and stand over a floor the radio clips to nought. The scan retunes onto the tone it hears: it lands 0 Hz off with the scope 200 Hz out, and an empty stop is left in 7 s.
+
+A carrier at 750 Hz never goes green but holds amber up to 12.2 s, and noise up to 5.0 s. Both are measured and unchanged.
+
+Build has no warnings. App carry-forward is 277 of 278; the loss is the dispatcher loop and passes alone.
