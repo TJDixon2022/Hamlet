@@ -138,6 +138,8 @@ public sealed record CatchRigField(string Field, string Value, bool Known);
 /// <param name="ScopeHz">Where the scope showed the peak, before the scan landed by ear (work instruction 542).</param>
 /// <param name="ToneHz">The tone the ear found there, before the dial was retuned to put it at the CW pitch; null where none.</param>
 /// <param name="Survey">The survey the station was listed in, counting from one (work instruction 543); nought where none.</param>
+/// <param name="ToneAfterHz">The tone heard after the scan centred it, the last measurement before the stay (work instruction 544); null where none was heard.</param>
+/// <param name="ToneFollowsDial">Which way the tone moved for a move of the dial, as the scan knew it then: 1 where it rises with the dial, -1 where it falls.</param>
 public sealed record CwCatch(
     DateTime StartUtc,
     DateTime EndUtc,
@@ -157,7 +159,9 @@ public sealed record CwCatch(
     double Seconds,
     long ScopeHz = 0,
     double? ToneHz = null,
-    int Survey = 0)
+    int Survey = 0,
+    double? ToneAfterHz = null,
+    int ToneFollowsDial = 0)
 {
     /// <summary>The catch's own JSON file name.</summary>
     [JsonIgnore]
@@ -428,6 +432,9 @@ public sealed class CwCatchScan
             _dialMovedTo = null;
             _placed = false;
             _bandName = band.Name;
+
+            // CW starts as the owner's radio does, the tone rising with the dial; CW-R the other way (work instruction 544).
+            _toneFollowsDial = _monitor.State[RigField.Mode] is { IsKnown: true, Number: { } mode } && (Civ.CivMode)(int)mode == Civ.CivMode.CwReverse ? -1 : 1;
         }
 
         ScanFolder = Path.Combine(_folder, "scan-" + started.ToString("yyyy-MM-dd-HHmmss", CultureInfo.InvariantCulture));
@@ -766,7 +773,7 @@ public sealed class CwCatchScan
         var landedAt = peak.FrequencyHz;
         (double Hz, double OverDb)? tone = null;
         var probeStart = _utcNow();
-        var retuned = false;
+        double? toneAfter = null;
         var heardFrom = probeStart;
 
         try
@@ -791,14 +798,16 @@ public sealed class CwCatchScan
                 }
             }
 
-            // In CW the dial reads the frequency of a signal heard at the CW pitch, so a tone heard at f is a signal at the dial
-            // plus f less the pitch. A tone already within a few hertz of the pitch is not retuned, and the catch keeps what the
-            // probe heard, so a station landed on squarely loses none of its first letter.
+            // **THE TONE SITS AT THE PITCH BEFORE THE STAY IS JUDGED** (work instruction 544, task 2, HM-DEC-248). A tone already
+            // within a few hertz of the pitch is not retuned, and the catch keeps what the probe heard. Otherwise the dial is
+            // moved, the tone measured again, and moved again until it sits there; the catch keeps the last probe's audio.
             if (tone is { } heardTone && Math.Abs(heardTone.Hz - pitch) > LandedHz)
             {
-                await Tune(landedAt + (long)Math.Round(heardTone.Hz - pitch), token).ConfigureAwait(false);
-                await Wait(Settle, token).ConfigureAwait(false);
-                retuned = true;
+                (toneAfter, heardFrom) = await Centre(landedAt, heardTone.Hz, pitch, width, token).ConfigureAwait(false);
+            }
+            else
+            {
+                toneAfter = tone?.Hz;
             }
         }
         catch (OperationCanceledException)
@@ -820,15 +829,10 @@ public sealed class CwCatchScan
             return (Save(name, peak, survey, probeStart, CatchKind.Empty, CatchLeft.NothingHeard, null, _ear.Sense(), []), null);
         }
 
-        var start = retuned ? _utcNow() : heardFrom;
+        var start = heardFrom;
         var radio = _monitor.State.All()
             .Select(v => new CatchRigField(v.Field.ToString(), v.Text, v.IsKnown))
             .ToList();
-
-        if (retuned)
-        {
-            _ear.Begin();
-        }
 
         CatchLeft left;
         CwScanEnd? ended = null;
@@ -921,7 +925,7 @@ public sealed class CwCatchScan
             start, _utcNow(), dial, dial, peak.Level, peak.Floor,
             sense.ShapeSeen ? CatchKind.Positive : CatchKind.Negative, left,
             heard.Stations, heard.Text, heard.Letters, heard.Lights, radio, wav, heard.SampleRate, heard.Seconds,
-            peak.FrequencyHz, tone?.Hz, survey);
+            peak.FrequencyHz, tone?.Hz, survey, toneAfter, _toneFollowsDial);
 
         Write(caught.Json, caught);
 
@@ -933,6 +937,73 @@ public sealed class CwCatchScan
 
     /// <summary>How near the CW pitch a tone may sit and be landed on already, with no retune: ten hertz, two of the ear's steps.</summary>
     public const double LandedHz = 10;
+
+    /// <summary>
+    /// **WHICH WAY THE TONE MOVES WHEN THE DIAL MOVES** (work instruction 544, task 2, HM-DEC-248): 1 where it rises with the
+    /// dial, -1 where it falls. Started from the mode and corrected from the audio, and kept for the rest of the scan.
+    /// </summary>
+    /// <remarks>
+    /// <para>**FOUND ON THE SCAN'S TWO STATIONS**: landing by ear moved the dial by the tone less the pitch, as though the
+    /// tone fell as the dial rose. On the owner's radio in CW it rises with it. A retune of +130 Hz took 730 Hz to 860,
+    /// and one of -65 Hz took 535 to 470, so each landing doubled the error it set out to take away and left the station
+    /// on the filter's skirt.</para>
+    /// <para>**THE RADIO'S SIDE IS A SETTING HAMLET DOES NOT READ**, so it is measured: CW starts as the owner's radio
+    /// does, the tone rising with the dial, CW-R the other way, and a retune that moves the tone away from the pitch, or
+    /// out of the filter, turns it round.</para>
+    /// </remarks>
+    private int _toneFollowsDial = 1;
+
+    /// <summary>
+    /// **CENTRE THE TONE** (work instruction 544, task 2): move the dial so the tone heard at <paramref name="dial"/> sits at
+    /// the pitch, measure it again, and go on until it is within <see cref="LandedHz"/>, three moves at most. Where a move
+    /// takes the tone further from the pitch or out of the filter, the tone goes the other way on this radio: the scan
+    /// turns round from where it last heard the tone well. Ends at the best dial with a measurement there, whose audio the
+    /// catch keeps.
+    /// </summary>
+    /// <returns>The tone at the dial left, or null where none could be heard there; and when its probe began.</returns>
+    private async Task<(double? Tone, DateTime HeardFrom)> Centre(long dial, double tone, double pitch, double width, CancellationToken token)
+    {
+        var at = dial;
+        double? last = null;
+        var heardFrom = _utcNow();
+
+        async Task<double?> Probe(long hz)
+        {
+            await Tune(hz, token).ConfigureAwait(false);
+            await Wait(Settle, token).ConfigureAwait(false);
+            at = hz;
+            heardFrom = _utcNow();
+            _ear.Begin();
+            await Wait(CwCatchScan.Probe, token).ConfigureAwait(false);
+
+            return _ear.Tone(CwCatchScan.Probe.TotalSeconds, pitch - (width / 2), pitch + (width / 2))?.Hz;
+        }
+
+        for (var move = 0; move < 3 && Math.Abs(tone - pitch) > LandedHz; move++)
+        {
+            var next = dial + (long)Math.Round(_toneFollowsDial * (pitch - tone));
+            var heard = await Probe(next).ConfigureAwait(false);
+
+            last = heard;
+
+            if (heard is { } h && Math.Abs(h - pitch) < Math.Abs(tone - pitch))
+            {
+                dial = next;
+                tone = h;
+                continue;
+            }
+
+            // Further from the pitch, or out of the filter: the tone goes the other way. From where it was heard well.
+            _toneFollowsDial = -_toneFollowsDial;
+        }
+
+        if (at != dial)
+        {
+            last = await Probe(dial).ConfigureAwait(false);
+        }
+
+        return (last, heardFrom);
+    }
 
     /// <summary>The CW pitch and filter width the scan hears through: the radio's own in CW, or the ear's where unread.</summary>
     private (double PitchHz, double WidthHz) Hearing()
@@ -968,7 +1039,7 @@ public sealed class CwCatchScan
         var caught = new CwCatch(
             start, _utcNow(), dial, kind == CatchKind.Empty ? peak.FrequencyHz : dial, peak.Level, peak.Floor, sense.ShapeSeen ? CatchKind.Positive : kind, left,
             heard.Stations, heard.Text, heard.Letters, heard.Lights, radio, wav, heard.SampleRate, heard.Seconds,
-            peak.FrequencyHz, tone?.Hz, survey);
+            peak.FrequencyHz, tone?.Hz, survey, null, _toneFollowsDial);
 
         Write(caught.Json, caught);
 

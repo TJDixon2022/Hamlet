@@ -101,27 +101,38 @@ public sealed class TheCatchScanTests : IDisposable
     }
 
     /// <remarks>
-    /// Work instruction 542, task 3: **landing by ear.** The scope draws the call's peak 200 Hz from the call, a bin's error at
-    /// a wide span; the scan lands there, hears the call at a 400 Hz tone, and retunes the dial to put it at the 600 Hz pitch,
-    /// within 15 Hz. The empty stop beside it costs the three tries, not 30 s.
+    /// Work instruction 542, task 3, and 544, task 2: **landing by ear, and the tone at the pitch before the stay.** The
+    /// scope draws the call's peak off the call, by a bin's error at a wide span or more; the scan lands there, hears the call
+    /// (at the peak, or half a filter either side), and moves the dial until the tone sits at the 600 Hz pitch, within 15 Hz,
+    /// measured again after each move. On a radio whose tone rises with the dial, as the owner's does in CW, and on one
+    /// whose tone falls, which the scan learns from the audio. The empty stop beside it costs the three tries, not 30 s.
     /// </remarks>
-    [Fact]
-    public async Task TheScanLandsByEar()
+    [Theory]
+    [InlineData(260, 1)]
+    [InlineData(260, -1)]
+    [InlineData(150, 1)]
+    [InlineData(150, -1)]
+    [InlineData(200, 1)]
+    public async Task TheScanLandsByEar(int offsetHz, int toneSign)
     {
         using var world = await ScanWorld.Ready(keepsSending: true);
 
-        world.Scope.CallOffsetHz = 200;
+        world.Scope.CallOffsetHz = offsetHz;
+        world.Scope.BinCount = 4750;
+        world.Scope.PeakHalfWidthHz = 20;
+        world.ToneSign = toneSign;
 
         var (scan, summary) = await world.Run(_folder, Short with { Length = TimeSpan.FromSeconds(140) });
         var first = Read<CwCatch>(scan, summary.Catches[0].Json);
         var empty = Read<CwCatch>(scan, summary.Catches[1].Json);
+        var heardAt = 600 + (toneSign * (first.DialHz - Call));
 
-        _output.WriteLine($"scope peak {first.ScopeHz} Hz, tone heard {first.ToneHz:0.0} Hz, dial retuned to {first.DialHz} Hz: {first.DialHz - Call:+0;-0;0} Hz from the call; {first.Kind}, `{first.Text}`");
+        _output.WriteLine($"scope {offsetHz} Hz off, tone {(toneSign > 0 ? "rising" : "falling")} with the dial: scope peak {first.ScopeHz} Hz, tone heard {first.ToneHz:0.0} Hz, after {first.ToneAfterHz:0.0} Hz, dial {first.DialHz} Hz, {first.DialHz - Call:+0;-0;0} Hz from the call, so heard at {heardAt} Hz; the scan's direction {first.ToneFollowsDial}; {first.Kind}, `{first.Text}`");
         _output.WriteLine($"empty stop at {empty.ScopeHz} Hz: {(empty.EndUtc - empty.StartUtc).TotalSeconds:0.0} s");
 
-        Assert.InRange(first.ScopeHz, Call + 150, Call + 250);
-        Assert.InRange(first.ToneHz!.Value, 385, 415);
-        Assert.InRange(first.DialHz, Call - 15, Call + 15);
+        Assert.InRange(first.ScopeHz, Call + offsetHz - 20, Call + offsetHz + 20);
+        Assert.InRange(heardAt, 585, 615);
+        Assert.InRange(first.ToneAfterHz!.Value, 585, 615);
         Assert.Equal(CatchKind.Positive, first.Kind);
         Assert.Equal(CatchKind.Empty, empty.Kind);
         Assert.InRange((empty.EndUtc - empty.StartUtc).TotalSeconds, 0, 8);
@@ -338,6 +349,12 @@ public sealed class TheCatchScanTests : IDisposable
 
         public double CallSeconds { get; }
 
+        /// <summary>
+        /// Which way a station's tone moves when the dial moves: 1, rising with it, as the owner's radio does in CW (work
+        /// instruction 544); -1 the other way.
+        /// </summary>
+        public int ToneSign { get; set; } = 1;
+
         private double Seconds { get; set; }
 
         public static async Task<ScanWorld> Ready(bool keepsSending)
@@ -405,13 +422,13 @@ public sealed class TheCatchScanTests : IDisposable
                     _callFrom ??= g;
 
                     var k = g - _callFrom.Value;
-                    var keyed = CallAt(600 + (int)call);
+                    var keyed = CallAt(600 + (ToneSign * (int)-call));
 
                     s += k < keyed.Length ? keyed[k] : 0;
                 }
                 else if (Math.Abs(carrier) < 250)
                 {
-                    s += (float)(0.3 * Math.Sin(2 * Math.PI * (600 + carrier) * g / Rate));
+                    s += (float)(0.3 * Math.Sin(2 * Math.PI * (600 + (ToneSign * -carrier)) * g / Rate));
                 }
 
                 chunk[i] = s;
@@ -461,9 +478,15 @@ public sealed class TheCatchScanTests : IDisposable
         {
         }
 
+        /// <summary>How many bins a sweep has: the radio's 475, or more for a scope that places a peak to tens of hertz.</summary>
+        public int BinCount { get; set; } = 475;
+
+        /// <summary>How far either side of a peak the scope draws it.</summary>
+        public long PeakHalfWidthHz { get; set; } = 150;
+
         public void Emit(Random noise)
         {
-            var bins = new byte[475];
+            var bins = new byte[BinCount];
 
             for (var i = 0; i < bins.Length; i++)
             {
@@ -473,7 +496,7 @@ public sealed class TheCatchScanTests : IDisposable
 
                 foreach (var peak in new[] { Call + CallOffsetHz, Noise, Carrier })
                 {
-                    if (Math.Abs(at - peak) <= 150)
+                    if (Math.Abs(at - peak) <= PeakHalfWidthHz)
                     {
                         bins[i] = 90;
                     }

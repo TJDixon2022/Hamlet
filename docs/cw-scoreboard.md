@@ -308,6 +308,7 @@ A change is taken only where no hard limit is worse than at HEAD: the first reco
 | 541 task 2 | 2026-10-05 | 208 of 244 | 15 | 2 | **191** | 1, as task 1 | 55 of 77, 2 added | the ten rules that did not earn their place leave the tree, 844 lines of decoder source net; every stretch reads as after task 1 |
 | 541 task 3 | 2026-10-05 | 208 of 244 | 15 | 2 | **191** | 1, as task 1 | 55 of 77, 2 added | the scan remembers its length and stays in Hamlet's settings; nothing that reads was changed |
 | 544 task 1 | 2026-10-05 | 208 of 244 | 15 | 2 | **191** | 1, as at HEAD | 55 of 77, 3 added | a sender keeps the dot and dash line it last showed while a few marks hide the jump between its two kinds, the line redrawn from the marks now; a piece of a mark left out of the line and joined to its neighbour was measured at 188 (and 190 without the join) and not shipped |
+| 544 task 2 | 2026-10-05 | 208 of 244 | 15 | 2 | **191** | 1, as at HEAD | 55 of 77, 3 added | the scan centres the tone at the CW pitch before the stay, measuring again after each move and learning which way the tone moves; nothing that reads was changed |
 
 ## Scans (work instruction 544, HM-DEC-248)
 
