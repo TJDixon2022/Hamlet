@@ -697,51 +697,41 @@ public sealed class TheRecordingsScoreboardTests
         return $"| {label} | {board.Total} | {board.Wrong} | {board.Invented} | **{board.Score}** | {board.SpacesRight} | {(board.FirstReads == FirstRecording ? "reads" : $"`{board.FirstReads}`")} | {noise} | {carriers} of 20 | {board.SilencePrints.Count} |";
     }
 
-    /// <summary>The rules a search starts from, from the environment: kept rules taken out, and removed rules brought back.</summary>
-    private static (string[] Off, string[] With) SearchBase()
-    {
-        static string[] Read(string name)
-            => (Environment.GetEnvironmentVariable(name) ?? string.Empty).Split('|', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-
-        return (Read("HAMLET_RULES_OFF"), Read("HAMLET_RULES_WITH"));
-    }
+    /// <summary>The rules a search starts from, from the environment: kept rules taken out, separated by |.</summary>
+    private static string[] SearchBase()
+        => (Environment.GetEnvironmentVariable("HAMLET_RULES_OFF") ?? string.Empty)
+            .Split('|', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
 
     /// <remarks>
-    /// Work instruction 539, task 3: from the rules in <c>HAMLET_RULES_OFF</c> and <c>HAMLET_RULES_WITH</c> (separated by
-    /// |), every single change - each kept or added rule taken out, each removed rule brought back, and each one already
-    /// changed changed back - scored on the new score, best first. Asserts nothing; the table is the result, and the search
-    /// is stepped by hand from it, one change at a time.
+    /// Work instruction 539, task 3: from the rules in <c>HAMLET_RULES_OFF</c>, every single change - each kept rule taken
+    /// out, and each one already out put back - scored on the score of right less wrong less invented, best first. Asserts
+    /// nothing; the table is the result. The ten rules removed in work instruction 541 are no longer in the tree to bring
+    /// back; the tags <c>before-scoreboard</c> and <c>before-false-characters</c> hold them.
     /// </remarks>
     [Fact]
     public void EveryChangeFromTheSearchBase()
     {
-        var (off, with) = SearchBase();
-        Board Measure(string[] o, string[] w)
+        var off = SearchBase();
+        Board Measure(string[] o)
         {
             using var a = CwRules.Off(o);
-            using var b = CwRules.With(w);
 
             return Score();
         }
 
-        var start = Measure(off, with);
+        var start = Measure(off);
         var rows = new List<(int Score, string Row)>();
 
-        _output.WriteLine($"base: off [{string.Join(", ", off)}], with [{string.Join(", ", with)}]");
+        _output.WriteLine($"base: off [{string.Join(", ", off)}]");
         _output.WriteLine("| change | right | wrong | invented | score | spaces | first | noise prints | carriers print | silence prints |");
         _output.WriteLine("|---|---|---|---|---|---|---|---|---|---|");
         _output.WriteLine(ScoreRow("none (the base)", start));
 
-        // On by default (kept, added, or restored): taken out with Off. Off by default (removed, or taken out): brought back with With.
-        foreach (var rule in CwRules.All.Concat(CwRules.Added).Concat(CwRules.Removed).Distinct())
+        foreach (var rule in CwRules.All)
         {
-            var onByDefault = !CwRules.TakenOut.Contains(rule) && (!CwRules.Removed.Contains(rule) || CwRules.Restored.Contains(rule));
-            var board = onByDefault
-                ? (off.Contains(rule) ? Measure(off.Where(r => r != rule).ToArray(), with) : Measure(off.Append(rule).ToArray(), with))
-                : (with.Contains(rule) ? Measure(off, with.Where(r => r != rule).ToArray()) : Measure(off, with.Append(rule).ToArray()));
-            var label = onByDefault ? (off.Contains(rule) ? "back in: " : "out: ") : (with.Contains(rule) ? "out again: " : "back in: ");
+            var board = off.Contains(rule) ? Measure(off.Where(r => r != rule).ToArray()) : Measure(off.Append(rule).ToArray());
 
-            rows.Add((board.Score, ScoreRow(label + rule, board)));
+            rows.Add((board.Score, ScoreRow((off.Contains(rule) ? "back in: " : "out: ") + rule, board)));
         }
 
         foreach (var (_, row) in rows.OrderByDescending(r => r.Score))

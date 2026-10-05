@@ -143,36 +143,23 @@ internal sealed class CwPatternGate
         // a word line off the letter gaps in a transmission's first seconds.
         var wordLine = letterMean is not { } l ? gapDit * UnmeasuredWordRatio
             : word is { Count: >= MeasuredRunGaps } ? (CwRules.On(CwRules.GapCrossing) ? Crossing(letter!, word) : CwSenderGate.Boundary(CwSenderGate.LogStats(letter!), CwSenderGate.LogStats(word)))
-            : Math.Max(CwRules.On(CwRules.ColdStartWordLine) ? (inside.Count >= MeasuredRunGaps ? Centre(inside) : gapDit) * UnmeasuredWordRatio : 0, CwRules.On(CwRules.FiveDitFloor) ? FiveDitLine(l, word is null, ditSeconds, smear) : l * LetterWordRatio);
+            : Math.Max(CwRules.On(CwRules.ColdStartWordLine) ? (inside.Count >= MeasuredRunGaps ? Centre(inside) : gapDit) * UnmeasuredWordRatio : 0, l * LetterWordRatio);
 
         return new CwGapLines(gapDit, character, wordLine, inside, letter, word);
-    }
-
-    /// <summary>
-    /// **A WORD GAP IS FIVE DITS OR MORE** where a sender's gaps above the element gap form only one cluster (work
-    /// instruction 525, HM-DEC-229). Removed in work instruction 534, restored behind a switch by work instruction 539.
-    /// </summary>
-    public const double WordGapDits = 5;
-
-    // The word line from the letter cluster with the five-dit floor, as before work instruction 534: five dits on the true dit,
-    // the word line where only the letter cluster shows under it, and never over it where three clusters show.
-    private static double FiveDitLine(double letterMean, bool noWords, double ditSeconds, double smear)
-    {
-        var fiveDits = (WordGapDits * (ditSeconds + (smear / 2))) + (smear / 2);
-
-        return noWords && letterMean < fiveDits ? fiveDits
-            : letterMean < fiveDits ? Math.Min(fiveDits, letterMean * LetterWordRatio)
-            : letterMean * LetterWordRatio;
     }
 
     /// <summary>How many gaps either side a gap is judged against: three, a letter's worth (work instruction 526).</summary>
     public const int NeighbourGaps = 3;
 
     /// <summary>
-    /// **A GAP IS JUDGED AGAINST ITS NEIGHBOURS** (work instruction 526, task 2, HM-DEC-230): inside a letter or between
-    /// letters, by the gaps around it in the same sender, where they show a clean jump; a word is still decided by the
-    /// lines. Removed in work instruction 534, restored behind a switch by work instruction 539.
+    /// **A GAP IS JUDGED AGAINST ITS NEIGHBOURS** (work instruction 526, task 2, HM-DEC-230; removed in 534, back in 541,
+    /// HM-DEC-245): inside a letter or between letters, by the gaps around it in the same sender, where they show a clean
+    /// jump of <see cref="CwSenderGate.TwoKindsRatio"/>; a word is still decided by the sender's lines.
     /// </summary>
+    /// <param name="gaps">The sender's gaps in time order.</param>
+    /// <param name="index">The gap judged.</param>
+    /// <param name="lines">The sender's lines, which decide a word, and decide the rest where the neighbours cannot.</param>
+    /// <returns>The gap's kind.</returns>
     public static CwGapKind KindAmongNeighbours(IReadOnlyList<double> gaps, int index, CwGapLines lines)
     {
         var gap = gaps[index];
@@ -198,6 +185,7 @@ internal sealed class CwPatternGate
         var at = -1;
         var widest = 0.0;
 
+        // Each side at least two: one odd gap is not a cluster (unit 504).
         for (var i = 2; i < window.Count - 1; i++)
         {
             if (window[i] / window[i - 1] > widest)
@@ -216,12 +204,6 @@ internal sealed class CwPatternGate
 
         return gap > boundary ? CwGapKind.Letter : CwGapKind.Element;
     }
-
-    /// <summary>
-    /// **A GAP LONGER THAN THREE OF THE SENDER'S WORD GAPS IS A PAUSE** (work instruction 529, task 2, HM-DEC-233), not
-    /// counted in its word cluster. Removed in work instruction 534, restored behind a switch by work instruction 539.
-    /// </summary>
-    public const double PauseWordGaps = 3;
 
     /// <summary>
     /// A sender's dit from its gaps alone, where its marks show only one length: a gap inside a letter is a dit and a
@@ -259,21 +241,6 @@ internal sealed class CwPatternGate
         }
 
         var (letter, word) = Split(sorted);
-
-        // **THE PAUSE, BEHIND A SWITCH** (restored by work instruction 539 to be measured): every gap longer than three of the
-        // sender's word gaps is taken out, and the clusters settled again from the first split.
-        if (CwRules.On(CwRules.Pause))
-        {
-            var pause = PauseWordGaps * LetterWordRatio * LetterWordRatio * Centre(letter);
-            var kept = sorted.Where(g => g <= pause).ToList();
-
-            if (kept.Count < sorted.Count && kept.Count >= MeasuredRunGaps)
-            {
-                var words = word.Where(g => g <= pause).ToList();
-
-                (letter, word) = words.Count > 0 ? Settle(letter.Where(g => g <= pause).ToList(), words) : Split(kept);
-            }
-        }
 
         return word.Count > 0 ? (letter, word) : (letter, null);
     }
@@ -487,35 +454,13 @@ internal sealed class CwPatternGate
         // **NO QUIETER MARK IS HELD FOR A STANDING SENDER** (work instruction 534, HM-DEC-238): a candidate a standing sender's
         // pitch and lengths but quieter than it by up to twice the tolerance was held for the sender's next mark and admitted
         // inside its letter (work instruction 511). The owner's recordings read better without it, and it came out.
-        // Restored behind a switch by work instruction 539, to be measured on the new score.
-        var quieter = CwRules.On(CwRules.QuieterMarks);
-
         if (home is null)
         {
-            var sender = quieter
-                ? _sequences.Where(s => s.Standing && s.TakesQuieter(candidate)).OrderByDescending(s => s.Count).FirstOrDefault()
-                : null;
-
-            if (sender is not null)
-            {
-                // Inside a letter already by the gap before it, it stands now; the first mark of a letter waits for the next.
-                if (sender.AdmitNow(candidate) is { } now)
-                {
-                    Stood++;
-                    return new[] { now };
-                }
-
-                sender.Hold(candidate);
-                return Array.Empty<CwMark>();
-            }
-
             home = new Sequence(++_nextId);
             _sequences.Add(home);
         }
 
-        var admitted = quieter ? home.Resolve(candidate) : null;
-
-        if (admitted is null && home.Crowds(candidate))
+        if (home.Crowds(candidate))
         {
             // **THE SAME TONE READ TWICE, OR A PIECE OF IT**: dropped, not begun again elsewhere.
             return Array.Empty<CwMark>();
@@ -523,22 +468,10 @@ internal sealed class CwPatternGate
 
         var standing = home.Add(candidate);
 
-        if (admitted is not null)
-        {
-            standing = standing.Prepend(admitted).ToArray();
-        }
-
         Stood += standing.Count;
 
         return standing;
     }
-
-    /// <summary>
-    /// How far under a standing sender's level its own mark may sit inside one of its letters, as a multiple of the level
-    /// tolerance: two (work instruction 511, task 2, HM-DEC-215). Removed in work instruction 534, restored behind a switch
-    /// by work instruction 539.
-    /// </summary>
-    public const double QuieterShare = 2;
 
     /// <summary>
     /// How far a mark's pitch may sit from its sequence's own and agree with it: half a bin either side, one bin's width
@@ -683,123 +616,9 @@ internal sealed class CwPatternGate
         public double PitchHz => _recent.Count > 0 ? _recent.Average(r => r.PitchHz) : double.NaN;
 
         /// <summary>The sequence's level: the mean of its last eight marks', the quieter marks it took by its pattern left out (work instruction 515).</summary>
-        public double LevelDb => _recent.Where(r => !r.BySendersPattern).TakeLast(8).Select(r => r.LevelDb).DefaultIfEmpty(double.NaN).Average();
+        public double LevelDb => _recent.TakeLast(8).Select(r => r.LevelDb).DefaultIfEmpty(double.NaN).Average();
 
         private CwMark? Last => _recent.Count > 0 ? _recent[^1] : null;
-
-        // A quieter mark of this sender's, waiting for its next mark (work instruction 511, task 2; restored by 539).
-        private CwMark? _quieter;
-
-        /// <summary>
-        /// Whether a candidate that does not agree is this standing sender's quieter mark: within a bin of its pitch, under
-        /// its level by more than the tolerance and no more than twice it, within √2 of its dit or its dah, and not sitting on
-        /// its last mark (work instruction 511, task 2).
-        /// </summary>
-        public bool TakesQuieter(CwMark m)
-        {
-            if (_recent.Count == 0 || m.FromSeconds - LastToSeconds > SilenceSeconds || Crowds(m))
-            {
-                return false;
-            }
-
-            var pitch = _recent.Average(r => r.PitchHz);
-
-            if (Math.Abs(m.PitchHz - pitch) > AgreeHz)
-            {
-                return false;
-            }
-
-            var dit = Dit(m);
-            var dahs = _recent.Where(r => r.ToSeconds - r.FromSeconds >= CwSenderGate.TwoKindsRatio * dit).ToList();
-            var dits = _recent.Where(r => r.ToSeconds - r.FromSeconds < CwSenderGate.TwoKindsRatio * dit).ToList();
-            var length = m.ToSeconds - m.FromSeconds;
-
-            bool Near(double of) => length >= of / LengthRatio && length <= of * LengthRatio;
-
-            var kind = Near(dit) && dits.Count > 0 ? dits
-                : dahs.Count > 0 && Near(dahs.Average(r => r.ToSeconds - r.FromSeconds)) ? dahs
-                : null;
-
-            if (kind is null)
-            {
-                return false;
-            }
-
-            var level = kind.TakeLast(LevelMarks).Average(r => r.LevelDb);
-            var heights = _recent.Select(r => r.OwnContrastDb).Where(double.IsFinite).OrderBy(c => c).ToList();
-            var tolerance = CwSenderGate.LevelToleranceDb(heights.Count > 0 ? heights[heights.Count / 2] : double.NaN);
-            var under = level - m.LevelDb;
-            var wobble = double.IsFinite(m.OwnContrastDb) && m.OwnContrastDb > 0
-                ? 20 * Math.Log10(1 + Math.Pow(10, -m.OwnContrastDb / 20))
-                : 0;
-
-            return under > tolerance && under - wobble <= QuieterShare * tolerance;
-        }
-
-        /// <summary>Take a quieter mark now where the gap from the sender's last mark already places it inside a letter.</summary>
-        public CwMark? AdmitNow(CwMark m)
-        {
-            if (Last is not { } before)
-            {
-                return null;
-            }
-
-            var dit = Dit(m);
-            var gap = m.FromSeconds - before.ToSeconds;
-
-            if (gap < LeastGapShare * dit || gap >= InsideLetterShare * dit)
-            {
-                return null;
-            }
-
-            _quieter = null;
-
-            return Take(m with { BySendersPattern = true });
-        }
-
-        /// <summary>Hold a quieter mark until the sender's next mark; a later one replaces it.</summary>
-        public void Hold(CwMark m) => _quieter = m;
-
-        /// <summary>
-        /// The sender's next mark has come: the held quieter mark stands if it sits inside one of the sender's letters.
-        /// </summary>
-        public CwMark? Resolve(CwMark next)
-        {
-            if (_quieter is not { } q || !Standing || Last is not { } before)
-            {
-                _quieter = null;
-                return null;
-            }
-
-            _quieter = null;
-
-            var dit = Dit(next);
-            var gapBefore = q.FromSeconds - before.ToSeconds;
-            var gapAfter = next.FromSeconds - q.ToSeconds;
-
-            if (gapBefore < LeastGapShare * dit || gapAfter < LeastGapShare * dit
-                || Math.Min(gapBefore, gapAfter) >= InsideLetterShare * dit)
-            {
-                return null;
-            }
-
-            return Take(q with { BySendersPattern = true });
-        }
-
-        /// <summary>Take a quieter mark into the sequence as one of its own.</summary>
-        private CwMark Take(CwMark admitted)
-        {
-            _recent.Add(admitted);
-            Count++;
-            LastToSeconds = Math.Max(LastToSeconds, admitted.ToSeconds);
-
-            if (_recent.Count > RecentMarks)
-            {
-                _recent.RemoveAt(0);
-            }
-
-            return admitted;
-        }
 
         /// <summary>Its recent marks, oldest first (work instruction 529).</summary>
         public IReadOnlyList<CwMark> RecentList => _recent.ToArray();
@@ -899,7 +718,7 @@ internal sealed class CwPatternGate
             // nought. **THE 0.2 LINE CAME OUT** (work instruction 534, HM-DEC-238): measured on the owner's recordings it held
             // back real stations, and loud noise still stands nothing without it.
             if (_held.Count < MarksToStand || !TwoLengths(_held)
-                || !(CwSequenceShape.Of(_held.Count > RecentMarks ? _held.GetRange(_held.Count - RecentMarks, RecentMarks) : _held, _held.Count).Score is var score && (CwRules.On(CwRules.StandingLine) ? score >= CwShapeLights.GreenScore : score > 0)))
+                || !(CwSequenceShape.Of(_held.Count > RecentMarks ? _held.GetRange(_held.Count - RecentMarks, RecentMarks) : _held, _held.Count).Score > 0))
             {
                 return Array.Empty<CwMark>();
             }
@@ -929,7 +748,7 @@ internal sealed class CwPatternGate
                 }
             }
 
-            return CwRules.On(CwRules.HandTwoKinds) && lengths.Count >= 2 * MarksToStand && CwSenderGate.TwoKindsOfAHand(lengths);
+            return false;
         }
     }
 }

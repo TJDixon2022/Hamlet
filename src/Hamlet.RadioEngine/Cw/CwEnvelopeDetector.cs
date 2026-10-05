@@ -702,8 +702,6 @@ public sealed class CwEnvelopeDetector
         // **NO RECTANGLE FIT** (work instruction 534, HM-DEC-238): the fit that filled what the per-hop tests left came out
         // when the owner's recordings read as well without it. The tag before-scoreboard holds it.
         CallMarks(evals, hop, nowSeconds);
-        FitMarks(evals, hop, nowSeconds);
-        FlushFitted(evals, hop);
 
         // **SHAPE PICKS THE SENDER; LOUDNESS PICKS NOTHING** (work instruction 519, R116, HM-DEC-223). The
         // reading - its pitch, the light and the scope - follows the standing sequence whose marks and gaps
@@ -1061,12 +1059,6 @@ public sealed class CwEnvelopeDetector
             return;
         }
 
-        // Key-up, behind a switch (restored by work instruction 539).
-        if (MarksNeedKeyUp && CwRules.On(CwRules.KeyUp) && to0 + _laneRiseHops <= hop && lane.Level(to0 + _laneRiseHops) > level - FlatToleranceDb)
-        {
-            return;
-        }
-
         var own = OwnContrast(lane, start, end, level, hop, (2 * inset) + 1, (2 * inset) + (2 * EdgeHops));
 
         if (MarksNeedEdges && !HasEdges(lane, start, end, level, EdgeDepth(own.ContrastDb), _laneEdgeHops))
@@ -1076,7 +1068,7 @@ public sealed class CwEnvelopeDetector
 
         var grid = Nearest(_lane.PitchHz);
 
-        // Narrowness, behind a switch (restored by work instruction 539).
+        // Narrowness (work instruction 541, HM-DEC-245).
         if (MarksNeedNarrowness && CwRules.On(CwRules.Narrowness) && (!IsNarrow(grid, start, end, level, own.ContrastDb, hop) || !IsToneHere(from, to, _lane.PitchHz)))
         {
             return;
@@ -1409,13 +1401,6 @@ public sealed class CwEnvelopeDetector
                 var apex = Apex(i, m.Start, m.End);
                 var level = MeanLevel(_bins[apex], m.Start, m.End);
 
-                // **A MARK ENDS WHERE ITS TONE ENDS** (work instruction 492), behind a switch (restored by work instruction 539):
-                // one window after the bar ends, the peak must have dropped below it by more than the flatness tolerance.
-                if (MarksNeedKeyUp && CwRules.On(CwRules.KeyUp) && _bins[apex].Level(m.End + edgeHops) > level - FlatToleranceDb)
-                {
-                    continue;
-                }
-
                 // **AND IT BEGINS WHERE ITS TONE ROSE.** The key-down edge can join the front of a
                 // dah's top as a run of its own and split it, so the bar that ends with the tone may
                 // be only its back half. The mark reaches back over the hops before it where the peak
@@ -1444,7 +1429,7 @@ public sealed class CwEnvelopeDetector
                     continue;
                 }
 
-                // **AND IT IS NARROW** (work instruction 498, R108, HM-DEC-202), behind a switch (restored by work instruction 539).
+                // **AND IT IS NARROW** (work instruction 498, R108, HM-DEC-202; back in 541, HM-DEC-245).
                 if (MarksNeedNarrowness && CwRules.On(CwRules.Narrowness) && !IsNarrow(apex, start, m.End, level, own.ContrastDb, hop))
                 {
                     continue;
@@ -1675,9 +1660,8 @@ public sealed class CwEnvelopeDetector
         return nearest;
     }
 
-    // **THE DETECTOR RULES REMOVED IN WORK INSTRUCTION 534, RESTORED BEHIND A SWITCH** (work instruction 539, HM-DEC-243):
-    // key-up, narrowness and the rectangle fit, copied from the tag before-scoreboard and gated by CwRules, off unless a
-    // test turns one on, to be measured on the new score.
+    // **NARROWNESS, BACK IN THE TREE** (work instruction 541, HM-DEC-245): removed in work instruction 534 and restored when
+    // the score counted what is wrong and invented as well as what is right. Copied from the tag before-scoreboard.
 
     /// <summary>
     /// How far either side of the sender's pitch the band beside a mark is read on its own samples, in Hz (work instruction
@@ -1714,393 +1698,6 @@ public sealed class CwEnvelopeDetector
 
 
     /// <summary>
-    /// Whether a stretch may become a candidate by a rectangle fitted to it as a whole, beside the
-    /// per-hop bar tests (work instruction 516, R115, HM-DEC-220); on by default. Off, only the per-hop
-    /// tests make candidates, so the difference can be counted.
-    /// </summary>
-    public bool MarksMayBeFitted { get; set; } = true;
-
-    /// <summary>
-    /// The least share of a stretch's variance a rectangle must explain to be a candidate mark (work
-    /// instruction 516). The author's choice, set from the clean call: the lowest score a real mark of it
-    /// earns at 24 dB over the noise is 0.835, and this sits 0.135 under that, a margin of a sixth; the
-    /// highest score any dit- or dah-length stretch of noise earned is 0.24. It is not moved to make a weak
-    /// case pass or a noise case fail.
-    /// </summary>
-    public const double FitThreshold = 0.7;
-
-    /// <summary>How far either side of the peak the lobe's other bins are read for the fit: 100 Hz, a window's resolution, so their noise is their own.</summary>
-    public const int FitLobeBins = 4;
-
-    /// <summary>How many hops of gap either side the rectangle is fitted against: the shortest bar, a dit at the fastest speed.</summary>
-    private int FitPadHops => Math.Max(2, (int)Math.Round(ShortestBarMs / HopMs));
-
-    // The best fit score each bin had at the last end tried, and its length, for the local maximum in time.
-    private double[] _fitPrev1 = Array.Empty<double>();
-    private double[] _fitPrev2 = Array.Empty<double>();
-    private int[] _fitLen1 = Array.Empty<int>();
-
-    /// <summary>
-    /// **A RECTANGLE FITTED AS A WHOLE** (work instruction 516, R115, HM-DEC-220): the share of the
-    /// variance of a stretch and its gaps either side that a two-level rectangle explains - the top's
-    /// mean over the hops from <paramref name="start"/> to <paramref name="end"/>, the floor's over
-    /// <paramref name="pad"/> hops either side - in the bin and the bins a window's resolution either side
-    /// of it together, each with its own levels. Nought to one; no decibel figure is in it.
-    /// </summary>
-    /// <param name="bin">The bin.</param>
-    /// <param name="start">The first hop of the top.</param>
-    /// <param name="end">The last hop of the top.</param>
-    /// <param name="pad">The hops of gap either side.</param>
-    /// <returns>The score, and the bin's own top and floor; a score of nought where the top is not above the floor.</returns>
-    private (double Score, double TopDb, double FloorDb) Fit(int bin, long start, long end, int pad)
-    {
-        double sse = 0;
-        double sst = 0;
-        var top = double.NaN;
-        var floor = double.NaN;
-        var sideHeight = double.NegativeInfinity;
-
-        for (var offset = -FitLobeBins; offset <= FitLobeBins; offset += FitLobeBins)
-        {
-            var k = bin + offset;
-
-            if (k < 0 || k >= _bins.Length)
-            {
-                continue;
-            }
-
-            var b = _bins[k];
-            var (nT, sT, qT) = b.Sums(start, end);
-            var (n1, s1, q1) = b.Sums(start - pad, start - 1);
-            var (n2, s2, q2) = b.Sums(end + 1, end + pad);
-            var nF = n1 + n2;
-            var sF = s1 + s2;
-            var qF = q1 + q2;
-
-            if (offset == 0)
-            {
-                top = sT / nT;
-                floor = sF / nF;
-            }
-            else
-            {
-                sideHeight = Math.Max(sideHeight, (sT / nT) - (sF / nF));
-            }
-
-            var all = sT + sF;
-
-            sse += qT - (sT * sT / nT) + (qF - (sF * sF / nF));
-            sst += qT + qF - (all * all / (nT + nF));
-        }
-
-        // **THE RECTANGLE IS THIS BIN'S.** A tone's lobe is highest at its peak, so the bin the rectangle is
-        // fitted at stands higher over its gaps than the lobe's bins either side. Where a side stands higher,
-        // the rectangle is another station's, a hundred hertz away, and this bin's score is nought.
-        // And a step no taller than the wobble a flat top may have (<see cref="FlatToleranceDb"/>) is a flat
-        // top: the share explained has no scale, and on a clean tone half a decibel of ripple explains most of
-        // nothing.
-        return !(top - floor > FlatToleranceDb) || !(sst > 0) || sideHeight > top - floor ? (0, top, floor) : (1 - (sse / sst), top, floor);
-    }
-
-    /// <summary>The rectangle fit's score for a span on the detector's own clock, at the bin nearest a pitch: for the tests' report (work instruction 516).</summary>
-    /// <param name="pitchHz">The pitch.</param>
-    /// <param name="fromSeconds">Where the span starts.</param>
-    /// <param name="toSeconds">Where it ends.</param>
-    /// <returns>The score, or NaN where the span and its gaps are not all held.</returns>
-    internal double FitScoreAt(double pitchHz, double fromSeconds, double toSeconds)
-    {
-        lock (_gate)
-        {
-            var nowSeconds = _samplesSeen / (double)SampleRate;
-            var last = _hop - 1;
-            var start = last + 1 - (long)Math.Round((nowSeconds - fromSeconds) * 1000 / HopMs);
-            var end = last - (long)Math.Round((nowSeconds - toSeconds) * 1000 / HopMs);
-            var pad = FitPadHops;
-            var nearest = 0;
-
-            for (var i = 1; i < _bins.Length; i++)
-            {
-                if (Math.Abs(_bins[i].Hz - pitchHz) < Math.Abs(_bins[nearest].Hz - pitchHz))
-                {
-                    nearest = i;
-                }
-            }
-
-            return start - pad < 0 || end + pad > last || last - (start - pad) >= _bins[nearest].SumsKept || end < start
-                ? double.NaN
-                : Fit(nearest, start, end, pad).Score;
-        }
-    }
-
-    /// <summary>
-    /// The lengths, in hops, the fit tries: the standing senders' dits and dahs and a little either side,
-    /// or, where nobody stands, every plausible length from the shortest bar to a 5 WPM dah in steps of a
-    /// quarter (work instruction 516).
-    /// </summary>
-    private List<int> FitLengths(double nowSeconds)
-    {
-        var standing = _pattern.StandingLengths(nowSeconds, HoldSeconds);
-        var lengths = new SortedSet<int>();
-
-        if (standing.Count > 0)
-        {
-            foreach (var (dit, dah) in standing)
-            {
-                foreach (var seconds in new[] { dit, dah })
-                {
-                    foreach (var share in new[] { 0.8, 1.0, 1.25 })
-                    {
-                        lengths.Add(Math.Max(1, (int)Math.Round(seconds * share * 1000 / HopMs)));
-                    }
-                }
-            }
-        }
-        else
-        {
-            for (var ms = ShortestBarMs; ms <= LongestDahMs; ms *= 1.25)
-            {
-                lengths.Add(Math.Max(1, (int)Math.Round(ms / HopMs)));
-            }
-        }
-
-        return lengths.ToList();
-    }
-
-    /// <summary>
-    /// **FIT THE RECTANGLE; DO NOT CHECK IT** (work instruction 516, R115, HM-DEC-220). Each hop, in every
-    /// bin, the rectangles that end a gap's width ago are fitted at the lengths <see cref="FitLengths"/>
-    /// gives; a bin's best becomes a candidate at its best end in time, where it is the lobe's peak, scores
-    /// <see cref="FitThreshold"/> or more and no candidate already covers it. It goes to the pattern gate
-    /// exactly as a per-hop candidate does.
-    /// </summary>
-    /// <remarks>
-    /// <para>**THE OWNER, R115**: *"Focus on shape. If you get the shape, the decode comes."* Every per-hop
-    /// test judges a bar one hop at a time, and noise riding on a weak dah's top breaks it into pieces of 20
-    /// and 30 ms. The rectangle is still there; every hop of it and of the gaps beside it votes on one top
-    /// and one floor.</para>
-    /// <para>**NOT A RUNNING MEAN.** Unit 510 averaged the hops over half a dit and then ran the per-hop
-    /// tests on the blurred result, and every row got worse; this leaves the per-hop tests alone and adds a
-    /// second way in.</para>
-    /// </remarks>
-    private void FitMarks(Evaluation[] evals, long hop, double nowSeconds)
-    {
-        if (!MarksMayBeFitted || !CwRules.On(CwRules.RectangleFit) || _bins.Length == 0)
-        {
-            return;
-        }
-
-        if (_fitPrev1.Length != _bins.Length)
-        {
-            _fitPrev1 = new double[_bins.Length];
-            _fitPrev2 = new double[_bins.Length];
-            _fitLen1 = new int[_bins.Length];
-        }
-
-        var pad = FitPadHops;
-        var end = hop - pad;
-        var lengths = FitLengths(nowSeconds);
-        var reach = _bins[0].SumsKept;
-        var score = new double[_bins.Length];
-        var length = new int[_bins.Length];
-
-        for (var i = 0; i < _bins.Length; i++)
-        {
-            foreach (var l in lengths)
-            {
-                var start = end - l + 1;
-
-                if (start - pad < 0 || hop - (start - pad) >= reach)
-                {
-                    continue;
-                }
-
-                var s = Fit(i, start, end, pad).Score;
-
-                if (s > score[i])
-                {
-                    score[i] = s;
-                    length[i] = l;
-                }
-            }
-        }
-
-        for (var i = 0; i < _bins.Length; i++)
-        {
-            // The best end in time: the end before this one scored at least as well as the one before it, and
-            // better than this one.
-            var best = _fitPrev1[i] >= FitThreshold && _fitPrev1[i] >= _fitPrev2[i] && _fitPrev1[i] > score[i];
-            var e = end - 1;
-            var s = e - _fitLen1[i] + 1;
-
-            if (best && s - pad >= 0)
-            {
-                var fit = Fit(i, s, e, pad);
-
-                // The lobe's peak: no bin within 300 Hz, the reach narrowness reads at, stands higher over
-                // the same span. A strong tone's side lobes 225 Hz out are rectangles too, thirty decibels
-                // under it, and only the tone's own top tells them apart.
-                var peak = true;
-
-                for (var k = Math.Max(0, i - (3 * FitLobeBins)); k <= Math.Min(_bins.Length - 1, i + (3 * FitLobeBins)) && peak; k++)
-                {
-                    var (n, sum, _) = _bins[k].Sums(s, e);
-
-                    peak = k == i || sum / n <= fit.TopDb;
-                }
-
-                if (peak)
-                {
-                    OfferFitted(evals, i, s, e, fit, hop, nowSeconds);
-                }
-            }
-
-            _fitPrev2[i] = _fitPrev1[i];
-            _fitPrev1[i] = score[i];
-            _fitLen1[i] = length[i];
-        }
-    }
-
-    // Fitted rectangles waiting for the per-hop tests to finish with their stretch: the mark, its bin and its hops.
-    private readonly List<(CwMark Mark, int Bin, long Start, long End)> _fitPending = new();
-
-    /// <summary>
-    /// Hold a fitted rectangle until the per-hop tests have finished with its stretch (work instructions
-    /// 516 and 517). A fit can end before the key came up, a dit-sized rectangle on the front of a dah, and
-    /// offered at once it reached the gate before the per-hop path called the whole dah, and the dah was
-    /// then refused as already called. On the air that took W1AW at 18 WPM to dits only.
-    /// </summary>
-    private void OfferFitted(Evaluation[] evals, int bin, long start, long end, (double Score, double TopDb, double FloorDb) fit, long hop, double nowSeconds)
-    {
-        var from = nowSeconds - ((hop - start + 1) * HopMs / 1000);
-        var to = nowSeconds - ((hop - end) * HopMs / 1000);
-        var pitch = MarkPitch(StationBin(bin, start, end), start, end);
-        var keyed = false;
-
-        for (var k = Math.Max(0, bin - 2); k <= Math.Min(_bins.Length - 1, bin + 2) && !keyed; k++)
-        {
-            keyed = evals[k].Keying;
-        }
-
-        var candidate = new CwMark(0, from, to, pitch, fit.TopDb, fit.TopDb - fit.FloorDb)
-        {
-            Keyed = keyed,
-            OwnContrastDb = fit.TopDb - fit.FloorDb,
-            Stood = false,
-            FitScore = fit.Score,
-        };
-
-        _fitPending.Add((candidate, bin, start, end));
-    }
-
-    /// <summary>The hops after a bar's end in which the per-hop tests may still call it: the edge read and the promptness bound.</summary>
-    private int PerHopCallHops => Math.Max(EdgeHops, 3 * (EnvelopeWindowSamples / HopSamples));
-
-    /// <summary>
-    /// **THE FIT ONLY FILLS WHAT THE PER-HOP TESTS LEFT** (work instruction 517, HM-DEC-221). A fitted
-    /// rectangle waits while any bar within two bins of it that overlaps its stretch is still running or
-    /// still inside the hops the per-hop tests may call it in. Once none is, it is dropped if a mark the
-    /// per-hop tests found overlaps it at all, within two bins, or if another fitted mark covers half of
-    /// it; otherwise it goes to the pattern gate. A fit held longer than a 5 WPM dah past its end is
-    /// dropped, since nothing it could fill is that old.
-    /// </summary>
-    private void FlushFitted(Evaluation[] evals, long hop)
-    {
-        var limit = (long)Math.Ceiling(LongestDahMs / HopMs) + PerHopCallHops;
-
-        for (var p = 0; p < _fitPending.Count; p++)
-        {
-            var (mark, bin, start, end) = _fitPending[p];
-
-            if (hop - end <= limit && PerHopStillBusy(evals, bin, start, end, hop))
-            {
-                continue;
-            }
-
-            _fitPending.RemoveAt(p--);
-
-            // The sender's own window calls the marks at its pitch once it is open (work instruction 529), fitted ones too.
-            if (hop - end > limit || OverlapsPerHopMark(mark) || Covered(mark.FromSeconds, mark.ToSeconds, mark.PitchHz) || AtOwnWindow(mark.PitchHz, mark.ToSeconds))
-            {
-                continue;
-            }
-
-            var candidate = mark with { Sequence = ++_candidateSequence };
-
-            _candidates.Add(candidate);
-
-            foreach (var stood in MarksNeedPattern ? _pattern.Offer(candidate) : new[] { candidate })
-            {
-                _marks.Add(stood with { Sequence = ++_markSequence, Stood = true, Keyed = true });
-            }
-        }
-    }
-
-    /// <summary>Whether a bar within two bins that overlaps the stretch is still running or may still be called by the per-hop tests.</summary>
-    private bool PerHopStillBusy(Evaluation[] evals, int bin, long start, long end, long hop)
-    {
-        for (var k = Math.Max(0, bin - 2); k <= Math.Min(_bins.Length - 1, bin + 2); k++)
-        {
-            foreach (var bar in evals[k].AllBars)
-            {
-                if (bar.Start <= end && bar.End >= start && hop <= bar.End + PerHopCallHops)
-                {
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }
-
-    /// <summary>Whether a mark the per-hop tests found overlaps this fitted mark at all, within two bins of its pitch.</summary>
-    private bool OverlapsPerHopMark(CwMark fitted)
-    {
-        for (var k = _candidates.Count - 1; k >= 0; k--)
-        {
-            var called = _candidates[k];
-
-            if (called.ToSeconds < fitted.FromSeconds - KeyingSeconds)
-            {
-                break;
-            }
-
-            if (!called.Fitted && called.ToSeconds > fitted.FromSeconds && called.FromSeconds < fitted.ToSeconds
-                && Math.Abs(called.PitchHz - fitted.PitchHz) <= 2 * BinSpacingHz)
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /// <summary>
-    /// Whether a fitted mark already called within a bin of this pitch covers half this span or more
-    /// (work instruction 516): two fits of one stretch at neighbouring lengths are one mark.
-    /// </summary>
-    private bool Covered(double from, double to, double pitchHz)
-    {
-        for (var k = _candidates.Count - 1; k >= 0; k--)
-        {
-            var called = _candidates[k];
-
-            if (called.ToSeconds < from - KeyingSeconds)
-            {
-                break;
-            }
-
-            var overlap = Math.Min(called.ToSeconds, to) - Math.Max(called.FromSeconds, from);
-
-            if (called.Fitted && Math.Abs(called.PitchHz - pitchHz) <= BinSpacingHz && overlap >= (to - from) / 2)
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /// <summary>
     /// **What share of its own height over its gap a mark's bin must stand above the bins
     /// <see cref="NarrowBins"/> either side** (work instruction 507): a half, for the edges' reason.
     /// </summary>
@@ -2111,10 +1708,6 @@ public sealed class CwEnvelopeDetector
     /// </remarks>
     public const double NarrowShare = 0.5;
 
-
-    /// <summary>Whether a bar must end where its tone's peak drops, a window later; on by default.</summary>
-    /// <remarks>Work instruction 492's second delivery rule, switchable for the same count (work instruction 504).</remarks>
-    public bool MarksNeedKeyUp { get; set; } = true;
 
     /// <summary>How far a mark must stand above the bins <see cref="NarrowBins"/> either side, in dB.</summary>
     /// <remarks>Half amplitude, as for the edges (<see cref="EdgeDepthDb"/>). The author's.</remarks>
