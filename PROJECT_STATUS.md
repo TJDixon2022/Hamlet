@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: COMPLETED
-TASK: 4 of 4
-WORK_INSTRUCTION: 537 - the cleanup (run by hand)
+TASK: 3 of 3
+WORK_INSTRUCTION: 538 - spaces where the sender put them (run by hand)
 BALL: tim
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-10-04T19:30:45-04:00
-NOTE: Unit 537 done: repo cleaned, sheet on the shape side, three reds green; scoreboard 205 of 244
+UPDATED: 2026-10-04T20:10:34-04:00
+NOTE: Unit 538 done: spaces scored; word line at the gaps crossing; letters 206 of 244, spaces 54 to 58 of 77
 
 ---
 

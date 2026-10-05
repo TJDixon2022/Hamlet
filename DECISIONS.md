@@ -4,6 +4,59 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-242
+date: 2026-10-04
+refs: work instruction 538, src/Hamlet.RadioEngine/Cw/CwPatternGate.cs, src/Hamlet.RadioEngine/Cw/CwRules.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheRecordingsScoreboardTests.cs, tests/Hamlet.RadioEngine.Tests/Cw/AWordLineIsWhereTheGapsCrossTests.cs, docs/cw-scoreboard.md
+---
+
+**A word line is where the sender's own letter and word gaps cross.** The line between a sender's letter gaps and its
+word gaps is drawn where a gap is as likely to belong to either cluster, given each cluster's centre and spread in
+log-length.
+- **When the gaps show no clean jump**, they are split in two by log-length 2-means. They are kept as two kinds only
+  where the two centres sit √(7/3) apart, the walk's own jump.
+- **The same crossing settles the two clusters.** It replaces the boundary that set a gap as many of one cluster's
+  spreads from its centre as of the other's.
+
+**The scoreboard scores spaces.** A new column, spaces right over the reference's spaces for stretches of medium
+confidence or better:
+- printed letters are aligned to the reference letter by letter;
+- each reference boundary is read on the printed side, between the letters aligned either side of it.
+
+**The numbers:**
+
+| | baseline | after |
+|---|---|---|
+| spaces right | 54 of 77 (6 added) | 58 of 77 (4 added) |
+| letters | 205 of 244 | 206 of 244 |
+
+The first recording reads whole with its spaces, noise prints nothing, and the random carrier prints at seed 5195 alone,
+as at HEAD.
+
+**Why.** The owner saw words run together on a hand and every letter split on another sender. Both were the word line.
+- **On `cw-2026-10-03-144045`** the hand's letter gaps reach 709 ms and its word gaps start at 639. No two neighbours
+  differ by √(7/3), so every gap was one letter cluster, with the line at 958 ms above every word gap. Its clusters are
+  now 195 to 709 and 925 to 1163 ms, the line 815 ms, and 8 of 8 reference spaces are read.
+- **On `cw-2026-10-03-221530` at 598 Hz** the letter gaps run 111 to 171 ms. A word cluster centred at 274 ms but wide
+  pulled the old boundary to 160 ms, under its own letter gaps, and it printed `AGE 12ILEAR E D CW U SIN G A V`. At the
+  crossing the line is 241 ms and no space is added; two real spaces there are lost.
+- **A synthetic hand** whose letter gaps reach 5.5 dits and word gaps start at 6 read 4, 7 and 7 of 14 word spaces at
+  three seeds. It now reads 12, 14 and 13.
+
+**Each rule alone** (medium or better):
+
+| rules on | letters | spaces right | spaces added |
+|---|---|---|---|
+| neither | 205 | 54 | 6 |
+| the split alone | 206 | 59 | 8 |
+| the crossing alone | 205 | 52 | 3 |
+| both (shipped) | 206 | 58 | 4 |
+
+Both ship because the split alone splits more letters, which is the owner's second fault.
+
+**The references' spaces are less certain than their letters.** Each stretch's word breaks are read offline from its
+own gaps and printed beside them; no reference was changed.
+
+---
 id: HM-DEC-241
 date: 2026-10-04
 refs: work instruction 537, tag before-cleanup-2026-10-04, .gitignore, docs/archive/, src/Hamlet.RadioEngine/Cw/CwShapeSideReading.cs, src/Hamlet.App/ViewModels/MainWindowViewModel.cs, tests/Hamlet.App.Tests/DecisionLogOrderTests.cs

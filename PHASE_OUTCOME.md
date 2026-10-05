@@ -1801,3 +1801,15 @@ Run by hand, outside the loop: SESSION.lock taken and released; nothing written 
 **Task 4.** Dropped: it needs whole-suite runs, which HM-DEC-155 rules out.
 
 The scoreboard read 205 of 244 after every task. Build 0 warnings 0 errors. App carry-forward 276 of 278; the two losses, a dispatcher loop at 1 ms, pass alone.
+
+## UNIT 538 - STEP 12
+
+Run by hand, outside the loop: SESSION.lock taken and released, nothing written to RUN_LEDGER.md, nothing under tools\arbiter\ touched, no box ticked, and nothing keyed or transmitted. Version 1.13.222 to 1.13.223. HM-DEC-242.
+
+Task 1: the scoreboard scores spaces, aligning letters and reading each reference boundary between the printed letters aligned either side. The baseline is 54 of 77.
+
+Task 2: where a sender's letter and word gaps show no clean jump they are split in two where they overlap, and the word line is their equal-error crossing. Spaces went from 54 to 58 of 77, added spaces from 6 to 4, and letters from 205 to 206 of 244.
+
+Task 3: the sender who spaced its letters is 221530 at 598 Hz. A wide word cluster had pulled the old boundary to 160 ms, under its letter gaps; at the crossing the line is 241 ms and nothing is added.
+
+The first recording reads whole with its spaces, noise prints nothing, and the carrier prints at seed 5195 as at HEAD. The build has no warnings. App carry-forward was 277 of 278; the one loss, the dispatcher loop, passes alone.
