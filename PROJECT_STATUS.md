@@ -2,12 +2,12 @@ PROTOCOL: 2
 PROJECT: Hamlet
 STATE: COMPLETED
 TASK: closing
-WORK_INSTRUCTION: 542 - the scan finds stations, lands on them, hears them as the app does (run by hand)
+WORK_INSTRUCTION: 543 - the scan watches a span, visits what it saw, then moves on (run by hand)
 BALL: tim
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-10-05T09:54:22-04:00
-NOTE: Unit 542 done - one wiring, scope peaks repeat, the scan lands by ear; scoreboard 191
+UPDATED: 2026-10-05T11:02:38-04:00
+NOTE: Unit 543 done - the scan watches a span, visits what it saw, moves on; scoreboard 191
 
 ---
 

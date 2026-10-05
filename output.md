@@ -2,115 +2,153 @@
 
 - **Session:** development computer, Claude Code. The prompt claimed `PROJECT: Hamlet`.
 - **Gate:** checked in `C:\Source\HamLet`.
-  - Present: `SHACK_FACTS.md`, `docs\cw-scoreboard.md`, `docs\cw-keying-map.md`.
+  - Present: `SHACK_FACTS.md`, `src\Hamlet.RadioEngine\Cw\CwChain.cs`, `docs\cw-scoreboard.md`.
   - Absent: `CoreHMI.sln`, `MURC.sln`.
 - **Nothing in this report is evidence about the radio.**
-- **Work instruction 542, run by hand on `main`:**
+- **Work instruction 543, run by hand on `main`:**
   - SESSION.lock was taken and released.
   - Nothing was written to RUN_LEDGER.md, nothing under `tools\arbiter\` was touched, and nothing in PHASE_PLAN.md was ticked.
-  - Nothing keys or transmits. The only radio write in the new code is the frequency.
-  - No scan catch was read.
-- **R88:** lifted for the owner's twelve recordings only. They were read only by the scoreboard.
-- **Version:** 1.13.226 → 1.13.227. **Ruling:** HM-DEC-246, *One wiring for every listener; the scan lands by ear*.
+  - No recording or scan catch was read.
+  - Nothing keys or transmits. The only radio write is the frequency.
+- **Version:** 1.13.227 → 1.13.228. **Ruling:** HM-DEC-247, *The scan watches a span, visits what it saw, then moves on*.
 - **The scoreboard read 191 after every task.** Its test stays red only on the two hard limits red at HEAD: the carrier at seed 5195, and one letter in a silence.
 
-**Task 1: one wiring for every listener** (commit `7858b92d`).
-- **What was found:** three wiring differences, listed in section 3.
-- **What changed:** `CwChain` (`src/Hamlet.RadioEngine/Cw/CwChain.cs`) builds the decoder and the detector and wires them exactly as the app did.
-  - The app, the scan's ear, the scoreboard and the bench helpers in `ThePatternIsTheGateTests` and `TheOwnersRecordingReadsTests` all use it.
-  - The app's own wiring block is now one call to `CwChain.Wire`.
+**Task 1: why clear stations are skipped** (commit `f42108f0`, before any change).
+- **The fake radio:**
+  - A centre-mode scope that follows the dial, ±10 kHz, 475 bins of about 42 Hz.
+  - The floor clipped to nought, and two noise blips a sweep at 6 or 7.
+- **The sweep rate:** about 4.5 sweeps a second. That is the rate measured off the owner's radio and recorded in `ScopeFlow.QuietAfter`. The older fake scope sent ten a second, more than twice the real rate.
+- **Three stations in the first span,** each keyed down in 55% of sweeps, drawn as a core with skirts:
+  - strong at 7.0043 MHz, 120 at its core, 11 bins over nought at its base;
+  - moderate at 7.0091 MHz, 30 at its core, 5 bins at its base;
+  - moderate at 7.0150 MHz, 24 at its core, 5 bins at its base.
+  - The skirt shapes are mine, from the scope's resolution being wider than a bin at that span.
+- **The cause: every clear station was refused as too wide.**
+  - The scan did wait: it watched the span for 9 sweeps, and the rule needed 3. So the first suspected cause, not waiting, does not hold.
+  - The radio clips its floor to nought, so the line sat at 1, and a station's width was counted at the foot of its skirts.
+  - Every sweep in which a station was up measured 11 or 5 bins, against a limit of 3, so none ever qualified.
 
-**Task 2: a peak is what the scope really shows** (commit `8f180ed4`).
-- **What changed:** `ScopeWatch` replaces the level-only peak rule. A peak must repeat, be narrow, and stand over a floor the radio clips to nought. The figures are in section 3.
+**Task 2: watch, visit, advance** (commit `cc3f0d1a`).
+- **One span at a time.** The scan advances one scope span across the CW segment and wraps at its end.
+  - Where the scope shows the whole segment, or does not move with the dial, there is one span: what the scope shows.
+- **Watch.** It watches for the **survey time**, 3 s by default, about 13 sweeps.
+  - The survey time is a setting in the popover, 1 to 30 s, kept with the other three scan settings.
+- **What gets listed.** Every top, not one per run of bins, that does both of these:
+  - **stands in a quarter of the sweeps watched, and three at least**, as before;
+  - **is 250 Hz or narrower at half its own height over the floor.** Where three bins are wider than 250 Hz, the limit is three bins.
+- **Why 250 Hz:**
+  - A keyed CW signal occupies about four times its speed in hertz, 160 Hz at 40 WPM, and the scope adds its own resolution.
+  - A phone signal is about 2.4 kHz, and a static crash covers many bins.
+  - Half its own height is where a signal's width is its own and not its strength's.
+- **Neighbours:** tops within 250 Hz are one station, as before.
+- **Visit, then advance.**
+  - It visits each listed station in frequency order and lands by ear, as before.
+  - Then it advances. A span with nothing listed advances as soon as its survey ends.
+- **A hand on the dial** carries on from there:
+  - With a moving scope, the next span is centred where the hand left it.
+  - With a whole-segment scope, the visits begin at the station nearest the hand.
+- **Watched fail first.** The three span tests were run against the task 1 commit, and all three failed there. Section 3 has the failures.
 
-**Task 3: the scan lands by ear** (commit `534812bd`).
-- **How it lands:**
-  - At each peak the scan listens two seconds for the strongest narrow tone in the passband.
-  - It retunes so that tone sits at the CW pitch.
-  - If no tone is heard, it tries half a filter width either side.
-  - A tone already within 10 Hz of the pitch is not retuned, and the catch keeps what the probe heard.
-- **The new `empty` kind:** a stop with no tone after all three tries is `empty`, left as `NothingHeard`, and left at once.
-- **Records:** a catch now records the scope's frequency and the tone heard.
-- **The pitch and filter the scan listens through** are the radio's own in CW. Where the radio's are unread or read as nought, it uses the ear's.
-- **One scan test was changed:** `APositiveThatStopsIsLeftAfterItsSilence` now counts the silence from the end of the call, not from the start of the catch.
-  - A scan that probes and retunes begins its catch after the call has started.
-  - In that test the scope's centroid put the dial 80 Hz off. The scan heard the call at 680 Hz and retuned onto it.
+**Task 3: the scan shows its reasoning** (commit `5e999774`).
+- **The line** reads `watching 7.000–7.020 · 0:03 · 3 stations`, then `visiting 1 of 3 · 7.0043 · landing`, then the light, `negative`, or `empty` with its clock, then `advancing to 7.020–7.040`.
+- **`scan.json` keeps every survey:**
+  - its span, the sweeps watched, its floor, line and bin width;
+  - every peak considered, with its level, width at half height, sweeps stood narrow and sweeps shown in;
+  - a verdict for each (`listed`, `not-repeating`, `too-wide` or `merged`) and why, in words.
+  - Each catch names the survey it came from.
+- **Two faults found by this task's test, and fixed:**
+  - A weaker station 150 Hz from a stronger one was measured across its neighbour's slope and called too wide. A top's width now stops where the bins rise again, so the two are merged as one station.
+  - A skipped wide signal was placed at its left edge. It is now placed at the centroid of every sweep it showed in.
+- **One departure from the order's numbering:** the survey record and the new line were built in task 2's restructure of the loop, since the new loop is what produces them. Task 3 added their tests and the two fixes.
 
-**Task 4: the carrier and the noise** (commit `f8d9efae`).
-- **What was done:** measured through the shared wiring at five seeds.
-- **Result:** neither the carrier nor the noise reaches green. Both hold amber for a while. The figures are in section 3.
-- **No cause was plain, so nothing was changed.**
-
-**Records:** DECISIONS.md HM-DEC-246, the CLAUDE.md §1 row, PHASE_OUTCOME and PHASE_STATUS in both copies, and the version.
+**Records:** DECISIONS.md HM-DEC-247, the CLAUDE.md §1 row, PHASE_OUTCOME and PHASE_STATUS in both copies, and the version.
 
 ## 2. What the owner should expect
 
 - **Rebuild**, then run a scan as before.
-- **What was wrong with the scan's ear:** it was wired its own way. It listened through the pitch and filter Hamlet was given, not the radio's own.
-  - Now the ear, the app, the scoreboard and the bench all share one wiring, and it is the app's.
-- **That was not the whole fault:**
-  - On a synthetic 20 WPM call through the filter, the old ear and the app already found the same 70 marks and reached green.
-  - So this work does not show that your three real stations would now be positives. Only the radio can tell us that.
-  - What has changed for them is the landing: the scan now puts the tone it hears at your CW pitch, where before it trusted the scope to within a few hundred hertz.
-- **How the scan picks signals:** it keeps only a place on the scope that comes back sweep after sweep, is narrow, and stands above the floor. One-sweep noise blips at 6 or 7 are no longer stops.
-- **How it lands:** it listens two seconds and retunes onto the tone it hears. If it hears none, it looks half a filter either side.
-- **The new `empty` kind:** a stop with nothing to hear is marked `empty` and left after about 7 seconds. Before, it sat out the 30-second negative stay.
-- **How much faster a pass is:**
-  - In your first scan, 45 of 55 stops held nothing. At 30 s each that was about 22 minutes.
-  - At 7 s each it is about 5 minutes, before counting the blips the new peak rule no longer stops for.
-- **Green is still the line for a positive.** Amber still comes on over a steady carrier and over noise, and is not counted.
+- **Why clear stations were skipped:**
+  - The scan judged a station's width at the very bottom of its trace on the waterfall, where the radio has cut its noise to nothing.
+  - A strong, clear station spreads wide down there, so it was thrown out as too wide to be Morse. The clearer the station, the surer it was to be skipped.
+  - The scan was waiting long enough; it just refused what it saw.
+- **What the scan does now, span by span:**
+  - It moves the dial by one waterfall's width, as you saw before.
+  - It watches for three seconds.
+  - It lists every narrow signal that keeps coming back, judged by its width halfway up rather than at its foot.
+  - It visits each one in turn, low to high, landing by ear.
+  - Then it moves to the next span. A span with nothing in it is left as soon as the three seconds are up.
+  - The three seconds is a new setting, beside the others under the `⋯` button.
+- **What the line under the header says:**
+  - `watching 7.000–7.020 · 0:02 · 3 stations` while it looks;
+  - `visiting 2 of 3 · 7.0091 · shape found · 0:31`, or `· negative · 0:12`, or `· empty`, while it listens;
+  - `advancing to 7.020–7.040` as it moves on.
+- **Where the reasons are kept:** in `scan.json` in the scan's folder (`%AppData%\Hamlet\scans\scan-…`), under `surveys`.
+  - Every survey lists every peak it considered and why it was visited or skipped.
+  - A station you saw on the waterfall and the scan passed by has its reason written there: shown in too few sweeps, too wide for Morse, or kept as one with a stronger neighbour.
+- **Measured on fake sweeps only.** Nothing here was tried on your radio. The widths a real station shows on your scope have not been measured.
 
 ## 3. What you should see
 
-**The wiring differences:**
-- **The passband.**
-  - The ear heard through the pitch and filter it was given, fixed at the start.
-  - The app hears through the radio's own CW pitch and filter, read live, and only in CW or CW-R.
-  - The ear now does the same.
-- **The order.**
-  - The app's decoder takes each chunk before its detector does, so the decoder reads the detector's marks one chunk behind.
-  - The scoreboard and the bench helpers ran the detector first. They now run the decoder first.
-- **The waiting pitch.** The scoreboard and the bench helpers never wired the detector's waiting pitch (a sender qualified but not yet printed). They do now.
-- **The scoreboard:** 191 before and after, 208 of 244 right, 15 wrong, 2 invented.
+**Task 1, the trace at the task 1 commit, before any change.** Sweep by sweep, level/width in bins over the line, `-` = keyed up:
+```
+span 7.000-7.020 MHz, tuned at 0.25 s, held 0.75 to 2.75 s; 9 sweeps watched; next tune at 2.75 s to 7.0280 MHz
+floor 0 (median of every bin), line 1; a peak must stand in 3 of 9 sweeps and be 3 bins wide or less
+strong 7.0043 MHz: 120/11 - 120/11 - 120/11 120/11 120/11 - 120/11 -> refused: too wide - 6 sweeps up, 0 of them 3 bins or narrower at the line
+moderate 7.0091 MHz: 30/5 - 30/5 - 30/5 - - 30/5 30/5 -> refused: too wide - 5 sweeps up, 0 of them 3 bins or narrower at the line
+moderate 7.0150 MHz: 24/5 - - - 24/5 24/5 - - - -> refused: too wide - 3 sweeps up, 0 of them 3 bins or narrower at the line
+noise blips: 15 over 15 places, the most any place came back 1 -> refused: not repeating
+the rule's own peaks over these sweeps: none
+catches in 25 s of scanning: 0; tunes: 7.010@0.3, 7.028@2.7, 7.046@5.2, 7.064@7.7, 7.082@10.2, 7.100@12.7, 7.118@15.2, 7.010@19.8, ... 7.031@39.3
+```
+- The scan at the task 1 commit also ran past its 25 s length to 39 s, because its survey of the whole segment never looked at the clock.
 
-**The synthetic call** (20 WPM, 12 dB, a 1 dB AGC overshoot, through the 500 Hz filter):
+**The same span now** (13 sweeps in 3 s): the old rule still refuses all three, and the new rule lists all three.
+```
+7.0043 MHz level 120, 126 Hz at half height, listed: stood narrow in 8 of 13 sweeps
+7.0091 MHz level 30, 126 Hz at half height, listed: stood narrow in 7 of 13 sweeps
+7.0150 MHz level 24, 126 Hz at half height, listed: stood narrow in 6 of 13 sweeps
+tunes: 7.010@0.3, 7.004@3.7, 7.004@6.2, 7.005@8.7, 7.009@11.2, 7.009@13.7, 7.009@16.2, 7.015@18.8, 7.015@21.3, 7.015@23.8, ...
+```
 
-| | marks | shape | green | text |
-|---|---|---|---|---|
-| app, before | 70 | 0.494 | yes | `CQ CQ CQ DE W1AW W1AW W1AW K` |
-| ear, before | 70 | 0.494 | yes | `CQ CQ CQ DE W1AW W1AW W1AW K` |
-| app, after | 70 | 0.494 | yes | `CQ CQ CQ DE W1AW W1AW W1AW K` |
-| ear, after | 70 | 0.494 | yes | `CQ CQ CQ DE W1AW W1AW W1AW K` |
+**The tests:**
+- `TheScanWatchesASpanTests`, all 3 pass. At the task 1 commit, all 3 fail:
+  - **All three clear stations are visited:** expected 3, got 0.
+  - **A span of blips is left after its survey:**
+    - Now: nothing visited, and the next span is tuned 3.5 s after the first.
+    - At the task 1 commit: the next tune went to 7.028 rather than one span on, 7.030.
+  - **A station keyed half the time is visited, and one keyed in one sweep of fifteen is not.**
+    - At the task 1 commit, nothing was visited.
+    - At 40% keying and this seed, the station showed in 3 of 13 sweeps and was skipped as not repeating. That is the rule as written, and its reason is recorded.
+- `TheScanShowsItsReasoningTests`, all 3 pass:
+  - the watching, visiting and advancing lines;
+  - `visiting 1 of 3 · 7.0100 · reading · 0:05` on the call, and `visiting 3 of 3 · 7.0500 · negative · 0:12` on the carrier;
+  - `scan.json`'s survey.
+- **Other tests:**
+  - `WhyClearStationsAreSkippedTests` passes.
+  - All 93 scan tests pass, including every catch-scan and never-transmits test.
+  - The app's scan-settings tests pass, now with the survey time.
 
-**The scope rule** (`APeakIsWhatTheScopeShowsTests`, 11 pass):
-- **The figures:**
-  - Where the median is above nought, a peak stands six of the floor's spreads over it. Where the median is nought, any value above nought counts.
-  - It must stand in a quarter of the sweeps watched, and three at least, within a bin of the same place.
-  - It may be three bins wide at most. Peaks within 250 Hz are one peak.
-- **The test sweeps:** 20 sweeps with a floor clipped to nought, two blips a sweep at 6 or 7, a keyed station at 6 up in half the sweeps, and a crash thirty bins wide in two sweeps.
-- **With the station:** exactly one peak at each of five seeds, 22 to 79 Hz from the station, standing in 8 to 14 of 20 sweeps.
-- **Without it:** no peak at any seed.
-- **An unclipped floor** keeps its six-spread margin.
+**An example survey from `scan.json`:** a moderate station, a weaker one 150 Hz above it, and a phone-wide signal. The 22 one-sweep blips, each `not-repeating`, are left out here.
+```json
+{
+  "index": 1, "lowHz": 7000000, "highHz": 7020000, "sweeps": 13, "listed": 1,
+  "considered": [
+    { "frequencyHz": 7004021, "level": 30, "widthHz": 126.3, "stood": 10, "seen": 10,
+      "verdict": "listed", "why": "stood narrow in 10 of 13 sweeps" },
+    { "frequencyHz": 7004147, "level": 20, "widthHz": 126.3, "stood": 10, "seen": 10,
+      "verdict": "merged", "why": "within 250 Hz of the station at 7.0040 MHz, kept as that one" },
+    { "frequencyHz": 7012021, "level": 40, "widthHz": 2484.2, "stood": 0, "seen": 13,
+      "verdict": "too-wide", "why": "showed in 13 of 13 sweeps, 2484 Hz wide at half its height, over the 250 Hz a keyed CW signal fills, narrow in only 0" }
+  ]
+}
+```
 
-**The landing test** (`TheScanLandsByEar`):
-- The scope peak was put 205 Hz above the call.
-- The scan heard the tone at 395 Hz, retuned, and landed **0 Hz** from the call. It read the call as a positive.
-- The empty stop was left in **7.0 s**.
-- All 9 catch-scan tests pass, and both never-transmits tests pass.
-
-**The carrier and the noise** (`TheEarHearsAsTheAppDoesTests`, 26 s each, five seeds):
-
-| | green | amber | best shape | printed |
-|---|---|---|---|---|
-| steady carrier at 750 Hz | never | 0.1 to 12.2 s | 0.167 | nothing |
-| band noise | never | 0 to 5.0 s | 0.000 | nothing |
-
-**Build:** no warnings. **App carry-forward:** 277 of 278. The one loss, `ThreeChipsCostTheTopBandNothing`, is the dispatcher loop, and it passes alone.
+**Build:** no warnings. **App carry-forward:** 277 of 278. The one loss, `TheOfferIsOneButtonAndItIsTheOneTheEngineNamed`, is the dispatcher loop, and it passes alone.
 
 ## 4. What's blocking us
 
-- **Whether the three real stations now read green** is unknown until a scan on the air. The synthetic call already read green through the old ear, so the field miss is not explained.
-- **Amber on a carrier and on noise** holds up to 12.2 s and 5.0 s. Green is unaffected, so nothing was changed.
+- **The 250 Hz limit and the station shapes are the author's, not measured off your scope.** A survey's `widthHz` on the air will show whether real stations sit under it.
+- **A scope in its fixed mode, narrower than the segment, is not tested.** The scan treats what it shows as the one span.
+- **A visit's landing does not watch the scan's length.** A scan can end up to one landing, about 7 s, after its length.
 - **The silence limit stays red at one letter,** as at HEAD.
 - **The carrier limit stays red at seed 5195,** as at HEAD.
 - **The low-confidence 22:18:51 stretch** still prints junk the score cannot see, as reported by unit 541.
@@ -124,5 +162,3 @@
   - The run path, the only path to the screen, already shows only settled text.
   - The ask stands only for the timing-only path.
   - No change for it sits in the tree.
-
-Unit 540's ask, whether amber counts as a positive, is answered by work instruction 542 (*green stays the line for a positive*) and is dropped.

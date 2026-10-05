@@ -1857,3 +1857,15 @@ A scope peak must now repeat, be narrow, and stand over a floor the radio clips 
 A carrier at 750 Hz never goes green but holds amber up to 12.2 s, and noise up to 5.0 s. Both are measured and unchanged.
 
 Build has no warnings. App carry-forward is 277 of 278; the loss is the dispatcher loop and passes alone.
+
+## UNIT 543 - STEP 12
+
+Run by hand, outside the loop: SESSION.lock was taken and released, nothing was written to RUN_LEDGER.md, nothing under tools\arbiter\ was touched, and no box was ticked. Version 1.13.227 to 1.13.228. HM-DEC-247.
+
+The cause was found first. At the radio's 4.5 sweeps a second the scan watched 9 sweeps where 3 were needed. It still refused every clear station as too wide, because width was counted at the foot of the skirts on a floor the radio clips to nought: 11 bins for a strong station and 5 for a moderate one, against a limit of 3.
+
+The scan now advances a span at a time and watches for 3 s, a setting. It lists every top that stands in a quarter of the sweeps and is 250 Hz or narrower at half its own height. It visits each by ear in frequency order, then advances.
+
+The line says what it is doing. `scan.json` keeps every peak considered and why. The scoreboard read 191 after every task.
+
+Build has no warnings. App carry-forward is 277 of 278; the loss is the dispatcher loop and passes alone.

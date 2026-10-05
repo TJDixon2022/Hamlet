@@ -4,6 +4,48 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-247
+date: 2026-10-05
+refs: work instruction 543, HM-DEC-246, HM-DEC-244, src/Hamlet.RadioEngine/Scan/CwCatchScan.cs, src/Hamlet.RadioEngine/Scan/ScopePeaks.cs
+---
+
+**The scan watches a span, visits what it saw, then moves on.** Ordered by the owner in work instruction 543, 2026-10-05.
+
+**The owner, watching a scan live:** *"The radio jumps by the width of the waterfall. That's okay. But I'm seeing very clear stations within a waterfall that never get tuned to. It seems like we should advance, scan the waterfall for maybe two, three seconds, see if there's any station, then lock into that station and try it. I don't know what we're searching for when we're scanning. I'm not seeing any logic to it."*
+
+**The cause, found before anything changed: clear stations were refused as too wide.** The scan was driven on fake scope sweeps at the radio's own rate of about four and a half a second (the figure in `ScopeFlow`), over one ±10 kHz span holding three clear stations.
+- **The scan did wait.** It watched the span for 9 sweeps, and the rule needed 3.
+- **Every station was refused for its width.** The radio clips its floor to nought, so the line sat at 1, and a station's width was counted at the foot of its skirts.
+  - The strong station measured 11 bins and the moderate ones 5, against a limit of 3.
+  - None stood narrow in a single sweep, so none was ever tuned to.
+
+**What the scan now does, span by span:**
+1. **It advances one scope span** across the band's CW segment, wrapping at its end. Where the scope shows the whole segment, or stays put when the dial moves, there is one span: what the scope shows.
+2. **It watches the waterfall** for the survey time, 3 s by default (about thirteen sweeps). This is a setting in the scan's popover, kept with the others.
+   - It lists every top that stands in a quarter of the sweeps watched, and three at least.
+   - Each top must be **250 Hz wide or less at half its own height** over the floor. Where three bins are wider than that, the limit is three bins.
+   - A width stops where the bins rise again, so a neighbour's slope is not counted.
+   - Tops within 250 Hz of each other are one station.
+3. **It visits each station on the list in frequency order**, lands by ear, and keeps the catch as positive, negative or empty as before.
+4. **It then advances.** A span with nothing listed advances as soon as its survey ends. A hand on the dial carries on from where it was left.
+
+**Why 250 Hz:** a keyed CW signal occupies about four times its speed in hertz, 160 Hz at 40 WPM, and the scope adds its own resolution. A phone signal is about 2.4 kHz, and a static crash covers many bins.
+
+**The scan shows its reasoning.**
+- The line under the header reads, for example:
+  - `watching 7.000–7.020 · 0:03 · 3 stations`
+  - `visiting 2 of 3 · 7.0091 · empty`
+  - `visiting 1 of 3 · 7.0100 · reading · 0:05`
+  - `visiting 3 of 3 · 7.0500 · negative · 0:12`
+  - `advancing to 7.020–7.040`
+- `scan.json` keeps every survey: its span, its sweeps, and every peak considered. Each peak has its level, its width at half height, the sweeps it stood and showed in, and a verdict with the reason in words: listed, not repeating, too wide, or merged.
+- Each catch names the survey it came from.
+
+**Measured on the same sweeps:** the three stations of the cause are listed, at 126 Hz wide at half height, standing in 8, 7 and 6 of 13 sweeps. A span of noise blips lists nothing and advances 3.5 s after it was tuned. A station keyed in half the sweeps is visited, and one keyed in one sweep of fifteen is not.
+
+What the terminal reads is unchanged, and the scoreboard reads 191 after every task. Nothing keys or transmits. The only radio write is the frequency.
+
+---
 id: HM-DEC-246
 date: 2026-10-05
 refs: work instruction 542, HM-DEC-245, HM-DEC-244, src/Hamlet.RadioEngine/Cw/CwChain.cs, src/Hamlet.RadioEngine/Scan/ScopePeaks.cs, src/Hamlet.RadioEngine/Scan/CwCatchScan.cs, src/Hamlet.RadioEngine/Scan/CwCatchEar.cs
