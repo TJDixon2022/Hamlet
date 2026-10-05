@@ -4,6 +4,43 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-248
+date: 2026-10-05
+refs: work instruction 544, HM-DEC-247, HM-DEC-246, R88, src/Hamlet.RadioEngine/Cw/CwSenderGate.cs, src/Hamlet.RadioEngine/Scan/CwCatchScan.cs, src/Hamlet.RadioEngine/Scan/CwCatchEar.cs, src/Hamlet.RadioEngine/Scan/ScopePeaks.cs, docs/cw-scoreboard.md
+---
+
+**What three real scans found.** Ordered by the owner in work instruction 544, 2026-10-05.
+
+**R88 is lifted for the scan catches the instruction names, and no other.** Three are in the tree: `catch-153810-7033367`, `catch-154819-7050903` and `catch-154614-7047190`. The other six were not on the shack computer; the tests that need them are reported as waiting, not failed.
+
+**The cause found in task 1: a sender lost its dot and dash line.**
+- On the strong station of `catch-153810-7033367`, the detector broke dahs at shallow dips into marks of 85 and 107 ms. These filled the jump between the sender's 65 ms dits and 150 ms dahs.
+- With no two neighbouring lengths among its last forty marks differing by twice, the gate took the dit from the gaps inside letters. On this heavy fist those gaps are 36 ms.
+- The line fell to 67 ms, and fourteen letters had dits read as dahs.
+- **The fix:** a sender keeps the line it last showed while a few marks hide the jump. The line is redrawn from the marks now.
+- The catch reads 109 of 152 against its pending reference, from 103. The scoreboard holds at 191.
+- **Not fixed:** dahs broken into two dit-length marks remain, 9 times in the over. A rule treating a piece of a mark as part of its neighbour was measured at 188 and was not shipped.
+
+**The landing (task 2).** On the owner's radio in CW the tone rises as the dial rises. Landing moved the dial the other way and doubled the error: 730 Hz went to 860, and 535 to 470.
+- The scan now measures the tone again after every move until it sits within 10 Hz of the pitch.
+- It turns round where a move takes the tone away from the pitch or out of the filter, and remembers the direction for the scan.
+- The catch records the tone before and after.
+
+**The carrier rule (task 3).**
+- After 8 s of a stay, a tone whose 20 ms frames fall 6 dB under the median of their own second in fewer than 15% of frames is a carrier.
+- A keyed signal is key-up a quarter of its time or more. The two stations read 0.23 to 0.39; the carrier in the tree reads 0.10.
+- A carrier catch is marked `carrier` and left at once. Its true frequency is remembered: the dial, less the tone's offset from the pitch.
+- Any peak within 400 Hz of a known carrier is not visited again, from either side.
+
+**The empty rule (task 4).**
+- **The survey** lists a place only where, at some height, its tops outnumber what noise that high gives by chance: under one false station in a hundred surveys, and three sweeps at least. This replaces the quarter of the sweeps watched, which noise reached at 5.26 Hz bins.
+- **A tone** is judged over all its pieces and over their strongest quarter, and the plainer is taken.
+- **A peak drawn at 20 or higher** on the scope's scale gets a 6 s listen before it is called empty.
+- On a fake scan at fine bins, empties went from 23 of 23 stops to none of 1, and the station that pauses 4 s between overs is no longer called empty.
+
+Nothing keys or transmits. Listen-only is unchanged. The only radio write is the frequency.
+
+---
 id: HM-DEC-247
 date: 2026-10-05
 refs: work instruction 543, HM-DEC-246, HM-DEC-244, src/Hamlet.RadioEngine/Scan/CwCatchScan.cs, src/Hamlet.RadioEngine/Scan/ScopePeaks.cs

@@ -1132,3 +1132,19 @@ The scan now advances a span at a time and watches for 3 s, a setting. It lists 
 The line says what it is doing. `scan.json` keeps every peak considered and why. The scoreboard read 191 after every task.
 
 Build has no warnings. App carry-forward is 277 of 278; the loss is the dispatcher loop and passes alone.
+
+## UNIT 544 - STEP 12
+
+Run by hand, outside the loop: SESSION.lock was taken and released, nothing was written to RUN_LEDGER.md, nothing under tools\arbiter\ was touched, and no box was ticked. Version 1.13.228 to 1.13.229. HM-DEC-248.
+
+R88 is lifted for the scan catches the instruction names; three are in the tree.
+
+On the strong station, broken dahs hid the jump between dit and dah. The gate then took the dit from 36 ms gaps, and dits read as dahs. A sender now keeps its last line, redrawn from the marks now: 109 of 152 against the pending reference, from 103.
+
+Landing now centres the tone at the pitch, measuring again after each move. The tone rises with the dial on the owner's radio, and landing had turned the wrong way.
+
+A tone that never keys is a carrier, left at 8 s and remembered. The survey lists only what noise that high would not give by chance, and a high peak gets 6 s before it is called empty.
+
+The scoreboard read 191 after every task.
+
+Build has no warnings. App carry-forward is 277 of 278; the loss is the dispatcher loop and passes alone.
