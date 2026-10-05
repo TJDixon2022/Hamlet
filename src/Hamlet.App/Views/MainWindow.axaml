@@ -1600,6 +1600,40 @@
                                 ToolTip.Tip="{Binding CaptureTip}"
                                 ToolTip.ShowOnDisabled="True"
                                 ToolTip.ShowDelay="300" />
+                        <!-- SCAN, BESIDE RECORD (work instruction 540, HM-DEC-244). Tim, 2026-10-04: "I want a scan,
+                             like a radio scan ... I want this to run unattended." It reads Stop while a scan runs, and
+                             the small button beside it opens its three settings. It never transmits. -->
+                        <Button x:Name="ScanButton"
+                                Content="{Binding CatchScanLabel}"
+                                FontSize="11" Padding="10,2"
+                                Command="{Binding ToggleCatchScanCommand}"
+                                ToolTip.Tip="{x:Static vm:MainWindowViewModel.CatchScanTip}"
+                                ToolTip.ShowDelay="300" />
+                        <Button x:Name="ScanSettingsButton"
+                                Content="⋯"
+                                FontSize="11" Padding="6,2"
+                                IsEnabled="{Binding !IsCatchScanning}"
+                                ToolTip.Tip="The scan's length, and how long it stays where a shape forms and where none does."
+                                ToolTip.ShowDelay="300">
+                            <Button.Flyout>
+                                <Flyout Placement="BottomEdgeAlignedRight">
+                                    <StackPanel Spacing="6" Width="250">
+                                        <TextBlock Text="{Binding CatchScanSettingsLine}" TextWrapping="Wrap" FontSize="11" />
+                                        <Grid ColumnDefinitions="*,110" RowDefinitions="Auto,Auto,Auto" RowSpacing="4">
+                                            <TextBlock Grid.Row="0" Text="scan length, minutes" VerticalAlignment="Center" FontSize="11" />
+                                            <NumericUpDown Grid.Row="0" Grid.Column="1" Minimum="1" Maximum="600" Increment="5"
+                                                           FormatString="0" Value="{Binding CatchScanMinutes}" />
+                                            <TextBlock Grid.Row="1" Text="positive stay, seconds" VerticalAlignment="Center" FontSize="11" />
+                                            <NumericUpDown Grid.Row="1" Grid.Column="1" Minimum="5" Maximum="600" Increment="5"
+                                                           FormatString="0" Value="{Binding CatchPositiveStaySeconds}" />
+                                            <TextBlock Grid.Row="2" Text="negative stay, seconds" VerticalAlignment="Center" FontSize="11" />
+                                            <NumericUpDown Grid.Row="2" Grid.Column="1" Minimum="5" Maximum="600" Increment="5"
+                                                           FormatString="0" Value="{Binding CatchNegativeStaySeconds}" />
+                                        </Grid>
+                                    </StackPanel>
+                                </Flyout>
+                            </Button.Flyout>
+                        </Button>
                         <!-- COPY, BESIDE CLEAR (work instruction numbered 509, run as unit
                              510, task 2). The clipboard is this window's own, handed in. -->
                         <Button Content="Copy"
@@ -1627,7 +1661,15 @@
                              thing again in a longer way. -->
                         <ctl:HintMarkControl Kind="Tip" HorizontalAlignment="Left"
                             VerticalAlignment="Center"
+                            IsVisible="{Binding !CatchScanLine.Length}"
                             Text="what the radio is hearing, as it arrives" />
+                        <!-- WHAT THE SCAN IS DOING (work instruction 540), in the hint's own cell, so the one layout
+                             holds and nothing moves when it appears. -->
+                        <TextBlock x:Name="ScanLine"
+                                   Text="{Binding CatchScanLine}"
+                                   IsVisible="{Binding !!CatchScanLine.Length}"
+                                   VerticalAlignment="Center" FontSize="11"
+                                   TextTrimming="CharacterEllipsis" />
                         <StackPanel Grid.Column="1" Orientation="Horizontal"
                                     Spacing="6">
                             <!-- THE RECEIVER'S FRONT END, WHERE HE IS ALREADY
@@ -3870,6 +3912,7 @@
                                     Content="CQ"
                                     Padding="16,4"
                                     Command="{Binding SendCallToAnyoneCommand}"
+                                    IsEnabled="{Binding TransmitIdleForScan}"
                                     ToolTip.Tip="{Binding CallToAnyoneText}" />
 
                             <!-- **STOP LEFT THIS AREA IN WORK INSTRUCTION
