@@ -2,12 +2,12 @@ PROTOCOL: 2
 PROJECT: Hamlet
 STATE: COMPLETED
 TASK: 3 of 3
-WORK_INSTRUCTION: 538 - spaces where the sender put them (run by hand)
+WORK_INSTRUCTION: 539 - false characters count against the score (run by hand)
 BALL: tim
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-10-04T20:10:34-04:00
-NOTE: Unit 538 done: spaces scored; word line at the gaps crossing; letters 206 of 244, spaces 54 to 58 of 77
+UPDATED: 2026-10-04T22:28:36-04:00
+NOTE: Unit 539 done: score is right less wrong less invented, baseline 186; rules measured, sets A 191 and B 193 need a ruling
 
 ---
 

@@ -1076,3 +1076,13 @@ Task 2: where a sender's letter and word gaps show no clean jump they are split 
 Task 3: the sender who spaced its letters is 221530 at 598 Hz. A wide word cluster had pulled the old boundary to 160 ms, under its letter gaps; at the crossing the line is 241 ms and nothing is added.
 
 The first recording reads whole with its spaces, noise prints nothing, and the carrier prints at seed 5195 as at HEAD. The build has no warnings. App carry-forward was 277 of 278; the one loss, the dispatcher loop, passes alone.
+
+## UNIT 539 - STEP 12
+
+Run by hand, outside the loop. SESSION.lock was taken and released; nothing was written to RUN_LEDGER.md, nothing under tools\arbiter\ was touched, and no box was ticked. Nothing was keyed or transmitted. HEAD was tagged before-false-characters and pushed. Version 1.13.223 to 1.13.224. HM-DEC-243.
+
+The scoreboard now scores letters right less wrong less invented. Invented is read against a keying map of every station in the owner's twelve recordings (docs/cw-keying-map.md), and nothing may print in a silence of two seconds or more. The baseline is 206 right, 18 wrong, 2 invented, a score of 186, with one letter printed in a silence.
+
+The thirteen rules removed in work instruction 534 are back behind switches, off. Every rule was measured alone, and the search was stepped one change at a time. The best set that holds the limits reaches 191 but leaves invented at 2. With gap kinds also out it reaches 193 with nothing invented, but the random carrier prints at 2 of 20 seeds. Neither met the bar, so the reading is HEAD's.
+
+Build has no warnings. App carry-forward is 278 of 278.

@@ -4,6 +4,48 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-243
+date: 2026-10-04
+refs: work instruction 539, tag before-false-characters, tests/Hamlet.RadioEngine.Tests/Cw/TheKeyingMapTests.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheRecordingsScoreboardTests.cs, src/Hamlet.RadioEngine/Cw/CwRules.cs, docs/cw-keying-map.md, docs/cw-scoreboard.md
+---
+
+**False characters count against the score.** The owner, 2026-10-04, at the radio: *"We are still having way too much
+false character. With the positive identification of shape in noise and the identification of multiple characters, we
+should essentially have zero. And we got a lot."* HEAD was tagged `before-false-characters` before any engine change.
+
+**The score is letters right, less wrong, less invented.**
+- **Wrong:** a printed letter the alignment counts as not the reference's, a wrong letter or an extra, inside a stretch
+  of medium confidence or better.
+- **Invented:** a printed letter, in any recording, whose marks overlap no keying on a keying map within one bin of its
+  pitch, with 10 ms of tolerance. A letter that is both counts once, as invented.
+
+**The keying map** (`docs/cw-keying-map.md`) is read offline at every 25 Hz pitch.
+- **What counts as keying:** a mark is a pitch standing 13 dB over the band's median at that instant for 25 ms or more.
+  The radio's AGC moves every pitch together, so it cancels.
+- **The first floor failed:** a floor over the whole recording keyed one station from 300 to 900 Hz on every recording,
+  and three stations in loud noise.
+- **It does not read the references.** It finds a station at 513 Hz in `cw-2026-10-03-143906` that has none.
+
+**Real silence prints nothing; this joins the hard limits.** A silence is two seconds or more with no station keying. At
+HEAD one letter prints in one: a placeholder in `cw-2026-10-03-221502` at 21.46 s, 60 ms after the station's last mark.
+
+**The baseline is 206 right, 18 wrong, 2 invented: a score of 186.** The junk the owner sees is nearly all misreading of
+stations that are keying, counted as wrong, not letters printed from nothing.
+
+**Every rule was measured alone on the new score.**
+- **Restored behind switches:** the thirteen removed in work instruction 534 are back from the tag `before-scoreboard`,
+  each behind a switch in `CwRules` that is off.
+- **The search:** one change at a time, taking a change only where no hard limit is worse than at HEAD.
+- **Set A, 191:** narrowness, three lone letters dropped, and the neighbour judgement of gaps, each restored. Invented
+  stays at 2.
+- **Set B, 193:** set A with gap kinds also taken out. Nothing is invented and nothing prints in a silence, but the random
+  carrier prints at 2 of its 20 seeds against 1 at HEAD.
+
+**No set met the bar, so none shipped.** Set A does not lower invented, and set B breaks a hard limit. No rule is
+restored or removed by default: the final score is the baseline, 186, and the reading is HEAD's. The first pass counted
+the carrier over five seeds, walked to set B, and the twenty-seed test caught it; the scoreboard now counts all twenty.
+
+---
 id: HM-DEC-242
 date: 2026-10-04
 refs: work instruction 538, src/Hamlet.RadioEngine/Cw/CwPatternGate.cs, src/Hamlet.RadioEngine/Cw/CwRules.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheRecordingsScoreboardTests.cs, tests/Hamlet.RadioEngine.Tests/Cw/AWordLineIsWhereTheGapsCrossTests.cs, docs/cw-scoreboard.md
