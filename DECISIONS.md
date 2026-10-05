@@ -4,6 +4,75 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-244
+date: 2026-10-04
+supersedes: HM-DEC-107 on two points for this scan only - a dial moved by hand, and where the fence comes from
+refs: work instruction 540, src/Hamlet.RadioEngine/Scan/CwCatchScan.cs, src/Hamlet.RadioEngine/Scan/CwCatchEar.cs, src/Hamlet.RadioEngine/Scan/ScopePeaks.cs, src/Hamlet.RadioEngine/Scan/ListenOnlyLock.cs, src/Hamlet.App/ViewModels/MainWindowViewModel.CatchScan.cs
+---
+
+**The scan: catch CW unattended, positives and negatives, listen only.**
+
+The owner, 2026-10-04: *"I want a scan, like a radio scan where the radio used to scan when it sensed something, it would
+stop. I want this to run unattended. It will scan, it will look for shape, it will sit there while it's able to decode
+something. It will record what it's decoding as well as the waveform. It's a way to gather data unattended."* And:
+*"It's just as good to find areas where the waterfall looks like it should have something and you can't hear it as when
+you can hear it. This is all to make us better."*
+
+**His answers, one at a time, as the scan is built:**
+
+| question | his answer |
+|---|---|
+| what it scans | CW only, the CW segment of the band the radio is on |
+| choosing the band | never changes band; he sets the band and starts the scan |
+| finding signals | the radio's spectrum scope, jumping straight to what it shows |
+| positives | any signal where dit and dah shapes can be made out; stay no more than 90 seconds |
+| negatives | the scope shows energy and no shape forms; listen 30 seconds, keep it |
+| repeats | keep catching; it may be the other operator |
+| length of a scan | selectable, 30 minutes by default, then it stops on its own |
+| storage | Hamlet's own data folder, beside the telemetry |
+| overriding | a Stop button |
+| the dial moved during a scan | carry on from there |
+| transmitting | never; listen only, absolute |
+| the link to the radio drops | abort, and say so |
+| the PC sleeping | not a concern |
+
+**What the scan does.**
+- **Starting:** a `Scan` button beside `Record` on the CW terminal starts it; it reads `Stop` while one runs. Its length
+  and two stays are in a popover beside it.
+- **The fence:** the CW segment of the band the radio is on, from `HfBands`, the cited band data the map uses.
+- **Finding signals:** peaks standing six of the floor's own spreads over the radio's scope.
+- **Each catch:** it tunes the dial to a peak and listens with its own detector and gate on the same audio.
+  - A positive stays up to the positive stay and leaves ten seconds after its station goes silent.
+  - A negative listens for the negative stay.
+- **Going round:** it visits the peaks in frequency order, round and round.
+- **Ending:** it ends at its length, on Stop, on leaving the CW tab, on a band change, or when the link drops.
+- **Writes to the radio:** the frequency only. It puts the dial back where it was at the end, unless the link is down or
+  the band changed.
+- **What each catch keeps:** a WAV at the audio's own rate (48 kHz from the IC-7300) and a JSON. A `scan.json` sits in
+  `%AppData%\Hamlet\scans\scan-<date>-<time>\`.
+
+**Listen only.** While a scan runs it holds one `ListenOnlyLock`, and every path that keys the radio asks it immediately
+before keying:
+- the CW door's check, which refuses with token `scan_running`;
+- the radio's keyer;
+- the auto-caller's keyer;
+- the push-to-talk sequence every audio mode keys through, which refuses with `RefusedWhileScanning`.
+
+The CW send buttons go grey with the reason.
+
+**What this supersedes.** HM-DEC-107 and §0.2.1 are superseded for this scan on two points, by the owner's answers:
+- **A dial moved by hand is carried on from**, rather than a stop.
+- **The fence is the band's CW segment from cited band data**, rather than a file he edits.
+
+The rest of §0.2.1 holds: refuse before the rig state is populated, never tune while transmitting, write the home down
+before the first tune and put it back, and stop when the link stops answering.
+
+**One reading is the session's and is held for the owner (section 4 of the report).** The order defined a positive as the
+light's amber, *shape forming*, or better. In the scan's own tests amber came on within seconds on band noise and on a
+steady carrier, so a positive is taken as the green light: a shape found, or reading. Amber stays in each catch's light
+history.
+
+---
 id: HM-DEC-243
 date: 2026-10-04
 refs: work instruction 539, tag before-false-characters, tests/Hamlet.RadioEngine.Tests/Cw/TheKeyingMapTests.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheRecordingsScoreboardTests.cs, src/Hamlet.RadioEngine/Cw/CwRules.cs, docs/cw-keying-map.md, docs/cw-scoreboard.md

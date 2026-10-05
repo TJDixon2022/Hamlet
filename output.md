@@ -1,234 +1,187 @@
 ## 1. What Claude did
 
-- **Session:** the development computer, in Claude Code. The prompt claimed `PROJECT: Hamlet`.
+- **Session:** development computer, Claude Code. The prompt claimed `PROJECT: Hamlet`.
 - **Gate:** checked in `C:\Source\HamLet`.
-  - Present, as required: `SHACK_FACTS.md`, `docs\cw-scoreboard.md` and `cw-2026-10-03-221828.wav`.
-  - Absent, as required: `CoreHMI.sln` and `MURC.sln`.
-- **The first paste of this order was refused** at the gate. It named `cw-2026-10-04-230144.wav`, which is not in the tree. The second paste named the twelve recordings on the scoreboard and passed.
-- **Nothing in this report is evidence about the radio.**
-- **Work instruction 539, run by hand on `main`:**
+  - Present: `SHACK_FACTS.md`, `docs\cw-scoreboard.md`, `CW_REQUIREMENTS.md`.
+  - Absent: `CoreHMI.sln`, `MURC.sln`.
+- **Nothing in this report is evidence about the radio.** The scan ran only against a fake radio.
+- **Work instruction 540, run by hand on `main`:**
   - SESSION.lock was taken and released.
-  - Nothing was written to RUN_LEDGER.md, and nothing under `tools\arbiter\` was touched.
-  - No box in PHASE_PLAN.md was ticked.
-  - Nothing was keyed or transmitted.
-  - R88 was lifted for the owner's twelve recordings only.
-- **Tag:** HEAD was tagged `before-false-characters` and pushed before any engine change.
-- **Version:** 1.13.223 → 1.13.224. **Ruling:** HM-DEC-243.
+  - Nothing was written to RUN_LEDGER.md, nothing under `tools\arbiter\` was touched, and nothing in PHASE_PLAN.md was ticked.
+  - **Nothing was keyed or transmitted, and nothing was written to a radio:** no radio was connected.
+- **Version:** 1.13.224 → 1.13.225. **Ruling:** HM-DEC-244.
 
-**Task 1: the score counts wrong and invented** (commit `2ae73649`).
-- **The keying map** (`TheKeyingMapTests`, `docs\cw-keying-map.md`):
-  - Each recording is read offline and non-causally at every 25 Hz pitch from 300 to 900 Hz. The audio is mixed to nought and low-passed at 30 Hz, four passes forward and back.
-  - A mark is 25 ms or more where a pitch stands 13 dB over the median of every pitch at that instant.
-  - A mark overlapped by one 6 dB louder within 100 Hz is dropped as that one's leak.
-  - A station is a run of neighbouring pitches with five marks or more.
-  - Loud noise keys no station.
-- **The first version failed:** it set each pitch's floor over the whole recording. That keyed three stations in loud noise and one station from 300 to 900 Hz on every real recording. It was replaced before anything was scored.
-- **The map reads no reference.** It finds every station the references name, plus one with no reference: `143906` at 513 Hz.
-- **Timing:** the live path's marks start within a few milliseconds of the map's. The median is 0 to 5 ms, and the 90th percentile is under 7 ms on ten of the twelve recordings. So invented is read with 10 ms of tolerance.
-- **Wrong:** printed letters the letters alignment counts as a wrong letter or an extra, inside the medium-or-better stretches. A letter that is both wrong and invented counts once, as invented.
-- **Invented:** printed letters, in any recording, whose span overlaps no map mark within one bin of their pitch.
-- **Score = right − wrong − invented.**
-- **Baseline: 206 right, 18 wrong, 2 invented, score 186.** It is in `docs\cw-scoreboard.md`.
+**Tasks 1 and 2: the scan, and what each catch keeps** (commit `2f343e7b`). They are one commit, because the scan writes each catch's files as it goes.
 
-**Task 2: real silence prints nothing** (commit `934f137e`).
-- **The limit:** every stretch of two seconds or more where no station keys, on the map, joins the hard limits.
-- **At HEAD one letter prints in one:** a `■` in `221502` at 21.46 s at 500 Hz, 60 ms after the station's last mark, in the silence from 21.4 to 24.5 s.
+- **The engine** (`Hamlet.RadioEngine.Scan`):
+  - `CwCatchScan`, the loop.
+  - `CwCatchEar`, its own detector and gate on the same audio, fresh for every catch. What the CW terminal reads is not touched.
+  - `ScopePeaks`, which finds signals in the scope sweep.
+  - `ListenOnlyLock`, the lock described under task 3.
+- **The app:**
+  - A **`Scan`** button beside `Record`, `Copy` and `Clear`. It reads **`Stop`** while a scan runs, and its hover says what it does and that it never transmits.
+  - A **`⋯`** settings popover: length, positive stay, negative stay.
+  - **The line under the header**, in the hint's own cell, so nothing moves. It reads `scanning 7.012`, `listening on 7.031 · shape found · 0:42`, `negative on 7.044 · 0:18`, `scan done · 14 catches`, `scan aborted · the radio's link dropped · 3 catches`.
+- **The band:** whatever band the radio is on. Its CW segment comes from `HfBands`, the band data the map already uses. A band with no CW segment refuses to start. A hand-tune into another band stops the scan at once.
+- **The scope margin is six of the floor's own spreads.**
+  - The floor is the sweep's median bin. Its spread is 1.4826 × the median deviation, which equals a standard deviation for noise, and never under one scope unit.
+  - Why: the scope's amplitude scale is the radio's own and the manual does not state it in decibels, so the margin is read from the sweep itself. Band noise stands six spreads over its floor about once in a billion bins, so 475 bins of noise show no peak.
+  - **Hold:** each place is held for 2 s at its highest value, because a keyed station shows nothing in a single sweep taken between its marks.
+  - **One peak per 250 Hz**, half the CW filter.
+  - **Centroid:** each peak sits at the centroid of its bins, since a bin is about 280 Hz wide at a wide span.
+- **Landing:** the dial is tuned to the peak. In CW, the dial reads the frequency of a signal heard at the CW pitch, so the signal lands at the pitch, in the middle of the filter.
+- **The silence time is 10 s.** A positive is left once its station has been silent that long.
+  - It is longer than any pause inside one operator's sending: two word gaps at 5 WPM Farnsworth are under 4 s.
+  - It is long enough for the other operator to start a reply on the same frequency, so a contact in progress keeps the scan there up to the 90 s stay.
+- **Ending:** at its length; on `Stop`, which saves the catch under way marked *stopped*; on leaving the CW tab; on a band change; when the link drops; or if the radio transmits.
+  - **A dial moved by hand:** the scan carries on from the new frequency.
+- **What it writes to the radio:** the frequency, to land on each peak and to put the dial back where it was when the scan ends.
+  - The starting frequency is noted on disk before the first tune, using the old scanner's crash-safe note, so a crash mid-scan is put right on the next connect.
+  - The dial is not put back if the link is down or the band changed.
+  - If the segment is wider than the scope's span, it also tunes across the segment a span at a time to survey it.
+  - **It writes no scope span or mode, no filter and no mode.** The scan never needed a scope write.
+- **What each catch keeps,** in `%AppData%\Hamlet\scans\scan-<date>-<time>\`, next to `telemetry\`:
+  - `catch-<time>-<frequency>.wav`: the whole stay, at the audio's own rate, which is 48 kHz from the IC-7300's USB codec.
+  - `catch-<time>-<frequency>.json`: the start and end in UTC, the dial, the signal's frequency and level, and the scope floor; positive or negative, and why it left; every sender the gate held; the text with each letter's time; the light's states over the stay; and the radio's state at landing.
+  - `scan.json`: rewritten after every catch, so a scan that dies still has its record.
 
-**Task 3: every rule measured on the new score** (commit `8159079b`).
-- **The thirteen rules removed in work instruction 534** are back from the tag `before-scoreboard`. Each is behind a `CwRules` switch that is off:
-  - the 0.2 standing line
-  - three lone letters dropped
-  - quieter marks
-  - the pause
-  - a hand's two kinds
-  - key-up
-  - the five-dit floor
-  - the shape's inside-letter tightness
-  - the shape's letter-gap tightness
-  - the rectangle fit
-  - narrowness
-  - the neighbour judgement of gaps
-  - the neighbour split of marks
-- **The crowds narrowing** gained a switch.
-- **The scoreboard runs in parallel.** A board takes 14 s, against 44 s before.
-- **The carrier is counted over its twenty seeds.** The search's first pass counted five, walked to a set that printed at a sixth seed, and the twenty-seed test caught it. The search was then rerun from HEAD.
-- **How the search was stepped:** one change at a time, best first, re-measuring after each. A change was taken only where no hard limit got worse than at HEAD.
-  1. Narrowness back in: 188.
-  2. Three lone letters dropped back in: 190.
-  3. The neighbour judgement of gaps back in: **191**.
-  4. Then no change raised the score with the limits held.
-- **Neither best set met the bar, so none shipped:**
+**Task 3: listen only, proven** (commit `f5c0b724`).
 
-  | set | rules | score | invented | in silence | carrier | bar |
-  |---|---|---|---|---|---|---|
-  | **A** | the three above | 191 | 2, as at HEAD | 1, as at HEAD | 1 of 20 | invented does not fall |
-  | **B** | A, with gap kinds also out | 193 | 0 | 0 | **2 of 20** | breaks the carrier limit |
+- **The lock:** while a scan runs it holds one `ListenOnlyLock`, and every path that keys the radio asks it immediately before keying:
+  - The CW door, `CwTransmitter.Check`, refuses with a new readiness state, `ScanRunning`, token `scan_running`. The CW send buttons therefore go grey with the reason beside them.
+  - The radio's keyer, `KeyerCwSender`, asks before every piece.
+  - The auto-caller's keyer shares the same lock.
+  - The push-to-talk sequence that every audio mode keys through, `Ft8TransmitSequence`, refuses with `RefusedWhileScanning` before the key goes down and before any audio reaches the sound card.
+- **The digital CQ button** is also bound off while a scan runs. The digital send row only shows on the Digital tab, and leaving the CW tab stops a scan.
+- **The tests:** a whole scan on a fake radio, with both keying paths asked twice, keys nothing, writes no frame and plays nothing. Once the scan ends, the same keyer keys, which proves the lock was what held it. In the window, every transmit control pressed during a scan does nothing.
 
-  No single change from B brings the carrier back.
-- **The defaults read exactly as HEAD:** 206 / 18 / 2 / 186. I checked this after the change.
-
-**Recorded, at the owner's order:** HM-DEC-243, *False characters count against the score*, in `DECISIONS.md` and the `CLAUDE.md` §1 index. Full text:
-
-> **False characters count against the score.** The owner, 2026-10-04, at the radio: *"We are still having way too much false character. With the positive identification of shape in noise and the identification of multiple characters, we should essentially have zero. And we got a lot."* HEAD was tagged `before-false-characters` before any engine change.
->
-> **The score is letters right, less wrong, less invented.**
-> - **Wrong:** a printed letter the alignment counts as not the reference's, a wrong letter or an extra, inside a stretch of medium confidence or better.
-> - **Invented:** a printed letter, in any recording, whose marks overlap no keying on a keying map within one bin of its pitch, with 10 ms of tolerance. A letter that is both counts once, as invented.
->
-> **The keying map** (`docs/cw-keying-map.md`) is read offline at every 25 Hz pitch.
-> - **What counts as keying:** a mark is a pitch standing 13 dB over the band's median at that instant for 25 ms or more. The radio's AGC moves every pitch together, so it cancels.
-> - **The first floor failed:** a floor over the whole recording keyed one station from 300 to 900 Hz on every recording, and three stations in loud noise.
-> - **It does not read the references.** It finds a station at 513 Hz in `cw-2026-10-03-143906` that has none.
->
-> **Real silence prints nothing; this joins the hard limits.** A silence is two seconds or more with no station keying. At HEAD one letter prints in one: a placeholder in `cw-2026-10-03-221502` at 21.46 s, 60 ms after the station's last mark.
->
-> **The baseline is 206 right, 18 wrong, 2 invented: a score of 186.** The junk the owner sees is nearly all misreading of stations that are keying, counted as wrong, not letters printed from nothing.
->
-> **Every rule was measured alone on the new score.**
-> - **Restored behind switches:** the thirteen removed in work instruction 534 are back from the tag `before-scoreboard`, each behind a switch in `CwRules` that is off.
-> - **The search:** one change at a time, taking a change only where no hard limit is worse than at HEAD.
-> - **Set A, 191:** narrowness, three lone letters dropped, and the neighbour judgement of gaps, each restored. Invented stays at 2.
-> - **Set B, 193:** set A with gap kinds also taken out. Nothing is invented and nothing prints in a silence, but the random carrier prints at 2 of its 20 seeds against 1 at HEAD.
->
-> **No set met the bar, so none shipped.** Set A does not lower invented, and set B breaks a hard limit. No rule is restored or removed by default: the final score is the baseline, 186, and the reading is HEAD's. The first pass counted the carrier over five seeds, walked to set B, and the twenty-seed test caught it; the scoreboard now counts all twenty.
+**Recorded, at the owner's order:** HM-DEC-244, *The scan: catch CW unattended, positives and negatives, listen only*. It quotes the owner and records all thirteen of his answers. It supersedes HM-DEC-107 on two points for this scan only, both by his answers: a dial moved by hand is carried on from, and the fence is the band's cited CW segment rather than a file he edits. The rest of §0.2.1 holds.
 
 ## 2. What the owner should expect
 
-- **Rebuild.** Nothing you hear on the air changes with this unit, and Hamlet reads exactly as it did yesterday.
-- **The scoreboard now charges for false characters.** Across your twelve recordings, the number is letters right, less wrong, less invented.
-- **Invented, before and after: 2 and 2.** On a fair map of where every station keys, Hamlet printed only two letters over no keying at all: an `E` in 14:39:51 and a `■` in 22:15:02. The second is a fragment printed in the 3-second pause after a station stopped.
-- **The rest of the junk is wrong, not invented.** The `SES E IE E IEA` you see is Hamlet misreading a station that is really there: 18 wrong letters in the counted stretches, and more in the low-confidence ones.
-- **Real letters it took to remove the junk: none, because nothing was removed.**
-- **Rules that came back: none.** I brought all thirteen rules that unit 534 took out back into the code, switched off, and measured every rule:
-  - **Set A:** narrowness, dropping three lone letters, and judging a gap against its neighbours, together. They take the score from 186 to 191 (2 more letters right, 3 fewer wrong). They leave invented at 2, though, and the order asked for invented to fall.
-  - **Set B:** set A with gap kinds also taken out. Nothing is invented, nothing prints in a silence, and the score is 193. But the random carrier then prints on 2 of its 20 seeds instead of 1, which breaks your hard limit.
-  - So I shipped neither, and the choice is yours (section 4).
-- **What will look red but is not new:**
-  - The scoreboard test is red on the carrier at seed 5195, as before. It is now also red on the silence print, the new limit, which fails at HEAD too.
-  - The 20-seed carrier test is red on seed 5195, as before.
-  - Three `AReplyIsReadFromItsFirstLetter` tests are red, as before.
-- **Build:** clean. **App carry-forward:** 278 of 278.
-- **Pushed:** everything, to `main`.
+- **Rebuild.**
+- **To start a scan:**
+  1. Set the band on the radio.
+  2. Open the CW tab and press **Listen**.
+  3. Press **Scan** in the CW terminal's header, beside Record.
+- **While it runs,** the button reads **Stop**, and the line under the header says what it is doing:
+  - `scanning 7.012` while it looks at the scope;
+  - `listening on 7.031 · shape found · 0:42` on a station it can read;
+  - `negative on 7.044 · 0:18` where the scope shows something but no shape forms;
+  - `scan done · 14 catches` when it finishes;
+  - `scan aborted · the radio's link dropped` if the cable goes.
+- **The `⋯` beside Scan** sets its length (30 minutes), how long it stays on a station it can read (90 s), and how long it listens where it cannot (30 s).
+- **It needs the radio's scope stream reaching Hamlet**, the same stream the waterfall draws. If the waterfall is empty, the scan refuses and says the scope is not reaching Hamlet.
+- **Where the catches land:** `%AppData%\Hamlet\scans\scan-<date>-<time>\`, beside the telemetry folder. **Tools > Open data folder** gets you there, so you can zip a scan folder and send it.
+  - Each catch is a WAV and a JSON, and the folder has one `scan.json` listing them.
+  - **A 30-minute scan is about 173 MB:** 48 kHz, 16-bit, mono. The test scans at 8 kHz were 3.8 MB for 4 minutes, which is the same arithmetic.
+- **Nothing can transmit while it runs.** The CW send buttons go grey and say "a scan is running, and a scan listens only". Behind them, the keyer and push-to-talk refuse even if something gets pressed.
+- **The only thing it changes on the radio is the frequency,** and it puts it back where you left it when it ends. It never changes band.
+  - If you turn the dial yourself, it carries on from there.
+  - If you change band, or leave the CW tab, it stops.
+- **One difference from the order:** a station counts as a "positive" when the light goes **green** (shape found, or reading), not amber. In the tests, amber came on within seconds on plain band noise and on a steady carrier. See section 4.
+- **Build:** clean.
+- **App carry-forward:** 278 of 278.
+- **The scoreboard reads exactly as at HEAD:** 206 right, 18 wrong, 2 invented, score 186. It is red for the same two reasons as before: the carrier at seed 5195, and one letter printed in a silence.
+- **Pushed:** to `main`.
 - **Untouched and uncommitted, from before this unit:** `PARKED.md`, `RUN_LEDGER.md`, `WORK_INSTRUCTIONS.md`, `.run-unit\denials.txt`, the four `.run-unit\reports` files, and `tests\fixtures\cw\captured\cases-2026-10-0{2,3}.txt`.
 
 ## 3. What you should see
 
-**The score per stretch at HEAD.** After this unit it is the same, since no default changed.
+**The tests:** 12 of 12 pass. The engine tests run on a fake rig, scope and audio with virtual time; the app test runs headless.
 
-| recording | pitch | stretch | confidence | printed | right | wrong | invented |
-|---|---|---|---|---|---|---|---|
-| `200157` | 662.8 | 0-30 s | verified | `FER C HAT<BT> BEST 7V 73 <SK> KC4ZGP DEWA` | 27 of 27 | 0 | 0 |
-| `143906` | 514.2 | 0-30 s | none | `IEE II E NIEEE IET TAEEKEEIEEII IMESE ITT` | 0 of 0 | 0 | 0 |
-| `143951` | 499.5 | 14.5-30 s | low | `EWAE IIEWRK I AGN ES` | 12 of 16 | 3 | 1 |
-| `144020` | 499.5 | 0-12.5 s | medium | `ES OK ON PA <BT>` | 9 of 9 | 0 | 0 |
-| `144020` | 599.9 | 9.5-30 s | medium | `WX IN NETAGIT IEN TEMP` | 17 of 19 | 1 | 0 |
-| `144045` | 599.9 | 0-30 s | high | `N E MP 57 57<BT> BTU BOB DE KG8V K` | 22 of 23 | 0 | 0 |
-| `221502` | 491.5 | 0-30 s | low | `ED OF ITS OWN HEE BK BK WHATBUGAEI EUI E■ ■` | 29 of 42 | 1 | 1 |
-| `221530` | 491.5 | 0-9.5 s | medium | `H CHA MPIMTN` | 6 of 11 | 1 | 0 |
-| `221530` | 598.4 | 9-30 s | medium | `IHES MHENI■S AGE12ILEARED CW USINGA V` | 27 of 34 | 3 | 0 |
-| `221548` | 597.7 | 0-18.5 s | low | `I M IEE IEE E USINGA V BPLX Z EPS` | 18 of 26 | 5 | 0 |
-| `221548` | 498.0 | 18-30 s | medium | `E WRHEE MYSCOET T MASTEN` | 14 of 18 | 3 | 0 |
-| `221745` | 501.7 | 0-28 s | medium | `E IAND TMN 4MEMM TONITE . EUROWEE H IRD TOO` | 19 of 29 | 9 | 0 |
-| `221805` | 601.3 | 5-30 s | medium | `E 40T U THESE DAYS. TNX FERANOTHERF` | 28 of 33 | 1 | 0 |
-| `221828` | 601.3 | 0-30 s | medium | `FER ANOTHER FB QSO ES HOPE U HA VE AGN ED ESBEST EV A MU` | 37 of 41 | 0 | 0 |
-| `221851` | 601.3 | 0-30 s | low | `SES E IE E IEA E I GE EI E NAERE I BK` | 4 of 20 | 6 | 0 |
-
-**Totals, medium confidence or better:**
-
-| | right | wrong | invented | score | printed in silence |
-|---|---|---|---|---|---|
-| before, HEAD | 206 of 244 | 18 | 2 | **186** | 1 |
-| after (as shipped) | 206 of 244 | 18 | 2 | **186** | 1 |
-| set A, not shipped | 208 | 15 | 2 | **191** | 1 |
-| set B, not shipped | 208 | 15 | 0 | **193** | 0 |
-
-**The silences**, two seconds or more with no station keying:
-
-| recording | silences | printed in them at HEAD |
+| # | test | result |
 |---|---|---|
-| `200157` | 7.3-9.6 s | nothing |
-| `143906` | 7.9-13.7, 24.5-26.8, 27.1-30.0 s | nothing |
-| `143951` | 0.0-5.7, 6.4-13.8 s | nothing |
-| `144020` | 11.3-13.6 s | nothing |
-| `221502` | 21.4-24.5 s | `■` at 21.46 s, 500 Hz |
-| the other seven | none | — |
+| 1 | `ThreePeaksAreVisitedAndCaught`: a call, noise and a carrier on the scope | visits 7.010, 7.030, 7.050 in order. Positive, negative, negative. WAV, JSON and scan.json written. Dial back home. **Pass** |
+| 2 | `APositiveThatKeepsSendingIsLeftAtNinetySeconds` | left `stay-ran-out` at 90.0 s. **Pass** |
+| 2 | `APositiveThatStopsIsLeftAfterItsSilence` | a 21.8 s call, left `read-out` at 30.0 s. **Pass** |
+| 3 | (in 1) a negative | left at 30 s, its WAV 30 s long. **Pass** |
+| 4 | `TheScanStopsOnItsOwnAtItsLength` (40 s) | `scan done · 1 catch`, the catch `scan-ended`. **Pass** |
+| 5 | `StopEndsItAtOnceAndSavesTheCatch` | ended at 20 s, catch saved `stopped`, dial home. **Pass** |
+| 6 | `ADialMovedByHandIsCarriedOnFrom` | catch `dial-moved`, next catch at 7.050. **Pass** |
+| 6 | `ABandChangeStopsIt` | `scan stopped · the band changed`, dial left on 14.030. **Pass** |
+| 7 | `ALinkThatDropsAbortsIt` | `scan aborted · the radio's link dropped`, catch `link-dropped`, scan.json says so. **Pass** |
+| 8 | `NothingTransmitsWhileItRuns` | keyer refused: *"A scan is running, and a scan listens only: nothing goes out until it stops."* Push-to-talk `RefusedWhileScanning`, twice. 0 keying commands, 0 frames, 0 audio. Keys after the scan. **Pass** |
+| 8 | `TheCwDoorRefusesWhileTheLockIsHeld` | readiness `ScanRunning`, token `scan_running`. **Pass** |
+| 8 | `EveryTransmitControlDoesNothingWhileAScanRuns` (app) | CW send, auto-call arm and start, digital CQ, message, PSK31 answer and typed line pressed. Nothing keyed, framed or played; the CW buttons show the scan's reason. **Pass** |
 
-**Every rule alone, from HEAD (score 186).** The carrier is counted over its 20 seeds:
+Also run, with no change and nothing failing: 62 engine transmit, readiness and scan tests; `BindingHealthTests`; and `DecisionLogOrderTests`.
 
-| change | right | wrong | invented | score | carrier prints | silence prints |
-|---|---|---|---|---|---|---|
-| out: first pick waits one word gap | 205 | 14 | 3 | **188** | 2 of 20 | 2 |
-| back in: narrowness | 209 | 17 | 4 | **188** | 1 of 20 | 1 |
-| back in: three lone letters dropped | 204 | 16 | 1 | **187** | 1 of 20 | 1 |
-| back in: key-up | 207 | 17 | 3 | **187** | 1 of 20 | 3 |
-| back in: the neighbour judgement of gaps | 207 | 18 | 2 | **187** | 1 of 20 | 1 |
-| out: cold-start word line at √21 (first recording splits FER) | 206 | 18 | 2 | **186** | 1 of 20 | 1 |
-| out: handover backlog | 206 | 18 | 2 | **186** | 1 of 20 | 1 |
-| out: gap kinds | 206 | 18 | 2 | **186** | 2 of 20 | 1 |
-| out: word line at the clusters' crossing | 206 | 18 | 2 | **186** | 1 of 20 | 1 |
-| back in: the pause | 206 | 18 | 2 | **186** | 1 of 20 | 1 |
-| back in: the five-dit floor | 206 | 18 | 2 | **186** | 1 of 20 | 1 |
-| back in: the rectangle fit | 206 | 18 | 2 | **186** | 1 of 20 | 1 |
-| back in: the neighbour split of marks | 206 | 18 | 2 | **186** | 1 of 20 | 1 |
-| out: split overlapping letter and word gaps | 205 | 18 | 2 | **185** | 1 of 20 | 1 |
-| back in: the shape's inside-letter tightness | 205 | 18 | 2 | **185** | 1 of 20 | 1 |
-| back in: the shape's letter-gap tightness | 205 | 18 | 2 | **185** | 1 of 20 | 1 |
-| out: lone letter | 208 | 21 | 4 | **183** | 1 of 20 | 2 |
-| out: settle at key-down | 200 | 18 | 2 | **180** | 1 of 20 | 1 |
-| out: release under 0.1 | 203 | 21 | 2 | **180** | 1 of 20 | 1 |
-| back in: the 0.2 standing line | 197 | 15 | 5 | **177** | 1 of 20 | 3 |
-| back in: quieter marks | 199 | 17 | 5 | **177** | 1 of 20 | 4 |
-| out: a mark's own shape | 184 | 12 | 0 | **172** | 1 of 20 | 0 |
-| out: two kinds held over the last ten marks | 206 | 16 | 21 | **169** | 9 of 20 | 2 |
-| back in: a hand's two kinds | 210 | 18 | 24 | **168** | 5 of 20 | 16 |
-| out: a silent sender is not a candidate | 175 | 14 | 2 | **159** | 1 of 20 | 1 |
-| out: a mark crowds the last only where it overlaps it or is a piece | 187 | 38 | 2 | **147** | 1 of 20 | 1 |
-| out: retry over newer marks when speed changes | 156 | 11 | 1 | **144** | 0 of 20 | 1 |
-| out: edges | 95 | 3 | 3 | **89** | 1 of 20 | 1 |
-| out: the sender's own window (first recording breaks) | 146 | 56 | 2 | **88** | 1 of 20 | 0 |
+**Disk:** the test scan in `ThreePeaksAreVisitedAndCaught` wrote 3.8 MB over 4.0 minutes at 8 kHz.
 
-**The search**, one change at a time, with no hard limit worse than at HEAD:
+**`scan.json`** from that test scan, with three of its six catches shown:
 
-| step | change | right | wrong | invented | score | carrier | silence |
-|---|---|---|---|---|---|---|---|
-| 0 | HEAD | 206 | 18 | 2 | 186 | 1 of 20 | 1 |
-| 1 | narrowness back in | 209 | 17 | 4 | 188 | 1 of 20 | 1 |
-| 2 | three lone letters dropped back in | 207 | 15 | 2 | 190 | 1 of 20 | 1 |
-| 3 | the neighbour judgement of gaps back in | 208 | 15 | 2 | **191** | 1 of 20 | 1 |
-| — | no further change raises it within the limits | | | | | | |
-| (B) | and gap kinds out | 208 | 15 | 0 | 193 | **2 of 20** | 0 |
+```json
+{
+  "startUtc": "2026-10-04T23:00:00Z",
+  "endUtc": "2026-10-04T23:04:00Z",
+  "band": "40 m",
+  "segmentLowHz": 7000000,
+  "segmentHighHz": 7125000,
+  "homeHz": 7031000,
+  "lengthMinutes": 4,
+  "positiveStaySeconds": 90,
+  "negativeStaySeconds": 30,
+  "silentSeconds": 10,
+  "marginSpreads": 6,
+  "catches": [
+    { "startUtc": "2026-10-04T23:00:02.75Z", "signalHz": 7009921, "kind": "positive", "left": "stay-ran-out",
+      "text": "RQ CQ CQ DE W1AW W1AW W1AW K CQ CQ CQ DE W1AW W1AW W1AW K CQ CQ CQ DE W1AW W1AW W1AW K CQ CQ CQ DE W1AW W1AW W1AW K CQ N",
+      "wav": "catch-230002-7009921.wav", "json": "catch-230002-7009921.json" },
+    { "startUtc": "2026-10-04T23:01:33.25Z", "signalHz": 7030100, "kind": "negative", "left": "stay-ran-out",
+      "text": "", "wav": "catch-230133-7030100.wav", "json": "catch-230133-7030100.json" },
+    { "startUtc": "2026-10-04T23:02:03.75Z", "signalHz": 7049994, "kind": "negative", "left": "stay-ran-out",
+      "text": "", "wav": "catch-230203-7049994.wav", "json": "catch-230203-7049994.json" }
+  ],
+  "ended": "length-reached",
+  "sentence": "scan done · 6 catches",
+  "scopeFollowsDial": null
+}
+```
 
-**The keying map in brief**, per recording, with each station's pitch and when it keys:
+**A catch's JSON**, the positive above, shortened where it lists 120 letters, 60 light changes and the radio's fields:
 
-- `200157`: 663 Hz, 0.2 to 7.3 s and 9.6 to 29.9 s.
-- `143906`: 513 Hz, with no reference.
-- `143951`: 522 Hz, 13.8 to 29.3 s.
-- `144020`: 498 Hz to 11.3 s, then 598 Hz from 13.6 s.
-- `144045`: 598 Hz, plus five marks at 495 Hz in its last half second.
-- `221502`: 491 Hz.
-- `221530`: 488 Hz to 9.2 s, then 597 Hz.
-- `221548`: 596 Hz to 17.9 s, then 496 Hz.
-- `221745`: 507 Hz, plus 605 Hz briefly.
-- `221805`: 508 Hz to 6.2 s, then 605 Hz.
-- `221828` and `221851`: one station at about 606 Hz throughout.
+```json
+{
+  "startUtc": "2026-10-04T23:00:02.75Z",
+  "endUtc": "2026-10-04T23:01:32.75Z",
+  "dialHz": 7009921,
+  "signalHz": 7009921,
+  "signalLevel": 90,
+  "scopeFloor": 23,
+  "kind": "positive",
+  "left": "stay-ran-out",
+  "stations": [ { "pitchHz": 600.04, "shapeScore": 0.464, "marks": 289, "printed": true } ],
+  "text": "RQ CQ CQ DE W1AW W1AW W1AW K CQ CQ CQ DE W1AW ... CQ N",
+  "letters": [ { "seconds": 0.73, "text": "R" }, { "seconds": 1.79, "text": "Q" }, { "seconds": 3, "text": "C" }, "..." ],
+  "lights": [ { "seconds": 0, "light": "listening" }, "...", { "seconds": 87.47, "light": "shape found" }, { "seconds": 87.79, "light": "reading" } ],
+  "radio": [ { "field": "Frequency", "value": "7.010 MHz", "known": true }, { "field": "Mode", "value": "CW", "known": true }, "..." ],
+  "wav": "catch-230002-7009921.wav",
+  "sampleRate": 8000,
+  "seconds": 90
+}
+```
 
-The full map is in `docs\cw-keying-map.md`.
+The first letter reads `R` where the call opens with `C`. The ear joined the call 0.7 s in, part way through the first C. The rest of the call reads whole.
 
 ## 4. What's blocking us
 
-- **Your ruling: ship set A, ship set B, or neither.** The full trade-off is in section 2.
-  - **Set A**, three restored rules: the score goes 186 → 191 and nothing gets worse, but invented stays at 2.
-  - **Set B**, set A with gap kinds out: the score goes to 193, invented to 0, and silence prints to 0, but the random carrier prints at seed 5206 as well as 5195.
-  - Each ships as a two-line change in `CwRules` (`Restored`, `TakenOut`).
-- **The silence limit is red at HEAD.** One placeholder prints 60 ms into the pause after `221502`'s station stops. Only set B, or rules far too costly (a mark's own shape, the sender's own window), clear it.
-- **What the score can't see:**
-  - **Spaces.** Taking out the gap crossing or the handover backlog leaves the score unchanged. Neither came out, because nothing shipped. Taking out the crossing would undo HM-DEC-242's fix for `221530`, and it would turn `TheSenderWhoSpacedItsLettersIsNotSplit` red.
-  - **Weak stations.** The map does not see a station under 13 dB over the band. A letter read from one counts as invented.
-- **The thirteen removed rules are now in the tree again, switched off**, about 800 lines. Keeping them makes the next measurement a one-line change. Deleting them, as unit 534 did, keeps the tree smaller, and the tag `before-false-characters` holds the tree without them either way.
-- **The red tests are unchanged from HEAD:**
-  - the carrier at seed 5195, in the scoreboard and the 20-seed test;
-  - three `AReplyIsReadFromItsFirstLetter` tests;
-  - the scoreboard's new silence limit.
+- **Your call: does amber count as a positive?** The order said a positive is the light's amber, *shape forming*, or better.
+  - In the scan's own tests, amber came on within seconds on plain band noise and on a steady carrier. By that rule every catch was a positive, and the negatives were never caught.
+  - So the scan counts a positive only on **green**, a shape found or reading.
+  - Amber is still kept in every catch's light history, so the JSON shows which negatives went amber.
+  - Industry practice: count on the stronger signal, as built.
+  - The alternative is amber held for some seconds.
+- **Never run on the radio.** Things a fake can't show:
+  - whether the IC-7300's scope follows the dial in its centre mode when the segment is wider than the span (`scopeFollowsDial` in scan.json will say);
+  - how the six-spread margin behaves on a real band;
+  - whether CPU holds with a second detector running.
+- **The scope must already be streaming.** The scan writes no scope setting, so with the scope's wave output off, it refuses and says the scope isn't reaching Hamlet.
+- **The order named three "why it left" reasons that needed definitions:**
+  - *read out*: a positive that printed and then went silent;
+  - *went silent*: one that went silent without printing;
+  - Added beside them: *dial moved*, *band changed*, *scan ended*, and *scan stopped* (tab left or the radio transmitted).
+- **The scan's settings are not remembered across restarts.** They reset to 30 min, 90 s and 30 s.
 
 ### Asks still outstanding
 
@@ -240,3 +193,4 @@ The full map is in `docs\cw-keying-map.md`.
   - The ask stands only for the timing-only path.
   - No change for it sits in the tree.
 - **Unit 539, 2026-10-04:** ship rule set A, rule set B, or neither (above). Waiting on the owner. Both are switch lists in `CwRules` and neither is on.
+- **Unit 540, 2026-10-04:** does amber count as a positive (above)? Waiting on the owner. The scan counts green; the change is one line in `CwCatchEar`.

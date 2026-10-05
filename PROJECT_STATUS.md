@@ -2,12 +2,12 @@ PROTOCOL: 2
 PROJECT: Hamlet
 STATE: COMPLETED
 TASK: 3 of 3
-WORK_INSTRUCTION: 539 - false characters count against the score (run by hand)
+WORK_INSTRUCTION: 540 - the scan: catch CW unattended (run by hand)
 BALL: tim
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-10-04T22:28:36-04:00
-NOTE: Unit 539 done: score is right less wrong less invented, baseline 186; rules measured, sets A 191 and B 193 need a ruling
+UPDATED: 2026-10-04T23:29:23-04:00
+NOTE: Unit 540 done: the scan built, 12 tests pass on a fake radio, scoreboard unchanged; amber-or-green needs a ruling
 
 ---
 

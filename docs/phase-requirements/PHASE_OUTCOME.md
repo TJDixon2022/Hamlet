@@ -1086,3 +1086,13 @@ The scoreboard now scores letters right less wrong less invented. Invented is re
 The thirteen rules removed in work instruction 534 are back behind switches, off. Every rule was measured alone, and the search was stepped one change at a time. The best set that holds the limits reaches 191 but leaves invented at 2. With gap kinds also out it reaches 193 with nothing invented, but the random carrier prints at 2 of 20 seeds. Neither met the bar, so the reading is HEAD's.
 
 Build has no warnings. App carry-forward is 278 of 278.
+
+## UNIT 540 - STEP 12
+
+Run by hand, outside the loop: SESSION.lock taken and released; nothing written to RUN_LEDGER.md, nothing under tools\arbiter\ touched, no box ticked. Version 1.13.224 to 1.13.225. HM-DEC-244.
+
+The scan is built. A Scan button beside Record on the CW terminal scans the CW segment of the band the radio is on. It jumps to peaks on the radio's scope, stays up to 90 s where a shape forms, and listens 30 s where none does. It keeps each catch's WAV and JSON, and a scan.json, in %AppData%\Hamlet\scans\. It writes only the frequency, and puts it back at the end.
+
+While it runs, one lock shuts every keying path, and the CW send buttons say why.
+
+Twelve tests on a fake radio pass. The scoreboard reads as at HEAD, 186. Build has no warnings; app carry-forward is 278 of 278. Nothing keyed or transmitted.
