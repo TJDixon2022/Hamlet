@@ -235,7 +235,7 @@ public sealed class CwCatchScan
     private readonly Func<TimeSpan, CancellationToken, Task> _delay;
     private readonly Func<DateTime> _utcNow;
     private readonly object _gate = new();
-    private readonly List<byte> _held = new();
+    private readonly ScopeWatch _watch = new();
 
     private long _frameLowHz;
     private long _frameHighHz;
@@ -397,7 +397,7 @@ public sealed class CwCatchScan
         CwScanSummary Summary(CwScanEnd ended, DateTime? at) => new(
             started, at, band.Name, band.CwLowHz, band.CwHighHz, home,
             _settings.Length.TotalMinutes, _settings.PositiveStay.TotalSeconds, _settings.NegativeStay.TotalSeconds,
-            SilentSeconds, ScopePeaks.MarginSpreads, catches.ToList(), ended,
+            SilentSeconds, ScopeWatch.MarginSpreads, catches.ToList(), ended,
             ended == CwScanEnd.Running ? "scanning" : Line(ended, catches.Count), follows);
 
         Write("scan.json", Summary(CwScanEnd.Running, null));
@@ -474,7 +474,7 @@ public sealed class CwCatchScan
                         break;
                     }
 
-                    cursor = peak.FrequencyHz + ScopePeaks.MergeHz;
+                    cursor = peak.FrequencyHz + ScopeWatch.MergeHz;
                 }
 
                 if (stop is { } s)
@@ -633,7 +633,7 @@ public sealed class CwCatchScan
 
         foreach (var p in peaks.OrderByDescending(p => p.Level))
         {
-            if (merged.All(m => Math.Abs(m.FrequencyHz - p.FrequencyHz) > ScopePeaks.MergeHz))
+            if (merged.All(m => Math.Abs(m.FrequencyHz - p.FrequencyHz) > ScopeWatch.MergeHz))
             {
                 merged.Add(p);
             }
@@ -646,14 +646,14 @@ public sealed class CwCatchScan
     {
         lock (_gate)
         {
-            _held.Clear();
+            _watch.Clear();
         }
 
         await Wait(SurveyHold, token).ConfigureAwait(false);
 
         lock (_gate)
         {
-            return ScopePeaks.Find(_held.ToList(), _frameLowHz, _frameHighHz, fromHz, toHz).ToList();
+            return _watch.Peaks(fromHz, toHz).ToList();
         }
     }
 
@@ -828,12 +828,12 @@ public sealed class CwCatchScan
         {
             if (frame.LowHz != _frameLowHz || frame.HighHz != _frameHighHz)
             {
-                _held.Clear();
+                _watch.Clear();
             }
 
             _frameLowHz = frame.LowHz;
             _frameHighHz = frame.HighHz;
-            ScopePeaks.MaxHold(_held, frame.Bins);
+            _watch.Add(frame.LowHz, frame.HighHz, frame.Bins);
         }
 
         Interlocked.Increment(ref _frames);
@@ -846,7 +846,7 @@ public sealed class CwCatchScan
         Say(sentence);
 
         return new CwScanSummary(at, at, string.Empty, 0, 0, 0, _settings.Length.TotalMinutes, _settings.PositiveStay.TotalSeconds,
-            _settings.NegativeStay.TotalSeconds, SilentSeconds, ScopePeaks.MarginSpreads, [], why, sentence, null);
+            _settings.NegativeStay.TotalSeconds, SilentSeconds, ScopeWatch.MarginSpreads, [], why, sentence, null);
     }
 
     private void Say(string line) => Said?.Invoke(line);
