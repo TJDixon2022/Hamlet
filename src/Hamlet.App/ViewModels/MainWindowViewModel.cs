@@ -559,6 +559,9 @@ public partial class MainWindowViewModel : ObservableObject
     partial void OnOperatingModeChanged(string value)
     {
         OnPropertyChanged(nameof(IsCwMode));
+
+        // Leaving the CW tab stops a scan (work instruction 540).
+        StopCatchScanForTab(value);
         OnPropertyChanged(nameof(IsDigitalMode));
         OnPropertyChanged(nameof(IsVoiceMode));
 
@@ -9788,7 +9791,10 @@ public partial class MainWindowViewModel : ObservableObject
         // state that would let Hamlet transmit mid-tune on a frequency
         // neither component believes it is on.
         AutoCall = _autoCall = new AutoCallViewModel(
-            line => StatusText = line, () => Scan.IsScanning);
+            line => StatusText = line, () => Scan.IsScanning || _listenOnly.IsHeld)
+        {
+            ListenOnly = _listenOnly,
+        };
 
         // THE OPERATOR'S OWN SCAN FILE, WRITTEN ONCE (§0.2.1). It cannot be
         // edited until it exists, and nothing else in the app was going to
@@ -13429,7 +13435,7 @@ public partial class MainWindowViewModel : ObservableObject
 
         // The one door to the transmitter, and it only exists while a radio is
         // connected (§0.2, HM-DEC-059).
-        Transmit.Attach(new CwTransmitter(new KeyerCwSender(rig)));
+        Transmit.Attach(new CwTransmitter(new KeyerCwSender(rig, _listenOnly), listenOnly: _listenOnly));
 
         // THE SCANNER GETS ITS RADIO, AND THE DIAL GOES BACK IF A SCAN DIED
         // MID-RUN (§0.2.1). The note is written before the first tune for
@@ -15403,7 +15409,7 @@ public partial class MainWindowViewModel : ObservableObject
         _transmitLevelReport = sink as ITransmitLevelReport;
 
         _armedSend = new Ft8ArmedSend(
-            new Ft8TransmitSequence(port, sink, _sendLicence, _telemetry));
+            new Ft8TransmitSequence(port, sink, _sendLicence, _telemetry, listenOnly: _listenOnly));
 
         AppEvents.TransmitPath(_telemetry, "built", rate);
     }

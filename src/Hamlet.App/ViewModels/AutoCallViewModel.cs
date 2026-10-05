@@ -50,6 +50,9 @@ public sealed partial class AutoCallViewModel : ObservableObject
         _scannerRunning = scannerRunning ?? (() => false);
     }
 
+    /// <summary>The scan's lock, handed to this keyer too: while a scan runs nothing here keys (work instruction 540).</summary>
+    public Hamlet.RadioEngine.Scan.ListenOnlyLock? ListenOnly { get; init; }
+
     /// <summary>The operator's own text. Hamlet never writes one.</summary>
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(CanArm))]
@@ -236,7 +239,7 @@ public sealed partial class AutoCallViewModel : ObservableObject
         _decoder = decoder;
 
         _caller = rig is not null && monitor is not null
-            ? new AutoCaller(rig, monitor, new KeyerCwSender(rig))
+            ? new AutoCaller(rig, monitor, new KeyerCwSender(rig, ListenOnly))
             : null;
 
         IsArmed = false;

@@ -67,11 +67,15 @@ public sealed class CwTransmitter
     /// <summary>Create a transmitter over a sender.</summary>
     /// <param name="sender">Whatever keys the radio.</param>
     /// <param name="guard">The privilege guard, or a fresh one.</param>
-    public CwTransmitter(ICwSender sender, TransmitGuard? guard = null)
+    /// <param name="listenOnly">The scan's lock: while it is held every check refuses (work instruction 540).</param>
+    public CwTransmitter(ICwSender sender, TransmitGuard? guard = null, Scan.ListenOnlyLock? listenOnly = null)
     {
         _sender = sender ?? throw new ArgumentNullException(nameof(sender));
         _guard = guard ?? new TransmitGuard();
+        _listenOnly = listenOnly;
     }
+
+    private readonly Scan.ListenOnlyLock? _listenOnly;
 
     /// <summary>Whether this path can widen the gaps between characters.</summary>
     public bool SupportsCharacterSpacing => _sender.SupportsCharacterSpacing;
@@ -93,6 +97,15 @@ public sealed class CwTransmitter
     public TransmitOutcome Check(TransmitContext context)
     {
         ArgumentNullException.ThrowIfNull(context);
+
+        // **A SCAN LISTENS ONLY** (work instruction 540, HM-DEC-244): while one runs every send refuses, so the buttons go
+        // grey with the reason beside them, and the keyer below asks the same lock again before it keys.
+        if (_listenOnly?.IsHeld == true)
+        {
+            var scanning = new CwReadiness(CwReadyState.ScanRunning, false, Scan.ListenOnlyLock.Refusal, "");
+
+            return new TransmitOutcome(false, scanning.Detail, "", null, false, scanning);
+        }
 
         var decision = _guard.Check(
             context.LicenseClass, context.FrequencyHz, TransmitMode.Cw,

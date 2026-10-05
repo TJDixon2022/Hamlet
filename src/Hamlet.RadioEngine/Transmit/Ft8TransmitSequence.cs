@@ -47,6 +47,9 @@ public enum Ft8TransmitOutcome
     /// </summary>
     RefusedAsUnsendable,
 
+    /// <summary>A scan was running, and a scan listens only (work instruction 540, HM-DEC-244). Nothing keyed.</summary>
+    RefusedWhileScanning,
+
     /// <summary>The sink threw, or returned having played less than it was given.</summary>
     AudioFailed,
 
@@ -413,6 +416,7 @@ public sealed class Ft8TransmitSequence
     private readonly ITelemetry _telemetry;
     private readonly byte _radioAddress;
     private readonly byte _controllerAddress;
+    private readonly Scan.ListenOnlyLock? _listenOnly;
 
     /// <summary>Build a sequence over a transport and a sink.</summary>
     /// <param name="port">The CI-V transport, in whatever state it is in.</param>
@@ -421,13 +425,15 @@ public sealed class Ft8TransmitSequence
     /// <param name="telemetry">Where the record goes, or nowhere.</param>
     /// <param name="radioAddress">The radio's CI-V address.</param>
     /// <param name="controllerAddress">This application's CI-V address.</param>
+    /// <param name="listenOnly">The scan's lock: while it is held nothing is keyed (work instruction 540).</param>
     public Ft8TransmitSequence(
         ISerialPort port,
         ITransmitAudioSink sink,
         TransmitGuard? guard = null,
         ITelemetry? telemetry = null,
         byte radioAddress = CivConstants.DefaultRadioAddress,
-        byte controllerAddress = CivConstants.DefaultControllerAddress)
+        byte controllerAddress = CivConstants.DefaultControllerAddress,
+        Scan.ListenOnlyLock? listenOnly = null)
     {
         _port = port ?? throw new ArgumentNullException(nameof(port));
         _sink = sink ?? throw new ArgumentNullException(nameof(sink));
@@ -435,6 +441,7 @@ public sealed class Ft8TransmitSequence
         _telemetry = telemetry ?? NullTelemetry.Instance;
         _radioAddress = radioAddress;
         _controllerAddress = controllerAddress;
+        _listenOnly = listenOnly;
     }
 
     /// <summary>
@@ -493,6 +500,16 @@ public sealed class Ft8TransmitSequence
             return Recorded(
                 send,
                 Refused(Ft8TransmitOutcome.RefusedAsUnsendable, unsendable, string.Empty),
+                stages);
+        }
+
+        // **THE SCAN'S LOCK, ASKED RIGHT BEFORE THE KEY GOES DOWN** (work instruction 540, HM-DEC-244): while a scan runs,
+        // nothing keys and no audio is handed to the sound card.
+        if (_listenOnly?.IsHeld == true)
+        {
+            return Recorded(
+                send,
+                Refused(Ft8TransmitOutcome.RefusedWhileScanning, Scan.ListenOnlyLock.Refusal, string.Empty),
                 stages);
         }
 

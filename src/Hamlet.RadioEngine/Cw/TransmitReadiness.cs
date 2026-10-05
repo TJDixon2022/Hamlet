@@ -88,6 +88,9 @@ public enum CwReadyState
 
     /// <summary>The radio is already transmitting.</summary>
     AlreadyTransmitting,
+
+    /// <summary>A scan is running, and a scan listens only (work instruction 540, HM-DEC-244).</summary>
+    ScanRunning,
 }
 
 /// <summary>What Hamlet can say about whether a send would reach the air.</summary>
@@ -135,6 +138,7 @@ public sealed record CwReadiness(
         CwReadyState.ListenOnly => "listen_only",
         CwReadyState.LicenseClassUnknown => "license_class_unknown",
         CwReadyState.FrequencyUnknown => "frequency_unknown",
+        CwReadyState.ScanRunning => "scan_running",
         _ => "already_transmitting",
     };
 

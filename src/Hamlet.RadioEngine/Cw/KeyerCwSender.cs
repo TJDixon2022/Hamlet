@@ -1,4 +1,5 @@
 using Hamlet.RadioEngine.Rig;
+using Hamlet.RadioEngine.Scan;
 
 namespace Hamlet.RadioEngine.Cw;
 
@@ -31,7 +32,14 @@ public sealed class KeyerCwSender : ICwSender
 
     /// <summary>Create a sender over a rig.</summary>
     /// <param name="rig">The radio.</param>
-    public KeyerCwSender(IRig rig) => _rig = rig ?? throw new ArgumentNullException(nameof(rig));
+    /// <param name="listenOnly">The scan's lock: while it is held nothing is keyed (work instruction 540).</param>
+    public KeyerCwSender(IRig rig, ListenOnlyLock? listenOnly = null)
+    {
+        _rig = rig ?? throw new ArgumentNullException(nameof(rig));
+        _listenOnly = listenOnly;
+    }
+
+    private readonly ListenOnlyLock? _listenOnly;
 
     /// <inheritdoc/>
     /// <remarks>
@@ -84,6 +92,12 @@ public sealed class KeyerCwSender : ICwSender
                             ? "Stopped before anything went out."
                             : "Stopped part way through.",
                         i, pieces.Count);
+                }
+
+                // **THE SCAN'S LOCK, ASKED RIGHT BEFORE EACH PIECE KEYS** (work instruction 540, HM-DEC-244).
+                if (_listenOnly?.IsHeld == true)
+                {
+                    return new CwSendResult(CwSendOutcome.Refused, ListenOnlyLock.Refusal, i, pieces.Count);
                 }
 
                 if (!await _rig.SendCwAsync(pieces[i], cancellationToken).ConfigureAwait(false))
