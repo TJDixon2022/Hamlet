@@ -515,6 +515,32 @@ public sealed class TheRecordingsScoreboardTests
     }
 
     /// <remarks>
+    /// Work instruction 538, task 3: the sender who spaces every letter. On the owner's 22:15:30 station at 598 Hz the
+    /// letter gaps run 111 to 171 ms and the word cluster is wide, centred at 274 ms; the boundary that set a gap as many of
+    /// one cluster's spreads from its centre as of the other's put the word line at 160 ms, under its own letter gaps, and
+    /// it printed `AGE 12ILEAR E D CW U SIN G A V`. At the crossing the line is above every letter gap and no space is added.
+    /// </remarks>
+    [Fact]
+    public void TheSenderWhoSpacedItsLettersIsNotSplit()
+    {
+        Spaces Read(params string[] off)
+        {
+            using var _ = CwRules.Off(off);
+            var s = Score(limits: false).Stretches.Single(x => x.Stretch.Recording == "cw-2026-10-03-221530" && x.Stretch.PitchHz > 590);
+
+            _output.WriteLine($"off: {(off.Length == 0 ? "none" : string.Join(", ", off))}: `{s.PrintedText}`; {LineRow(s)}");
+
+            return s.Spaces;
+        }
+
+        var before = Read(CwRules.GapCrossing);
+        var after = Read();
+
+        Assert.True(before.Added >= 3, $"before: {before.Added} added");
+        Assert.Equal(0, after.Added);
+    }
+
+    /// <remarks>
     /// Work instruction 538, tasks 2 and 3: the board with the two word-line rules on and off, letters and spaces and the
     /// hard limits for each. Asserts nothing; the table is the result.
     /// </remarks>

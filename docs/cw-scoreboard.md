@@ -37,6 +37,7 @@ references.
 | 537 | 2026-10-04 | 205 of 244 | carrier limit red: 1 of 5, as before | the cleanup: the repo, the capture sheet and three reds; nothing that reads was changed, and the scoreboard read 205 after every task | not scored |
 | 538 task 1 | 2026-10-04 | 205 of 244 | carrier limit red: 1 of 5, as before | the scoreboard scores spaces: printed letters aligned to the reference letter by letter, and each reference boundary read between the letters aligned either side; nothing that reads was changed | **54 of 77**, 6 added |
 | 538 task 2 | 2026-10-04 | 206 of 244 | carrier limit red: 1 of 5, as before | a word line is where the sender's own letter and word gaps cross: where they show no clean jump they are split in two where they overlap, and the line is the equal-error point given each cluster's centre and spread | **58 of 77**, 4 added |
+| 538 task 3 | 2026-10-04 | 206 of 244 | carrier limit red: 1 of 5, as before | the sender who spaced its letters: on 221530 at 598 Hz a wide word cluster pulled the spread-count boundary to 160 ms, under letter gaps to 171; at the crossing (task 2's rule, shipped with it) the line is 241 ms and no space is added, at the cost of two real spaces there (7 to 5 of 12); no further change | **58 of 77**, 4 added |
 
 ## Stretches at the baseline (unit 534, before any change)
 
