@@ -52,9 +52,9 @@ public sealed class TheCatchScanTests : IDisposable
 
     /// <remarks>
     /// Tests 1 and 3: the scan visits all three peaks in frequency order, catches the call as a positive, the noise as empty
-    /// (no tone to hear, work instruction 542) and the carrier as a negative - a tone with no shape - and
-    /// leaves the negative at 30 s, and writes each catch's WAV and JSON and the scan's
-    /// scan.json. The dial is put back where it was.
+    /// (no tone to hear, work instruction 542) and the steady carrier, held all four minutes, as a carrier - a tone that never
+    /// keys - left after eight seconds and never visited again (work instruction 544), and writes each catch's WAV and JSON
+    /// and the scan's scan.json. The dial is put back where it was.
     /// </remarks>
     [Fact]
     public async Task ThreePeaksAreVisitedAndCaught()
@@ -66,7 +66,7 @@ public sealed class TheCatchScanTests : IDisposable
 
         Assert.True(summary.Catches.Count >= 3, $"{summary.Catches.Count} catches");
         Assert.Equal([Call, Noise, Carrier], summary.Catches.Take(3).Select(c => Nearest(c.SignalHz)));
-        Assert.Equal([CatchKind.Positive, CatchKind.Empty, CatchKind.Negative], summary.Catches.Take(3).Select(c => c.Kind));
+        Assert.Equal([CatchKind.Positive, CatchKind.Empty, CatchKind.Carrier], summary.Catches.Take(3).Select(c => c.Kind));
         Assert.Equal(CwScanEnd.LengthReached, summary.Ended);
 
         foreach (var entry in summary.Catches)
@@ -81,12 +81,15 @@ public sealed class TheCatchScanTests : IDisposable
         Assert.Equal(CatchLeft.NothingHeard, empty.Left);
         Assert.InRange((empty.EndUtc - empty.StartUtc).TotalSeconds, 0, 8);
 
-        var negative = Read<CwCatch>(scan, summary.Catches[2].Json);
+        // **A CARRIER IS A CARRIER** (work instruction 544, task 3): the steady carrier is not keyed, so it is left once the
+        // stay has heard eight seconds, its true frequency is remembered, and it is never visited again, from either side.
+        var carrier = Read<CwCatch>(scan, summary.Catches[2].Json);
 
-        Assert.Equal(CatchLeft.StayRanOut, negative.Left);
-        Assert.InRange((negative.EndUtc - negative.StartUtc).TotalSeconds, 30, 31);
-        Assert.InRange(negative.Seconds, 29, 31.5);
-        Assert.Equal(ScanWorld.Rate, WavAudio.Read(Path.Combine(scan.ScanFolder!, negative.Wav)).SampleRate);
+        Assert.Equal(CatchLeft.SteadyCarrier, carrier.Left);
+        Assert.InRange((carrier.EndUtc - carrier.StartUtc).TotalSeconds, 8, 9.5);
+        Assert.Equal(ScanWorld.Rate, WavAudio.Read(Path.Combine(scan.ScanFolder!, carrier.Wav)).SampleRate);
+        Assert.Contains(summary.Carriers ?? [], c => Math.Abs(c - Carrier) <= 30);
+        Assert.Single(summary.Catches, c => Nearest(c.SignalHz) == Carrier);
 
         var positive = Read<CwCatch>(scan, summary.Catches[0].Json);
 

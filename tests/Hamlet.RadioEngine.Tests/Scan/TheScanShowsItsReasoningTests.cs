@@ -55,7 +55,8 @@ public sealed class TheScanShowsItsReasoningTests : IDisposable
 
     /// <remarks>
     /// On the whole-segment scope of the catch tests, with the call, the noise and the carrier: a station heard keying says
-    /// its light as the ear has it, and one with no shape says negative, each with its clock.
+    /// its light as the ear has it, and one with no shape says negative, each with its clock; a carrier says so once it is
+    /// judged one (work instruction 544).
     /// </remarks>
     [Fact]
     public async Task TheLineSaysTheLightOrNegativeOnAVisit()
@@ -71,7 +72,8 @@ public sealed class TheScanShowsItsReasoningTests : IDisposable
 
         Assert.Contains(distinct, l => l.StartsWith("visiting 1 of 3 · 7.0100 · ", StringComparison.Ordinal)
             && (l.Contains("shape found", StringComparison.Ordinal) || l.Contains("reading", StringComparison.Ordinal)));
-        Assert.Contains("visiting 3 of 3 · 7.0500 · negative · 0:12", distinct);
+        Assert.Contains("visiting 3 of 3 · 7.0500 · negative · 0:05", distinct);
+        Assert.Contains(distinct, l => l.StartsWith("visiting 3 of 3 · 7.0500 · a carrier, not keyed · 0:0", StringComparison.Ordinal));
     }
 
     /// <remarks>

@@ -150,6 +150,87 @@ public sealed class CwCatchEar : IDisposable
     /// <summary>The widest a tone may be at six decibels under its top, in hertz: sixty. A CW signal is tens of hertz wide.</summary>
     public const double ToneWidestHz = 60;
 
+    /// <summary>How far under the median of its own second a frame at the tone must sit to be key-up: 6 dB.</summary>
+    public const double KeyUpDb = 6;
+
+    /// <summary>
+    /// **THE SHARE OF THE TIME A TONE IS KEY-UP** (work instruction 544, task 3, HM-DEC-248): the catch's audio since it
+    /// began, in 20 ms frames at <paramref name="toneHz"/>, and the share of them that sit <see cref="KeyUpDb"/> or more under
+    /// the median of the second around them. Null where under a second has been heard.
+    /// </summary>
+    /// <param name="toneHz">The tone.</param>
+    /// <returns>The share key-up, 0 to 1, or null.</returns>
+    public double? KeyUpShare(double toneHz)
+    {
+        float[] audio;
+        int rate;
+
+        lock (_gate)
+        {
+            rate = _rate > 0 ? _rate : _source.SampleRate;
+            audio = _audio.SelectMany(a => a).ToArray();
+        }
+
+        return KeyUpShareOf(audio, rate, toneHz);
+    }
+
+    /// <summary>The share of some audio's 20 ms frames at a tone that are key-up, as <see cref="KeyUpShare"/> has it.</summary>
+    /// <param name="audio">The audio.</param>
+    /// <param name="rate">Its rate.</param>
+    /// <param name="toneHz">The tone.</param>
+    /// <returns>The share key-up, 0 to 1, or null where under a second of audio was given.</returns>
+    /// <remarks>
+    /// <para>**WHAT CW IS AND A CARRIER IS NOT**: a keyed signal is key-up between every element and letter, a quarter or
+    /// more of its time at any speed - a dit's gap is as long as the dit, and a letter's gaps are three - and there its tone
+    /// falls to the noise. A carrier holds. The frame is judged against its own second, so a fade of a few decibels a
+    /// second does not count as key-up and a keyed signal's gaps do.</para>
+    /// <para>**THE FIGURES ARE THE AUTHOR'S**: 20 ms is under the shortest gap anyone keys, half a 48 WPM dit's 25; 6 dB is
+    /// the tone halved in amplitude, which a key-up does to any signal standing that far over its noise, and a steady tone
+    /// in noise rarely does.</para>
+    /// </remarks>
+    public static double? KeyUpShareOf(float[] audio, int rate, double toneHz)
+    {
+        var frame = rate / 50;
+        var frames = audio.Length / frame;
+
+        if (frames < 50)
+        {
+            return null;
+        }
+
+        var coefficient = 2 * Math.Cos(2 * Math.PI * toneHz / rate);
+        var db = new double[frames];
+
+        for (var f = 0; f < frames; f++)
+        {
+            double s1 = 0, s2 = 0;
+
+            for (var i = f * frame; i < (f + 1) * frame; i++)
+            {
+                var s0 = audio[i] + (coefficient * s1) - s2;
+
+                s2 = s1;
+                s1 = s0;
+            }
+
+            db[f] = 10 * Math.Log10((s1 * s1) + (s2 * s2) - (coefficient * s1 * s2) + 1e-20);
+        }
+
+        var up = 0;
+
+        for (var f = 0; f < frames; f++)
+        {
+            var around = db.Skip(Math.Max(0, f - 25)).Take(50).OrderBy(d => d).ToArray();
+
+            if (db[f] <= around[around.Length / 2] - KeyUpDb)
+            {
+                up++;
+            }
+        }
+
+        return up / (double)frames;
+    }
+
     /// <summary>
     /// **THE STRONGEST NARROW TONE IN THE PASSBAND** (work instruction 542, task 3, HM-DEC-246): the last
     /// <paramref name="seconds"/> of the catch's audio, its power at every <see cref="ToneStepHz"/> from

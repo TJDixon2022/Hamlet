@@ -21,6 +21,12 @@ public enum CatchKind
     /// at once; the owner's negatives - a tone Hamlet cannot read - are kept apart from it.
     /// </summary>
     Empty,
+
+    /// <summary>
+    /// **A CARRIER** (work instruction 544, task 3, HM-DEC-248): a tone that stands clear of the noise and does not key. Left
+    /// early, and its true frequency remembered for the rest of the scan.
+    /// </summary>
+    Carrier,
 }
 
 /// <summary>Why the scan left a catch.</summary>
@@ -55,6 +61,9 @@ public enum CatchLeft
 
     /// <summary>Nothing was heard: an empty stop, left at once (work instruction 542).</summary>
     NothingHeard,
+
+    /// <summary>A steady carrier: its tone held, never keyed, and the scan left it (work instruction 544).</summary>
+    SteadyCarrier,
 }
 
 /// <summary>How a scan ended, or why it did not start.</summary>
@@ -224,6 +233,7 @@ public sealed record CwScanSurvey(
 /// <param name="ScopeFollowsDial">Whether the scope moved with the dial when the segment was wider than its span; null where it was not wider.</param>
 /// <param name="SurveySeconds">How long each span was watched (work instruction 543).</param>
 /// <param name="Surveys">Every survey, in order, with every peak it considered.</param>
+/// <param name="Carriers">Every carrier the scan found, at its true frequency (work instruction 544).</param>
 public sealed record CwScanSummary(
     DateTime StartUtc,
     DateTime? EndUtc,
@@ -241,7 +251,8 @@ public sealed record CwScanSummary(
     string Sentence,
     bool? ScopeFollowsDial,
     double SurveySeconds = 0,
-    IReadOnlyList<CwScanSurvey>? Surveys = null);
+    IReadOnlyList<CwScanSurvey>? Surveys = null,
+    IReadOnlyList<long>? Carriers = null);
 
 /// <summary>
 /// **THE SCAN: CATCH CW UNATTENDED, POSITIVES AND NEGATIVES, LISTEN ONLY** (work instruction 540, HM-DEC-244).
@@ -429,7 +440,8 @@ public sealed class CwCatchScan
         lock (_gate)
         {
             _stopFor = null;
-            _dialMovedTo = null;
+            _bandName = band.Name;
+            _carriers.Clear();
             _placed = false;
             _bandName = band.Name;
 
@@ -461,7 +473,7 @@ public sealed class CwCatchScan
             _settings.Length.TotalMinutes, _settings.PositiveStay.TotalSeconds, _settings.NegativeStay.TotalSeconds,
             SilentSeconds, ScopeWatch.MarginSpreads, catches.ToList(), ended,
             ended == CwScanEnd.Running ? "scanning" : Line(ended, catches.Count), follows,
-            _settings.SurveyTime.TotalSeconds, surveys.ToList());
+            _settings.SurveyTime.TotalSeconds, surveys.ToList(), Carriers());
 
         Write("scan.json", Summary(CwScanEnd.Running, null));
 
@@ -550,6 +562,20 @@ public sealed class CwCatchScan
                     {
                         stop = now;
                         break;
+                    }
+
+                    long? nearCarrier;
+
+                    lock (_gate)
+                    {
+                        nearCarrier = _carriers.Cast<long?>().FirstOrDefault(c => Math.Abs(c!.Value - listed[i].FrequencyHz) <= CarrierSkipHz);
+                    }
+
+                    // **A KNOWN CARRIER IS NOT VISITED AGAIN** (work instruction 544, task 3), from either side.
+                    if (nearCarrier is { } known)
+                    {
+                        Say($"visiting {i + 1} of {listed.Count} · {Mhz4(listed[i].FrequencyHz)} · the carrier at {Mhz4(known)}, passed by");
+                        continue;
                     }
 
                     var (caught, after) = await CatchAt(listed[i], band, deadline, i + 1, listed.Count, surveys.Count, linked.Token).ConfigureAwait(false);
@@ -836,6 +862,8 @@ public sealed class CwCatchScan
 
         CatchLeft left;
         CwScanEnd? ended = null;
+        var carrierJudged = false;
+        var isCarrier = false;
         var sense = _ear.Sense();
 
         while (true)
@@ -866,6 +894,21 @@ public sealed class CwCatchScan
                 ended = over;
                 left = Leaving(over);
                 break;
+            }
+
+            // **A CARRIER IS A CARRIER** (work instruction 544, task 3): once the stay has heard enough, a tone that has not
+            // keyed is a carrier, whatever shape its marks made, and it is left at once.
+            if (!carrierJudged && stayed >= CarrierListen && (toneAfter ?? tone?.Hz) is { } held)
+            {
+                carrierJudged = true;
+
+                if (_ear.KeyUpShare(held) is { } share && share < CarrierKeyUpShare)
+                {
+                    isCarrier = true;
+                    left = CatchLeft.SteadyCarrier;
+                    Say($"visiting {index} of {total} · {Mhz4(Placed())} · a carrier, not keyed · {Clock(stayed)}");
+                    break;
+                }
             }
 
             bool moved;
@@ -923,13 +966,56 @@ public sealed class CwCatchScan
 
         var caught = new CwCatch(
             start, _utcNow(), dial, dial, peak.Level, peak.Floor,
-            sense.ShapeSeen ? CatchKind.Positive : CatchKind.Negative, left,
+            isCarrier ? CatchKind.Carrier : sense.ShapeSeen ? CatchKind.Positive : CatchKind.Negative, left,
             heard.Stations, heard.Text, heard.Letters, heard.Lights, radio, wav, heard.SampleRate, heard.Seconds,
             peak.FrequencyHz, tone?.Hz, survey, toneAfter, _toneFollowsDial);
 
         Write(caught.Json, caught);
 
+        // **A CARRIER'S TRUE FREQUENCY IS REMEMBERED**: the dial, less the tone's offset from the pitch the way the tone moves.
+        if (isCarrier)
+        {
+            var heldTone = toneAfter ?? tone?.Hz ?? pitch;
+
+            lock (_gate)
+            {
+                _carriers.Add(dial - (long)Math.Round(_toneFollowsDial * (heldTone - pitch)));
+            }
+        }
+
         return (caught, ended);
+    }
+
+    /// <summary>How long the stay listens before it judges whether a tone keys at all: eight seconds.</summary>
+    /// <remarks>The author's: a few words at any speed, so the share of time key-up is a share of many gaps.</remarks>
+    public static readonly TimeSpan CarrierListen = TimeSpan.FromSeconds(8);
+
+    /// <summary>
+    /// The share of the time key-up under which a tone is a carrier: 0.15 (work instruction 544, task 3, HM-DEC-248).
+    /// </summary>
+    /// <remarks>
+    /// The author's, from what CW is: a keyed signal is key-up a quarter of its time or more, a gap after every element and
+    /// three after every letter, less what frames straddling an edge and the fastest keying take from it. A steady tone in
+    /// noise falls 6 dB under its own second only now and then. Measured, not chosen from: the scan's two stations read
+    /// 0.23 to 0.39 over every eight seconds, and the carrier in the tree 0.085 to 0.105.
+    /// </remarks>
+    public const double CarrierKeyUpShare = 0.15;
+
+    /// <summary>How near a known carrier a peak may be and not be visited again, from either side: 400 Hz.</summary>
+    /// <remarks>
+    /// The author's: the scope's peak sat 315 and 380 Hz from the stations it led to in the scan's two catches here, so a
+    /// peak that near a carrier may be that carrier seen again. A station that close to a carrier is passed by as well.
+    /// </remarks>
+    public const long CarrierSkipHz = 400;
+
+    private readonly List<long> _carriers = new();
+
+    private List<long> Carriers()
+    {
+        lock (_gate)
+        {
+            return _carriers.ToList();
+        }
     }
 
     /// <summary>How long the scan listens at each try for a tone before it judges: two seconds, a few of a station's marks.</summary>
