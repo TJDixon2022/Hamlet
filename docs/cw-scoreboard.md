@@ -211,3 +211,41 @@ Each stretch's word line beside its letter and word clusters, as the gate held t
 | `cw-2026-10-03-221851` | 601 | 1 gaps, 155-155 ms, centre 155 | 2 gaps, 320-460 ms, centre 384 | 237 ms (median 237, 237-237) | 4 of 7, 2 added |
 
 **Each rule alone** (medium or better): both on, letters 206 and spaces 58 of 77 with 4 added; the split alone, 206 and 59 with 8 added; the crossing alone, 205 and 52 with 3 added; both off, 205 and 54 with 6 added.
+
+## The score counts wrong and invented (work instruction 539, HM-DEC-243)
+
+The owner, 2026-10-04: *"We are still having way too much false character."* Letters right alone cost nothing for a letter never sent. From unit 539 the scoreboard's number is:
+
+**score = letters right - wrong - invented.**
+
+- **wrong:** a printed letter the alignment counts as not the reference's, wrong in its place or extra, inside a stretch of medium confidence or better, and not invented.
+- **invented:** a printed letter, in any recording, whose marks overlap no keying on the keying map (`docs\cw-keying-map.md`) within one bin either side of its pitch.
+- **a hard limit:** nothing prints inside a silence of two seconds or more on the keying map.
+
+### Score totals
+
+| unit | date | right | wrong | invented | score | printed in silence | spaces right | what changed |
+|---|---|---|---|---|---|---|---|---|
+| 539 baseline | 2026-10-04 | 206 of 244 | 18 | 2 | **186** | 1 (`221502` 21.4-24.5 s, `■` at 21.46 s) | 58 of 77, 4 added | the score as HEAD reads it; tag `before-false-characters` |
+
+### Stretches at the 539 baseline
+
+| recording | pitch | stretch | confidence | reference | printed | right | spaces right | missing | added | wrong | invented |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| `cw-2026-10-02-200157` | 662.8 | 0-30 s | verified | `FER C HAT<BT> BEST 7V 73 <SK> KC4ZGP DEWA` | `FER C HAT<BT> BEST 7V 73 <SK> KC4ZGP DEWA` | 27 of 27 | 8 of 8 | 0 | 0 | 0 | 0 |
+| `cw-2026-10-03-143906` | 514.2 | 0-30 s | none | `` | `IEE II E NIEEE IET TAEEKEEIEEII IMESE ITT` | 0 of 0 | 0 of 0 | 0 | 0 | 0 | 0 |
+| `cw-2026-10-03-143951` | 499.5 | 14.5-30 s | low | `O WAEIIEURD U AGN ES` | `EWAE IIEWRK I AGN ES` | 12 of 16 | 3 of 4 | 1 | 1 | 3 | 1 |
+| `cw-2026-10-03-144020` | 499.5 | 0-12.5 s | medium | `ES OK ON PA <BT>` | `ES OK ON PA <BT>` | 9 of 9 | 4 of 4 | 0 | 0 | 0 | 0 |
+| `cw-2026-10-03-144020` | 599.9 | 9.5-30 s | medium | `WX IN NETAGIT IUN TEMP E` | `WX IN NETAGIT IEN TEMP` | 17 of 19 | 4 of 5 | 1 | 0 | 1 | 0 |
+| `cw-2026-10-03-144045` | 599.9 | 0-30 s | high | `N TEMP 57 57<BT> BTU BOB DE KG8V K` | `N E MP 57 57<BT> BTU BOB DE KG8V K` | 22 of 23 | 8 of 8 | 0 | 1 | 0 | 0 |
+| `cw-2026-10-03-221502` | 491.5 | 0-30 s | low | `ED OF ITS OWN HEE BK BK WHAT BUG AE US E ENIE EE ITS A 66 K` | `ED OF ITS OWN HEE BK BK WHATBUGAEI EUI E■ ■` | 29 of 42 | 8 of 17 | 9 | 0 | 1 | 1 |
+| `cw-2026-10-03-221530` | 491.5 | 0-9.5 s | medium | `6 CHAMPION BK` | `H CHA MPIMTN` | 6 of 11 | 1 of 2 | 1 | 1 | 1 | 0 |
+| `cw-2026-10-03-221530` | 598.4 | 9-30 s | medium | `EN FB WHEN I WAS AGE 12 I LEARNED CW USING A V` | `IHES MHENI■S AGE12ILEARED CW USINGA V` | 27 of 34 | 5 of 12 | 7 | 0 | 3 | 0 |
+| `cw-2026-10-03-221548` | 597.7 | 0-18.5 s | low | `2 I LEARNED CW USING A V BPLX Z EPS` | `I M IEE IEE E USINGA V BPLX Z EPS` | 18 of 26 | 6 of 9 | 3 | 2 | 5 | 0 |
+| `cw-2026-10-03-221548` | 498.0 | 18-30 s | medium | `YRHEE MY SCOUT MASTER` | `E WRHEE MYSCOET T MASTEN` | 14 of 18 | 2 of 3 | 1 | 1 | 3 | 0 |
+| `cw-2026-10-03-221745` | 501.7 | 0-28 s | medium | `E E DAND ON 40M TONITE . EUR EE H RD TOO` | `E IAND TMN 4MEMM TONITE . EUROWEE H IRD TOO` | 19 of 29 | 9 of 11 | 2 | 0 | 9 | 0 |
+| `cw-2026-10-03-221805` | 601.3 | 5-30 s | medium | `ET ON 40T S THESE DAYS . TNX FER ANOTHER FT` | `E 40T U THESE DAYS. TNX FERANOTHERF` | 28 of 33 | 7 of 10 | 3 | 0 | 1 | 0 |
+| `cw-2026-10-03-221828` | 601.3 | 0-30 s | medium | `FER ANOTHER FB QSO ES HOPE U HAVE AGN ED ES BEST 73 <AR> W` | `FER ANOTHER FB QSO ES HOPE U HA VE AGN ED ESBEST EV A MU` | 37 of 41 | 10 of 14 | 4 | 1 | 0 | 0 |
+| `cw-2026-10-03-221851` | 601.3 | 0-30 s | low | `BEST 73 <AR> W2L CQ DE NA8SB K` | `SES E IE E IEA E I GE EI E NAERE I BK` | 4 of 20 | 4 of 7 | 3 | 2 | 6 | 0 |
+
+Invented at the baseline: `143951`, an `E` at 16.6 s at 500 Hz, and `221502`, a `■` at 21.5 s at 500 Hz, the second printed 60 ms after the station's last mark, inside the silence that follows.

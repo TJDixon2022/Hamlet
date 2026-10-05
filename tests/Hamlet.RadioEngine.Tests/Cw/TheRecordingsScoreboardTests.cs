@@ -97,10 +97,10 @@ public sealed class TheRecordingsScoreboardTests
     ];
 
     /// <summary>One letter the reader printed: when its last mark ended, its pitch, its text.</summary>
-    internal readonly record struct Printed(double Seconds, double PitchHz, string Text, bool SpaceBefore = false, CwGapLines? Lines = null);
+    internal readonly record struct Printed(double Seconds, double PitchHz, string Text, bool SpaceBefore = false, CwGapLines? Lines = null, double From = double.NaN);
 
     /// <summary>A stretch's score: what printed there, its letters, and how many of the reference's letters were read right.</summary>
-    internal sealed record Scored(Stretch Stretch, string PrintedText, int ReferenceLetters, int Right, Spaces Spaces = default, IReadOnlyList<Printed>? Letters = null);
+    internal sealed record Scored(Stretch Stretch, string PrintedText, int ReferenceLetters, int Right, Spaces Spaces = default, IReadOnlyList<Printed>? Letters = null, int Wrong = 0, int Invented = 0);
 
     /// <summary>The whole board: each stretch, the total over the stretches of medium confidence or better, and the hard limits.</summary>
     internal sealed record Board(IReadOnlyList<Scored> Stretches, IReadOnlyDictionary<string, string> Unassigned, int Total, int OutOf, string FirstReads, IReadOnlyList<(string What, string Reads)> Noise)
@@ -116,6 +116,21 @@ public sealed class TheRecordingsScoreboardTests
 
         /// <summary>Spaces printed where the reference has none, over the same stretches.</summary>
         public int SpacesAdded => Stretches.Where(s => s.Stretch.Confidence >= Confidence.Medium).Sum(s => s.Spaces.Added);
+
+        /// <summary>Printed letters not the reference's - wrong or extra - over the stretches of medium confidence or better (work instruction 539).</summary>
+        public int Wrong { get; init; }
+
+        /// <summary>Printed letters over no keying at their pitch, in every recording (work instruction 539).</summary>
+        public int Invented { get; init; }
+
+        /// <summary>The invented letters, per recording.</summary>
+        public IReadOnlyDictionary<string, List<Printed>> InventedBy { get; init; } = new Dictionary<string, List<Printed>>();
+
+        /// <summary>Every letter printed inside a silence of two seconds or more on the keying map: a hard limit (task 2).</summary>
+        public IReadOnlyList<(string Recording, (double From, double To) Silence, Printed Letter)> SilencePrints { get; init; } = [];
+
+        /// <summary>**THE SCORE**: letters right less wrong less invented (work instruction 539, HM-DEC-243).</summary>
+        public int Score => Total - Wrong - Invented;
     }
 
     private static string Sheet(string recording)
@@ -170,7 +185,7 @@ public sealed class TheRecordingsScoreboardTests
         };
         gate.RunRead += (c, run) =>
         {
-            letters.Add(new Printed(run[^1].ToSeconds, run.Average(m => m.PitchHz), c.Text, space, gate.StationLines));
+            letters.Add(new Printed(run[^1].ToSeconds, run.Average(m => m.PitchHz), c.Text, space, gate.StationLines, run[0].FromSeconds));
             space = false;
         };
 
@@ -355,6 +370,8 @@ public sealed class TheRecordingsScoreboardTests
     {
         var scored = new List<Scored>();
         var unassigned = new Dictionary<string, string>();
+        var inventedBy = new Dictionary<string, List<Printed>>();
+        var silencePrints = new List<(string, (double, double), Printed)>();
 
         foreach (var recording in Stretches.Select(s => s.Recording).Distinct())
         {
@@ -380,11 +397,27 @@ public sealed class TheRecordingsScoreboardTests
                 }
             }
 
+            // **WHAT WAS NEVER SENT** (work instruction 539, task 1): a letter whose marks overlap no keying by any station within
+            // one bin of its pitch, on the keying map; and a letter printed inside a silence of two seconds or more.
+            var map = TheKeyingMapTests.Of(recording);
+            var invented = letters.Where(l => !map.Keyed(l.PitchHz, l.From, l.Seconds)).ToList();
+
+            inventedBy[recording] = invented;
+
+            foreach (var l in letters)
+            {
+                if (map.SilenceAround(l.From, l.Seconds) is { } quiet)
+                {
+                    silencePrints.Add((recording, quiet, l));
+                }
+            }
+
             foreach (var s in mine)
             {
                 var printed = Text(by[s]);
+                var wrong = WrongAt(printed, s.Reference).Count(i => i < by[s].Count && !invented.Contains(by[s][i]));
 
-                scored.Add(new Scored(s, printed, Letters(s.Reference).Length, Right(printed, s.Reference), SpacesOf(printed, s.Reference), by[s]));
+                scored.Add(new Scored(s, printed, Letters(s.Reference).Length, Right(printed, s.Reference), SpacesOf(printed, s.Reference), by[s], wrong, by[s].Count(invented.Contains)));
             }
 
             if (none.Length > 0)
@@ -397,7 +430,49 @@ public sealed class TheRecordingsScoreboardTests
         var first = limits ? TheFirst() : FirstRecording;
         var noise = limits ? NoiseRuns() : [];
 
-        return new Board(scored, unassigned, counted.Sum(s => s.Right), counted.Sum(s => s.ReferenceLetters), first, noise);
+        return new Board(scored, unassigned, counted.Sum(s => s.Right), counted.Sum(s => s.ReferenceLetters), first, noise)
+        {
+            Wrong = counted.Sum(s => s.Wrong),
+            Invented = inventedBy.Values.Sum(v => v.Count),
+            InventedBy = inventedBy,
+            SilencePrints = silencePrints,
+        };
+    }
+
+    /// <summary>
+    /// The printed letters the alignment counts as not the reference's: a wrong letter in its place, or an extra (work
+    /// instruction 539, task 1). Indices into the printed letters, spaces dropped; the free ends are not counted.
+    /// </summary>
+    internal static IReadOnlyList<int> WrongAt(string printed, string reference)
+    {
+        var decode = Letters(printed);
+        var key = Letters(reference);
+
+        if (decode.Length == 0 || key.Length == 0)
+        {
+            return [];
+        }
+
+        var score = CwScorer.Within(decode, key, CwKeyKind.Exact);
+        var at = new List<int>();
+        var di = score.Start;
+
+        foreach (var step in score.Steps)
+        {
+            switch (step.Edit)
+            {
+                case CwEdit.Same:
+                    di++;
+                    break;
+
+                case CwEdit.Wrong:
+                case CwEdit.Added:
+                    at.Add(di++);
+                    break;
+            }
+        }
+
+        return at;
     }
 
     /// <summary>What the first recording reads, spaces as printed.</summary>
@@ -434,15 +509,25 @@ public sealed class TheRecordingsScoreboardTests
     {
         var sb = new StringBuilder();
 
-        sb.AppendLine("| recording | pitch | stretch | confidence | reference | printed | right | spaces right | missing | added |");
-        sb.AppendLine("|---|---|---|---|---|---|---|---|---|---|");
+        sb.AppendLine("| recording | pitch | stretch | confidence | reference | printed | right | spaces right | missing | added | wrong | invented |");
+        sb.AppendLine("|---|---|---|---|---|---|---|---|---|---|---|---|");
 
         foreach (var s in board.Stretches)
         {
-            sb.AppendLine(CultureInfo.InvariantCulture, $"| `{s.Stretch.Recording}` | {s.Stretch.PitchHz:0.0} | {s.Stretch.From:0.#}-{s.Stretch.To:0.#} s | {s.Stretch.Confidence.ToString().ToLowerInvariant()} | `{s.Stretch.Reference}` | `{s.PrintedText}` | {s.Right} of {s.ReferenceLetters} | {s.Spaces.Right} of {s.Spaces.OfReference} | {s.Spaces.Missing} | {s.Spaces.Added} |");
+            sb.AppendLine(CultureInfo.InvariantCulture, $"| `{s.Stretch.Recording}` | {s.Stretch.PitchHz:0.0} | {s.Stretch.From:0.#}-{s.Stretch.To:0.#} s | {s.Stretch.Confidence.ToString().ToLowerInvariant()} | `{s.Stretch.Reference}` | `{s.PrintedText}` | {s.Right} of {s.ReferenceLetters} | {s.Spaces.Right} of {s.Spaces.OfReference} | {s.Spaces.Missing} | {s.Spaces.Added} | {s.Wrong} | {s.Invented} |");
         }
 
-        sb.AppendLine(CultureInfo.InvariantCulture, $"total (medium or better): **{board.Total} of {board.OutOf}** letters; **{board.SpacesRight} of {board.SpacesOutOf}** spaces, {board.SpacesAdded} added");
+        sb.AppendLine(CultureInfo.InvariantCulture, $"total (medium or better): **{board.Total} of {board.OutOf}** letters right, **{board.Wrong}** wrong; **{board.Invented}** invented in every recording; **score {board.Score}**; **{board.SpacesRight} of {board.SpacesOutOf}** spaces, {board.SpacesAdded} added");
+
+        foreach (var (recording, letters) in board.InventedBy.Where(p => p.Value.Count > 0))
+        {
+            sb.AppendLine(CultureInfo.InvariantCulture, $"invented in `{recording}`: {letters.Count}, `{string.Concat(letters.Select(l => l.Text))}` at {string.Join(", ", letters.Take(8).Select(l => FormattableString.Invariant($"{l.From:0.0} s {l.PitchHz:0} Hz")))}{(letters.Count > 8 ? ", ..." : string.Empty)}");
+        }
+
+        foreach (var (recording, quiet, letter) in board.SilencePrints)
+        {
+            sb.AppendLine(CultureInfo.InvariantCulture, $"printed in silence: `{recording}` {quiet.From:0.0}-{quiet.To:0.0} s `{letter.Text}` at {letter.From:0.00} s {letter.PitchHz:0} Hz");
+        }
 
         return sb.ToString();
     }
@@ -472,6 +557,7 @@ public sealed class TheRecordingsScoreboardTests
 
         Assert.Equal(FirstRecording, board.FirstReads);
         Assert.All(board.Noise, n => Assert.Equal(string.Empty, n.Reads));
+
     }
 
     /// <summary>A stretch's word line beside its letter and word clusters, as the gate held them when its last letter printed.</summary>
