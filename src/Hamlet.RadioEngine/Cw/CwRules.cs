@@ -53,11 +53,17 @@ internal static class CwRules
     /// <summary>A mark sits inside the shape of a keyed tone, on its own.</summary>
     public const string MarkShape = "a mark's own shape";
 
+    /// <summary>Where a sender's letter and word gaps show no clean jump, they are split in two where they overlap (work instruction 538).</summary>
+    public const string OverlapSplit = "split overlapping letter and word gaps";
+
+    /// <summary>The word line is where the letter and word clusters cross, each weighed by its own spread (work instruction 538).</summary>
+    public const string GapCrossing = "word line at the clusters' crossing";
+
     /// <summary>Every rule kept, in the order the work instruction names them.</summary>
     public static readonly IReadOnlyList<string> All =
     [
         LoneLetter, ColdStartWordLine, SpeedRetry, Settle, OwnWindow, Release, FirstPickWait, Backlog, SilentNotCandidate, Edges,
-        MarkShape, KindsHeld, GapKinds,
+        MarkShape, KindsHeld, GapKinds, OverlapSplit, GapCrossing,
     ];
 
     [ThreadStatic]

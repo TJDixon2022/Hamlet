@@ -142,7 +142,7 @@ internal sealed class CwPatternGate
         // owner's recordings measured as worth nothing gone, the scoreboard held without it, and the √21 line already keeps
         // a word line off the letter gaps in a transmission's first seconds.
         var wordLine = letterMean is not { } l ? gapDit * UnmeasuredWordRatio
-            : word is { Count: >= MeasuredRunGaps } ? CwSenderGate.Boundary(CwSenderGate.LogStats(letter!), CwSenderGate.LogStats(word))
+            : word is { Count: >= MeasuredRunGaps } ? (CwRules.On(CwRules.GapCrossing) ? Crossing(letter!, word) : CwSenderGate.Boundary(CwSenderGate.LogStats(letter!), CwSenderGate.LogStats(word)))
             : Math.Max(CwRules.On(CwRules.ColdStartWordLine) ? (inside.Count >= MeasuredRunGaps ? Centre(inside) : gapDit) * UnmeasuredWordRatio : 0, l * LetterWordRatio);
 
         return new CwGapLines(gapDit, character, wordLine, inside, letter, word);
@@ -224,12 +224,100 @@ internal sealed class CwPatternGate
 
         if (at + 1 >= clusters.Count)
         {
-            return (clusters[at], new List<double>());
+            return CwRules.On(CwRules.OverlapSplit) ? SplitOverlap(clusters[at]) : (clusters[at], new List<double>());
         }
 
         var (letter, word) = Settle(clusters[at], clusters[at + 1]);
 
         return letter.Count == 0 ? (clusters[at], clusters[at + 1]) : (letter, word);
+    }
+
+    /// <summary>
+    /// **A HAND'S LETTER AND WORD GAPS OVERLAP, AND ARE STILL TWO KINDS** (work instruction 538, task 2, HM-DEC-242): where the
+    /// walk finds no clean jump, the gaps are split in two by log-length 2-means and settled at the crossing (<see
+    /// cref="Crossing"/>); they are taken as two kinds only where the two centres sit the walk's own jump, √(7/3), apart.
+    /// </summary>
+    /// <remarks>
+    /// On the owner's 14:40:45 recording the hand's letter gaps run to 709 ms and its word gaps start at 639, no two
+    /// neighbours differ by √(7/3), and every gap was one letter cluster with a word line at 958 ms, above every word gap he
+    /// sent. A sender's letter gaps alone, split by 2-means, part at about 0.8 of their spread either side of their centre,
+    /// a hand's 0.19 in log-length leaving centres 1.36 apart, under the jump.
+    /// </remarks>
+    private static (List<double> Letter, List<double> Word) SplitOverlap(List<double> sorted)
+    {
+        var none = (sorted, new List<double>());
+
+        if (sorted.Count < MeasuredRunGaps + 1)
+        {
+            return none;
+        }
+
+        var logs = sorted.Select(g => Math.Log(g)).ToList();
+        var lo = logs[0];
+        var hi = logs[^1];
+        var count = 0;
+
+        for (var i = 0; i < 30; i++)
+        {
+            var mid = (lo + hi) / 2;
+            var next = logs.Count(l => l < mid);
+
+            if (next == 0 || next == logs.Count)
+            {
+                return none;
+            }
+
+            lo = logs.Take(next).Average();
+            hi = logs.Skip(next).Average();
+
+            if (next == count)
+            {
+                break;
+            }
+
+            count = next;
+        }
+
+        var (letter, word) = Settle(sorted.Take(count).ToList(), sorted.Skip(count).ToList());
+
+        return letter.Count >= MeasuredRunGaps && word.Count > 0 && Centre(word) / Centre(letter) >= LetterWordRatio
+            ? (letter, word)
+            : none;
+    }
+
+    /// <summary>
+    /// **THE SENDER'S OWN EQUAL-ERROR LINE** (work instruction 538, task 2, HM-DEC-242): where in log-length a gap is as likely
+    /// to be of one cluster as of the other, given each one's centre and spread, the spread floored as the sender's.
+    /// </summary>
+    /// <remarks>
+    /// The boundary it replaces for gaps set a length as many of one cluster's spreads from its centre as of the other's,
+    /// and a wide word cluster pulled it down onto the letter gaps: on the owner's 22:15:30 station, letter gaps of 111 to
+    /// 171 ms and a word cluster centred at 274 put it at 160 ms, and every letter printed spaced. Where the two densities
+    /// cross twice the crossing between the centres is taken; where they do not cross between them, the geometric middle.
+    /// </remarks>
+    internal static double Crossing(IReadOnlyCollection<double> low, IReadOnlyCollection<double> high)
+    {
+        var (m1, s1) = CwSenderGate.LogStats(low);
+        var (m2, s2) = CwSenderGate.LogStats(high);
+        var a = (1 / (s1 * s1)) - (1 / (s2 * s2));
+        var b = -2 * ((m1 / (s1 * s1)) - (m2 / (s2 * s2)));
+        var c = (m1 * m1 / (s1 * s1)) - (m2 * m2 / (s2 * s2)) + (2 * Math.Log(s1 / s2));
+        var middle = (m1 + m2) / 2;
+        double? x = null;
+
+        if (Math.Abs(a) < 1e-9)
+        {
+            x = Math.Abs(b) < 1e-12 ? null : -c / b;
+        }
+        else if ((b * b) - (4 * a * c) is var d and >= 0)
+        {
+            var r1 = (-b + Math.Sqrt(d)) / (2 * a);
+            var r2 = (-b - Math.Sqrt(d)) / (2 * a);
+
+            x = r1 > m1 && r1 < m2 ? r1 : r2 > m1 && r2 < m2 ? r2 : null;
+        }
+
+        return Math.Exp(x is { } v && v > m1 && v < m2 ? v : middle);
     }
 
     // The centre of some lengths: their geometric mean.
@@ -255,7 +343,7 @@ internal sealed class CwPatternGate
         for (var i = 0; i < 8 && low.Count > 0 && high.Count > 0; i++)
         {
             var boundary = low.Count >= MeasuredRunGaps && high.Count >= MeasuredRunGaps
-                ? CwSenderGate.Boundary(CwSenderGate.LogStats(low), CwSenderGate.LogStats(high))
+                ? (CwRules.On(CwRules.GapCrossing) ? Crossing(low, high) : CwSenderGate.Boundary(CwSenderGate.LogStats(low), CwSenderGate.LogStats(high)))
                 : Math.Sqrt(Centre(low) * Centre(high));
             var next = all.Where(g => g < boundary).ToList();
 

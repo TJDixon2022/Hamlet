@@ -36,6 +36,7 @@ references.
 | 536 task 2 | 2026-10-04 | 205 of 244 | carrier limit red: 1 of 5 seeds print (1 of 20 in the test) | and its gaps fall into kinds: a clean jump of √3 among the nine gaps, at least two either side | not scored |
 | 537 | 2026-10-04 | 205 of 244 | carrier limit red: 1 of 5, as before | the cleanup: the repo, the capture sheet and three reds; nothing that reads was changed, and the scoreboard read 205 after every task | not scored |
 | 538 task 1 | 2026-10-04 | 205 of 244 | carrier limit red: 1 of 5, as before | the scoreboard scores spaces: printed letters aligned to the reference letter by letter, and each reference boundary read between the letters aligned either side; nothing that reads was changed | **54 of 77**, 6 added |
+| 538 task 2 | 2026-10-04 | 206 of 244 | carrier limit red: 1 of 5, as before | a word line is where the sender's own letter and word gaps cross: where they show no clean jump they are split in two where they overlap, and the line is the equal-error point given each cluster's centre and spread | **58 of 77**, 4 added |
 
 ## Stretches at the baseline (unit 534, before any change)
 
@@ -165,3 +166,47 @@ A stretch's spaces: each boundary between two reference letters, read on the pri
 | `cw-2026-10-03-221851` | 601.3 | 0-30 s | low | `BEST 73 <AR> W2L CQ DE NA8SB K` | `SES E IE E IEA E I GE EI E NAFE I BK` | 5 of 20 | 3 of 7 | 4 | 6 |
 
 **Total (medium or better): 205 of 244 letters; 54 of 77 spaces, 6 added.** Hard limits as before: the first recording reads whole with its spaces, noise prints nothing, the carrier prints on seed 5195.
+
+## Word lines at unit 538, before and after task 2
+
+Each stretch's word line beside its letter and word clusters, as the gate held them when the stretch's last letter printed, with the line's median and range over the stretch.
+
+**Before** (HEAD, both rules off):
+
+| recording | pitch | letter gaps | word gaps | word line at the last letter | spaces |
+|---|---|---|---|---|---|
+| `cw-2026-10-02-200157` | 663 | 18 gaps, 170-430 ms, centre 292 | 8 gaps, 579-2296 ms, centre 911 | 457 ms (median 458, 327-605) | 8 of 8, 0 added |
+| `cw-2026-10-03-143951` | 500 | 2 gaps, 345-390 ms, centre 367 | 1 gaps, 1050-1050 ms, centre 1050 | 561 ms (median 561, 561-561) | 3 of 4, 1 added |
+| `cw-2026-10-03-144020` | 500 | 4 gaps, 274-420 ms, centre 338 | 4 gaps, 968-1068 ms, centre 1012 | 654 ms (median 584, 529-681) | 4 of 4, 0 added |
+| `cw-2026-10-03-144020` | 600 | 13 gaps, 187-583 ms, centre 372 | 4 gaps, 895-1018 ms, centre 955 | 770 ms (median 543, 458-770) | 4 of 5, 0 added |
+| `cw-2026-10-03-144045` | 600 | 22 gaps, 195-1163 ms, centre 546 | none | 958 ms (median 958, 298-1194) | 5 of 8, 1 added |
+| `cw-2026-10-03-221502` | 492 | 19 gaps, 118-264 ms, centre 168 | 10 gaps, 368-1328 ms, centre 562 | 267 ms (median 275, 216-309) | 8 of 17, 0 added |
+| `cw-2026-10-03-221530` | 492 | none | none | 292 ms (median 279, 277-328) | 1 of 2, 1 added |
+| `cw-2026-10-03-221530` | 598 | 11 gaps, 111-171 ms, centre 141 | 20 gaps, 184-1361 ms, centre 274 | 160 ms (median 296, 159-333) | 7 of 12, 3 added |
+| `cw-2026-10-03-221548` | 598 | 16 gaps, 130-200 ms, centre 168 | 12 gaps, 231-1590 ms, centre 513 | 208 ms (median 318, 208-389) | 6 of 9, 3 added |
+| `cw-2026-10-03-221548` | 498 | 18 gaps, 123-661 ms, centre 229 | none | 394 ms (median 319, 296-422) | 1 of 3, 1 added |
+| `cw-2026-10-03-221745` | 502 | 22 gaps, 65-311 ms, centre 182 | 7 gaps, 390-929 ms, centre 558 | 325 ms (median 298, 287-325) | 9 of 11, 0 added |
+| `cw-2026-10-03-221805` | 601 | 25 gaps, 137-424 ms, centre 233 | 3 gaps, 665-713 ms, centre 684 | 530 ms (median 341, 240-530) | 7 of 10, 0 added |
+| `cw-2026-10-03-221828` | 601 | 40 gaps, 137-1011 ms, centre 270 | none | 470 ms (median 378, 235-470) | 8 of 14, 0 added |
+| `cw-2026-10-03-221851` | 601 | 1 gaps, 155-155 ms, centre 155 | 2 gaps, 320-460 ms, centre 384 | 240 ms (median 240, 240-240) | 3 of 7, 6 added |
+
+**After** (both rules on):
+
+| recording | pitch | letter gaps | word gaps | word line at the last letter | spaces |
+|---|---|---|---|---|---|
+| `cw-2026-10-02-200157` | 663 | 18 gaps, 170-430 ms, centre 292 | 8 gaps, 579-2296 ms, centre 911 | 477 ms (median 479, 327-669) | 8 of 8, 0 added |
+| `cw-2026-10-03-143951` | 500 | 2 gaps, 345-390 ms, centre 367 | 1 gaps, 1050-1050 ms, centre 1050 | 561 ms (median 561, 561-561) | 3 of 4, 1 added |
+| `cw-2026-10-03-144020` | 500 | 4 gaps, 274-420 ms, centre 338 | 4 gaps, 968-1068 ms, centre 1012 | 651 ms (median 584, 529-675) | 4 of 4, 0 added |
+| `cw-2026-10-03-144020` | 600 | 13 gaps, 187-583 ms, centre 372 | 4 gaps, 895-1018 ms, centre 955 | 739 ms (median 543, 458-739) | 4 of 5, 0 added |
+| `cw-2026-10-03-144045` | 600 | 15 gaps, 195-709 ms, centre 403 | 7 gaps, 925-1163 ms, centre 1051 | 815 ms (median 640, 298-815) | 8 of 8, 1 added |
+| `cw-2026-10-03-221502` | 492 | 19 gaps, 118-264 ms, centre 168 | 10 gaps, 368-1328 ms, centre 562 | 275 ms (median 279, 216-309) | 8 of 17, 0 added |
+| `cw-2026-10-03-221530` | 492 | none | none | 292 ms (median 279, 277-328) | 1 of 2, 1 added |
+| `cw-2026-10-03-221530` | 598 | 23 gaps, 111-226 ms, centre 168 | 8 gaps, 252-1361 ms, centre 447 | 241 ms (median 296, 230-333) | 5 of 12, 0 added |
+| `cw-2026-10-03-221548` | 598 | 17 gaps, 130-231 ms, centre 171 | 11 gaps, 290-1590 ms, centre 552 | 239 ms (median 318, 239-383) | 6 of 9, 2 added |
+| `cw-2026-10-03-221548` | 498 | 14 gaps, 123-283 ms, centre 185 | 4 gaps, 388-661 ms, centre 481 | 313 ms (median 312, 296-322) | 2 of 3, 1 added |
+| `cw-2026-10-03-221745` | 502 | 20 gaps, 97-311 ms, centre 187 | 7 gaps, 390-929 ms, centre 558 | 312 ms (median 298, 287-312) | 9 of 11, 0 added |
+| `cw-2026-10-03-221805` | 601 | 25 gaps, 137-424 ms, centre 233 | 3 gaps, 665-713 ms, centre 684 | 513 ms (median 341, 240-513) | 7 of 10, 0 added |
+| `cw-2026-10-03-221828` | 601 | 27 gaps, 137-285 ms, centre 203 | 13 gaps, 304-1011 ms, centre 488 | 291 ms (median 293, 243-358) | 10 of 14, 1 added |
+| `cw-2026-10-03-221851` | 601 | 1 gaps, 155-155 ms, centre 155 | 2 gaps, 320-460 ms, centre 384 | 237 ms (median 237, 237-237) | 4 of 7, 2 added |
+
+**Each rule alone** (medium or better): both on, letters 206 and spaces 58 of 77 with 4 added; the split alone, 206 and 59 with 8 added; the crossing alone, 205 and 52 with 3 added; both off, 205 and 54 with 6 added.

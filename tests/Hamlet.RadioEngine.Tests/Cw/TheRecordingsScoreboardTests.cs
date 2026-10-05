@@ -97,10 +97,10 @@ public sealed class TheRecordingsScoreboardTests
     ];
 
     /// <summary>One letter the reader printed: when its last mark ended, its pitch, its text.</summary>
-    internal readonly record struct Printed(double Seconds, double PitchHz, string Text, bool SpaceBefore = false);
+    internal readonly record struct Printed(double Seconds, double PitchHz, string Text, bool SpaceBefore = false, CwGapLines? Lines = null);
 
     /// <summary>A stretch's score: what printed there, its letters, and how many of the reference's letters were read right.</summary>
-    internal sealed record Scored(Stretch Stretch, string PrintedText, int ReferenceLetters, int Right, Spaces Spaces = default);
+    internal sealed record Scored(Stretch Stretch, string PrintedText, int ReferenceLetters, int Right, Spaces Spaces = default, IReadOnlyList<Printed>? Letters = null);
 
     /// <summary>The whole board: each stretch, the total over the stretches of medium confidence or better, and the hard limits.</summary>
     internal sealed record Board(IReadOnlyList<Scored> Stretches, IReadOnlyDictionary<string, string> Unassigned, int Total, int OutOf, string FirstReads, IReadOnlyList<(string What, string Reads)> Noise)
@@ -170,7 +170,7 @@ public sealed class TheRecordingsScoreboardTests
         };
         gate.RunRead += (c, run) =>
         {
-            letters.Add(new Printed(run[^1].ToSeconds, run.Average(m => m.PitchHz), c.Text, space));
+            letters.Add(new Printed(run[^1].ToSeconds, run.Average(m => m.PitchHz), c.Text, space, gate.StationLines));
             space = false;
         };
 
@@ -384,7 +384,7 @@ public sealed class TheRecordingsScoreboardTests
             {
                 var printed = Text(by[s]);
 
-                scored.Add(new Scored(s, printed, Letters(s.Reference).Length, Right(printed, s.Reference), SpacesOf(printed, s.Reference)));
+                scored.Add(new Scored(s, printed, Letters(s.Reference).Length, Right(printed, s.Reference), SpacesOf(printed, s.Reference), by[s]));
             }
 
             if (none.Length > 0)
@@ -472,6 +472,68 @@ public sealed class TheRecordingsScoreboardTests
 
         Assert.Equal(FirstRecording, board.FirstReads);
         Assert.All(board.Noise, n => Assert.Equal(string.Empty, n.Reads));
+    }
+
+    /// <summary>A stretch's word line beside its letter and word clusters, as the gate held them when its last letter printed.</summary>
+    internal static string LineRow(Scored s)
+    {
+        var lines = s.Letters?.Where(l => l.Lines is not null).Select(l => l.Lines!).ToList() ?? [];
+
+        if (lines.Count == 0)
+        {
+            return $"| `{s.Stretch.Recording}` | {s.Stretch.PitchHz:0} | no lines | | | |";
+        }
+
+        static string Cluster(IReadOnlyList<double>? c)
+            => c is { Count: > 0 } ? FormattableString.Invariant($"{c.Count} gaps, {c.Min() * 1000:0}-{c.Max() * 1000:0} ms, centre {Math.Exp(c.Average(g => Math.Log(g))) * 1000:0}") : "none";
+
+        var last = lines[^1];
+        var words = lines.Select(l => l.WordSeconds * 1000).Order().ToList();
+
+        return FormattableString.Invariant(
+            $"| `{s.Stretch.Recording}` | {s.Stretch.PitchHz:0} | {Cluster(last.LetterGaps)} | {Cluster(last.WordGaps)} | {last.WordSeconds * 1000:0} ms (median {words[words.Count / 2]:0}, {words[0]:0}-{words[^1]:0}) | {s.Spaces.Right} of {s.Spaces.OfReference}, {s.Spaces.Added} added |");
+    }
+
+    /// <remarks>
+    /// Work instruction 538, task 2: each stretch's word line beside its letter and word clusters, as the gate held them at
+    /// its last letter, with the line's median and range over the stretch. Asserts nothing; the table is the result.
+    /// </remarks>
+    [Fact]
+    public void EachStretchsWordLineBesideItsClusters()
+    {
+        var board = Score(limits: false);
+
+        _output.WriteLine("| recording | pitch | letter gaps | word gaps | word line at the last letter | spaces |");
+        _output.WriteLine("|---|---|---|---|---|---|");
+
+        foreach (var s in board.Stretches.Where(s => s.Stretch.Confidence != Confidence.None))
+        {
+            _output.WriteLine(LineRow(s));
+        }
+
+        _output.WriteLine($"letters {board.Total} of {board.OutOf}; spaces {board.SpacesRight} of {board.SpacesOutOf}, {board.SpacesAdded} added");
+    }
+
+    /// <remarks>
+    /// Work instruction 538, tasks 2 and 3: the board with the two word-line rules on and off, letters and spaces and the
+    /// hard limits for each. Asserts nothing; the table is the result.
+    /// </remarks>
+    [Fact]
+    public void TheWordLineRulesOnAndOff()
+    {
+        foreach (var off in new[] { Array.Empty<string>(), [CwRules.OverlapSplit], [CwRules.GapCrossing], new[] { CwRules.OverlapSplit, CwRules.GapCrossing } })
+        {
+            using var _ = CwRules.Off(off);
+            var board = Score();
+            var carriers = board.Noise.Count(n => n.What.StartsWith("a carrier", StringComparison.Ordinal) && n.Reads.Length > 0);
+
+            _output.WriteLine($"| off: {(off.Length == 0 ? "none" : string.Join(", ", off))} | letters {board.Total} of {board.OutOf} | spaces {board.SpacesRight} of {board.SpacesOutOf}, {board.SpacesAdded} added | first `{board.FirstReads}` | noise prints {board.Noise.Count(n => !n.What.StartsWith("a carrier", StringComparison.Ordinal) && n.Reads.Length > 0)} | carriers print {carriers} of 5 |");
+
+            foreach (var s in board.Stretches.Where(s => s.Stretch.Confidence != Confidence.None))
+            {
+                _output.WriteLine($"    {LineRow(s)} `{s.PrintedText}` {s.Right}/{s.ReferenceLetters}");
+            }
+        }
     }
 
     /// <remarks>
