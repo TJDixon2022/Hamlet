@@ -9474,6 +9474,9 @@ public partial class MainWindowViewModel : ObservableObject
 
         _licenses = licenseLookup;
         _settings = settings;
+
+        // The scan's three settings, as the operator last left them (work instruction 541).
+        LoadCatchScanSettings();
         _telemetry = telemetry;
 
         // The terminal names BT and AR by the operator's setting, read as each

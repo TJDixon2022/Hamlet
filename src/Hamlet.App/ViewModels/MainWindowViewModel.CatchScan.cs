@@ -173,9 +173,49 @@ public sealed partial class MainWindowViewModel
         CultureInfo.InvariantCulture,
         $"runs {CatchScanMinutes} min · stays up to {CatchPositiveStaySeconds} s on a shape · {CatchNegativeStaySeconds} s where none forms");
 
-    partial void OnCatchScanMinutesChanged(int value) => OnPropertyChanged(nameof(CatchScanSettingsLine));
+    // While the settings are being read in at start, a change is not a change to save.
+    private bool _loadingCatchScanSettings;
 
-    partial void OnCatchPositiveStaySecondsChanged(int value) => OnPropertyChanged(nameof(CatchScanSettingsLine));
+    /// <summary>
+    /// **THE SCAN REMEMBERS ITS SETTINGS** (work instruction 541): its length and two stays are kept in Hamlet's settings, as
+    /// the app keeps its others, and read back at start. A value out of the popover's range is taken as the default.
+    /// </summary>
+    private void LoadCatchScanSettings()
+    {
+        _loadingCatchScanSettings = true;
 
-    partial void OnCatchNegativeStaySecondsChanged(int value) => OnPropertyChanged(nameof(CatchScanSettingsLine));
+        try
+        {
+            CatchScanMinutes = _settings.ScanMinutes is >= 1 and <= 600 ? _settings.ScanMinutes : 30;
+            CatchPositiveStaySeconds = _settings.ScanPositiveStaySeconds is >= 5 and <= 600 ? _settings.ScanPositiveStaySeconds : 90;
+            CatchNegativeStaySeconds = _settings.ScanNegativeStaySeconds is >= 5 and <= 600 ? _settings.ScanNegativeStaySeconds : 30;
+        }
+        finally
+        {
+            _loadingCatchScanSettings = false;
+        }
+    }
+
+    // **SAVED THE MOMENT IT CHANGES, NOT AT SHUTDOWN**, as the operating mode is: a preference written only on a clean exit is
+    // lost whenever the app is closed the way people close it.
+    private void SaveCatchScanSettings()
+    {
+        OnPropertyChanged(nameof(CatchScanSettingsLine));
+
+        if (_loadingCatchScanSettings)
+        {
+            return;
+        }
+
+        _settings.ScanMinutes = CatchScanMinutes;
+        _settings.ScanPositiveStaySeconds = CatchPositiveStaySeconds;
+        _settings.ScanNegativeStaySeconds = CatchNegativeStaySeconds;
+        SettingsStore.Save(_settings);
+    }
+
+    partial void OnCatchScanMinutesChanged(int value) => SaveCatchScanSettings();
+
+    partial void OnCatchPositiveStaySecondsChanged(int value) => SaveCatchScanSettings();
+
+    partial void OnCatchNegativeStaySecondsChanged(int value) => SaveCatchScanSettings();
 }

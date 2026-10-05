@@ -136,6 +136,15 @@ public sealed class AppSettings
     /// <see cref="SpotRefreshChoices"/>.</summary>
     public int SpotRefreshMinutes { get; set; } = DefaultSpotRefreshMinutes;
 
+    /// <summary>The scan's length, in minutes (work instruction 541): thirty unless the operator set another.</summary>
+    public int ScanMinutes { get; set; } = 30;
+
+    /// <summary>The scan's positive stay, in seconds (work instruction 541): ninety unless the operator set another.</summary>
+    public int ScanPositiveStaySeconds { get; set; } = 90;
+
+    /// <summary>The scan's negative stay, in seconds (work instruction 541): thirty unless the operator set another.</summary>
+    public int ScanNegativeStaySeconds { get; set; } = 30;
+
     /// <summary>Per-panel expand/collapse state, keyed by panel id. An absent
     /// key means expanded — a new panel arrives open (HM-DEC-021).</summary>
     public Dictionary<string, bool> PanelExpanded { get; set; } = new();
