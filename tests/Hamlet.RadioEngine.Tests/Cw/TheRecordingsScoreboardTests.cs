@@ -162,17 +162,16 @@ public sealed class TheRecordingsScoreboardTests
     /// <summary>Reads audio through the live path.</summary>
     internal static (IReadOnlyList<Printed> Letters, string Text) ReadLive(float[] samples, int rate, double pitchHz = 600, double widthHz = 500)
     {
-        var detector = new CwEnvelopeDetector(rate);
+        // **ONE WIRING FOR EVERY LISTENER** (work instruction 542, HM-DEC-246): the scoreboard reads through the app's own chain,
+        // not one of its own. It used to wire the detector and the gate itself, and missed the waiting pitch and the order the
+        // app hears each chunk in.
+        using var chain = new CwChain(rate, pitchHz);
+        var gate = chain.Decoder.Runs;
 
-        detector.SetPassband(pitchHz, widthHz);
-
-        var gate = new CwSenderGate();
-
-        detector.PrintedPitch = () => gate.StationPitchHz;
+        chain.Detector.SetPassband(pitchHz, widthHz);
 
         var letters = new List<Printed>();
         var characters = new List<CwCharacter>();
-        var sequence = 0L;
         var chunk = rate / 100;
 
         // A word end comes before the letter it opens, so it is carried to that letter (work instruction 538).
@@ -191,15 +190,10 @@ public sealed class TheRecordingsScoreboardTests
 
         for (var at = 0; at + chunk <= samples.Length; at += chunk)
         {
-            detector.Process(samples.AsSpan(at, chunk));
-
-            var batch = detector.MarksSince(sequence);
-
-            sequence = batch.Marks.Count > 0 ? batch.Marks.Max(m => m.Sequence) : sequence;
-            gate.Read(batch);
+            chain.Process(new AudioChunk(at, rate, samples.AsSpan(at, chunk)));
         }
 
-        gate.Flush();
+        chain.Decoder.Flush();
 
         var text = string.Join(' ', string.Concat(characters.Select(c => c.Text)).Split(' ', StringSplitOptions.RemoveEmptyEntries));
 

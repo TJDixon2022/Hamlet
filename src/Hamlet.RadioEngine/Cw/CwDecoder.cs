@@ -977,6 +977,9 @@ public sealed class CwDecoder
 
     private readonly CwSenderGate _runs = new();
 
+    /// <summary>The gate and reader the decoder prints from, for listeners built on <see cref="CwChain"/> that need its letters, runs and senders (work instruction 542).</summary>
+    internal CwSenderGate Runs => _runs;
+
     // The last mark sequence number taken from the detector.
     private long _markSequence;
 

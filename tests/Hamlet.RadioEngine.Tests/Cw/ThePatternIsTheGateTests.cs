@@ -87,19 +87,16 @@ public sealed class ThePatternIsTheGateTests
     /// <summary>Runs the detector and the reader, and counts the marks at a pitch before and after the pattern.</summary>
     internal static Reading Read(float[] samples, double pitch = Pitch, Action<CwEnvelopeDetector>? setUp = null)
     {
-        var detector = new CwEnvelopeDetector(Rate);
+        // **THE APP'S OWN CHAIN** (work instruction 542, HM-DEC-246): the bench reads through CwChain, wired as the app wires it,
+        // rather than wiring the detector and a gate itself.
+        using var chain = new CwChain(Rate, pitch);
+        var detector = chain.Detector;
 
         setUp?.Invoke(detector);
 
-        var reader = new CwSenderGate();
-
-        // The terminal tells the detector which sender it prints, as the app wires it (work instruction 529): the sender's own
-        // window opens on that sender and on nothing else.
-        detector.PrintedPitch = () => reader.StationPitchHz;
-
+        var reader = chain.Decoder.Runs;
         var characters = new List<CwCharacter>();
         var printedMarks = 0;
-        var sequence = 0L;
         var most = 0;
 
         reader.CharacterRead += characters.Add;
@@ -107,16 +104,11 @@ public sealed class ThePatternIsTheGateTests
 
         for (var at = 0; at + Chunk <= samples.Length; at += Chunk)
         {
-            detector.Process(samples.AsSpan(at, Chunk));
-
-            var batch = detector.MarksSince(sequence);
-
-            sequence = batch.Marks.Count > 0 ? batch.Marks.Max(m => m.Sequence) : sequence;
-            reader.Read(batch);
+            chain.Process(new Hamlet.RadioEngine.Audio.AudioChunk(at, Rate, samples.AsSpan(at, Chunk)));
             most = Math.Max(most, detector.Reading.MarksLast4s);
         }
 
-        reader.Flush();
+        chain.Decoder.Flush();
 
         var all = detector.MarksSince(0).Marks;
         var kept = detector.CandidatesKept;

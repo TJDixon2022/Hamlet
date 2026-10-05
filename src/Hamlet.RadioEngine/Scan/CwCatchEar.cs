@@ -65,8 +65,7 @@ public sealed class CwCatchEar : IDisposable
     private readonly List<CatchLight> _lights = new();
     private readonly System.Text.StringBuilder _text = new();
 
-    private CwEnvelopeDetector? _detector;
-    private CwSenderGate? _sender;
+    private CwChain? _chain;
     private long _sequence;
     private long _samples;
     private int _rate;
@@ -79,13 +78,20 @@ public sealed class CwCatchEar : IDisposable
     /// <param name="source">The audio Hamlet hears.</param>
     /// <param name="pitchHz">The radio's CW pitch, where the detector's band is centred.</param>
     /// <param name="widthHz">The radio's filter width.</param>
-    public CwCatchEar(IAudioSource source, double pitchHz, double widthHz)
+    /// <param name="radio">
+    /// What Hamlet knows about the radio, read on every chunk for the passband as the app reads it (work instruction 542); null
+    /// to use <paramref name="pitchHz"/> and <paramref name="widthHz"/>.
+    /// </param>
+    public CwCatchEar(IAudioSource source, double pitchHz, double widthHz, Func<Rig.RigState>? radio = null)
     {
         _source = source ?? throw new ArgumentNullException(nameof(source));
         _pitchHz = pitchHz;
         _widthHz = widthHz;
+        _radio = radio;
         _source.SamplesReady += OnSamples;
     }
+
+    private readonly Func<Rig.RigState>? _radio;
 
     /// <summary>Begin a catch: forget the last one, start recording and reading.</summary>
     public void Begin()
@@ -102,8 +108,8 @@ public sealed class CwCatchEar : IDisposable
             _shapeSeen = false;
             _lastMarkSeconds = double.NegativeInfinity;
             _light = CwShapeLight.Listening;
-            _detector = null;
-            _sender = null;
+            _chain?.Dispose();
+            _chain = null;
             _lights.Add(new CatchLight(0, Words(CwShapeLight.Listening)));
             _listening = true;
         }
@@ -137,7 +143,7 @@ public sealed class CwCatchEar : IDisposable
         lock (_gate)
         {
             _listening = false;
-            _sender?.Flush();
+            _chain?.Decoder.Flush();
 
             rate = _rate > 0 ? _rate : _source.SampleRate;
             samples = new float[_audio.Sum(a => a.Length)];
@@ -150,7 +156,7 @@ public sealed class CwCatchEar : IDisposable
                 at += chunk.Length;
             }
 
-            var reading = _sender?.ShapeReading;
+            var reading = _chain?.Decoder.ShapeSide;
 
             heard = new CatchHeard(
                 reading?.Senders.Select(s => new CatchStation(s.PitchHz, s.ShapeScore, s.Marks, s.Printed)).ToList() ?? [],
@@ -172,7 +178,11 @@ public sealed class CwCatchEar : IDisposable
     }
 
     /// <inheritdoc/>
-    public void Dispose() => _source.SamplesReady -= OnSamples;
+    public void Dispose()
+    {
+        _source.SamplesReady -= OnSamples;
+        _chain?.Dispose();
+    }
 
     private void OnSamples(in AudioChunk chunk)
     {
@@ -183,27 +193,36 @@ public sealed class CwCatchEar : IDisposable
                 return;
             }
 
-            if (_detector is null)
+            if (_chain is null)
             {
+                // **THE APP'S OWN CHAIN** (work instruction 542, HM-DEC-246): the same decoder, detector, gate and reader,
+                // wired as the app wires them, rather than a chain of the ear's own.
                 _rate = chunk.SampleRate;
-                _detector = new CwEnvelopeDetector(_rate);
-                _detector.SetPassband(_pitchHz, _widthHz);
-                _sender = new CwSenderGate();
+                _chain = new CwChain(_rate, _pitchHz);
 
-                var sender = _sender;
-                var detector = _detector;
+                var gate = _chain.Decoder.Runs;
 
-                detector.PrintedPitch = () => sender.StationPitchHz;
-                detector.WaitingPitch = () => sender.WaitingPitchHz;
-                sender.CharacterRead += c => _text.Append(c.Text);
-                sender.RunRead += (c, run) => _letters.Add(new CatchLetter(run[^1].ToSeconds, c.Text));
+                gate.CharacterRead += c => _text.Append(c.Text);
+                gate.RunRead += (c, run) => _letters.Add(new CatchLetter(run[^1].ToSeconds, c.Text));
+            }
+
+            // **THE PASSBAND IS THE RADIO'S**, read as the app reads it on every scope tick: its CW pitch and filter in CW, the
+            // whole band otherwise. Without a view of the radio, the pitch and width the ear was given.
+            if (_radio?.Invoke() is { } state)
+            {
+                _chain.SetPassband(state);
+            }
+            else
+            {
+                _chain.Detector.SetPassband(_pitchHz, _widthHz);
             }
 
             _audio.Add(chunk.Samples.ToArray());
             _samples += chunk.Samples.Length;
-            _detector.Process(chunk.Samples);
+            _chain.Process(chunk);
 
-            var batch = _detector.MarksSince(_sequence);
+            // When the last mark stood: read from the detector without taking anything from the decoder's own reading.
+            var batch = _chain.Detector.MarksSince(_sequence);
 
             if (batch.Marks.Count > 0)
             {
@@ -211,9 +230,7 @@ public sealed class CwCatchEar : IDisposable
                 _lastMarkSeconds = Math.Max(_lastMarkSeconds, batch.Marks.Max(m => m.ToSeconds));
             }
 
-            _sender!.Read(batch);
-
-            var light = _detector.Reading.ShapeLight;
+            var light = _chain.Detector.Reading.ShapeLight;
 
             if (light != _light)
             {

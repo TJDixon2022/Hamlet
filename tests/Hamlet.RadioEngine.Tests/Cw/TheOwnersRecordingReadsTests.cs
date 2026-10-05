@@ -38,16 +38,14 @@ public sealed class TheOwnersRecordingReadsTests
     internal static (string Text, IReadOnlyList<CwCharacter> Characters, IReadOnlyList<CwMark> Marks, IReadOnlyList<(double At, double Line, string Clusters)> Lines, IReadOnlyList<CwMark> Candidates) Read(string name = "cw-2026-10-02-200157")
     {
         var audio = WavAudio.Read(Wav(name));
-        var detector = new CwEnvelopeDetector(audio.SampleRate);
+        // **THE APP'S OWN CHAIN** (work instruction 542, HM-DEC-246), wired as the app wires it.
+        using var chain = new CwChain(audio.SampleRate, 600);
+        var detector = chain.Detector;
 
         detector.SetPassband(600, 500);
 
-        var reader = new CwSenderGate();
-
-        // The terminal tells the detector which sender it prints, as the app wires it.
-        detector.PrintedPitch = () => reader.StationPitchHz;
+        var reader = chain.Decoder.Runs;
         var characters = new List<CwCharacter>();
-        var sequence = 0L;
         var chunk = audio.SampleRate / 100;
 
         var lines = new List<(double At, double Line, string Clusters)>();
@@ -60,17 +58,12 @@ public sealed class TheOwnersRecordingReadsTests
 
         for (var at = 0; at + chunk <= audio.Samples.Length; at += chunk)
         {
-            detector.Process(audio.Samples.AsSpan(at, chunk));
-
-            var batch = detector.MarksSince(sequence);
-
-            sequence = batch.Marks.Count > 0 ? batch.Marks.Max(m => m.Sequence) : sequence;
-            reader.Read(batch);
+            chain.Process(new AudioChunk(at, audio.SampleRate, audio.Samples.AsSpan(at, chunk)));
         }
 
         var shapes = string.Join("; ", reader.SenderShapes.Select(s => $"{s.PitchHz:0} Hz {s.Marks} marks{(s.Printed ? " printed" : string.Empty)}: {s.Shape}"));
 
-        reader.Flush();
+        chain.Decoder.Flush();
         var own = detector.OwnWindowLane;
 
         LastSenders = $"{shapes}; own window at {own.PitchHz:0.0} Hz, dit {own.DitSeconds * 1000:0} ms, cutoff {own.CutoffHz:0.0} Hz, rise {own.RiseSeconds * 1000:0.0} ms, delay {own.DelaySeconds * 1000:0.0} ms";

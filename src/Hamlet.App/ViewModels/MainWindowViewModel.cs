@@ -11634,41 +11634,12 @@ public partial class MainWindowViewModel : ObservableObject
         _envelope = new CwEnvelopeDetector(_audioInput.SampleRate);
         _envelope.Listen(_audioInput);
 
-        // **NO DETECTION, NO LETTERS** (work instruction 485, R97, HM-DEC-190). The decoder lets
-        // out only what it read while the detector said somebody was keying; until now the two ran
-        // side by side and never spoke, and the terminal filled with letters read from noise.
-        var detector = _envelope;
-        _decoder.KeyingGate = () => detector.Reading.Keying;
-
-        // **AND IT LISTENS WHERE THE DETECTOR HEARS** (work instruction 486; 488, HM-DEC-193):
-        // while the detector says keying, the decoder mixes at the pitch the reading carries - the
-        // bin its bars were called in, carried through the gaps - and is fed nothing otherwise.
-        _decoder.DetectorPitch = () => PitchForTheDecoder(detector.Reading);
-
-        // **AND THE READING FOLLOWS WHAT THE TERMINAL PRINTS** (work instruction 519, R116, HM-DEC-223): the
-        // light, the tone line and the scope show the sender being printed, the best shape, never the loudest.
-        var printer = _decoder;
-        detector.PrintedPitch = () => printer.RunsPrintingHz;
-
-        // **AND THE LIGHT CLAIMS NO MORE THAN THE PRINTER** (work instruction 535, HM-DEC-239): green only for the sender
-        // printed or the one qualified and waiting to print.
-        detector.WaitingPitch = () => printer.RunsWaitingHz;
-
-        // **AND A LETTER NEEDS BLOCKS** (work instruction 487, R99): one block the detector called
-        // under each dit and dah, or the letter does not reach the screen.
-        _decoder.DetectorBlocks = detector.BlocksBetween;
-
-        // **ALL THREE WIRED, NONE IN FORCE** (work instruction 489, R102, HM-DEC-194). The
-        // detector calls a station's bars 50 Hz to one side two hops in three (unit 488), so its
-        // pitch, keying and blocks do not steer or gate the decoder until that pitch is fit. The
-        // decoder's own switches, DetectorSteersPitch, DetectorGatesKeying and DetectorGatesBlocks,
-        // stay off; the scope, the blocks and the light go on as before.
-
-        // **A CHARACTER IS A RUN OF MARKS THAT AGREE** (work instruction 490, R103, HM-DEC-195).
-        // The decoder is given every mark the detector calls, with its pitch, level and length,
-        // and the terminal and the scope show what the run reader reads from them; the gates above
-        // stay off, since a letter appears only where its run exists.
-        _decoder.DetectorMarks = detector.MarksSince;
+        // **ONE WIRING FOR EVERY LISTENER** (work instruction 542, HM-DEC-246): the detector and the decoder are wired to each
+        // other by CwChain.Wire, the one place every listener - this window, the scoreboard, the scan's ear - takes its wiring
+        // from. What it wires, and why, is written there: no detection no letters, the decoder listens where the detector
+        // hears, the reading follows what the terminal prints, the light claims no more than the printer, a letter needs
+        // blocks, and the gate reads the detector's marks.
+        CwChain.Wire(_decoder, _envelope);
 
         _audioInput.Start();
 
@@ -12653,8 +12624,9 @@ public partial class MainWindowViewModel : ObservableObject
         var state = RigState;
         var cw = state[RigField.Mode] is { IsKnown: true, Number: { } mode }
                  && CivValues.IsCw((CivMode)(int)mode);
-        var pitch = cw && state[RigField.CwPitch] is { IsKnown: true, Number: { } hz } ? hz : (double?)null;
-        var width = cw ? state.FilterBandwidthHz : null;
+
+        // The radio's pitch and filter in CW, the whole band otherwise: the one rule every listener takes (work instruction 542).
+        var (pitch, width) = CwChain.Passband(state);
 
         envelope.SetPassband(pitch, width);
 
@@ -12695,7 +12667,7 @@ public partial class MainWindowViewModel : ObservableObject
     /// <param name="reading">The detector's last reading.</param>
     /// <returns>A pitch in hertz, or NaN.</returns>
     internal static double PitchForTheDecoder(CwEnvelopeReading reading) =>
-        reading.Keying && double.IsFinite(reading.PitchHz) && reading.PitchHz > 0 ? reading.PitchHz : double.NaN;
+        CwChain.PitchForTheDecoder(reading);
 
     /// <summary>
     /// Put a settled character on the scope, over the span the decoder gave it

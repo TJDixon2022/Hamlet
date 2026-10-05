@@ -105,7 +105,7 @@ public sealed partial class MainWindowViewModel
         }
 
         var width = monitor.State[RigField.FilterBandwidth] is { IsKnown: true, Number: { } w } && w > 0 ? w : 500;
-        var ear = new CwCatchEar(audio, _settings.CwPitchHz, width);
+        var ear = new CwCatchEar(audio, _settings.CwPitchHz, width, () => monitor.State);
         var settings = new CwScanSettings(
             TimeSpan.FromMinutes(Math.Max(1, CatchScanMinutes)),
             TimeSpan.FromSeconds(Math.Max(5, CatchPositiveStaySeconds)),
