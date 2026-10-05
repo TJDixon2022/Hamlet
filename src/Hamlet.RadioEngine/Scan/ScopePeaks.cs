@@ -66,10 +66,10 @@ public sealed record ScopeSurvey(int Sweeps, double Floor, double Line, double B
 /// the floor's own spreads over it: band noise does that about once in a billion bins. **Where the median is nought** - the
 /// radio has clipped its noise - any value above nought is energy the scope chose to show, and the two tests below
 /// decide.</item>
-/// <item>**It repeats** (<see cref="RepeatShare"/>, <see cref="LeastRepeats"/>): it stands in a quarter or more of the sweeps
-/// watched, and in three at least, within a bin of the same place. A keyed CW signal is up for around half its time, so even
-/// a sweep taken at random catches it in a quarter of sweeps with room to spare; a noise blip stands in one sweep and is gone
-/// from the next.</item>
+/// <item>**It repeats more than noise that high would** (<see cref="LeastRepeats"/>, <see cref="FalseStationsPerSurvey"/>): it
+/// stands, within a bin of one place, in three sweeps at least, and in as many more as it takes for noise that reaches its
+/// height to do it by chance under once in a hundred surveys (work instruction 544). A quarter of the sweeps watched stood
+/// here until then; at fine bins noise reached it, and a station that pauses between overs fell short of it.</item>
 /// <item>**It is narrow, measured at half its own height** (<see cref="WidestHz"/>, <see cref="WidestBins"/>). **Work
 /// instruction 543 found the clear stations refused here**: the width was counted at the line, which on a clipped floor is
 /// the foot of a signal's skirts, so a strong station drew eleven bins and a moderate one five against a limit of three.
@@ -89,9 +89,6 @@ public sealed class ScopeWatch
     /// <summary>Where the median is above nought, how many of the floor's own spreads a bin must stand over it: six.</summary>
     public const double MarginSpreads = 6;
 
-    /// <summary>The share of sweeps watched a peak must stand in: a quarter.</summary>
-    public const double RepeatShare = 0.25;
-
     /// <summary>The fewest sweeps a peak must stand in: three.</summary>
     public const int LeastRepeats = 3;
 
@@ -103,6 +100,67 @@ public sealed class ScopeWatch
 
     /// <summary>How close two peaks may be and be one: 250 Hz, half the radio's CW filter.</summary>
     public const long MergeHz = 250;
+
+    /// <summary>
+    /// How many places noise may list as stations in a survey, on average, by landing its tops at one place often enough:
+    /// one in a hundred surveys (work instruction 544, task 4, HM-DEC-248).
+    /// </summary>
+    /// <remarks>
+    /// <para>**AT FINE BINS NOISE REPEATS.** In scan 152712, at 5.26 Hz bins, 146 of its 163 stops were noise. A place
+    /// stands in a sweep where a top falls within a bin of it, and where the scope draws a little energy in many bins every
+    /// sweep a top falls near any place often: with a top in one bin of twelve, a place gets one in three sweeps by chance,
+    /// so four of thirteen is what noise does. A quarter of the sweeps was a figure for a scope that is clipped quiet.</para>
+    /// <para>**SO THE COUNT NEEDED IS THE ONE NOISE OF THAT HEIGHT DOES NOT REACH.** The tops as high as a place's own fall
+    /// elsewhere at some rate; three bins' worth of that rate is the chance one lands at the place in a sweep, and the place
+    /// must stand in so many sweeps that, over every place in the span, noise would do it in under one survey in a hundred,
+    /// about once in six minutes of scanning at a survey every 3.75 s. A
+    /// station well over the noise has few tops as high as its own around it and needs only the quarter it always did; a
+    /// low bump among many like it needs nearly every sweep. The figure is the author's.</para>
+    /// </remarks>
+    public const double FalseStationsPerSurvey = 0.01;
+
+    /// <summary>
+    /// The sweeps a place must stand in, out of <paramref name="sweeps"/>, for noise to list a station by chance under
+    /// <see cref="FalseStationsPerSurvey"/> a survey: at least <paramref name="least"/>, or one more than the sweeps where none is.
+    /// </summary>
+    /// <param name="sweeps">The sweeps watched.</param>
+    /// <param name="bins">The bins a sweep has.</param>
+    /// <param name="elsewhere">How many tops as high as the place's own fell elsewhere in those sweeps.</param>
+    /// <param name="least">The fewest the rule ever asks for.</param>
+    internal static int Needed(int sweeps, int bins, int elsewhere, int least)
+    {
+        var p = Math.Min(1, 3.0 * Math.Max(0, elsewhere) / ((double)sweeps * bins));
+
+        for (var k = least; k <= sweeps; k++)
+        {
+            if (bins * Tail(sweeps, p, k) <= FalseStationsPerSurvey)
+            {
+                return k;
+            }
+        }
+
+        return sweeps + 1;
+    }
+
+    // The chance of k or more of n sweeps, each with chance p.
+    private static double Tail(int n, double p, int k)
+    {
+        var sum = 0.0;
+
+        for (var j = k; j <= n; j++)
+        {
+            var choose = 1.0;
+
+            for (var m = 0; m < j; m++)
+            {
+                choose = choose * (n - m) / (m + 1);
+            }
+
+            sum += choose * Math.Pow(p, j) * Math.Pow(1 - p, n - j);
+        }
+
+        return sum;
+    }
 
     private readonly List<byte[]> _sweeps = new();
     private long _lowHz;
@@ -182,6 +240,8 @@ public sealed class ScopeWatch
         var sum = new double[count];
         var highest = new double[count];
         var widths = new List<double>[count];
+        var heights = new List<(double H, bool Narrow)>[count];
+        var tops = new List<double>();
 
         foreach (var sweep in _sweeps)
         {
@@ -211,10 +271,13 @@ public sealed class ScopeWatch
                 var width = (b - a + 1) * binHz;
 
                 seen[i]++;
+                tops.Add(sweep[i]);
                 highest[i] = Math.Max(highest[i], sweep[i]);
                 (widths[i] ??= new List<double>()).Add(width);
 
                 var narrow = width <= widest;
+
+                (heights[i] ??= new List<(double H, bool Narrow)>()).Add((sweep[i], narrow));
 
                 stood[i] += narrow ? 1 : 0;
 
@@ -238,7 +301,7 @@ public sealed class ScopeWatch
         int Near(int[] counts, int i) => counts[i] + (i > 0 ? counts[i - 1] : 0) + (i < count - 1 ? counts[i + 1] : 0);
         double NearSum(double[] values, int i) => values[i] + (i > 0 ? values[i - 1] : 0) + (i < count - 1 ? values[i + 1] : 0);
 
-        var least = Math.Max(LeastRepeats, (int)Math.Ceiling(RepeatShare * _sweeps.Count));
+        var least = LeastRepeats;
         var considered = new List<ScopeCandidate>();
         var stations = new List<(ScopeCandidate Candidate, ScopePeak Peak)>();
         var n = _sweeps.Count;
@@ -261,6 +324,25 @@ public sealed class ScopeWatch
 
             var showed = Near(seen, i);
             var narrow = Near(stood, i);
+
+            // **MORE REPEATS THAN NOISE THIS HIGH GIVES BY CHANCE** (work instruction 544, task 4): at each height the place's
+            // tops reach, its own tops at least that high against how often tops that high fall elsewhere in these sweeps. It
+            // stands at the height that does best: a station over low noise at its own height, where noise seldom reaches.
+            var own = Enumerable.Range(i - 1, 3).Where(k => k >= 0 && k < count && heights[k] is not null).SelectMany(k => heights[k]).ToList();
+            var (height, need, narrowAt, showedAt) = own.Select(x => x.H).Distinct()
+                .Select(h =>
+                {
+                    var mine = own.Count(x => x.H >= h);
+
+                    return (H: h, Need: Needed(n, count, tops.Count(t => t >= h) - mine, least), Narrow: own.Count(x => x.H >= h && x.Narrow), Showed: mine);
+                })
+                .OrderByDescending(s => s.Narrow - s.Need)
+                .ThenByDescending(s => s.Showed - s.Need)
+                .DefaultIfEmpty((H: 0, Need: least, Narrow: 0, Showed: 0))
+                .First();
+
+            narrow = narrowAt;
+            showed = showedAt;
             var level = Math.Max(highest[i], Math.Max(i > 0 ? highest[i - 1] : 0, i < count - 1 ? highest[i + 1] : 0));
             var all3 = Enumerable.Range(i - 1, 3).Where(k => k >= 0 && k < count && widths[k] is not null).SelectMany(k => widths[k]).OrderBy(w => w).ToList();
             var width = all3.Count > 0 ? all3[all3.Count / 2] : 0;
@@ -268,13 +350,13 @@ public sealed class ScopeWatch
             var sw = NearSum(seenWeight, i);
             var place = narrow > 0 && w > 0 ? (long)Math.Round(NearSum(sum, i) / w) : sw > 0 ? (long)Math.Round(NearSum(seenSum, i) / sw) : at;
 
-            if (narrow >= least)
+            if (narrow >= need)
             {
-                var candidate = new ScopeCandidate(place, level, width, narrow, showed, ScopeVerdict.Listed, $"stood narrow in {narrow} of {n} sweeps");
+                var candidate = new ScopeCandidate(place, level, width, narrow, showed, ScopeVerdict.Listed, $"stood narrow in {narrow} of {n} sweeps at {height:0} or higher, where {need} were needed");
 
                 stations.Add((candidate, new ScopePeak(place, level, floor, spread, narrow, n, width)));
             }
-            else if (showed >= least)
+            else if (showed >= need)
             {
                 considered.Add(new ScopeCandidate(place, level, width, narrow, showed, ScopeVerdict.TooWide,
                     $"showed in {showed} of {n} sweeps, {width:0} Hz wide at half its height, over the {widest:0} Hz a keyed CW signal fills, narrow in only {narrow}"));
@@ -282,7 +364,7 @@ public sealed class ScopeWatch
             else
             {
                 considered.Add(new ScopeCandidate(place, level, width, narrow, showed, ScopeVerdict.NotRepeating,
-                    $"showed in {showed} of {n} sweeps, under the {least} needed"));
+                    $"showed in {showed} of {n} sweeps at {height:0} or higher, under the {need} needed where tops that high fall {tops.Count(t => t >= height) - showed} times elsewhere in these sweeps"));
             }
         }
 

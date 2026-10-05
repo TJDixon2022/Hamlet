@@ -824,6 +824,20 @@ public sealed class CwCatchScan
                 }
             }
 
+            // **A HIGH PEAK EARNS A LONGER LISTEN** (work instruction 544, task 4, HM-DEC-248): operators pause longer than a
+            // check between overs, so where the scope drew the peak well over anything noise draws and no tone was heard in the
+            // three checks, the scan listens at the peak once more, for longer, before it calls the stop empty.
+            if (tone is null && peak.Level >= HighPeakLevel)
+            {
+                await Tune(peak.FrequencyHz, token).ConfigureAwait(false);
+                await Wait(Settle, token).ConfigureAwait(false);
+                heardFrom = _utcNow();
+                _ear.Begin();
+                await Wait(LongListen, token).ConfigureAwait(false);
+                tone = _ear.Tone(LongListen.TotalSeconds, pitch - (width / 2), pitch + (width / 2));
+                landedAt = peak.FrequencyHz;
+            }
+
             // **THE TONE SITS AT THE PITCH BEFORE THE STAY IS JUDGED** (work instruction 544, task 2, HM-DEC-248). A tone already
             // within a few hertz of the pitch is not retuned, and the catch keeps what the probe heard. Otherwise the dial is
             // moved, the tone measured again, and moved again until it sits there; the catch keeps the last probe's audio.
@@ -985,6 +999,22 @@ public sealed class CwCatchScan
 
         return (caught, ended);
     }
+
+    /// <summary>
+    /// How high on the scope's own scale a peak must stand to earn <see cref="LongListen"/> before it is called empty: 20
+    /// (work instruction 544, task 4).
+    /// </summary>
+    /// <remarks>
+    /// The author's: on the clipped scope the noise blips of the first scans stood at 6 and 7, and three times the highest
+    /// is energy noise alone does not draw. Stops at 79, 38 and 31 were called empty after their two-second checks.
+    /// </remarks>
+    public const double HighPeakLevel = 20;
+
+    /// <summary>
+    /// How long the scan listens once more at a high peak where its three checks heard no tone: six seconds, longer than the
+    /// four an operator pauses between overs (work instruction 544, task 4). The author's.
+    /// </summary>
+    public static readonly TimeSpan LongListen = TimeSpan.FromSeconds(6);
 
     /// <summary>How long the stay listens before it judges whether a tone keys at all: eight seconds.</summary>
     /// <remarks>The author's: a few words at any speed, so the share of time key-up is a share of many gaps.</remarks>

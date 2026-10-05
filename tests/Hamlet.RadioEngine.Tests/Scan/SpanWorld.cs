@@ -113,10 +113,28 @@ internal sealed class SpanWorld : IDisposable
     {
         var n = (int)(Rate * ChunkSeconds);
         var chunk = new float[n];
+        var dial = Rig.FrequencyHz;
 
         for (var i = 0; i < n; i++)
         {
-            chunk[i] = _band[(_sample + i) % _band.Length];
+            var g = _sample + i;
+
+            chunk[i] = _band[g % _band.Length];
+
+            // A station that sends is heard at the pitch its offset from the dial puts it at, rising with the dial as the
+            // owner's radio does in CW, inside the filter; it sends its over, pauses, and sends it again.
+            foreach (var station in Stations)
+            {
+                if (station.Sends is null || Math.Abs(dial - station.Hz) >= 250)
+                {
+                    continue;
+                }
+
+                var over = Over(station, 600 + (int)(dial - station.Hz));
+                var k = g % (over.Length + (long)(station.PauseSeconds * Rate));
+
+                chunk[i] += k < over.Length ? over[k] : 0;
+            }
         }
 
         Audio.Push(new AudioChunk(_sample, Rate, chunk));
@@ -137,22 +155,48 @@ internal sealed class SpanWorld : IDisposable
         }
     }
 
+    private readonly Dictionary<(string, int), float[]> _overs = new();
+
+    private float[] Over(ScopeStation station, int pitch)
+    {
+        if (!_overs.TryGetValue((station.Name, pitch), out var samples))
+        {
+            samples = CwSignal.Generate(new CwSignalRequest(
+                station.Sends!, WordsPerMinute: 20, ToneHz: pitch, SampleRate: Rate, Amplitude: station.Amplitude,
+                NoiseAmplitude: 0, LeadInSeconds: 0, TailSeconds: 0, Seed: 5443)).Samples;
+            _overs[(station.Name, pitch)] = samples;
+        }
+
+        return samples;
+    }
+
+    /// <summary>Whether a station is sending now, not pausing between its overs.</summary>
+    private bool Sending(ScopeStation station)
+        => station.Sends is null
+           || _sample % (Over(station, 600).Length + (long)(station.PauseSeconds * Rate)) < Over(station, 600).Length;
+
+    /// <summary>Half the scope's span: ±10 kHz unless a test sets it, ±1.25 kHz for bins of about 5 Hz.</summary>
+    public long HalfSpan { get; set; } = HalfSpanHz;
+
+    /// <summary>How many noise blips, at 6 or 7, a sweep has.</summary>
+    public int BlipsPerSweep { get; set; } = 2;
+
     private void Sweep()
     {
-        var low = Rig.FrequencyHz - HalfSpanHz;
-        var high = Rig.FrequencyHz + HalfSpanHz;
+        var low = Rig.FrequencyHz - HalfSpan;
+        var high = Rig.FrequencyHz + HalfSpan;
         var bins = new byte[BinCount];
         var binHz = (high - low) / (double)BinCount;
 
-        // Two noise blips a sweep, at 6 or 7, anywhere.
-        for (var b = 0; b < 2; b++)
+        // Noise blips, at 6 or 7, anywhere.
+        for (var b = 0; b < BlipsPerSweep; b++)
         {
             bins[_random.Next(BinCount)] = (byte)(6 + _random.Next(2));
         }
 
         foreach (var station in Stations)
         {
-            if (_random.NextDouble() >= station.UpShare)
+            if (_random.NextDouble() >= station.UpShare || !Sending(station))
             {
                 continue;
             }
@@ -207,4 +251,7 @@ internal sealed class SpanWorld : IDisposable
 /// <param name="Hz">Where it is.</param>
 /// <param name="Profile">Its height on the scope's byte scale at its centre bin, then one bin out, two bins out, and so on.</param>
 /// <param name="UpShare">The share of sweeps it is keyed down in.</param>
-internal sealed record ScopeStation(string Name, long Hz, byte[] Profile, double UpShare);
+/// <param name="Sends">What it sends, where the ear should hear it; null for the scope alone.</param>
+/// <param name="PauseSeconds">How long it pauses between its overs.</param>
+/// <param name="Amplitude">How loud it sends, against band noise of 0.04.</param>
+internal sealed record ScopeStation(string Name, long Hz, byte[] Profile, double UpShare, string? Sends = null, double PauseSeconds = 0, double Amplitude = 0.3);

@@ -107,7 +107,8 @@ public sealed class WhyClearStationsAreSkippedTests : IDisposable
         var all = sweeps.SelectMany(s => s).Select(b => (double)b).OrderBy(b => b).ToArray();
         var floor = all[all.Length / 2];
         var line = floor > 0 ? floor + 6 : floor + 1;
-        var least = Math.Max(ScopeWatch.LeastRepeats, (int)Math.Ceiling(ScopeWatch.RepeatShare * sweeps.Count));
+        // The rule at the task 1 commit: three sweeps at least, and a quarter of those watched.
+        var least = Math.Max(ScopeWatch.LeastRepeats, (int)Math.Ceiling(0.25 * sweeps.Count));
         var kept = 0;
         var binHz = (high - low) / (double)count;
 

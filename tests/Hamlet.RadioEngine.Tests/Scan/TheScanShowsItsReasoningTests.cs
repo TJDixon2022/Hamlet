@@ -40,7 +40,7 @@ public sealed class TheScanShowsItsReasoningTests : IDisposable
     {
         using var world = await SpanWorld.Ready(WhyClearStationsAreSkippedTests.Home, WhyClearStationsAreSkippedTests.ThreeClear);
         var lines = new List<string>();
-        var (_, summary) = await world.Run(_folder, new CwScanSettings(TimeSpan.FromSeconds(30), TimeSpan.FromSeconds(90), TimeSpan.FromSeconds(30)), s => s.Said += lines.Add);
+        var (_, summary) = await world.Run(_folder, new CwScanSettings(TimeSpan.FromSeconds(70), TimeSpan.FromSeconds(90), TimeSpan.FromSeconds(30)), s => s.Said += lines.Add);
         var distinct = lines.Distinct().ToList();
 
         _output.WriteLine(string.Join(Environment.NewLine, distinct.Take(40)));

@@ -310,6 +310,7 @@ A change is taken only where no hard limit is worse than at HEAD: the first reco
 | 544 task 1 | 2026-10-05 | 208 of 244 | 15 | 2 | **191** | 1, as at HEAD | 55 of 77, 3 added | a sender keeps the dot and dash line it last showed while a few marks hide the jump between its two kinds, the line redrawn from the marks now; a piece of a mark left out of the line and joined to its neighbour was measured at 188 (and 190 without the join) and not shipped |
 | 544 task 2 | 2026-10-05 | 208 of 244 | 15 | 2 | **191** | 1, as at HEAD | 55 of 77, 3 added | the scan centres the tone at the CW pitch before the stay, measuring again after each move and learning which way the tone moves; nothing that reads was changed |
 | 544 task 3 | 2026-10-05 | 208 of 244 | 15 | 2 | **191** | 1, as at HEAD | 55 of 77, 3 added | the scan calls a tone that never keys a carrier after 8 s (key-up under 0.15 of its 20 ms frames), leaves it, and passes by any peak within 400 Hz of its true frequency; nothing that reads was changed, and both noise limits print nothing |
+| 544 task 4 | 2026-10-05 | 208 of 244 | 15 | 2 | **191** | 1, as at HEAD | 55 of 77, 3 added | a survey lists a place only where its tops at some height outnumber what noise that high gives by chance (under one false station in a hundred surveys, three sweeps at least); a tone is judged over all its pieces and over their strongest quarter; a peak drawn at 20 or higher earns a 6 s listen before it is empty; nothing that reads was changed |
 
 ## Scans (work instruction 544, HM-DEC-248)
 

@@ -77,9 +77,11 @@ public sealed class TheCatchScanTests : IDisposable
 
         var empty = Read<CwCatch>(scan, summary.Catches[1].Json);
 
-        // Steady noise at the scope's peak, no tone at it nor either side: empty, left after the three tries (work instruction 542).
+        // Steady noise at the scope's peak, no tone at it nor either side: empty, left after the three tries and the longer
+        // listen a high peak earns (work instructions 542 and 544).
         Assert.Equal(CatchLeft.NothingHeard, empty.Left);
-        Assert.InRange((empty.EndUtc - empty.StartUtc).TotalSeconds, 0, 8);
+        // The noise peak is drawn at 90, a high peak, so it earns the longer listen before it is called empty (work instruction 544).
+        Assert.InRange((empty.EndUtc - empty.StartUtc).TotalSeconds, 0, 8 + CwCatchScan.LongListen.TotalSeconds + 0.5);
 
         // **A CARRIER IS A CARRIER** (work instruction 544, task 3): the steady carrier is not keyed, so it is left once the
         // stay has heard eight seconds, its true frequency is remembered, and it is never visited again, from either side.
@@ -108,7 +110,8 @@ public sealed class TheCatchScanTests : IDisposable
     /// scope draws the call's peak off the call, by a bin's error at a wide span or more; the scan lands there, hears the call
     /// (at the peak, or half a filter either side), and moves the dial until the tone sits at the 600 Hz pitch, within 15 Hz,
     /// measured again after each move. On a radio whose tone rises with the dial, as the owner's does in CW, and on one
-    /// whose tone falls, which the scan learns from the audio. The empty stop beside it costs the three tries, not 30 s.
+    /// whose tone falls, which the scan learns from the audio. The empty stop beside it costs the three tries and the longer
+    /// listen its high peak earns, not 30 s.
     /// </remarks>
     [Theory]
     [InlineData(260, 1)]
@@ -138,7 +141,8 @@ public sealed class TheCatchScanTests : IDisposable
         Assert.InRange(first.ToneAfterHz!.Value, 585, 615);
         Assert.Equal(CatchKind.Positive, first.Kind);
         Assert.Equal(CatchKind.Empty, empty.Kind);
-        Assert.InRange((empty.EndUtc - empty.StartUtc).TotalSeconds, 0, 8);
+        // The noise peak is drawn at 90, a high peak, so it earns the longer listen before it is called empty (work instruction 544).
+        Assert.InRange((empty.EndUtc - empty.StartUtc).TotalSeconds, 0, 8 + CwCatchScan.LongListen.TotalSeconds + 0.5);
     }
 
     /// <remarks>Test 2: a positive that keeps sending is left when the positive stay, 90 s, runs out.</remarks>

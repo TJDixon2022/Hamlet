@@ -142,8 +142,9 @@ public sealed class CwCatchEar : IDisposable
 
     /// <summary>
     /// How far the strongest place in the passband must stand over the passband's median to be a tone: ten decibels. The
-    /// author's: the power is averaged over quarter-second pieces, so a bin of band noise wanders about its mean by a
-    /// decibel or two, and ten clears anything noise does while a keyed station at the edge of being heard stands well over it.
+    /// author's: the power is taken over quarter-second pieces, and over their strongest quarter (work instruction 544), at every pitch alike, so
+    /// a bin of band noise wanders about the median by a few decibels, and ten clears anything noise does while a keyed
+    /// station at the edge of being heard stands well over it.
     /// </summary>
     public const double ToneOverDb = 10;
 
@@ -234,7 +235,7 @@ public sealed class CwCatchEar : IDisposable
     /// <summary>
     /// **THE STRONGEST NARROW TONE IN THE PASSBAND** (work instruction 542, task 3, HM-DEC-246): the last
     /// <paramref name="seconds"/> of the catch's audio, its power at every <see cref="ToneStepHz"/> from
-    /// <paramref name="lowHz"/> to <paramref name="highHz"/> averaged over quarter-second pieces, and the strongest place, where
+    /// <paramref name="lowHz"/> to <paramref name="highHz"/> over all its quarter-second pieces and over the strongest quarter of them (work instruction 544), the plainer taken, and the strongest place, where
     /// it stands <see cref="ToneOverDb"/> over the median and is no wider than <see cref="ToneWidestHz"/>. Null where none does.
     /// </summary>
     /// <param name="seconds">How much of the audio to read.</param>
@@ -270,11 +271,13 @@ public sealed class CwCatchEar : IDisposable
             pitches.Add(f);
         }
 
-        var power = new double[pitches.Count];
+        var mean = new double[pitches.Count];
+        var strongest = new double[pitches.Count];
 
         for (var p = 0; p < pitches.Count; p++)
         {
             var coefficient = 2 * Math.Cos(2 * Math.PI * pitches[p] / rate);
+            var pieces = new List<double>();
 
             for (var start = 0; start + piece <= audio.Length; start += piece)
             {
@@ -288,10 +291,25 @@ public sealed class CwCatchEar : IDisposable
                     s1 = s0;
                 }
 
-                power[p] += (s1 * s1) + (s2 * s2) - (coefficient * s1 * s2);
+                pieces.Add((s1 * s1) + (s2 * s2) - (coefficient * s1 * s2));
             }
+
+            mean[p] = pieces.Average();
+            strongest[p] = pieces.OrderByDescending(x => x).Take(Math.Max(1, pieces.Count / 4)).Average();
         }
 
+        // **JUDGED TWO WAYS, THE PLAINER TAKEN** (work instruction 544, task 4, HM-DEC-248): over every piece, where a steady tone
+        // is plainest, and over the strongest quarter of the pieces, where a station heard keying for half a second of its
+        // check and pausing the rest is as plain as one keying the whole time. Every pitch is judged the same way each time,
+        // so the median a tone must stand over is noise's own by the same measure.
+        var heard = new[] { Judge(mean, pitches), Judge(strongest, pitches) }.Where(t => t is not null).ToList();
+
+        return heard.Count == 0 ? null : heard.MaxBy(t => t!.Value.OverDb);
+    }
+
+    // The strongest place in the passband, where it stands ToneOverDb over the median and is no wider than ToneWidestHz.
+    private static (double Hz, double OverDb)? Judge(double[] power, List<double> pitches)
+    {
         var db = power.Select(x => 10 * Math.Log10(x + 1e-20)).ToArray();
         var median = db.OrderBy(d => d).ElementAt(db.Length / 2);
         var top = Array.IndexOf(db, db.Max());
