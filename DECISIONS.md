@@ -4,6 +4,47 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-251
+date: 2026-10-06
+refs: work instruction 547, HM-DEC-250, R88, docs/cw-scoreboard.md, src/Hamlet.RadioEngine/Cw/CwSenderGate.cs, src/Hamlet.RadioEngine/Cw/CwRules.cs, tests/Hamlet.RadioEngine.Tests/Cw/AStationsShadowIsNotAStationTests.cs, tests/Hamlet.RadioEngine.Tests/Cw/AFarnsworthBulletinReadsAsWordsTests.cs, tests/Hamlet.RadioEngine.Tests/Scan/ADipInsideOneToneTests.cs, tests/Hamlet.RadioEngine.Tests/Scan/TheWeakFastStationTests.cs
+---
+
+**A station's shadow is not a station; Farnsworth ships.** Ordered by the owner in work instruction 547, 2026-10-06. **The owner, on W1AW on the air: *"We are regressing."***
+
+**R88 is lifted for W1AW's `cw-2026-10-06-212015`**, as well as the owner's twelve recordings and the three scan catches in the tree, and no other.
+
+**Task 1: the shadow was not in the recording, so no shadow rule was built.**
+- The hypothesis came from the live sheet. It held senders at 650 Hz (shape 0.71, 71 marks) and 550 Hz (shape 0.59, 37 marks) beside W1AW at 600, which might be keying sidebands standing as stations.
+- The recording disproves that for what it holds:
+  - read cold, or heard six times end to end, the gate holds one sender at 600 Hz, never hands over, and prints nothing at another pitch;
+  - its candidates at 550 and 650 Hz number 4 and 7 in 30 s, sit at the noise level of every other pitch, and none begins and ends in step with a W1AW mark;
+  - a strong call keyed hard, with no shaping, holds one sender and reads whole.
+- The senders on the live sheet were built in the minutes before the 30 s the recording holds. No change in the tree was named as letting skirts stand, because none was shown.
+- The shadow rule is not built. **Its figure, a few milliseconds of agreement in time, was never needed.**
+- The recording joins the scoreboard as its thirteenth stretch, high confidence. The total is 227 with it (248 of 288 right, 19 wrong, 2 invented, 65 of 87 spaces, 3 added) and 191 without it, as before. It reads 40 of 44 and 10 of 10 spaces; its 4 wrong are the cold-start opening, `E NE II AEED` for `PE II AND`.
+
+**Task 2: the Farnsworth rule ships, at the owner's word.** *"Ship it."*
+- Three gaps in a row, each past the sender's word line by √(7/3), are a new spacing, and its gaps are taken from the first of them.
+- The score holds at 227 and spaces right at 65 of 87, and spaces added falls from 3 to 2.
+- W1AW's slow section after ordinary sending reads `XT IS FROM OCTOBER 2024 QST PAGE 50 5 WPM TEXT FOLLOWS`, where it read letter by letter.
+
+**Task 3: the six points are explained, not CW's own, and not shipped.**
+- Keeping the gap that ends where a sender's newer-speed marks begin reads 233, but 64 of 87 spaces. The whole gain is on 221745 at 502 Hz.
+- There that gap is a 685 ms pause, which becomes the sender's word cluster. Its real 390 ms word gaps become letter gaps, the word line rises from 298 to 456 ms and the letter line from 87 to 99-113 ms.
+- So the `0` of `40M` holds together, but the real space before `4` is lost. A pause redrawing the clusters is not the sender's spacing.
+
+**Task 4: the depths separate in part, and the join did not ship.**
+- On the sender's own window, none of 966 real gaps inside a letter falls less than 0.65 of its sender's contrast toward key-up; the median is 1.51.
+- Of the nine dips, five fall less than 0.6, two fall to key-up, and two fall 0.66 and 0.83.
+- Joining across a dip under 0.6 scored 226, with one invented `E`, and joined none of the nine. Most likely the joined stretch then fails the mark's shape with the dip in its top.
+
+**Task 5: a weak dah's top does break the flat-top tolerance; the fix did not ship.**
+- At 25 WPM and 10 dB, 3 of 66 dahs hold their tops inside 1.5 dB, against 65 of 66 at 20 dB.
+- A tolerance taking the noise's extreme over a run's looks read 230, but the first recording read `FEN` for `FER`, a hard limit, and the 10 dB call still kept only 5 dahs.
+
+**Shipped:** the Farnsworth rule and W1AW's stretch on the board. Nothing keys or transmits, and nothing is written to the radio.
+
+---
 id: HM-DEC-250
 date: 2026-10-06
 refs: work instruction 546, HM-DEC-245, HM-DEC-248, HM-DEC-249, R88, docs/cw-scoreboard.md, tests/Hamlet.RadioEngine.Tests/Scan/TheBrokenDahsTests.cs, tests/Hamlet.RadioEngine.Tests/Cw/AFarnsworthBulletinReadsAsWordsTests.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheSpacesThatSlippedTests.cs, tests/Hamlet.RadioEngine.Tests/Scan/TheWeakFastStationTests.cs

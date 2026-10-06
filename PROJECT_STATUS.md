@@ -2,12 +2,12 @@ PROTOCOL: 2
 PROJECT: Hamlet
 STATE: COMPLETED
 TASK: closing
-WORK_INSTRUCTION: 546 - broken dahs, Farnsworth, spaces, and the weak fast station (run by hand)
+WORK_INSTRUCTION: 547 - a station's shadow is not a station; Farnsworth ships (run by hand)
 BALL: tim
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-10-06T11:14:17-04:00
-NOTE: Unit 546 done - nothing that reads shipped; 191 and 55 of 77 held; Farnsworth fix waits on the owner
+UPDATED: 2026-10-06T18:02:50-04:00
+NOTE: Unit 547 done - no shadows in the W1AW recording; Farnsworth ships; board 227 with W1AW, 191 without
 
 ---
 
