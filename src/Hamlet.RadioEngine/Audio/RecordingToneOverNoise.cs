@@ -16,7 +16,7 @@ namespace Hamlet.RadioEngine.Audio;
 /// This measures the same thing the same way over the samples in one file: every
 /// five milliseconds, a forty millisecond Hann window, the power at the pitch against
 /// the median of the 25 Hz grid across the tracker's range, leaving out every grid
-/// pitch within <see cref="CwCompetitor.SeparationHz"/> of the tone, counted only
+/// pitch within <see cref="SeparationHz"/> of the tone, counted only
 /// where the middle of five readings in a row agrees, and the highest of those.</para>
 /// <para>**THE NOISE BESIDE THE TONE IS BESIDE IT IN FREQUENCY, AND THAT HAS A
 /// LIMIT WORTH KNOWING.** Measured on `cw-2026-08-20-014854`, the grid below 550 Hz
@@ -37,6 +37,11 @@ public static class RecordingToneOverNoise
 
     /// <summary>The noise grid's spacing, in hertz.</summary>
     public const double GridHz = 25;
+
+    /// <summary>How far a grid pitch has to sit from the tone to count as the noise beside it, in hertz.</summary>
+    /// <remarks>The competitor's hundred and twenty-five, kept here when the competitor came out (work instruction 545):
+    /// closer than this the grid hears the station's own image in a neighboring bin.</remarks>
+    public const double SeparationHz = 125;
 
     /// <summary>The highest the pitch stood above the noise beside it, in dB.</summary>
     /// <param name="audio">The recording, and nothing else.</param>
@@ -76,7 +81,7 @@ public static class RecordingToneOverNoise
 
         for (var hz = KeyingEnvelope.LowestToneHz; hz <= KeyingEnvelope.HighestToneHz; hz += GridHz)
         {
-            if (Math.Abs(hz - toneHz) >= CwCompetitor.SeparationHz)
+            if (Math.Abs(hz - toneHz) >= SeparationHz)
             {
                 neighbors.Add(2 * Math.Cos(2 * Math.PI * hz / rate));
             }

@@ -81,7 +81,9 @@ public sealed class AReplayedCaptureArrivesWholeTests
 
             while (!Volatile.Read(ref stop))
             {
-                if (meterWindow.Tail(tap, CwKeyingThresholds.Window) is not null)
+                // The keying meter's six-second read came out of the app with the meter (work instruction 545); it is kept
+                // here as load, so the tap is asked at least as hard as before.
+                if (meterWindow.Tail(tap, TimeSpan.FromSeconds(6)) is not null)
                 {
                     Interlocked.Increment(ref readsMade);
                 }
