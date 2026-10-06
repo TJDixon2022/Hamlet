@@ -20,7 +20,7 @@ namespace Hamlet.RadioEngine.Cw;
 /// straight out. Until now the only caller in the tree was nothing at all: the
 /// verdict says which bin won and the runners-up were dropped on the floor.</para>
 /// <para>**IT SAYS WHAT WAS MEASURED AND NOTHING ABOUT WHOSE IT IS** (§0.0), in
-/// the same way <see cref="ToneInterference"/> does. Hamlet cannot tell a second
+/// the same way the tracker's interference reading did, before work instruction 545 retired it. Hamlet cannot tell a second
 /// operator from the same operator's own image in another bin, and it does not
 /// guess: what is useful is the offset and the strength, which are facts, and
 /// the reason they matter, which is that anything keying inside the filter is

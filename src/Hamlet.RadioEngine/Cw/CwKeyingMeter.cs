@@ -156,7 +156,7 @@ public static class CwKeyingThresholds
     /// hold no keying at any pitch swing 14.1 and 17.7. Twenty sits in the gap on
     /// both sets of evidence.</para>
     /// <para>**NOT CONSULTED FOR THE TRACKER'S KEYING FLAG** (work instruction 477,
-    /// HM-DEC-186). <see cref="CwToneTracker.HasKeying"/> is true while this meter's
+    /// HM-DEC-186). The tracker's keying flag, retired with it by work instruction 545, was true while this meter's
     /// verdict is keying, at any swing, because on 14.0321 the station swung 18 and the
     /// decoder was mixed at its pitch and told nobody was there. That flag never read this
     /// constant - it rested on the survey's admission - and it is written here so nobody

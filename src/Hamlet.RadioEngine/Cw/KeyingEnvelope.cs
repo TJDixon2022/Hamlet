@@ -126,13 +126,15 @@ public static class KeyingEnvelope
     /// the sweep answered 1000 Hz on `cw-2026-08-23-001520`, three hundred hertz
     /// above anything the decoder will ever track, which is an answer no reader
     /// can act on. At 900 it answers 525.</para>
+    /// <para>**THE TRACKER CAME OUT** (work instruction 545), and the range is now written here once: 300 to 900 hertz,
+    /// the radio's own CW pitch range (§4, p. 4-14).</para>
     /// </remarks>
-    public const double LowestToneHz = CwToneTracker.MinimumToneHz;
+    public const double LowestToneHz = 300;
 
     /// <summary>The highest pitch a sweep looks at, in hertz.</summary>
     /// <remarks>See <see cref="LowestToneHz"/>: one range, taken from the
-    /// tracker's own.</remarks>
-    public const double HighestToneHz = CwToneTracker.MaximumToneHz;
+    /// radio's own CW pitch range.</remarks>
+    public const double HighestToneHz = 900;
 
     /// <summary>How far apart the candidates are, in hertz.</summary>
     public const double ToneStepHz = 25;

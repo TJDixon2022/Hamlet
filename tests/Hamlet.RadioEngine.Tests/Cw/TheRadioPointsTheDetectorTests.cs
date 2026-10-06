@@ -75,34 +75,6 @@ public sealed class TheRadioPointsTheDetectorTests
         Assert.Equal(0, pointer.FramesLast4s(start + TimeSpan.FromSeconds(5)));
     }
 
-    /// <remarks>
-    /// Proves the tracker's two candidates: the meter saying keying at 600 and the scope pointing
-    /// at keying at 850, the tracker mixes at 850 from the next hop; the scope letting go hands
-    /// it back to the meter's 600.
-    /// </remarks>
-    [Fact]
-    public void WhenTheScopeAndTheMeterBothNameAPitchTheScopeWins()
-    {
-        const int trackerRate = 48_000;
-        var tracker = new CwToneTracker(trackerRate, 500);
-        var noise = new Noise(483);
-
-        FeedTracker(tracker, noise, trackerRate / 2);
-        tracker.FollowMeter(new KeyingReading(KeyingVerdict.Keying, 600, 48, 24, 30, 0.27, false, 48));
-        tracker.FollowScope(850);
-        FeedTracker(tracker, noise, tracker.HopSamples);
-        var both = tracker.ToneHz;
-
-        tracker.FollowScope(null);
-        FeedTracker(tracker, noise, tracker.HopSamples);
-        var meterOnly = tracker.ToneHz;
-
-        _output.WriteLine($"meter 600 and scope 850: {both:0} Hz, keying {tracker.HasKeying}; scope gone: {meterOnly:0} Hz");
-
-        Assert.Equal(850, both, 0);
-        Assert.Equal(600, meterOnly, 0);
-    }
-
     // A flat frame at a low level with one tall bin, 475 points across five kilohertz.
     private static byte[] FrameWithPeakAt(long hz)
     {
@@ -113,45 +85,5 @@ public sealed class TheRadioPointsTheDetectorTests
         bins[index] = 200;
 
         return bins;
-    }
-
-    private static void Feed(CwEnvelopeDetector detector, Noise noise, int samples)
-    {
-        var chunk = new float[samples];
-
-        for (var i = 0; i < samples; i++)
-        {
-            chunk[i] = noise.Next();
-        }
-
-        detector.Process(chunk);
-    }
-
-    private static void FeedTracker(CwToneTracker tracker, Noise noise, int samples)
-    {
-        var chunk = new float[samples];
-
-        for (var i = 0; i < samples; i++)
-        {
-            chunk[i] = noise.Next();
-        }
-
-        tracker.Process(chunk, 0, _ => { });
-    }
-
-    /// <summary>Seeded Gaussian noise, Box-Muller.</summary>
-    private sealed class Noise
-    {
-        private readonly Random _random;
-
-        public Noise(int seed) => _random = new Random(seed);
-
-        public float Next()
-        {
-            var u1 = 1.0 - _random.NextDouble();
-            var u2 = _random.NextDouble();
-
-            return (float)(0.03 * Math.Sqrt(-2 * Math.Log(u1)) * Math.Cos(2 * Math.PI * u2));
-        }
     }
 }

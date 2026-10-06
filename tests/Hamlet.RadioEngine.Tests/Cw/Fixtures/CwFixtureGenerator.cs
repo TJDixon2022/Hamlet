@@ -118,7 +118,7 @@ public static class CwFixtureGenerator
     /// which is worth recording rather than quietly correcting. The figure comes
     /// from `CW_RECEIVE_BRIEF.md` §4, written before the guard had a lower bound.
     /// The guard now treats anything at or below
-    /// <see cref="CwTransmitGuard.SilenceBelowDbfs"/>, which is minus ninety, as a
+    /// the transmit guard's silence level (retired by work instruction 545), which is minus ninety, as a
     /// file with nothing in it rather than as a muted receiver — precisely so the
     /// noiseless fixtures stop being read as one long transmission. A preamble
     /// generated at minus ninety therefore sits exactly on that boundary and

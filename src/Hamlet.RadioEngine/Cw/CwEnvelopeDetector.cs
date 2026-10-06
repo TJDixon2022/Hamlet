@@ -160,12 +160,12 @@ public sealed class CwEnvelopeDetector
 
     /// <summary>The shortest run that can be a bar, in ms: the shortest dit anyone sends.</summary>
     /// <remarks>
-    /// **THE SURVEY'S OWN FLOOR** (<see cref="CwToneSurvey.ShortestDitMs"/>): twenty-five
-    /// milliseconds is forty-eight words a minute, the fastest the radio's own keyer goes. A
+    /// **THE SURVEY'S OWN FLOOR**, moved here when the survey came out (work instruction 545): twenty-five
+    /// milliseconds is forty-eight words a minute, the fastest the radio's own keyer goes (`14 0C`, p. 19-3). A
     /// run's length is the audio its windows cover: the first window's start to the last one's
     /// end.
     /// </remarks>
-    public const double ShortestBarMs = CwToneSurvey.ShortestDitMs;
+    public const double ShortestBarMs = 25;
 
     /// <summary>How far apart the bins are, in hertz: the keying meter's step.</summary>
     public const double BinSpacingHz = KeyingEnvelope.ToneStepHz;

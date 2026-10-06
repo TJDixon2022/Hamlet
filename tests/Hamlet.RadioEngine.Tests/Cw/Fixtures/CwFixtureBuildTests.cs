@@ -18,6 +18,12 @@ namespace Hamlet.RadioEngine.Tests.Cw.Fixtures;
 /// </remarks>
 public sealed class CwFixtureBuildTests
 {
+    /// <summary>The level the retired transmit guard took for a muted receiver, in dBFS (work instruction 545).</summary>
+    private const double MuteBelowDbfs = -60;
+
+    /// <summary>The level the retired transmit guard took for a file with nothing in it, in dBFS.</summary>
+    private const double SilenceBelowDbfs = -90;
+
     private readonly ITestOutputHelper _output;
 
     /// <summary>Creates the tests.</summary>
@@ -76,7 +82,7 @@ public sealed class CwFixtureBuildTests
 
         // Above the floor the guard treats as a file with nothing in it, and at
         // or below what a muted receiver actually delivers.
-        Assert.InRange(quietest, CwTransmitGuard.SilenceBelowDbfs, -10);
+        Assert.InRange(quietest, SilenceBelowDbfs, -10);
     }
 
     /// <remarks>
@@ -183,12 +189,12 @@ public sealed class CwFixtureBuildTests
             var db = 20 * Math.Log10(Math.Sqrt(sum / window) + 1e-12);
             frames++;
 
-            if (db <= CwTransmitGuard.MuteBelowDbfs)
+            if (db <= MuteBelowDbfs)
             {
                 muted++;
 
                 Assert.True(
-                    db > CwTransmitGuard.SilenceBelowDbfs,
+                    db > SilenceBelowDbfs,
                     $"a mute measured {db:0.0} dBFS, which is a file with nothing "
                     + "in it rather than a muted receiver");
             }

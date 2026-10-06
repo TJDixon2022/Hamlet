@@ -112,8 +112,9 @@ public sealed class TheKeyingWitnessSaysNothingImpossibleTests
     [Fact]
     public void TheSweepLooksExactlyWhereTheDecoderCan()
     {
-        Assert.Equal(CwToneTracker.MinimumToneHz, KeyingEnvelope.LowestToneHz);
-        Assert.Equal(CwToneTracker.MaximumToneHz, KeyingEnvelope.HighestToneHz);
+        // The tracker came out with work instruction 545; the range is the radio's own CW pitch range (§4, p. 4-14).
+        Assert.Equal(300, KeyingEnvelope.LowestToneHz);
+        Assert.Equal(900, KeyingEnvelope.HighestToneHz);
     }
 
     /// <remarks>

@@ -74,7 +74,7 @@ public static class RecordingToneOverNoise
 
         var neighbors = new List<double>();
 
-        for (var hz = CwToneTracker.MinimumToneHz; hz <= CwToneTracker.MaximumToneHz; hz += GridHz)
+        for (var hz = KeyingEnvelope.LowestToneHz; hz <= KeyingEnvelope.HighestToneHz; hz += GridHz)
         {
             if (Math.Abs(hz - toneHz) >= CwCompetitor.SeparationHz)
             {
