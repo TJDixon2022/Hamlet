@@ -1,158 +1,168 @@
 ## 1. What Claude did
 
-- **Session:** development computer, Claude Code. The prompt claimed `PROJECT: Hamlet`.
-- **Gate:** checked in `C:\Source\HamLet`.
-  - Present: `SHACK_FACTS.md`, `docs\cw-scoreboard.md`, `tests\fixtures\cw\captured\scans\catch-153810-7033367.wav`.
-  - Absent: `CoreHMI.sln`, `MURC.sln`.
-  - An earlier paste of this order was refused at the gate, before the catches were in the tree.
-- **Nothing in this report is evidence about the radio.**
-- **Work instruction 544, run by hand on `main`:**
-  - SESSION.lock was taken and released.
-  - Nothing was written to RUN_LEDGER.md, nothing under `tools\arbiter\` was touched, and nothing in PHASE_PLAN.md was ticked.
-  - Nothing keys or transmits; listen-only is unchanged. The only radio write is the frequency.
-- **R88:** lifted for the owner's twelve recordings and the scan catches the instruction names.
-  - Three catches are in the tree.
-  - The six that are not (`144059`, `041036`, `035414`, `040053`, `143718`, `144637`) are **waiting**, not failed; synthetic stand-ins were used where the order allows.
-- **Version:** 1.13.228 → 1.13.229. **Ruling:** HM-DEC-248, *What three real scans found*.
-- **The scoreboard read 191 after every task** (208 right, 15 wrong, 2 invented).
-  - Hard limits are as at HEAD: the carrier at seed 5195 and one letter in a silence stay red; noise prints nothing; the first recording reads.
-  - Spaces added went from 2 to 3 with task 1. Spaces are not in the score.
+Development computer, project gate `PROJECT: Hamlet` checked against `PROJECT_CARD.md`, `Hamlet.sln` and the `Hamlet.*` namespaces. Nothing here is evidence about the radio. Branch `main`. Run by hand: `SESSION.lock` taken at 22:01:47 and released at the end, nothing written to `RUN_LEDGER.md`, nothing under `tools\arbiter\` touched, no box ticked in `PHASE_PLAN.md`. HEAD `1b18cc89` was tagged `before-old-decoder-removal` and pushed before any change. Version 1.13.229 to 1.13.230. Ruling HM-DEC-249, the number the order gave.
 
-**Task 1: why the over falls apart** (commit `e13ac5a9`).
-- **What was traced:**
-  - the main catch read through the app's chain at the scan's passband (pitch 600, filter 500);
-  - beside it, my offline read: mixed at the station's 860 Hz, a 40 Hz low-pass run forward and back, one level cut, and letters and words cut from its own three gap clusters;
-  - in ten-second windows: marks missed or added, dit/dah flips, letter cuts, and the gate's dit, split, character and word lines and level reference.
-- **What holds steady:** the chain hears the marks (394 against 411), cuts letters where the offline read does, and keeps its level reference within about a decibel.
-- **What goes wrong: dot against dash, two ways, one root.**
-  - **Broken dahs.** Nine dahs the offline read hears whole (about 150 to 165 ms) come out of the detector as two short marks about 20 ms apart. Each is read as two dits.
-  - **The line collapses.** At 13.9, 34.7, 36.5, 43.8, 45.5, 50.7, 65.5 to 67.3 and 80.6 s the gate showed "dit none, dah none": among its last forty marks no two neighbouring lengths differed by twice, because the broken pieces (85 and 107 ms) filled the jump. The gate then took the dit from the gaps inside letters, 36 ms on this heavy fist where its dits are 65. The line fell to 65–69 ms and fourteen letters had dits read as dahs.
-- **Fixed:** the sender keeps the line it last showed while a few marks hide the jump, redrawn from the marks now (rule switch `a sender keeps its line`).
-  - The plain version kept a stale line, and the straight key's second `N0CALL` read `N0FALLK`. Redrawing the line from the marks now restored it.
-  - The seven CW reds that remain are the same seven red at HEAD, checked in a worktree.
-- **Not shipped:** treating a piece of a mark as part of its neighbour.
-  - With the join it measured 188; without the join, 190.
-  - It turned `NETAGIT` into `NETAGTT` on the owner's fists. The broken dahs remain.
-- **The `scans` table:** both station catches, scored against my offline reads, are in `docs\cw-scoreboard.md`. They are **pending**: reported, never totalled.
+**Task 1: every caller reads the shape side** (`4b1aba71`).
+- Every caller of the old decoder in the app and the engine was found and moved onto the shape side, or retired with its reason. The table is in section 3.
+- `CwDecodeReport` now carries the shape side's own figures: the senders held, the letters resolved, whether a sender is printing, the speed and its proof.
+- The story line, the competing note and the speed read those figures.
+- The app's display tests that pinned old figures were re-pinned on `CwChain`, or removed where they tested only the old meter or tracker.
+- Scoreboard and scans table identical to HEAD.
 
-**Task 2: the tone sits at the pitch before the stay** (commit `507dde3d`).
-- **Found in the catch JSON:**
-  - At the scope's peak neither station gave a tone. The peak was 380 and 315 Hz from the station, outside the filter.
-  - Half a filter to one side the tone was heard, and the retune went the wrong way: +130 Hz took 730 Hz to 860, and −65 Hz took 535 to 470.
-  - On the owner's radio in CW the tone rises with the dial; landing assumed it falls.
-- **Fixed:** after landing the scan moves the dial, measures the tone again, and repeats, up to three moves, until it is within 10 Hz of the pitch.
-  - Where a move takes the tone further away or out of the filter, it turns round and remembers the direction for the scan.
-  - It starts from CW rising (CW-R the other way).
-  - The catch JSON gains `toneAfterHz` and `toneFollowsDial`.
+**Task 2: the old code is removed**, one group at a time, building and running the scoreboard after each.
+- **`CwDecoder` became the chain and nothing else** (`c91eb6b7`). It keeps the tap, the suspension while the radio transmits and the digital-mode skip. It pulls the detector's marks into the sender gate and the lookup table. `CwChain` lost its pitch argument.
+- **Groups 1 to 5:**
+  - group 1 is `493ccb02`;
+  - group 2 is `7e5a70d6`;
+  - group 3 is `5d213bc2`;
+  - group 4 is `3ab273e0`;
+  - group 5 is `f72d4c05`.
+- No removal changed a reading, so nothing was put back.
+- **Moved before each removal:**
+  - the survey's 25 ms shortest dit went into `CwEnvelopeDetector.ShortestBarMs`;
+  - the 5 ms hop went into `CwCharacter.HopMilliseconds`, which the sender gate and the scope read;
+  - the 300 to 900 Hz pitch range went into `KeyingEnvelope`;
+  - the competitor's 125 Hz separation went into `RecordingToneOverNoise.SeparationHz`.
+- **Re-pinned on `CwChain`, because they assert behaviour the shape side keeps:**
+  - own sending is not decoded (now on a generated CQ);
+  - digital mode does not decode;
+  - the tap;
+  - the scan dwell;
+  - the clear;
+  - the scroll's letters and blocks;
+  - the terminal copy;
+  - prosign naming, compared trimmed because the shape side prints no leading word gap;
+  - printed stays printed;
+  - the scope draws live;
+  - the sent-text guard;
+  - the silence lock.
 
-**Task 3: a carrier is a carrier** (commit `c9e3b6a8`).
-- **The rule:** after 8 s of a stay, the share of 20 ms frames at the tone sitting 6 dB or more under the median of their own second.
-  - A keyed signal is key-up a quarter of its time or more. Under **0.15** the catch is `carrier`, left at once.
-  - Its true frequency is remembered (dial, less the tone's offset from the pitch, the way the tone moves), and any peak within **400 Hz** of it is passed by, from either side.
-- **Measured:** the two stations read 0.23 to 0.39 over every 8 s; the carrier in the tree 0.085 to 0.105.
-- **The 400 Hz:** the scope's peak sat 315 and 380 Hz from the stations it led to.
+**Task 3: what it bought.**
+- The counts are in section 3. **`CwDecoder` is now** the tap, the transmit suspension and the shape side's pull from detector to gate to lookup table: 362 lines, from 1,360.
+- `CW_REQUIREMENTS.md`: HM-REQ-093 (the pitch proof) and HM-REQ-120 to 129 (the second decoder and the arbiter) are each marked retired in one line, with their text kept.
+- `CW_SPEC.md`: the one line naming the pitch proof is marked the same way. Its other "arbiter" mentions are the work loop's arbiter, not `CwArbiter`.
 
-**Task 4: fewer empty stops, no lost stations** (commit `ee84f0b0`).
-- **The survey's repeat count:**
-  - A place is listed only where, at some height, its tops outnumber what noise that high gives by chance: under one false station in **a hundred** surveys, and **three** sweeps at least.
-  - That replaces the quarter of the sweeps. At 5.26 Hz bins with dense noise, a quarter is what noise does, and a station pausing between overs fell short of it.
-- **The tone check:** judged over all its pieces and over their strongest quarter, the plainer taken. A steady carrier stays plain, and a station keying half its check is not missed.
-- **The longer listen:** a peak the scope draws at **20** or higher (three times the noise blips' 6 and 7) gets a **6 s** listen before it is called empty. That is longer than the 4 s an operator pauses between overs.
+**Records.**
+- `PHASE_OUTCOME.md`, both copies: `## UNIT 545 - STEP 12`.
+- `PHASE_STATUS.md`, both copies: names 545.
+- `Directory.Build.props`: 1.13.230.
+- `CLAUDE.md` §1: a row above HM-DEC-248.
+- `DECISIONS.md`: HM-DEC-249, *The old decoder comes out*.
+- Nothing was recorded under §12.1.
 
-**Records:** DECISIONS.md HM-DEC-248, the CLAUDE.md §1 row, PHASE_OUTCOME and PHASE_STATUS in both copies, the scoreboard rows, and the version.
+**Build** `-warnaserror`: no warnings, no errors.
+
+**App carry-forward:** 277 of 278. The loss is `ThePsk31ConversationCardTests.NoSlotClockUnderPsk31AndFt8AndFt4StillShowIt`, a headless dispatcher test. It passes in its own class (8 of 8) and reads nothing from CW. It is the same order-dependent kind as unit 544's loss, though a different test.
 
 ## 2. What the owner should expect
 
-- **Rebuild.**
-- **Why the strong station's over fell apart:** the station sent heavy, and now and then one of its dahs came through as two short pieces. A run of those hid the difference between its dots and dashes. Hamlet then guessed its dot length from the spaces, which on this heavy fist are about half a dot, and from then on read ordinary dots as dashes.
-- **Whether it reads now:** better, not whole.
-  - It now keeps the dot/dash line it had already learned. The main catch went from 103 to 109 letters right of 152, and `THURSDAY` reads `TIEURSDAY` where it read `TIEUGODAY`.
-  - The dahs that arrive in two pieces still read as two dots.
-- **The two stations, before and after** (through the app, as the scan hears them):
-  - 7.0334, 860 Hz, before: `… SACK PAIN SOTHIW TIEUGODAY HAVE RM OTINE6 … RMYT MSEE WHATITA …`
-  - 7.0334, 860 Hz, after: `… SACK PAIN SOTHIS TIEURSDAY HAVE RM UTINE6 … RAYT MSEE WHATITA …`
-  - 7.0511, 470 Hz: unchanged, `N E ANEI BTW■ I E GG IRIATE YOUR NICE KEYI N`.
-- **Landing:** the scan now puts each station's tone at your CW pitch, and checks again after each move. Your radio raises the tone as the dial goes up, and Hamlet had it backwards, which is why the strong station sat at 860 Hz on the edge of your filter.
-- **Carriers:** a tone that never keys is now called a carrier after 8 s, the scan moves on, and it does not stop on that carrier again from either side.
-- **Empties:** far fewer stops on noise. A station that pauses between overs is listened to for longer before the scan gives up on it, if the waterfall shows it strongly.
-- **For you to confirm by ear.** These are my offline reads of the two catches. They are pending, and neither counts toward the score until you say so.
-  - `catch-153810-7033367` (860 Hz): my read was `T HE MATRESS IS SOFT ES CATT FINDA SAFE SPOT WITH OUT PAINHEEQ IKE NEUER HTD BACK PATN SOTHIS TRURADAY HAKE ROUTTNE X EEE KK UW ESGG TOASK UOR X AAY TMSEE WUAT I TWINTED HEE<BT> XIREMETBER AT AGE`. The reference uses the shack read's words where it gives them whole: `THE MATRESS IS SOFT ES CANT FIND A SAFE SPOT WITHOUT PAIN HEE IVE NEVER HAD BACK PAIN SO THIS THURSDAY HAVE ROUTINE X EEE KK UW ESGG TO ASK FOR XRAY TO SEE WHAT I TWINTED HEE<BT> I REMEMBER AT AGE`. The middle run (`X EEE KK UW ESGG`) neither read makes sense of.
-  - `catch-154819-7050903` (470 Hz): `KS AND BTW, I AGGREIRIATE YOUR NICE KEYIE R`, probably *thanks and by the way, I appreciate your nice keying*.
+Rebuild and run as usual. **Nothing you read changes.** Every letter, space and confidence the terminal prints came from the shape side before this unit, and still does. The scoreboard reads exactly as it did: 191, with 208 of 244 letters right.
+
+- **Level meter.** It shows the input level, as before. It never showed the old decoder's figure.
+- **Story line.** It says what the shape side is doing now. *Listening* when no shape has formed. *A shape is forming* while a sender is held but not printed. *Reading a sender at about 600 hertz, keying at about 18 words a minute* while it prints. The clipping and near-silence warnings are unchanged.
+- **Speed.** The speed on screen, the speed the transmit panel offers and the speed in the record now come from the printed sender's own dit. The transmit speed is only read and offered. It never keys anything. With no sender printing, no speed is shown.
+- **Competing note.** It appears when the gate holds another sender beside the one printing.
+- **Retired:**
+  - **the keying meter's panel**, which was off unless you had turned its setting on, so nothing on your screen moves;
+  - **the keying advice**;
+  - **the pitch lock and its text**;
+  - **the "listening afresh" note**;
+  - **the retune nudge**.
+- **On the capture sheet**, the keying line now reads `retired`, and the roster's meter column is empty.
+
+**How much came out.** 154 files: 12,220 lines of source and 37,844 lines of tests. That is about two thirds of the engine's CW code. The fldigi reader, the old probabilistic decoder, the tone tracker and survey, the keying meter and the competitor are gone. All of it is reachable by the tag `before-old-decoder-removal`.
+
+**How much faster.** The full scoreboard ran in 56 s and now runs in 21 s. The scans table ran in about 45 s and now runs in 17 s. The old decoder ran on every hop and no longer does.
 
 ## 3. What you should see
 
-**Task 1, the drift trace of `catch-153810-7033367` at HEAD** (the chain against the offline read, ten-second windows):
+**The callers, as found and as they are now.**
 
-| window | offline marks | chain marks | missed | dot/dash flipped | letter cuts missed / added | dit ms | split ms | char line ms | word line ms | level ref dB |
-|---|---|---|---|---|---|---|---|---|---|---|
-| 0-10 s | 43 | 31 | 14 | 3 | 0 / 0 | 60 | 104 | 85 | 284 | -18.9 |
-| 10-20 s | 51 | 51 | 1 | 1 | 0 / 0 | 64 | 108 | 78 | 253 | -19.1 |
-| 20-30 s | 48 | 42 | 6 | 0 | 0 / 0 | 60 | 108 | 86 | 293 | -18.6 |
-| 30-40 s | 52 | 52 | 3 | 6 | 0 / 0 | 60 | 112 | 74 | 209 | -19.3 |
-| 40-50 s | 53 | 56 | 0 | 9 | 0 / 1 | 59 | 104 | 70 | 205 | -18.9 |
-| 50-60 s | 45 | 45 | 2 | 7 | 0 / 1 | 59 | 109 | 83 | 304 | -19.0 |
-| 60-70 s | 47 | 43 | 7 | 5 | 0 / 0 | 64 | 106 | 80 | 292 | -19.2 |
-| 70-80 s | 49 | 50 | 2 | 3 | 0 / 0 | 65 | 111 | 74 | 243 | -18.9 |
-| 80-90 s | 23 | 24 | 1 | 1 | 0 / 0 | 49 | 88 | 71 | 194 | -19.9 |
+| Caller | Read before | Reads now |
+|---|---|---|
+| Level meter | the decode report's level, from the tap | the tap's input level, unchanged |
+| Story line | the old decoder's states and SNR | the shape side: listening, a shape forming, reading at N Hz and N WPM |
+| Keying advice | the keying meter | **retired**: it judged the meter's verdict, which no longer exists |
+| Keying meter panel | `CwKeyingMeter` | **retired**: hidden by default (`ShowKeyingSweep` off); the setting is kept so settings files load |
+| Competing note | `CwCompetitor` from the survey | `Report.Competing`: printing and more than one sender held |
+| Speed on screen, speed proof | the old decoder's rolling WPM | the printed sender's dit, as 1.2 over the dit; proved only while printing |
+| Transmit speed (heard WPM) and speed offer | the same | the printed sender's dit; read only, keys nothing |
+| `SpeedIsReacquiring` | the old clock | a sender waiting with none printed |
+| Scope input | the old printing pitch | `RunsPrintingHz` |
+| Hearing light and verdict row | meter and survey fields | the printed pitch and senders held (`printedHz`, `sendersHeld`) |
+| Decode-quality row | SNR, elements seen, word-spacing flag | tone (while printing), senders held, letters resolved, character counts |
+| Capture sheet keying line | the meter | **retired**: reads `retired` |
+| Case roster meter column | the meter | **retired**: empty |
+| Pitch lock and its text | the tracker | **retired** |
+| Listening-afresh note (followed note) | the tracker | **retired** |
+| Retune nudge (`_decoderTunedAtHz`) | the tracker's `Retuned` | **retired**: the shape side follows each sender itself |
+| Leading edge | the stream's provisional tip | **retired**: the terminal shows settled text only |
+| Decode-queue drop counters | the stream | **retired**: written as 0 |
+| `CwPitchChoice` | the survey | **retired** |
+| Auto-call station change | the old printing pitch | the printed pitch moving by more than the gate's pitch tolerance |
+| Scan ear (`CwCatchEar`) | `CwChain(rate, pitch)` | `CwChain(rate)` |
 
-- **Every flip, by kind:**
-  - Nine pairs are one dah read as two short marks, at 3.54, 31.62, 32.65, 40.69, 49.17, 52.14, 53.63, 69.54 and 72.11 s. For example, at 31.62 s the chain has 67 and 50 ms, 23 ms apart, where the offline read has one 150 ms dah.
-  - Nine are dits read as dahs at a split of 65 to 67 ms, at 36.66, 43.84, 43.94, 45.54, 46.03, 51.33, 51.44, 65.45 and 81.08 s.
-- **At those times the gate's clusters read** `dit none, dah none, split 67 ms; gaps element 36 ms ±0.26, letter 142 ms, word 286 ms`.
-- **After the fix:** the "dit none" collapses are gone; flips per window are 3, 1, 0, 5, 7, 5, 4, 3, 1. The broken dahs remain.
+**The groups, with the scoreboard after each.** The scoreboard read the same after every step: 208 of 244, 15 wrong, 2 invented, score 191, 55 of 77 spaces with 3 added. Both hard limits stayed red as at HEAD. The scans table was identical too.
 
-**The two station catches through the app's chain:**
-
-| catch | when | marks at the tone | shape | green | right / wrong against the pending reference |
-|---|---|---|---|---|---|
-| `catch-153810-7033367`, 860 Hz | before | 394 | 0.136 | yes | 103 of 152 / 39 |
-| | after | 394 | 0.136 | yes | 109 of 152 / 33 |
-| `catch-154819-7050903`, 470 Hz | before and after | 82 | 0.532 | yes | 25 of 35 / 6 |
-
-**Landing** (`TheScanLandsByEar`, scope peak off the call, both directions of tone):
-
-| scope off | tone with the dial | tone heard | tone after | dial from the call |
+| Step | What came out | Source lines out | Test lines out | Files deleted |
 |---|---|---|---|---|
-| 260 Hz | rising | 610.4 Hz (half a filter aside) | 600.3 Hz | +2 Hz |
-| 260 Hz | falling | 589.6 Hz | 598.9 Hz | +2 Hz |
-| 150 Hz | rising | 749.6 Hz | 599.7 Hz | −2 Hz |
-| 150 Hz | falling | 450.4 Hz | 601.1 Hz | −2 Hz; the scan learned the direction |
-| 200 Hz | rising | 805.0 Hz | 600.0 Hz | 0 Hz |
+| Task 1, callers | meter display, pitch lock, `CwPitchChoice`, old sheet tests | 1,103 (142 in) | 6,819 | 33 |
+| Decoder becomes the chain | tracker, stream, second reader, vote and switch inside `CwDecoder`; old-path tests | 1,219 (157 in) | 22,739 | 61 |
+| Group 1 | `Cw\Second\*`, `CwSecondReader`, `CwSecondReading`, `FldigiConfidence`, `CwArbiter`, `CwVoteTable`, `CwSwitchTable` | 3,262 | 1,140 | 19 |
+| Group 2 | `CwProbabilisticDecoder`, `CwProbabilisticStream`, `CwUnitEstimator`, `CwCharacterProbability` | 3,396 | 5,077 | 22 |
+| Group 3 | `CwToneTracker`, `CwToneSurvey`, `CwTransmitGuard`, `CwInterferenceNotes` | 2,758 | 1,080 | 10 |
+| Group 4 | `CwKeyingMeter`, `CwCompetitor` | 459 | 675 | 6 |
+| Group 5 | `CwPitchProof`, the last old-path tests | 40 | 357 | 3 |
 
-**Carriers** (`ACarrierIsACarrierTests`, as the scan listens, judged at 8 s):
-- `catch-154614-7047190` (in the tree, called negative at shape 0.45 before): tone 670.4 Hz, key-up **0.103**. It is a carrier, ended at 8.0 s, printed nothing, no shape seen.
-- **A synthetic carrier held 78 s** (standing in for the missing `143718`), steady: key-up **0.000**, a carrier at 8.0 s, printed nothing.
-- **The same carrier fading 6 dB:** key-up **0.000**, a carrier at 8.0 s, printed nothing.
-  - Fed the whole 78 s, the decoder itself prints `ITEI D I TIEI` from this fading carrier. The scan leaves at 8 s, before it does.
-- **A keyed station at the same level:** key-up **0.298**, not a carrier.
-- **In the scan** (`ThreePeaksAreVisitedAndCaught`): the steady carrier is `carrier`, left after 8 s, remembered within 30 Hz, and never stopped at again.
+**Tests removed because they only exercised removed code** (listed by commit):
+- `4b1aba71`:
+  - EverySentenceOnTheSheet, TheKeyingCaptionNamesTheSweepItRan, TheSidecarDoesNotContradictItself, AHeldVerdictPrintsNoMeasurements, OneInstrumentDoesNotArgueWithAnother, TheDetectorFollowsTheMeter, TheFollowedSentenceReachesTheScreen;
+  - AHeldPitchDoesNotOutliveItsEvidence, ARecordingWithKeyingInItIsRead, CwDiagnosis, CwEmissionGate, CwLowDuty, CwRefusalFloorTable, CwSurveyThresholdPin, CwReceiverFixture, NothingActsOnTheAdmissionVerdict, NothingIsReadFromAudioWithNoKeying, TheCaptureOfTheTwentyThird, TheCleanSyntheticsFourWays, TheCwBaselineTable, TheDisplacementFloorFourWays, TheEightReds, TheInterferenceIsMeasuredFact, TheOperatorIsToldAboutASecondStation, ThePitchSaysWhetherItWasProved, TheProsignsFixtureAtABand, TheReworkNumbersPrinter, TheSixRedsTrace, TheStationStillKeyingTrace, TheSwingIsTheFigureThatHolds, TheTrackerSwitchTrace, WhereAcquisitionPoints.
+- `c91eb6b7`:
+  - ANudgeIsNotAMove, TheDecoderIsFedTheDetectorsPitch, ABlipDoesNotShiftEverythingAfterIt, ARefinementKeepsTheTiming, BothDecodersAreScoredAlike, BothDecodersReadTheSameSamples, CwDisplacementFloor, CwRefiningRetune, CwSpeedSilence, DoesAStrongSignalClearEightyPercent, EachDecodersConfidenceIsMeasured, EveryCharacterCarriesAConfidence, CwAdjudication, CwTwoStation, HowSeventeenThirtySevensGapsAreCalled, NoDetectionNoLetters, OneUnitThroughBothClassifiers;
+  - TheArbitrationEarnsItsPlace (Fact and Tests), TheChannelConditionsAreReadFact, TheCleanReadsStayClean, TheDecoderGetsItsEarsBack, TheEmitDecisionTable, TheGateHasItsOwnWindowNow, TheInventedLettersAreNotPrintedSure, TheMustFistsAtFifteenDecibelsFact, ThePhantomsBecomeBlocks, ThePitchCanBeHeld, ThePitchTheDetectorFoundReachesTheDecoder, TheSpeedFollowsTheSendersMarkPairs, TheSpeedSaysWhetherItWasProved, TheSpeedSearchReachesBothEnds, TheTrackedPitchIsChosenByKeying, TheTrackerStaysWithTheStationItReads, TheTwoPitchesTable, WhatBandwidthTheDecoderListensThrough;
+  - WhatEachDecoderKnowsAboutEachCharacterFact, WhatFldigisEdgesWouldMoveFact, WhatPitchTheDecoderIsOn, WhatTheAcquiringLettersReadAtTheProvedValuesFact, WhatTheDecoderDoesWhileAcquiring, WhatTheFortySureWrongLettersRestOn, WhatTheNamedWordsRead, WhatTheOpeningHeard, WhatThePitchCanSayItProved, WhatTheSecondDecoderReadsFirst, WhatTheSpeedCanSayItProved, WhatTheSureLettersMarksLookLike, WhatTheSureLettersWerePrintedUnderFact, WhenTheWindowIsEmptied;
+  - WhereOursLosesWhatThePortKeeps, WhereTheGapsActuallySit, WhereTheInventedLettersSitFact, WhereThePairSpeedMovedTheUnit, WhereTheSpaceIsDecided, WhereTheSureAddedLettersComeFrom, WhereTheSureWrongLettersComeFrom, WhereTheTwoReadingsMeetFact, WhereTheWordBoundariesGoWrong, WhereTheWordsBreak, WhyTheGateDidNotFire.
+  - Removed as methods only: `WhichStraysASplitMade`, `TheStraysAndTheSpansTheyStandOn` and `WhatSeparatesAStrayFromALetter` (WhatTheStrayLettersRestOn's helpers stay), and `NothingBelowTheBarIsPrinted` (TheSeventeenThirtySevenCapture).
+- `493ccb02`: TheOperatorSeesOneTranscript, TheHigherCalibratedReadingWins, TheSecondDecoderIsAFaithfulPort, WhatFldigisFrontEndWouldLiftFact, WhereTheSecondDecodersFirstDitGoes.
+- `7e5a70d6`: EachCharacterAnswersForItself, EveryElementCarriesItsOwnPitch, CwTwoInOnePassband, TheIntegratorBandwidthTable, TheTwoStationTable, NoSenderIsSplitInTwo, TheNoiseScaleTable, TheProbabilisticDecoder, TheQuietestBinNoLongerWins, TheRefillGuardActuallyRuns, TheShortRunFilterDropsWithoutMerging, TheTwoEnvelopePathsAgree, TheUnitIsMeasuredNotSearched, WhatAFlatMarginDoesToShortCharacters, WhatDecodeScoringCosts, WhatTheWindowRatioIsMadeOf, WhereHamletAndTheReferenceDiverge, WhereTheKeyUpStateSits.
+- `5d213bc2`:
+  - CwInterferenceNotes, CwToneSurvey, CwTrackerSwitch, CwTransmitGuard, TheSurveyAlreadyUsesAShortWindow, TheTrackerObeysTheMeter;
+  - the tracker method of TheRadioPointsTheDetector.
+- `3ab273e0`:
+  - CwKeyingMeter, TheMeterRunsOnLiveAudio, TheOwnersRefusedStationIsKeying, TheSwingBarIsTheLowestTheOwnerHeard;
+  - the two meter methods of TheKeyingWitnessSaysNothingImpossible.
+- `f72d4c05`: AMoveStartsTheDecoderFresh, TheFirstSecondsAreReadAgain. Both were already excluded from compilation, and their lines left the csproj with them.
 
-**Empties** (`FewerEmptyStopsTests`): 3 minutes at 5.26 Hz bins, forty noise blips a sweep, and a station keying SOS with 4 s pauses.
+**The counts.**
 
-| | surveys | listed | stops | empty | the pausing station |
-|---|---|---|---|---|---|
-| before (task 3 commit) | 4 | 27 | 23 | 23 (100 %) | called empty |
-| after | 43 | 1 | 1 | 0 | visited, negative, not empty |
+| | Before | After |
+|---|---|---|
+| Files deleted | | 154: 26 source, 128 test |
+| Source lines | | 12,220 out, 311 in |
+| Test lines | | 37,844 out, 257 in |
+| `CwDecoder.cs` | 1,360 lines | 362 lines |
+| Full scoreboard (`TheRecordingsScoreboard`) | 56 s (test 52 s) | 21 s (test 18 s) |
+| Scans table | about 45 s | 17 s |
 
-**The scoreboard rows** (`docs\cw-scoreboard.md`):
-
-| unit | right | wrong | invented | score | printed in silence | spaces |
-|---|---|---|---|---|---|---|
-| 544 task 1 | 208 of 244 | 15 | 2 | **191** | 1, as at HEAD | 55 of 77, 3 added |
-| 544 task 2 | 208 of 244 | 15 | 2 | **191** | 1 | 55 of 77, 3 added |
-| 544 task 3 | 208 of 244 | 15 | 2 | **191** | 1 | 55 of 77, 3 added |
-| 544 task 4 | 208 of 244 | 15 | 2 | **191** | 1 | 55 of 77, 3 added |
-
-**Build:** no warnings. **Scan tests:** all 103 pass. **App carry-forward:** 277 of 278. The one loss, `AtEachOf354sNineSizesStopIsInTheStatusBarAndOnTheWindow`, is the dispatcher loop, and it passes alone.
+**Re-pinned tests run green this unit:**
+- engine: the own-sending suite (6), digital mode, the tap, ScannerEndToEnd (7), ACharacterIsARunOfMarksThatAgree (19 of 20, see section 4), the silence lock's all-zero buffer, CwFixtureBuild (46), the witness sweep, the radio pointer;
+- app: the clear, prosign naming (7), printed stays printed, scope draws live, the letter over its bars, one decoder one truth, both scroll tests, terminal copy, the sent-text guard, the bars carry their letters.
 
 ## 4. What's blocking us
 
-- **The two `scans` references wait on your ear.** Until you confirm them they are reported and not totalled.
-- **Six named catches are not in the tree,** and their tests wait for them: `144059`, `041036`, `035414`, `040053`, `143718` and `144637`.
-- **Broken dahs remain.** The detector still breaks some dahs at shallow dips, and the gate reads them as two dots. The one rule tried, joining a piece to its neighbour, lowered the score and did not ship.
-- **The scan starts from the tone rising with the dial in CW,** which is what your two catches show. A radio set the other way corrects itself after one wrong move.
-- **A station within 400 Hz of a known carrier is passed by** too, for the rest of the scan.
-- **The 15 %, 400 Hz, 20 and 6 s figures are mine,** from what CW does and the catches here. None is measured on more of your radio's audio.
+- **Re-pinned and not run:** the engine carry-forward's three CW read guards read recordings R88 does not lift. These are `TheAdjudicatedReadingsKeepReadingTests`, the 08-25 cases of `TheCapturesThatDecodeKeepDecodingTests`, and `CwFixtureTests.TheCleanRecordingsDecodeExactly`. Their pins were the old decoder's readings. They now decode through `CwChain` and were not run, so expect them red until you rule on R88 for them or on their pins.
+- **Also re-pinned and not run, for the same reason:**
+  - `CaseRosterSurvivesAnEveningTests` (`004507`);
+  - `OneDecoderNotTwoTests`;
+  - the captures in `TheSilencePropertyIsLockedTests`;
+  - `TheSeventeenThirtySevenCaptureTests`;
+  - `HowFastTheDecoderEatsAudioTests` (`003016`).
+- **`ACharacterIsARunOfMarksThatAgreeTests.MostNoiseBarsHaveNoEdges` is red.** It reads only `CwEnvelopeDetector`, which this unit did not touch, so it was red before. It reads like the edge rule unit 541 removed.
+- **`VoiceTests` stays red** on two British spellings from earlier units: `CwRules.cs:75` "neighbour" (unit 541) and `CwCatchScan.cs:521` "centre" (unit 543). They were left per §12.6.
+- **`CwCounterTrail` has no caller in the app.** It had none at the tag either, so it was outside this unit and was left.
+- **`docs/carry-forward-tests.txt` still names the three CW read guards** as the CW read guard. Choosing a shape-side guard to replace them is yours.
+- **Unit 487's ask** stood only for the timing-only path, and that path is now removed.
 - **The silence limit stays red at one letter,** and **the carrier limit at seed 5195,** as at HEAD.
 
 ### Asks still outstanding

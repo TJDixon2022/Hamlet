@@ -1148,3 +1148,9 @@ A tone that never keys is a carrier, left at 8 s and remembered. The survey list
 The scoreboard read 191 after every task.
 
 Build has no warnings. App carry-forward is 277 of 278; the loss is the dispatcher loop and passes alone.
+
+## UNIT 545 - STEP 12
+
+Run by hand, outside the loop: SESSION.lock was taken and released, nothing was written to RUN_LEDGER.md, nothing under tools\arbiter\ was touched, and no box was ticked. Version 1.13.229 to 1.13.230. HM-DEC-249.
+
+The old decoder is out. W1AW's check on 2026-10-05 was the owner's condition, and it passed. HEAD was tagged `before-old-decoder-removal` first. Every caller of the old decoder now reads the shape side or is retired in words. `CwDecoder` is the chain and nothing else, 362 lines from 1,360. The second reader, the probabilistic decoder, the tone tracker and survey, the keying meter and the competitor came out in five groups, and the scoreboard read as at HEAD after each one. In all, 154 files are deleted, 12,220 source lines and 37,844 test lines. The scoreboard runs in 21 s, from 56 s. Build has no warnings. App carry-forward is 277 of 278; the loss is a headless dispatcher test, which passes in its own class.

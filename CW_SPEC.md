@@ -37,7 +37,7 @@ be unknown.
 - characters, each carrying a confidence class (sure / dim / placeholder);
 - word boundaries;
 - the running speed estimate with its proof state (proved / hypothesis / none);
-- the running pitch with its proof state;
+- the running pitch with its proof state; **retired 2026-10-05 (work instruction 545, HM-DEC-249): the pitch proof is removed with the tone tracker and the survey that set it**;
 - the signal measurements the decoder acted on (tone level, noise reference,
   passband used), each with provenance and age;
 - an explicit "nothing read" state, distinct from "nothing there".

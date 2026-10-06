@@ -4,6 +4,60 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-249
+date: 2026-10-05
+refs: work instruction 545, HM-DEC-248, HM-DEC-215, R101, src/Hamlet.RadioEngine/Cw/CwDecoder.cs, src/Hamlet.RadioEngine/Cw/CwChain.cs, src/Hamlet.RadioEngine/Cw/CwDecodeReport.cs, src/Hamlet.App/ViewModels/MainWindowViewModel.cs, CW_REQUIREMENTS.md, CW_SPEC.md
+---
+
+**The old decoder comes out.** Ordered by the owner in work instruction 545, 2026-10-05.
+
+**The owner's condition was W1AW's sanity check, and it passed on 2026-10-05**: the 10, 13 and 15 WPM text read whole sentences. HEAD was tagged `before-old-decoder-removal` and pushed before any change, and everything removed is reachable by that name.
+
+**Every caller moved onto the shape side, or retired in words.**
+- **Level meter:** keeps the input level the tap already measures.
+- **Story line:** says what the shape side is doing: listening, a shape forming, or reading a sender at about N hertz and N words a minute.
+- **Speed on screen, speed proof, transmit speed and speed offer:** read the printed sender's dit, as 1.2 over the dit. The transmit speed is only read and keys nothing.
+- **Competing note:** the senders the gate holds besides the printed one.
+- **Scope input, hearing light and verdict row:** the printed pitch and the senders held.
+- **Decode-quality row, capture sheet and case roster:** the shape side's figures.
+- **Auto-call station change:** the printed pitch moving by more than the gate's pitch tolerance.
+- **Retired:**
+  - the keying meter's block, which was hidden by default, so nothing on the default screen moves;
+  - the keying advice;
+  - the sheet's keying line, which now reads `retired`;
+  - the roster's meter column, which is now empty;
+  - the pitch lock and its text;
+  - the followed note;
+  - the retune nudge;
+  - the leading edge;
+  - the decode-queue drop counters, which are now 0;
+  - `CwPitchChoice`.
+
+**`CwDecoder` is the chain and nothing else**, 362 lines, from 1,360. It holds the tap, the suspension while the radio transmits and the digital-mode skip. It pulls the detector's marks into the sender gate and the lookup table, and raises what they print.
+
+**Removed, one group at a time.** The scoreboard read exactly as at HEAD after each group: 208 of 244, 15 wrong, 2 invented, score 191, 55 of 77 spaces with 3 added, and the same two hard limits red. The scans table was unchanged too.
+
+| Group | What came out | Source lines removed |
+|---|---|---|
+| 1 | The fldigi second reader, `CwArbiter`, `CwVoteTable` and `CwSwitchTable` | 3,262 |
+| 2 | `CwProbabilisticDecoder`, `CwProbabilisticStream`, `CwUnitEstimator` and `CwCharacterProbability` | 3,396 |
+| 3 | `CwToneTracker` and `CwToneSurvey`, with `CwTransmitGuard` and `CwInterferenceNotes`, which only the tracker read | 2,758 |
+| 4 | `CwKeyingMeter` and `CwCompetitor` | 459 |
+| 5 | `CwPitchProof`, and the last tests that named the old path | 40 |
+
+- **What moved first:**
+  - the survey's 25 ms shortest dit went to the detector;
+  - the 5 ms hop went to `CwCharacter`;
+  - the 300 to 900 Hz pitch range went to `KeyingEnvelope`;
+  - the competitor's 125 Hz separation went to the recording tone figure.
+- **In all:** 154 files deleted. 12,220 source lines and 37,844 test lines came out.
+- **The scoreboard** runs in 21 s, from 56 s.
+
+`CW_REQUIREMENTS.md` HM-REQ-093 and HM-REQ-120 to 129, and one line of `CW_SPEC.md`, are marked retired by this ruling, their text kept.
+
+Nothing keys or transmits, and nothing is written to the radio.
+
+---
 id: HM-DEC-248
 date: 2026-10-05
 refs: work instruction 544, HM-DEC-247, HM-DEC-246, R88, src/Hamlet.RadioEngine/Cw/CwSenderGate.cs, src/Hamlet.RadioEngine/Scan/CwCatchScan.cs, src/Hamlet.RadioEngine/Scan/CwCatchEar.cs, src/Hamlet.RadioEngine/Scan/ScopePeaks.cs, docs/cw-scoreboard.md
