@@ -35,6 +35,8 @@ public sealed class TheVerdictCarriesTheScopeTests
         "frequency", "mode", "agc", "preamp",
         "inputPeakDb", "inputFloorDb",
         "sinceVerdictMs",
+        // Work instruction 548, task 2: what the live path lost.
+        "audioLostMs", "audioLostLastMinuteMs", "audioStallMs", "audioQueuePeak",
         "scopeEnvelopeDb", "scopeFloorDb", "scopeThresholdDb", "scopeMark",
         "scopeRunMs", "scopePitchHz", "scopeContrastDb", "scopeMarksLast4s", "shapeScore", "sequencesStanding", "shapeLight", "shapeFill",
         "scopePeakHz", "scopePeakDb", "scopePeakLevel", "scopeFramesLast4s",

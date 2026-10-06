@@ -9,12 +9,13 @@ namespace Hamlet.App.ViewModels;
 /// <summary>What the shape side holds, read once a second on the decode tick (work instruction 545).</summary>
 /// <param name="PrintedHz">The printed sender's pitch, or NaN where nobody is printed.</param>
 /// <param name="SendersHeld">How many senders the gate holds.</param>
+/// <param name="Audio">What the live decode path received and lost, or null where nothing is listening (work instruction 548).</param>
 /// <remarks>
 /// **THE METER, THE TRACKER AND THE SURVEY CAME OUT WITH THE OLD DECODER** (work instruction 545, HM-DEC-249): the keying
 /// meter's reading, the tracker's pitch and keying, and the coarse survey's admitted bins this carried. The shape side's
 /// own figures stand in their place.
 /// </remarks>
-public sealed record CwHearingState(double PrintedHz, int SendersHeld)
+public sealed record CwHearingState(double PrintedHz, int SendersHeld, AudioContinuity? Audio = null)
 {
     /// <summary>Nothing is listening.</summary>
     public static CwHearingState None { get; } = new(double.NaN, 0);
@@ -354,6 +355,13 @@ public sealed partial class CwHearingViewModel : ObservableObject
             ["inputPeakDb"] = Measured(rig.InputPeakDb),
             ["inputFloorDb"] = Measured(rig.InputFloorDb),
             ["sinceVerdictMs"] = (long)Math.Round((_clock() - _lightChangedUtc).TotalMilliseconds),
+
+            // **WHAT THE LIVE PATH LOST** (work instruction 548, task 2): audio that never reached the decode, the longest a
+            // capture callback came late, and the deepest the queue got, so a wrong reading can be told from a starved one.
+            ["audioLostMs"] = state.Audio is { } lost ? Math.Round(lost.LostMilliseconds) : null,
+            ["audioLostLastMinuteMs"] = state.Audio is { } recent ? Math.Round(recent.LostLastMinuteMilliseconds) : null,
+            ["audioStallMs"] = state.Audio is { } stall ? Math.Round(stall.LongestStallMilliseconds) : null,
+            ["audioQueuePeak"] = state.Audio?.QueuePeak,
 
             // **WHAT THE SCOPE SAW AT THE PRESS** (work instruction 476 task 3), at most one
             // redraw old, so the next unit can read whether it saw keying where he heard it.

@@ -11806,7 +11806,17 @@ public partial class MainWindowViewModel : ObservableObject
     }
 
     /// <summary>What the decoder can see, when it is producing nothing.</summary>
-    public string DecoderStory => CwDecodeStory.Describe(DecodeReport, IsDecoding);
+    public string DecoderStory => WithAudioLost(CwDecodeStory.Describe(DecodeReport, IsDecoding));
+
+    /// <summary>
+    /// The story, and where audio went missing on its way to the decoder in the last minute, a sentence saying so
+    /// (work instruction 548, task 2): a reading built on audio that never arrived is said to be so.
+    /// </summary>
+    private string WithAudioLost(string story)
+        => _liveFeed?.Continuity is { LostLastMinuteMilliseconds: >= 1 } audio
+            ? (story.Length > 0 ? story + " " : string.Empty)
+              + string.Create(CultureInfo.InvariantCulture, $"Some audio never reached the decoder, about {audio.LostLastMinuteMilliseconds:0} milliseconds of it in the last minute, so letters around then may be missing or wrong.")
+            : story;
 
     /// <summary>True when there is something to say about it.</summary>
     public bool HasDecoderStory => DecoderStory.Length > 0;
@@ -12168,6 +12178,10 @@ public partial class MainWindowViewModel : ObservableObject
             // **HOW MUCH OF THE RECORDING HAD THE KEY DOWN**, at the printed sender's pitch, and not written at all where
             // nobody was printed (§0.0).
             $"duty       {DutyForTheRecord(audio, shape)}",
+
+            // **WHAT THE LIVE PATH LOST** (work instruction 548, task 2): audio that never reached the decode since it started
+            // listening, the longest a capture callback came late, and the deepest the queue got.
+            $"audio      {(_liveFeed?.Continuity is { } audioLine ? audioLine.SheetLine + "  (since the decoder started listening; lost counts what the queue dropped and what the capture fell short of real time by, past one 100 ms buffer)" : "not counted  (nothing is listening)")}",
             "",
         };
 
@@ -12315,7 +12329,7 @@ public partial class MainWindowViewModel : ObservableObject
 
         var side = decoder.ShapeSide;
 
-        CwHearing.Observe(new CwHearingState(side.PrintedPitchHz, side.Senders.Count));
+        CwHearing.Observe(new CwHearingState(side.PrintedPitchHz, side.Senders.Count, _liveFeed?.Continuity));
     }
 
     /// <summary>How often the light reads the shape side: once a second.</summary>

@@ -35,6 +35,9 @@ public sealed class TheOwnersVerdictIsARowTests
         "inputPeakDb", "inputFloorDb",
         "sinceVerdictMs",
 
+        // Work instruction 548, task 2: what the live path lost, the longest stall and the queue's peak.
+        "audioLostMs", "audioLostLastMinuteMs", "audioStallMs", "audioQueuePeak",
+
         // Work instruction 476 task 3 extends the row with the scope's state at the press;
         // TheVerdictCarriesTheScopeTests asserts these eight by value.
         "scopeEnvelopeDb", "scopeFloorDb", "scopeThresholdDb", "scopeMark",
