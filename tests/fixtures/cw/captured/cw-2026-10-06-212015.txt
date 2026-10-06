@@ -1,0 +1,70 @@
+captured   2026-10-06 21:20:16 UTC
+audioSeen  7622400 samples
+fingerprint 2b41ff62bbe2
+seconds    30.0
+sampleRate 48000
+frequency  7047500 Hz  (read from the radio a moment ago)
+band       40 m  (from the frequency the radio reported)
+broadcast  the radio volunteered nothing while this recording was being made, and the setting reads on; 0 of 15456 frames since the link came up were the radio announcing something
+
+inputPeak  -13.0 dBFS  (over the whole recording)
+meterPeak  -13.5 dBFS  (the moment it was kept)
+inputFloor -21.4 dBFS  (the level meter's running floor at the moment it was kept, carried across everything heard, falling quickly to a quiet stretch and rising slowly to a loud one; not a figure about this recording alone)
+clipping   False  (over the 0.2 seconds the level meter last measured when it was kept, the stretch meterPeak is over; not the whole recording)
+pitch      600 Hz  (the printed sender's, from its own marks)
+tonePeak   49.5  (a figure about this recording: over the 30.0 seconds in this file, the highest the printed sender's tone at 600 Hz stood above the noise beside it, in dB)
+speed      17 WPM  (the printed sender's dit, 70 ms)
+inThis     46 letters printed, 125 marks stood  (in the 30.0 seconds of audio in this file)
+text       OAT U H SPOTLESS DAY OF THE YEAR. NEVERTHELESS, THER I K I E SAVE BEEN SOLAR FLARES, THE LARGEST WF WHICH A C8.6 DASH CLASS FLARE REACHED ITS PEAK AT 2 46 UTC ON SEPTEMBER 30 IN REGION NOAA 4535. IT WAS ACCOMPANIED N NE HY TYP IEI EEIS A I E NEEA NI E EI AND TYW IV RADIO EMISSIONS I EIOWEVER, THIS NME IS E
+textCovers everything read since the decoder started listening, about 3 minutes ago
+senders    600 Hz shape 0.59, 596 marks, printed; 650 Hz shape 0.71, 71 marks; 550 Hz shape 0.59, 37 marks
+keying     retired  (the independent keying sweep came out with the old decoder, work instruction 545; the senders line above says what the gate held)
+duty       43.2%  (of the 30.0 seconds in this file, the key was down at 600 Hz)
+
+sinceLast  238 letters printed, 722 marks stood  (since the decoder started listening; this is the first capture of the session)
+
+Frequency            7.047500 MHz
+Mode                 CW
+DataMode             off
+FilterSelection      FIL2
+FilterBandwidth      500 Hz
+SMeter               S9
+TransmitStatus       receiving
+Overflow             not overloading
+TwinPbtOuter         unknown
+TwinPbtInner         undocumented
+Rit                  undocumented
+Swr                  unknown
+PowerOut             unknown
+RfPower              31%
+RfGain               100%
+Squelch              0%
+SquelchStatus        open
+Agc                  FAST
+Preamp               off
+Attenuator           off
+NoiseBlanker         off
+NoiseBlankerLevel    50%
+NoiseReduction       off
+NoiseReductionLevel  28%
+AutoNotch            off
+ManualNotch          off
+BreakIn              full
+KeyerSpeed           20 WPM
+CwPitch              600 Hz
+AccUsbOutputSelect   AF
+AccUsbAfLevel        80%
+NotchPosition        unknown
+FilterShape          unknown
+AfLevel              unknown
+RfSqlFunction        unknown
+BreakInDelay         unknown
+AntennaTuner         unknown
+Alc                  unknown
+AccUsbSquelch        open regardless of squelch
+Split                off
+ScopeOn              on
+ScopeOutput          on
+CivUsbPort           unknown
+CivTransceive        on
+Vfo                  undocumented
