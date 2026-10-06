@@ -13,7 +13,7 @@ namespace Hamlet.RadioEngine.Tests.Cw;
 /// suck."* And: *"I want to run it against all the recordings that we've done over the last two days."*
 /// </summary>
 /// <remarks>
-/// <para>R88 is lifted for the owner's twelve recordings named in <see cref="Stretches"/> and no other. Each is read through
+/// <para>R88 is lifted for the owner's twelve recordings and W1AW's `cw-2026-10-06-212015` (work instruction 547), named in <see cref="Stretches"/>, and no other. Each is read through
 /// the live path as the app wires it - the detector, the sender's window, the gate and the reader - at the radio's state
 /// from its own sheet, and what printed is scored against the web session's references, letters right with spaces
 /// ignored, by the scorer's edit distance with free ends.</para>
@@ -94,6 +94,12 @@ public sealed class TheRecordingsScoreboardTests
         // The sign-off corrected (work instruction 535), as above: 73 <AR> W2L where the web session wrote EEV CW 2L.
         new("cw-2026-10-03-221851", 601.3, 0, 30, "BEST 73 <AR> W2L CQ DE NA8SB K", Confidence.Low, 150, 125, 330,
             ".. [285] -... [220] . [195] ... [225] - [223] --... [190] ...-- [129] .-.-. [195] .-- [169] ..--- [160] .-.. [230] -.-. [200] --.- [345] -.. [250] . [485] -. [180] .- [165] ---.. [245] ... [320] -... [155] -.- [1970] . [1070] . [370] . [475] -.....- [650] . [545] ... [900] . [235] ... [960] . [350] .. [250] .-. [265] .- [225] ...- [570] ... [160] . [190] . [675]"),
+        // **W1AW'S BULLETIN, THE FIRST STRONG MACHINE SIGNAL ON THE BOARD** (work instruction 547, task 1; R88 lifted for it):
+        // 17 WPM, dit 70 ms, dah 205, S9. The opening `PE` follows a cut mark; `CME` from the bulletin, where the signal weakens
+        // at the end. The elements are the offline read at a 120 ms split, a 121 ms letter line and a 321 ms word line, from
+        // its own 70 and 205 ms marks and 70, 210 and 490 ms gaps.
+        new("cw-2026-10-06-212015", 599.9, 0, 30, "PE II AND TYPE IV RADIO EMISSIONS HOWEVER, THIS CME IS", Confidence.High, 120, 121, 321,
+            ". [190] .--. [192] . [456] .. [188] .. [456] .- [192] -. [186] -.. [451] - [190] -.-- [178] .--. [191] . [454] .. [185] ...- [451] .-. [186] .- [187] -.. [188] .. [185] --- [452] . [186] -- [190] .. [188] ... [187] ... [185] .. [191] --- [189] -. [182] ... [989] .... [190] --- [187] .-- [188] . [164] ...- [188] . [193] .-..--..-- [450] - [191] .... [191] .. [191] ... [445] ...-. [190] -- [194] . [456] .. [192] ..."),
     ];
 
     /// <summary>One letter the reader printed: when its last mark ended, its pitch, its text.</summary>
