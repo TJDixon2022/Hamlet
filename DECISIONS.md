@@ -4,6 +4,38 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-250
+date: 2026-10-06
+refs: work instruction 546, HM-DEC-245, HM-DEC-248, HM-DEC-249, R88, docs/cw-scoreboard.md, tests/Hamlet.RadioEngine.Tests/Scan/TheBrokenDahsTests.cs, tests/Hamlet.RadioEngine.Tests/Cw/AFarnsworthBulletinReadsAsWordsTests.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheSpacesThatSlippedTests.cs, tests/Hamlet.RadioEngine.Tests/Scan/TheWeakFastStationTests.cs
+---
+
+**Broken dahs, Farnsworth gaps, and the spaces.** Ordered by the owner in work instruction 546, 2026-10-06. Each task shipped only on its own merit; **none that reads met its bar, so nothing that reads changed.**
+
+Score and spaces were measured before and after each task. At HEAD the score is 191: 208 right, 15 wrong, 2 invented, with 55 of 77 spaces and 3 added. The hard limits are the carrier at seed 5195 and one `S` in a silence.
+
+- **Task 1, a dah that breaks in two: not shipped.**
+  - The nine dahs of `catch-153810-7033367` are a real dip on the sender's own envelope, 8 to 20 dB deep and 8 to 24 ms long. The detector stands two marks, and the gate prints two dits.
+  - Joining across a gap under half the sender's own inside-letter gap meets the break in the gate. Applied from the sender's first gaps, it scored 154 (162 right, 6 wrong) with 42 of 77 spaces, and two recordings went silent.
+  - Applied only once the sender had shown its two kinds, its letter gaps and ten inside gaps, it scored 186 (205 right, 17 wrong) with 54 of 77 spaces. It joined 2 of the 9 dahs, and joined real dits on the owner's fists. The main catch fell from 109 to 106 of 152.
+- **Task 2, Farnsworth: not shipped.**
+  - W1AW's form at 18 WPM spaced for 5 and 7.5 WPM reads as words from cold.
+  - Heard after ordinary 18 WPM sending, it prints letter by letter, as on the air. The sender's old letter and word gaps stay in its window, and the word line falls between them, under the stretched letter gaps.
+  - Three gaps in a row, each past the word line by √(7/3), taken as a new spacing reads the slow section as words. It holds 191, with spaces right at 55 and added at 2. Spaces right did not rise, so it misses the bar.
+  - A by-product was measured and not shipped: also keeping the one gap that ends where the newer-speed marks begin reads 197 (211 right, 12 wrong) but 54 of 77 spaces.
+- **Task 3, the spaces that slipped: not shipped.**
+  - Spaces right is 55 with the neighbour judgement of gaps on or off. The three spaces were lost to three lone letters dropped: the opening `E` of 221745 and of 221805, each with the space beside it.
+  - That rule off reads 191 (210 right, 17 wrong) with 58 of 77 spaces but 4 added. Task 2's change does not bring the spaces back.
+- **Task 4, the weak fast station: traced, not fixed.**
+  - At 25 WPM and 10 dB, on `cw-2026-10-03-143906` and on a synthetic call, the detector keeps about 5 dahs of about 40.
+  - With the edge test off, the 10 dB call keeps 34 dahs and reads its second half. So the flat-top test most likely breaks the dahs into pieces, which the edge test then refuses. The scoreboard needs the edge test.
+- **Task 5, tidy: done.**
+  - `neighbour` in a rule name and `centre` in the scan's advancing line become American, and `VoiceTests` passes.
+  - `MostNoiseBarsHaveNoEdges` retires with the ten rules (HM-DEC-245).
+  - The old CW read guards are not touched.
+
+Nothing keys or transmits, and nothing is written to the radio.
+
+---
 id: HM-DEC-249
 date: 2026-10-05
 refs: work instruction 545, HM-DEC-248, HM-DEC-215, R101, src/Hamlet.RadioEngine/Cw/CwDecoder.cs, src/Hamlet.RadioEngine/Cw/CwChain.cs, src/Hamlet.RadioEngine/Cw/CwDecodeReport.cs, src/Hamlet.App/ViewModels/MainWindowViewModel.cs, CW_REQUIREMENTS.md, CW_SPEC.md
