@@ -72,7 +72,7 @@ internal static class CwRules
     public const string ThreeLone = "three lone letters dropped";
 
     /// <summary>A gap is judged against its neighbours (work instruction 526; removed in 534, back in 541, HM-DEC-245).</summary>
-    public const string NeighbourGaps = "the neighbour judgement of gaps";
+    public const string NeighbourGaps = "the neighbor judgement of gaps";
 
     /// <summary>A sender keeps the dot and dash line it last showed while a few marks hide the jump (work instruction 544, HM-DEC-248).</summary>
     public const string KeptSplit = "a sender keeps its line";

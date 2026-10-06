@@ -463,7 +463,7 @@ public sealed class CwCatchScan
 
         var deadline = started + _settings.Length;
         var surveys = new List<CwScanSurvey>();
-        long? nextCentre = null;
+        long? nextCenter = null;
         long? carryFrom = null;
         bool? follows = null;
         CwScanEnd end;
@@ -509,27 +509,27 @@ public sealed class CwCatchScan
                 else
                 {
                     var span = high - low;
-                    var centre = nextCentre ?? band.CwLowHz + (span / 2);
+                    var center = nextCenter ?? band.CwLowHz + (span / 2);
 
-                    if (centre - (span / 2) >= band.CwHighHz)
+                    if (center - (span / 2) >= band.CwHighHz)
                     {
-                        centre = band.CwLowHz + (span / 2);
+                        center = band.CwLowHz + (span / 2);
                     }
 
                     if (surveys.Count > 0)
                     {
-                        Say($"advancing to {Mhz(Math.Max(band.CwLowHz, centre - (span / 2)))}–{Mhz(Math.Min(band.CwHighHz, centre + (span / 2)))}");
+                        Say($"advancing to {Mhz(Math.Max(band.CwLowHz, center - (span / 2)))}–{Mhz(Math.Min(band.CwHighHz, center + (span / 2)))}");
                     }
 
-                    await Tune(centre, linked.Token).ConfigureAwait(false);
+                    await Tune(center, linked.Token).ConfigureAwait(false);
                     await Wait(Settle, linked.Token).ConfigureAwait(false);
 
                     var (l, h) = Edges();
 
-                    follows = centre >= l && centre <= h;
+                    follows = center >= l && center <= h;
                     watchLow = Math.Max(band.CwLowHz, l);
                     watchHigh = Math.Min(band.CwHighHz, h);
-                    nextCentre = centre + span;
+                    nextCenter = center + span;
                 }
 
                 // 2. **WATCH THE WATERFALL** for the survey time and list every station that keeps showing up.
@@ -605,7 +605,7 @@ public sealed class CwCatchScan
                     {
                         // **THE DIAL MOVED BY HAND: CARRY ON FROM THERE** (the owner, 2026-10-04): the next span is the one
                         // centred where the hand left it.
-                        nextCentre = there;
+                        nextCenter = there;
                         carryFrom = there;
                         break;
                     }
