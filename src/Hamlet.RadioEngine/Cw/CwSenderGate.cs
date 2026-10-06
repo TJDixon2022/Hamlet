@@ -717,9 +717,55 @@ public sealed class CwSenderGate
                 var now = MarksNow();
                 var since = ReferenceEquals(now, _recent) || now.Count == 0 ? double.NegativeInfinity : now[0].FromSeconds;
 
-                return _runGapsAt.Where(g => g.At > since).Select(g => g.Seconds).ToList();
+                // The spacing now includes the first of the three gaps that showed it; the speed now begins after its own.
+                var spacing = CwRules.On(CwRules.SpacingNow) ? _spacingSince : double.NegativeInfinity;
+
+                return _runGapsAt.Where(g => g.At > since && g.At >= spacing).Select(g => g.Seconds).ToList();
             }
         }
+
+        // Where the sender's spacing now began: the first of three gaps in a row past its word line (work instruction 546).
+        private double _spacingSince = double.NegativeInfinity;
+
+        /// <summary>
+        /// **THREE WORDS IN A ROW ARE A NEW SPACING** (work instruction 546, task 2): a sender whose last three gaps between
+        /// runs all sit past its word line, each by √(7/3), has either sent three one-letter words running, which the gate already does not
+        /// take as sending (three lone letters are dropped together), or has stretched its spacing, as W1AW does going from
+        /// its ordinary sending to a Farnsworth section. Its gaps are then taken from the first of the three, so its letter
+        /// and word clusters are its own spacing now, however far both are from its dit. Shipped at the owner's word (work
+        /// instruction 547, task 2, HM-DEC-251).
+        /// </summary>
+        private void NoteSpacing()
+        {
+            if (!CwRules.On(CwRules.SpacingNow))
+            {
+                return;
+            }
+
+            var since = _runGapsAt.Where(g => g.At >= _spacingSince).ToList();
+
+            if (since.Count <= SpacingRun)
+            {
+                return;
+            }
+
+            var line = Lines.WordSeconds;
+            var last = since.TakeLast(SpacingRun).ToList();
+
+            if (last.All(g => g.Seconds > line * StretchJump))
+            {
+                _spacingSince = last[0].At;
+            }
+        }
+
+        /// <summary>How many gaps in a row past the word line show a new spacing: three, as three lone letters are not sending.</summary>
+        private const int SpacingRun = 3;
+
+        /// <summary>
+        /// How far past the word line each of the three must sit: the jump the gate splits a sender's gap clusters at, √(7/3),
+        /// so a hand's ordinary word gaps beside its line are not a new spacing and a stretched letter gap is.
+        /// </summary>
+        private static readonly double StretchJump = Math.Sqrt(7.0 / 3);
 
         public List<CwMark> Open { get; } = new();
 
@@ -1040,6 +1086,7 @@ public sealed class CwSenderGate
             else if (!double.IsNegativeInfinity(LastToSeconds))
             {
                 _runGapsAt.Add((mark.FromSeconds, mark.FromSeconds - LastToSeconds));
+                NoteSpacing();
             }
 
             Open.Add(mark);

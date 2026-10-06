@@ -133,7 +133,8 @@ public sealed class AFarnsworthBulletinAfterOtherSendingTests
     /// <remarks>
     /// Task 2: the bulletin at 5 and 7.5 WPM overall after a preamble: <c>vvv</c>, the same text at the same Farnsworth
     /// spacing; <c>fast</c>, a sentence at 18 WPM with ordinary spacing just before, the sender's lines learned on it.
-    /// Prints what reads; asserts only that something printed.
+    /// Since the rule shipped (work instruction 547, task 2, HM-DEC-251), the slow section reads as words after either
+    /// preamble: everything after its first word, whose opening letters are sent before three gaps have shown the new spacing.
     /// </remarks>
     /// <param name="preamble">Which preamble.</param>
     /// <param name="overallWpm">The overall speed.</param>
@@ -154,6 +155,6 @@ public sealed class AFarnsworthBulletinAfterOtherSendingTests
         _output.WriteLine($"{preamble} 18/{overallWpm}: lines at the end: {lines}");
         _output.WriteLine($"  read `{text}`");
 
-        Assert.NotEmpty(text);
+        Assert.EndsWith("IS FROM OCTOBER 2024 QST PAGE 50 5 WPM TEXT FOLLOWS", text, StringComparison.Ordinal);
     }
 }

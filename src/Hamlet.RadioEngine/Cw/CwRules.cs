@@ -77,6 +77,12 @@ internal static class CwRules
     /// <summary>A sender keeps the dot and dash line it last showed while a few marks hide the jump (work instruction 544, HM-DEC-248).</summary>
     public const string KeptSplit = "a sender keeps its line";
 
+    /// <summary>
+    /// Three gaps in a row past the word line mean the sender's spacing changed, and its gaps are taken from the first of them
+    /// (work instruction 546, task 2).
+    /// </summary>
+    public const string SpacingNow = "three words in a row are a new spacing";
+
     /// <summary>Every rule kept, in the order the work instruction names them.</summary>
     /// <remarks>
     /// **THREE RULES EARNED THEIR PLACE; TEN LEFT THE TREE** (work instruction 541, HM-DEC-245): of the thirteen work
@@ -88,6 +94,7 @@ internal static class CwRules
     [
         LoneLetter, ColdStartWordLine, SpeedRetry, Settle, OwnWindow, Release, FirstPickWait, Backlog, SilentNotCandidate, Edges,
         MarkShape, KindsHeld, GapKinds, OverlapSplit, GapCrossing, CrowdsNarrowed, Narrowness, ThreeLone, NeighbourGaps, KeptSplit,
+        SpacingNow,
     ];
 
     [ThreadStatic]
