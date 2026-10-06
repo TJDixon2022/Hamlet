@@ -117,3 +117,100 @@ public sealed class TheWeakFastStationProbeTests(ITestOutputHelper output)
         Assert.True(audio.Samples.Length > 0);
     }
 }
+
+/// <summary>
+/// Task 5 of work instruction 547: whether a weak dah's top holds inside the flat-top tolerance at its own contrast. The bin's
+/// envelope rebuilt offline as the detector takes it - a ten millisecond Hann window at the tone every five - over a
+/// synthetic 25 WPM call whose dahs are known to the sample.
+/// </summary>
+public sealed class AWeakDahsTopTests(ITestOutputHelper output)
+{
+    /// <remarks>
+    /// For each dah, its interior's spread about its own mean against <see cref="CwEnvelopeDetector.ToleranceDb"/> at its
+    /// contrast over the gaps; how many dahs hold, and the tolerance that would hold nineteen in twenty. Asserts only that
+    /// dahs were measured.
+    /// </remarks>
+    /// <param name="db">The tone over the noise in the 500 Hz passband.</param>
+    [Theory]
+    [InlineData(10)]
+    [InlineData(12)]
+    [InlineData(20)]
+    public void TheDahsTopsAgainstTheTolerance(int db)
+    {
+        const int rate = 8000;
+        const string text = "QSY QSY DE W1AW W1AW K QSY QSY DE W1AW W1AW K";
+        const double lead = 3;
+        var audio = CwSignal.Generate(new CwSignalRequest(
+            text, WordsPerMinute: 25, ToneHz: 600, SampleRate: rate, Amplitude: 0.5,
+            NoiseAmplitude: Math.Pow(10, -db / 20.0), LeadInSeconds: lead, TailSeconds: 3, Seed: 5460 + db));
+        var dit = 1.2 / 25;
+        var pattern = MorseCode.KeyPattern(text);
+        var marks = new List<(double From, double To, bool Dah)>();
+        var at = lead;
+
+        for (var i = 0; i < pattern.Count; i++)
+        {
+            var length = pattern[i] * dit;
+
+            if (i % 2 == 0)
+            {
+                marks.Add((at, at + length, pattern[i] == 3));
+            }
+
+            at += length;
+        }
+
+        // The bin: a ten millisecond Hann window at 600 Hz, every five.
+        var hop = rate / 200;
+        var window = 2 * hop;
+        var levels = new List<(double At, double Db)>();
+
+        for (var start = 0; start + window <= audio.Samples.Length; start += hop)
+        {
+            double i0 = 0, q0 = 0;
+
+            for (var k = 0; k < window; k++)
+            {
+                var w = 0.5 - (0.5 * Math.Cos(2 * Math.PI * (k + 0.5) / window));
+                var phase = 2 * Math.PI * 600 * (start + k) / rate;
+
+                i0 += w * audio.Samples[start + k] * Math.Cos(phase);
+                q0 += w * audio.Samples[start + k] * Math.Sin(phase);
+            }
+
+            levels.Add(((start + window) / (double)rate, 10 * Math.Log10((i0 * i0) + (q0 * q0) + 1e-20)));
+        }
+
+        var gaps = marks.Skip(1).Select((m, i) => (From: marks[i].To + 0.015, To: m.From - 0.005)).Where(g => g.To > g.From)
+            .SelectMany(g => levels.Where(l => l.At >= g.From && l.At <= g.To).Select(l => l.Db)).Order().ToList();
+        var gapLevel = gaps[gaps.Count / 2];
+        var held = 0;
+        var spreads = new List<double>();
+        var needs = new List<double>();
+
+        foreach (var m in marks.Where(m => m.Dah))
+        {
+            // The interior: every window wholly inside the dah, past the rise.
+            var top = levels.Where(l => l.At >= m.From + 0.015 && l.At <= m.To).Select(l => l.Db).ToList();
+            var mean = top.Average();
+            var spread = Math.Max(top.Max() - mean, mean - top.Min());
+            var tolerance = CwEnvelopeDetector.ToleranceDb(mean - gapLevel);
+
+            spreads.Add(spread);
+            needs.Add(spread / tolerance);
+
+            if (spread <= tolerance)
+            {
+                held++;
+            }
+        }
+
+        var contrast = marks.Where(m => m.Dah).SelectMany(m => levels.Where(l => l.At >= m.From + 0.015 && l.At <= m.To).Select(l => l.Db)).Average() - gapLevel;
+        var sorted = spreads.Order().ToList();
+
+        output.WriteLine(string.Create(System.Globalization.CultureInfo.InvariantCulture,
+            $"{db} dB: bin contrast {contrast:0.0} dB, tolerance {CwEnvelopeDetector.ToleranceDb(contrast):0.00} dB; {held} of {spreads.Count} dahs hold their top inside it; spread median {sorted[sorted.Count / 2]:0.00} dB, 95th percentile {sorted[(int)(0.95 * (sorted.Count - 1))]:0.00} dB, max {sorted[^1]:0.00} dB"));
+
+        Assert.NotEmpty(spreads);
+    }
+}
