@@ -72,7 +72,7 @@ public sealed class TheLetterSitsOverItsBarsTests
         var settled = run.Settled
             .Select(s => s.Character)
             .Where(ch => ch.Text == "C")
-            .Select(ch => (End: run.Start + ch.At, Start: run.Start + ch.At - TimeSpan.FromMilliseconds(ch.SpanHops * CwProbabilisticDecoder.HopMilliseconds)))
+            .Select(ch => (End: run.Start + ch.At, Start: run.Start + ch.At - TimeSpan.FromMilliseconds(ch.SpanHops * CwCharacter.HopMilliseconds)))
             .Select(s => (Left: CwScopeControl.XOfTime(s.Start, now, Width), Right: CwScopeControl.XOfTime(s.End, now, Width)))
             .ToList();
 

@@ -152,7 +152,7 @@ public sealed class TheBarsCarryTheirLettersTests
 
         if (settle)
         {
-            var spanHops = (int)Math.Round((endMs - startMs) / CwProbabilisticDecoder.HopMilliseconds);
+            var spanHops = (int)Math.Round((endMs - startMs) / CwCharacter.HopMilliseconds);
             graph.Settle(Character("C", "-.-.", TimeSpan.FromMilliseconds(endMs), spanHops), heard, now);
         }
 

@@ -1,4 +1,5 @@
 using System.Text.RegularExpressions;
+using Hamlet.RadioEngine.Audio;
 using Hamlet.RadioEngine.Cw;
 using Xunit;
 using Xunit.Abstractions;
@@ -16,7 +17,7 @@ namespace Hamlet.App.Tests.ViewModels;
 /// sidetone; this closes the path through the code.</para>
 /// <para>**THE GUARANTEE IS THAT ONLY THE DECODER CAN WRITE.** The transcript has
 /// four ways in, and every call site in the application is a subscription to an
-/// event raised by `CwDecoder`, which raises them from `CwProbabilisticStream`
+/// event raised by `CwDecoder`, which raises them from the shape side
 /// and from nowhere else. That stream is fed audio and nothing but audio.</para>
 /// <para>**WHAT WOULD HAVE TO GO WRONG.** Somebody would have to call one of the
 /// four write methods from a path that is not the decoder's — the send panel, the
@@ -156,13 +157,15 @@ public sealed class SentTextNeverEntersTheReceivedStreamTests
     [Fact]
     public void ADecodedCharacterCarriesThePatternItWasReadFrom()
     {
-        var stream = new CwProbabilisticStream(8_000);
+        // Through the chain (work instruction 545): the shape side is what reaches the screen.
+        using var chain = new CwChain(8_000);
+        var stream = chain.Decoder;
         var settled = new List<CwCharacter>();
 
         stream.CharacterSettled += settled.Add;
 
         // Silence in, nothing out. There is no other way to make one.
-        stream.Process(new float[8_000 * 3]);
+        chain.Process(new AudioChunk(0, 8_000, new float[8_000 * 3]));
         stream.Flush();
 
         _output.WriteLine($"{settled.Count} characters out of three seconds of nothing");

@@ -13,7 +13,7 @@ namespace Hamlet.RadioEngine.Cw;
 /// <para>**THE OWNER, 2026-09-28**: *"An E followed by a T, if it's a real person doing CW, they
 /// will have the same amplitude. They will have the same pitch or frequency. They'll have a
 /// different duration. A dot or a dash is the only thing that varies."*</para>
-/// <para>**A SECOND, SIMPLER READER, BESIDE THE FIRST.** <see cref="CwProbabilisticDecoder"/> reads
+/// <para>**A SECOND, SIMPLER READER, BESIDE THE FIRST.** The probabilistic decoder, retired by work instruction 545, read
 /// one mixed stream and fits letters to timing alone; it was never given a mark's pitch or
 /// level. This reads the marks <see cref="CwEnvelopeDetector"/> calls, each with all three, and
 /// nothing else. The lattice, the speed grid, the unit estimator and the emission gate are not
@@ -673,7 +673,7 @@ public sealed class CwSenderGate
                 TimeSpan.FromSeconds(at))
             {
                 Stage = CwReadingStage.Settled,
-                SpanHops = (int)Math.Round((at - run[0].FromSeconds) * 1000 / CwProbabilisticDecoder.HopMilliseconds),
+                SpanHops = (int)Math.Round((at - run[0].FromSeconds) * 1000 / CwCharacter.HopMilliseconds),
             },
             Marks = run,
         });

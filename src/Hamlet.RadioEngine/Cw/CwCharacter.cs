@@ -127,6 +127,11 @@ public sealed record CwCharacter(
     /// </remarks>
     public double SpanLogLikelihoodRatio { get; init; } = double.NaN;
 
+    /// <summary>How long one hop of <see cref="SpanHops"/> is, in milliseconds.</summary>
+    /// <remarks>Moved here from the probabilistic decoder when it came out (work instruction 545); the sender gate counts
+    /// a printed letter's span in it and the scope places the letter by it.</remarks>
+    public const double HopMilliseconds = 5.0;
+
     /// <summary>How many hops this character spans, or nought where unmeasured.</summary>
     public int SpanHops { get; init; }
 
@@ -160,7 +165,7 @@ public sealed record CwCharacter(
     /// </summary>
     /// <remarks>
     /// <para>**SET BY THE STREAM FROM THE PATH'S OWN LATTICE** (work instruction
-    /// 442, task 2; <see cref="CwProbabilisticDecoder.RivalMargin"/>): the path's
+    /// 442, task 2; the probabilistic decoder's rival margin, retired by work instruction 545): the path's
     /// score for the reading emitted less its score for the best different
     /// reading of the same span, another letter or the same elements split, in
     /// natural log. Negative where a rival scores better.</para>
@@ -176,7 +181,7 @@ public sealed record CwCharacter(
     /// <remarks>
     /// <para>**A NUMBER BESIDE THE CHARACTER, NEVER A CLASS** (work instruction
     /// 464, task 2). Set by the stream where <see cref="MarginLlr"/> is set, by
-    /// <see cref="CwCharacterProbability.Of"/>: a logistic in the rival margin,
+    /// the character probability's logistic (retired by work instruction 545): a logistic in the rival margin,
     /// fitted once over the keyed corpus and measured held-out by recording in
     /// `docs/phase-requirements/calibration.md`. <see cref="Confidence"/>, the
     /// lattice, the class rule and every threshold are untouched by it, and

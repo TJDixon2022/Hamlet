@@ -213,7 +213,7 @@ public sealed class CwTrainingGraph
         var end = nowUtc - (heard > character.At ? heard - character.At : TimeSpan.Zero);
         var hasSpan = character.SpanHops > 0;
         var start = hasSpan
-            ? end - TimeSpan.FromMilliseconds(character.SpanHops * CwProbabilisticDecoder.HopMilliseconds)
+            ? end - TimeSpan.FromMilliseconds(character.SpanHops * CwCharacter.HopMilliseconds)
             : end;
 
         lock (_gate)

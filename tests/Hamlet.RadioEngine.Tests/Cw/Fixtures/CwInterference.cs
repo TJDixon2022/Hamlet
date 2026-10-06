@@ -55,8 +55,8 @@ public static class CwInterference
     /// <summary>The channel under every case.</summary>
     public const string Channel = "CH-AWGN";
 
-    /// <summary>The adjacent and co-channel stations' text: <see cref="CwTwoInOnePassband.OtherText"/>.</summary>
-    public const string AdjacentText = CwTwoInOnePassband.OtherText;
+    /// <summary>The adjacent and co-channel stations' text, the two-in-one passband's, kept when it came out (work instruction 545).</summary>
+    public const string AdjacentText = "DE N0AAA UP";
 
     /// <summary>INT-COCHAN's offset: inside the 45 Hz detector bandwidth, ±22.5 Hz about the tone.</summary>
     public const double CoChannelOffsetHz = 10;

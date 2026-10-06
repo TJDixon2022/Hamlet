@@ -230,10 +230,10 @@ public sealed class ThePitchInstrumentIsProvedTests
         var median = runs[1];
         var seconds = (double)audio.Samples.Length / audio.SampleRate;
         var instrumentHops = Math.Floor((seconds - CwPitchInstrument.WindowSeconds) / CwPitchInstrument.HopSeconds) + 1;
-        var decoderHops = seconds * 1000 / Hamlet.RadioEngine.Cw.CwProbabilisticDecoder.HopMilliseconds;
+        var decoderHops = seconds * 1000 / Hamlet.RadioEngine.Cw.CwCharacter.HopMilliseconds;
 
         _output.WriteLine(string.Create(Invariant,
-            $"cost | {name} | {audio.SampleRate} samples a second | {seconds:0.00} s | runs {runs[0] / 1000:0.0}, {runs[1] / 1000:0.0}, {runs[2] / 1000:0.0} ms | median {median / 1000:0.0} ms | {instrumentHops:0} instrument hops of {CwPitchInstrument.HopSeconds:0.0} s: {median / instrumentHops:0} us per instrument hop | {decoderHops:0} decoder hops of {Hamlet.RadioEngine.Cw.CwProbabilisticDecoder.HopMilliseconds:0} ms: {median / decoderHops:0.0} us per decoder hop | {windows.Count} windows keyed"));
+            $"cost | {name} | {audio.SampleRate} samples a second | {seconds:0.00} s | runs {runs[0] / 1000:0.0}, {runs[1] / 1000:0.0}, {runs[2] / 1000:0.0} ms | median {median / 1000:0.0} ms | {instrumentHops:0} instrument hops of {CwPitchInstrument.HopSeconds:0.0} s: {median / instrumentHops:0} us per instrument hop | {decoderHops:0} decoder hops of {Hamlet.RadioEngine.Cw.CwCharacter.HopMilliseconds:0} ms: {median / decoderHops:0.0} us per decoder hop | {windows.Count} windows keyed"));
     }
 
     /// <summary>

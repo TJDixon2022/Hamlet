@@ -188,10 +188,13 @@ public sealed class TheInterferenceProfilesAreWhatTheySayTests
 
         if (spec.ProfileId == "INT-COCHAN")
         {
-            var half = CwProbabilisticDecoder.IntegratorBandwidthHz / 2;
+            // The co-channel profile was defined against the retired probabilistic decoder's 45 Hz Hann integrator, kept
+            // here as the profile's own figure (work instruction 545).
+            const double integratorBandwidthHz = 45.0;
+            var half = integratorBandwidthHz / 2;
             var offset = stations[0].Hz - wanted.Hz;
             Check(Math.Abs(offset) < half && Math.Abs(offset) > OffsetToleranceHz,
-                string.Create(Invariant, $"INT-COCHAN: the second station {offset:+0.000;-0.000} Hz from the wanted, inside the detector bandwidth ({CwProbabilisticDecoder.IntegratorName}, {CwProbabilisticDecoder.IntegratorBandwidthHz:0} Hz, so within ±{half:0.0} Hz) and not on the wanted's own pitch"));
+                string.Create(Invariant, $"INT-COCHAN: the second station {offset:+0.000;-0.000} Hz from the wanted, inside the detector bandwidth (Hann, {integratorBandwidthHz:0} Hz, so within ±{half:0.0} Hz) and not on the wanted's own pitch"));
         }
 
         if (spec.ProfileId == "INT-PILEUP")
