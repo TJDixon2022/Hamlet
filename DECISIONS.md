@@ -4,6 +4,54 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-252
+date: 2026-10-06
+refs: work instruction 548, HM-DEC-251, HM-DEC-093, R88, src/Hamlet.RadioEngine/Cw/CwLiveFeed.cs, src/Hamlet.RadioEngine/Cw/CwDecoder.cs, src/Hamlet.RadioEngine/Audio/AudioTap.cs, src/Hamlet.App/ViewModels/MainWindowViewModel.cs, src/Hamlet.App/ViewModels/CwHearingViewModel.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheLiveFeedTests.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheLiveFeedIsCountedTests.cs, tests/Hamlet.RadioEngine.Tests/Cw/ASenderHeldFromBeforeTests.cs
+---
+
+**What goes wrong live.** Ordered by the owner in work instruction 548, 2026-10-06. **The owner: *"We were perfect on W1AW before."***
+
+R88 is lifted for the owner's twelve recordings, the three scan catches in the tree and W1AW's `cw-2026-10-06-212015`, and no other.
+
+**What reproduced the junk: lost audio.**
+- **Fed cleanly**, W1AW's recording reads `PE II AND TYPE IV RADIO EMISSIONS HOWEVER, THIS NME IS` through the chain, in 10, 50 or 100 ms chunks, the second pass after the first as history.
+- **Fed with audio lost**, it prints the live junk's kind:
+  - one 50 ms chunk lost a second gives `TYAEE IEA RADIO EMII EEIOTS` (28 right, 9 wrong of 44);
+  - a 200 ms stall every 5 s gives `IND TYPE ■` and `HWWEUERT■` (34 right, 4 wrong);
+  - a 200 ms stall every 2 s gives 25 right, 13 wrong;
+  - one 10 ms chunk in a hundred lost reads clean.
+- **A chunk late but not lost reads the same**: nothing in the chain reads a wall clock.
+- That the shack machine lost audio that evening is not shown, because its telemetry is not on this computer. The counters below are how the next W1AW session will tell.
+
+**Why the live path could lose audio.**
+- The decoder and the detector both ran inside WASAPI's capture callback. NAudio's shared-mode capture reads a 100 ms device buffer about every 50 ms, and a callback longer than the buffer is audio the device overwrote, of which the chain was never told.
+- The CW decode had run on that thread since the hand-off was taken out on 2026-09-23.
+- On this machine the chain costs 4.7% to 9.0% of real time with one or three senders held, and its worst 50 ms chunk 15 to 22 ms. The shack machine's worst callback was once measured at 91 ms.
+
+**What was fixed.**
+- **The live path loses no audio to a slow decode.** `CwLiveFeed` copies each chunk into a bounded queue (`AudioHandoff`) and returns; the chain drains it on a thread of its own; the tap is still fed on the callback, for Record and FT8.
+- The longest callback fell from about 18 ms to 0.08 ms.
+- W1AW through the queue reads character for character what the chain reads fed directly.
+- If the decode falls the queue's 30 chunks behind, the oldest is dropped and counted.
+
+**Not built: a hole in the audio is told to the gate.** Leaving unprinted the letter whose mark spans a hole, or whose gap crosses one, longer than half the sender's dit, read worse as often as better:
+- one chunk a second: 20 right, 11 wrong, against 28 and 9;
+- stalls every 5 s: 37 and 3, against 34 and 4;
+- stalls every 2 s: 29 and 10, against 25 and 13.
+
+**Counted again.**
+- The capture sheet carries `audio  lost 0 ms, longest stall 0 ms, queue peak 1`.
+- Every verdict row carries `audioLostMs`, `audioLostLastMinuteMs`, `audioStallMs` and `audioQueuePeak`.
+- The story line says so when audio was lost in the last minute.
+- What is lost counts what the queue dropped, and what the capture fell short of real time by, past one 100 ms buffer of clock jitter. A test drops audio on a fake clock and reads it back.
+
+**Record keeps up to five minutes.** The length is a setting beside the scan's, 30 s by default, kept across restarts, and it takes effect when Hamlet next starts listening. Five minutes at 48 kHz is about 58 MB of floats.
+
+**What the senders were: not found.** After five minutes of band noise and a weaker station at 650 Hz that stops, the second station prints, is let go, and W1AW takes the terminal and reads whole. A sender held from before did not take it. A capture from the moment Hamlet starts listening is still how the live sheet's 550 and 650 Hz senders can be traced.
+
+The scoreboard reads 227 throughout. Nothing keys or transmits, and nothing is written to the radio.
+
+---
 id: HM-DEC-251
 date: 2026-10-06
 refs: work instruction 547, HM-DEC-250, R88, docs/cw-scoreboard.md, src/Hamlet.RadioEngine/Cw/CwSenderGate.cs, src/Hamlet.RadioEngine/Cw/CwRules.cs, tests/Hamlet.RadioEngine.Tests/Cw/AStationsShadowIsNotAStationTests.cs, tests/Hamlet.RadioEngine.Tests/Cw/AFarnsworthBulletinReadsAsWordsTests.cs, tests/Hamlet.RadioEngine.Tests/Scan/ADipInsideOneToneTests.cs, tests/Hamlet.RadioEngine.Tests/Scan/TheWeakFastStationTests.cs

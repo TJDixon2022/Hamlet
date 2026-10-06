@@ -1,150 +1,131 @@
 ## 1. What Claude did
 
-Development computer, project gate `PROJECT: Hamlet` checked against `PROJECT_CARD.md`, the order's five checks and `Hamlet.sln`: Hamlet confirmed. Nothing here is evidence about the radio. Branch `main`. Run by hand: `SESSION.lock` taken at 17:31:22 and released at the end, nothing written to `RUN_LEDGER.md`, nothing under `tools\arbiter\` touched, no box ticked in `PHASE_PLAN.md`. Version 1.13.231 to 1.13.232. Ruling HM-DEC-251, the number the order gave. Nothing was recorded under §12.1.
+Development computer, project gate `PROJECT: Hamlet` checked against `PROJECT_CARD.md`, the order's five checks and `Hamlet.sln`: Hamlet confirmed. Nothing here is evidence about the radio. Branch `main`. Run by hand: `SESSION.lock` taken at 18:30:34 and released at the end, nothing written to `RUN_LEDGER.md`, nothing under `tools\arbiter\` touched, no box ticked in `PHASE_PLAN.md`. Version 1.13.232 to 1.13.233. Ruling HM-DEC-252, the number the order gave. Nothing was recorded under §12.1.
 
-**Task 1, a station's shadow** (`e342d2be`): the hypothesis was tested and not borne out. W1AW's stretch joins the board.
-- **The recording, through the app's chain at the radio's own pitch and filter:**
-  - read cold, the gate holds **one** sender, at 600 Hz, and prints nothing at another pitch;
-  - heard three and six times end to end, which is minutes of the same station as the live session had, it still holds one sender with no handover.
-- **The detector's candidates beside W1AW:**
-  - 4 at 550 Hz and 7 at 650 Hz in 30 s, at about -25 dB, the noise level of every other pitch;
-  - **none begins and ends in step with a W1AW mark.**
-- **A strong call keyed hard**, with no shaping, holds one sender and reads whole (a test).
-  - Steady tones 50 Hz either side, keyed with it, are not a key's sidebands: they beat with the call as 50 Hz amplitude modulation and the call prints nothing. That model was set aside.
-- **What follows:** the 550 and 650 Hz senders on the live sheet were built in the two and a half minutes before the 30 s the recording holds. No change in the tree could be named as letting skirts stand, because none was shown. No shadow rule was built.
-- **The board:** `cw-2026-10-06-212015` joins as its thirteenth stretch, high confidence, with the reference the order gave.
-  - It reads 40 of 44 and 10 of 10 spaces. The 4 wrong are the cold-start opening, `E NE II AEED` for `PE II AND`; with history in front the same audio reads `PE II AND`.
-  - **The total with it is 227** (248 of 288 right, 19 wrong, 2 invented, 65 of 87 spaces, 3 added). **Without it, 191**, as at HEAD.
-- The recording and its sheet were already committed (`af1277e8`).
+**Task 1, the live fault on the bench** (`78f87f33`):
+- **How live audio reaches the chain:**
+  - `WasapiAudioSource` opens the device with a 100 ms buffer. NAudio's shared-mode capture reads it about every 50 ms and raises one chunk of about 2,400 samples at 48 kHz on WASAPI's own thread.
+  - The decoder and the detector were both subscribed straight to that event, so the whole chain ran inside the capture callback.
+  - The CW decode has run there since its hand-off queue was taken out on 2026-09-23.
+- **The reproduction:** W1AW's recording fed through the chain twice, the second pass with the first as history.
+  - Clean feeds, in any chunk size, read whole.
+  - Lost audio prints the junk's kind (the table is in section 3).
+  - A late chunk is the same chunk to the chain, which counts samples and reads no clock.
+- **The cause shown:** audio lost before it reaches the chain. That the shack machine lost audio that evening is not shown, since its telemetry is not on this computer.
+- **Fixed, the first place:** `CwLiveFeed` takes the chain off the capture thread.
+  - The callback feeds the tap, as before, and copies the chunk into a bounded queue (`AudioHandoff`, the queue the waterfall already uses).
+  - The chain drains the queue on its own thread.
+  - The longest callback fell from about 18 ms (the chain's worst 50 ms chunk) to 0.08 ms.
+  - W1AW through the queue reads exactly what the chain reads fed directly (a test).
+- **The second place, not built:** telling the gate where audio went missing, so that no letter measured across a hole prints.
+  - Built twice and measured; in its best form it ignores holes shorter than half the sender's dit and drops only the letter a hole lies in.
+  - It read better on stalls and worse on frequent short losses (section 3), so it was taken out.
+  - The feed still counts every hole.
+- **The cost** (section 3): 4.7% to 9.0% of real time on this machine, the worst 50 ms chunk 15 to 22 ms against the 100 ms buffer.
+- The scoreboard reads 227, unchanged.
 
-**Task 2, Farnsworth ships** (`f8135413`):
-- The rule was applied from `.run-unit\unit546-spacing.patch` with my trace hooks removed, and without the `>=`.
-- 227, 65 of 87 spaces, added 3 to 2. The only change on the board is one added space that goes, on 221745.
-- `AFarnsworthBulletinReadsAsWordsTests` now asserts the slow section reads as words after ordinary sending, and passes 6 of 6.
+**Task 2, audio continuity counted** (`450b379e`):
+- **The sheet:** a capture sheet line, `audio      lost 0 ms, longest stall 0 ms, queue peak 1`, with a note saying what each means.
+- **Every verdict row:** `audioLostMs`, `audioLostLastMinuteMs`, `audioStallMs` and `audioQueuePeak`. The two tests that pin the row's fields gained the four.
+- **The story line:** when audio went missing in the last minute it adds *"Some audio never reached the decoder, about 340 milliseconds of it in the last minute, so letters around then may be missing or wrong."*
+- **The test** (`TheLiveFeedIsCountedTests.TheCountersReadWhatWasDropped`): a fake capture on a fake clock. It counts:
+  - the loss after one 100 ms buffer of jitter;
+  - the 400 ms stall;
+  - the hole;
+  - the chunks.
 
-**Task 3, the six points** (`226cfbdb`): explained and not shipped.
-- With the gap kept, the board reads 233 (251 right, 16 wrong) but 64 of 87 spaces, 3 added.
-- The whole gain is on 221745 at 502 Hz: the gap is a 685 ms pause before the sender's newer-speed marks, which becomes its word cluster and demotes its real 390 ms word gaps to letter gaps. The full chain is in section 3.
-- **Not from what a sender does**: a pause is neither speed's spacing. Reverted.
+**Task 3, Record keeps longer** (`fa0f40d1`):
+- A setting, `Record keeps, seconds`, 30 to 300 in steps of 30. It is the fifth row in the scan's settings popover (the `⋯` beside Scan), saved the moment it changes, in `settings.json` as `RecordSeconds`.
+- The tap is sized when Hamlet starts listening, so a new length takes effect the next time it does.
+- The Record button's hover says the length in words, *"Records the last 5 minutes"*, and the sheet's `seconds` line already says how long each recording is.
+- **The cost:** the tap holds 32-bit floats, not 16-bit samples, so five minutes at 48 kHz is about **58 MB**, not 29 MB. A press copies it once more while it writes.
 
-**Task 4, a dip inside one tone** (`e776af07`): measured; the rule did not ship.
-- The depths separate in part (section 3).
-- Joining across a dip that stays under 0.6 of the contrast, held in the sender's window, scored 226, with an invented `E` on 221745, and joined none of the nine. Most likely the joined stretch then fails the mark's shape test, the dip still in its top.
-- The main catch rose from 109 to 112 of 152. Reverted.
-
-**Task 5, a weak dah's top** (`827a7862`, the drop candidate): found, and the fix did not ship.
-- A weak dah's top does break the flat-top tolerance (section 3).
-- A tolerance taking the noise's extreme over the run's looks read 230 and 68 of 87 spaces, 4 added. But it **broke the first recording's hard limit** (`FEN` for `FER`), and the 10 dB call still kept 5 dahs. Reverted.
+**Task 4, what the senders were** (`8cb3913f`): W1AW's recording after five minutes of band noise at its own floor, and a station 10 dB weaker at 650 Hz keying for the first four.
+- The second station printed and was let go when it stopped.
+- W1AW then took the terminal and read whole.
+- No sender held from before took it, and there was nothing to fix.
 
 **Records:**
-- `docs\cw-scoreboard.md`: one row per task.
-- `PHASE_OUTCOME.md`, both copies: `## UNIT 547 - STEP 12`.
-- `PHASE_STATUS.md`, both copies: names 547.
-- `Directory.Build.props`: 1.13.232.
-- `CLAUDE.md` §1: a row above HM-DEC-250.
-- `DECISIONS.md`: HM-DEC-251.
+- `docs\cw-scoreboard.md`: a row per task.
+- `PHASE_OUTCOME.md`, both copies: `## UNIT 548 - STEP 12`.
+- `PHASE_STATUS.md`, both copies: names 548.
+- `Directory.Build.props`: 1.13.233.
+- `CLAUDE.md` §1: a row above HM-DEC-251.
+- `DECISIONS.md`: HM-DEC-252.
 
-**Build** `-warnaserror`: no warnings, no errors. **App carry-forward:** 278 of 278.
+**Build** `-warnaserror`: no warnings, no errors.
+
+**App carry-forward:** 277 of 278. The loss is `TheStopIsAlwaysOnScreenTests.AtEachOf354sNineSizesStopIsInTheStatusBarAndOnTheWindow`, the dispatcher-loop test unit 544 named, which passes in its own class (5 of 5).
 
 ## 2. What the owner should expect
 
 Rebuild and run as usual.
 
-- **The W1AW junk was not its own shadows, as far as the recording can show.** The 30 seconds you kept hold one station and nothing keyed in step beside it. Read through Hamlet as it is now, the bulletin reads `PE II AND TYPE IV RADIO EMISSIONS HOWEVER, THIS NME IS`, the `NME` where the signal weakens at the end, with history in front of it. Read cold from the file's first second, it starts `E NE II AEED`, because Hamlet waits a word before it picks a station.
-  - The two extra senders on your sheet grew in the minutes before the recording. What they were is not in this file. A longer capture of W1AW, from the moment Hamlet starts listening, would show it.
-- **W1AW's slow sections now read as words**, even when Hamlet was already listening to ordinary-speed sending before them. The first letter or two of the slow section can still be lost, since it takes three gaps to see the spacing has changed.
-- **The six points were one long pause** on your 22:17:45 recording, which pulled that sender's word line up. It happened to keep `40M` whole and cost a real space. It did not ship.
-- **The broken dahs still read as two dits.** Your real gaps always fall much deeper than most of those dips, so depth can tell them apart. But the joined dah is then refused by the detector's own shape test. That is the next place to look.
-- **The weak fast station is unchanged.** Its dahs' tops wobble more than the detector allows at that strength. Widening the allowance helped elsewhere but broke the first recording, so it did not ship.
-- **The score:** 191 on your twelve recordings before and after. With W1AW's bulletin added to the board, 227, and spaces 65 of 87 with added falling from 3 to 2.
+- **The live W1AW junk was reproduced on the bench, by losing audio.** When pieces of audio go missing before the decoder sees them, its dahs come out as dits and its letters run together, which is exactly the `E I S A N` kind of junk you saw. The same recording fed whole reads clean every time.
+  - Hamlet was doing all its CW decoding inside the sound card's own delivery call. A slow moment there costs audio the sound card throws away, and nothing told the decoder.
+  - The decoding now runs behind a queue, on its own thread, so a slow moment costs nothing unless the decoder falls well behind, and then it is counted. Whether your shack machine was losing audio that evening I cannot see from here. The new audio line will say.
+- **The new line on the capture sheet** reads like `audio      lost 0 ms, longest stall 12 ms, queue peak 3`. Look at **lost** first: anything over nought means the decoder missed audio. A **longest stall** near or over 100 ms means the sound card's thread waited long enough to lose audio. A **queue peak** that climbs into the twenties means the decoder is falling behind. The story line under the terminal also says so whenever audio went missing in the last minute.
+- **To set Record longer:** press the small `⋯` beside **Scan**, set **Record keeps, seconds** to 300, then stop and start listening so it takes. Five minutes holds about 58 MB while Hamlet listens.
+- **At the next W1AW session:**
+  1. Set Record to five minutes.
+  2. Start listening before W1AW starts.
+  3. Press Record the moment junk appears.
+  4. Send the capture and its sheet.
+
+  The sheet's audio line will say whether audio was lost, and the five minutes will show where the extra senders came from.
+- **The extra senders at 550 and 650 Hz:** in a bench case with a weaker station that stops before W1AW, nothing held over took the terminal. What they were on the air is still to be seen in a long capture.
+- **The score:** 227 with W1AW's bulletin, 191 on your twelve recordings, the same before and after.
 
 ## 3. What you should see
 
-**The scoreboard after each task** (with W1AW's stretch from task 1 on; at HEAD 191, 208 of 244, 15 wrong, 55 of 77 spaces, 3 added):
+**The live-feed table** (W1AW's recording, fed twice; the second pass, scored against `PE II AND TYPE IV RADIO EMISSIONS HOWEVER, THIS CME IS`):
 
-| unit | right | wrong | invented | score | printed in silence | spaces | what changed |
-|---|---|---|---|---|---|---|---|
-| 547 task 1 | 248 of 288 (208 of 244) | 19 (15) | 2 | **227** (191) | 1 | 65 of 87, 3 added (55 of 77, 3) | W1AW joins the board; no shadow rule |
-| 547 task 2 | 248 of 288 | 19 | 2 | **227** | 1 | 65 of 87, **2 added** | Farnsworth ships |
-| 547 task 3 | 248 of 288 | 19 | 2 | **227** | 1 | 65 of 87, 2 added | the gap measured at 233, 64 spaces; not shipped |
-| 547 task 4 | 248 of 288 | 19 | 2 | **227** | 1 | 65 of 87, 2 added | the dip join measured at 226; not shipped |
-| 547 task 5 | 248 of 288 | 19 | 2 | **227** | 1 | 65 of 87, 2 added | the long-top tolerance measured at 230, first recording `FEN`; not shipped |
-
-**W1AW, the senders and handovers** (before and after are the same, since no rule changed what the gate holds):
-
-| read | senders at the end | handovers | printed away from 600 Hz |
+| way of feeding | lost | the second pass prints | right, wrong of 44 |
 |---|---|---|---|
-| once, cold | 600 Hz, shape 0.59, 110 marks, printed | 4.13 s on; released 18.36-18.74 s and 27.29-28.23 s | nothing |
-| three times | 600 Hz, 334 marks | the same in each pass | nothing |
-| six times | 600 Hz, 670 marks | the same in each pass | nothing |
-| live sheet (not reproducible) | 600 Hz 0.59 printed; 650 Hz 0.71, 71 marks; 550 Hz 0.59, 37 marks | — | — |
+| 10 ms chunks, nothing lost (the scoreboard's) | 0 | `EPE II AND TYPE IV RADIO EMISSIONS HOWEVER, THIS NME IS` | 43, 1 |
+| 50 ms chunks, nothing lost (the live capture's) | 0 | the same | 43, 1 |
+| 100 ms chunks, nothing lost | 0 | `S EPE II AND TYPE IV ...` | 43, 1 |
+| 10 ms chunks, one in a hundred lost | 600 ms | the same as clean | 43, 1 |
+| 50 ms chunks, one a second lost | 3,000 ms | `IS IME IS EEGE II AND TYAEE IEA RADIO EMII EEIOTS HOWEVER, TH` | 28, 9 |
+| 50 ms chunks, a 200 ms stall every 5 s | 2,400 ms | `ND IS EPE II IND TYPE ■ RADIO EAISSIONS HOWEVER■ THIS` | 34, 4 |
+| 50 ms chunks, a 200 ms stall every 2 s | 6,000 ms | `E■ II IND ■■ IVRADEO EAISSEONI HWWEUERT■ TSIS IME 5` | 25, 13 |
+| late but not lost | 0 | the same as clean: the chain reads no clock | 43, 1 |
 
-| candidates by pitch, one pass | count | level | in step with a 600 Hz mark |
-|---|---|---|---|
-| 600 Hz | 118 | -18.0 dB | — |
-| 550 Hz | 4 | -24.7 dB | 0 |
-| 650 Hz | 7 | -25.3 dB | 0 |
-| every other pitch, 375-850 Hz | 1 to 13 each | -24 to -33 dB | 0 |
+With the gate told where audio went missing (measured, not built):
 
-**Task 3, letter by letter on 221745 at 502 Hz:**
+| way of feeding | right, wrong |
+|---|---|
+| one a second lost | 20, 11 |
+| a 200 ms stall every 5 s | 37, 3 |
+| a 200 ms stall every 2 s | 29, 10 |
+| one in a hundred lost | 43, 1 |
 
-| at | gap kept out (as shipped) | gap kept in |
-|---|---|---|
-| lines | letter line 87 ms, word line 298 ms; letter cluster 3 at 195 ms, word 1 at 390 ms | letter line 95-113 ms, word line 283-456 ms; letter cluster 3 at 248-299 ms, word 1 at 401-685 ms |
-| 6.37-7.38 s | `M`, then `N` with no space before | `M`, then ` N` (gap 283 ms, at the word line 283 ms): **a space added** |
-| 8.13 s | ` 4` (gap 405 ms past 298 ms): right | `4` (gap 401 ms under 456 ms): **a space lost** |
-| 9.08-10.35 s | `M E M` (the `0` cut into three) | `0`: **three letters right** |
+**The cost table** (this machine; 48 kHz in 50 ms chunks; W1AW's recording with synthetic stations added):
 
-- **The stretch:** `TMN 4MEMM` (18 right, 9 wrong) becomes `TM N40M` (21 right, 6 wrong).
-- **On 143951** (low, not counted): the larger lines remove spaces before `K` and `E`.
-- **On 221851** (low): letters regroup with no gain.
-
-**The dips against key-up**, on the sender's own window, each as the share of the sender's contrast it falls through:
-
-| | count | min | 5th percentile | median | max |
+| stations | senders held at the end | per second of audio | of real time | worst 50 ms chunk | against the buffer |
 |---|---|---|---|---|---|
-| the nine dips | 9 | 0.47 | 0.47 | 0.59 | 1.24 |
-| real gaps inside a letter, all stretches and the catch | 966 | 0.65 | 0.83 | 1.51 | 3.46 |
+| W1AW alone | 1 | 89.8 ms | 9.0% (with the first run's warm-up) | 20.0 ms | 100 ms |
+| W1AW and 2 more | 3 | 57.0 ms | 5.7% | 21.8 ms | 100 ms |
+| W1AW and 5 more | 3 (six did not stand) | 47.0 ms | 4.7% | 15.4 ms | 100 ms |
 
-| under this share of the contrast | dips | real gaps |
-|---|---|---|
-| 0.5 | 2 of 9 | 0 of 966 |
-| 0.6 | 5 of 9 | 0 of 966 |
-| 0.7 | 6 of 9 | 6 of 966 |
-| 0.8 | 6 of 9 | 31 of 966 |
+The margin here is about five times the worst chunk. Through the queue, the callback's longest is 0.08 ms.
 
-**The nine dahs**, as shipped (unchanged by this unit) and with the dip join that did not ship:
+**The counters' test** (a fake capture, a fake clock, 50 ms chunks at 8 kHz):
 
-| at | depth | as shipped | with the join |
-|---|---|---|---|
-| 3.54 s | 0.47 | `. .` | `. .` |
-| 31.62 s | 1.06 | `. . .` | `. . .` |
-| 32.65 s | 1.24 | `. .` | `.` then `.` in the next letter |
-| 40.69 s | 0.66 | `. .` | `. .` |
-| 49.17 s | 0.83 | `. . .` | `. . .` |
-| 52.14 s | 0.59 | `. .` | `. .` |
-| 53.63 s | 0.54 | `. . .` | `. . .` |
-| 69.54 s | 0.49 | `. . .` | `.` |
-| 72.11 s | 0.50 | `. . .` | `. . .` |
+| moment | lost | longest stall | queue peak | holes | chunks |
+|---|---|---|---|---|---|
+| after 20 chunks on time | 0 ms | 0 ms | 19 | 0 | 20 |
+| after 400 ms of nothing, then a chunk whose place jumps a second | 250 ms (350 lost, less the 100 ms of jitter allowed for) | 400 ms | 21 | 1 | 22 |
 
-The main catch read 109 of 152 against its pending reference at HEAD, and 112 with the join.
-
-**The weak dah's top**, rebuilt offline on the bin's own 10 ms Hann window at the tone every 5 ms, for a 25 WPM call:
-
-| tone over noise | bin contrast | tolerance | dahs holding their top | top spread, median / 95th / max |
-|---|---|---|---|---|
-| 20 dB | 27.2 dB | 1.50 dB | 65 of 66 | 0.70 / 1.04 / 1.66 dB |
-| 12 dB | 18.6 dB | 1.50 dB | 14 of 66 | 1.83 / 2.64 / 4.75 dB |
-| 10 dB | 16.7 dB | 1.50 dB | 3 of 66 | 2.40 / 3.09 / 4.15 dB |
-
-With the long-top tolerance, the 10 dB call still stands 70 marks, 5 of them dahs, and prints nothing. 143906 also prints nothing, where it printed junk.
+The queue peak of 19 is the test delivering faster than its worker reads. Live, chunks come every 50 ms.
 
 ## 4. What's blocking us
 
-- **The live W1AW senders at 550 and 650 Hz cannot be traced from this recording.** A capture that starts when Hamlet starts listening to W1AW would.
-- **The broken dahs** need the mark's own shape test to see a dip inside one tone. The depth rule alone joins none, though the depths do separate.
-- **The weak fast station** needs a second flatness check found and measured. The run test is not the only one holding a weak top back, and widening it broke `FER`.
-- **The old CW read guards** (`TheAdjudicatedReadingsKeepReadingTests`, the 08-25 cases of `TheCapturesThatDecodeKeepDecodingTests`, `CwFixtureTests.TheCleanRecordingsDecodeExactly`) are still not touched, and still wait on your ruling about replacing them with the scoreboard.
+- **Whether the shack machine lost audio** on 2026-10-06 is not shown. The next W1AW session's audio line answers it.
+- **The 550 and 650 Hz senders on the live sheet** wait on a five-minute capture from the start of listening.
+- **The scan's ear** runs a second chain on the capture thread while a scan is on. It was not moved behind a queue in this unit.
+- **A hole in the audio is not told to the gate.** The measured rule was mixed, and a better one would need to know which letter a hole really cut.
+- **The old CW read guards** are still untouched, and still wait on your ruling about replacing them with the scoreboard.
 - **`TheLoneLettersInsideWordsStillPrint("DE DE")`** is red, as before this unit.
 - **The silence limit stays red at one letter,** and **the carrier limit at seed 5195,** as at HEAD.
 
