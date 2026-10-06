@@ -187,17 +187,6 @@ public sealed record CwCharacter(
     public double Probability { get; init; } = double.NaN;
 
     /// <summary>
-    /// What the arbiter did with this character's span, or null where it did not
-    /// pass through one (HM-REQ-121, 126, 127).
-    /// </summary>
-    /// <remarks>
-    /// **FOR THE CAPTURE SHEET, NEVER THE CW TAB** (work instruction 465). It says
-    /// which decoder's character was emitted and carries the other's; the tab
-    /// shows one transcript and names no decoder (HM-REQ-121).
-    /// </remarks>
-    public CwArbitration? Arbitration { get; init; }
-
-    /// <summary>
     /// The rival reading <see cref="MarginLlr"/> was taken against, dits and dahs
     /// with a space where it splits the letter; null where there is none.
     /// </summary>
