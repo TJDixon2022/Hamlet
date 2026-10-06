@@ -206,6 +206,9 @@ public partial class MainWindowViewModel : ObservableObject
     /// </summary>
     private CwEnvelopeDetector? _envelope;
 
+    // The chain fed from a queue off the capture's thread, and its audio counters (work instruction 548).
+    private CwLiveFeed? _liveFeed;
+
     /// <summary>Asks the time servers how far the machine's clock is out.</summary>
     /// <remarks>
     /// **EVERY TEN MINUTES, AND THE INTERVAL IS REASONED.** A PC clock the
@@ -11459,7 +11462,7 @@ public partial class MainWindowViewModel : ObservableObject
         // working Morse.
         _lastCharacterUtc = DateTime.MinValue;
         _lastDecodeUtc = DateTime.UtcNow;
-        _decoder.Listen(_audioInput);
+        // Fed by the live feed below, behind the queue (work instruction 548).
 
         // **THE DIGITAL WATERFALL RIDES ALONG** (work instruction 038). It
         // subscribes to the same event and never starts or stops the source, so
@@ -11473,7 +11476,7 @@ public partial class MainWindowViewModel : ObservableObject
         // **THE OSCILLOSCOPE RIDES ALONG TOO** (work instruction 476, HM-DEC-185). The same
         // samples the decoder gets, walked at the same hop; it drives nothing.
         _envelope = new CwEnvelopeDetector(_audioInput.SampleRate);
-        _envelope.Listen(_audioInput);
+        // Fed by the live feed below, behind the queue (work instruction 548).
 
         // **ONE WIRING FOR EVERY LISTENER** (work instruction 542, HM-DEC-246): the detector and the decoder are wired to each
         // other by CwChain.Wire, the one place every listener - this window, the scoreboard, the scan's ear - takes its wiring
@@ -11481,6 +11484,12 @@ public partial class MainWindowViewModel : ObservableObject
         // hears, the reading follows what the terminal prints, the light claims no more than the printer, a letter needs
         // blocks, and the gate reads the detector's marks.
         CwChain.Wire(_decoder, _envelope);
+
+        // **THE CHAIN RUNS BEHIND A QUEUE, OFF THE CAPTURE'S THREAD** (work instruction 548, HM-DEC-252): the decoder and the
+        // detector ran inside the capture's callback, and a callback that runs past the device's buffer is audio the device
+        // overwrote. The tap is fed on the capture's thread as before; the chain catches up on its own, and what it drops is counted.
+        _liveFeed = new CwLiveFeed(_decoder, _envelope);
+        _liveFeed.Listen(_audioInput);
 
         _audioInput.Start();
 
@@ -11563,6 +11572,8 @@ public partial class MainWindowViewModel : ObservableObject
         _decodeTimer.Stop();
         _scopeTimer.Stop();
 
+        _liveFeed?.Dispose();
+        _liveFeed = null;
         _envelope?.Listen(null);
         _envelope = null;
         CwHearing.ObserveScope(CwScopeFrame.Empty);

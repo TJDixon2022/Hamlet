@@ -254,7 +254,15 @@ public sealed class CwDecoder
 
     /// <summary>Feed samples directly, without a source.</summary>
     /// <param name="chunk">The samples.</param>
-    public void Process(in AudioChunk chunk)
+    public void Process(in AudioChunk chunk) => Process(chunk, tap: true);
+
+    /// <summary>Feed samples, tapping them or not.</summary>
+    /// <param name="chunk">The samples.</param>
+    /// <param name="tap">
+    /// False where the tap was fed already, on the capture's own thread, and this is the decode catching up behind a queue
+    /// (work instruction 548): a sample tapped twice would double what Record and FT8 read.
+    /// </param>
+    public void Process(in AudioChunk chunk, bool tap)
     {
         // **THE AUDIO CLOCK A SETTLED CHARACTER'S `At` IS READ ON** (work instruction 480 task 3): every sample handed
         // here, suspended or not.
@@ -262,7 +270,10 @@ public sealed class CwDecoder
 
         // **THE TAP STILL TAKES IT.** A capture is the raw evidence of what arrived at the sound card, and audio the
         // operator made himself is part of that (§0.0.1). What it does not do is reach the gate.
-        Tap.Take(chunk.Samples, chunk.SampleRate);
+        if (tap)
+        {
+            Tap.Take(chunk.Samples, chunk.SampleRate);
+        }
 
         // **THE RUNS, FROM THE DETECTOR'S MARKS** (work instruction 490). While the radio is sending or a digital mode is
         // up the marks are taken and dropped, never read, held or released later (HM-DEC-147).
