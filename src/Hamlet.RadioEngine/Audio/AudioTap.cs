@@ -75,6 +75,26 @@ public sealed class AudioTap
     /// </remarks>
     public const int SecondsKept = 30;
 
+    /// <summary>The most a tap may keep, in seconds: five minutes (work instruction 548, task 3).</summary>
+    /// <remarks>
+    /// Five minutes at 48 kHz is 14.4 million samples, held as 32-bit floats: about 58 MB, and a capture copies it once more
+    /// while it writes. It is the operator's to choose, for catching what came before a fault, and never the default.
+    /// </remarks>
+    public const int MaximumSecondsKept = 300;
+
+    /// <summary>A tap that keeps the default thirty seconds.</summary>
+    public AudioTap()
+        : this(SecondsKept)
+    {
+    }
+
+    /// <summary>A tap that keeps a stated length of audio (work instruction 548, task 3).</summary>
+    /// <param name="secondsKept">How much to keep, held between one second and <see cref="MaximumSecondsKept"/>.</param>
+    public AudioTap(int secondsKept) => KeptSeconds = Math.Clamp(secondsKept, 1, MaximumSecondsKept);
+
+    /// <summary>How much audio this tap keeps, in seconds.</summary>
+    public int KeptSeconds { get; }
+
     /// <summary>Over how long the level is measured.</summary>
     /// <remarks>
     /// A fifth of a second, which is a few Morse elements at any speed. Short
@@ -207,7 +227,7 @@ public sealed class AudioTap
             if (_sampleRate != sampleRate)
             {
                 _sampleRate = sampleRate;
-                _ring = new float[Math.Max(1, sampleRate * SecondsKept)];
+                _ring = new float[Math.Max(1, sampleRate * KeptSeconds)];
                 _write = 0;
                 _filled = 0;
                 _levelWanted = Math.Max(1, (int)(sampleRate * LevelSeconds));

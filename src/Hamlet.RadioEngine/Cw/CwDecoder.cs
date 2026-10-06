@@ -40,8 +40,17 @@ public sealed class CwDecoder
     /// <summary>Creates a decoder.</summary>
     /// <param name="sampleRate">Samples per second.</param>
     public CwDecoder(int sampleRate)
+        : this(sampleRate, AudioTap.SecondsKept)
+    {
+    }
+
+    /// <summary>Creates the decoder with a tap that keeps a stated length of audio for Record (work instruction 548, task 3).</summary>
+    /// <param name="sampleRate">The audio's sample rate.</param>
+    /// <param name="tapSeconds">How many seconds the tap keeps: thirty by default, up to five minutes.</param>
+    public CwDecoder(int sampleRate, int tapSeconds)
     {
         SampleRate = Math.Max(1_000, sampleRate);
+        Tap = new AudioTap(tapSeconds);
 
         // What the gate reads is what reaches the screen (work instruction 490), and what the decoder decoded: the app
         // times its quiet offer and the evidence that the operator is working Morse (HM-DEC-149) from it (work
@@ -73,7 +82,7 @@ public sealed class CwDecoder
     /// **THE TAP IS HERE RATHER THAN AT THE SOUND CARD** so that what a capture contains is what the decoder received,
     /// not what something upstream believes it sent.
     /// </remarks>
-    public AudioTap Tap { get; } = new();
+    public AudioTap Tap { get; }
 
     /// <summary>How much audio has been handed to the decoder, on the clock <see cref="CwCharacter.At"/> uses.</summary>
     /// <remarks>

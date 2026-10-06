@@ -11431,7 +11431,7 @@ public partial class MainWindowViewModel : ObservableObject
         // **THE DECODER IS THE CHAIN** (work instruction 545, HM-DEC-249): the detector's marks, the sender's window, the
         // gate and the lookup table, wired below. The fldigi second reader and its arbiter, the probabilistic lattice, the
         // tone tracker and the keying meter came out; none of them decided anything that reached the screen.
-        _decoder = new CwDecoder(_audioInput.SampleRate);
+        _decoder = new CwDecoder(_audioInput.SampleRate, RecordSeconds);
 
         _decoderStartedUtc = DateTime.UtcNow;
         // **THE TWO PASSES BOTH REACH THE SCREEN NOW, AND THEY ARE NOT
@@ -11890,9 +11890,22 @@ public partial class MainWindowViewModel : ObservableObject
     /// Hamlet is not listening, its hover says why.
     /// </remarks>
     public string CaptureTip => (IsDecoding ? string.Empty : "Grayed because Hamlet is not listening; start listening and it can record. ")
-        + "Records the last half minute of what the decoder heard, as cw- and the time .wav, with what the radio was "
+        + "Records the last " + SpokenLength(_decoder?.Tap.KeptSeconds ?? RecordSeconds) + " of what the decoder heard, as cw- and the time .wav, with what the radio was "
         + "doing beside it in a .txt of the same name, in " + CaptureFolder + ". It also puts the station on tonight's "
         + "list, so press it whenever you can hear CW here, whether or not Hamlet read any of it.";
+
+    /// <summary>A length of audio in words, as the voice says one (work instruction 548, task 3).</summary>
+    /// <param name="seconds">The length.</param>
+    /// <returns>Half a minute, a minute, a minute and a half, two minutes, and so on.</returns>
+    internal static string SpokenLength(int seconds) => seconds switch
+    {
+        30 => "half minute",
+        60 => "minute",
+        90 => "minute and a half",
+        _ when seconds % 60 == 0 => $"{seconds / 60} minutes",
+        _ when seconds % 60 == 30 => $"{seconds / 60} and a half minutes",
+        _ => $"{seconds} seconds",
+    };
 
     /// <summary>
     /// Keep the last half minute the decoder heard, as a file (HM-DEC-088).

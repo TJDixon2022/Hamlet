@@ -1613,13 +1613,13 @@
                                 Content="⋯"
                                 FontSize="11" Padding="6,2"
                                 IsEnabled="{Binding !IsCatchScanning}"
-                                ToolTip.Tip="The scan's length, how long it watches each span, and how long it stays where a shape forms and where none does."
+                                ToolTip.Tip="The scan's length, how long it watches each span, how long it stays where a shape forms and where none does, and how much Record keeps."
                                 ToolTip.ShowDelay="300">
                             <Button.Flyout>
                                 <Flyout Placement="BottomEdgeAlignedRight">
                                     <StackPanel Spacing="6" Width="250">
                                         <TextBlock Text="{Binding CatchScanSettingsLine}" TextWrapping="Wrap" FontSize="11" />
-                                        <Grid ColumnDefinitions="*,110" RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="4">
+                                        <Grid ColumnDefinitions="*,110" RowDefinitions="Auto,Auto,Auto,Auto,Auto" RowSpacing="4">
                                             <TextBlock Grid.Row="0" Text="scan length, minutes" VerticalAlignment="Center" FontSize="11" />
                                             <NumericUpDown Grid.Row="0" Grid.Column="1" Minimum="1" Maximum="600" Increment="5"
                                                            FormatString="0" Value="{Binding CatchScanMinutes}" />
@@ -1632,6 +1632,11 @@
                                             <TextBlock Grid.Row="3" Text="watch each span, seconds" VerticalAlignment="Center" FontSize="11" />
                                             <NumericUpDown Grid.Row="3" Grid.Column="1" Minimum="1" Maximum="30" Increment="1"
                                                            FormatString="0" Value="{Binding CatchSurveySeconds}" />
+                                            <!-- How much Record keeps (work instruction 548, task 3): 30 s to 5 minutes, from the next listen. -->
+                                            <TextBlock Grid.Row="4" Text="Record keeps, seconds" VerticalAlignment="Center" FontSize="11"
+                                                       ToolTip.Tip="How much Record keeps, from half a minute to five minutes. Five minutes holds about 58 MB while Hamlet listens, and it takes effect the next time Hamlet starts listening." />
+                                            <NumericUpDown Grid.Row="4" Grid.Column="1" Minimum="30" Maximum="300" Increment="30"
+                                                           FormatString="0" Value="{Binding RecordSeconds}" />
                                         </Grid>
                                     </StackPanel>
                                 </Flyout>

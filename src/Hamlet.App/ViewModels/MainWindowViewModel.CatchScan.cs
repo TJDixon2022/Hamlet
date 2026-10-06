@@ -3,6 +3,7 @@ using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Hamlet.App.Settings;
+using Hamlet.RadioEngine.Audio;
 using Hamlet.RadioEngine.Rig;
 using Hamlet.RadioEngine.Scan;
 
@@ -59,6 +60,14 @@ public sealed partial class MainWindowViewModel
     /// </summary>
     [ObservableProperty]
     private int _catchSurveySeconds = (int)CwScanSettings.DefaultSurveyTime.TotalSeconds;
+
+    /// <summary>
+    /// How many seconds Record keeps, from thirty to five minutes (work instruction 548, task 3): thirty by default. The tap is
+    /// sized when Hamlet starts listening, so a change takes effect the next time it does.
+    /// </summary>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(CaptureTip))]
+    private int _recordSeconds = AudioTap.SecondsKept;
 
     /// <summary>The button's word: Scan, or Stop while one runs.</summary>
     public string CatchScanLabel => IsCatchScanning ? "Stop" : "Scan";
@@ -180,7 +189,7 @@ public sealed partial class MainWindowViewModel
     /// <summary>The scan's settings in words, for the popover's heading.</summary>
     public string CatchScanSettingsLine => string.Create(
         CultureInfo.InvariantCulture,
-        $"runs {CatchScanMinutes} min · watches each span {CatchSurveySeconds} s · stays up to {CatchPositiveStaySeconds} s on a shape · {CatchNegativeStaySeconds} s where none forms");
+        $"runs {CatchScanMinutes} min · watches each span {CatchSurveySeconds} s · stays up to {CatchPositiveStaySeconds} s on a shape · {CatchNegativeStaySeconds} s where none forms · Record keeps {RecordSeconds} s");
 
     // While the settings are being read in at start, a change is not a change to save.
     private bool _loadingCatchScanSettings;
@@ -199,6 +208,7 @@ public sealed partial class MainWindowViewModel
             CatchPositiveStaySeconds = _settings.ScanPositiveStaySeconds is >= 5 and <= 600 ? _settings.ScanPositiveStaySeconds : 90;
             CatchNegativeStaySeconds = _settings.ScanNegativeStaySeconds is >= 5 and <= 600 ? _settings.ScanNegativeStaySeconds : 30;
             CatchSurveySeconds = _settings.ScanSurveySeconds is >= 1 and <= 30 ? _settings.ScanSurveySeconds : 3;
+            RecordSeconds = _settings.RecordSeconds is >= AudioTap.SecondsKept and <= AudioTap.MaximumSecondsKept ? _settings.RecordSeconds : AudioTap.SecondsKept;
         }
         finally
         {
@@ -221,6 +231,7 @@ public sealed partial class MainWindowViewModel
         _settings.ScanPositiveStaySeconds = CatchPositiveStaySeconds;
         _settings.ScanNegativeStaySeconds = CatchNegativeStaySeconds;
         _settings.ScanSurveySeconds = CatchSurveySeconds;
+        _settings.RecordSeconds = RecordSeconds;
         SettingsStore.Save(_settings);
     }
 
@@ -231,4 +242,6 @@ public sealed partial class MainWindowViewModel
     partial void OnCatchNegativeStaySecondsChanged(int value) => SaveCatchScanSettings();
 
     partial void OnCatchSurveySecondsChanged(int value) => SaveCatchScanSettings();
+
+    partial void OnRecordSecondsChanged(int value) => SaveCatchScanSettings();
 }
