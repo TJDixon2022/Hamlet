@@ -32,7 +32,8 @@ namespace Hamlet.App.Tests.Views;
 /// <c>Command</c> - never through the view model, because the commands carry no gate of their own.</para>
 /// <para>**THE SIX THINGS** of the criterion, each by the row keys that carry them (the trace,
 /// <c>.run-unit/unit482-trace.txt</c>): the verdict; the light, which R92 retired and whose field
-/// now says what the bars say; the tracker; the meter's figures; the survey's bins; the rig state.
+/// now says what the bars say; the tracker; the meter's figures and the survey's bins, which became the shape side's
+/// printed pitch and senders held in work instruction 545; the rig state.
 /// **NOTHING IS KEYED AND NO RECORDING IS READ** (R88).</para>
 /// </remarks>
 public sealed class TheOwnersPressLandsInTheFileTests : IDisposable
@@ -45,8 +46,9 @@ public sealed class TheOwnersPressLandsInTheFileTests : IDisposable
         // Work instruction 515: the tracker left the row with the watched bin (R114); the pitch the decoder
         // prints at stands in its place.
         ("where the decoder prints", new[] { "mixingHz" }),
-        ("the meter's figures", new[] { "meterVerdict", "meterHz", "meterScore", "meterMedianMs", "meterSwingDb" }),
-        ("the survey's bins", new[] { "survey" }),
+        // Work instruction 545: the keying meter and the survey left the row with the old decoder; the shape side stands
+        // in their place.
+        ("the shape side", new[] { "printedHz", "sendersHeld" }),
         ("the rig state", new[] { "frequency", "mode", "agc", "preamp", "inputPeakDb", "inputFloorDb" }),
     };
 
@@ -167,7 +169,7 @@ public sealed class TheOwnersPressLandsInTheFileTests : IDisposable
 
         _output.WriteLine(
             "hearing state handed over: " + !ReferenceEquals(panel.CwHearing.State, CwHearingState.None)
-            + " after " + clock.ElapsedMilliseconds + " ms; survey bins held: " + panel.CwHearing.State.Survey.Count);
+            + " after " + clock.ElapsedMilliseconds + " ms; senders held: " + panel.CwHearing.State.SendersHeld);
     }
 
     /// <summary>The button with these words on the CW tab.</summary>
@@ -226,20 +228,11 @@ public sealed class TheOwnersPressLandsInTheFileTests : IDisposable
             data.GetProperty("light").GetString(),
             new[] { CwHearingViewModel.BarsKeyingWords, CwHearingViewModel.BarsNoKeyingWords });
 
-        // **THE SURVEY IS ASSERTED AS AN ARRAY ONLY** (the instruction's drop candidate, taken):
-        // the training radio's Morse admits no survey bin in the time a test waits, and admitting
-        // one would mean touching the survey, which this unit may not. Each bin's hz and levelDb
-        // stay proved against the fake in TheOwnersVerdictIsARowTests.
-        var survey = data.GetProperty("survey");
-
-        Assert.Equal(JsonValueKind.Array, survey.ValueKind);
-
-        _output.WriteLine("  survey bins: " + survey.GetArrayLength());
 
         // A figure not measured is null, never NaN: no field is a number written as a word.
         foreach (var key in new[]
         {
-            "mixingHz", "meterHz", "meterScore", "meterMedianMs", "meterSwingDb",
+            "mixingHz", "printedHz", "sendersHeld",
             "frequency", "inputPeakDb", "inputFloorDb", "sinceVerdictMs",
         })
         {

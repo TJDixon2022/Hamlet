@@ -56,11 +56,8 @@ public sealed class CwDecoder
     /// and having just lost the station are both states in which no speed may be
     /// named, and they are not the same state (§0.0).
     /// </remarks>
-    private bool _hasFollowed;
     private int _lastFollows;
 
-    private double _lastSnrDb = double.NaN;
-    private bool _toneLatched;
     /// <summary>The pitch the mixdown is held at, or NaN when it follows.</summary>
     private double _lockedToneHz = double.NaN;
 
@@ -83,20 +80,6 @@ public sealed class CwDecoder
     private bool _transmitting;
     private DateTime _transmitEndedUtc = DateTime.MinValue;
     private long _suspendedChunks;
-
-    private readonly double[] _snrHistory = new double[5];
-    private int _snrWrite;
-    private int _snrFilled;
-
-    /// <summary>
-    /// How fast the held signal-to-noise figure falls away, per measurement.
-    /// </summary>
-    /// <remarks>
-    /// Measurements arrive two hundred times a second, so this decays about ten
-    /// decibels in ten seconds: long enough to hold across the gaps inside a
-    /// message and short enough that a station going away is noticed.
-    /// </remarks>
-    private const double SnrDecayDbPerHop = 0.005;
 
     /// <summary>The fldigi port reading the same hops, or null where only ours reads.</summary>
     private readonly CwSecondReader? _second;
@@ -561,22 +544,26 @@ public sealed class CwDecoder
     /// that became part of a character. A pair of figures where the gap between
     /// them used to mean something now says the gap is nought, which is true.
     /// </remarks>
-    public CwDecodeReport Report => new(
-        Tap.Level,
-        _tracker.ToneHz,
-        _lastSnrDb,
-        HasTone: _toneLatched,
-        _elementsResolved,
-        _elementsResolved,
-        _charactersEmitted,
-        _charactersUnsure,
-        _tracker.HasKeying,
-        _tracker.Verdict.Interference,
-        (double)_tracker.Guard.BlockedHops * _tracker.HopSamples / SampleRate,
-        Competitor: _tracker.Competitor,
-        PitchProof: _tracker.PitchProof,
-        SpeedProof: SpeedProof,
-        WordsPerMinute: WordsPerMinute);
+    public CwDecodeReport Report
+    {
+        get
+        {
+            // **FROM THE SHAPE SIDE** (work instruction 545): the printed sender, the senders the gate holds, the counts of
+            // what reached the screen; the level is the tap's, which is what arrives whatever is read.
+            var side = ShapeSide;
+
+            return new CwDecodeReport(
+                Tap.Level,
+                side.PrintedPitchHz,
+                side.Senders.Count,
+                _elementsResolved,
+                _charactersEmitted,
+                _charactersUnsure,
+                Printing: double.IsFinite(side.PrintedPitchHz),
+                SpeedProof: SpeedProof,
+                WordsPerMinute: WordsPerMinute);
+        }
+    }
 
     /// <summary>Everything inside the decision delay, handed over whole.</summary>
     /// <remarks>
@@ -715,63 +702,39 @@ public sealed class CwDecoder
     public const int FastestPlausibleWpm = 48;
 
     /// <summary>
-    /// True while the decoder is refilling an emptied window after following
-    /// somebody else.
+    /// True while the gate has a sender qualified and waiting to print, and nobody printed: the speed is being worked out
+    /// (work instruction 545).
     /// </summary>
     /// <remarks>
-    /// **A TERMINAL THAT GOES QUIET WITHOUT SAYING WHY IS ITS OWN CONFIDENT
-    /// WRONG ANSWER** (§0.0). Emptying the window costs up to twelve seconds of
-    /// reading, and it happens at the exact moment somebody answers a call, which
-    /// is when an unexplained silence reads as nobody being there. So the state
-    /// is published rather than left to be inferred from an empty screen, and it
-    /// ends the moment text comes back.
-    /// </remarks>
-    public bool ListeningAfresh
-        => _followedAt != long.MinValue
-           && _probabilistic.Last.Text.Length == 0
-           && _lastSample - _followedAt
-              < (long)(CwProbabilisticStream.WindowSeconds * SampleRate);
-
-    /// <summary>
-    /// True while the decoder's window still holds the station before this one.
-    /// </summary>
-    /// <remarks>
-    /// **THE TEST IS WHETHER THE TRACKER HAS MOVED WITHIN A WINDOW'S WORTH OF
-    /// AUDIO**, which is exact rather than a settling delay picked by hand. It
-    /// used to be counted in marks the old estimator had seen; the tracker knows
-    /// the same thing and survives the removal. A surface showing the speed
-    /// leaves the field blank while this holds (§0.0).
+    /// **FROM THE SHAPE SIDE.** It used to say the old decoder's window still held the station before this one; the shape
+    /// side has no window, and what it can say is that a sender has shown enough to qualify and is waiting out its first
+    /// word gap. A surface showing the speed says so rather than going blank (§0.0).
     /// </remarks>
     public bool SpeedIsReacquiring
-        => _hasFollowed
-            ? _lastSample - _samplesAtDiscontinuity
-              < (long)(CwProbabilisticStream.WindowSeconds * SampleRate)
-            : _probabilistic.Last.Text.Length == 0;
+        => RunsRead && double.IsNaN(_runs.StationPitchHz) && double.IsFinite(_runs.WaitingPitchHz);
 
     /// <summary>
     /// The sending speed, or null when nothing has earned the right to name one.
     /// </summary>
     /// <remarks>
-    /// <para>**ONE GUARDED ANSWER, READ BY EVERY SURFACE** (HM-DEC-090). The
-    /// speed reached three separate screens as a settled fact while nothing was
-    /// being received, and guarding each of them would have left the fourth.</para>
-    /// <para>**AND IT IS NOT NAMED ACROSS A HANDOVER.** The decoder reads a
-    /// window several seconds long, so while that window still holds audio from
-    /// the station before this one it names a speed between the two, which
-    /// describes neither: measured, it named 18 where one station sends 16.</para>
+    /// <para>**ONE GUARDED ANSWER, READ BY EVERY SURFACE** (HM-DEC-090): the speed on the terminal's header and the speed
+    /// the transmit panel offers both read this.</para>
+    /// <para>**THE PRINTED SENDER'S OWN DIT** (work instruction 545): 1.2 seconds over the dit the gate measures on the
+    /// sender it prints, the standard PARIS word of fifty dits. Null where nobody is printed, or the number falls outside
+    /// what anybody sends.</para>
     /// </remarks>
     public int? WordsPerMinute
     {
         get
         {
-            var reading = _probabilistic.Last;
+            var side = ShapeSide;
 
-            if (reading.Text.Length == 0 || SpeedIsReacquiring)
+            if (!double.IsFinite(side.PrintedPitchHz) || !(side.PrintedDitSeconds > 0))
             {
                 return null;
             }
 
-            var wpm = (int)Math.Round(reading.WordsPerMinute);
+            var wpm = (int)Math.Round(1.2 / side.PrintedDitSeconds);
 
             return wpm >= SlowestPlausibleWpm && wpm <= FastestPlausibleWpm
                 ? wpm
@@ -781,49 +744,11 @@ public sealed class CwDecoder
 
     /// <summary>What can be said about the speed now (HM-REQ-034).</summary>
     /// <remarks>
-    /// <para>**PROVED ONLY WHERE <see cref="WordsPerMinute"/> NAMES A NUMBER, THE
-    /// DIT BEHIND IT WAS MEASURED, AND ITS KEYING IS STILL ARRIVING** (work
-    /// instruction 451). The number is the guard's above. Measured is the
-    /// stream's (<see cref="CwProbabilisticStream.UnitWasMeasured"/>): the
-    /// estimator's dit or the marks' overrule, not the grid's winner. Still
-    /// arriving is the tracker's own recent span, six surveys
-    /// (<see cref="CwToneTracker.KeyingRecently"/>), at a pitch within half the
-    /// mixdown filter of the one being read, the line the follow above already
-    /// uses for the same sender. **Six surveys and not the latest one**, because
-    /// the survey does not confirm keying on every half second of a slow sender
-    /// and this reading trails it (see <see cref="CwToneTracker.KeyingRecently"/>).</para>
-    /// <para>**A HYPOTHESIS WHERE THE WINDOW HOLDS A READING AND ANY OF THOSE
-    /// FAILS**: the clock re-acquiring, the unit won on the grid, or no keying at
-    /// the pitch for six surveys, which is a speed held in a window whose sender
-    /// has stopped. **None where nothing has been read**, or the gate refused the
-    /// whole window, whose grid winner describes nobody.</para>
-    /// <para>**IT DESCRIBES THE SPEED AND NOTHING READS IT** in the decode, the
-    /// tracker or the pitch. Proved is a subset of a named number, so no speed is
-    /// stated with more certainty than before, only less.</para>
+    /// **PROVED WHERE <see cref="WordsPerMinute"/> NAMES A NUMBER** (work instruction 545): the gate prints a sender only
+    /// while its two kinds of mark hold over its last ten and its gaps fall into kinds, and lets it go when it falls
+    /// silent, so a dit it prints from is measured on keying still arriving. None otherwise.
     /// </remarks>
-    public CwSpeedProof SpeedProof
-    {
-        get
-        {
-            var reading = _probabilistic.Last;
-
-            if (reading.WordsPerMinute <= 0 || reading.Text.Length == 0)
-            {
-                return CwSpeedProof.None;
-            }
-
-            var lastKeyedHz = _tracker.LastKeyedHz;
-
-            return WordsPerMinute is not null
-                   && _probabilistic.UnitWasMeasured
-                   && _tracker.KeyingRecently
-                   && !double.IsNaN(lastKeyedHz)
-                   && Math.Abs(lastKeyedHz - _probabilistic.ToneHz)
-                      < CwProbabilisticDecoder.BandwidthHz / 2
-                ? CwSpeedProof.Proved
-                : CwSpeedProof.Hypothesis;
-        }
-    }
+    public CwSpeedProof SpeedProof => WordsPerMinute is null ? CwSpeedProof.None : CwSpeedProof.Proved;
 
     /// <summary>
     /// Listen to a source. Replaces any previous one.
@@ -1390,7 +1315,6 @@ public sealed class CwDecoder
                 || Math.Abs(pitch - fromHz) >= CwProbabilisticDecoder.BandwidthHz / 2)
             {
                 _samplesAtDiscontinuity = reading.SampleIndex;
-                _hasFollowed = true;
             }
 
             // **THE TRACKER'S OWN CLASSIFICATION IS NOT WHAT DECIDES THE
@@ -1432,53 +1356,5 @@ public sealed class CwDecoder
         // classifications while fixing a similar number elsewhere. Left uncalled,
         // the survey stays at its acquiring width. It is not this unit's (§12.6).
 
-        // **HOW FAR THE TONE STANDS ABOVE THE BAND WHILE IT IS KEYED**, which is
-        // not the same question as how far it stands above it on average, and the
-        // difference is why real stations were being missed (HM-DEC-090).
-        //
-        // A station answering a call keys for a second and a half in thirty
-        // seconds. Averaged across all of it, a signal fifty decibels out of the
-        // noise reported minus nought point six, because for ninety-six per cent
-        // of the time the bin holds nothing but noise.
-        //
-        // So it is a held peak: up at once, down over about ten seconds. Three
-        // measurements have to agree before it counts, which is what stops one
-        // burst of static setting it.
-        if (!reading.HasNoise)
-        {
-            return;
-        }
-
-        _snrHistory[_snrWrite] = reading.SnrDb;
-        _snrWrite = (_snrWrite + 1) % _snrHistory.Length;
-        _snrFilled = Math.Min(_snrFilled + 1, _snrHistory.Length);
-
-        if (_snrFilled < _snrHistory.Length)
-        {
-            return;
-        }
-
-        var sustained = Median(_snrHistory);
-
-        _lastSnrDb = double.IsNaN(_lastSnrDb) || sustained > _lastSnrDb
-            ? sustained
-            : _lastSnrDb - SnrDecayDbPerHop;
-
-        // Opens high and closes low, so a marginal signal is not dropped in the
-        // quiet parts of its own message (HM-DEC-090).
-        _toneLatched = _lastSnrDb >= (_toneLatched
-            ? CwDecodeReport.ToneReleaseDb
-            : CwDecodeReport.ToneThresholdDb);
-    }
-
-    /// <summary>The middle of five, without allocating.</summary>
-    private static double Median(double[] values)
-    {
-        Span<double> copy = stackalloc double[values.Length];
-
-        values.CopyTo(copy);
-        copy.Sort();
-
-        return copy[copy.Length / 2];
     }
 }

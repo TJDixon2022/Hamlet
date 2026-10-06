@@ -214,7 +214,7 @@ public sealed class CallsignPrivacyTests : IDisposable
             telemetry,
             new Hamlet.RadioEngine.Cw.CwDecodeReport(
                 new Hamlet.RadioEngine.Audio.AudioLevel(-12, -20, -46, false, 30),
-                620, 9.5, true, 44, 40, 11, 2),
+                620, 2, 40, 11, 2, Printing: true),
             "sampled");
 
         AppEvents.AudioCaptured(telemetry, 30, 7_030_000, worked: true);

@@ -251,17 +251,6 @@ public partial class MainWindowViewModel : ObservableObject
     private IAudioSource? _audioInput;
     private CwDecoder? _decoder;
 
-    /// <summary>
-    /// Whether Hamlet can hear keying at all, said independently of the decoder.
-    /// </summary>
-    private CwKeyingMeter? _keyingMeter;
-
-    /// <summary>The meter's work, off the interface thread.</summary>
-    private Task<KeyingReading>? _meterWork;
-
-    /// <summary>When the meter last looked.</summary>
-    private DateTime _meterLastUtc = DateTime.MinValue;
-
     /// <summary>When the current decoder began listening, or null when none is.</summary>
     private DateTime? _decoderStartedUtc;
     private readonly Audio.ModeAudioPlayer _audio = new();
@@ -939,24 +928,7 @@ public partial class MainWindowViewModel : ObservableObject
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(SuspendedNote))]
     [NotifyPropertyChangedFor(nameof(AdvisoryNote))]
-    [NotifyPropertyChangedFor(nameof(ShowKeyingMeter))]
     private bool _decodingIsSuspended;
-
-    /// <summary>
-    /// True while the decoder is refilling a window it emptied to follow
-    /// somebody else.
-    /// </summary>
-    /// <remarks>
-    /// Carried as a property of its own, the way the suspended state is, so the
-    /// sentence below is reachable from the screen rather than only from the
-    /// decoder: the region that shows it is the thing that has gone missing
-    /// before, and a test can only prove it by driving this.
-    /// </remarks>
-    [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(FollowedNote))]
-    [NotifyPropertyChangedFor(nameof(AdvisoryNote))]
-    [NotifyPropertyChangedFor(nameof(ShowKeyingMeter))]
-    private bool _listeningAfresh;
 
     /// <summary>
     /// The one advisory the terminal is showing, by priority.
@@ -998,32 +970,14 @@ public partial class MainWindowViewModel : ObservableObject
         }
     }
 
-    /// <summary>
-    /// Whether the keying meter's own block is shown beneath the advisory.
-    /// </summary>
-    /// <remarks>
-    /// <para>**TWO VOICES SAYING DIFFERENT THINGS AT THE SAME TIME IS WORSE THAN
-    /// EITHER OF THEM.** On the evening of 2026-08-25 the advisory said a clear
-    /// tone was present and the meter's block underneath it said there was no
-    /// keying, the two disagreeing about the pitch by fifty hertz — and the
-    /// block's advice sends the operator across the room to change a setting on
-    /// the radio for what is a decoder problem.</para>
-    /// <para>**THE METER IS NOT RETIRED AND MUST NOT BE.** It is the one
-    /// instrument that shares nothing with the decoder, and its whole value is
-    /// that it can contradict it (HM-DEC-091). On `cw-2026-08-22-012823` it found
-    /// the right frequency while the decoder took the wrong one. What is
-    /// suppressed is only its block *while the advisory has something to say*,
-    /// which is the case where a second, quieter, less reliable voice can only
-    /// confuse: agreed with independent measurement six times and contradicted it
-    /// eleven, across everything analysed from 2026-08-22 to 2026-08-25.</para>
-    /// <para>When the advisory is silent the meter speaks, exactly as before.</para>
-    /// </remarks>
-    public bool ShowKeyingMeter
-        => _settings.ShowKeyingSweep
-            && IsDecoding
-            && string.IsNullOrWhiteSpace(AdvisoryNote);
-
     /// <summary>Every advisory the terminal can show, most urgent first.</summary>
+    /// <remarks>
+    /// **THE KEYING METER'S BLOCK, THE PITCH LOCK'S LINE AND THE FOLLOWED NOTE CAME OUT WITH THE OLD DECODER** (work
+    /// instruction 545, HM-DEC-249). The meter's block spoke only while this region had nothing to say; the decoder's story
+    /// at the end of the list now always says what the shape side is doing while Hamlet listens, so the region speaks in
+    /// its place. The pitch lock held the old decoder's mixdown, and no control on the screen reached it. The followed
+    /// note said the old decoder had emptied its window, which the shape side does not have.
+    /// </remarks>
     private IEnumerable<string> Advisories()
     {
         yield return SuspendedNote;
@@ -1040,35 +994,9 @@ public partial class MainWindowViewModel : ObservableObject
         // diagnosis (HM-DEC-148).
         yield return ReceiveObstructionText;
 
-        // **WHAT THE DECODER IS LISTENING TO, WHEN IT IS BEING HELD THERE.** It
-        // sits below what is in the way because it is a state the operator chose
-        // rather than a fault he needs to fix.
-        yield return PitchLockText;
-
-        // **WHY THE SCREEN JUST WENT QUIET.** Following somebody empties the
-        // decoder's window, and twelve seconds of nothing with no explanation
-        // reads as a dead band at the one moment it certainly is not one.
-        yield return FollowedNote;
-
         yield return CaptureNote;
         yield return DecoderStory;
     }
-
-    /// <summary>What the terminal says while it refills after following somebody.</summary>
-    /// <remarks>
-    /// The window holds twelve seconds and all of it was listened to at the other
-    /// station's pitch, so it is thrown away rather than decoded as a mixture
-    /// (HM-DEC-009). The cost is real and is stated rather than hidden.
-    /// </remarks>
-    public string FollowedNote
-        => ListeningAfresh
-            ? "somebody else has started sending and Hamlet has moved across to "
-              + "them, so it has let go of what it was holding, because those "
-              + "twelve seconds were listened to at the other station's pitch and "
-              + "reading them now would put one operator's letters in the other's "
-              + "mouth. Give it a few seconds to fill up again and the text picks "
-              + "up where the new station is."
-            : "";
 
     /// <summary>What the terminal says while the operator is sending.</summary>
     /// <remarks>
@@ -1102,7 +1030,6 @@ public partial class MainWindowViewModel : ObservableObject
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(TerminalSummary))]
     [NotifyPropertyChangedFor(nameof(TerminalIdleText))]
-    [NotifyPropertyChangedFor(nameof(ShowKeyingMeter))]
     [NotifyPropertyChangedFor(nameof(CaptureTip))]
     private bool _isDecoding;
 
@@ -9064,7 +8991,6 @@ public partial class MainWindowViewModel : ObservableObject
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(OverflowAdvice))]
     [NotifyPropertyChangedFor(nameof(AdvisoryNote))]
-    [NotifyPropertyChangedFor(nameof(ShowKeyingMeter))]
     private bool _frontEndIsOverloading;
 
     /// <summary>What to do about an overloading front end, in terms of a knob.</summary>
@@ -9122,76 +9048,6 @@ public partial class MainWindowViewModel : ObservableObject
     /// </remarks>
     [ObservableProperty]
     private string _receiveObstructionText = "";
-
-    /// <summary>
-    /// Whether the decoder's pitch is held, and what it is held at.
-    /// </summary>
-    /// <remarks>
-    /// <para>**A LOCK THE OPERATOR CANNOT SEE IS A LOCK HE CANNOT TRUST.** A
-    /// wandering decode and a held one look identical on screen, so without this
-    /// the operator has no way to tell whether the thing he pressed did
-    /// anything, and no way to tell later that it is still holding.</para>
-    /// <para>It says the pitch to a tenth of a hertz because that is what the
-    /// lock actually holds — an interpolated peak, not a bin — and rounding it to
-    /// a whole number on the panel would make two different locks look like the
-    /// same one.</para>
-    /// <para>Empty while the tracker is steering, so nothing is said when there
-    /// is nothing to say (HM-DEC-148's precedent for the advisory area).</para>
-    /// </remarks>
-    [ObservableProperty]
-    private string _pitchLockText = "";
-
-    /// <summary>What the lock control reads right now.</summary>
-    [ObservableProperty]
-    private string _pitchLockLabel = "Hold this pitch";
-
-    /// <summary>
-    /// Hold the decoder's pitch where the station is, or let it follow again.
-    /// </summary>
-    /// <remarks>
-    /// <para>**THE TRACKER IS MEASURABLY THE LARGEST SOURCE OF SOUP IN THIS
-    /// DECODER**, and until now the operator had no way to take it out of the
-    /// path. Unit 002 put a clean generated station through the production path
-    /// and got twenty-two characters that were never sent, and through the same
-    /// window with the pitch nailed it got none.</para>
-    /// <para>**IT LOCKS TO THE MEASURED PEAK AND NOT TO THE RADIO'S CW PITCH.**
-    /// A capture from 2026-08-24 carries `CwPitch 600 Hz` while the station in it
-    /// sat at 439.81, so a lock to the radio's setting would have pointed the
-    /// filter at empty spectrum and held it there.</para>
-    /// <para>Where nothing can be measured it refuses and says so, rather than
-    /// holding a pitch nobody found (§0.0).</para>
-    /// </remarks>
-    [RelayCommand]
-    private void TogglePitchLock()
-    {
-        if (_decoder is not { } decoder)
-        {
-            return;
-        }
-
-        if (decoder.IsLocked)
-        {
-            decoder.Unlock();
-            PitchLockLabel = "Hold this pitch";
-            PitchLockText = "";
-
-            return;
-        }
-
-        var locked = decoder.Lock();
-
-        if (double.IsNaN(locked))
-        {
-            PitchLockText =
-                "There is not enough measured yet to hold a pitch, so nothing "
-                + "was locked and the decoder is still following. Give it a few "
-                + "seconds of a station and press again.";
-
-            return;
-        }
-
-        PitchLockLabel = "Follow again";
-    }
 
     /// <summary>The rule itself, so the test reads it rather than a copy (§0).</summary>
     /// <param name="overloading">Whether the radio says its front end is overloading.</param>
@@ -11429,7 +11285,7 @@ public partial class MainWindowViewModel : ObservableObject
             ReceiveObstructions.For(
                 state,
                 state.Mode is { } inMode && CivValues.IsCw(inMode),
-                _decoder?.Report.Competitor is not null)
+                _decoder?.Report.Competing == true)
                 .Select(one => one.Says));
 
         OnPropertyChanged(nameof(RigState));
@@ -11567,28 +11423,12 @@ public partial class MainWindowViewModel : ObservableObject
         // speaker level and its quite separate USB output level.
         _capture = WasapiAudioDevices.Health(_settings.AudioInputDeviceId);
 
-        // **NO JOINT CUTTER IN THIS BUILD** (work instruction 392). The decoder is
-        // 2026-08-25's, which has none, so `UseJointDecoder` is kept in the
-        // settings file and read by nothing until step 4 judges the cutter on
-        // numbers (Tim's ruling of 2026-08-27 made it his switch, off by default).
-        // **TWO READERS, ONE TRANSCRIPT** (HM-REQ-120, 121; work instruction 465).
-        // The fldigi port reads the same samples beside ours, and every character
-        // the tab shows has passed through the arbiter. Which one it came from is
-        // on the capture sheet, never on the tab.
-        _decoder = new CwDecoder(_audioInput.SampleRate, _settings.CwPitchHz, secondReader: true);
+        // **THE DECODER IS THE CHAIN** (work instruction 545, HM-DEC-249): the detector's marks, the sender's window, the
+        // gate and the lookup table, wired below. The fldigi second reader and its arbiter, the probabilistic lattice, the
+        // tone tracker and the keying meter came out; none of them decided anything that reached the screen.
+        _decoder = new CwDecoder(_audioInput.SampleRate, _settings.CwPitchHz);
 
         _decoderStartedUtc = DateTime.UtcNow;
-
-        // **THE INSTRUMENT FOR THE FAULT NOBODY HAS FOUND YET** (HM-DEC-091).
-        // The operator hears stations Hamlet does not, and finds out the next
-        // morning from a roster. This says so while he is sitting at the radio,
-        // so he can turn the gain, change the filter or retune and watch the
-        // number answer. It reads the same tap the decoder reads and shares
-        // nothing else with it.
-        _keyingMeter = new CwKeyingMeter();
-        _meterWork = null;
-        _meterLastUtc = DateTime.MinValue;
-        PublishKeying(KeyingReading.None);
         // **THE TWO PASSES BOTH REACH THE SCREEN NOW, AND THEY ARE NOT
         // RIVALS** (HM-DEC-096). The leading edge answers while somebody is
         // still sending and is never final; the settled pass runs a few seconds
@@ -11739,9 +11579,6 @@ public partial class MainWindowViewModel : ObservableObject
         // with nought counted, and a history carried across the seam would make
         // a window straddle two of them.
         _decoderStartedUtc = null;
-        _keyingMeter = null;
-        _meterWork = null;
-        PublishKeying(KeyingReading.None);
         CwHearing.Observe(CwHearingState.None);
 
         DigitalSpectrum?.Stop();
@@ -11790,7 +11627,6 @@ public partial class MainWindowViewModel : ObservableObject
             keyed.IsKnown ? keyed.Number == 1 : null, DateTime.UtcNow);
 
         DecodingIsSuspended = _decoder.DecodingSuspended;
-        ListeningAfresh = _decoder.ListeningAfresh;
 
         // **THE SETTLED-PASS READOUTS WENT WITH THE SETTLED PASS.** The tip
         // mark, the ceiling note, the handover note and the revisions count all
@@ -11809,20 +11645,10 @@ public partial class MainWindowViewModel : ObservableObject
         // the same screen, and they are different problems.
         DecodeReport = _decoder.Report;
 
-        // **THE LOCK'S STATE, ON THE SAME TICK AS EVERYTHING ELSE.** It reads
-        // the decoder rather than remembering what was pressed, so a lock that
-        // refused to engage cannot leave the panel claiming one is held.
-        // The advisory is recomputed from several of these on every tick, and
-        // the keying meter's block follows it (task 5): one voice at a time.
+        // The advisory is recomputed from the report on every tick: the decoder's story at its end says what the shape side
+        // is doing (work instruction 545).
         OnPropertyChanged(nameof(AdvisoryNote));
-        OnPropertyChanged(nameof(ShowKeyingMeter));
 
-        PitchLockText = _decoder.IsLocked
-            ? $"The decoder is holding {_decoder.LockedToneHz:0.0} hertz and is "
-              + "not following the tracker. Press the lock again to let it follow."
-            : "";
-
-        RunKeyingMeter();
         ObserveHearing(_decoder);
 
         // **A STALLED AUDIO PIPELINE USED TO LOOK EXACTLY LIKE A QUIET BAND**
@@ -11845,7 +11671,6 @@ public partial class MainWindowViewModel : ObservableObject
         OnPropertyChanged(nameof(InputLevelFraction));
         OnPropertyChanged(nameof(DecoderStory));
         OnPropertyChanged(nameof(HasDecoderStory));
-        OnPropertyChanged(nameof(KeyingAdviceIsUseful));
         OnPropertyChanged(nameof(CaptureNote));
         OnPropertyChanged(nameof(HasCaptureNote));
 
@@ -11975,27 +11800,6 @@ public partial class MainWindowViewModel : ObservableObject
     /// <summary>True when there is something to say about it.</summary>
     public bool HasDecoderStory => DecoderStory.Length > 0;
 
-    /// <summary>
-    /// Whether the keying sweep's advice about the antenna is worth showing.
-    /// </summary>
-    /// <remarks>
-    /// <para>**TWO PANELS ASSERTED OPPOSITE THINGS ABOUT THE SAME BAND AND THE
-    /// ADVICE SENT HIM TO THE RADIO FOR A DECODER CONDITION.** The line above
-    /// said a clear tone was present; this block said no keying here, fifty hertz
-    /// away; and its paragraph told him the signal was being lost between the
-    /// antenna and Hamlet and to try the gain, the filter and the tuning. On the
-    /// evening of 2026-08-25 he went and did that, and nothing was wrong with the
-    /// radio.</para>
-    /// <para>**THE ADVICE IS ONLY EVER TRUE WHERE NOTHING FOUND A TONE.** Where
-    /// the decoder has one, the sweep disagreeing with it is a fault in the
-    /// sweep — measured on this tree's own corpus, its calibration sits inside an
-    /// overlap rather than in a gap — and telling him to go and turn knobs is
-    /// acting on the wrong one of two instruments (§0.0).</para>
-    /// <para>The word and the numbers stay where the sweep is shown at all; what
-    /// retires is the instruction to go to the radio.</para>
-    /// </remarks>
-    public bool KeyingAdviceIsUseful => !DecodeReport.HasTone;
-
     /// <summary>What Windows is doing to the input, where it could be read.</summary>
     public string CaptureNote => CaptureAdvice.Describe(_capture);
 
@@ -12038,7 +11842,7 @@ public partial class MainWindowViewModel : ObservableObject
         // WHAT DECIDES IT IS WHICH NUMBERS MOVED, which is why the rate limit
         // lives here and not inside the event (§8.1).
         var moved = report.CharactersEmitted != _lastQuality.CharactersEmitted
-            || report.HasTone != _lastQuality.HasTone
+            || report.SendersHeld != _lastQuality.SendersHeld
             || report.Clipping != _lastQuality.Clipping
             || report.NearlySilent != _lastQuality.NearlySilent
             || Math.Abs(report.Level.PeakDb - _lastQuality.Level.PeakDb) >= 3;
@@ -12347,7 +12151,8 @@ public partial class MainWindowViewModel : ObservableObject
             // and the gate held it under the shape it needs, or held something else, this is where that shows.
             $"senders    {SendersForTheRecord(shape)}",
 
-            KeyingRecordLine(_keyingReading),
+            // **THE KEYING SWEEP CAME OUT WITH THE OLD DECODER** (work instruction 545); the line stays, saying so.
+            "keying     retired  (the independent keying sweep came out with the old decoder, work instruction 545; the senders line above says what the gate held)",
 
             // **HOW MUCH OF THE RECORDING HAD THE KEY DOWN**, at the printed sender's pitch, and not written at all where
             // nobody was printed (§0.0).
@@ -12479,128 +12284,31 @@ public partial class MainWindowViewModel : ObservableObject
     /// <summary>Whether any capture has already been written this session.</summary>
     private bool _hasPreviousCapture;
 
-    /// <summary>How often the keying meter looks.</summary>
-    /// <remarks>
-    /// Once a second, which is fast enough to feel like an answer when the
-    /// operator turns a knob and slow enough that one update's work, about
-    /// seventy milliseconds of it, is a small share of a core.
-    /// </remarks>
-    private static readonly TimeSpan KeyingMeterEvery = TimeSpan.FromSeconds(1);
-
-    /// <summary>What the keying meter is willing to say, in one word.</summary>
-    [ObservableProperty]
-    private string _keyingWord = "";
-
-    /// <summary>The measurements behind that word.</summary>
-    [ObservableProperty]
-    private string _keyingDetail = "";
-
-    /// <summary>Whether the meter is holding a verdict through a quiet stretch.</summary>
-    [ObservableProperty]
-    private bool _keyingIsHeld;
-
-    /// <summary>Whether the meter can hear somebody keying.</summary>
-    [ObservableProperty]
-    private bool _keyingIsPresent;
-
-    /// <summary>Whether the meter has settled on nothing being keyed.</summary>
-    [ObservableProperty]
-    private bool _keyingIsAbsent;
-
-    /// <summary>Whether the meter has not seen enough to say (HM-DEC-091).</summary>
-    [ObservableProperty]
-    private bool _keyingIsUndecided;
-
-    /// <summary>What the meter said, for the sidecar and the roster.</summary>
-    private KeyingReading _keyingReading = KeyingReading.None;
-
     /// <summary>
-    /// Let the keying meter look, off the interface thread (HM-DEC-091).
-    /// </summary>
-    /// <remarks>
-    /// <para>**SEVENTY MILLISECONDS IS A VISIBLE HITCH ON THE INTERFACE THREAD**,
-    /// and this runs every second for as long as the terminal is open, so it runs
-    /// on a worker. **THE SEAM IS HERE AND NOWHERE ELSE**: the meter's own state
-    /// is touched only by that worker, one at a time, and is read back here only
-    /// after the task has completed, so the completion is what orders the two.
-    /// </para>
-    /// <para>A window is taken on this thread rather than inside the worker,
-    /// because the tap's lock is held by the audio thread and a worker queueing
-    /// behind it would drift out of step with the second it is meant to be
-    /// keeping.</para>
-    /// </remarks>
-    private void RunKeyingMeter()
-    {
-        if (_meterWork is { IsCompleted: true })
-        {
-            if (_meterWork.IsCompletedSuccessfully)
-            {
-                PublishKeying(_meterWork.Result);
-            }
-
-            _meterWork = null;
-        }
-
-        if (_keyingMeter is null || _decoder is null || _meterWork is not null)
-        {
-            return;
-        }
-
-        if (DateTime.UtcNow - _meterLastUtc < KeyingMeterEvery)
-        {
-            return;
-        }
-
-        _meterLastUtc = DateTime.UtcNow;
-
-        var meter = _keyingMeter;
-        var tap = _decoder.Tap;
-
-        // **THE READ MOVED INSIDE THE TASK IN UNIT 239, AND IT IS NOT A TIDY-UP.**
-        // It used to happen right here, on the UI thread: six seconds of audio,
-        // 1.15 MB, allocated once a second on the thread that draws. The meter
-        // now owns that buffer and reads into it, so this costs the UI thread
-        // nothing and the large object heap nothing.
-        //
-        // **ONE UPDATE RUNS AT A TIME AND THAT IS WHAT MAKES A SHARED BUFFER
-        // SAFE.** The guard above returns while `_meterWork` is not null, so a
-        // second read cannot start while the first is still reading.
-        _meterWork = Task.Run(() => meter.Update(tap));
-    }
-
-    /// <summary>
-    /// Hand the light what the detector says, once a second (work instruction 474).
+    /// Hand the light what the shape side holds, once a second (work instructions 474 and 545).
     /// </summary>
     /// <param name="decoder">The decoder listening now.</param>
     /// <remarks>
-    /// <para>**NOTHING HERE DECIDES ANYTHING.** The meter's verdict is the one
-    /// <see cref="PublishKeying"/> last put on the screen, the tracker's pitch and
-    /// keying are the report this tick already read, and the admitted bins are
-    /// <see cref="CwToneTracker.CoarseCandidates"/>, the seam that has handed them out
-    /// for diagnosis since unit 448 and that <see cref="CwDecoder.Report"/> already
-    /// calls from this thread through the competitor.</para>
-    /// <para>**ONCE A SECOND, ON THE METER'S CADENCE**, because the survey's
-    /// examination is not free and the light cannot usefully change faster than the
-    /// meter beside it.</para>
+    /// <para>**NOTHING HERE DECIDES ANYTHING.** The owner's verdict row takes it: the printed sender's pitch and how many
+    /// senders the gate holds. The keying meter's verdict, the tracker's pitch and keying and the survey's admitted bins it
+    /// used to carry came out with the old decoder (work instruction 545).</para>
     /// </remarks>
     private void ObserveHearing(CwDecoder decoder)
     {
-        if (DateTime.UtcNow - _hearingLastUtc < KeyingMeterEvery)
+        if (DateTime.UtcNow - _hearingLastUtc < HearingEvery)
         {
             return;
         }
 
         _hearingLastUtc = DateTime.UtcNow;
 
-        var report = DecodeReport;
+        var side = decoder.ShapeSide;
 
-        CwHearing.Observe(new CwHearingState(
-            _keyingReading,
-            report.ToneHz,
-            report.PitchWasMeasured,
-            report.HasKeying,
-            decoder.Tracker.CoarseCandidates()));
+        CwHearing.Observe(new CwHearingState(side.PrintedPitchHz, side.Senders.Count));
     }
+
+    /// <summary>How often the light reads the shape side: once a second.</summary>
+    private static readonly TimeSpan HearingEvery = TimeSpan.FromSeconds(1);
 
     /// <summary>
     /// Hand the oscilloscope the envelope detector's last four seconds (work instruction 476).
@@ -12651,7 +12359,7 @@ public partial class MainWindowViewModel : ObservableObject
         CwHearing.ObserveScope(_scopeFeed.Tick(
             envelope,
             reading,
-            IsDecoding && _decoder is { } mixing ? mixing.PrintingHz : double.NaN,
+            IsDecoding && _decoder is { } printing ? printing.RunsPrintingHz : double.NaN,
             CwHearing.Scope,
             scopeQuiet: false,
             DateTime.UtcNow));
@@ -12698,65 +12406,6 @@ public partial class MainWindowViewModel : ObservableObject
         }
 
         _scopePointer.Observe(frame, dial, pitch, width, DateTime.UtcNow);
-    }
-
-    /// <summary>Put a reading on the screen.</summary>
-    /// <param name="reading">What the meter said.</param>
-    /// <remarks>
-    /// **THE NUMBERS ARE THE POINT AND THE WORD IS THE SUMMARY** (§0.0). He is
-    /// going to chase a fault by turning a knob, and a figure that moves is worth
-    /// more to him than a word that changes.
-    /// </remarks>
-    private void PublishKeying(KeyingReading reading)
-    {
-        _keyingReading = reading;
-
-        // **THE METER STEERS NOTHING** (work instruction 515, R114, HM-DEC-219): unit 477 handed this
-        // reading to the decoder's tracker to mix at; the shape is found at every pitch now, and the
-        // meter's reading is shown and written to the row and nothing else.
-
-        KeyingWord = reading.Verdict switch
-        {
-            KeyingVerdict.Keying => "somebody is keying",
-            KeyingVerdict.NoKeying => "no keying here",
-            _ => "listening",
-        };
-
-        KeyingIsPresent = reading.Verdict == KeyingVerdict.Keying;
-        KeyingIsAbsent = reading.Verdict == KeyingVerdict.NoKeying;
-        KeyingIsUndecided = reading.Verdict == KeyingVerdict.Listening;
-        KeyingIsHeld = reading.Held;
-
-        KeyingDetail = KeyingDetailFor(reading);
-    }
-
-    /// <summary>What the meter measured, or why there is nothing to show.</summary>
-    /// <param name="reading">The reading.</param>
-    /// <returns>The detail line.</returns>
-    /// <remarks>
-    /// **A HELD VERDICT PRINTS THE VERDICT AND NO MEASUREMENTS.** While the meter
-    /// is coasting through a gap between overs, the newest window it has is the
-    /// gap, so the figures beside the word are measurements of silence wearing
-    /// the station's label. On the evening of 2026-08-20 that put `9 ms key down`
-    /// on screen and in a capture sidecar for a station the other recordings of
-    /// the same operator measure at about ninety, and a work order was written
-    /// from it. The verdict is the thing being held and it is still worth
-    /// printing; the numbers are not, because they are not about what the word
-    /// says.
-    /// </remarks>
-    private static string KeyingDetailFor(KeyingReading reading)
-    {
-        if (reading.Held)
-        {
-            return "holding through a quiet stretch, so there is nothing fresh "
-                   + "to measure";
-        }
-
-        return reading.ToneHz <= 0
-            ? "nothing measured yet"
-            : $"{reading.ToneHz:0} Hz, key down {reading.MedianMs:0} ms, "
-              + $"{reading.SwingDb:0} dB between quiet and loud, "
-              + $"{reading.Runs} key-downs";
     }
 
     /// <summary>
@@ -12934,164 +12583,6 @@ public partial class MainWindowViewModel : ObservableObject
 
         return $"{profile.Duty * 100:0.0}%  (of the {audio.Duration.TotalSeconds:0.0} seconds in "
             + $"this file, the key was down at {shape.PrintedPitchHz:0} Hz)";
-    }
-
-    /// <summary>The sidecar's `keying` line, label and caption included.</summary>
-    /// <param name="reading">What the meter said.</param>
-    /// <returns>The line exactly as the sheet writes it.</returns>
-    /// <remarks>
-    /// <para>**THE CAPTION NAMED A SWEEP NOBODY RAN** (work instruction 418, P10).
-    /// It said 400 to 1200 Hz as a literal long after the sweep moved to the
-    /// tracker's own range, and `cw-2026-08-28-004844` printed `keying at 375 Hz`
-    /// under it. The range, the step and the window are now read from the
-    /// constants the meter runs on, so the sentence cannot fall behind again.</para>
-    /// <para>**AND IT SAYS WHAT IS SHARED.** The meter reads the decoder's own tap on
-    /// purpose and sweeps the tracker's range; what it does not share is the
-    /// decoder's code or its choice of pitch. The reading is the one the meter last
-    /// published, whose window ends a second or two before the press.</para>
-    /// </remarks>
-    internal static string KeyingRecordLine(KeyingReading reading)
-        => $"keying     {KeyingLine(reading)}"
-           + string.Format(
-               CultureInfo.InvariantCulture,
-               "  (an independent sweep of {0:0} to {1:0} Hz in {2:0} Hz steps over the "
-               + "{3:0} seconds the meter last read before the press, taking the same audio "
-               + "as the decoder and the tracker's own range, and none of the decoder's "
-               + "code or its choice of pitch)",
-               KeyingEnvelope.LowestToneHz,
-               KeyingEnvelope.HighestToneHz,
-               KeyingEnvelope.ToneStepHz,
-               CwKeyingThresholds.Window.TotalSeconds);
-
-    /// <summary>What the meter said, as one line for a record.</summary>
-    /// <param name="reading">The reading.</param>
-    /// <returns>The line.</returns>
-    internal static string KeyingLine(KeyingReading reading)
-    {
-        var word = reading.Verdict switch
-        {
-            KeyingVerdict.Keying => "keying",
-            KeyingVerdict.NoKeying => "no keying",
-            _ => "listening",
-        };
-
-        if (reading.ToneHz <= 0)
-        {
-            return "not measured";
-        }
-
-        // **A HELD VERDICT CARRIES NO MEASUREMENTS INTO THE RECORD EITHER.** The
-        // sidecar is the more dangerous of the two places, because a figure
-        // written beside a recording is read months later as a fact about it.
-        // **THE KEY-DOWN LENGTH PRINTED HERE USED TO BE ONE NOBODY COULD SEND**
-        // (§0.0). It was the middle of every threshold crossing, and a threshold
-        // is crossed by noise hundreds of times, so on a recording holding a real
-        // station the chatter outnumbered the elements several to one and the
-        // number landed among the chatter: four milliseconds beside an
-        // adjudicated `VA3VRR`, three beside an adjudicated `N4L`. A dit at sixty
-        // words a minute is twenty and sixty is faster than a hand sends, so
-        // those were not measurements that had gone wrong. They were
-        // measurements of something that is not Morse, printed where a reader
-        // takes them for a fist.
-        //
-        // **THE VERDICT IS STILL CALIBRATED ON THE OLD FIGURE AND IS UNCHANGED
-        // HERE.** Moving the verdict onto this one was built and measured: it
-        // takes the meter from ten recordings right of twenty-three to seventeen,
-        // and it costs the silence property, because in single six-second windows
-        // `cw-2026-08-20-014854` scores above the bar and would then read as
-        // keying. That trade is not this session's to make.
-        if (reading.Held)
-        {
-            return word + " (held through a quiet stretch, so nothing was measured)";
-        }
-
-        if (reading.Verdict == KeyingVerdict.NoKeying)
-        {
-            return NoKeyingLine(reading);
-        }
-
-        var length = reading.ElementMedianMs > 0
-            ? string.Format(
-                CultureInfo.InvariantCulture,
-                "{0:0} ms key down",
-                reading.ElementMedianMs)
-            : "no key-down was element length";
-
-        return string.Format(
-            CultureInfo.InvariantCulture,
-            "{0} at {1:0} Hz, {2}, {3:0} dB swing, {4} key-downs",
-            word,
-            reading.ToneHz,
-            length,
-            reading.SwingDb,
-            reading.Runs);
-    }
-
-    /// <summary>A no-keying verdict, what was counted, and which test it failed.</summary>
-    /// <param name="reading">A reading whose verdict is no keying and is not held.</param>
-    /// <returns>The line.</returns>
-    /// <remarks>
-    /// <para>**NO KEYING AND NINETY-EIGHT KEY-DOWNS IN ONE BREATH** (work
-    /// instruction 411, HM-DEC-170). `cw-2026-09-23-173723.txt` said exactly that.
-    /// The meter counts every rise above its threshold and the line called each
-    /// one a key-down, which is a claim somebody keyed it, beside a verdict that
-    /// nobody did. Both numbers were true; the word joining them was not.</para>
-    /// <para>**THE VERDICT IS NOT TOUCHED AND THE NUMBERS ARE NOT DROPPED.** The
-    /// counts become rises, and the line names which of the meter's four tests
-    /// this window failed against the meter's own bar, so a reader can see that
-    /// 17:37 was refused on its swing alone - 16 dB against 20, measured over six
-    /// seconds, where unit 409 found the swing runs low.</para>
-    /// </remarks>
-    private static string NoKeyingLine(KeyingReading reading)
-    {
-        var failed = new List<string>();
-
-        if (reading.Score < CwKeyingThresholds.KeyingScore)
-        {
-            failed.Add(string.Format(
-                CultureInfo.InvariantCulture,
-                "a keying score of {0:0.00} where it needs {1:0.00}",
-                reading.Score,
-                CwKeyingThresholds.KeyingScore));
-        }
-
-        if (reading.ElementMedianMs < CwKeyingThresholds.SlowestChatterMs
-            || reading.ElementMedianMs > CwKeyingThresholds.LongestElementMs)
-        {
-            failed.Add(string.Format(
-                CultureInfo.InvariantCulture,
-                "a median rise of {0:0} ms where it needs {1:0} to {2:0}",
-                reading.ElementMedianMs,
-                CwKeyingThresholds.SlowestChatterMs,
-                CwKeyingThresholds.LongestElementMs));
-        }
-
-        if (reading.SwingDb < CwKeyingThresholds.ConfidentSwingDb)
-        {
-            failed.Add(string.Format(
-                CultureInfo.InvariantCulture,
-                "a {0:0} dB swing where it needs {1:0}",
-                reading.SwingDb,
-                CwKeyingThresholds.ConfidentSwingDb));
-        }
-
-        // **A NEWEST WINDOW THAT PASSES ALL FOUR IS POSSIBLE**: the verdict is
-        // held across fifteen quiet windows before it turns, and a window that
-        // passes resets it. Should one ever arrive here, it says so rather than
-        // inventing a reason.
-        var why = failed.Count > 0
-            ? string.Join(" and ", failed)
-            : "the earlier windows, since this one passes every test";
-
-        return string.Format(
-            CultureInfo.InvariantCulture,
-            "no keying at {0:0} Hz: {1} rises above the threshold, median {2:0} ms, "
-            + "{3:0} dB swing; not called keying on {4}",
-            reading.ToneHz,
-            reading.Runs,
-            reading.ElementMedianMs,
-            reading.SwingDb,
-            why);
     }
 
     /// <summary>What the decoder's running totals cover, in words.</summary>
@@ -21063,7 +20554,9 @@ public partial class MainWindowViewModel : ObservableObject
                 // looking at when he decided there was a station there.
                 Transcript.Tail(RosterTextLength),
                 covers,
-                KeyingLine(_keyingReading),
+                // **THE METER COLUMN STAYS, EMPTY** (work instruction 545): the keying sweep came out with the old decoder, and
+                // the roster keeps its shape so rows before and after line up.
+                "",
 
                 // **THE SEED COLUMN IS ALWAYS EMPTY NOW.** The control that filled it was inert and came out; the column
                 // stays so rosters before and after are the same shape.

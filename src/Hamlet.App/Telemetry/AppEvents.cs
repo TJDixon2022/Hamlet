@@ -1812,22 +1812,12 @@ public static class AppEvents
                 ["clipping"] = report.Clipping,
                 ["nearlySilent"] = report.NearlySilent,
 
-                // **AN UNSPACED TRANSCRIPT AND AN EMPTY ONE ARE DIFFERENT FACTS**
-                // (HM-DEC-142). One is a callsign read correctly by a decoder that
-                // measured no word breaks; the other is a decoder producing
-                // nothing. Counting characters alone cannot tell them apart, and
-                // the difference is what somebody reading this file months later
-                // would most want to know.
-                ["wordSpacingUnmeasured"] = report.WordSpacingUnmeasured,
+                // **FROM THE SHAPE SIDE** (work instruction 545): the printed sender's pitch, null where nobody is printed
+                // rather than a zero that reads like a measurement (HM-DEC-050), and the senders the gate holds. The old
+                // decoder's signal over noise and its unmeasured word spacing came out with it.
+                ["toneHz"] = report.Printing ? Math.Round(report.ToneHz) : null,
+                ["sendersHeld"] = report.SendersHeld,
 
-                // Unknown stays unknown rather than becoming a zero that reads
-                // like a measurement (HM-DEC-050).
-                ["toneHz"] = report.HasTone ? Math.Round(report.ToneHz) : null,
-                ["snrDb"] = double.IsNaN(report.SnrDb)
-                    ? null
-                    : Math.Round(report.SnrDb, 1),
-
-                ["elementsSeen"] = report.ElementsSeen,
                 ["elementsResolved"] = report.ElementsResolved,
                 ["charactersEmitted"] = report.CharactersEmitted,
                 ["charactersUnsure"] = report.CharactersUnsure,

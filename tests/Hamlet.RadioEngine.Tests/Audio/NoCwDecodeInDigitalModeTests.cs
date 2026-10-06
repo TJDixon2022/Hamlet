@@ -87,6 +87,6 @@ public sealed class NoCwDecodeInDigitalModeTests
 
         decoder.Flush();
 
-        return (decoder.Tap.SamplesSeen, decoder.Report.ElementsSeen, text.ToString().Trim());
+        return (decoder.Tap.SamplesSeen, decoder.Report.ElementsResolved, text.ToString().Trim());
     }
 }

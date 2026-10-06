@@ -131,8 +131,8 @@ public sealed class CaseRosterSurvivesAnEveningTests : IDisposable
             _folder,
             new CwCase(
                 stamp, 7_030_000, "40 m", Path.GetFileName(wav), "",
-                report.HasTone ? report.ToneHz : null,
-                double.IsNaN(report.SnrDb) ? null : report.SnrDb,
+                report.Printing ? report.ToneHz : null,
+                null,
                 decoder.WordsPerMinute,
                 report.CharactersEmitted,
                 report.CharactersUnsure,
@@ -160,8 +160,8 @@ public sealed class CaseRosterSurvivesAnEveningTests : IDisposable
             new CwCase(
                 stamp.AddSeconds(20), 7_030_000, "40 m", "",
                 "no new audio since the last one",
-                report.HasTone ? report.ToneHz : null,
-                double.IsNaN(report.SnrDb) ? null : report.SnrDb,
+                report.Printing ? report.ToneHz : null,
+                null,
                 decoder.WordsPerMinute,
                 report.CharactersEmitted,
                 report.CharactersUnsure,

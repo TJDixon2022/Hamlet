@@ -73,7 +73,7 @@ public sealed class TheRestOfTheSheetIsTrueTests
     {
         var wav = Directory
             .GetFiles(
-                Path.Combine(EverySentenceOnTheSheetTests.Root(), "tests", "fixtures", "cw", "captured"),
+                Path.Combine(TheSheet.Root(), "tests", "fixtures", "cw", "captured"),
                 stamp + ".wav",
                 SearchOption.AllDirectories)
             .Single();
@@ -90,9 +90,8 @@ public sealed class TheRestOfTheSheetIsTrueTests
 
         var report = adjust is null ? decoder.Report : adjust(decoder.Report);
 
-        var sheet = EverySentenceOnTheSheetTests.Sheet(
+        var sheet = TheSheet.Compose(
             decoder,
-            EverySentenceOnTheSheetTests.Meter(audio).Reading,
             audio,
             report,
             MainWindowViewModel.TonePeakRecordLine(audio, decoder.ShapeSide),

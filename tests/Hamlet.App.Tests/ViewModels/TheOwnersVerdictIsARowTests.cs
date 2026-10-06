@@ -28,8 +28,9 @@ public sealed class TheOwnersVerdictIsARowTests
         // Work instruction 515: the three tracker fields left the row with the watched bin (R114), and
         // mixingHz, the pitch the decoder prints at since unit 488, is named here at last.
         "mixingHz",
-        "meterVerdict", "meterHz", "meterScore", "meterMedianMs", "meterSwingDb",
-        "survey",
+        // Work instruction 545: the keying meter's five fields and the survey's bins left the row with the old decoder,
+        // and the shape side's printed pitch and senders held stand in their place.
+        "printedHz", "sendersHeld",
         "frequency", "mode", "agc", "preamp",
         "inputPeakDb", "inputFloorDb",
         "sinceVerdictMs",
@@ -61,11 +62,8 @@ public sealed class TheOwnersVerdictIsARowTests
         // Work instruction 478: the light is gone and the field carries the bars' verdict.
         // Nothing has fed the scope here, so the bars say no keying.
         Assert.Equal("the bars say no keying", row.Data["light"]);
-        Assert.Equal("keying", row.Data["meterVerdict"]);
-        Assert.Equal(610.0, row.Data["meterHz"]);
-        Assert.Equal(0.21, row.Data["meterScore"]);
-        Assert.Equal(70.0, row.Data["meterMedianMs"]);
-        Assert.Equal(22.0, row.Data["meterSwingDb"]);
+        Assert.Equal(612.0, row.Data["printedHz"]);
+        Assert.Equal(2, row.Data["sendersHeld"]);
         Assert.Equal(7_030_000L, row.Data["frequency"]);
         Assert.Equal("CW", row.Data["mode"]);
         Assert.Equal("FAST", row.Data["agc"]);
@@ -73,12 +71,6 @@ public sealed class TheOwnersVerdictIsARowTests
         Assert.Equal(-12.5, row.Data["inputPeakDb"]);
         Assert.Equal(-61.0, row.Data["inputFloorDb"]);
         Assert.Equal(2500L, row.Data["sinceVerdictMs"]);
-
-        var survey = Assert.IsAssignableFrom<IReadOnlyList<IReadOnlyDictionary<string, object?>>>(row.Data["survey"]);
-        var bin = Assert.Single(survey);
-
-        Assert.Equal(575.0, bin["hz"]);
-        Assert.Equal(-40.0, bin["levelDb"]);
     }
 
     /// <remarks>
@@ -136,14 +128,14 @@ public sealed class TheOwnersVerdictIsARowTests
         var row = Assert.Single(rows);
 
         Assert.Null(row.Data["mixingHz"]);
-        Assert.Null(row.Data["meterHz"]);
+        Assert.Null(row.Data["printedHz"]);
         Assert.Null(row.Data["frequency"]);
         Assert.DoesNotContain(row.Data.Values, v => v is double d && double.IsNaN(d));
     }
 
     /// <remarks>
     /// Proves the row goes through the existing `.jsonl` writer's serializer as one line,
-    /// category `cw`, event `owner_verdict`, survey and all - measured and unmeasured.
+    /// category `cw`, event `owner_verdict`, every field - measured and unmeasured.
     /// </remarks>
     [Fact]
     public void TheRowIsOneLineOfTheExistingWriterUnderCw()
@@ -151,7 +143,7 @@ public sealed class TheOwnersVerdictIsARowTests
         var (hearing, _, _) = Driven();
         var empty = new CwHearingViewModel(null, () => CwHearingRig.Unknown);
 
-        foreach (var (row, surveyed) in new[] { (hearing.VerdictRow("agree"), 1), (empty.VerdictRow("idiot"), 0) })
+        foreach (var (row, held) in new[] { (hearing.VerdictRow("agree"), 2), (empty.VerdictRow("idiot"), 0) })
         {
             var line = JsonlTelemetry.Serialize(new TelemetryEvent(
                 DateTime.UtcNow, "s", TelemetryLevel.Info, "test",
@@ -164,7 +156,7 @@ public sealed class TheOwnersVerdictIsARowTests
             Assert.Equal("cw", root.GetProperty("category").GetString());
             Assert.Equal("owner_verdict", root.GetProperty("event").GetString());
             Assert.Equal(Fields.Length, root.GetProperty("data").EnumerateObject().Count());
-            Assert.Equal(surveyed, root.GetProperty("data").GetProperty("survey").GetArrayLength());
+            Assert.Equal(held, root.GetProperty("data").GetProperty("sendersHeld").GetInt32());
         }
     }
 
@@ -212,12 +204,8 @@ public sealed class TheOwnersVerdictIsARowTests
         var rig = new CwHearingRig(7_030_000, "CW", "FAST", "OFF", -12.5, -61);
         var hearing = new CwHearingViewModel(new Recording(rows), () => rig, () => clock);
 
-        hearing.Observe(new CwHearingState(
-            new KeyingReading(KeyingVerdict.Keying, 610, 70, 22, 30, 0.21, false),
-            612,
-            true,
-            false,
-            new[] { new KeyingCandidate(575, 60, 180, 3, 6, 18, 12, -40) }));
+        // The shape side at the press (work instruction 545): a sender printed at 612 Hz, and another held beside it.
+        hearing.Observe(new CwHearingState(612, 2));
 
         clock = now.AddMilliseconds(2500);
 

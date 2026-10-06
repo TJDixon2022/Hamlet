@@ -6,22 +6,18 @@ using Hamlet.RadioEngine.Telemetry;
 
 namespace Hamlet.App.ViewModels;
 
-/// <summary>What the detector already says, read once a second on the decode tick.</summary>
-/// <param name="Meter">The keying meter's last reading.</param>
-/// <param name="TrackerHz">The tracker's own pitch - not where the decoder mixes while the detector says keying (work instruction 488).</param>
-/// <param name="TrackerHasPitch">Whether that pitch was measured rather than assumed.</param>
-/// <param name="TrackerHasKeying">Whether the tracker's survey verdict holds keying.</param>
-/// <param name="Survey">Every bin the coarse survey admits as keying.</param>
-public sealed record CwHearingState(
-    KeyingReading Meter,
-    double TrackerHz,
-    bool TrackerHasPitch,
-    bool TrackerHasKeying,
-    IReadOnlyList<KeyingCandidate> Survey)
+/// <summary>What the shape side holds, read once a second on the decode tick (work instruction 545).</summary>
+/// <param name="PrintedHz">The printed sender's pitch, or NaN where nobody is printed.</param>
+/// <param name="SendersHeld">How many senders the gate holds.</param>
+/// <remarks>
+/// **THE METER, THE TRACKER AND THE SURVEY CAME OUT WITH THE OLD DECODER** (work instruction 545, HM-DEC-249): the keying
+/// meter's reading, the tracker's pitch and keying, and the coarse survey's admitted bins this carried. The shape side's
+/// own figures stand in their place.
+/// </remarks>
+public sealed record CwHearingState(double PrintedHz, int SendersHeld)
 {
     /// <summary>Nothing is listening.</summary>
-    public static CwHearingState None { get; } = new(
-        KeyingReading.None, double.NaN, false, false, Array.Empty<KeyingCandidate>());
+    public static CwHearingState None { get; } = new(double.NaN, 0);
 }
 
 /// <summary>What the rig and the input say at a press, for the owner's verdict row.</summary>
@@ -339,7 +335,6 @@ public sealed partial class CwHearingViewModel : ObservableObject
     public IReadOnlyDictionary<string, object?> VerdictRow(string verdict)
     {
         var state = State;
-        var meter = state.Meter;
         var rig = _rig();
         var scope = Scope.Reading;
 
@@ -347,18 +342,11 @@ public sealed partial class CwHearingViewModel : ObservableObject
         {
             ["verdict"] = verdict,
             ["light"] = LightWords,
-            ["meterVerdict"] = VerdictWord(meter.Verdict),
-            ["meterHz"] = meter.ToneHz > 0 ? meter.ToneHz : null,
-            ["meterScore"] = Measured(meter.Score),
-            ["meterMedianMs"] = Measured(meter.MedianMs),
-            ["meterSwingDb"] = Measured(meter.SwingDb),
-            ["survey"] = state.Survey
-                .Select(c => (IReadOnlyDictionary<string, object?>)new Dictionary<string, object?>
-                {
-                    ["hz"] = Measured(c.ToneHz),
-                    ["levelDb"] = Measured(c.KeyedDb),
-                })
-                .ToList(),
+
+            // **THE SHAPE SIDE AT THE PRESS** (work instruction 545): the printed sender's pitch and the senders the gate held,
+            // where the keying meter's verdict and figures and the survey's bins stood before the old decoder came out.
+            ["printedHz"] = Measured(state.PrintedHz),
+            ["sendersHeld"] = state.SendersHeld,
             ["frequency"] = rig.FrequencyHz,
             ["mode"] = rig.Mode,
             ["agc"] = rig.Agc,
@@ -404,11 +392,4 @@ public sealed partial class CwHearingViewModel : ObservableObject
 
     private static double? Measured(double value)
         => double.IsNaN(value) || double.IsInfinity(value) ? null : value;
-
-    private static string VerdictWord(KeyingVerdict verdict) => verdict switch
-    {
-        KeyingVerdict.Keying => "keying",
-        KeyingVerdict.NoKeying => "no keying",
-        _ => "listening",
-    };
 }

@@ -30,8 +30,8 @@ public sealed class TheVerdictCarriesTheScopeTests
         // Work instruction 515: the three tracker fields left the row with the watched bin (R114), and
         // mixingHz, the pitch the decoder prints at since unit 488, is named here at last.
         "mixingHz",
-        "meterVerdict", "meterHz", "meterScore", "meterMedianMs", "meterSwingDb",
-        "survey",
+        // Work instruction 545: the meter's five fields and the survey's bins became the shape side's two.
+        "printedHz", "sendersHeld",
         "frequency", "mode", "agc", "preamp",
         "inputPeakDb", "inputFloorDb",
         "sinceVerdictMs",

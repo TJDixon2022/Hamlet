@@ -48,11 +48,11 @@ public sealed class AClearKeepsWhatTheDecoderWorkedOutTests
     public AClearKeepsWhatTheDecoderWorkedOutTests(ITestOutputHelper output) => _output = output;
 
     /// <summary>What the decoder holds, as the requirement names it.</summary>
-    private sealed record State(int? Wpm, double RollingWpm, double ToneHz, CwPitchProof PitchProof, double SnrDb, bool HasTone, bool Reacquiring)
+    private sealed record State(int? Wpm, double ToneHz, int SendersHeld, bool Printing, bool Reacquiring)
     {
         public override string ToString()
             => string.Create(CultureInfo.InvariantCulture,
-                $"speed {Wpm?.ToString(CultureInfo.InvariantCulture) ?? "null"} (rolling {RollingWpm:0.0}), pitch {ToneHz:0.0} {PitchProof}, held SNR {SnrDb:0.000} dB, tone {HasTone}, reacquiring {Reacquiring}");
+                $"speed {Wpm?.ToString(CultureInfo.InvariantCulture) ?? "null"}, pitch {ToneHz:0.0}, senders held {SendersHeld}, printing {Printing}, reacquiring {Reacquiring}");
     }
 
     /// <summary>HM-REQ-035: the clear leaves speed, pitch and noise floor as they were.</summary>
@@ -60,17 +60,21 @@ public sealed class AClearKeepsWhatTheDecoderWorkedOutTests
     public void HmReq035AClearKeepsTheSpeedThePitchAndTheNoiseFloor()
     {
         var audio = WavAudio.Read(Path.Combine(
-            EverySentenceOnTheSheetTests.Root(), "tests", "fixtures", "cw", "synthetic-cq", "cq-18wpm-15db.wav"));
+            TheSheet.Root(), "tests", "fixtures", "cw", "synthetic-cq", "cq-18wpm-15db.wav"));
 
         var model = new MainWindowViewModel(new AppSettings(), null);
-        var cleared = new CwDecoder(audio.SampleRate, 600);
-        var twin = new CwDecoder(audio.SampleRate, 600);
+        // **THROUGH THE CHAIN** (work instruction 545): the decoder that reaches the screen is the detector, the gate and
+        // the lookup table, so the clear is tested on the speed, pitch and senders it holds.
+        using var clearedChain = new CwChain(audio.SampleRate, 600);
+        using var twinChain = new CwChain(audio.SampleRate, 600);
+        var cleared = clearedChain.Decoder;
+        var twin = twinChain.Decoder;
 
         typeof(MainWindowViewModel).GetField("_decoder", BindingFlags.Instance | BindingFlags.NonPublic)!.SetValue(model, cleared);
         cleared.LeadingEdge += model.Transcript.OfferEdge;
         cleared.CharacterSettled += model.Transcript.Settle;
 
-        var hop = cleared.Tracker.HopSamples;
+        var hop = audio.SampleRate / 100;
         var clearAt = (long)(ClearAtSeconds * audio.SampleRate);
         var done = false;
         var after = 0;
@@ -83,8 +87,8 @@ public sealed class AClearKeepsWhatTheDecoderWorkedOutTests
         {
             var chunk = new AudioChunk(at, audio.SampleRate, audio.Samples.AsSpan((int)at, hop));
 
-            cleared.Process(chunk);
-            twin.Process(chunk);
+            clearedChain.Process(chunk);
+            twinChain.Process(chunk);
 
             if (!done && at + hop >= clearAt)
             {
@@ -133,6 +137,8 @@ public sealed class AClearKeepsWhatTheDecoderWorkedOutTests
     {
         var report = decoder.Report;
 
-        return new State(decoder.WordsPerMinute, decoder.Reading.WordsPerMinute, report.ToneHz, report.PitchProof, report.SnrDb, report.HasTone, decoder.SpeedIsReacquiring);
+        // From the shape side (work instruction 545): the old decoder's rolling speed, pitch proof and signal over noise came
+        // out with it, and the speed, pitch and senders held are what a clear must keep now.
+        return new State(decoder.WordsPerMinute, report.ToneHz, report.SendersHeld, report.Printing, decoder.SpeedIsReacquiring);
     }
 }

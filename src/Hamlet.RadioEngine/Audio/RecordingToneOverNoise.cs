@@ -8,7 +8,7 @@ namespace Hamlet.RadioEngine.Audio;
 /// </summary>
 /// <remarks>
 /// <para>**THE HELD FIGURE'S OWN QUANTITY, OVER THIS FILE ONLY.** The decoder's
-/// held peak (<see cref="CwDecodeReport.SnrDb"/>) rises at once and falls about a
+/// held peak (the old decoder's signal over noise, gone since work instruction 545) rises at once and falls about a
 /// decibel a second across a whole evening, so the number beside a capture was the
 /// highest the tracked tone had stood in the last several seconds of whatever came
 /// before it: measured across this repository's captures it rated two recordings
