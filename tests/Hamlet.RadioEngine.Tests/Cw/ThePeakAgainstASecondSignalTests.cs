@@ -155,6 +155,43 @@ public sealed class ThePeakAgainstASecondSignalTests
             $"{switches} switches between stations across {chose.Count} readings");
     }
 
+    /// <summary>What the old tone tracker does on the same input.</summary>
+    /// <remarks>
+    /// **THE ORDER ASKS FOR THIS AND THE TRACKER IS STILL IN THE TREE.** It is
+    /// what `CwSpectralPeak` displaced in unit 050, and the difference the order
+    /// suspects is that it **held** its pitch once locked where the peak
+    /// re-measures from scratch every time. If the tracker holds through the same
+    /// mix that moves the peak, that is the mechanism named.
+    /// </remarks>
+    [Fact]
+    public void WhatTheOldTrackerDoesOnTheSameMix()
+    {
+        var strong = WavAudio.Read(PathOf(StrongName));
+        var weak = WavAudio.Read(PathOf(WeakName));
+
+        _output.WriteLine("secondDb	trackerHz	measured	holding");
+
+        foreach (var db in new[] { -30.0, -18, -6, -3, 0, 6 })
+        {
+            var mixed = Mix(strong, weak, db);
+            var tracker = new CwToneTracker(mixed.SampleRate, 600);
+            var hop = tracker.HopSamples;
+
+            for (var at = 0L; at + hop <= mixed.Samples.Length; at += hop)
+            {
+                tracker.Process(
+                    mixed.Samples.AsSpan((int)at, hop), at, _ => { });
+            }
+
+            var hz = tracker.ToneHz;
+            var holdingStrong = Math.Abs(hz - StrongHz) < Math.Abs(hz - WeakHz);
+
+            _output.WriteLine(
+                $"{db:+0;-0}	{hz:0.0}	{tracker.HasMeasuredPitch}	"
+                + $"{(holdingStrong ? "613 (first)" : "440 (second)")}");
+        }
+    }
+
     /// <summary>The full path of a fixture.</summary>    /// <summary>The full path of a fixture.</summary>
     private static string PathOf(string name)
         => Path.Combine(

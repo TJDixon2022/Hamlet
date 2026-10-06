@@ -38,17 +38,11 @@
        unedited. Step 3 retires or repairs each one under R49, one at a time, and
        takes its line out of this group when it does. -->
   <ItemGroup>
-    <Compile Remove="Cw\AMoveStartsTheDecoderFreshTests.cs" />
     <Compile Remove="Cw\AStationIsABinThatSwingsTests.cs" />
-    <Compile Remove="Cw\EveryElementCarriesItsOwnPitchTests.cs" />
     <Compile Remove="Cw\IsTheHertzABiasOrAFloorTests.cs" />
-    <Compile Remove="Cw\NoSenderIsSplitInTwoTests.cs" />
-    <Compile Remove="Cw\TheFirstSecondsAreReadAgainTests.cs" />
     <Compile Remove="Cw\ThePeakAgainstASecondSignalTests.cs" />
     <Compile Remove="Cw\ThePeakFindsThePitchTheTrackerMissedTests.cs" />
-    <Compile Remove="Cw\TheQuietestBinNoLongerWinsTests.cs" />
     <Compile Remove="Cw\TheReferenceDecoderIsPortedFaithfullyTests.cs" />
-    <Compile Remove="Cw\WhereHamletAndTheReferenceDivergeTests.cs" />
   </ItemGroup>
 
 </Project>

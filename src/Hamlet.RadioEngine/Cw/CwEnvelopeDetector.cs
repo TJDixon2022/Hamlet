@@ -307,7 +307,7 @@ public sealed class CwEnvelopeDetector
         SampleRate = Math.Max(1_000, sampleRate);
 
         // **THE DECODER'S OWN HOP**, five milliseconds, so a hop here and a hop in
-        // `CwToneTracker` are the same slice of time.
+        // `CwCharacter.HopMilliseconds` are the same slice of time.
         HopSamples = Math.Max(4, SampleRate / 200);
 
         // Each bin's level is read over two hops, ten milliseconds: a 25 ms dit still holds
