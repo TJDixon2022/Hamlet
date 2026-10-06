@@ -39,19 +39,12 @@ public sealed class PrintedStaysPrintedTests
         var audio = CwSignal.Generate(new CwSignalRequest(
             "CQ CQ DE N0CALL K", WordsPerMinute: 9, ToneHz: 600, SampleRate: Rate, Amplitude: 0.5,
             NoiseAmplitude: 0.05, LeadInSeconds: 4, TailSeconds: 4, Seed: 485));
-        var detector = new CwEnvelopeDetector(Rate);
-        var decoder = new CwDecoder(Rate, 600)
-        {
-            KeyingGate = () => detector.Reading.Keying,
-            DetectorPitch = () => detector.Reading.Keying ? detector.Reading.PitchHz : double.NaN,
-            DetectorBlocks = detector.BlocksBetween,
-            DetectorGatesKeying = true,
-            DetectorSteersPitch = true,
-            DetectorGatesBlocks = true,
-        };
+        // Through the chain (work instruction 545): the detector, the gate and the lookup table, as the tab hears.
+        using var chain = new CwChain(Rate);
+        var decoder = chain.Decoder;
+        var detector = chain.Detector;
         var transcript = new CwTranscript();
 
-        decoder.LeadingEdge += transcript.OfferEdge;
         decoder.CharacterSettled += transcript.Settle;
 
         string Screen() => transcript.PlainText + transcript.TipText;
@@ -62,8 +55,7 @@ public sealed class PrintedStaysPrintedTests
 
         for (var at = 0; at + 80 <= audio.Samples.Length; at += 80)
         {
-            decoder.Process(new AudioChunk(at, Rate, audio.Samples.AsSpan(at, 80)));
-            detector.Process(audio.Samples.AsSpan(at, 80));
+            chain.Process(new AudioChunk(at, Rate, audio.Samples.AsSpan(at, 80)));
 
             var screen = Screen();
 

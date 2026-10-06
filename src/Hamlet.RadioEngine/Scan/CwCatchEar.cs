@@ -412,7 +412,7 @@ public sealed class CwCatchEar : IDisposable
                 // **THE APP'S OWN CHAIN** (work instruction 542, HM-DEC-246): the same decoder, detector, gate and reader,
                 // wired as the app wires them, rather than a chain of the ear's own.
                 _rate = chunk.SampleRate;
-                _chain = new CwChain(_rate, _pitchHz);
+                _chain = new CwChain(_rate);
 
                 var gate = _chain.Decoder.Runs;
 

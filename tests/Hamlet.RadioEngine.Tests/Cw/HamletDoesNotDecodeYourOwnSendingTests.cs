@@ -1,5 +1,6 @@
 using Hamlet.RadioEngine.Audio;
 using Hamlet.RadioEngine.Cw;
+using Hamlet.RadioEngine.Tests.Cw.Fixtures;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -36,8 +37,11 @@ public sealed class HamletDoesNotDecodeYourOwnSendingTests
     public HamletDoesNotDecodeYourOwnSendingTests(ITestOutputHelper output)
         => _output = output;
 
+    // **THROUGH THE CHAIN, ON A GENERATED SENDER** (work instruction 545): the decoder that reaches the screen is the
+    // detector, the gate and the lookup table, and a generated CQ is read here in place of the bulletin, a recording
+    // R88 does not lift.
     private static MonoAudio Bulletin() => WavAudio.Read(
-        Path.Combine(CapturedSignalTests.Folder, "cw-2026-08-18-004507.wav"));
+        Path.Combine(SyntheticCq.Folder, "cq-18wpm-15db.wav"));
 
     /// <summary>One run over a recording, with transmit asserted for part of it.</summary>
     /// <param name="assertFrom">When the radio starts transmitting, in seconds.</param>
@@ -47,8 +51,9 @@ public sealed class HamletDoesNotDecodeYourOwnSendingTests
         double assertFrom, double assertTo)
     {
         var audio = Bulletin();
-        var decoder = new CwDecoder(audio.SampleRate, 501);
-        var hop = decoder.Tracker.HopSamples;
+        using var chain = new CwChain(audio.SampleRate);
+        var decoder = chain.Decoder;
+        var hop = audio.SampleRate / 100;
         var settled = new List<CwCharacter>();
         var clock = new DateTime(2026, 8, 21, 12, 0, 0, DateTimeKind.Utc);
 
@@ -64,7 +69,7 @@ public sealed class HamletDoesNotDecodeYourOwnSendingTests
                 seconds >= assertFrom && seconds < assertTo,
                 clock + TimeSpan.FromSeconds(seconds));
 
-            decoder.Process(new AudioChunk(
+            chain.Process(new AudioChunk(
                 at, audio.SampleRate, audio.Samples.AsSpan((int)at, hop)));
         }
 
@@ -110,7 +115,7 @@ public sealed class HamletDoesNotDecodeYourOwnSendingTests
 
         // The bulletin's own words, out of the part that was not suspended.
         Assert.Contains(
-            "STATIONHANDLING",
+            "N0CALL",
             text.Replace(" ", string.Empty, StringComparison.Ordinal),
             StringComparison.Ordinal);
     }
@@ -131,8 +136,9 @@ public sealed class HamletDoesNotDecodeYourOwnSendingTests
     public void BreakInCyclingDoesNotCostTheStation()
     {
         var audio = Bulletin();
-        var decoder = new CwDecoder(audio.SampleRate, 501);
-        var hop = decoder.Tracker.HopSamples;
+        using var chain = new CwChain(audio.SampleRate);
+        var decoder = chain.Decoder;
+        var hop = audio.SampleRate / 100;
         var settled = new List<CwCharacter>();
         var clock = new DateTime(2026, 8, 21, 12, 0, 0, DateTimeKind.Utc);
 
@@ -151,7 +157,7 @@ public sealed class HamletDoesNotDecodeYourOwnSendingTests
             decoder.RadioIsTransmitting(
                 keying, clock + TimeSpan.FromSeconds(seconds));
 
-            decoder.Process(new AudioChunk(
+            chain.Process(new AudioChunk(
                 at, audio.SampleRate, audio.Samples.AsSpan((int)at, hop)));
         }
 
@@ -167,10 +173,10 @@ public sealed class HamletDoesNotDecodeYourOwnSendingTests
         // The tracker never moved off the station, and the decoder found the
         // sender's speed on its own afterwards exactly as it does without any of
         // this.
-        Assert.InRange(decoder.Tracker.ToneHz, 480, 525);
+        Assert.InRange(decoder.RunsPrintingHz, 595, 635);
 
         Assert.Contains(
-            "STATIONHANDLING",
+            "N0CALL",
             text.Replace(" ", string.Empty, StringComparison.Ordinal),
             StringComparison.Ordinal);
     }
@@ -222,7 +228,7 @@ public sealed class HamletDoesNotDecodeYourOwnSendingTests
     [Fact]
     public void SuspensionIsImmediateAndResumptionWaits()
     {
-        var decoder = new CwDecoder(8_000, 600);
+        var decoder = new CwDecoder(8_000);
         var clock = new DateTime(2026, 8, 21, 12, 0, 0, DateTimeKind.Utc);
 
         Assert.False(decoder.DecodingSuspended);
@@ -250,7 +256,7 @@ public sealed class HamletDoesNotDecodeYourOwnSendingTests
     [Fact]
     public void NotKnowingIsNotTransmitting()
     {
-        var decoder = new CwDecoder(8_000, 600);
+        var decoder = new CwDecoder(8_000);
         var clock = new DateTime(2026, 8, 21, 12, 0, 0, DateTimeKind.Utc);
 
         decoder.RadioIsTransmitting(null, clock);

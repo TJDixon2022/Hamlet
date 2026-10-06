@@ -99,7 +99,7 @@ public sealed class ACharacterIsARunOfMarksThatAgreeTests
     internal static List<CwCharacter> ReadCharacters(float[] samples, bool runs)
     {
         var detector = new CwEnvelopeDetector(Rate);
-        var decoder = new CwDecoder(Rate, 600);
+        var decoder = new CwDecoder(Rate);
         var settled = new List<CwCharacter>();
 
         if (runs)
@@ -154,12 +154,12 @@ public sealed class ACharacterIsARunOfMarksThatAgreeTests
 
     private (string Old, string New) Both(string name, float[] samples, string sent)
     {
-        var old = Read(samples, runs: false);
+        // The old path came out with work instruction 545; only the shape side is read.
+        var old = "";
         var now = Read(samples, runs: true);
 
         _output.WriteLine($"{name}");
         _output.WriteLine($"  sent      `{sent}`");
-        _output.WriteLine($"  old path  `{old}` ({old.Count(c => c != ' ')} characters)");
         _output.WriteLine($"  new path  `{now}` ({now.Count(c => c != ' ')} characters)");
 
         return (old, now);
@@ -392,7 +392,7 @@ public sealed class ACharacterIsARunOfMarksThatAgreeTests
 
         detector.SetPassband(600, 500);
 
-        var decoder = new CwDecoder(Rate, 600) { DetectorMarks = detector.MarksSince };
+        var decoder = new CwDecoder(Rate) { DetectorMarks = detector.MarksSince };
         var settled = new List<CwCharacter>();
 
         decoder.CharacterSettled += settled.Add;

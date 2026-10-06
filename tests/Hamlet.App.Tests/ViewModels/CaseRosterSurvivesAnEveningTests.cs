@@ -94,14 +94,15 @@ public sealed class CaseRosterSurvivesAnEveningTests : IDisposable
     public void OnePressKeepsTheAudioAndMarksTheCase()
     {
         var audio = WavAudio.Read(Fixture());
-        var decoder = new CwDecoder(audio.SampleRate, 600);
+        using var chain = new CwChain(audio.SampleRate);
+        var decoder = chain.Decoder;
 
         var settled = new List<CwCharacter>();
         decoder.CharacterSettled += settled.Add;
 
         using (var source = new BufferedAudioSource(audio))
         {
-            decoder.Listen(source);
+            chain.Listen(source);
             source.PumpAll();
             decoder.Flush();
         }

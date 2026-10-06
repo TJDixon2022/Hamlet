@@ -42,7 +42,8 @@ public sealed class TheSilencePropertyIsLockedTests
     public void ACaptureHoldingNoStationEmitsNoLetters(string name)
     {
         var audio = Read(name);
-        var decoder = new CwDecoder(audio.SampleRate, 600);
+        using var chain = new CwChain(audio.SampleRate);
+        var decoder = chain.Decoder;
         var letters = new System.Text.StringBuilder();
 
         decoder.CharacterSettled += c =>
@@ -54,11 +55,11 @@ public sealed class TheSilencePropertyIsLockedTests
             }
         };
 
-        var hop = decoder.Tracker.HopSamples;
+        var hop = Math.Max(4, 48_000 / 200);
 
         for (var at = 0L; at + hop <= audio.Samples.Length; at += hop)
         {
-            decoder.Process(new AudioChunk(
+            chain.Process(new AudioChunk(
                 at, audio.SampleRate, audio.Samples.AsSpan((int)at, hop)));
         }
 
@@ -80,17 +81,18 @@ public sealed class TheSilencePropertyIsLockedTests
     [Fact]
     public void AnAllZeroBufferEmitsNothing()
     {
-        var decoder = new CwDecoder(48_000, 600);
+        using var chain = new CwChain(48_000);
+        var decoder = chain.Decoder;
         var emitted = 0;
 
         decoder.CharacterSettled += _ => emitted++;
 
         var silence = new float[48_000 * 20];
-        var hop = decoder.Tracker.HopSamples;
+        var hop = Math.Max(4, 48_000 / 200);
 
         for (var at = 0L; at + hop <= silence.Length; at += hop)
         {
-            decoder.Process(new AudioChunk(
+            chain.Process(new AudioChunk(
                 at, 48_000, silence.AsSpan((int)at, hop)));
         }
 

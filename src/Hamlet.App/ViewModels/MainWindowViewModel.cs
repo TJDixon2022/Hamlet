@@ -7502,8 +7502,10 @@ public partial class MainWindowViewModel : ObservableObject
         return new AudioArrival(
             tap.ArrivalRatio(slotSpan),
             tap.ArrivalRatioBetween(now - slotSpan, now),
-            _decoder?.DecodeQueueDroppedChunks ?? 0,
-            _decoder?.DecodeQueueDroppedSamples ?? 0,
+            // **THE DECODER HAS NO QUEUE** (work instruction 392, carried by work instruction 545): it reads on the thread that
+            // delivers the audio, so nothing is ever dropped from one.
+            0,
+            0,
             wasapi?.CallbackFailures ?? 0,
             wasapi?.EmptyBuffers ?? 0,
             wasapi?.LongestCallbackMicroseconds ?? 0,
@@ -11426,7 +11428,7 @@ public partial class MainWindowViewModel : ObservableObject
         // **THE DECODER IS THE CHAIN** (work instruction 545, HM-DEC-249): the detector's marks, the sender's window, the
         // gate and the lookup table, wired below. The fldigi second reader and its arbiter, the probabilistic lattice, the
         // tone tracker and the keying meter came out; none of them decided anything that reached the screen.
-        _decoder = new CwDecoder(_audioInput.SampleRate, _settings.CwPitchHz);
+        _decoder = new CwDecoder(_audioInput.SampleRate);
 
         _decoderStartedUtc = DateTime.UtcNow;
         // **THE TWO PASSES BOTH REACH THE SCREEN NOW, AND THEY ARE NOT
@@ -11440,7 +11442,6 @@ public partial class MainWindowViewModel : ObservableObject
         // late on purpose, so the tail of what it has read can change when the
         // next character arrives, and the terminal shows that rather than
         // stacking up every version of it.
-        _decoder.LeadingEdge += Transcript.OfferEdge;
         _decoder.CharacterSettled += Transcript.Settle;
         _decoder.CharacterSettled += SettleOnTheGraph;
 
@@ -11568,7 +11569,6 @@ public partial class MainWindowViewModel : ObservableObject
 
         if (_decoder is not null)
         {
-            _decoder.LeadingEdge -= Transcript.OfferEdge;
             _decoder.CharacterSettled -= Transcript.Settle;
             _decoder.CharacterSettled -= SettleOnTheGraph;
             _decoder.Listen(null);
@@ -12369,15 +12369,6 @@ public partial class MainWindowViewModel : ObservableObject
     private readonly CwScopeFeed _scopeFeed = new();
 
     /// <summary>
-    /// The pitch the decoder's second rung is fed: the reading's own pitch while it says keying, and
-    /// NaN otherwise, so the tracker takes over only when nobody is keying (work instruction 488).
-    /// </summary>
-    /// <param name="reading">The detector's last reading.</param>
-    /// <returns>A pitch in hertz, or NaN.</returns>
-    internal static double PitchForTheDecoder(CwEnvelopeReading reading) =>
-        CwChain.PitchForTheDecoder(reading);
-
-    /// <summary>
     /// Put a settled character on the scope, over the span the decoder gave it
     /// (work instruction 480). Called on the audio thread; the graph locks.
     /// </summary>
@@ -13024,20 +13015,6 @@ public partial class MainWindowViewModel : ObservableObject
     /// <summary>UI-origin frequency changes: clamp to band, refresh the mode
     /// line, and schedule a throttled rig send so tape drags don't flood the
     /// CI-V bus.</summary>
-    /// <summary>
-    /// How far the dial has to move before the decoder starts fresh, in hertz.
-    /// </summary>
-    /// <remarks>
-    /// **PROVISIONAL, AND THE NUMBER IS TIM'S** (§12.4, work instruction 043
-    /// task 5). Five hundred is the CW filter's own width: inside it the
-    /// receiver is passing the same signal, so the station a nudge is aimed at
-    /// is the station already being read.
-    /// </remarks>
-    public const long NudgeHz = 500;
-
-    /// <summary>Where the decoder was last told the dial had moved to.</summary>
-    private long _decoderTunedAtHz = long.MinValue;
-
     partial void OnFrequencyHzChanged(long value)
     {
         // THE DIAL REACHES PAST THE BAND EDGE, on purpose (HM-DEC-055). It used
@@ -13087,38 +13064,6 @@ public partial class MainWindowViewModel : ObservableObject
         // The forget button belongs to where the dial is, so it comes and goes
         // with the dial (HM-DEC-134).
         OnPropertyChanged(nameof(IsSomewhereRemembered));
-
-        // **AND THE DECODER LETS GO OF THE PITCH IT MEASURED SOMEWHERE ELSE.**
-        // The tracker holds its last measured pitch through the gaps in a slow
-        // sender's keying, which is what makes a slow fist readable at all and
-        // is untouched while the dial stays put. What it could not do was let
-        // go: on 2026-08-26 the operator tuned here from twenty-four minutes and
-        // one QSY away, and the decoder went on mixing at the 300 Hz it had
-        // measured there while the station in front of him keyed above 400. It
-        // refused everything, correctly, because nothing was keyed at 300.
-        //
-        // It hangs on the frequency rather than on a clock because that is when
-        // the evidence stops existing. A station is entitled to pause for as
-        // long as it likes; it is not entitled to be heard on a frequency the
-        // receiver has left.
-        // **A SMALL NUDGE IS NOT A MOVE** (Tim's ruling of 2026-08-29). This
-        // fired on every change to the dial, including a ten-hertz one, so
-        // fine-tuning a station threw away the pitch the survey had just
-        // measured on it, the held peak, and the window being read — which is
-        // the opposite of what a reset is for. The station a nudge is aimed at
-        // is the station already being read.
-        //
-        // **THE FIGURE IS THE CW FILTER'S OWN WIDTH AND IT IS PROVISIONAL**
-        // (§12.4). Inside 500 Hz the receiver is still passing the same signal,
-        // so a move that small cannot have left the station behind; beyond it
-        // the audio in the window is about somewhere else. The operator's own
-        // moves on 2026-08-29 were 8.8 kHz and 13.0 kHz, twenty times this.
-        // **Three candidates are costed in the report and the number is his.**
-        if (Math.Abs(clamped - _decoderTunedAtHz) >= NudgeHz)
-        {
-            _decoderTunedAtHz = clamped;
-            _decoder?.Retuned();
-        }
 
         if (_arrivedOnHz != clamped)
         {

@@ -39,7 +39,7 @@ public sealed class TheOwnersRecordingReadsTests
     {
         var audio = WavAudio.Read(Wav(name));
         // **THE APP'S OWN CHAIN** (work instruction 542, HM-DEC-246), wired as the app wires it.
-        using var chain = new CwChain(audio.SampleRate, 600);
+        using var chain = new CwChain(audio.SampleRate);
         var detector = chain.Detector;
 
         detector.SetPassband(600, 500);

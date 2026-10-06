@@ -53,7 +53,7 @@ public sealed class TheStrongStationsOverTests
     /// <summary>Reads a catch through the app's chain at the scan's passband, as the ear does.</summary>
     internal static ChainRead ReadChain(float[] samples, int rate, double pitchHz = 600, double widthHz = 500)
     {
-        using var chain = new CwChain(rate, pitchHz);
+        using var chain = new CwChain(rate);
         var gate = chain.Decoder.Runs;
         var marks = new List<CwMark>();
         var printed = new List<Labelled>();

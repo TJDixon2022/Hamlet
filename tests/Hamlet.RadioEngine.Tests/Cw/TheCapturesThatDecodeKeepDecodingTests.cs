@@ -258,8 +258,9 @@ public sealed class TheCapturesThatDecodeKeepDecodingTests
         var audio = WavAudio.Read(
             Path.Combine(CapturedSignalTests.Folder, name + ".wav"));
 
-        var decoder = new CwDecoder(audio.SampleRate, 600);
-        var hop = decoder.Tracker.HopSamples;
+        using var chain = new CwChain(audio.SampleRate);
+        var decoder = chain.Decoder;
+        var hop = Math.Max(4, audio.SampleRate / 200);
 
         // **WHAT IS COUNTED IS WHAT SETTLED, SPLIT BY WHETHER IT HAS A NAME**
         // (R57, HM-DEC-168). A placeholder is something the decoder heard and
@@ -307,7 +308,7 @@ public sealed class TheCapturesThatDecodeKeepDecodingTests
 
         for (var at = 0L; at + hop <= audio.Samples.Length; at += hop)
         {
-            decoder.Process(new AudioChunk(
+            chain.Process(new AudioChunk(
                 at, audio.SampleRate, audio.Samples.AsSpan((int)at, hop)));
         }
 

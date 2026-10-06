@@ -17,7 +17,7 @@ namespace Hamlet.RadioEngine.Cw;
 /// <item>the decoder reads the detector's marks (<see cref="CwDecoder.DetectorMarks"/>) into its gate and reader;</item>
 /// <item>the detector follows what the gate prints and what waits to print (<see cref="CwEnvelopeDetector.PrintedPitch"/>,
 /// <see cref="CwEnvelopeDetector.WaitingPitch"/>), which is what opens the sender's own window;</item>
-/// <item>the decoder is handed the detector's keying, pitch and blocks, each behind its own switch, off as in the app;</item>
+/// <item>the keying, pitch and blocks it used to hand the old decoder came out with it (work instruction 545);</item>
 /// <item>**THE DECODER HEARS EACH CHUNK BEFORE THE DETECTOR DOES.** The app subscribes the decoder to the audio first, so the
 /// gate takes the marks the detector had called up to the chunk before; <see cref="Listen"/> and <see cref="Process"/>
 /// keep that order;</item>
@@ -29,11 +29,13 @@ public sealed class CwChain : IDisposable
 {
     /// <summary>Builds a chain: a decoder and a detector, wired as the app wires them.</summary>
     /// <param name="sampleRate">The audio's rate.</param>
-    /// <param name="cwPitchHz">The decoder's starting pitch.</param>
-    /// <param name="secondReader">Whether the decoder runs its second reader, as the app's does.</param>
-    public CwChain(int sampleRate, double cwPitchHz, bool secondReader = true)
+    /// <remarks>
+    /// **NO PITCH**: the detector finds the shape at every pitch the filter passes, and the decoder that took a starting
+    /// pitch and a second reader came out with the old decoder (work instruction 545).
+    /// </remarks>
+    public CwChain(int sampleRate)
     {
-        Decoder = new CwDecoder(sampleRate, cwPitchHz, secondReader: secondReader);
+        Decoder = new CwDecoder(sampleRate);
         Detector = new CwEnvelopeDetector(sampleRate);
         Wire(Decoder, Detector);
     }
@@ -50,39 +52,24 @@ public sealed class CwChain : IDisposable
     /// </summary>
     /// <param name="decoder">The decoder.</param>
     /// <param name="detector">The detector.</param>
+    /// <remarks>
+    /// The keying gate, the detector's pitch and the block rule it also handed the old decoder, each behind a switch that
+    /// was off, came out with it (work instruction 545).
+    /// </remarks>
     public static void Wire(CwDecoder decoder, CwEnvelopeDetector detector)
     {
         ArgumentNullException.ThrowIfNull(decoder);
         ArgumentNullException.ThrowIfNull(detector);
 
-        // **NO DETECTION, NO LETTERS** (work instruction 485, R97, HM-DEC-190), behind its switch.
-        decoder.KeyingGate = () => detector.Reading.Keying;
-
-        // **AND IT LISTENS WHERE THE DETECTOR HEARS** (work instructions 486 and 488, HM-DEC-193), behind its switch.
-        decoder.DetectorPitch = () => PitchForTheDecoder(detector.Reading);
-
-        // **AND THE READING FOLLOWS WHAT THE TERMINAL PRINTS** (work instruction 519, HM-DEC-223).
+        // **THE READING FOLLOWS WHAT THE TERMINAL PRINTS** (work instruction 519, HM-DEC-223).
         detector.PrintedPitch = () => decoder.RunsPrintingHz;
 
         // **AND THE LIGHT CLAIMS NO MORE THAN THE PRINTER** (work instruction 535, HM-DEC-239).
         detector.WaitingPitch = () => decoder.RunsWaitingHz;
 
-        // **AND A LETTER NEEDS BLOCKS** (work instruction 487, R99), behind its switch.
-        decoder.DetectorBlocks = detector.BlocksBetween;
-
         // **A CHARACTER IS A RUN OF MARKS THAT AGREE** (work instruction 490, HM-DEC-195): the gate and reader read the marks.
         decoder.DetectorMarks = detector.MarksSince;
     }
-
-    /// <summary>
-    /// The pitch the decoder's second rung is fed: the reading's own pitch while it says keying, NaN otherwise (work
-    /// instruction 488).
-    /// </summary>
-    /// <param name="reading">The detector's last reading.</param>
-    /// <returns>A pitch in hertz, or NaN.</returns>
-    public static double PitchForTheDecoder(CwEnvelopeReading reading) =>
-        reading.Keying && double.IsFinite(reading.PitchHz) && reading.PitchHz > 0 ? reading.PitchHz : double.NaN;
-
     /// <summary>
     /// **THE PASSBAND IS THE RADIO'S, READ, OR THE WHOLE BAND** (work instruction 476): in CW or CW-R the radio's own CW
     /// pitch and filter width; in any other mode, or where either is unread, nulls, and the detector sums the whole band.

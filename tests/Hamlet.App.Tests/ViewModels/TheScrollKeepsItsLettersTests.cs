@@ -90,7 +90,7 @@ public sealed class TheScrollKeepsItsLettersTests
     private static Run Listen(float[] samples)
     {
         var detector = new CwEnvelopeDetector(Rate);
-        var decoder = new CwDecoder(Rate, 600) { DetectorMarks = detector.MarksSince };
+        var decoder = new CwDecoder(Rate) { DetectorMarks = detector.MarksSince };
         var feed = new CwScopeFeed();
         var start = new DateTime(2026, 9, 30, 20, 10, 0, DateTimeKind.Utc);
         var terminal = new List<Printed>();
@@ -117,7 +117,7 @@ public sealed class TheScrollKeepsItsLettersTests
 
         void Tick()
         {
-            frame = feed.Tick(detector, detector.Reading, decoder.PrintingHz, frame, scopeQuiet: false, Now());
+            frame = feed.Tick(detector, detector.Reading, decoder.RunsPrintingHz, frame, scopeQuiet: false, Now());
 
             var items = CwScopeControl.Items(frame, Width);
             var bars = items.Where(i => i.Kind == CwScopeItemKind.Bar).ToList();

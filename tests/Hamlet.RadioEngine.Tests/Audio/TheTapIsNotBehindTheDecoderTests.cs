@@ -52,7 +52,7 @@ public sealed class TheTapIsNotBehindTheDecoderTests
     [Fact]
     public void TheTapIsFedOnceWhicheverWayTheAudioArrives()
     {
-        var direct = new CwDecoder(Rate, 600);
+        var direct = new CwDecoder(Rate);
         var samples = new float[Chunk];
 
         direct.Process(new AudioChunk(0, Rate, samples));
@@ -61,7 +61,7 @@ public sealed class TheTapIsNotBehindTheDecoderTests
         Assert.Equal(Chunk, direct.Tap.SamplesSeen);
 
         using var source = new FakeSource(Rate);
-        var attached = new CwDecoder(Rate, 600);
+        var attached = new CwDecoder(Rate);
 
         attached.Listen(source);
         source.Deliver(Chunk);

@@ -417,11 +417,10 @@ public sealed partial class AutoCallViewModel : ObservableObject
             return AutoCallWindow.Empty;
         }
 
-        // **A FOLLOW AND NEVER A REFINEMENT** (HM-DEC-123). The tracker settling
-        // one bin over on the station it is already reading says nothing about
-        // anybody arriving; going to a different station says somebody started
-        // transmitting, and it says it sooner than any classifier can.
-        var followsBefore = decoder.Tracker.Follows;
+        // **ANOTHER SENDER PRINTED** (work instruction 545): the gate prints a sender at a pitch more than one bin from the
+        // one it printed before the window, or prints one where it printed nobody. The tone tracker's follow it replaces
+        // came out with the old decoder; a refinement within one bin is still never a change (HM-DEC-123).
+        var printedBefore = decoder.RunsPrintingHz;
         var heard = new List<CwCharacter>();
 
         void Take(CwCharacter c) => heard.Add(c);
@@ -442,7 +441,11 @@ public sealed partial class AutoCallViewModel : ObservableObject
             decoder.CharacterSettled -= Take;
         }
 
-        return new AutoCallWindow(heard, decoder.Tracker.Follows != followsBefore);
+        var printedNow = decoder.RunsPrintingHz;
+        var changed = double.IsFinite(printedNow)
+            && (!double.IsFinite(printedBefore) || Math.Abs(printedNow - printedBefore) > CwSenderGate.PitchToleranceHz);
+
+        return new AutoCallWindow(heard, changed);
     }
 
     private void OnTransmitted(object? sender, AutoCallTransmission went)

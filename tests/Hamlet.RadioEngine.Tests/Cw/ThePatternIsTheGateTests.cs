@@ -89,7 +89,7 @@ public sealed class ThePatternIsTheGateTests
     {
         // **THE APP'S OWN CHAIN** (work instruction 542, HM-DEC-246): the bench reads through CwChain, wired as the app wires it,
         // rather than wiring the detector and a gate itself.
-        using var chain = new CwChain(Rate, pitch);
+        using var chain = new CwChain(Rate);
         var detector = chain.Detector;
 
         setUp?.Invoke(detector);

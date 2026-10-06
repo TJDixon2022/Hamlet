@@ -39,16 +39,17 @@ public sealed class TheSeventeenThirtySevenCaptureTests
         var audio = WavAudio.Read(
             Path.Combine(CapturedSignalTests.Folder, name + ".wav"));
 
-        var decoder = new CwDecoder(audio.SampleRate, 600);
+        using var chain = new CwChain(audio.SampleRate);
+        var decoder = chain.Decoder;
         var settled = new List<CwCharacter>();
 
         decoder.CharacterSettled += settled.Add;
 
-        var hop = decoder.Tracker.HopSamples;
+        var hop = Math.Max(4, audio.SampleRate / 200);
 
         for (var at = 0L; at + hop <= audio.Samples.Length; at += hop)
         {
-            decoder.Process(new AudioChunk(
+            chain.Process(new AudioChunk(
                 at, audio.SampleRate, audio.Samples.AsSpan((int)at, hop)));
         }
 
@@ -132,7 +133,8 @@ public sealed class TheSeventeenThirtySevenCaptureTests
         var audio = WavAudio.Read(
             Path.Combine(CapturedSignalTests.Folder, name + ".wav"));
 
-        var decoder = new CwDecoder(audio.SampleRate, 600);
+        using var chain = new CwChain(audio.SampleRate);
+        var decoder = chain.Decoder;
         var settled = new List<CwCharacter>();
         var below = new List<CwCharacter>();
 
@@ -145,11 +147,11 @@ public sealed class TheSeventeenThirtySevenCaptureTests
             }
         };
 
-        var hop = decoder.Tracker.HopSamples;
+        var hop = Math.Max(4, audio.SampleRate / 200);
 
         for (var at = 0L; at + hop <= audio.Samples.Length; at += hop)
         {
-            decoder.Process(new AudioChunk(
+            chain.Process(new AudioChunk(
                 at, audio.SampleRate, audio.Samples.AsSpan((int)at, hop)));
         }
 

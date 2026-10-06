@@ -6,7 +6,8 @@ namespace Hamlet.RadioEngine.Cw;
 /// <summary>One listening window's worth of evidence (phase 3).</summary>
 /// <param name="Heard">What the decoder settled on, in order.</param>
 /// <param name="StationChanged">
-/// True when the tracker followed a different station during the window.
+/// True when the gate printed a different sender during the window: one more than a bin from the sender it printed
+/// before, or one where it printed nobody (work instruction 545; the tone tracker's follow came out with the old decoder).
 /// </param>
 /// <remarks>
 /// <para>**THE TRACKER'S OWN MOVE IS EVIDENCE AND IT ARRIVES SOONER THAN TEXT.**

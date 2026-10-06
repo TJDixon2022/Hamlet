@@ -89,7 +89,9 @@ public sealed class TheTwoNamedPatternIsNamedAsTheTerminalIsSetTests
 
         _output.WriteLine($"HM-REQ-072 | {naming} | {prosign} | shown `{shown}`");
 
-        Assert.Equal($" W1AW DE K2ABC {named} R TU {named} ", shown);
+        // Through the chain (work instruction 545): the shape side prints no word gap before the first letter or after the
+        // last, where the old decoder did, so the text is compared trimmed.
+        Assert.Equal($"W1AW DE K2ABC {named} R TU {named}", shown.Trim());
         Assert.DoesNotContain(notNamed, shown, StringComparison.Ordinal);
     }
 
@@ -114,13 +116,14 @@ public sealed class TheTwoNamedPatternIsNamedAsTheTerminalIsSetTests
     {
         var audio = CwSignal.Generate(new CwSignalRequest(
             $"W1AW DE K2ABC ^{prosign} R TU ^{prosign}", WordsPerMinute: 18, NoiseAmplitude: 0.02));
-        var decoder = new CwDecoder(audio.SampleRate, CwSignal.DefaultToneHz);
+        using var chain = new CwChain(audio.SampleRate);
+        var decoder = chain.Decoder;
         var settled = new List<CwCharacter>();
 
         decoder.CharacterSettled += settled.Add;
 
         using var source = new BufferedAudioSource(audio);
-        decoder.Listen(source);
+        chain.Listen(source);
         source.PumpAll();
         decoder.Flush();
 

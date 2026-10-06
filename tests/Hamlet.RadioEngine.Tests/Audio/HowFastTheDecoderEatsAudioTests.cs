@@ -59,7 +59,8 @@ public sealed class HowFastTheDecoderEatsAudioTests
 
         Assert.Equal(48_000, audio.SampleRate);
 
-        var decoder = new CwDecoder(audio.SampleRate, 600);
+        using var chain = new CwChain(audio.SampleRate);
+        var decoder = chain.Decoder;
         var total = audio.SampleRate * Seconds;
         var pushed = 0L;
         var at = 0;

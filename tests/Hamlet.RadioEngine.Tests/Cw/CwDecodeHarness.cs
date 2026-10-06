@@ -74,13 +74,14 @@ internal static class CwDecodeHarness
         MonoAudio audio,
         double expectedToneHz = CwSignal.DefaultToneHz)
     {
-        var decoder = new CwDecoder(audio.SampleRate, expectedToneHz);
+        using var chain = new CwChain(audio.SampleRate);
+        var decoder = chain.Decoder;
 
         var characters = new List<CwCharacter>();
         decoder.CharacterSettled += characters.Add;
 
         using var source = new BufferedAudioSource(audio);
-        decoder.Listen(source);
+        chain.Listen(source);
         source.PumpAll();
         decoder.Flush();
 
@@ -93,7 +94,7 @@ internal static class CwDecodeHarness
         return new CwDecodeResult(
             characters, text.ToString().Trim(), decoder.Report)
         {
-            WordsPerMinute = (int)Math.Round(decoder.Reading.WordsPerMinute),
+            WordsPerMinute = decoder.WordsPerMinute ?? 0,
         };
     }
 }

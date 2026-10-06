@@ -49,7 +49,7 @@ public sealed class TheTerminalCopiesTests
             Call, WordsPerMinute: 20, ToneHz: 625, SampleRate: Rate, Amplitude: 0.5,
             NoiseAmplitude: 0.04, LeadInSeconds: 3, TailSeconds: 3, Seed: 5090)).Samples;
         var detector = new CwEnvelopeDetector(Rate);
-        var decoder = new CwDecoder(Rate, 600) { DetectorMarks = detector.MarksSince };
+        var decoder = new CwDecoder(Rate) { DetectorMarks = detector.MarksSince };
 
         decoder.CharacterSettled += transcript.Settle;
 

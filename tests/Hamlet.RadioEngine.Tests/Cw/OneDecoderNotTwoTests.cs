@@ -62,8 +62,8 @@ public sealed class OneDecoderNotTwoTests
 
     private static (string Text, double ToneHz) Read(MonoAudio audio, int chunk)
     {
-        var decoder = new CwDecoder(
-            audio.SampleRate, TheAdjudicatedReadingsKeepReadingTests.RadioPitchHz);
+        using var chain = new CwChain(audio.SampleRate);
+        var decoder = chain.Decoder;
 
         var text = new System.Text.StringBuilder();
 
@@ -73,7 +73,7 @@ public sealed class OneDecoderNotTwoTests
         {
             var take = (int)Math.Min(chunk, audio.Samples.Length - at);
 
-            decoder.Process(new AudioChunk(
+            chain.Process(new AudioChunk(
                 at, audio.SampleRate, audio.Samples.AsSpan((int)at, take)));
         }
 
@@ -132,8 +132,8 @@ public sealed class OneDecoderNotTwoTests
 
         var fed = Read(audio, 240);
 
-        var decoder = new CwDecoder(
-            audio.SampleRate, TheAdjudicatedReadingsKeepReadingTests.RadioPitchHz);
+        using var chain = new CwChain(audio.SampleRate);
+        var decoder = chain.Decoder;
 
         var heard = new System.Text.StringBuilder();
 
@@ -141,7 +141,7 @@ public sealed class OneDecoderNotTwoTests
 
         using (var source = new BufferedAudioSource(audio))
         {
-            decoder.Listen(source);
+            chain.Listen(source);
             source.PumpAll();
         }
 

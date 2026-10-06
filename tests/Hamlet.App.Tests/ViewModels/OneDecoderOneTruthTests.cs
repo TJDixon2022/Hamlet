@@ -94,7 +94,7 @@ public sealed class OneDecoderOneTruthTests
     internal static (string Terminal, string Scroll, string Shown) Surfaces(float[] samples)
     {
         var detector = new CwEnvelopeDetector(Rate);
-        var decoder = new CwDecoder(Rate, 600) { DetectorMarks = detector.MarksSince };
+        var decoder = new CwDecoder(Rate) { DetectorMarks = detector.MarksSince };
         var feed = new CwScopeFeed();
         var start = new DateTime(2026, 9, 29, 13, 35, 0, DateTimeKind.Utc);
         var terminal = new List<CwCharacter>();
@@ -111,7 +111,7 @@ public sealed class OneDecoderOneTruthTests
 
         void Tick()
         {
-            frame = feed.Tick(detector, detector.Reading, decoder.PrintingHz, frame, scopeQuiet: false, Now());
+            frame = feed.Tick(detector, detector.Reading, decoder.RunsPrintingHz, frame, scopeQuiet: false, Now());
 
             foreach (var l in CwScopeControl.DrawnLetters(frame))
             {

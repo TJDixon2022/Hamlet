@@ -39,7 +39,7 @@ public sealed class TheEarHearsAsTheAppDoesTests
     /// <summary>The app's chain: <see cref="CwChain"/>, its passband the radio's pitch and filter, fed in 10 ms chunks.</summary>
     internal static Hearing ByTheApp(float[] samples)
     {
-        using var chain = new CwChain(Rate, Pitch);
+        using var chain = new CwChain(Rate);
         var text = new System.Text.StringBuilder();
         var green = false;
 

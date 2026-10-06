@@ -72,7 +72,7 @@ public sealed class TheScrollKeepsItsBlocksTests
     private static Run Listen(float[] samples)
     {
         var detector = new CwEnvelopeDetector(Rate);
-        var decoder = new CwDecoder(Rate, 600) { DetectorMarks = detector.MarksSince };
+        var decoder = new CwDecoder(Rate) { DetectorMarks = detector.MarksSince };
         var feed = new CwScopeFeed();
         var start = new DateTime(2026, 9, 30, 21, 0, 0, DateTimeKind.Utc);
         var printed = new List<CwCharacter>();
@@ -89,7 +89,7 @@ public sealed class TheScrollKeepsItsBlocksTests
 
         void Tick()
         {
-            frame = feed.Tick(detector, detector.Reading, decoder.PrintingHz, frame, scopeQuiet: false, Now());
+            frame = feed.Tick(detector, detector.Reading, decoder.RunsPrintingHz, frame, scopeQuiet: false, Now());
             frames.Add((frame.Training.NowUtc, frame.Training.Bars));
         }
 

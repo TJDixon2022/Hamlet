@@ -124,7 +124,8 @@ public sealed class ScannerEndToEndTests
     [Fact]
     public void ADwellReachesTheDecoderAndTheVerdictCarriesItsConfidence()
     {
-        var decoder = new CwDecoder(8_000, 600);
+        using var chain = new CwChain(8_000);
+        var decoder = chain.Decoder;
         var dwell = new ScanDwell(FortyMeters.JumpHz);
 
         decoder.CharacterSettled += dwell.Take;
@@ -132,7 +133,7 @@ public sealed class ScannerEndToEndTests
         using var audio = new TrainingAudioSource(
             MorseCode.CqCall("N0CALL"), wordsPerMinute: 18, toneHz: 600);
 
-        decoder.Listen(audio);
+        chain.Listen(audio);
         audio.Start();
 
         // Twenty seconds of audio, pumped a tenth of a second at a time so the

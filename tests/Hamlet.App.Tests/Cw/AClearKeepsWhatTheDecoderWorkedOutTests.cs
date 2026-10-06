@@ -65,13 +65,12 @@ public sealed class AClearKeepsWhatTheDecoderWorkedOutTests
         var model = new MainWindowViewModel(new AppSettings(), null);
         // **THROUGH THE CHAIN** (work instruction 545): the decoder that reaches the screen is the detector, the gate and
         // the lookup table, so the clear is tested on the speed, pitch and senders it holds.
-        using var clearedChain = new CwChain(audio.SampleRate, 600);
-        using var twinChain = new CwChain(audio.SampleRate, 600);
+        using var clearedChain = new CwChain(audio.SampleRate);
+        using var twinChain = new CwChain(audio.SampleRate);
         var cleared = clearedChain.Decoder;
         var twin = twinChain.Decoder;
 
         typeof(MainWindowViewModel).GetField("_decoder", BindingFlags.Instance | BindingFlags.NonPublic)!.SetValue(model, cleared);
-        cleared.LeadingEdge += model.Transcript.OfferEdge;
         cleared.CharacterSettled += model.Transcript.Settle;
 
         var hop = audio.SampleRate / 100;

@@ -165,7 +165,7 @@ public sealed class TheRecordingsScoreboardTests
         // **ONE WIRING FOR EVERY LISTENER** (work instruction 542, HM-DEC-246): the scoreboard reads through the app's own chain,
         // not one of its own. It used to wire the detector and the gate itself, and missed the waiting pitch and the order the
         // app hears each chunk in.
-        using var chain = new CwChain(rate, pitchHz);
+        using var chain = new CwChain(rate);
         var gate = chain.Decoder.Runs;
 
         chain.Detector.SetPassband(pitchHz, widthHz);

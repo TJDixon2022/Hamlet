@@ -72,12 +72,11 @@ public sealed class TheScopeDrawsLiveTests
     internal static Run Listen(double seconds)
     {
         using var source = new TrainingAudioSource("CQ", wordsPerMinute: 20, toneHz: 600, noiseAmplitude: 0.02);
-        var decoder = new CwDecoder(source.SampleRate, 600, secondReader: true);
-        var envelope = new CwEnvelopeDetector(source.SampleRate);
+        // Through the chain (work instruction 545): the detector, the gate and the lookup table, as the tab hears.
+        using var chain = new CwChain(source.SampleRate);
+        var decoder = chain.Decoder;
+        var envelope = chain.Detector;
 
-        // Gated as the tab gated it before R102 (work instruction 489): no detection, no letters (R97).
-        decoder.KeyingGate = () => envelope.Reading.Keying;
-        decoder.DetectorGatesKeying = true;
         var feed = new CwScopeFeed();
         var start = new DateTime(2026, 9, 28, 18, 30, 0, DateTimeKind.Utc);
         var settled = new List<(CwCharacter, TimeSpan)>();
@@ -90,8 +89,7 @@ public sealed class TheScopeDrawsLiveTests
             feed.Settle(c, decoder.Heard, Now());
         };
 
-        decoder.Listen(source);
-        envelope.Listen(source);
+        chain.Listen(source);
 
         // The radio in CW at a 600 Hz pitch with a 500 Hz filter, as the tick reads it.
         envelope.SetPassband(600, 500);
@@ -118,8 +116,7 @@ public sealed class TheScopeDrawsLiveTests
             }
         }
 
-        decoder.Listen(null);
-        envelope.Listen(null);
+        chain.Listen(null);
 
         return new Run(frame, keyed.Hops.Count > 0 ? keyed : frame, recent, settled, start);
     }

@@ -31,7 +31,7 @@ public sealed class NoCwDecodeInDigitalModeTests
         => _output = output;
 
     /// <summary>
-    /// With Digital set, the tap fills and the probabilistic decoder's element
+    /// With Digital set, the tap fills and the shape side's element
     /// count does not move.
     /// </summary>
     /// <remarks>
@@ -72,7 +72,10 @@ public sealed class NoCwDecodeInDigitalModeTests
     private static (long Tapped, long Elements, string Text) Decode(
         MonoAudio audio, bool digital)
     {
-        var decoder = new CwDecoder(audio.SampleRate, 600) { DigitalMode = digital };
+        using var chain = new CwChain(audio.SampleRate);
+        var decoder = chain.Decoder;
+
+        decoder.DigitalMode = digital;
         var text = new System.Text.StringBuilder();
 
         decoder.CharacterSettled += c => text.Append(c.Text);
@@ -81,7 +84,7 @@ public sealed class NoCwDecodeInDigitalModeTests
 
         for (var at = 0; at + chunk <= audio.Samples.Length; at += chunk)
         {
-            decoder.Process(new AudioChunk(
+            chain.Process(new AudioChunk(
                 at, audio.SampleRate, audio.Samples.AsSpan(at, chunk)));
         }
 
