@@ -1,0 +1,67 @@
+captured   automatically, a W1AW session (work instruction 549)
+session    code practice · fast · scheduled 2026-10-07 20:00 to 21:00 UTC (15:00 to 16:00 America/Chicago)
+speeds     code practice at 5 to 15 words a minute (slow) or 10 to 35 (fast); CW bulletins at 18  (the schedule's own words)
+w1aw       7047500 Hz on 40 m  (the dial within 250 Hz of it: half the radio's filter, or 250 Hz where unread)
+window     19:59:00 to 21:02:00 UTC  (a minute before the scheduled start to two minutes after the scheduled end)
+piece      3
+started    2026-10-07 20:09:00 UTC
+closed     2026-10-07 20:14:00 UTC
+seconds    300.0
+sampleRate 48000
+samples    117860160 to 132260160 on the audio clock  (the next piece begins at 132260160, so nothing falls between them)
+missing    0 samples  (audio the capture never received inside this piece; not filled)
+continues  piece-04.wav
+
+frequency  7047500 Hz  (read from the radio a moment ago)
+band       40 m  (from the frequency the radio reported)
+pitch      600 Hz  (the printed sender's, from its own marks)
+speed      27 WPM  (the printed sender's dit, 44 ms)
+senders    600 Hz shape 0.94, 3998 marks, printed; 550 Hz shape 0.47, 740 marks
+audio      lost 0 ms, longest stall 21 ms, queue peak 1  (since the decoder started listening)
+composed   2026-10-07 20:14:00 UTC  (these lines, as the app last had them)
+
+Frequency            7.047500 MHz
+Mode                 CW
+DataMode             off
+FilterSelection      FIL2
+FilterBandwidth      500 Hz
+SMeter               S3
+TransmitStatus       receiving
+Overflow             not overloading
+TwinPbtOuter         unknown
+TwinPbtInner         undocumented
+Rit                  undocumented
+Swr                  unknown
+PowerOut             unknown
+RfPower              31%
+RfGain               100%
+Squelch              0%
+SquelchStatus        open
+Agc                  FAST
+Preamp               off
+Attenuator           off
+NoiseBlanker         off
+NoiseBlankerLevel    50%
+NoiseReduction       off
+NoiseReductionLevel  28%
+AutoNotch            off
+ManualNotch          off
+BreakIn              full
+KeyerSpeed           20 WPM
+CwPitch              600 Hz
+AccUsbOutputSelect   AF
+AccUsbAfLevel        80%
+NotchPosition        unknown
+FilterShape          unknown
+AfLevel              unknown
+RfSqlFunction        unknown
+BreakInDelay         unknown
+AntennaTuner         unknown
+Alc                  unknown
+AccUsbSquelch        open regardless of squelch
+Split                off
+ScopeOn              on
+ScopeOutput          on
+CivUsbPort           unknown
+CivTransceive        on
+Vfo                  undocumented
