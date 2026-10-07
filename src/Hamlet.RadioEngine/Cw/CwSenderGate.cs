@@ -77,8 +77,12 @@ public sealed class CwSenderGate
     // envelope windows, twenty milliseconds.
     private const double CallingLagSeconds = 0.02;
 
-    /// <summary>The shape under which a printed sender is let go: half the 0.2 it stood at (work instruction 526, task 5).</summary>
-    internal const double ReleaseScore = CwShapeLights.GreenScore / 2;
+    /// <summary>
+    /// The shape under which a printed sender is let go: 0.1 (work instruction 550, task 2). On the score rebuilt there it
+    /// sits under every sample a real hand gave (their least 0.125) and at junk's median (0.106), so a hand at its worst is
+    /// held and a sender that has come to sound like junk is not. It was half the light's 0.2 (work instruction 526).
+    /// </summary>
+    internal const double ReleaseScore = 0.1;
 
     /// <summary>
     /// How many of a sender's last marks its two kinds must hold over before it may print: ten, two sequences' worth (work
@@ -356,8 +360,8 @@ public sealed class CwSenderGate
     internal static double Boundary((double Mu, double Sd) low, (double Mu, double Sd) high) => Sender.Boundary(low, high);
 
     /// <summary>Every sender's pitch and shape, and whether it is the one printed: for the tests' report (work instruction 519).</summary>
-    internal IReadOnlyList<(double PitchHz, CwSequenceShape Shape, bool Printed, int Marks)> SenderShapes
-        => _senders.Select(s => (s.Reference.Pitch, s.Shape, s == _station, s.Marks)).ToList();
+    internal IReadOnlyList<(double PitchHz, CwSequenceShape Shape, bool Printed, int Marks, bool Qualified)> SenderShapes
+        => _senders.Select(s => (s.Reference.Pitch, s.Shape, s == _station, s.Marks, Qualifies(s))).ToList();
 
     /// <summary>
     /// Whether the shape picks the sender printed (work instruction 519); on by default. Off, unit 490's rule
@@ -427,8 +431,9 @@ public sealed class CwSenderGate
             // A sender whose marks and gaps do not sound like code at all - a shape of nought - is not a sender to print.
             // **THE 0.2 STANDING LINE CAME OUT** (work instruction 534, HM-DEC-238): on the owner's recordings it held back
             // real stations whose letter spacing a hand makes uneven, and without it the scoreboard rose from 169 to 182 with
-            // loud noise still printing nothing. The light still turns green at 0.2.
-            .Where(s => !ShapePicks || s.Score > 0)
+            // loud noise still printing nothing. **A CANDIDATE STANDS AT THE RELEASE LINE** (work instruction 550, task 2): nothing
+            // is picked under the score it would be let go at; on the rebuilt score that is 0.1, under every real hand measured.
+            .Where(s => !ShapePicks || s.Score >= ReleaseScore)
             .OrderByDescending(s => ShapePicks ? s.Score : s.Sender.Marks)
             .ThenByDescending(s => ShapePicks ? 0 : s.Sender.Reference.Level)
             .ToList();

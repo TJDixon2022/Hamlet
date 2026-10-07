@@ -24,7 +24,7 @@ public sealed class TheShapeScoreTakenApartTests(ITestOutputHelper output)
     internal const string W1aw = "cw-2026-10-06-212015";
 
     /// <summary>One sample of one sender or sequence: its shape, and which class and source it is from.</summary>
-    internal sealed record Sample(string Class, string Source, double Seconds, double PitchHz, CwSequenceShape Shape, bool Printed, bool Detector);
+    internal sealed record Sample(string Class, string Source, double Seconds, double PitchHz, CwSequenceShape Shape, bool Printed, bool Detector, bool Qualified = false);
 
     /// <summary>The four classes, every sample of each.</summary>
     internal static IReadOnlyList<Sample> Measure()
@@ -136,7 +136,7 @@ public sealed class TheShapeScoreTakenApartTests(ITestOutputHelper output)
             {
                 var t = (at + chunk) / (double)rate;
 
-                list.AddRange(gate.SenderShapes.Select(s => new Sample("", source, t, s.PitchHz, s.Shape, s.Printed, false)));
+                list.AddRange(gate.SenderShapes.Select(s => new Sample("", source, t, s.PitchHz, s.Shape, s.Printed, false, s.Qualified)));
                 list.AddRange(chain.Detector.StandingNow.Select(s => new Sample("", source, t, s.PitchHz, s.Shape, false, true)));
             }
         }
@@ -162,7 +162,6 @@ public sealed class TheShapeScoreTakenApartTests(ITestOutputHelper output)
         ("level step dB", s => s.LevelStepDb),
         ("contrast dB", s => s.ContrastDb),
         ("score", s => s.Score),
-        ("candidate", s => s.Ranked),
     ];
 
     /// <summary>Median and range of a list, as the table writes them.</summary>
@@ -219,6 +218,43 @@ public sealed class TheShapeScoreTakenApartTests(ITestOutputHelper output)
         foreach (var g in samples.Where(s => !s.Detector).GroupBy(s => (s.Class, s.Source)).OrderBy(g => g.Key.Class))
         {
             output.WriteLine($"{g.Key.Class} | {g.Key.Source} | {g.Count()} | " + string.Join(" | ", Terms.Select(t => Cell(g.Select(s => t.Of(s.Shape)).ToList()))));
+        }
+
+        // **THE QUALIFY LINE AT 0.1 AND AT 0.4** (the owner's follow-up to work instruction 550): every real hand's printed
+        // sender, how often it sits under 0.4; and every junk sender that qualifies, at either line.
+        foreach (var g in samples.Where(s => !s.Detector && s.Printed && s.Class is "real hands" or "perfect keying").GroupBy(s => s.Source))
+        {
+            var under = g.Where(s => s.Shape.Score < 0.4).ToList();
+
+            output.WriteLine(FormattableString.Invariant(
+                $"qualify 0.4 | real | {g.Key} | {g.Count()} samples | least {g.Min(s => s.Shape.Score):0.000} | under 0.4: {under.Count}{(under.Count > 0 ? " at " + string.Join(", ", under.Select(s => $"{s.Seconds:0} s {s.Shape.Score:0.00}")) : string.Empty)}"));
+        }
+
+        foreach (var g in samples.Where(s => !s.Detector && s.Class == "junk" && s.Qualified).GroupBy(s => s.Source))
+        {
+            output.WriteLine(FormattableString.Invariant(
+                $"qualify | junk | {g.Key} | qualified samples {g.Count()} | at 0.1 {g.Count(s => s.Shape.Score >= 0.1)} | at 0.4 {g.Count(s => s.Shape.Score >= 0.4)} | best {g.Max(s => s.Shape.Score):0.000}"));
+        }
+
+        // How many senders the gate held at once on W1AW's recording, at most: the bar's one.
+        var w1aw = WavAudio.Read(TheOwnersRecordingReadsTests.Wav(W1aw));
+        var (w1awPitch, w1awWidth) = TheRecordingsScoreboardTests.RadioState(W1aw);
+        var held = Run(w1aw.Samples, w1aw.SampleRate, w1awPitch, w1awWidth, W1aw).Where(s => !s.Detector).GroupBy(s => s.Seconds).Select(g => g.Count()).DefaultIfEmpty(0).Max();
+
+        output.WriteLine($"W1AW's recording: at most {held} senders held at once");
+
+        // The score's percentiles per class, from which the lines that read the score are set (task 2).
+        foreach (var c in Classes)
+        {
+            var sorted = samples.Where(s => s.Class == c && !s.Detector).Select(s => s.Shape.Score).Order().ToList();
+
+            if (sorted.Count > 0)
+            {
+                double P(double q) => sorted[(int)Math.Min(sorted.Count - 1, Math.Floor(q * sorted.Count))];
+
+                output.WriteLine(FormattableString.Invariant(
+                    $"percentiles | {c} | min {sorted[0]:0.000} | p5 {P(0.05):0.000} | p10 {P(0.10):0.000} | p25 {P(0.25):0.000} | p50 {P(0.5):0.000} | p75 {P(0.75):0.000} | p90 {P(0.90):0.000} | p95 {P(0.95):0.000} | max {sorted[^1]:0.000}"));
+            }
         }
 
         Assert.NotEmpty(samples);

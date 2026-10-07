@@ -32,10 +32,11 @@ public static class CwShapeLights
     public const double FormingSeconds = 2;
 
     /// <summary>
-    /// The shape score a standing sequence must pass before the light goes green: a fifth (work instruction 522, task
-    /// 2). Clear of everything noise has produced - unit 520 measured noise's best at 0.173 - and under a rough fist's 0.374.
+    /// Where the gauge's second stretch, the shape score, begins: 0.4 (work instruction 550, task 2). On the score rebuilt
+    /// there, three quarters of junk's samples sit under it (its 75th percentile 0.40) and nineteen in twenty of real hands'
+    /// above it (their 5th percentile 0.46); W1AW sits at 0.94. It was 0.2 on the old score, whose junk reached 0.56.
     /// </summary>
-    public const double GreenScore = 0.2;
+    public const double GreenScore = 0.4;
 
     /// <summary>Where the gauge's first stretch, the marks toward five, ends and its second, the shape score, begins.</summary>
     public const double Mark = 0.8;

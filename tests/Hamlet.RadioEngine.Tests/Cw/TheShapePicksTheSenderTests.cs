@@ -125,7 +125,7 @@ public sealed class TheShapePicksTheSenderTests
     internal sealed record Run(
         string Text,
         List<(double Seconds, double PitchHz, string Text)> Letters,
-        IReadOnlyList<(double PitchHz, CwSequenceShape Shape, bool Printed, int Marks)> Senders,
+        IReadOnlyList<(double PitchHz, CwSequenceShape Shape, bool Printed, int Marks, bool Qualified)> Senders,
         double HighestStandingShape,
         CwSequenceShape? HighestStandingShapeOf = null);
 
@@ -139,7 +139,7 @@ public sealed class TheShapePicksTheSenderTests
         var characters = new List<CwCharacter>();
         var letters = new List<(double, double, string)>();
         var sequence = 0L;
-        IReadOnlyList<(double, CwSequenceShape, bool, int)> senders = Array.Empty<(double, CwSequenceShape, bool, int)>();
+        IReadOnlyList<(double, CwSequenceShape, bool, int, bool)> senders = Array.Empty<(double, CwSequenceShape, bool, int, bool)>();
 
         reader.CharacterRead += characters.Add;
         reader.RunRead += (c, run) => letters.Add((run[^1].ToSeconds, run.Average(m => m.PitchHz), c.Text));
@@ -178,7 +178,7 @@ public sealed class TheShapePicksTheSenderTests
             _output.WriteLine($"  letters at {group.Key:0} Hz: `{string.Concat(group.Select(l => l.Text))}`");
         }
 
-        foreach (var (pitch, shape, printed, marks) in run.Senders.Where(s => s.Marks >= CwPatternGate.MarksToStand).OrderByDescending(s => s.Shape.Score))
+        foreach (var (pitch, shape, printed, marks, _) in run.Senders.Where(s => s.Marks >= CwPatternGate.MarksToStand).OrderByDescending(s => s.Shape.Score))
         {
             _output.WriteLine(string.Create(CultureInfo.InvariantCulture, $"  sender at {pitch:0} Hz, {marks} marks{(printed ? ", printed" : string.Empty)}: {shape}"));
         }

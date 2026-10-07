@@ -3,25 +3,29 @@ namespace Hamlet.RadioEngine.Cw;
 /// <summary>
 /// **HOW MUCH A SEQUENCE OF MARKS SOUNDS LIKE CODE**: one score from the shape of its marks and gaps
 /// together, nought to one, with no level and no height in any of it (work instruction 519, R116,
-/// HM-DEC-223).
+/// HM-DEC-223; rebuilt by work instruction 550, HM-DEC-254).
 /// </summary>
-/// <param name="Rectangle">The mean of its marks' own shape with the height left out (<see cref="CwMarkShape.ShapeOnly"/>), or a fitted mark's fit score.</param>
-/// <param name="Dits">How tightly its dits cluster: one less their spread in log-length over a hand's widest.</param>
+/// <param name="Rectangle">The mean of its marks' own shape with the height left out (<see cref="CwMarkShape.ShapeOnly"/>), or a fitted mark's fit score. Reported; not in the score.</param>
+/// <param name="Dits">How tightly its dits cluster, scored against a hand's widest.</param>
 /// <param name="Dahs">The same for its dahs.</param>
-/// <param name="Separation">How far apart the two centres stand: nought at two to one, one at three to one or wider.</param>
+/// <param name="Separation">How far apart the two centres stand: nought at two to one, one at three to one or wider. Reported; not in the score.</param>
 /// <param name="Consistency">The share of its marks within √2 of the nearer of its two centres.</param>
-/// <param name="Evidence">How many marks have stood, saturating: one less e to the minus count over ten.</param>
+/// <param name="Evidence">How many marks have stood, saturating: one less e to the minus count over ten. Reported; not in the score.</param>
 /// <remarks>
 /// <para>**THE OWNER, R116**: *"I don't care what the pitch is. You should find the shape in the noise.
-/// It's there. It was audible. Let's defocus pitch and emphasize shape."* And: *"I want this to be so
-/// much shape that I'm shocked."*</para>
-/// <para>**A PRODUCT, AS UNIT 502 CHOSE FOR A MARK.** A keyed tone is all of these at once: flat-topped
-/// marks, two lengths that each hold, three to one apart, and every mark one of the two. Something
-/// crisp on four and wrong on one is not a keyed tone; a sum would let the four outvote the one, and a
-/// product does not. The author's, from what a keyed tone is, not from any result.</para>
-/// <para>**NO GAP TERMS** (work instruction 534, HM-DEC-238): the tightness of a sender's gaps inside letters and between
-/// them came out when the owner's recordings read better without them. A mark's shape says whether it is CW; how
-/// evenly a human spaces his letters does not.</para>
+/// It's there. It was audible. Let's defocus pitch and emphasize shape."* And, 2026-10-07: *"I'm thinking our shape
+/// isn't good enough."*</para>
+/// <para>**THE SCORE RANKS PERFECT KEYING FIRST AND JUNK LAST** (work instruction 550, HM-DEC-254): each kind tight,
+/// every mark one of the two kinds, and the gaps inside letters tight, the four of CW's own terms that ranked real
+/// keying above junk when each was measured on W1AW, the owner's hands, synthetic calls and junk. W1AW scores 0.94,
+/// junk's median 0.11. **THREE TERMS CAME OUT OF IT AND ARE STILL REPORTED**: the rectangle ranked junk above real
+/// keying (a keyed carrier's edges are sharp and the filter and AGC round W1AW's, junk 0.88 to W1AW's 0.73), and the
+/// separation and the evidence did not rank (junk 1.00 and 0.93, real hands 0.89 and 0.92).</para>
+/// <para>**THE GAPS INSIDE LETTERS ONLY** (task 2): the old gap terms came out because a hand spaces its letters
+/// unevenly (work instruction 534, HM-DEC-238). The gaps under √3 dits are the ones a key makes between the elements of
+/// one letter, where a hand is as tight as with its dits; pauses between letters, words and sections are not scored.</para>
+/// <para>**A PRODUCT, AS UNIT 502 CHOSE FOR A MARK.** Something crisp on three and wrong on one is not a keyed tone; a
+/// sum would let the three outvote the one, and a product does not.</para>
 /// <para>**A HAND'S WIDEST IS THE MEASURE** (unit 513's 0.25 in log-length, work instruction 520): a cluster
 /// as wide as the widest fist scores four-fifths for tightness, a machine's near one, and only past what any hand
 /// makes does it fall toward nought at twice that, so a machine ranks over a fist and a fist over noise.</para>
@@ -36,16 +40,16 @@ public sealed record CwSequenceShape(
     public const double EvidenceMarks = 2 * CwPatternGate.MarksToStand;
 
     /// <summary>Nothing that splits in two: no score.</summary>
-    public static CwSequenceShape None { get; } = new(0, 0, 0, 0, 0, 0);
+    public static CwSequenceShape None { get; } = new(0, 0, 0, 0, 0, 0) { InsideGaps = 0 };
 
-    /// <summary>The product of all six: how much it sounds like code, nought to one.</summary>
-    public double Score => Rectangle * Dits * Dahs * Separation * Consistency * Evidence;
+    /// <summary>How much it sounds like code, nought to one: its dits, its dahs and its gaps inside letters each tight, and every mark one of its two kinds (work instruction 550).</summary>
+    public double Score => Dits * Dahs * InsideGaps * Consistency;
 
-    /// <summary>The six and the score, for the tests' report.</summary>
+    /// <summary>The terms and the score, for the tests' report.</summary>
     public override string ToString()
         => string.Create(
             System.Globalization.CultureInfo.InvariantCulture,
-            $"shape {Score:0.000} (rectangle {Rectangle:0.00}, dits {Dits:0.00}, dahs {Dahs:0.00}, apart {Separation:0.00}, consistent {Consistency:0.00}, evidence {Evidence:0.00})");
+            $"shape {Score:0.000} (dits {Dits:0.00}, dahs {Dahs:0.00}, gaps inside letters {InsideGaps:0.00}, consistent {Consistency:0.00}; not scored: rectangle {Rectangle:0.00}, apart {Separation:0.00}, evidence {Evidence:0.00})");
 
     /// <summary>
     /// Score some marks of one sender, in time order, and how many it has had standing in all.
@@ -138,13 +142,10 @@ public sealed record CwSequenceShape(
         };
     }
 
-    /// <summary>The candidate: each kind tight, every mark one of them, the gaps inside letters tight (work instruction 550).</summary>
-    public double Ranked => Dits * Dahs * InsideGaps * Consistency;
-
     /// <summary>The dah over the dit, centre to centre (work instruction 550, task 1).</summary>
     public double Ratio { get; init; } = double.NaN;
 
-    /// <summary>How tightly its gaps inside letters cluster, as the marks' tightness is scored (work instruction 550, task 1).</summary>
+    /// <summary>How tightly its gaps inside letters, those under √3 dits, cluster, scored as the marks' tightness is: in the score (work instruction 550).</summary>
     public double InsideGaps { get; init; } = double.NaN;
 
     /// <summary>The centre of its gaps inside letters over its dit: one for CW (work instruction 550, task 1).</summary>
