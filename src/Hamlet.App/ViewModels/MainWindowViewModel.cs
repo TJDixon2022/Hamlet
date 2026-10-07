@@ -11867,7 +11867,9 @@ public partial class MainWindowViewModel : ObservableObject
 
         // WHAT DECIDES IT IS WHICH NUMBERS MOVED, which is why the rate limit
         // lives here and not inside the event (§8.1).
-        var moved = report.CharactersEmitted != _lastQuality.CharactersEmitted
+        // **THE LETTERS ARE THE SHAPE SIDE'S** (work instruction 549, task 3), as the row's counts now are.
+        var shape = _decoder?.ShapeSide ?? CwShapeSideReading.Nothing;
+        var moved = shape.LettersPrinted != _lastQualityLetters
             || report.SendersHeld != _lastQuality.SendersHeld
             || report.Clipping != _lastQuality.Clipping
             || report.NearlySilent != _lastQuality.NearlySilent
@@ -11881,7 +11883,8 @@ public partial class MainWindowViewModel : ObservableObject
         _lastQualityUtc = now;
         _lastQuality = report;
 
-        AppEvents.DecodeQuality(_telemetry, report, "sampled");
+        AppEvents.DecodeQuality(_telemetry, report, shape, "sampled");
+        _lastQualityLetters = shape.LettersPrinted;
     }
 
     /// <summary>

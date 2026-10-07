@@ -1797,9 +1797,16 @@ public static class AppEvents
     /// twice per Morse element and buried everything that mattered. What decides
     /// when this is worth writing is which of these numbers moved, and only the
     /// caller knows that.</para>
+    /// <para>**THE COUNTS ARE THE SHAPE SIDE'S** (work instruction 549, task 3): the owner's telemetry of 2026-10-07 showed
+    /// `charactersEmitted` 576 and `elementsResolved` 1402 all day, the decoder's own counters; why they stood still was not
+    /// found on this computer, so the row reads the counts the capture sheet and the roster already read. Characters and
+    /// unsure are re-sourced from the shape side's letters printed and printed as the placeholder, the tone already was, and
+    /// `elementsResolved` is dropped for `marksStood`, the marks that stood and reached the gate, which is a different count
+    /// and so has a different name. `countsFrom` says so in the row.</para>
     /// </remarks>
+    /// <param name="shape">What the shape side holds: the source of the counts.</param>
     public static void DecodeQuality(
-        ITelemetry? telemetry, CwDecodeReport report, string reason)
+        ITelemetry? telemetry, CwDecodeReport report, CwShapeSideReading shape, string reason)
         => telemetry?.Write(
             TelemetryCategory.Decode,
             "decode_quality",
@@ -1818,9 +1825,47 @@ public static class AppEvents
                 ["toneHz"] = report.Printing ? Math.Round(report.ToneHz) : null,
                 ["sendersHeld"] = report.SendersHeld,
 
-                ["elementsResolved"] = report.ElementsResolved,
-                ["charactersEmitted"] = report.CharactersEmitted,
-                ["charactersUnsure"] = report.CharactersUnsure,
+                ["countsFrom"] = "shape side",
+                ["marksStood"] = shape.MarksStood,
+                ["charactersEmitted"] = shape.LettersPrinted,
+                ["charactersUnsure"] = shape.LettersUnreadable,
+            });
+
+    /// <summary>
+    /// What the CW listening did over ten seconds, written every ten seconds while listening (work instruction 549, task 3).
+    /// </summary>
+    /// <param name="telemetry">Sink, or null.</param>
+    /// <param name="sample">The sample.</param>
+    /// <remarks>
+    /// The audio, every sender held with its pitch, shape, marks, whether it has qualified and which is printed, the letters
+    /// printed, the light, and an automatic capture under way by its folder's name alone: no path, no text, no callsign
+    /// (HM-DEC-018).
+    /// </remarks>
+    public static void CwListen(ITelemetry? telemetry, CwListenSample sample)
+        => telemetry?.Write(
+            TelemetryCategory.Cw,
+            "cw_listen",
+            new Dictionary<string, object?>
+            {
+                ["audioLostMs"] = Math.Round(sample.AudioLostMs),
+                ["audioLostLast10sMs"] = Math.Round(sample.AudioLostLast10sMs),
+                ["audioLongestStallMs"] = Math.Round(sample.LongestStallMs),
+                ["audioQueuePeak"] = sample.QueuePeak,
+                ["sendersHeld"] = sample.Senders.Count,
+                ["senders"] = sample.Senders
+                    .Select(s => new Dictionary<string, object?>
+                    {
+                        ["pitchHz"] = Math.Round(s.PitchHz),
+                        ["shape"] = Math.Round(s.ShapeScore, 3),
+                        ["marks"] = s.Marks,
+                        ["qualified"] = s.Qualified,
+                        ["printed"] = s.Printed,
+                    })
+                    .ToList(),
+                ["printedPitchHz"] = sample.Senders.FirstOrDefault(s => s.Printed) is { } printed ? Math.Round(printed.PitchHz) : null,
+                ["lettersPrinted10s"] = sample.LettersPrinted,
+                ["light"] = sample.Light,
+                ["capture"] = sample.CaptureUnderWay,
             });
 
     /// <summary>

@@ -16,7 +16,7 @@ public sealed class CallsignPrivacyTests : IDisposable
     /// <summary>Every public event-writing method on <see cref="AppEvents"/>.
     /// If this number moves, a new event was added and the walk below has to
     /// grow with it — that is the point.</summary>
-    private const int ExpectedEventMethodCount = 82;
+    private const int ExpectedEventMethodCount = 83;
 
     private const string Callsign = "KC3QIS";
     // "Timothy", not "Tim": a three-letter needle matches "timer", which is a
@@ -215,7 +215,16 @@ public sealed class CallsignPrivacyTests : IDisposable
             new Hamlet.RadioEngine.Cw.CwDecodeReport(
                 new Hamlet.RadioEngine.Audio.AudioLevel(-12, -20, -46, false, 30),
                 620, 2, 40, 11, 2, Printing: true),
+            Hamlet.RadioEngine.Cw.CwShapeSideReading.Nothing,
             "sampled");
+
+        // The ten-second listening row (work instruction 549): senders, the light and a capture's folder name alone.
+        AppEvents.CwListen(
+            telemetry,
+            new Hamlet.RadioEngine.Cw.CwListenSample(
+                12, 0, 4, 3,
+                [new Hamlet.RadioEngine.Cw.CwSenderStanding(600, 0.41, 120, true) { Qualified = true }],
+                9, "reading", "w1aw-2026-10-07-205900"));
 
         AppEvents.AudioCaptured(telemetry, 30, 7_030_000, worked: true);
         AppEvents.AudioCaptured(telemetry, 0, 7_030_000, worked: false);

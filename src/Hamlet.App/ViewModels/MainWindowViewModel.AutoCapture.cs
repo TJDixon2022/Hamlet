@@ -6,6 +6,7 @@ using Hamlet.RadioEngine.Capture;
 using Hamlet.RadioEngine.Civ;
 using Hamlet.RadioEngine.Cw;
 using Hamlet.RadioEngine.Rig;
+using Hamlet.App.Telemetry;
 
 namespace Hamlet.App.ViewModels;
 
@@ -24,6 +25,8 @@ public sealed partial class MainWindowViewModel
     private CwAutoCapture? _autoCapture;
     private DateTime _lastAutoTickUtc = DateTime.MinValue;
     private string _autoSheetExtra = string.Empty;
+    private CwListenSampler _listenSampler = new();
+    private long _lastQualityLetters = -1;
 
     /// <summary>Where automatic captures go: <c>captures\auto</c> under Hamlet's data folder, and nothing else is ever deleted.</summary>
     internal static string AutoCaptureFolder => Path.Combine(CaptureFolder, "auto");
@@ -68,6 +71,7 @@ public sealed partial class MainWindowViewModel
             SheetExtra = () => Volatile.Read(ref _autoSheetExtra),
         };
         _autoCapture.Listen(source);
+        _listenSampler = new CwListenSampler();
         _lastAutoTickUtc = DateTime.MinValue;
 
         // **WHAT THE TERMINAL PRINTS**, for the stray-letter trigger (task 2), on the chain's thread.
@@ -128,6 +132,13 @@ public sealed partial class MainWindowViewModel
 
         AutoCaptureLine = auto.Line;
         AutoCaptureTip = auto.Tip;
+
+        // **AND THE TELEMETRY SAYS WHAT IS HAPPENING, EVERY TEN SECONDS** (task 3).
+        if (_liveFeed?.Continuity is { } audio
+            && _listenSampler.Sample(now, audio, _decoder?.ShapeSide ?? CwShapeSideReading.Nothing, CwHearing.ShapeLightWords, auto.CaptureUnderWay) is { } sample)
+        {
+            AppEvents.CwListen(_telemetry, sample);
+        }
     }
 
     /// <summary>

@@ -157,7 +157,7 @@ public sealed class CwSenderGate
         }
 
         var senders = _senders
-            .Select(s => new CwSenderStanding(s.Reference.Pitch, s.Shape.Score, s.Marks, s == _station))
+            .Select(s => new CwSenderStanding(s.Reference.Pitch, s.Shape.Score, s.Marks, s == _station) { Qualified = Qualifies(s) })
             .ToList();
 
         Volatile.Write(
@@ -174,6 +174,11 @@ public sealed class CwSenderGate
                 _unreadableTimes.ToArray(),
                 senders));
     }
+
+    // A sender qualifies on two keyed runs of two marks or more, two kinds seen, and its own letter gaps shown: the first test
+    // the pick makes, and what the telemetry reports (work instruction 549, task 3, moved here unchanged).
+    private static bool Qualifies(Sender s)
+        => s.Ended.Count(r => r.Length >= 2 && r.Any(m => m.Keyed)) >= QualifyingRuns && s.TwoKindsSeen && s.LetterGapSeconds is not null;
 
     // **THE GATE HANDS THE READER ONE SENDER'S STREAM** (work instruction 532): the table it is read through.
     private readonly CwRunReader _table = new();
@@ -409,7 +414,7 @@ public sealed class CwSenderGate
         // is released as before, silent past twice its word gap, a dah and the lag in calling it (unit 500). A
         // shape of nought prints nothing.
         var qualified = _senders
-            .Where(s => s.Ended.Count(r => r.Length >= 2 && r.Any(m => m.Keyed)) >= QualifyingRuns && s.TwoKindsSeen && s.LetterGapSeconds is not null)
+            .Where(Qualifies)
             // **A SENDER SILENT PAST ITS RELEASE IS NOT A CANDIDATE** (work instruction 533, HM-DEC-237): the silence that let
             // it go keeps it from being picked again. On the owner's QSO of 2026-10-03 the first station, released, still
             // outranked the reply on shape, was picked again, released again, and the reply never had the terminal.

@@ -5,7 +5,14 @@ namespace Hamlet.RadioEngine.Cw;
 /// <param name="ShapeScore">How much its marks and gaps sound like code, nought to one.</param>
 /// <param name="Marks">How many of its marks have stood in all.</param>
 /// <param name="Printed">Whether it is the sender the terminal prints.</param>
-public sealed record CwSenderStanding(double PitchHz, double ShapeScore, int Marks, bool Printed);
+public sealed record CwSenderStanding(double PitchHz, double ShapeScore, int Marks, bool Printed)
+{
+    /// <summary>
+    /// Whether it has qualified to print: two keyed runs of two marks or more, two kinds of mark seen, and its own letter gaps
+    /// shown (work instruction 549, task 3). Reported for the telemetry; the gate decides nothing from this copy.
+    /// </summary>
+    public bool Qualified { get; init; }
+}
 
 /// <summary>
 /// **WHAT THE SHAPE SIDE HELD AT A MOMENT** (work instruction 537, HM-DEC-241): the printed sender's pitch and dit, the
