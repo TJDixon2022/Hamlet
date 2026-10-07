@@ -263,6 +263,12 @@ public sealed class CwEnvelopeDetector
     // pattern gate that decides which stand (work instruction 507).
     private readonly List<CwMark> _candidates = new();
     private readonly CwPatternGate _pattern = new();
+
+    // The sequences that stood at the last hop, for the tests' report of their shapes (work instruction 550, task 1).
+    private IReadOnlyList<CwPatternGate.StandingSequence> _standingNow = Array.Empty<CwPatternGate.StandingSequence>();
+
+    /// <summary>The sequences that stood at the last hop, with their shapes: for the tests' report (work instruction 550).</summary>
+    internal IReadOnlyList<CwPatternGate.StandingSequence> StandingNow => _standingNow;
     private long _candidateSequence;
     private double _lowHz = double.NaN;
     private double _highHz = double.NaN;
@@ -709,6 +715,8 @@ public sealed class CwEnvelopeDetector
         // the sending, and the reading follows what it prints (<see cref="PrintedPitch"/>) while that stands,
         // and the best shape otherwise.
         var standing = _pattern.Standing(nowSeconds, HoldSeconds);
+
+        _standingNow = standing;
         var keying = standing.Count > 0;
         var printed = PrintedPitch?.Invoke() ?? double.NaN;
         var chosen = standing.FirstOrDefault(s => ShapePicks && double.IsFinite(printed) && Math.Abs(s.PitchHz - printed) <= BinSpacingHz)

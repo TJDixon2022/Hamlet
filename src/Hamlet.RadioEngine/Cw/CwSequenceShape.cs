@@ -113,14 +113,57 @@ public sealed record CwSequenceShape(
         var consistent = lengths.Count(l =>
             Math.Min(Math.Abs(Math.Log(l / dit)), Math.Abs(Math.Log(l / dah))) <= Math.Log(CwPatternGate.LengthRatio));
 
+        // **THE GAPS, MEASURED BESIDE THE SCORE** (work instruction 550, task 1): the gaps between consecutive marks, those
+        // under √3 dits taken as gaps inside a letter, the rest as gaps between letters, words or sections.
+        var ordered = marks.OrderBy(m => m.FromSeconds).ToList();
+        var gaps = ordered.Zip(ordered.Skip(1), (a, b) => b.FromSeconds - a.ToSeconds).Where(g => g > 0).ToList();
+        var inside = gaps.Where(g => g < Math.Sqrt(3) * dit).ToList();
+        var inKinds = gaps.Count(g => Math.Abs(Math.Log(g / dit)) <= Math.Log(CwPatternGate.LengthRatio) || g >= 2 * dit);
+
         return new CwSequenceShape(
             rectangles.Count > 0 ? rectangles.Average() : 1,
             Tightness(dits, againstAHand),
             Tightness(dahs, againstAHand),
             Math.Clamp((Math.Log(dah / dit) - Math.Log(2)) / (Math.Log(3) - Math.Log(2)), 0, 1),
             lengths.Count > 0 ? consistent / (double)lengths.Count : 0,
-            1 - Math.Exp(-count / EvidenceMarks));
+            1 - Math.Exp(-count / EvidenceMarks))
+        {
+            Ratio = dah / dit,
+            InsideGaps = Tightness(inside, againstAHand),
+            InsideGapRatio = inside.Count > 0 ? Centre(inside) / dit : double.NaN,
+            GapsInKinds = gaps.Count > 0 ? inKinds / (double)gaps.Count : double.NaN,
+            LevelSpreadDb = ordered.Count > 1 ? Math.Sqrt(ordered.Average(m => Math.Pow(m.LevelDb - ordered.Average(o => o.LevelDb), 2))) : double.NaN,
+            LevelStepDb = ordered.Count > 1 ? Median(ordered.Zip(ordered.Skip(1), (a, b) => Math.Abs(b.LevelDb - a.LevelDb)).ToList()) : double.NaN,
+            ContrastDb = Median(ordered.Select(m => m.ContrastDb).Where(double.IsFinite).ToList()),
+        };
     }
+
+    /// <summary>The candidate: each kind tight, every mark one of them, the gaps inside letters tight (work instruction 550).</summary>
+    public double Ranked => Dits * Dahs * InsideGaps * Consistency;
+
+    /// <summary>The dah over the dit, centre to centre (work instruction 550, task 1).</summary>
+    public double Ratio { get; init; } = double.NaN;
+
+    /// <summary>How tightly its gaps inside letters cluster, as the marks' tightness is scored (work instruction 550, task 1).</summary>
+    public double InsideGaps { get; init; } = double.NaN;
+
+    /// <summary>The centre of its gaps inside letters over its dit: one for CW (work instruction 550, task 1).</summary>
+    public double InsideGapRatio { get; init; } = double.NaN;
+
+    /// <summary>The spread of its marks' levels, in dB (work instruction 550, task 1).</summary>
+    public double LevelSpreadDb { get; init; } = double.NaN;
+
+    /// <summary>The median step in level from one mark to the next, in dB (work instruction 550, task 1).</summary>
+    public double LevelStepDb { get; init; } = double.NaN;
+
+    /// <summary>The median of its marks' contrast over their gaps, in dB (work instruction 550, task 1).</summary>
+    public double ContrastDb { get; init; } = double.NaN;
+
+    /// <summary>The share of its gaps within √2 of a dit or at least two dits: CW's kinds (work instruction 550, task 1).</summary>
+    public double GapsInKinds { get; init; } = double.NaN;
+
+    private static double Median(IReadOnlyList<double> values)
+        => values.Count == 0 ? double.NaN : values.Order().ElementAt(values.Count / 2);
 
     private static double Centre(IReadOnlyList<double> lengths) => Math.Exp(lengths.Average(l => Math.Log(l)));
 

@@ -325,6 +325,7 @@ A change is taken only where no hard limit is worse than at HEAD: the first reco
 | 548 task 2 | 2026-10-06 | 248 of 288 | 19 | 2 | **227** | 1, as at HEAD | 65 of 87, 2 added | audio continuity counted on the sheet, the verdict rows and the story line; nothing that reads changed |
 | 548 task 3 | 2026-10-06 | 248 of 288 | 19 | 2 | **227** | 1, as at HEAD | 65 of 87, 2 added | Record keeps 30 s to 5 minutes, a setting; nothing that reads changed |
 | 548 task 4 | 2026-10-06 | 248 of 288 | 19 | 2 | **227** | 1, as at HEAD | 65 of 87, 2 added | W1AW after five minutes of band noise and a weaker 650 Hz station that stops: no sender held from before took the terminal; nothing changed |
+| 550 task 1 | 2026-10-07 | 248 of 288 | 19 | 2 | **227** | 1, as at HEAD | 65 of 87, 2 added | the shape score taken apart on four classes; nothing that reads changed. Rectangle ranks junk over real keying (junk 0.88, W1AW 0.73, hands 0.63); separation (junk 1.00, hands 0.89) and evidence (junk 0.93, hands 0.92) do not rank; dit and dah tightness, consistency and the tightness of gaps inside letters do |
 
 ## Scans (work instruction 544, HM-DEC-248)
 
