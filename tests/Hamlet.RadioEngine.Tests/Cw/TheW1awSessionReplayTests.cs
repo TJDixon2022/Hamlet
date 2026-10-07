@@ -27,7 +27,7 @@ public sealed class TheW1awSessionReplayTests(ITestOutputHelper output)
         double Seconds);
 
     /// <summary>Replays the four pieces as one stream.</summary>
-    internal static Replay Run(int chunkMs = 10, bool wholeBand = false, Action<CwEnvelopeDetector>? setUp = null, Action<double>? onChunk = null)
+    internal static Replay Run(int chunkMs = 10, bool wholeBand = false, Action<CwEnvelopeDetector>? setUp = null, Action<double>? onChunk = null, float[]? before = null)
     {
         var (pitch, width) = TheRecordingsScoreboardTests.RadioState(Pieces[0]);
         var rate = WavAudio.Read(TheOwnersRecordingReadsTests.Wav(Pieces[0])).SampleRate;
@@ -48,9 +48,8 @@ public sealed class TheW1awSessionReplayTests(ITestOutputHelper output)
             space = false;
         };
 
-        foreach (var piece in Pieces)
+        foreach (var samples in (before is null ? [] : new[] { before }).Concat(Pieces.Select(p => WavAudio.Read(TheOwnersRecordingReadsTests.Wav(p)).Samples)))
         {
-            var samples = WavAudio.Read(TheOwnersRecordingReadsTests.Wav(piece)).Samples;
             var chunk = rate * chunkMs / 1000;
 
             for (var at = 0; at + chunk <= samples.Length; at += chunk)
@@ -214,6 +213,41 @@ public sealed class TheW1awSessionReplayTests(ITestOutputHelper output)
 
         Assert.Contains(r.Letters, l => l.Text == "A" && l.From is >= 546.55 and <= 546.70);
         Assert.All(new[] { "AND", "ATTEMPT", "EFFECTIVE", "PRETTY", "DETECT", "RADIATED", "SPECTRUM", "DETERMINED" }, w => Assert.Contains(w, words));
+    }
+
+    /// <remarks>
+    /// **WHAT IS LEFT OF THE GHOST** (work instruction 554, task 2): the replay starts cold, and live the chain had been listening
+    /// since before 19:59. Twenty seconds of a station at 550 Hz, 20 WPM, keyed in front of the session, so that a sequence stands
+    /// there when W1AW begins, the way one may have stood live: whether a sender at 550 Hz then keeps taking marks through the
+    /// session, as the live sheets' 147 to 978 marks did.
+    /// </remarks>
+    [Fact]
+    public void ASequenceStandingAt550BeforeTheSession()
+    {
+        var rate = WavAudio.Read(TheOwnersRecordingReadsTests.Wav(Pieces[0])).SampleRate;
+        var low = AHandIsReadAgainstItselfTests.Keyed("CQ CQ CQ DE K1ABC K1ABC K", _ => new AHandIsReadAgainstItselfTests.Sending(20, 0), 5540, 24, 0, 550);
+        var factor = rate / 8000;
+        var before = new float[low.Length * factor];
+
+        for (var i = 0; i < before.Length; i++)
+        {
+            var x = (double)i / factor;
+            var k = Math.Min((int)x, low.Length - 2);
+
+            before[i] = (float)(low[k] + ((low[k + 1] - low[k]) * (x - k)));
+        }
+
+        var r = Run(before: before);
+
+        foreach (var g in r.Senders.GroupBy(s => Math.Round(s.PitchHz / 25) * 25).OrderBy(g => g.Key))
+        {
+            output.WriteLine(string.Create(CultureInfo.InvariantCulture,
+                $"sender after a 550 Hz station | {g.Key:0} Hz | seen {g.Min(s => s.Seconds):0} to {g.Max(s => s.Seconds):0} s, {g.Select(s => s.Seconds).Distinct().Count()} seconds held | marks up to {g.Max(s => s.Marks)} | shape up to {g.Max(s => s.Shape):0.00} | printed {g.Count(s => s.Printed)} s"));
+        }
+
+        output.WriteLine(string.Create(CultureInfo.InvariantCulture, $"before | {before.Length / (double)rate:0.0} s at 550 Hz; text | {Text(r.Letters)[..Math.Min(300, Text(r.Letters).Length)]}"));
+
+        Assert.Contains(r.Letters, l => Math.Abs(l.PitchHz - 600) <= 15);
     }
 
     /// <remarks>
