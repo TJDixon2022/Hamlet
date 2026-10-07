@@ -673,7 +673,7 @@
                         FrequencyHz="{Binding FrequencyHz}"
                         BandLowHz="{Binding MapLowHz}"
                         BandHighHz="{Binding MapHighHz}"
-                        Neighborhoods="{Binding Neighborhoods}"
+                        Neighborhoods="{Binding MapNeighborhoods}"
                         ChosenShortName="{Binding ChosenDigitalMode}"
                         ChosenSpotHz="{Binding MapChosenSpotHz}"
                         ActivityDots="{Binding ActivityDots}"

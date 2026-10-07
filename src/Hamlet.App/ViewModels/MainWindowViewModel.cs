@@ -831,8 +831,18 @@ public partial class MainWindowViewModel : ObservableObject
     [NotifyPropertyChangedFor(nameof(DigitalReadinessLine))]
     [NotifyPropertyChangedFor(nameof(HasDigitalReadiness))]
     [NotifyPropertyChangedFor(nameof(DigitalModeChips))]
+    [NotifyPropertyChangedFor(nameof(MapNeighborhoods))]
     [NotifyPropertyChangedFor(nameof(GreenZone))]
     private IReadOnlyList<Neighborhood> _neighborhoods = Array.Empty<Neighborhood>();
+
+    /// <summary>
+    /// **THE MAP FOLLOWS THE TAB** (work instruction 551, HM-DEC-255): the band's blocks as the tab paints and names them. On
+    /// the CW tab every block the license lets him send both Morse and data in is Morse, on the Digital tab data, and on
+    /// the Voice tab as the data says. The map and the green zone's header read this; everything that decides anything
+    /// reads <see cref="Neighborhoods"/>, and nothing here writes to the radio.
+    /// </summary>
+    public IReadOnlyList<Neighborhood> MapNeighborhoods
+        => ModeLens.On(Neighborhoods, OperatingMode, _privileges, _settings.Operator.LicenseClass);
 
     /// <summary>
     /// The lowest frequency the neighborhood map draws.
@@ -1347,7 +1357,8 @@ public partial class MainWindowViewModel : ObservableObject
         => GreenZone.For(
             PrivilegeStatus,
             FrequencyHz,
-            Neighborhoods.FirstOrDefault(n => n.Contains(FrequencyHz)),
+            // The block as the map paints it, so the header's word agrees with the colour (work instruction 551).
+            MapNeighborhoods.FirstOrDefault(n => n.Contains(FrequencyHz)),
             ChosenDigitalMode,
             SegmentForTheChosenSubMode,
             Bands.FirstOrDefault(b => b.IsBestBet)?.Band.Name ?? "",
@@ -21451,6 +21462,11 @@ public partial class MainWindowViewModel : ObservableObject
         var cls = _settings.Operator.LicenseClass;
 
         PrivilegeSpans = _privileges.SpansFor(SelectedBand.Band, cls);
+
+        // **THE MAP FOLLOWS THE TAB** (work instruction 551): which blocks are shared is the license's word, so a new class or a
+        // new tab repaints them; this writes nothing to the radio.
+        OnPropertyChanged(nameof(MapNeighborhoods));
+        OnPropertyChanged(nameof(GreenZone));
 
         // The W1AW button follows the dial and says what the license covers, so both a new frequency
         // and a new class recompute it; it is raised only when what it says changed (work
