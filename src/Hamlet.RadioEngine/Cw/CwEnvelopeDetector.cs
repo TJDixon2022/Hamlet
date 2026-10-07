@@ -1210,7 +1210,9 @@ public sealed class CwEnvelopeDetector
                 }
                 else if (_laneSpan >= 0 && level < downLine)
                 {
-                    OfferLaneSpan(_laneSpan, h - 1, hop, nowSeconds, byLevel: true);
+                    var top = TrimToTop(lane, _laneSpan, h - 1, sender.LevelDb);
+                    OfferLaneSpan(top.From, top.To, hop, nowSeconds, byLevel: true);
+
                     _laneSpan = -1;
                 }
 
@@ -1256,6 +1258,47 @@ public sealed class CwEnvelopeDetector
         }
 
         _laneScan = Math.Max(_laneScan, last + 1);
+    }
+
+    // Hops under the half line at an end before it is trimmed (work instruction 554, task 2).
+    private const int TrimHops = 2;
+
+    /// <summary>
+    /// **A MARK READ BY LEVEL IS TRIMMED TO WHERE IT STANDS AT ITS SENDER'S LEVEL** (work instruction 554, task 2, HM-DEC-258): in
+    /// a word gap the radio's AGC lifts the noise to within 10 to 20 dB of the key-down level, over the window's up line, and on
+    /// W1AW's 35 WPM text the noise before a dit joined it into a mark twice as long, so AND read TND. Each end comes in past the
+    /// hops under half the sender's amplitude; what is left is taken where it stands within twice a flat top's wobble of the
+    /// sender's level, as A's dit stood within a dB, and the span is offered whole as before where it does not, a noise hump.
+    /// An end is trimmed only where two hops or more lie under the line: trimming the single hop an ordinary edge leaves there
+    /// moved every mark and printed `?` and `S` inside the 221502 silence; three hops or the window's rise left the strong
+    /// catch at 130 of 152. Skipping short runs over the line as well cost the strong catch two letters; it is not done.
+    /// </summary>
+    /// <returns>The trimmed span where its top stands at the sender's level, else the span as it was.</returns>
+    private static (long From, long To) TrimToTop(Bin lane, long a, long b, double keyDownDb)
+    {
+        var (a0, b0) = (a, b);
+        var half = keyDownDb + HalfAmplitudeDb;
+
+        while (a <= b && lane.Level(a) < half)
+        {
+            a++;
+        }
+
+        while (b >= a && lane.Level(b) < half)
+        {
+            b--;
+        }
+
+        // An edge's own fall leaves a hop under the line; two or more is noise beside the mark.
+        a = a - a0 >= TrimHops ? a : a0;
+        b = b0 - b >= TrimHops ? b : b0;
+
+        if (a > b || (a, b) == (a0, b0))
+        {
+            return (a0, b0);
+        }
+
+        return MeanLevel(lane, a, b) >= keyDownDb - (2 * FlatToleranceDb) ? (a, b) : (a0, b0);
     }
 
     /// <summary>One stretch of the sender's window over half its amplitude, offered as a candidate if it passes a mark's tests.</summary>
