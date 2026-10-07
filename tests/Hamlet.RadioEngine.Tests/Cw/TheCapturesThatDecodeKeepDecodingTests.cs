@@ -144,30 +144,10 @@ public sealed class TheCapturesThatDecodeKeepDecodingTests
         { "unadjudicated/cw-2026-08-23-002016", 34, 74, 31 },    // 44 named, 10 below the bar
 
 
-        // **THE EVENING OF 2026-08-25**, banked after four units of asking.
-        // Counts measured through this harness on the day the floors were set;
-        // where they differ from `MANIFEST.md` the tree is what is asserted and
-        // the difference is in that unit's report.
-        { "unadjudicated/cw-2026-08-25-011552", 22, 74, 8 },   // K1ZJA call, early lock
-        // **LOWERED 2026-08-25 UNDER TIM'S RULING, NOT SILENTLY.** The re-read
-        // costs this recording twelve of the sixteen elements it used to see and
-        // two of its four characters, and it is the only capture in the tree the
-        // re-read hurts. No adjudicated anchor covers it, so nothing else guards
-        // it and the floor stays rather than retiring — it is simply set to what
-        // the decoder now produces, with the loss on the record. Why the replay
-        // destroys this one recording is its own question and it is unanswered.
-        { "unadjudicated/cw-2026-08-25-012748", 2, 3, 2 },   // **Bug A**, and the one capture the re-read hurts
-        { "unadjudicated/cw-2026-08-25-012823", 22, 36, 0 },    // **the negative control** — the tone lands 50 Hz off and the reading is soup; re-banked by unit 442 from 23, 37 (R78)
-        { "unadjudicated/cw-2026-08-25-012922", 40, 102, 0 },   // lock recovering; re-banked by unit 442 from 43, 104 (R78)
-        { "unadjudicated/cw-2026-08-25-013010", 47, 118, 1 },   // a whole contact; the gate must not damage it; re-banked by unit 442 from 48, 122 (R78)
-        { "unadjudicated/cw-2026-08-25-013150", 51, 123, 7 },   // `CQ CQ CQ DE ND4K`
-        { "unadjudicated/cw-2026-08-25-013303", 44, 127, 10 },   // **the beat-the-chain case**
-        { "unadjudicated/cw-2026-08-25-013402", 56, 150, 5 },   // nought unsure at the old grid ceiling
-        { "unadjudicated/cw-2026-08-25-013520", 55, 147, 5 },   // **the reference case**
-        { "unadjudicated/cw-2026-08-25-013637", 60, 157, 3 },   // gap clusters merge at speed, the joint-cutter fixture
-        { "unadjudicated/cw-2026-08-25-021410", 36, 88, 11 },   // a machine fist with separable gaps, still miscut
-        { "unadjudicated/cw-2026-08-25-021629", 27, 65, 20 },   // 24 % duty: `559 559 IN MI MI` buried
-        { "unadjudicated/cw-2026-08-25-021825", 19, 43, 16 },   // 18 % duty: an eight-second call in thirty seconds; 25 named, 6 below the bar
+        // **THE EVENING OF 2026-08-25 IS RETIRED** (work instruction 552, task 4, HM-DEC-256; the owner's yes, 2026-10-07). Its
+        // thirteen captures were the CW read guard on the carry-forward line; they read the corpus R88 bars, and their floors were
+        // pinned to the decoder that came out. The scoreboard is the CW guard in their place. The rows are in the tag
+        // before-shape-score and in the history of this file.
 
         // **THE MISS OF 2026-08-26.** The operator sat on 14.0275 MHz hearing
         // fast CW while the terminal said nothing decoded yet. Floored at its

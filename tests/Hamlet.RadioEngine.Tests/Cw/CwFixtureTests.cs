@@ -85,7 +85,7 @@ public sealed class CwFixtureTests
     /// in-memory tests make, made again through a file, because the file is what
     /// a bug report will carry.
     /// </remarks>
-    [Theory]
+    [Theory(Skip = "Retired by HM-DEC-256 (work instruction 552, the owner's yes of 2026-10-07): a CW read guard on the corpus R88 bars, pinned to the decoder that came out; the scoreboard is the CW guard in its place.")]
     [InlineData("clean-12wpm")]
     [InlineData("clean-18wpm")]
     public void TheCleanRecordingsDecodeExactly(string name)

@@ -227,7 +227,7 @@ public sealed class TheAdjudicatedReadingsKeepReadingTests
     /// here is blind to.
     /// </remarks>
     /// <param name="reading">The adjudicated reading and its anchor.</param>
-    [Theory]
+    [Theory(Skip = "Retired by HM-DEC-256 (work instruction 552, the owner's yes of 2026-10-07): a CW read guard on the corpus R88 bars, pinned to the decoder that came out; the scoreboard is the CW guard in its place.")]
     [MemberData(nameof(Readings))]
     public void EachAdjudicatedReadingStillComesBack(Reading reading)
     {
@@ -266,7 +266,7 @@ public sealed class TheAdjudicatedReadingsKeepReadingTests
     /// only claim it makes is the one nobody can argue with: an anchor is never
     /// longer than the text it is drawn from.</para>
     /// </remarks>
-    [Fact]
+    [Fact(Skip = "Retired by HM-DEC-256 (work instruction 552, the owner's yes of 2026-10-07): a CW read guard on the corpus R88 bars, pinned to the decoder that came out; the scoreboard is the CW guard in its place.")]
     public void TheShortfallIsPrintedRatherThanPapered()
     {
         var whole = 0;

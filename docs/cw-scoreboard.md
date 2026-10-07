@@ -301,6 +301,11 @@ A change is taken only where no hard limit is worse than at HEAD: the first reco
 
 **Neither set meets the bar, so none shipped:** set A (step 3) raises the score to 191 but invented does not fall (2, as at HEAD) and one letter still prints in a silence; set B reaches 193 with nothing invented and nothing printed in a silence, but the carrier prints at seed 5206 as well as 5195. No single change from B brings the carrier back to 1 of 20. Taking out the handover backlog or the gap crossing leaves the score the same at every step; neither was taken out, since nothing shipped. The search's first pass counted the carrier over five seeds and walked to B; the twenty seeds caught it.
 
+**The CW guard** (work instruction 552, HM-DEC-256; the owner's yes, 2026-10-07). `TheScoreboardGuardsCwTests.TheScoreboardFallsNowhere`, on the engine carry-forward line, reads the last unit row below and holds the board to it: the score not below it, spaces right not below it and spaces added not above it, no more letters in a silence; the first recording whole and loud noise silent; and the random carrier at no more seeds than this line records. A unit that raises the board appends its row, and the guard holds it there.
+
+guard: the random carrier prints at 1 of 20 seeds (5195), recorded at unit 552
+
+
 | unit | date | right | wrong | invented | score | printed in silence | spaces right | what changed |
 |---|---|---|---|---|---|---|---|---|
 | 539 task 3 | 2026-10-04 | 206 of 244 | 18 | 2 | **186** | 1 | 58 of 77, 4 added | the thirteen removed rules back in the tree behind switches, off; every rule measured; no set met the bar, so the reading is HEAD's |
@@ -334,6 +339,7 @@ A change is taken only where no hard limit is worse than at HEAD: the first reco
 | 552 task 1 | 2026-10-07 | 248 of 288 | 19 | 2 | **227** | 1, as at HEAD | 65 of 87, 2 added | a key-down term in the shape score: one up to Morse's ceiling, 15 of 22 (a run of zeros), falling to nought at a key never up, over the sender's sending to a word gap; the noise burst 0.69 to 0.26, junk's p75 0.40 to 0.29 and p90 0.67 to 0.61; the carrier catch, key-down 0.64, stays 0.68; every scored stretch and hard limit as at HEAD |
 | 552 task 2 | 2026-10-07 | 248 of 288 | 19 | 2 | **227** | 1, as at HEAD | 65 of 87, 2 added | traced, not shipped: W1AW read cold prints `E NE II AEED`, and every letter is labelled at its pick as the sender's lines at the end would label it (split 117 then, 119 at the end); the detector never called P's first dah, before it had a gap level, and called N's dah as 60 ms of 205; re-reading the backlog cannot bring back a mark never called; nothing changed |
 | 552 task 3 | 2026-10-07 | 248 of 288 | 19 | 2 | **227** | 1, as at HEAD | 65 of 87, 2 added | on the CW tab a shared block the band data names for a digital mode keeps its name (RTTY, FT4, PSK31, FT8, JS8, auto, Data) in CW's colour; open ground is named CW; the Digital and Voice tabs unchanged; nothing that reads changed |
+| 552 task 4 | 2026-10-07 | 248 of 288 | 19 | 2 | **227** | 1, as at HEAD | 65 of 87, 2 added | the scoreboard is the CW guard: TheScoreboardGuardsCwTests on the engine carry-forward line holds the board to its last unit row; the three CW read guards retired at the owner's yes; nothing that reads changed |
 
 ## Scans (work instruction 544, HM-DEC-248)
 
