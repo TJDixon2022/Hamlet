@@ -319,7 +319,7 @@ public sealed class CwEnvelopeDetector
     /// Whether marks inside a standing station's own window are read by level (work instruction 553, task 2, HM-DEC-257); on.
     /// Off, they are stretches over half the sender's amplitude put through the per-hop tests, as before, for the tests' before.
     /// </summary>
-    internal bool LaneByLevel { get; set; } = false;
+    internal bool LaneByLevel { get; set; } = true;
 
     /// <summary>
     /// Whether a station's window opens on the sender waiting for its first pick, and reads its audio again from as far back as
