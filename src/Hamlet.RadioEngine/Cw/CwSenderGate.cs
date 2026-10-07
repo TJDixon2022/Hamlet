@@ -697,7 +697,10 @@ public sealed class CwSenderGate
 
         // **THREE LONE LETTERS IN A ROW ARE DROPPED TOGETHER** (removed in work instruction 534; back in 541, HM-DEC-245, when
         // the score counted what is wrong and invented as well as what is right).
-        if (CwRules.On(CwRules.ThreeLone) && last - first + 1 >= 3)
+        // **NEVER INSIDE A WORD** (work instruction 554, task 1, HM-DEC-258): English puts ETE and TTE inside words all day -
+        // DETECT, DETERMINED, KILOMETERS, ATTEMPT, LETTER - and W1AW's were dropped live. A row with a letter of two marks or
+        // more just before and just after it, and no word gap between, is inside a word and prints.
+        if (CwRules.On(CwRules.ThreeLone) && last - first + 1 >= 3 && !InsideAWord(sender, first, last, nextFrom))
         {
             return false;
         }
@@ -706,6 +709,34 @@ public sealed class CwSenderGate
         var after = nextFrom is { } from && from - run[^1].ToSeconds <= window;
 
         return before || after;
+    }
+
+    /// <summary>
+    /// Whether a row of one-mark letters lies inside one word: a letter of two marks or more just before it and just after it,
+    /// and no word gap anywhere from the one to the other, by the sender's own lines (work instruction 554, task 1). D-ETE-CT,
+    /// KILOM-ETE-RS, A-TTE-MPT and B-ETTE-R are; a row at a word's start or end, or standing alone, is not.
+    /// </summary>
+    private static bool InsideAWord(Sender sender, int first, int last, double? nextFrom)
+    {
+        var runs = sender.Ended;
+        var lines = sender.Lines;
+
+        if (first == 0 || runs[first - 1].Length < 2)
+        {
+            return false;
+        }
+
+        for (var i = first; i <= last; i++)
+        {
+            if (lines.KindOf(runs[i][0].FromSeconds - runs[i - 1][^1].ToSeconds) == CwGapKind.Word)
+            {
+                return false;
+            }
+        }
+
+        var nextLength = last + 1 < runs.Count ? runs[last + 1].Length : sender.Open.Count;
+
+        return nextFrom is { } from && nextLength >= 2 && lines.KindOf(from - runs[last][^1].ToSeconds) != CwGapKind.Word;
     }
 
     /// <summary>
