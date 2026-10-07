@@ -40,10 +40,21 @@ public sealed record CwSequenceShape(
     public const double EvidenceMarks = 2 * CwPatternGate.MarksToStand;
 
     /// <summary>Nothing that splits in two: no score.</summary>
-    public static CwSequenceShape None { get; } = new(0, 0, 0, 0, 0, 0) { InsideGaps = 0 };
+    public static CwSequenceShape None { get; } = new(0, 0, 0, 0, 0, 0) { InsideGaps = 0, KeyDownShare = 1 };
 
     /// <summary>How much it sounds like code, nought to one: its dits, its dahs and its gaps inside letters each tight, and every mark one of its two kinds (work instruction 550).</summary>
-    public double Score => Dits * Dahs * InsideGaps * Consistency;
+    public double Score => Dits * Dahs * InsideGaps * Consistency * KeyDown;
+
+    /// <summary>
+    /// **A CARRIER KEYS DOWN TOO MUCH TO BE MORSE** (work instruction 552, task 1): one while the key is down no more of its
+    /// sending than Morse ever keeps it, falling straight to nought at a key that never comes up. Morse's ceiling is the letter
+    /// `0` sent over and over, five dahs and their gaps and a letter gap: 15 units down of 22, 68%; ordinary text sits well under
+    /// it. Judged over the same recent marks as the other terms, its pauses past a word gap left out.
+    /// </summary>
+    public double KeyDown => double.IsFinite(KeyDownShare) ? Math.Clamp((1 - KeyDownShare) / (1 - MorseKeyDownCeiling), 0, 1) : 1;
+
+    /// <summary>The most of its sending Morse keeps the key down: 15 of 22, a run of zeros (work instruction 552).</summary>
+    public const double MorseKeyDownCeiling = 15.0 / 22;
 
     /// <summary>The terms and the score, for the tests' report.</summary>
     public override string ToString()
@@ -124,6 +135,11 @@ public sealed record CwSequenceShape(
         var inside = gaps.Where(g => g < Math.Sqrt(3) * dit).ToList();
         var inKinds = gaps.Count(g => Math.Abs(Math.Log(g / dit)) <= Math.Log(CwPatternGate.LengthRatio) || g >= 2 * dit);
 
+        // **HOW MUCH OF ITS SENDING THE KEY IS DOWN** (work instruction 552, task 1): its marks over its marks and the gaps between
+        // them up to a word gap, seven dits, and its pauses past that left out.
+        var sending = gaps.Where(g => g <= WordGapDits * dit).Sum();
+        var down = ordered.Sum(m => m.ToSeconds - m.FromSeconds);
+
         return new CwSequenceShape(
             rectangles.Count > 0 ? rectangles.Average() : 1,
             Tightness(dits, againstAHand),
@@ -136,6 +152,7 @@ public sealed record CwSequenceShape(
             InsideGaps = Tightness(inside, againstAHand),
             InsideGapRatio = inside.Count > 0 ? Centre(inside) / dit : double.NaN,
             GapsInKinds = gaps.Count > 0 ? inKinds / (double)gaps.Count : double.NaN,
+            KeyDownShare = down + sending > 0 ? down / (down + sending) : double.NaN,
             LevelSpreadDb = ordered.Count > 1 ? Math.Sqrt(ordered.Average(m => Math.Pow(m.LevelDb - ordered.Average(o => o.LevelDb), 2))) : double.NaN,
             LevelStepDb = ordered.Count > 1 ? Median(ordered.Zip(ordered.Skip(1), (a, b) => Math.Abs(b.LevelDb - a.LevelDb)).ToList()) : double.NaN,
             ContrastDb = Median(ordered.Select(m => m.ContrastDb).Where(double.IsFinite).ToList()),
@@ -162,6 +179,12 @@ public sealed record CwSequenceShape(
 
     /// <summary>The share of its gaps within √2 of a dit or at least two dits: CW's kinds (work instruction 550, task 1).</summary>
     public double GapsInKinds { get; init; } = double.NaN;
+
+    /// <summary>The share of its sending the key is down: its marks over its marks and the gaps between them up to a word gap (work instruction 552).</summary>
+    public double KeyDownShare { get; init; } = double.NaN;
+
+    /// <summary>A word gap, in dits: seven. A gap longer is a pause, not sending.</summary>
+    public const double WordGapDits = 7;
 
     private static double Median(IReadOnlyList<double> values)
         => values.Count == 0 ? double.NaN : values.Order().ElementAt(values.Count / 2);

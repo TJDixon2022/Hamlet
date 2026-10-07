@@ -158,6 +158,8 @@ public sealed class TheShapeScoreTakenApartTests(ITestOutputHelper output)
         ("inside-gap tightness", s => s.InsideGaps),
         ("inside gap over dit", s => s.InsideGapRatio),
         ("gaps in kinds", s => s.GapsInKinds),
+        ("key-down share", s => s.KeyDownShare),
+        ("key-down term", s => s.KeyDown),
         ("level spread dB", s => s.LevelSpreadDb),
         ("level step dB", s => s.LevelStepDb),
         ("contrast dB", s => s.ContrastDb),
@@ -267,6 +269,26 @@ public sealed class TheShapeScoreTakenApartTests(ITestOutputHelper output)
         var held = Run(w1aw.Samples, w1aw.SampleRate, w1awPitch, w1awWidth, W1aw).Where(s => !s.Detector).GroupBy(s => s.Seconds).Select(g => g.Count()).DefaultIfEmpty(0).Max();
 
         output.WriteLine($"W1AW's recording: at most {held} senders held at once");
+
+        // **THE KEY-DOWN SHARE PER CLASS AND PER SOURCE** (work instruction 552, task 1): Morse's own ceiling is 15 of 22, a run of
+        // zeros with their letter gaps.
+        foreach (var c in Classes)
+        {
+            var sorted = samples.Where(s => s.Class == c && !s.Detector && double.IsFinite(s.Shape.KeyDownShare)).Select(s => s.Shape.KeyDownShare).Order().ToList();
+
+            if (sorted.Count > 0)
+            {
+                double P(double q) => sorted[(int)Math.Min(sorted.Count - 1, Math.Floor(q * sorted.Count))];
+
+                output.WriteLine(FormattableString.Invariant(
+                    $"key-down | {c} | {sorted.Count} samples | min {sorted[0]:0.000} | p5 {P(0.05):0.000} | p25 {P(0.25):0.000} | p50 {P(0.5):0.000} | p75 {P(0.75):0.000} | p95 {P(0.95):0.000} | max {sorted[^1]:0.000}"));
+            }
+        }
+
+        foreach (var g in samples.Where(s => !s.Detector && double.IsFinite(s.Shape.KeyDownShare)).GroupBy(s => (s.Class, s.Source)).OrderBy(g => g.Key.Class))
+        {
+            output.WriteLine($"key-down source | {g.Key.Class} | {g.Key.Source} | {Cell(g.Select(s => s.Shape.KeyDownShare).ToList())} | score {Cell(g.Select(s => s.Shape.Score).ToList())}");
+        }
 
         // The score's percentiles per class, from which the lines that read the score are set (task 2).
         foreach (var c in Classes)

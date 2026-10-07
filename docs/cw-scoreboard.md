@@ -331,6 +331,7 @@ A change is taken only where no hard limit is worse than at HEAD: the first reco
 | 551 task 1 | 2026-10-07 | 248 of 288 | 19 | 2 | **227** | 1, as at HEAD | 65 of 87, 2 added | the map follows the tab: on the CW tab every block the licence lets the operator send both Morse and data in is painted and named CW, on the Digital tab Data, on the Voice tab as the data says; the header's word agrees; nothing that reads changed |
 | 551 task 2 | 2026-10-07 | 248 of 288 | 19 | 2 | **227** | 1, as at HEAD | 65 of 87, 2 added | the owner's two yeses recorded on HM-DEC-253: stray letters each printed alone, and W1AW within half the filter or 250 Hz; no code changed |
 | 551 task 3 | 2026-10-07 | 248 of 288 | 19 | 2 | **227** | 1, as at HEAD | 65 of 87, 2 added | the scan's ear reads behind a queue, off the sound card's thread; the callback records the catch's WAV and hands the chunk over; drops and holes counted on each catch; a slow ear catches the same positive with the same text and a whole WAV; nothing the terminal reads changed |
+| 552 task 1 | 2026-10-07 | 248 of 288 | 19 | 2 | **227** | 1, as at HEAD | 65 of 87, 2 added | a key-down term in the shape score: one up to Morse's ceiling, 15 of 22 (a run of zeros), falling to nought at a key never up, over the sender's sending to a word gap; the noise burst 0.69 to 0.26, junk's p75 0.40 to 0.29 and p90 0.67 to 0.61; the carrier catch, key-down 0.64, stays 0.68; every scored stretch and hard limit as at HEAD |
 
 ## Scans (work instruction 544, HM-DEC-248)
 
