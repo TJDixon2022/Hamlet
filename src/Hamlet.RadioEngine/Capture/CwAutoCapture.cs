@@ -41,6 +41,11 @@ public sealed class CwAutoCapture : IDisposable
     private readonly W1awMorseFrequencies _table;
     private readonly Func<DateTime> _clock;
     private readonly bool _threaded;
+    private readonly AutoCaptureDisk? _disk;
+    private DateTime? _refused;
+
+    /// <summary>What the line says while a session the disk refused goes on unrecorded.</summary>
+    public const string RefusedLine = "auto capture stopped · no room under the 10 GB kept for automatic captures";
     private readonly object _gate = new();
 
     private IAudioSource? _source;
@@ -57,16 +62,19 @@ public sealed class CwAutoCapture : IDisposable
     /// <param name="autoFolder">Where automatic captures go: <c>captures\auto</c> under Hamlet's data folder.</param>
     /// <param name="table">W1AW's schedule and frequencies.</param>
     /// <param name="clock">The clock, in UTC.</param>
+    /// <param name="disk">The disk keeper (task 4); null keeps no limit, for tests of the rest.</param>
     /// <param name="threaded">
     /// True to write on a thread of its own behind a queue, as the app does; false to write on the caller's thread, for
     /// tests that feed audio and read the files straight after.
     /// </param>
-    public CwAutoCapture(string autoFolder, W1awMorseFrequencies table, Func<DateTime> clock, bool threaded = true)
+    public CwAutoCapture(
+        string autoFolder, W1awMorseFrequencies table, Func<DateTime> clock, bool threaded = true, AutoCaptureDisk? disk = null)
     {
         AutoFolder = autoFolder ?? throw new ArgumentNullException(nameof(autoFolder));
         _table = table ?? throw new ArgumentNullException(nameof(table));
         _clock = clock ?? throw new ArgumentNullException(nameof(clock));
         _threaded = threaded;
+        _disk = disk;
     }
 
     /// <summary>Where automatic captures go.</summary>
@@ -108,7 +116,9 @@ public sealed class CwAutoCapture : IDisposable
             {
                 if (_w1aw is null || _session is null)
                 {
-                    return string.Empty;
+                    return _disk?.Paused == true ? AutoCaptureDisk.PausedLine
+                        : _refused is not null && _refused == W1awSessionWindow.At(_table, _clock())?.StartUtc ? RefusedLine
+                        : string.Empty;
                 }
 
                 return $"capturing W1AW · {_session.Run.Kind} · piece {_w1aw.PieceNumber} · {Elapsed(_clock() - _w1aw.StartedUtc)}";
@@ -210,11 +220,19 @@ public sealed class CwAutoCapture : IDisposable
 
                 if (why is not null)
                 {
+                    // **A SESSION THE DISK REFUSED STAYS STOPPED**: a fresh capture of it would be free to delete the pieces just
+                    // written to make room for its own.
+                    if (ReferenceEquals(why, _w1aw.EndReason))
+                    {
+                        _refused = _session!.StartUtc;
+                    }
+
                     ending = TakeLocked(why);
                 }
             }
 
-            if (_w1aw is null && now.Listening && now.InCw && !now.Scanning && session is not null && row is not null)
+            if (_w1aw is null && now.Listening && now.InCw && !now.Scanning && session is not null && row is not null
+                && !(_disk?.Paused ?? false) && session.StartUtc != _refused)
             {
                 StartLocked(session, row, W1awSessionWindow.ToleranceHz(now.FilterWidthHz), at);
             }
@@ -285,6 +303,12 @@ public sealed class CwAutoCapture : IDisposable
 
         void Write()
         {
+            // **THE DISK IS KEPT** (task 4): room is made before it is written, or it is not written.
+            if (_disk?.MakeRoom(44 + (2L * audio.Samples.Length), null) is not null)
+            {
+                return;
+            }
+
             try
             {
                 WavAudio.Write(Path.Combine(folder, "capture.wav"), audio);
@@ -364,7 +388,8 @@ public sealed class CwAutoCapture : IDisposable
     private void StartLocked(W1awScheduleState session, W1awMorseRow row, double toleranceHz, DateTime at)
     {
         var folder = Path.Combine(AutoFolder, $"w1aw-{at:yyyy-MM-dd-HHmmss}");
-        var capture = new ContinuousCapture(folder, _clock, piece => W1awSheet(piece, session, row, toleranceHz));
+        var capture = new ContinuousCapture(
+            folder, _clock, piece => W1awSheet(piece, session, row, toleranceHz), bytes => _disk?.MakeRoom(bytes, folder));
 
         _w1aw = capture;
         _session = session;

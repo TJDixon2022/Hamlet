@@ -66,7 +66,9 @@ public sealed partial class MainWindowViewModel
     private void StartAutoCapture(IAudioSource source)
     {
         _autoCapture?.Dispose();
-        _autoCapture = new CwAutoCapture(AutoCaptureFolder, W1awMorseFrequencies.Default, () => DateTime.UtcNow)
+        // **THE DISK IS KEPT** (task 4): 10 GB at most, the oldest first, nothing under 20 GB free, nothing outside auto.
+        _autoCapture = new CwAutoCapture(
+            AutoCaptureFolder, W1awMorseFrequencies.Default, () => DateTime.UtcNow, disk: new AutoCaptureDisk(AutoCaptureFolder))
         {
             SheetExtra = () => Volatile.Read(ref _autoSheetExtra),
         };
