@@ -34,6 +34,13 @@ public sealed record CwMark(
     public bool Keyed { get; init; }
 
     /// <summary>
+    /// The stretch this mark was read again over, where it is one of a station's marks read again through its own window when
+    /// the window opened: the reader replaces that sender's unprinted marks in the stretch with these. Null for every other mark
+    /// (work instruction 553, task 2).
+    /// </summary>
+    public (double FromSeconds, double ToSeconds)? Replaces { get; init; }
+
+    /// <summary>
     /// How far the bar sat inside the shape of a keyed tone when it was called: its five properties
     /// and their product (work instruction 502, R110). Null for a mark not built by the detector.
     /// </summary>

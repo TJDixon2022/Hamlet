@@ -228,7 +228,15 @@ public sealed class CwSenderGate
         // has its marks called later than a bin calls them, by the window's delay, so a silence is judged that much later.
         var heard = batch.HeardSeconds - batch.LateSeconds;
 
-        foreach (var mark in batch.Marks.OrderBy(m => m.FromSeconds))
+        // **A STATION'S OPENING READ AGAIN REPLACES WHAT THE GRID GAVE** (work instruction 553, task 2, HM-DEC-257).
+        var again = batch.Marks.Where(m => m.Replaces is not null).ToList();
+
+        if (again.Count > 0)
+        {
+            Replace(again);
+        }
+
+        foreach (var mark in batch.Marks.Where(m => m.Replaces is null).OrderBy(m => m.FromSeconds))
         {
             Take(mark);
         }
@@ -259,6 +267,51 @@ public sealed class CwSenderGate
 
         Print(double.PositiveInfinity);
         Publish(_heard);
+    }
+
+    /// <summary>
+    /// Replace a sender's marks over a stretch with the same stretch read again through its own window: the sender at the
+    /// marks' pitch that has printed nothing is built again from its marks outside the stretch and these, in order, its runs
+    /// split as they were taken. Where no such sender is held, the marks are taken as any others. Nothing printed changes.
+    /// </summary>
+    /// <param name="again">The marks read again, each carrying the stretch.</param>
+    private void Replace(List<CwMark> again)
+    {
+        var (from, to) = again[0].Replaces!.Value;
+        var pitch = again.Select(m => m.PitchHz).Order().ElementAt(again.Count / 2);
+        var index = _senders.FindIndex(s => s.PrintedRuns == 0 && Math.Abs(s.Reference.Pitch - pitch) <= PitchToleranceHz);
+
+        if (index < 0)
+        {
+            foreach (var mark in again.OrderBy(m => m.FromSeconds))
+            {
+                Take(mark);
+            }
+
+            return;
+        }
+
+        var old = _senders[index];
+        var kept = old.Ended.SelectMany(r => r).Concat(old.Open).Where(m => m.ToSeconds <= from || m.FromSeconds >= to).ToList();
+        var rebuilt = new Sender();
+
+        foreach (var mark in kept.Concat(again).OrderBy(m => m.FromSeconds))
+        {
+            if (rebuilt.Open.Count > 0 && rebuilt.KindOfNext(mark.FromSeconds - rebuilt.Open[^1].ToSeconds) != CwGapKind.Element)
+            {
+                End(rebuilt);
+            }
+
+            rebuilt.Add(mark);
+        }
+
+        _senders[index] = rebuilt;
+        _marksStood += again.Count;
+
+        if (ReferenceEquals(_station, old))
+        {
+            _station = rebuilt;
+        }
     }
 
     private void Take(CwMark mark)

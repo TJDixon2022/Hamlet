@@ -284,6 +284,9 @@ public sealed class CwEnvelopeDetector
     private Bin? _laneBin;
     private long _laneScan;
     private long _laneSpan = -1;
+
+    // The window's level between marks, hop by hop, for the station's key-up level (work instruction 553, task 2).
+    private readonly Queue<double> _laneGapLevels = new();
     private int _laneId = -1;
     private int _laneCount;
     private long _laneFromHop;
@@ -306,6 +309,78 @@ public sealed class CwEnvelopeDetector
     /// <summary>The sender's own window as last tuned, open or not: for the tests' report (work instruction 529).</summary>
     internal CwSenderLane OwnWindowLane => _lane;
 
+    /// <summary>
+    /// Each hop the sender's own window is open: the hop's time, the window's level, the sender's key-down level and dit, and the
+    /// window's delay. Null, and nothing kept, unless a test sets it (work instruction 553, task 1).
+    /// </summary>
+    internal List<(double Seconds, double LaneDb, double SenderDb, double DitSeconds, double DelaySeconds)>? LaneTrace { get; set; }
+
+    /// <summary>
+    /// Whether marks inside a standing station's own window are read by level (work instruction 553, task 2, HM-DEC-257); on.
+    /// Off, they are stretches over half the sender's amplitude put through the per-hop tests, as before, for the tests' before.
+    /// </summary>
+    internal bool LaneByLevel { get; set; } = false;
+
+    /// <summary>
+    /// Whether a station's window opens on the sender waiting for its first pick, and reads its audio again from as far back as
+    /// the detector holds, the marks found replacing the grid's for that stretch before any of it prints (work instruction 553,
+    /// task 2); on. Off, the window opens on the printed sender and reads two seconds back, as before.
+    /// </summary>
+    internal bool ColdReRead { get; set; } = false;
+
+    /// <summary>Whether the window opens on the sender waiting for its first pick (work instruction 553, task 3); for the measurements.</summary>
+    internal bool OpenWhileWaiting { get; set; } = false;
+
+    /// <summary>
+    /// How much raw audio the detector holds, in seconds: eight. A station is picked a word gap after it qualifies, and W1AW, read
+    /// from its first second, qualified about four seconds after its first mark; eight holds that twice over.
+    /// </summary>
+    internal const double ColdSeconds = 8;
+
+    // How much of the raw audio every reader but the re-read may look at: two seconds, as before; the whole eight with the
+    // re-read on, which is the only reader that needs them.
+    private int RawHeld => ColdReRead ? _raw.Length : 2 * SampleRate;
+
+    // Where the stretch the window read again begins: grid marks at the window's pitch ending after it are the window's.
+    private double _laneReplacedFromSeconds;
+
+    /// <summary>
+    /// Where a mark ends: the window falls past this share of the contrast under the key-down level, 0.6 (work instruction 553).
+    /// Measured on the window's own view, a real gap crosses 0.64 of the contrast or more nineteen times in twenty, and every
+    /// synthetic gap 0.65; the strong catch's 72 flutter dips never reach 0.77, and half of all dips stay under 0.30. Under the
+    /// gaps' fifth percentile, so a real gap ends a mark, with the midpoint below it.
+    /// </summary>
+    internal const double DownShare = 0.6;
+
+    /// <summary>
+    /// Where a mark begins: the window rises past this share of the contrast under the key-down level, 0.4 (work instruction
+    /// 553). The midpoint less the same tenth of the contrast, so a level wobbling about the midpoint by the window's own ripple
+    /// - under half a decibel on a strong signal, a tenth of an 8 dB contrast's 0.8 dB - neither starts nor ends a mark.
+    /// </summary>
+    internal const double UpShare = 0.4;
+
+    /// <summary>
+    /// The least contrast a station's window must show to be read by level: 6 dB, a key-up at half the key-down's amplitude.
+    /// Under it the stretch over half the sender's amplitude is still the mark, through the per-hop tests, as before.
+    /// </summary>
+    internal const double MinLevelContrastDb = 6;
+
+    /// <summary>How many hops of the window between marks the key-up level is taken over: four hundred, two seconds.</summary>
+    internal const int GapLevelHops = 400;
+
+    /// <summary>The station's key-up level on its own window: the median of its level between marks, or null before any.</summary>
+    private double? KeyUpDb()
+    {
+        if (_laneGapLevels.Count < 10)
+        {
+            return null;
+        }
+
+        var sorted = _laneGapLevels.Order().ToList();
+
+        return sorted[sorted.Count / 2];
+    }
+
     /// <summary>Creates a detector for one sample rate.</summary>
     /// <param name="sampleRate">Samples per second of the audio it will be fed.</param>
     public CwEnvelopeDetector(int sampleRate)
@@ -322,7 +397,7 @@ public sealed class CwEnvelopeDetector
         EnvelopeWindowSamples = 2 * HopSamples;
 
         _ring = new float[EnvelopeWindowSamples];
-        _raw = new float[2 * sampleRate];
+        _raw = new float[(int)(ColdSeconds * sampleRate)];
         _lane = new CwSenderLane(SampleRate);
         _window = new float[EnvelopeWindowSamples];
         _hann = new float[EnvelopeWindowSamples];
@@ -692,6 +767,11 @@ public sealed class CwEnvelopeDetector
         {
             lane.Add(hop, _lane.LevelDb, double.NaN, double.NaN, double.NaN);
             lane.Prune(hop - HistoryHops - _keyingHops);
+
+            if (LaneTrace is { } trace && _pattern.Sender(_laneId) is { } traced)
+            {
+                trace.Add((hop * HopMs / 1000, _lane.LevelDb, traced.LevelDb, traced.DitSeconds, _lane.DelaySeconds));
+            }
         }
 
         // **THE SHAPE IS FOUND WHEREVER IT APPEARS; THE WATCHED BIN RETIRES** (work instruction 515,
@@ -725,7 +805,7 @@ public sealed class CwEnvelopeDetector
 
         _readingShape = chosen?.Shape.Score ?? double.NaN;
 
-        FollowSender(chosen, hop);
+        FollowSender(chosen, standing, hop);
 
         foreach (var s in standing)
         {
@@ -851,7 +931,7 @@ public sealed class CwEnvelopeDetector
     /// mark, so it follows a sender whose pitch or speed moves as unit 524 follows one on its own bin. Before any sender
     /// stands nothing here runs, and the per-bin path finds marks exactly as before.
     /// </remarks>
-    private void FollowSender(CwPatternGate.StandingSequence? chosen, long hop)
+    private void FollowSender(CwPatternGate.StandingSequence? chosen, IReadOnlyList<CwPatternGate.StandingSequence> standing, long hop)
     {
         if (!OwnWindow)
         {
@@ -865,6 +945,14 @@ public sealed class CwEnvelopeDetector
         // and on nothing it has not. Noise never prints, so noise is read as before.
         var printed = PrintedPitch?.Invoke() ?? double.NaN;
         var id = chosen is not null && double.IsFinite(printed) && Math.Abs(chosen.PitchHz - printed) <= BinSpacingHz ? chosen.Id : _laneId;
+
+        // **AND ON THE SENDER WAITING FOR ITS FIRST PICK** (work instruction 553, task 2): the reader has taken it as a sender and
+        // will print it a word gap from now, so its window opens now and reads its opening again before any of it prints.
+        if (OpenWhileWaiting && !double.IsFinite(printed) && WaitingPitch?.Invoke() is { } waiting && double.IsFinite(waiting)
+            && standing.FirstOrDefault(s => Math.Abs(s.PitchHz - waiting) <= BinSpacingHz) is { } waits)
+        {
+            id = waits.Id;
+        }
 
         if (id < 0 || _pattern.Sender(id) is not { } sender || !(sender.DitSeconds > 0))
         {
@@ -908,8 +996,10 @@ public sealed class CwEnvelopeDetector
         _laneRiseHops = Math.Max(1, (int)Math.Ceiling(_lane.RiseSeconds * 1000 / HopMs));
         _laneEdgeHops = Math.Max(EdgeHops, (2 * _laneRiseHops) + 1);
 
-        var lane = new Bin(pitchHz, SampleRate, HistoryHops + (2 * _keyingHops), _keyingHops);
-        var from = Math.Max(0, _samplesSeen - _raw.Length);
+        // Two seconds back, as before; and with the cold re-read, as far back as the detector holds (work instruction 553).
+        var back = ColdReRead ? _raw.Length : 2 * SampleRate;
+        var lane = new Bin(pitchHz, SampleRate, Math.Max(HistoryHops, (int)(back / HopSamples)) + (2 * _keyingHops), _keyingHops);
+        var from = Math.Max(0, _samplesSeen - back);
 
         for (var n = from; n < _samplesSeen; n++)
         {
@@ -925,8 +1015,108 @@ public sealed class CwEnvelopeDetector
         // one ending after the window opened is called from it.
         _laneScan = Math.Max(0, hop - (long)Math.Round(KeyingSeconds * 1000 / HopMs));
         _laneSpan = -1;
+
+        // **THE KEY-UP LEVEL IS SEEDED FROM THE AUDIO JUST READ** (work instruction 553): the quieter half of the backfill, which is
+        // a keyed station's gaps, until the window has seen gaps of its own.
+        _laneGapLevels.Clear();
+
+        var backfill = Enumerable.Range(0, (int)Math.Max(0, hop - _laneScan + 1)).Select(k => lane.Level(_laneScan + k)).Where(double.IsFinite).Order().ToList();
+
+        foreach (var l in backfill.Take(backfill.Count / 2))
+        {
+            _laneGapLevels.Enqueue(l);
+        }
+
         _laneBin = lane;
+        _laneReplacedFromSeconds = _laneFromSeconds;
+
+        if (ColdReRead)
+        {
+            ReadAgain(hop, from);
+        }
     }
+
+    /// <summary>
+    /// **THE COLD START: THE OPENING READ AGAIN THROUGH THE STATION'S OWN WINDOW** (work instruction 553, task 2, HM-DEC-257).
+    /// The audio from as far back as the detector holds is read by level through the window just opened, and the marks found
+    /// go to the reader marked as replacing that stretch: before the station has a gap level the grid misses whole dahs, and W1AW
+    /// read from its first second printed `E NE II AEED` for `PE II AND`. The reader replaces only a sender that has printed
+    /// nothing; nothing already printed changes.
+    /// </summary>
+    /// <param name="hop">The hop the window opened at.</param>
+    /// <param name="fromSample">The first sample of the backfill.</param>
+    private void ReadAgain(long hop, long fromSample)
+    {
+        var lane = _laneBin!;
+        var startHop = (fromSample / HopSamples) + _laneEdgeHops;
+        var last = hop - _laneEdgeHops;
+
+        if (_pattern.Sender(_laneId) is not { } sender || !double.IsFinite(sender.LevelDb) || last <= startHop)
+        {
+            return;
+        }
+
+        // The key-up level over the whole stretch: the quieter half of it, which is the station's gaps and the band before it.
+        var levels = Enumerable.Range(0, (int)(last - startHop + 1)).Select(k => lane.Level(startHop + k)).Where(double.IsFinite).Order().ToList();
+
+        if (levels.Count < 10)
+        {
+            return;
+        }
+
+        _laneGapLevels.Clear();
+
+        foreach (var l in levels.Take(levels.Count / 2).TakeLast(GapLevelHops))
+        {
+            _laneGapLevels.Enqueue(l);
+        }
+
+        if (KeyUpDb() is not { } up || sender.LevelDb - up < MinLevelContrastDb)
+        {
+            return;
+        }
+
+        var contrast = sender.LevelDb - up;
+        var upLine = sender.LevelDb - (UpShare * contrast);
+        var downLine = sender.LevelDb - (DownShare * contrast);
+        var found = new List<CwMark>();
+        var span = -1L;
+        var nowSeconds = _samplesSeen / (double)SampleRate;
+
+        for (var h = startHop; h <= last; h++)
+        {
+            var level = lane.Level(h);
+
+            if (span < 0 && level >= upLine)
+            {
+                span = h;
+            }
+            else if (span >= 0 && level < downLine)
+            {
+                OfferLaneSpan(span, h - 1, hop, nowSeconds, byLevel: true, into: found);
+                span = -1;
+            }
+        }
+
+        // The live scan carries on where this left off, a mark under way included.
+        _laneScan = last + 1;
+        _laneSpan = span;
+
+        if (found.Count == 0)
+        {
+            return;
+        }
+
+        var stretch = (nowSeconds - ((hop - startHop) * HopMs / 1000), _laneFromSeconds);
+
+        _laneReplacedFromSeconds = stretch.Item1;
+
+        foreach (var m in found)
+        {
+            _marks.Add(m with { Sequence = ++_markSequence, Stood = true, Keyed = true, Replaces = stretch });
+        }
+    }
+
 
     /// <summary>
     /// The sender's pitch, measured on its own samples (work instruction 522's centroid): over each of its last four marks
@@ -961,7 +1151,7 @@ public sealed class CwEnvelopeDetector
 
     /// <summary>Whether a grid mark sits where the sender's own window now calls marks: within two bins of it, ending after it opened.</summary>
     private bool AtOwnWindow(double pitchHz, double toSeconds)
-        => _laneBin is not null && Math.Abs(pitchHz - _lane.PitchHz) <= 2 * BinSpacingHz && toSeconds > _laneFromSeconds;
+        => _laneBin is not null && Math.Abs(pitchHz - _lane.PitchHz) <= 2 * BinSpacingHz && toSeconds > _laneReplacedFromSeconds;
 
     /// <summary>Half amplitude, in dB of power: where a key's edge crosses on an envelope that rises and falls about it.</summary>
     private static readonly double HalfAmplitudeDb = 20 * Math.Log10(0.5);
@@ -997,9 +1187,58 @@ public sealed class CwEnvelopeDetector
         var line = sender.LevelDb + HalfAmplitudeDb - FlatToleranceDb;
         var last = hop - _laneEdgeHops;
 
+        // **INSIDE A STANDING STATION'S OWN WINDOW A MARK IS READ BY LEVEL** (work instruction 553, task 2, HM-DEC-257): up where
+        // the window rises past UpShare of the contrast under the key-down level, down where it falls past DownShare, the
+        // key-up level the median of the window between marks.
+        if (LaneByLevel && KeyUpDb() is { } up && sender.LevelDb - up >= MinLevelContrastDb)
+        {
+            var contrast = sender.LevelDb - up;
+            var upLine = sender.LevelDb - (UpShare * contrast);
+            var downLine = sender.LevelDb - (DownShare * contrast);
+
+            for (var h = _laneScan; h <= last; h++)
+            {
+                var level = lane.Level(h);
+
+                if (_laneSpan < 0 && level >= upLine)
+                {
+                    _laneSpan = h;
+                }
+                else if (_laneSpan >= 0 && level < downLine)
+                {
+                    OfferLaneSpan(_laneSpan, h - 1, hop, nowSeconds, byLevel: true);
+                    _laneSpan = -1;
+                }
+
+                if (_laneSpan < 0 && double.IsFinite(level) && level < downLine)
+                {
+                    _laneGapLevels.Enqueue(level);
+
+                    while (_laneGapLevels.Count > GapLevelHops)
+                    {
+                        _laneGapLevels.Dequeue();
+                    }
+                }
+            }
+
+            _laneScan = Math.Max(_laneScan, last + 1);
+            return;
+        }
+
         for (var h = _laneScan; h <= last; h++)
         {
             var above = lane.Level(h) >= line;
+
+            // The key-up level is learned here too, until the contrast is enough to read by level (work instruction 553).
+            if (!above && _laneSpan < 0 && double.IsFinite(lane.Level(h)))
+            {
+                _laneGapLevels.Enqueue(lane.Level(h));
+
+                while (_laneGapLevels.Count > GapLevelHops)
+                {
+                    _laneGapLevels.Dequeue();
+                }
+            }
 
             if (above && _laneSpan < 0)
             {
@@ -1016,12 +1255,12 @@ public sealed class CwEnvelopeDetector
     }
 
     /// <summary>One stretch of the sender's window over half its amplitude, offered as a candidate if it passes a mark's tests.</summary>
-    private void OfferLaneSpan(long a, long b, long hop, double nowSeconds)
+    private void OfferLaneSpan(long a, long b, long hop, double nowSeconds, bool byLevel = false, List<CwMark>? into = null)
     {
         var lane = _laneBin!;
         var hopSeconds = HopMs / 1000;
 
-        if (b <= _laneFromHop)
+        if (into is null && b <= _laneFromHop)
         {
             return;
         }
@@ -1067,9 +1306,19 @@ public sealed class CwEnvelopeDetector
             return;
         }
 
+        // **A MARK READ BY LEVEL IS AT LEAST HALF THE SENDER'S DIT** (work instruction 553): Morse's shortest mark is a dit, and the
+        // window gives it back a dit long, edge to edge at half amplitude; noise between letters that rises past the line a hop
+        // or two at a time is far shorter.
+        if (byLevel && _pattern.Sender(_laneId) is { DitSeconds: > 0 } keyed && to - from < 0.5 * keyed.DitSeconds)
+        {
+            return;
+        }
+
         var own = OwnContrast(lane, start, end, level, hop, (2 * inset) + 1, (2 * inset) + (2 * EdgeHops));
 
-        if (MarksNeedEdges && !HasEdges(lane, start, end, level, EdgeDepth(own.ContrastDb), _laneEdgeHops))
+        // **A MARK READ BY LEVEL MEETS NO PER-HOP TEST** (work instruction 553): the station stood on them already, and inside its own
+        // window they only cost it marks: a weak dah's wobbly top, a fluttering dah's dip.
+        if (!byLevel && MarksNeedEdges && !HasEdges(lane, start, end, level, EdgeDepth(own.ContrastDb), _laneEdgeHops))
         {
             return;
         }
@@ -1077,21 +1326,21 @@ public sealed class CwEnvelopeDetector
         var grid = Nearest(_lane.PitchHz);
 
         // Narrowness (work instruction 541, HM-DEC-245).
-        if (MarksNeedNarrowness && CwRules.On(CwRules.Narrowness) && (!IsNarrow(grid, start, end, level, own.ContrastDb, hop) || !IsToneHere(from, to, _lane.PitchHz)))
+        if (!byLevel && MarksNeedNarrowness && CwRules.On(CwRules.Narrowness) && (!IsNarrow(grid, start, end, level, own.ContrastDb, hop) || !IsToneHere(from, to, _lane.PitchHz)))
         {
             return;
         }
 
         var shape = Shape(lane, grid, start, end, level, own, hop, _laneEdgeHops, _laneRiseHops);
 
-        if (MarksNeedShape && shape.Score < ShapeThreshold)
+        if (!byLevel && MarksNeedShape && shape.Score < ShapeThreshold)
         {
             return;
         }
 
         var pitch = _lane.PitchHz;
 
-        if (MarksNeedOneCall && AlreadyCalled(from, to, pitch, level))
+        if (into is null && MarksNeedOneCall && AlreadyCalled(from, to, pitch, level))
         {
             return;
         }
@@ -1104,6 +1353,13 @@ public sealed class CwEnvelopeDetector
             OwnContrastDb = own.ContrastDb,
             Stood = false,
         };
+
+        // Read again over the opening (work instruction 553): collected for the reader, not offered to stand again.
+        if (into is not null)
+        {
+            into.Add(candidate);
+            return;
+        }
 
         _candidates.Add(candidate);
 
@@ -1538,7 +1794,7 @@ public sealed class CwEnvelopeDetector
         var beforeTo = (start - EdgeHops + 1) * HopSamples;
         var afterFrom = (end + EdgeHops + 1) * HopSamples;
         var afterTo = Math.Min(_samplesSeen, (end + (2 * EdgeHops) + 1) * HopSamples);
-        var oldest = Math.Max(0, _samplesSeen - _raw.Length);
+        var oldest = Math.Max(0, _samplesSeen - RawHeld);
 
         if (markFrom < oldest || markTo > _samplesSeen || markTo - markFrom < 8)
         {
@@ -1693,7 +1949,7 @@ public sealed class CwEnvelopeDetector
         var from = (long)Math.Round(fromSeconds * SampleRate);
         var to = (long)Math.Round(toSeconds * SampleRate);
 
-        if (from < Math.Max(0, _samplesSeen - _raw.Length) || to > _samplesSeen || to - from < 8)
+        if (from < Math.Max(0, _samplesSeen - RawHeld) || to > _samplesSeen || to - from < 8)
         {
             return true;
         }
