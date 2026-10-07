@@ -85,6 +85,20 @@ public sealed class CwSenderGate
     internal const double ReleaseScore = 0.1;
 
     /// <summary>
+    /// How far above the printed sender a challenger must score to take the terminal at a pause: 0.16 (work instruction 550,
+    /// task 3). The median spread of a real hand's own score over a minute, measured on the owner's recordings and both station
+    /// catches (0.158; W1AW's 0.009, synthetic calls' 0.002): a challenger must beat the printed sender by more than a hand
+    /// wanders by itself.
+    /// </summary>
+    internal const double HandoverMargin = 0.16;
+
+    /// <summary>
+    /// How long a challenger must have qualified before it may take the terminal: 15 s (work instruction 550, task 3), about
+    /// one call, `CQ CQ DE K1ABC K1ABC K` at 18 WPM being 15.7 s. The author's.
+    /// </summary>
+    internal const double ChallengerStandsSeconds = 15;
+
+    /// <summary>
     /// How many of a sender's last marks its two kinds must hold over before it may print: ten, two sequences' worth (work
     /// instruction 535). Five marks stand a sequence, and overlapping clusters needed twice that before they were a hand
     /// rather than chance (work instruction 523). Over the sixteen a sequence's lengths are read over, real hands showed
@@ -417,6 +431,15 @@ public sealed class CwSenderGate
         // and the louder on a tie. Which one, when, and how it is held follows below (work instruction 520). It
         // is released as before, silent past twice its word gap, a dah and the lag in calling it (unit 500). A
         // shape of nought prints nothing.
+        // **WHEN EACH SENDER BEGAN TO QUALIFY** (work instruction 550, task 3), for the challenge below.
+        if (double.IsFinite(heardSeconds))
+        {
+            foreach (var s in _senders)
+            {
+                s.QualifiedSince = !Qualifies(s) ? double.NaN : double.IsNaN(s.QualifiedSince) ? heardSeconds : s.QualifiedSince;
+            }
+        }
+
         var qualified = _senders
             .Where(Qualifies)
             // **A SENDER SILENT PAST ITS RELEASE IS NOT A CANDIDATE** (work instruction 533, HM-DEC-237): the silence that let
@@ -442,13 +465,17 @@ public sealed class CwSenderGate
         // own word gap and a dah - a mark is seen only once it has ended, so a letter gap and the dah after it fall
         // short of this and only a gap between words passes - gives the terminal to a better-shaped sender standing
         // then. Never inside a word, and never to a worse shape.
+        // **AND ONLY TO A CLEARLY BETTER ONE** (work instruction 550, task 3): the challenger has qualified for
+        // ChallengerStandsSeconds and scores HandoverMargin above the printed sender. A printed sender that has gone silent
+        // is still released for its silence and the reply picked, its backlog printing, as before.
         if (ShapePicks
             && _station is not null
             && _station.Open.Count == 0
             && double.IsFinite(heardSeconds)
             && heardSeconds - _station.LastToSeconds > _station.WordGapSeconds + _station.LongestMarkSeconds + CallingLagSeconds
             && qualified.FirstOrDefault(q => q.Sender != _station) is { Sender: not null } better
-            && better.Score > _station.Shape.Score)
+            && better.Score >= _station.Shape.Score + HandoverMargin
+            && heardSeconds - better.Sender.QualifiedSince >= ChallengerStandsSeconds)
         {
             _station = better.Sender;
         }
@@ -876,6 +903,9 @@ public sealed class CwSenderGate
         }
 
         public int PrintedRuns { get; set; }
+
+        /// <summary>When it last began to qualify, on the gate's clock; NaN while it does not (work instruction 550, task 3).</summary>
+        public double QualifiedSince { get; set; } = double.NaN;
 
         public int Marks { get; private set; }
 

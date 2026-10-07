@@ -236,6 +236,31 @@ public sealed class TheShapeScoreTakenApartTests(ITestOutputHelper output)
                 $"qualify | junk | {g.Key} | qualified samples {g.Count()} | at 0.1 {g.Count(s => s.Shape.Score >= 0.1)} | at 0.4 {g.Count(s => s.Shape.Score >= 0.4)} | best {g.Max(s => s.Shape.Score):0.000}"));
         }
 
+        // **HOW FAR A REAL SENDER'S OWN SCORE WANDERS OVER A MINUTE** (task 3): per real source, its printed sender's score in
+        // every window of up to sixty seconds, highest less lowest; the handover margin is set from it.
+        foreach (var c in new[] { "perfect keying", "real hands", "synthetic clean" })
+        {
+            var spreads = samples.Where(s => !s.Detector && s.Printed && s.Class == c).GroupBy(s => s.Source)
+                .SelectMany(g =>
+                {
+                    var series = g.OrderBy(s => s.Seconds).ToList();
+
+                    return series.Select(first => series.Where(s => s.Seconds >= first.Seconds && s.Seconds < first.Seconds + 60).Select(s => s.Shape.Score).ToList())
+                        .Where(w => w.Count >= 2)
+                        .Select(w => w.Max() - w.Min());
+                })
+                .Order().ToList();
+
+            if (spreads.Count > 0)
+            {
+                output.WriteLine(FormattableString.Invariant(
+                    $"spread over a minute | {c} | {spreads.Count} windows | median {spreads[spreads.Count / 2]:0.000} | p90 {spreads[(int)(0.9 * (spreads.Count - 1))]:0.000} | max {spreads[^1]:0.000}"));
+            }
+        }
+
+        output.WriteLine(FormattableString.Invariant(
+            $"one call, CQ CQ DE K1ABC K1ABC K at 18 WPM: {CwSignal.DurationOf(new CwSignalRequest("CQ CQ DE K1ABC K1ABC K", WordsPerMinute: 18, LeadInSeconds: 0, TailSeconds: 0)).TotalSeconds:0.0} s"));
+
         // How many senders the gate held at once on W1AW's recording, at most: the bar's one.
         var w1aw = WavAudio.Read(TheOwnersRecordingReadsTests.Wav(W1aw));
         var (w1awPitch, w1awWidth) = TheRecordingsScoreboardTests.RadioState(W1aw);
