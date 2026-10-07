@@ -4,6 +4,56 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-254
+date: 2026-10-07
+refs: work instruction 550, HM-DEC-223, HM-DEC-224, HM-DEC-238, HM-DEC-253, tag before-shape-score, src/Hamlet.RadioEngine/Cw/CwSequenceShape.cs, src/Hamlet.RadioEngine/Cw/CwSenderGate.cs, src/Hamlet.RadioEngine/Cw/CwShapeLight.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheShapeScoreTakenApartTests.cs, tests/Hamlet.RadioEngine.Tests/Cw/ThePrintedStationKeepsTheTerminalTests.cs
+---
+
+**The shape score ranks perfect keying first.** Ordered by the owner in work instruction 550, 2026-10-07, with a follow-up the same day. **The owner:** *"I'm thinking our shape isn't good enough."* W1AW, machine keying, scored 0.59 live while a sender at 650 Hz beside it, not a station, scored 0.71, and a strong real hand scored 0.136.
+
+HEAD was tagged `before-shape-score` and pushed before any engine change. R88 was lifted for the owner's twelve recordings, the three scan catches and W1AW's `cw-2026-10-06-212015`, and no other.
+
+**Measured on four classes** (medians, the gate's senders sampled each second of audio):
+
+| term | W1AW | real hands | synthetic clean | junk |
+|---|---|---|---|---|
+| rectangle | 0.73 | 0.63 | 0.57 | 0.88 |
+| dits | 0.98 | 0.93 | 0.98 | 0.52 |
+| dahs | 0.97 | 0.96 | 0.98 | 0.73 |
+| separation | 0.94 | 0.89 | 1.00 | 1.00 |
+| consistency | 1.00 | 1.00 | 1.00 | 0.73 |
+| evidence | 1.00 | 0.92 | 1.00 | 0.93 |
+| gaps inside letters | 0.98 | 0.92 | 0.99 | 0.83 |
+| old score | 0.64 | 0.44 | 0.52 | 0.10 |
+
+**Kept: dit tightness, dah tightness, the tightness of gaps inside letters, and consistency**, CW's own terms, each ranking real keying above junk. The gaps scored are those under √3 dits, a key's gaps between the elements of a letter; pauses between letters, words and sections are not scored, which is why the old gap terms that HM-DEC-238 took out are not back.
+
+**Dropped from the score, still reported:**
+- **The rectangle ranked junk above real keying**: a randomly keyed carrier has sharp edges, and the filter and AGC round W1AW's and a hand's.
+- **Separation** (junk 1.00, hands 0.89) and **evidence** (junk 0.93, hands 0.92) did not rank. W1AW's 0.94 separation came from its 2.93 ratio through the filter.
+
+**The new score, medians (range):** W1AW 0.94 (0.83 to 0.94), synthetic clean 0.95 (0.85 to 0.95), real hands 0.76 (0.12 to 0.94), junk 0.11 (0 to 0.73). **The ranges overlap**: the carrier catch (0.68) and one short-lived sender in three minutes of loud noise (0.69) score as high as the roughest hands, the catch being a real carrier whose fading makes two lengths, the noise sender a handful of marks that happened to fall tight.
+
+**Thresholds re-set from the same measurements:**
+- **Release 0.1**, unchanged in value, now with its own reason: under every sample a real hand gave (least 0.125), at junk's median (0.106).
+- **A candidate must score 0.1**, the release line, where it had to be over nought: nothing is picked under the score it would be let go at.
+- **The gauge's green 0.4**: junk's 75th percentile (0.40), under real hands' 5th (0.46).
+- **Not moved:** a detector sequence stands where its score is over nought; the scan's positive and the light's green follow what the gate prints, not the score.
+
+**The owner's follow-up: a qualify line at 0.4, measured and not taken.**
+- Five real hands' printed senders dip under 0.4: `221502` twice to 0.35, `221530` once to 0.30, `221745` once to 0.15, the station catch `153810` five times to 0.12, and `154819` twice to 0.18.
+- Junk qualifying at 0.1 comes from the carrier catch and 12 of the 20 random-carrier seeds; at 0.4, from the carrier catch and 9 seeds.
+
+**The printed station keeps the terminal.**
+- At a pause a challenger takes the terminal only once it has **qualified for 15 s** and scores **0.16 above** the printed sender.
+- **The 0.16 is the median spread of a real hand's own score over a minute** (0.158; W1AW's 0.009, synthetic calls' 0.002).
+- **The 15 s is about one call**, `CQ CQ DE K1ABC K1ABC K` at 18 WPM taking 15.7 s. The author's.
+- A printed sender gone silent is released and the reply picked as before. The QSO handover recordings read as at HEAD.
+- **W1AW after a minute of a 650 Hz station calling beside it keeps the terminal**, reading `EPE II AND TYPE IV RADIO EMISSIONS HOWEVER, THIS NME IS`. It does so with the margin set to nought as well, and at HEAD, so that case does not prove the margin: at W1AW's pauses the 650 Hz sender, qualified at 0.95, was not a candidate, for a reason not found.
+
+**The scoreboard reads 227** after every task, every scored stretch and every hard limit as at HEAD. The unscored `cw-2026-10-03-143906` prints `ITT` more. Of the shape, light and handover tests, the four red at the tag are red, and a fifth red there, `ACleanSenderAtTheEdgeOutranksALouderFistAtTheCentre`, now passes. The scan's 122 tests pass. Nothing keys or transmits, and nothing is written to the radio.
+
+---
 id: HM-DEC-253
 date: 2026-10-07
 refs: work instruction 549, HM-DEC-252, HM-DEC-199, HM-DEC-018, src/Hamlet.RadioEngine/Capture/, src/Hamlet.RadioEngine/Cw/CwListenSampler.cs, src/Hamlet.RadioEngine/Cw/CwSenderGate.cs, src/Hamlet.App/ViewModels/MainWindowViewModel.AutoCapture.cs, src/Hamlet.App/Telemetry/AppEvents.cs, tests/Hamlet.RadioEngine.Tests/Capture/, tests/Hamlet.App.Tests/Telemetry/TheListenRowTests.cs
