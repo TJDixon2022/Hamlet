@@ -4,6 +4,41 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-253
+date: 2026-10-07
+refs: work instruction 549, HM-DEC-252, HM-DEC-199, HM-DEC-018, src/Hamlet.RadioEngine/Capture/, src/Hamlet.RadioEngine/Cw/CwListenSampler.cs, src/Hamlet.RadioEngine/Cw/CwSenderGate.cs, src/Hamlet.App/ViewModels/MainWindowViewModel.AutoCapture.cs, src/Hamlet.App/Telemetry/AppEvents.cs, tests/Hamlet.RadioEngine.Tests/Capture/, tests/Hamlet.App.Tests/Telemetry/TheListenRowTests.cs
+---
+
+**Hamlet captures for itself.** Ordered by the owner in work instruction 549, 2026-10-07. **The owner:** W1AW, a strong clear signal *"as it is every day"*, printed stray letters in bursts, and *"I think you can figure something out to allow this unattended. Perhaps auto capture on your side."*
+
+**Why.** While W1AW is on, Hamlet held 4 to 9 senders at once (2026-10-07 13:00 UTC: never under 2, mostly 4 to 7, up to 9), at other hours 0 to 2; there is one station, and a replay of a W1AW recording held one. A long capture taken at the time is how to see what live does differently. It only listens: nothing tunes, changes mode, keys or writes to the radio.
+
+**The owner's answers, recorded as he gave them:**
+- **Capture every W1AW session whole: yes**; about 260 MB a 45-minute session is fine.
+- **Disk: 10 GB at most** for automatic captures; **the oldest automatic capture goes first**; **never below 20 GB free**; **his own Record presses are never deleted**.
+- **Trouble captures, their triggers, the cooldown and the telemetry rate: the web session's to set**: four or more senders held, any audio lost, or a burst of junk; a 10-minute cooldown; a row every 10 s.
+
+**A W1AW session, whole.**
+- While Hamlet listens in CW with the dial on a frequency in `data\bands\w1aw-morse.json`, on any band, from **a minute before** a scheduled run to **two minutes after** its scheduled end (the order's figures: the ARRL's clock and Hamlet's may differ, and a bulletin that runs over is still the bulletin).
+- **On the frequency means within half the radio's filter width, or 250 Hz where the width is unread.** The order said "the tolerance the W1AW button already uses"; the button has none, it tunes exactly. Half the filter is where W1AW's tone stays inside the passband, which is whether it can be heard at all. The author's, handed back.
+- Written from the audio as it arrives, behind a queue on its own thread, in **back-to-back five-minute pieces**: a chunk straddling a boundary is split, so the next piece begins on the very next sample, and a hole in the audio clock is said on the sheet and never filled.
+- Each piece a 48 kHz 16-bit WAV with a sheet carrying the schedule entry (kind, speed word, scheduled start and end in UTC and US Central), the piece's number and sample span, and the app's own lines: frequency, band, pitch, speed, senders, the audio line and every rig field.
+- Into `captures\auto\w1aw-<date>-<time>\`. Leaving the frequency, leaving CW, stopping listening, the window closing or the next session beginning ends it, and its last sheet says which.
+- The line under the terminal header, in the hint's own cell so nothing moves: `capturing W1AW · code practice · piece 3 · 12:40`, the time how long it has run; its hover says where the files go.
+
+**Trouble, captured where it happens.** Anywhere else, listening in CW and not scanning, Hamlet's own five-minute ring, whatever Record is set to, is saved into `captures\auto\trouble-<date>-<time>-<reason>\` when:
+- **four or more senders are held for 10 seconds**: past anything an ordinary band gave that day, and longer than noise forms a sender and is forgotten;
+- **any audio is lost**: one lost 50 ms chunk a second reproduced the junk on the bench (HM-DEC-252);
+- **six or more letters of one or two elements, each printed on its own, within 10 seconds.** The order's figure was six such letters in ten seconds, and measured on text it fires on clean copy: E, T, I, A, N and M are half of English, plain English at 18 WPM prints up to 15 of them in ten seconds and a bulletin's text 19, and six in a row comes up in English and Q-code exchanges as often as in the junk. Clean text prints at most 2 such letters alone in any ten seconds at 18, 25 or 35 WPM, the only one-letter words being A and I. The owner's word was stray letters. **The narrowing to lone letters is the author's, handed back**: it does not fire on the bench junk of HM-DEC-252, which runs its letters together.
+- **Each trigger waits 10 minutes**, so a second capture holds audio the first did not. During a W1AW capture a trigger is noted on that capture's sheet instead. No trouble capture during a scan.
+
+**The telemetry.** While listening, a `cw_listen` row every 10 seconds: audio lost in all and in the ten seconds, the longest stall, the queue's peak; every sender held with its pitch, shape score, marks, **whether it has qualified** and which is printed; letters printed in the ten seconds; the light; a capture under way, by its folder's name alone (HM-DEC-018). **`decode_quality`'s counts are re-sourced from the shape side**: characters and unsure from letters printed and printed as the placeholder; `elementsResolved` is dropped for `marksStood`, a different count under a different name; the tone already was; the row says `countsFrom: shape side`. Why the old counters stood still on the shack machine was not found here.
+
+**The disk.** Automatic captures use **10 GB, 2^30 bytes to the GB**, the unit Explorer shows. Before each piece or trouble capture is written, the oldest automatic capture, by the time in its folder's name, is deleted until it fits, never the one being written. **Under 20 GB free nothing automatic is written** and the line says `auto capture paused · disk under 20 GB free`. **Only folders directly under `captures\auto` are ever deleted**, each checked by its full path; Record presses, the scan's catches and the telemetry are never touched. A session the disk refused stays stopped for that session, since a fresh capture could delete the pieces just written.
+
+The scoreboard reads 227, identical to HEAD, after every task. The gate's qualification test was moved into one method unchanged, for the row.
+
+---
 id: HM-DEC-252
 date: 2026-10-06
 refs: work instruction 548, HM-DEC-251, HM-DEC-093, R88, src/Hamlet.RadioEngine/Cw/CwLiveFeed.cs, src/Hamlet.RadioEngine/Cw/CwDecoder.cs, src/Hamlet.RadioEngine/Audio/AudioTap.cs, src/Hamlet.App/ViewModels/MainWindowViewModel.cs, src/Hamlet.App/ViewModels/CwHearingViewModel.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheLiveFeedTests.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheLiveFeedIsCountedTests.cs, tests/Hamlet.RadioEngine.Tests/Cw/ASenderHeldFromBeforeTests.cs
