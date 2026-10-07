@@ -88,6 +88,12 @@ refs: work instruction 549, HM-DEC-252, HM-DEC-199, HM-DEC-018, src/Hamlet.Radio
 
 The scoreboard reads 227, identical to HEAD, after every task. The gate's qualification test was moved into one method unchanged, for the row.
 
+**Addendum, 2026-10-07 (work instruction 551): the owner's two yeses.** The two figures this record handed back as the author's are now the owner's. Tim, 2026-10-07, answered both: *yes*.
+- **Stray letters:** a burst of junk is six or more letters of one or two elements, **each printed alone**, within 10 seconds.
+- **On W1AW's frequency:** the dial within half the radio's filter width, or 250 Hz where the width is unread.
+
+Nothing in the tree changed with the answer; the record above stands as written.
+
 ---
 id: HM-DEC-252
 date: 2026-10-06
