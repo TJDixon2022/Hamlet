@@ -4,6 +4,34 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-255
+date: 2026-10-07
+refs: work instruction 551, HM-DEC-207, HM-DEC-032, HM-DEC-253, HM-DEC-252, src/Hamlet.RadioEngine/Explore/ModeLens.cs, src/Hamlet.App/ViewModels/MainWindowViewModel.cs, src/Hamlet.App/Views/MainWindow.axaml, src/Hamlet.RadioEngine/Scan/CwCatchEar.cs, src/Hamlet.RadioEngine/Scan/CwCatchScan.cs, tests/Hamlet.RadioEngine.Tests/Explore/TheMapFollowsTheTabTests.cs, tests/Hamlet.App.Tests/ViewModels/TheMapFollowsTheTabTests.cs, tests/Hamlet.RadioEngine.Tests/Scan/TheCatchScanTests.cs
+---
+
+**The map follows the tab.** Ordered by the owner in work instruction 551, 2026-10-07. **The owner**, on the CW tab at 7.0475 MHz, W1AW's frequency: *"Why is this region purple? It is CW, right?"* The header read `Morse · yours to use` and the map painted the stretch as data, RTTY and FT4 gathering there. *"When we are on the CW tab it should reflect CW, and on the Data tab it should reflect data."*
+
+**How the map coloured a block:** each block of the band carries a family from `data\bands\us-neighborhoods.json` (or `Open` and `Phone` filled from the band's structure, `OutsideTheBand` past its edges), and the map paints it in that family's colour from `ModePalette` (HM-DEC-032). At 7.0475 the data's W1AW block is 500 Hz of Morse between RTTY row and FT4 sprint, a sliver on a 300 kHz map.
+
+**Shared is the licence's word.** A block is shared where the operator's licence lets him send both Morse and data over all of it (its ends and its middle); with his class unknown, where any class may. **On the CW tab every shared block is painted and named CW; on the Digital tab, Data; on the Voice tab, as the data says.** A block already of the tab's family keeps its own name.
+
+**The shared blocks of 40 m, for a General licensee, and what changes:**
+- **Painted CW on the CW tab** (data by the band data): RTTY row 7.040–7.04725, FT4 sprint 7.04775–7.050, PSK31 ribbons 7.070–7.074, FT8 city 7.074–7.077, JS8 keyboard corner 7.078–7.081, RTTY and data 7.081–7.100 and 7.105–7.125, the automatic stations 7.100–7.105, and the open ground 7.077–7.078.
+- **Painted Data on the Digital tab** (Morse by the band data): CW main street 7.025–7.030 and 7.050–7.070, the QRP watering hole 7.030–7.040, and W1AW 7.04725–7.04775.
+- **Never changing:** the CW fast lane 7.000–7.025, listen-only for a General (shared for an Extra, and then it changes too); everything from 7.125 up, which allows no data (Phone downtown, Picture street, Ragchew boulevard, the AM corner, Phone side); and `not ham` past both edges.
+
+**The header's word reads the same block**, so it says Morse where the map paints CW and Digital where it paints Data. Everything that decides anything (mode follow, the receiver conditions, the card's story) still reads the band data's own blocks. **The repaint writes nothing to the radio**: a round of the tabs at 7.0475 asks the radio for exactly the one mode per tab HM-DEC-207 already writes, and nothing on screen moves.
+
+**The scan's ear reads behind a queue.**
+- **The fault:** the ear ran its own CW chain inside the sound card's callback while a scan was on, which is the fault HM-DEC-252 moved the terminal's decode away from.
+- **The callback:** records the chunk for the catch's WAV and hands it to the same bounded queue (`AudioHandoff`).
+- **The chain:** reads the chunk on the ear's own thread. Whatever reads the ear back waits for it to catch up, on the scan's thread.
+- **Counted:** a dropped chunk and a hole the chain reads across, both carried on each catch's JSON (`earDroppedChunks`, `earHoles`).
+- **Measured:** with the ear made slow, two milliseconds spun before each 10 ms chunk, a scan on the fake rig caught the same positive with the same text and a whole 220,000-sample WAV, and the longest delivery stayed at 0.1 ms.
+
+**The scoreboard reads 227 as at HEAD** after every task. Nothing keys or transmits, and nothing is written to the radio.
+
+---
 id: HM-DEC-254
 date: 2026-10-07
 refs: work instruction 550, HM-DEC-223, HM-DEC-224, HM-DEC-238, HM-DEC-253, tag before-shape-score, src/Hamlet.RadioEngine/Cw/CwSequenceShape.cs, src/Hamlet.RadioEngine/Cw/CwSenderGate.cs, src/Hamlet.RadioEngine/Cw/CwShapeLight.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheShapeScoreTakenApartTests.cs, tests/Hamlet.RadioEngine.Tests/Cw/ThePrintedStationKeepsTheTerminalTests.cs

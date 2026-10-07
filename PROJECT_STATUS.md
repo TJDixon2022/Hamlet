@@ -2,12 +2,12 @@ PROTOCOL: 2
 PROJECT: Hamlet
 STATE: COMPLETED
 TASK: closing
-WORK_INSTRUCTION: 550 - the shape score ranks perfect keying first (run by hand)
+WORK_INSTRUCTION: 551 - the map follows the tab (run by hand)
 BALL: tim
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-10-07T13:55:37-04:00
-NOTE: Unit 550 done - shape score rebuilt: W1AW 0.94, hands 0.76, junk 0.11; challenger needs 15 s and 0.16; scoreboard 227
+UPDATED: 2026-10-07T14:38:43-04:00
+NOTE: Unit 551 done - the map follows the tab; the owner's two yeses on HM-DEC-253; the scan's ear behind a queue; scoreboard 227
 
 ---
 
