@@ -25,6 +25,7 @@ a fixture decodes:
            send  TheOliviaSendTests.AnOliviaCqReachesTheAir                        app
            log   TheOliviaLogsAsOliviaTests.AnOliviaContactLogsAsOlivia...         app
     CW     read  TheScoreboardGuardsCwTests, the scoreboard held to its last recorded row   engine   unit 552, HM-DEC-256
+                 and the w1aw table held to its last row                             engine   unit 554, HM-DEC-258
 
 EVERY UNIT RUNS THIS LIST BEFORE ITS FIRST CHANGE AND AFTER ITS LAST. A RED AFTER THAT WAS
 GREEN BEFORE IS A REGRESSION, and the report names it as one in section 1 and section 4.

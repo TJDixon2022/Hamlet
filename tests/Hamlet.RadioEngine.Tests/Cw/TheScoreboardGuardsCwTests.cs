@@ -97,6 +97,54 @@ public sealed partial class TheScoreboardGuardsCwTests(ITestOutputHelper output)
         Assert.Equal(new Recorded("900 task 2", 230, 0, 66, 1, 2), LastRecorded(text));
     }
 
+    /// <summary>The last row of the `w1aw` table, its unit and its score (work instruction 554, task 3).</summary>
+    internal static (string Unit, int Score) LastW1aw(string text)
+    {
+        var match = text.Split('\n').Select(l => W1awRow().Match(l.Trim())).Last(m => m.Success);
+
+        return (match.Groups[1].Value.Trim(), int.Parse(match.Groups[2].Value, CultureInfo.InvariantCulture));
+    }
+
+    /// <remarks>
+    /// **THE W1AW TABLE FALLS NOWHERE** (work instruction 554, task 3, HM-DEC-258): the four pieces of W1AW's session of
+    /// 2026-10-07, scored in their own table, hold to its last row.
+    /// </remarks>
+    [Fact]
+    public void TheW1awTableFallsNowhere()
+    {
+        var recorded = LastW1aw(File.ReadAllText(Board()));
+        var board = TheW1awTableTests.Score();
+
+        output.WriteLine($"recorded, {recorded.Unit}: w1aw score {recorded.Score}; now {board.Score}, {board.Right} of {board.OutOf} right, {board.Wrong} wrong, {board.Invented} invented");
+
+        Assert.True(board.Score >= recorded.Score, $"the w1aw score fell from {recorded.Score} to {board.Score}");
+    }
+
+    /// <remarks>The w1aw guard reads the w1aw table's last row; the units guard never reads a w1aw row.</remarks>
+    [Fact]
+    public void TheW1awRowIsWhatItsGuardReads()
+    {
+        const string text = """
+            guard: the random carrier prints at 1 of 20 seeds (5195), recorded at unit 900
+
+            | unit | date | right | wrong | invented | score | printed in silence | spaces right | what changed |
+            |---|---|---|---|---|---|---|---|---|
+            | 900 task 1 | 2026-10-07 | 250 of 288 | 18 | 2 | **230** | 0 | 66 of 87, 1 added | the last |
+
+            | unit | date | score | right | wrong | invented | spaces right | what changed |
+            |---|---|---|---|---|---|---|---|
+            | 900 baseline | 2026-10-07 | **2000** | 2050 of 2151 | 50 | 0 | 437 of 440, 20 added | before |
+            | 900 task 1 | 2026-10-07 | **2097** | 2116 of 2151 | 19 | 0 | 438 of 440, 11 added | after |
+            """;
+
+        Assert.Equal(("900 task 1", 2097), LastW1aw(text));
+        Assert.Equal(230, LastRecorded(text).Score);
+    }
+
+    // A row of the w1aw table: its unit, its date, then its score in bold.
+    [GeneratedRegex(@"^\|\s*(\d{3} (?:task \d+|baseline))\s*\|[^|]*\|\s*\*\*(\d+)\*\*")]
+    private static partial Regex W1awRow();
+
     // A unit row of the units table: its unit, then its date, then right as "N of N"; the scan table's rows carry a catch there.
     [GeneratedRegex(@"^\|\s*\d{3} task \d+\s*\|[^|]*\|\s*\d+ of \d+")]
     private static partial Regex UnitRow();

@@ -345,6 +345,7 @@ guard: the random carrier prints at 1 of 20 seeds (5195), recorded at unit 552
 | 553 task 3 | 2026-10-07 | 252 of 288 | 13 | 1 | **238** | 0 | 65 of 87, 2 added | the window opens on the sender waiting for its first pick (two keyed runs, two kinds, its own letter gaps), 0.25 to 1 s sooner on most stretches and 12 s on 221851; a mark read by level is at least half the dit the window opened on; W1AW cold `E NE II AND`, 42 of 44; the strong catch 136 of 152, the second 22 of 35 (25 at HEAD) |
 | 554 task 1 | 2026-10-07 | 252 of 288 | 13 | 1 | **238** | 0 | 65 of 87, 2 added | three one-mark letters in a row are dropped only where they do not lie inside a word, a letter of two marks or more just before and after with no word gap between: DETECT, DETERMINED, KILOMETERS, ATTEMPT and BETTER LETTER read whole at 30 WPM, five lone E and T still print nothing; the random carrier prints at seed 5195 only, its text longer |
 | 554 task 2 | 2026-10-07 | 252 of 288 | 14 | 0 | **238** | 0 | 65 of 87, 2 added | a mark read by level is trimmed to where it stands at its sender's level: an end comes in where two hops or more lie under half the sender's amplitude, and only where what is left stands within 3 dB of the key-down level; W1AW's 2026-10-07 replay read AND as TND because the AGC lifts a word gap's noise over the window's up line, and now reads its fast text whole (DETECT, DETERMINED, ATTEMPT, EFFECTIVE, SPECTRUM, PRETTY), 19 places differing from live where there were 74; `221745`'s invented letter becomes a wrong one; the strong catch 137 of 152 with 12 wrong (136 and 10 at HEAD), the second 22 of 35 as at HEAD |
+| 554 task 3 | 2026-10-07 | 252 of 288 | 14 | 0 | **238** | 0 | 65 of 87, 2 added | W1AW's four pieces of 2026-10-07 join as their own `w1aw` table below, 2151 letters from an offline read anchored on the live text and English, 2044 at HEAD, 2059 after task 1, 2097 after task 2; the guard holds it; nothing that reads changed |
 
 ## Scans (work instruction 544, HM-DEC-248)
 
@@ -361,3 +362,79 @@ R88 is lifted for the scan catches work instruction 544 names; three are in the 
 
 - `catch-153810-7033367`, 860 Hz: `THE MATRESS IS SOFT ES CANT FIND A SAFE SPOT WITHOUT PAIN HEE IVE NEVER HAD BACK PAIN SO THIS THURSDAY HAVE ROUTINE X EEE KK UW ESGG TO ASK FOR XRAY TO SEE WHAT I TWINTED HEE<BT> I REMEMBER AT AGE`
 - `catch-154819-7050903`, 470 Hz: `KS AND BTW, I AGGREIRIATE YOUR NICE KEYIE R`
+
+## W1AW, the session of 2026-10-07 (work instruction 554, HM-DEC-258)
+
+R88 is lifted for the four pieces of W1AW's 20:00 UTC fast code practice of 2026-10-07, captured automatically
+(`tests\fixtures\cw\captured\w1aw-2026-10-07\piece-01` to `piece-04`, five minutes each, 19:59 to 20:18 UTC): the
+preamble at 14 WPM, the 35 WPM text and the 30 WPM text. `TheW1awTableTests.TheW1awTable` reads each piece cold through
+the live path, as the twelve are read, and scores it stretch by stretch. A letter belongs to the stretch its last mark
+ends in. **Invented** is a letter whose marks overlap none of the offline read's, at any pitch, since no other station keyed
+through the session. The table is its own, with its own total, because at two thousand letters it would swamp the twelve.
+**The guard holds it**: `TheScoreboardGuardsCwTests.TheW1awTableFallsNowhere` fails if its score falls below the last row
+here.
+
+**The reference** is the offline read of each piece, `TheW1awTableTests.EachPieceReadOffline`. The read is non-causal: an
+envelope at the sheet's pitch, cut at half the key-down level of each ten seconds, and a mark kept only where its top
+reaches within 3 dB of it. The AGC lifts the noise in a word gap over the old midpoint cut. Marks and gaps are classed
+against the forty marks around each one. The reference is anchored on the live text (`TheOfflineReadAgainstLive` sets the
+two side by side) and on English where either stumbled. A stretch is **high** where the offline read and the live text agree
+on every word, and **medium** where any word differed or was put to English. Left out, unscored: piece 1's first QST; the
+west coast station's call in piece 2, a run of dahs after K that neither read can part; the `E` and the `TEA` sent between
+`<AS>` and `<BT>`, which the reads do not agree on; and the Y the boundary cuts between pieces 3 and 4. 43 stretches, 18
+high and 25 medium, 2151 letters, all totalled.
+
+| unit | date | score | right | wrong | invented | spaces right | what changed |
+|---|---|---|---|---|---|---|---|
+| 554 baseline | 2026-10-07 | **2044** | 2081 of 2151 | 37 | 0 | 437 of 440, 20 added | HEAD before the unit (`f4bd0d96`) |
+| 554 task 1 | 2026-10-07 | **2059** | 2096 of 2151 | 37 | 0 | 437 of 440, 20 added | E and T inside a word are not noise |
+| 554 task 2 | 2026-10-07 | **2097** | 2116 of 2151 | 19 | 0 | 438 of 440, 11 added | a mark read by level stands at its sender's level |
+| 554 task 3 | 2026-10-07 | **2097** | 2116 of 2151 | 19 | 0 | 438 of 440, 11 added | the table and its guard; nothing that reads changed |
+
+### W1AW stretches at unit 554 task 3
+
+| piece | stretch | confidence | reference | printed | right | spaces right | missing | added | wrong | invented |
+|---|---|---|---|---|---|---|---|---|---|---|
+| `piece-01` | 64.5-103.7 s | medium | `QST QST DE W1AW W1AW W1AW QST QST QST DE W1AW W1AW` | `QST QST DE W1AW W1AW W1AW QST QST QST DE W1AW W1AW` | 39 of 39 | 11 of 11 | 0 | 0 | 0 | 0 |
+| `piece-01` | 103.7-150.6 s | medium | `W1AW QST QST QST DE W1AW W1AW W1AW THE COMPLETE W1AW SCHEDULE` | `W1AW QST QST QST DE W1AW W1AW W1AW THE COMPL W1AW SCHEDULE` | 47 of 50 | 11 of 11 | 0 | 0 | 0 | 0 |
+| `piece-01` | 150.6-198.1 s | medium | `APPEARS IN THE SEPTEMBER 2026 ISSUE OF QST ON PAGE 28. PRACTICE AT` | `APPEARS IN THE SEPTEMBER 2026 ISSUE OF QST ON PAGE 28. PRACTICE AT` | 54 of 54 | 12 of 12 | 0 | 0 | 0 | 0 |
+| `piece-01` | 198.1-240.3 s | medium | `35 30 25 20 15 13 AND 10 WPM FOLLOWS. THE NEXT` | `35 30 25 20 15 13 AND 10 WPM FOLLOWS. THE NEXT` | 35 of 35 | 11 of 11 | 0 | 0 | 0 | 0 |
+| `piece-01` | 240.4-279.9 s | high | `QUALIFYING RUNS SENT BY W1AW WILL BE ON OCTOBER 5 AT 4` | `QUALIFYING RUNS SENT BY W1AW WILL BE ON OCTOBER 5 AT 4` | 43 of 43 | 11 of 11 | 0 | 0 | 0 | 0 |
+| `piece-01` | 279.9-299.9 s | medium | `PM EDT, OCTOBER 7 AT 7 PM ED` | `PM EDT, OCTOBER 7 AT 7 PM ED` | 21 of 21 | 7 of 7 | 0 | 0 | 0 | 0 |
+| `piece-02` | 0-36 s | medium | `T, AND OCTOBER 8 AT 10 PM EDT. WEST COAST STATION` | `T, AT IOCTOBER 8 AT 10 PM EDT. WEST COAST STATION` | 37 of 39 | 9 of 10 | 1 | 1 | 2 | 0 |
+| `piece-02` | 41-95.2 s | high | `WILL TRANSMIT THE OFFICIAL ARRL QUALIFYING RUN ON THURSDAY, OCTOBER 29 AT` | `WILL TRANSMIT THE OFFICIAL ARRL QUALIFYING RUN ON THURSDAY, OCTOBER 29 AT` | 62 of 62 | 11 of 11 | 0 | 0 | 0 | 0 |
+| `piece-02` | 95.2-144.6 s | high | `9 PM PDT, OR OCTOBER 30 AT 0400Z, ON 3581.5. THE SPEEDS` | `9 PM PDT, OR OCTOBER 30 AT 0400Z, ON 3581.5. THE SPEEDS` | 44 of 44 | 11 of 11 | 0 | 0 | 0 | 0 |
+| `piece-02` | 144.7-188.1 s | medium | `WILL RUN FROM 10 TO 35 WPM. <AR> TEXT IS FROM OCTOBER` | `WILL RUN FROM 10 TO 35 WPM. <AR> TEXT IS FROM OCTOBER` | 39 of 39 | 11 of 11 | 0 | 0 | 0 | 0 |
+| `piece-02` | 188.1-226.7 s | high | `2024 QST PAGE 51 35 WPM TEXT FOLLOWS <AR> <BT> QST DE` | `2024 QST PAGE 51 35 WPM TEXT FOLLOWS <AR> <BT> QST DE` | 36 of 36 | 11 of 11 | 0 | 0 | 0 | 0 |
+| `piece-02` | 226.7-236.9 s | high | `W1AW <AS>` | `W1AW <AS>` | 5 of 5 | 1 of 1 | 0 | 0 | 0 | 0 |
+| `piece-02` | 237.6-251.1 s | medium | `<BT> NOW 35 WPM <BT> 8 FEET LONG AND AT LEAST 30` | `<BT> NOW 35 WPM <BT> 8 F LONG AND AT LEAST 30` | 28 of 31 | 11 of 11 | 0 | 0 | 0 | 0 |
+| `piece-02` | 251.1-267.5 s | medium | `INCHES DEEP. THEN LAY THE GROUND ROD AT THE BOTTOM OF THE` | `INCHES DEEP. THEN LAY T IE GROUND ROD AT THE BOTTOM OF THE` | 45 of 46 | 11 of 11 | 0 | 1 | 1 | 0 |
+| `piece-02` | 267.5-287.6 s | high | `TRENCH AND MAKE YOUR CONNECTION USING A CRIMP OR WELDED NOT SOLDERED` | `TRENCH AND MAKE YOUR CONNECTION USING A CRIMP OR WELDED NOT SOLDERED` | 57 of 57 | 11 of 11 | 0 | 0 | 0 | 0 |
+| `piece-02` | 287.7-299.9 s | medium | `CONNECTOR. PACK THE BOTTOM OF THE TRENC` | `CONNECTOR. PACK THE BOTTOM OF THE TRENC` | 33 of 33 | 6 of 6 | 0 | 0 | 0 | 0 |
+| `piece-03` | -0.1-21.9 s | medium | `H WITH GROUND ENHANCEMENT MATERIAL GEM BEFORE BURYING THE GROUND ROD. YOU` | `S WITH GROUND ENHANCEMENT MATERIAL GEM BEFORE BURYING THE GROUND ROD. YOU` | 61 of 62 | 11 of 11 | 0 | 0 | 1 | 0 |
+| `piece-03` | 22-41.8 s | medium | `CAN GET GEM FROM AN ELECTRICAL SUPPLY HOUSE. ATTACH THE GROUND TO` | `CAN GET GEM FROM AN ELECTRICAL SUPPLY HOUSE. ATTAC I THE GROUND TO` | 53 of 54 | 11 of 11 | 0 | 1 | 1 | 0 |
+| `piece-03` | 41.8-58.1 s | high | `THE ANTENNA S RADIAL PLATE AND BOND CONNECT IT TO YOUR MAIN` | `THE ANTENNA S RADIAL PLATE AND BOND CONNECT IT TO YOUR MAIN` | 48 of 48 | 11 of 11 | 0 | 0 | 0 | 0 |
+| `piece-03` | 58.1-79.8 s | high | `STATION GROUND ROD. THIS BONDING SHOULD ALSO INCLUDE THE HOME S ELECTRIC` | `STATION GROUND ROD. THIS BONDING SHOULD ALSO INCLUDE THE HOME S ELECTRIC` | 61 of 61 | 11 of 11 | 0 | 0 | 0 | 0 |
+| `piece-03` | 79.8-112.6 s | high | `UTILITY GROUND ROD. MICROWAVELENGTHS THE LAST THREE MICROWAVELENGTHS COLUMNS DESCRIBED MICROWAVE TRANSVERTERS` | `UTILITY GROUND ROD. MICROWAVELENGTHS THE LAST THREE MICROWAVELENGTI I COLUMNS DESCRIBED MICROWAVE TRANSVERTERS` | 96 of 98 | 11 of 11 | 0 | 1 | 2 | 0 |
+| `piece-03` | 112.7-138.4 s | high | `THE BASIC TRANSVERTER, THE LOCAL OSCILLATOR, AND TESTING AND TROUBLESHOOTING. I HOPE` | `THE BASIC TRANSVERTER, THE LOCAL OSCILLATOR, AND TESTING AND TROUBLESHOOTING. I HOPE` | 73 of 73 | 11 of 11 | 0 | 0 | 0 | 0 |
+| `piece-03` | 138.4-157.5 s | medium | `THAT YOU HAVE BEEN INSPIRED TO ATTEMPT A TRANSVERTER. AT SOME POINT,` | `THAT YOU HAVE BEEN INSPIR D TO ATTEMPT A TRANSVERTER. AT SOME POINT,` | 56 of 57 | 11 of 11 | 0 | 0 | 0 | 0 |
+| `piece-03` | 157.5-177.3 s | high | `YOU WILL WANT TO VERIFY ITS PERFORMANCE. AFTER BENCH DASH TESTING A` | `YOU WILL WANT TO VERIFY ITS PERFORMANCE. AFTER BENCH DASH TESTING A` | 56 of 56 | 11 of 11 | 0 | 0 | 0 | 0 |
+| `piece-03` | 177.3-194.3 s | high | `TRANSVERTER, IT S TIME TO MAKE SOME CONTACTS. THE FIRST ONE IS` | `TRANSVERTER, IT S TIME TO MAKE SOME CONTACTS. THE FIRST ONE IS` | 51 of 51 | 11 of 11 | 0 | 0 | 0 | 0 |
+| `piece-03` | 194.4-219.4 s | high | `USUALLY ACROSS THE BACKYARD, WITH VERY LOUD SIGNALS, WHICH CAN BE MISLEADING.` | `USUALLY ACROSS THE BACKYARD, WITH VERY LOUD SIGNALS, WHICH CAN BE MISLEADING.` | 66 of 66 | 11 of 11 | 0 | 0 | 0 | 0 |
+| `piece-03` | 219.4-236.3 s | medium | `INCREASE THE DISTANCE TO DOWN THE ROAD, THEN A FEW MILES, AND` | `INTNR TSE THE DISTANCE TO DOWN THE ROAD, THEN A FEW MILES, AND` | 46 of 50 | 11 of 11 | 0 | 1 | 4 | 0 |
+| `piece-03` | 236.3-252.5 s | medium | `FINALLY, SOME REAL DX AT TENS OR <BT> END OF 35WPM TEXT` | `FINALLY, SOME REAL DX A NS OR <BT> END OF 35WPM TEXT` | 38 of 41 | 11 of 11 | 0 | 0 | 0 | 0 |
+| `piece-03` | 252.5-258 s | high | `<BT> QST DE W1AW <AS>` | `<BT> QST DE W1AW <AS>` | 11 of 11 | 4 of 4 | 0 | 0 | 0 | 0 |
+| `piece-03` | 261.4-283.4 s | medium | `<BT> NOW 30 WPM <BT> HUNDREDS OF KILOMETERS. IF YOU CAN OPERATE` | `<BT> NOW 30 WPM <BT> HUNDREDS OF KILOMETEA S. IF YOU CAN OPERATE` | 45 of 46 | 11 of 11 | 0 | 1 | 1 | 0 |
+| `piece-03` | 283.4-299.9 s | high | `NEXT TO ANOTHER STATION, PERHAPS AT A ROVER SITE,` | `NEXT TO ANOTHER STATION, PERHAPS AT A ROVER SITE,` | 41 of 41 | 8 of 8 | 0 | 0 | 0 | 0 |
+| `piece-04` | 1.7-23.7 s | high | `CAN COMPARE SIGNALS. THE NORTH EAST WEAK SIGNAL GROUP AND THE SAN` | `CAN COMPARE SIGNALS. THE NORTH EAST WEAK SIGNAL GROUP AND THE SAN` | 54 of 54 | 11 of 11 | 0 | 0 | 0 | 0 |
+| `piece-04` | 23.7-48.5 s | medium | `DIEGO MIKROWAVE GROUP GET TOGETHER TO COMPARE AND MEASURE STATIONS. IT IS` | `DIEGO MIK ROWAVE GROUP G OGETHER TO COMPARE AND MEASURE STATIONS. IT IS` | 59 of 62 | 11 of 11 | 0 | 1 | 0 | 0 |
+| `piece-04` | 48.5-76.4 s | medium | `A CHANCE TO COMPARE MINIMUM DISCERNABLE SIGNAL AND TRANSMIT EFFECTIVE RADIATED POWER` | `A CHANCE TO COMPARE MINIMUM DISCERNABLE SIGNAL AND TRANSMIT EFFECTIVE RADIATED POWER` | 73 of 73 | 11 of 11 | 0 | 0 | 0 | 0 |
+| `piece-04` | 76.4-97 s | medium | `ERP TESTS ON 10 GHZ AND HIGHER BANDS. THESE TESTS REQUIRE SOME` | `ERP TESTS ON 10 GHZ AND I EGHER BANDS ■ THES STS REQUIRE SOME` | 45 of 51 | 11 of 11 | 0 | 2 | 3 | 0 |
+| `piece-04` | 97-120.8 s | high | `DEDICATED EQUIPMENT THAT MOST MICROWAVERS DON T HAVE. SO, WHAT CAN BE` | `DEDICATED EQUIPMENT THAT MOST MICROWAVERS DON T HAVE. SO, WHAT CAN BE` | 58 of 58 | 11 of 11 | 0 | 0 | 0 | 0 |
+| `piece-04` | 120.9-148.5 s | medium | `DONE WITH SIMPLE EQUIPMENT AT A LOW COST? VERIFYING PERFORMANCE RELATIVE TRANSMIT` | `DONE WITH SIMPLE EQUIPMENT AT A LMWCOST? VERIFYING PERFORMANCE RELATIVE TRANSMIT` | 69 of 70 | 10 of 11 | 1 | 0 | 1 | 0 |
+| `piece-04` | 148.6-174.2 s | medium | `ERP IS PRETTY STRAIGHTFORWARD. DETECT THE RADIATED SIGNAL WITH A SECOND ANTENNA` | `ERP IS PRETTY STRAIGHTFORWARD. DETECT THE RADIATED SIGNAL WITH A SECOND ANTENNA` | 68 of 68 | 11 of 11 | 0 | 0 | 0 | 0 |
+| `piece-04` | 174.2-196.3 s | high | `AT A REASONABLE DISTANCE USING A POWER INDICATOR OR THE TINYSA ULTRA` | `AT A REASONABLE DISTANCE USING A POWER INDICATOR OR THE TINYSA ULTRA` | 57 of 57 | 11 of 11 | 0 | 0 | 0 | 0 |
+| `piece-04` | 196.3-227.5 s | medium | `SPECTRUM ANALYZER AND ADJUST FOR THE MAXIMUM. AT MICROWAVE FREQUENCIES, PERFORMANCE IS` | `SPECTRUM ANALYZER AND ADJUST FOR THE MAXIMUM. AT MICROWAVE FREQUENCIES, PERFORMANCE IS` | 75 of 75 | 11 of 11 | 0 | 0 | 0 | 0 |
+| `piece-04` | 227.5-248.3 s | medium | `DETERMINED BY THE NOISE FIGURE NF MORE THAN GAIN. MEASURING NF IS` | `DETERMINED BY THE NOISE FIGURE NF MORE THAN GAIN. MEASURING NF IS` | 54 of 54 | 11 of 11 | 0 | 0 | 0 | 0 |
+| `piece-04` | 248.3-272.3 s | medium | `DIFFICULT. THE TINYSA ULTRA CAN MEASURE NF BUT REQUIRES A CALIBRATED <BT>` | `DIFFICULT. THE TINK SA ULTRE CAN MEASURE NF BUT REQUIRES A CALIBA ATED <BT>` | 56 of 59 | 11 of 11 | 0 | 2 | 3 | 0 |
+| `piece-04` | 272.3-299.9 s | medium | `END OF 30WPM TEXT <BT> QST DE W` | `END OF 30WPM TEXT <BT> QST DE WE` | 21 of 21 | 7 of 7 | 0 | 0 | 0 | 0 |
