@@ -329,7 +329,7 @@ public sealed class CwEnvelopeDetector
     internal bool ColdReRead { get; set; } = false;
 
     /// <summary>Whether the window opens on the sender waiting for its first pick (work instruction 553, task 3); for the measurements.</summary>
-    internal bool OpenWhileWaiting { get; set; } = false;
+    internal bool OpenWhileWaiting { get; set; } = true;
 
     /// <summary>
     /// How much raw audio the detector holds, in seconds: eight. A station is picked a word gap after it qualifies, and W1AW, read
@@ -343,6 +343,9 @@ public sealed class CwEnvelopeDetector
 
     // Where the stretch the window read again begins: grid marks at the window's pitch ending after it are the window's.
     private double _laneReplacedFromSeconds;
+
+    // The sender's dit when its window opened (work instruction 553).
+    private double _laneOpenDitSeconds;
 
     /// <summary>
     /// Where a mark ends: the window falls past this share of the contrast under the key-down level, 0.6 (work instruction 553).
@@ -984,6 +987,7 @@ public sealed class CwEnvelopeDetector
     /// </summary>
     private void OpenLane(int id, int count, double pitchHz, double ditSeconds, long hop)
     {
+        _laneOpenDitSeconds = ditSeconds;
         _lane.Reset();
         _lane.Tune(pitchHz, ditSeconds);
         _laneId = id;
@@ -1306,10 +1310,12 @@ public sealed class CwEnvelopeDetector
             return;
         }
 
+        // The dit is the one the window opened on, held while it stays open: marks shorter than half the sender's dit drag its dit
+        // estimate down if they are let in, and the guard with it, and a station does not halve its speed in a few seconds.
         // **A MARK READ BY LEVEL IS AT LEAST HALF THE SENDER'S DIT** (work instruction 553): Morse's shortest mark is a dit, and the
         // window gives it back a dit long, edge to edge at half amplitude; noise between letters that rises past the line a hop
         // or two at a time is far shorter.
-        if (byLevel && _pattern.Sender(_laneId) is { DitSeconds: > 0 } keyed && to - from < 0.5 * keyed.DitSeconds)
+        if (byLevel && _laneOpenDitSeconds > 0 && to - from < 0.5 * _laneOpenDitSeconds)
         {
             return;
         }

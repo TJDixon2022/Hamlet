@@ -196,6 +196,44 @@ public sealed class TheWindowsOwnViewTests(ITestOutputHelper output)
         }
     }
 
+    /// <remarks>
+    /// **HOW LONG THE WINDOW TAKES TO OPEN** (work instruction 553, task 3): on each source, the station's first mark, and when its
+    /// window first opened, on the printed sender as before and on the sender waiting for its first pick. Asserts nothing.
+    /// </remarks>
+    [Fact]
+    public void HowLongTheWindowTakesToOpen()
+    {
+        foreach (var (c, source, audio) in Sources().Where(s => s.Class != "the strong catch"))
+        {
+            var (samples, rate, pitch, width) = audio();
+            var line = new System.Text.StringBuilder($"{c} | {source}");
+
+            foreach (var waiting in new[] { false, true })
+            {
+                using var chain = new CwChain(rate);
+                var trace = new List<(double Seconds, double LaneDb, double SenderDb, double DitSeconds, double DelaySeconds)>();
+
+                chain.Detector.OpenWhileWaiting = waiting;
+                chain.Detector.LaneTrace = trace;
+                chain.Detector.SetPassband(pitch, width);
+
+                for (var at = 0; at + (rate / 100) <= samples.Length; at += rate / 100)
+                {
+                    chain.Process(new AudioChunk(at, rate, samples.AsSpan(at, rate / 100)));
+                }
+
+                var opened = trace.Count > 0 ? trace[0].Seconds : double.NaN;
+                var first = double.IsFinite(opened)
+                    ? chain.Detector.MarksSince(0).Marks.Where(m => m.ToSeconds <= opened + 1).Select(m => m.FromSeconds).DefaultIfEmpty(double.NaN).Min()
+                    : double.NaN;
+
+                line.Append(FormattableString.Invariant($" | {(waiting ? "waiting" : "printed")}: first mark {first:0.00} s, opened {opened:0.00} s, after {opened - first:0.00} s"));
+            }
+
+            output.WriteLine(line.ToString());
+        }
+    }
+
     private static int Dahs(string letter)
         => MorseAlphabet.All.FirstOrDefault(p => p.Value == letter).Key?.Count(c => c == '-') ?? 0;
 
