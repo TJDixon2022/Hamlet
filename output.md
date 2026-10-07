@@ -1,148 +1,170 @@
 ## 1. What Claude did
 
-Development computer, project gate `PROJECT: Hamlet` checked against `PROJECT_CARD.md`, the order's five checks and `Hamlet.sln`: Hamlet confirmed. Nothing here is evidence about the radio. Branch `main`. Run by hand: `SESSION.lock` taken at 15:36:05 and released at the end, nothing written to `RUN_LEDGER.md`, nothing under `tools\arbiter\` touched, no box ticked in `PHASE_PLAN.md`. **HEAD tagged `before-level-marks` and pushed before any engine change.** Version 1.13.237 to 1.13.238. Ruling HM-DEC-257, the number the order gave. Nothing was recorded under §12.1. R88 was lifted only as the order named. Every test run was one filtered invocation; the longest was the app carry-forward line, 2.5 minutes.
+Development computer, project gate `PROJECT: Hamlet` checked against `PROJECT_CARD.md`, the order's checks and `Hamlet.sln`: Hamlet confirmed. Nothing here is evidence about the radio. Branch `main`. Run by hand: `SESSION.lock` taken at 16:25:29 through `tools\arbiter\lock.bat take` and released at the end, nothing written to `RUN_LEDGER.md`, nothing under `tools\arbiter\` touched, no box ticked in `PHASE_PLAN.md`. R88 was lifted for the owner's twelve recordings, the three scan catches, W1AW's `cw-2026-10-06-212015` and the four pieces of W1AW's session of 2026-10-07, and no other. Version 1.13.238 to **1.13.239**. Ruling **HM-DEC-258**, the number the order gave. Nothing was recorded under §12.1. Every test run was one filtered invocation, one piece set per run; the longest was the app carry-forward line, 2.5 minutes.
 
-**Task 1, the window's own view** (`49229886`):
-- **What `TheWindowsOwnViewTests` measures:** a trace of the sender's own window, hop by hop, with the sender's key-down level beside it.
-  - **Excursions:** every stretch where the window sits more than 3 dB under the key-down level, its depth as a share of the station's contrast.
-  - **Dips and gaps:** an excursion shorter than half the dit is a dip inside a mark, since Morse's shortest gap is a whole dit; anything longer is a gap.
-  - **Sources:** W1AW, the strong 860 Hz catch, the owner's scored stretches, and synthetic 25 WPM calls at 8, 10, 12 and 24 dB through the filter with the bench's AGC.
-- **Real gaps** fall 0.64 of the contrast or more nineteen times in twenty (0.36 at the 1st percentile); synthetic gaps never under 0.65.
-- **Dips** have a median of 0.30. The strong catch's 72 never pass 0.77; two weak hands' recordings (`221502`, `221851`) have dips to full depth, so no level separates the two perfectly. Section 3 has the full table.
-- **Committed off:** the commit carries the level path, the window opening on the waiting sender, and the cold re-read with the gate's replacement, all behind switches, all off. It reads exactly as HEAD.
+**Task 1, E and T inside a word are not noise** (`793d6d46`), **shipped:**
+- **Seen failing first:** `EAndTInsideAWordTests`, 30 WPM through the filter with the bench's AGC, read through the app's chain. At HEAD all five lines lost their E and T runs (section 3).
+- **The rule:** three or more one-mark letters in a row are dropped only where they do not lie inside a word. Inside a word means a letter of two marks or more just before the run and just after it, with no word gap anywhere between.
+- **Narrower than the order's wording.** The order said a run is dropped only when each of its letters is printed alone as a word. Built that way, the board read **237**, under the bar, and a clean-marks variant read 236, so neither shipped.
+- **Results:** all five lines read whole, `E T E T E` printed as five lone words still reads nothing, and the board holds at **238**.
 
-**Task 2, marks by level inside a standing station's window** (`c5efa0e1`), **shipped:**
-- **The rule:** inside the window a mark starts where the window rises past **0.4** of the contrast under the key-down level and ends where it falls past **0.6**.
-  - The key-up level is the median of the window between marks over two seconds, seeded from the quieter half of the audio the window opened on. Below 6 dB of contrast the old path runs.
-  - 0.6 sits under the gaps' fifth percentile, so a real gap ends a mark. 0.4 is the midpoint less the same tenth, wider than the window's ripple (under 0.5 dB strong, 0.8 dB on an 8 dB contrast).
-- **No per-hop test:** a mark read by level meets no flat-top, edge, narrowness or shape test, but must be at least **half the sender's dit**.
-  - Without that floor, the second station catch fell from 25 to 6 of 35. Short noise marks crossed the line, and the window retuned from 470 Hz to 516 Hz and lost the station.
-- **Before a station stands nothing changes;** a mark's times are its crossings less the window's delay, as before.
-- **The board:** 227 held; invented 2 to 0; nothing in a silence.
-- **The cold re-read was built and is not shipped.**
-  - **What it does:** an eight-second raw history; at the window's opening the stretch is read again by level and handed to the gate, which rebuilds the sender (if it has printed nothing) with those marks in place of the grid's.
-  - **Measured:** score **208**, the first recording broken (`FER TN`), two letters in a silence. W1AW gained `EPE II E ND`.
-  - **Left off:** it stays behind its switch, with the raw history past two seconds invisible to every other reader, so the board reads as without it.
+**Task 2, the 550 Hz ghost, replayed** (`9a4fc209`, `accba896`):
+- **The replay:** `TheW1awSessionReplayTests` plays the four pieces in order through the app's chain, on one audio clock, at the radio's state from their sheets.
+- **No sender at 550 or 650 Hz in replay.** W1AW stands at 600 Hz with 5772 marks (5762 on the live sheet), beside three short noise senders at 675, 700 and 800 Hz, none printed (section 3). The same holds:
+  - at the live capture's 50 ms chunks as well as 10 ms;
+  - over the whole audio band;
+  - on the 552 build and the 553 task 2 build, in a scratch worktree, as on this unit's;
+  - after twenty seconds of a 20 WPM station at 550 Hz keyed in front of the session. That sender takes its own 67 marks, is let go a minute later, and takes none of W1AW's.
+- **So the ghost is not made of the audio**, the chunk timing, the passband, the build since 552, or a sequence standing from before. No shadow rule was built, because nothing measured shows a shadow. What is left, and how to test each, is in section 4.
+- **The replay found a fault of its own, now fixed:**
+  - **The fault:** this tree's replay broke W1AW's 35 WPM text (`TND` for AND at 546.7 s, 74 places off live).
+  - **The cause:** in a word gap the radio's AGC lifts the noise to within 10 to 20 dB of the key-down level, over the window's up line. Unit 553's level read joined that noise to the next dit and made a 70 ms mark of A's 35 ms dit.
+  - **The fix:** an end of a level-read span now comes in where two hops or more lie under half the sender's amplitude. The trim is kept only where what is left stands within 3 dB of the key-down level; otherwise the span is offered as before.
+  - **Measured and not shipped:**
+    - trimming a single hop moved every mark and printed `?` and `S` inside `221502`'s silence;
+    - three hops, or the window's rise, left the strong catch at 130 of 152;
+    - skipping short runs over the line as well cost the strong catch two letters;
+    - letting the held dit go after a pause, and switching off the half-dit floor, did not change the fast text: they are not the cause.
+- **The board** holds at **238**, now 14 wrong and 0 invented where it was 13 and 1. Nothing prints in a silence.
+- `TheFastTextReadsWhole` asserts A at 546.6 s and the eight fast-text words the live text broke.
 
-**Task 3, the window opens sooner** (`3d7dc677`), **shipped:**
-- **Measured how long the window takes to open** (section 3).
-- **Where it opens now:** on the sender the reader holds qualified and **waiting for its first pick** (two keyed runs, two kinds, its own letter gaps), not only once it prints. That is the reader's own qualification, a little later than the bare first two kinds the order named.
-- **The dit floor** now uses the dit the window opened on, held while it stays open. The sender's current dit let short noise marks drag the dit down; with it the second catch fell to 6 of 35 again.
-- **The board:** **238**.
+**Task 3, seventeen minutes of W1AW join the board** (`e6a92f52`), **shipped:**
+- **The offline read:** `TheW1awTableTests.EachPieceReadOffline` reads each piece non-causally.
+  - An envelope at the sheet's pitch, cut at half the key-down level of each ten seconds, with a mark kept only where its top reaches within 3 dB of it. The AGC's noise sits over the old midpoint cut.
+  - Marks and gaps are classed against the forty marks around each, so the speed changes need no table.
+- **The reference:** `TheOfflineReadAgainstLive` sets the offline read against the live text word by word.
+  - **Put to English:** QSA DI to QST DE, 2026 ISSUE, 13, AND, THE, ATTACH, INCREASE, HIGHER, and BANDS with its period.
+  - **Kept as read:** MIKROWAVE, since both reads hear a K.
+  - **Left out:** piece 1's first QST; the west coast station's call after K, a run of dahs neither read can part; the `E` and `TEA` between `AS` and `BT`; and the Y the piece boundary cuts.
+  - **Confidence:** high where the offline read and live agree on every word, medium where any word differed or was corrected. That gives 43 stretches, 18 high and 25 medium, **2151 letters**.
+- **The `w1aw` table** in `docs\cw-scoreboard.md` is scored as the twelve are, each piece read cold through the live path, with its own rows and total.
+  - **Invented** means a letter with no offline mark under it.
+  - **The baseline at HEAD** was measured in a scratch worktree at `f4bd0d96`, and **after task 1** at `793d6d46`.
+- **The guard** holds the table: `TheScoreboardGuardsCwTests.TheW1awTableFallsNowhere` reads the table's last row, and `TheW1awRowIsWhatItsGuardReads` proves neither guard reads the other's rows. `docs\carry-forward-tests.txt` names it on the CW line.
 
 **Records:**
-- `docs\cw-scoreboard.md`: a row per task.
-- `PHASE_OUTCOME.md`, both copies: `## UNIT 553 - STEP 12`.
-- `PHASE_STATUS.md`, both copies: names 553, that line only.
-- `Directory.Build.props`: 1.13.238.
+- `docs\cw-scoreboard.md`: a row per task, and the `w1aw` section with its stretch table.
+- `PHASE_OUTCOME.md`, both copies: `## UNIT 554 - STEP 12`.
+- `PHASE_STATUS.md`, both copies: names 554, that line only.
+- `Directory.Build.props`: 1.13.239.
 - `CLAUDE.md` §1: a row.
-- `DECISIONS.md`: HM-DEC-257.
+- `DECISIONS.md`: HM-DEC-258.
 
-**Build** `-warnaserror`: no warnings.
+**Build** `Hamlet.sln -warnaserror`: 0 warnings, 0 errors.
 
-**The scoreboard guard** passes after each task; it now holds the board at 238.
+**The scoreboard guard:** 4 of 4 pass, the board at 238 and the w1aw table at 2097.
 
-**The scan's tests:** 123 of 123.
+**The decision-log and voice tests:** 7 of 7.
 
-**App carry-forward:** 275 of 278. All three failures were `You've caused dispatcher loop`, and the three pass alone (16 of 16).
+**App carry-forward:** 277 of 278. The one failure, `Unit376TheTopBandTests`, was `You've caused dispatcher loop`, and it passes alone.
+
+The scratch worktrees were removed.
 
 ## 2. What the owner should expect
 
 Rebuild and run as usual.
 
-- **Once Hamlet has a station, it finds the station's marks by level.** It already watched a station through a narrow window tuned to its pitch, but still judged every mark there with the tests it uses to find stations in the noise: whether the top is flat, whether the edges are sharp. A weak or fluttering dah failed those and came out as two dits or nothing.
-  - Now, inside that window, a mark is simply the time the signal sits above the point between the station's own loud and quiet levels, with a margin either side so a wobble doesn't start or stop one.
-  - The tests still decide what counts as a station in the first place.
-- **The window opens sooner.** It used to open only once a station printed. It now opens as soon as Hamlet has decided it's a station and is waiting out a word gap before printing it, usually a quarter to a full second sooner, once twelve seconds sooner.
-- **The fluttering station** (the strong 860 Hz one the scan caught) reads far better: 136 of 152 letters against 108, wrong letters 35 to 10. Four of its nine dahs that used to break in two now read as one.
-- **W1AW tuned in cold** now prints `E NE II AND` for `PE II AND`, gaining AND. P is still missed: it arrives in the first second, before Hamlet has decided there's a station.
-- **The weak bench test** (25 WPM through the filter at 8 to 24 dB) already read every dah but one at 8 dB, and still does.
-- **The scoreboard:** 227 before, **238** after. No letter prints in a silence any more, noise prints nothing, and the first recording reads whole.
-- **One thing reads a little worse:** the second, weaker station the scan caught gives 22 of 35 letters where it gave 25.
-- **What will look wrong but is not:** the app's test line shows failures one at a time, a different test each run, all the "dispatcher loop" fault; each passes on its own.
-- Pushed to `main`, with the tag `before-level-marks`.
+- **DETECT and DETERMINED read whole.** Hamlet used to throw away three one-letter E's and T's in a row as noise, even in the middle of a word. Now it only does that when they don't sit inside a word, so ATTEMPT, KILOMETERS, BETTER and LETTER come through too. Noise that prints a string of lone E's and T's is still dropped.
+- **W1AW's fast text reads better than it did live.** Played back through this build, the 35 and 30 WPM text reads DETECT, RADIATED, SPECTRUM, DETERMINED, PRETTY, EFFECTIVE, ATTEMPT and KILOMETERS whole, where live it broke them. Only 19 small places differ from what you saw live, and from DETECT on the playback is the better read.
+- **The fix behind that:** between words your radio's AGC lifts the background noise close to the signal's level. Hamlet was gluing that noise onto the next dot and reading it as a dash, so AND came out as TND. It now trims a mark back to where it really stands at the station's level.
+- **The 550 Hz station is not in the recordings.** Played back any way I could, at either chunk size, over the whole band, on last week's builds, even with a station planted at 550 Hz first, Hamlet never holds a sender at 550 Hz. Whatever made it live isn't in the audio the app saved. What's left to test is in section 4.
+- **W1AW's seventeen minutes are now on the board** as their own table of about two thousand letters: 2044 before this unit, **2097** after. The guard holds that table as it holds the twelve.
+- **The twelve recordings** read 238 throughout. Nothing prints in a silence, noise prints nothing, the first recording reads whole, and the random carrier prints at one seed as before.
+- **The strong 860 Hz scan catch** gives 137 of 152 letters right, one more than before, but 12 wrong where it had 10. The weaker catch is unchanged at 22 of 35.
+- **What will look wrong but is not:** the app's test line shows one "dispatcher loop" failure, a different test each run, and that test passes on its own.
+- Pushed to `main`.
 
 ## 3. What you should see
 
-**The scoreboard rows:**
+**The scoreboard rows, the twelve:**
 
 | unit | right | wrong | invented | score | printed in silence | spaces |
 |---|---|---|---|---|---|---|
-| HEAD | 248 of 288 | 19 | 2 | **227** | 1 | 65 of 87, 2 added |
-| 553 task 1 | 248 of 288 | 19 | 2 | **227** | 1, as at HEAD | 65 of 87, 2 added |
-| 553 task 2 | 247 of 288 | 20 | 0 | **227** | 0 | 65 of 87, 2 added |
-| 553 task 3 | 252 of 288 | 13 | 1 | **238** | 0 | 65 of 87, 2 added |
+| HEAD | 252 of 288 | 13 | 1 | **238** | 0 | 65 of 87, 2 added |
+| 554 task 1 | 252 of 288 | 13 | 1 | **238** | 0 | 65 of 87, 2 added |
+| 554 task 2 | 252 of 288 | 14 | 0 | **238** | 0 | 65 of 87, 2 added |
+| 554 task 3 | 252 of 288 | 14 | 0 | **238** | 0 | 65 of 87, 2 added |
 
-Measured along the way, not shipped:
+Task 2 moves one stretch: `221745` reads `EUR MREE H ED TO` where HEAD read `EUROREE H ERD TO`, so one invented letter becomes one wrong one.
 
-| state | score | what |
+**The `w1aw` table:**
+
+| unit | score | right | wrong | invented | spaces |
+|---|---|---|---|---|---|
+| HEAD | **2044** | 2081 of 2151 | 37 | 0 | 437 of 440, 20 added |
+| 554 task 1 | **2059** | 2096 of 2151 | 37 | 0 | 437 of 440, 20 added |
+| 554 task 2 | **2097** | 2116 of 2151 | 19 | 0 | 438 of 440, 11 added |
+| 554 task 3 | **2097** | 2116 of 2151 | 19 | 0 | 438 of 440, 11 added |
+
+Measured on the way and not shipped (task 2):
+
+| variant | board | in silence | strong catch | why not |
+|---|---|---|---|---|
+| task 1's rule as the order worded it | 237 | 0 | | under the bar |
+| trim one hop, skip short runs | 237 | 1 | 134 of 152, 15 wrong | invented 2, `221502` |
+| trim one hop | 240 | 1 | 138 of 152, 11 wrong | `?` and `S` in `221502`'s silence |
+| trim three hops, or the window's rise | 238 | 0 | 130 of 152, 13 wrong | the strong catch falls |
+| **trim two hops (shipped)** | **238** | **0** | 137 of 152, 12 wrong | |
+
+**Task 1's synthetic lines**, 30 WPM, through the filter with the bench's AGC:
+
+| sent | HEAD | after |
 |---|---|---|
-| level marks, no dit floor | 228 | the second catch 6 of 35 |
-| level marks with the cold re-read and the waiting window | 208 | the first recording `FER TN`, 2 letters in a silence |
-| level marks with the waiting window, the dit floor at the current dit | 239 | the second catch 6 of 35 |
+| `DETECT THE RADIATED SIGNAL` | `D CT THE RADIATED SIGNAL` | whole |
+| `PERFORMANCE IS DETERMINED BY` | `PERFORMANCE IS D RMINED BY` | whole |
+| `HUNDREDS OF KILOMETERS` | `HUNDREDS OF KILOM RS` | whole |
+| `INSPIRED TO ATTEMPT A TRANSVERTER` | `INSPIRED TO A MPT A TRANSVERTER` | whole |
+| `A BETTER LETTER` | `A B R L R` | whole |
+| `E T E T E`, five lone words | nothing | nothing |
 
-**Task 1, the window's own view:** depth as a share of the station's contrast; dips are falls shorter than half a dit.
+**The senders held through the pieces, replayed** (seconds on the session's clock, piece 1 from 0):
 
-| class | gaps: count | p1 | p5 | median | dips: count | median | p95 | max |
-|---|---|---|---|---|---|---|---|---|
-| W1AW | 97 | 0.19 | 0.63 | 1.00 | 0 | | | |
-| the strong catch | 387 | 0.46 | 0.60 | 1.00 | 72 | 0.28 | 0.69 | 0.77 |
-| the owner's stretches | 858 | 0.25 | 0.59 | 1.00 | 166 | 0.31 | 0.94 | 1.72 |
-| 25 WPM synthetic, 8 to 24 dB | 494 | 0.73 | 0.78 | 1.00 | 0 | | | |
-| all | 1836 | 0.36 | 0.64 | 1.00 | 238 | 0.30 | 0.90 | 1.72 |
+| pitch | seen | marks | shape | printed |
+|---|---|---|---|---|
+| 600 Hz | 63 to 1182 s | 5772 | 0.95 | 1102 s |
+| 675 Hz | 521 to 580 s | 6 | 0.54 | never |
+| 700 Hz | 315 to 318 s | 5 | 0.61 | never |
+| 800 Hz | 205 to 211 s | 5 | 0.63 | never |
 
-Dips last 5 to 35 ms, median 10. The full-depth dips are on `221502` and `221851`, two weak hands.
+- **The same at 50 ms chunks**, and on the 552 and 553 task 2 builds (5601 marks at 600 Hz there).
+- **Over the whole band:** short noise senders from 150 to 1400 Hz, and none at 550.
+- **With a 550 Hz station first:** it stood 5 to 79 s and took 67 marks, its own.
+- **Live, by the sheets:** 550 Hz held 147, 347, 740 and 978 marks, and 650 Hz 21 in piece 2.
 
-**How long the window takes to open**, from the first mark the detector called:
+**Replay against live**, every difference, with the replay's time (this unit's tree; 74 places before task 2's fix):
 
-| source | first mark | opens on the printed sender | opens on the waiting sender |
-|---|---|---|---|
-| W1AW | 0.30 s | 4.12 s | 3.19 s |
-| `200157` | 0.17 s | 3.51 s | 3.18 s |
-| `144045` | 0.10 s | 5.34 s | 4.57 s |
-| `221745` | 1.17 s | 13.54 s | 9.59 s |
-| `221851` | 0.79 s | 16.29 s | 3.90 s |
-| 25 WPM, any strength | 3.01 s | 5.36 to 5.72 s | 5.09 to 5.47 s |
-
-**W1AW read cold** (the scoreboard's stretch, reference `PE II AND TYPE IV RADIO EMISSIONS HOWEVER, THIS CME IS`):
-
-| state | reads | right |
+| time | live | replay |
 |---|---|---|
-| HEAD | `E NE II AEED TYPE IV RADIO EMISSIONS HOWEVER, THIS NME IS` | 40 of 44 |
-| task 2 | `E NE II AEED TYPE IV …` | 40 of 44 |
-| task 3 | `E NE II AND TYPE IV RADIO EMISSIONS HOWEVER, THIS NME IS` | **42 of 44** |
-| with the cold re-read (not shipped) | `EPE II E ND TYPE IV …` | 42 of 44 |
+| 61.9 s | `M ■AW TU CODE PRACTICE … DE W1AW <AS> G ST GST` | `QST QST` (the minutes before 19:59 are not in the pieces) |
+| 336.1 s | `K9 OM` | `K■M` |
+| 473.8 s | `A E` | `TEXT` |
+| 537.7 s | `N T T O T ■IE` | `<BT> NOW 35` |
+| 695.3 s | `MICROWAVELENGTHS` | `MICROWAVELENGTI I` |
+| 746.7 s | | `ATTEMPT` |
+| 749.1 s | `MPT A` | |
+| 821.0 s | `ASE` | `TSE` |
+| 872.3 s | `KILOM A S.` | `KILOMETERS.` |
+| 883.5 s | `NEXT` | `NETAT` |
+| 968.4 s | `EFFE RTIVE` | `EFFECTIVE` |
+| 1050.6 s | `PR Y` | `PRETTY` |
+| 1059.8 s | `D CT` | `DETECT` |
+| 1062.7 s | `NADIATED` | `RADIATED` |
+| 1096.4 s | `SP CTRUM` | `SPECTRUM` |
+| 1127.6 s | `D RMINED` | `DETERMINED` |
+| 1139.6 s | `THAN` | `TIEAN` |
+| 1156.2 s | `ULTRE` | `ULTRA` |
+| 1180.2 s | `QS` | `QST DE WE` (the replay runs to the end of piece 4) |
 
-**The nine broken dahs on `catch-153810-7033367`:**
-- At HEAD all 9 stood in two or more pieces.
-- After task 2 and after task 3, 5 do and 4 read whole.
-- The catch against its pending reference went from **108 to 136 of 152**, wrong 35 to 10. With the old kept-line setting off it reads 97 at HEAD and 130 after.
-- The second station catch, `catch-154819-7050903`, reads 25 of 35 at HEAD and **22** after.
-
-**The weak table** (25 WPM, the bench's AGC, through the filter; 79 dahs sent):
-
-| strength | before | after |
-|---|---|---|
-| 8 dB | 78, `NEQ CQCQ DE K1ABC K1ABC K1ABC K TEST DE W1XYZ W1XYZ K` | 78, the same |
-| 10 dB | 79, read whole | 79, read whole |
-| 12 dB | 79, read whole | 79, read whole |
-| 24 dB | 79, read whole | 79, read whole |
-
-The order's "about 5 dahs of 40" was not seen on this bench: the call here is keyed clean with the bench's 1 dB AGC.
-
-**Noise:**
-- All four loud-noise runs print nothing.
-- The random carrier prints at seed 5195 only (`N N AETOTTNEAI AN`), as at HEAD.
-- Nothing prints in a silence.
-
-**The QSO handover:** the reply tests are red as at HEAD. The synthetic QSO reads exactly as at HEAD; `144020`'s reply reads `IAN` where HEAD read `IEN`, against a reference `IUN`.
+The whole replay's text and its word times print in `TheSessionReplayed`; the w1aw stretch table, reference against what printed, is in `docs\cw-scoreboard.md`.
 
 ## 4. What's blocking us
 
-- **The cold start is still half done.** W1AW's P arrives before any sender has qualified. The re-read that would recover it, built and switchable, reads 208 with the first recording broken.
-- **Junk and weak hands still overlap in depth.** Two weak hands' recordings have dips to full depth, so the 0.6 line breaks some of their dahs and no level separates them.
-- **The second station catch** reads 22 of 35, three letters under HEAD's 25.
-- **The window opens on the reader's qualification** (two keyed runs, two kinds, its own letter gaps). Opening on the bare first two kinds, as the order named, was not tried.
+- **The 550 Hz ghost is not found.** Three things are left, each with a way to test it:
+  - **Which build ran live.** The capture sheet does not name the app's version; adding it answers this next session.
+  - **The chain's state after hours of listening before 19:59.** A capture that starts earlier, or a sheet line naming the senders held when capture began, answers it.
+  - **A passband that flickers.** If the radio's pitch or filter goes unread for a tick, the detector sums the whole band and rebuilds its bins. The day's telemetry on the station computer answers it; none is on this machine.
+- **The strong scan catch** reads 137 of 152 with 12 wrong, against 136 and 10 at HEAD.
+- **The w1aw reference is the author's,** from an offline read and English, and waits on the owner's ear. In particular: AND where both reads hear AT D, INCREASE where both hear INTNR ASE, MIKROWAVE kept, and the west coast station's call left out.
 - **The dispatcher-loop failure** in the app's test line hits a different test each run and is not this unit's.
 
 ### Asks still outstanding
@@ -162,3 +184,9 @@ The order's "about 5 dahs of 40" was not seen on this bench: the call here is ke
   - opening the window on the waiting sender.
 
   The change sits in `src/Hamlet.RadioEngine/Cw/CwEnvelopeDetector.cs`.
+- **Unit 554, 2026-10-07:** these are the author's and wait on the owner:
+  - task 1's rule, inside a word rather than each letter alone as a word, since the order's wording read 237;
+  - the trim's two hops and 3 dB;
+  - the w1aw reference's corrections and omissions.
+
+  The changes sit in `src/Hamlet.RadioEngine/Cw/CwSenderGate.cs`, `src/Hamlet.RadioEngine/Cw/CwEnvelopeDetector.cs` and `tests/Hamlet.RadioEngine.Tests/Cw/TheW1awTableTests.cs`.

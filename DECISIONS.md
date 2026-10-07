@@ -4,6 +4,55 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-258
+date: 2026-10-07
+refs: work instruction 554, HM-DEC-245, HM-DEC-256, HM-DEC-257, R88, src/Hamlet.RadioEngine/Cw/CwSenderGate.cs, src/Hamlet.RadioEngine/Cw/CwEnvelopeDetector.cs, tests/Hamlet.RadioEngine.Tests/Cw/EAndTInsideAWordTests.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheW1awSessionReplayTests.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheW1awTableTests.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheScoreboardGuardsCwTests.cs, docs/cw-scoreboard.md
+---
+
+**E and T inside a word are not noise.** Ordered by the owner in work instruction 554, 2026-10-07. **R88 was lifted for the owner's twelve recordings, the three scan catches, W1AW's `cw-2026-10-06-212015` and the four pieces of W1AW's session of 2026-10-07 20:00 UTC** (`tests/fixtures/cw/captured/w1aw-2026-10-07/piece-01` to `piece-04`), and no other.
+
+**Why.** Live on W1AW's fast code practice Hamlet printed `D CT` for DETECT, `D RMINED` for DETERMINED, `KILOM A S` for KILOMETERS and `A MPT` for ATTEMPT. Each time the letters lost were three one-mark letters in a row inside a word, dropped by the rule that drops three in a row as noise. That rule was measured on hand-sent recordings where no word holds ETE.
+
+**Shipped: three lone letters are dropped only where they do not lie inside a word.**
+- **Inside a word** means a letter of two marks or more just before the run and just after it, with no word gap anywhere between.
+- **Narrower than the order's wording.** The order said a run is dropped only when each of its letters is printed alone as a word. Built that way, the scoreboard read 237, under the bar of 238, so the rule shipped is the one above.
+- **Results:** DETECT THE RADIATED SIGNAL, PERFORMANCE IS DETERMINED BY, HUNDREDS OF KILOMETERS, INSPIRED TO ATTEMPT A TRANSVERTER and A BETTER LETTER read whole at 30 WPM through the filter with the bench's AGC. Five lone E and T still print nothing. The scoreboard held at 238.
+
+**The 550 Hz ghost: not found in replay.** Live, every piece's sheet held a second sender at 550 Hz (147, 347, 740 and 978 marks) and piece 2 one at 650 Hz. Replayed through the app's chain in order, on one audio clock, the session held W1AW at 600 Hz (5772 marks, live 5762) and three short noise senders, at 675, 700 and 800 Hz, none printed. There was no sender at 550 or 650 Hz:
+- at 10 ms chunks or the live capture's 50 ms;
+- over the whole audio band;
+- on the 552 build, the 553 task 2 build, or this unit's;
+- after twenty seconds of a station at 550 Hz keyed in front of the session. That sender took its own 67 marks, was let go a minute later and took none of W1AW's, so a sequence standing from before the session does not feed on W1AW.
+
+**What is left, and how to test it:**
+- **Which build ran.** The sheets do not name it; adding the app's version to the sheet answers it.
+- **The chain's state from hours of listening before 19:59.** A capture that starts earlier answers it.
+- **A passband that flickers.** If the radio's pitch or filter goes unread for a tick, the detector sums the whole band and rebuilds its bins. The day's telemetry on the station computer answers it; none is on the development computer.
+
+A shadow rule was not built, because nothing measured shows a shadow.
+
+**Shipped: a mark read by level stands at its sender's level.**
+- **The fault:** replayed, the current tree broke the 35 WPM text (`TND` for AND, 74 places off live). In a word gap the radio's AGC lifts the noise to within 10 to 20 dB of the key-down level, over the window's up line, and the level read joined that noise to the next dit, making a mark twice a dit long.
+- **The rule:** an end of a level-read span comes in where two hops or more lie under half the sender's amplitude. The trim is kept only where what is left stands within 3 dB of the key-down level; otherwise the span is offered as before.
+- **Measured and not shipped:** trimming the single hop an ordinary edge leaves printed `?` and `S` inside `221502`'s silence. Three hops, or the window's rise, left the strong catch at 130 of 152. Skipping short runs over the line cost it two letters. Letting the held dit go after a pause, and the half-dit floor, were not the cause.
+- **Results:** the fast text reads whole (AND, ATTEMPT, EFFECTIVE, PRETTY, DETECT, RADIATED, SPECTRUM, DETERMINED). The replay differs from live in 19 places, and from DETECT on the replay is the better read. The scoreboard holds at 238, 14 wrong and 0 invented where it was 13 and 1, with nothing in a silence. The strong catch reads 137 of 152 with 12 wrong (136 and 10 at HEAD), the second catch 22 of 35 as at HEAD.
+
+**Shipped: seventeen minutes of W1AW join the board as their own `w1aw` table.**
+- **The reference is an offline read of each piece.** It is non-causal: an envelope at the sheet's pitch, cut at half the key-down level of each ten seconds, with a mark kept only where its top reaches within 3 dB of it, and lines from the forty marks around each.
+- **Anchored on the live text and on English:** QST DE, 2026 ISSUE, 13, AND, THE, ATTACH, INCREASE, HIGHER and BANDS with its period. MIKROWAVE is kept, since both reads hear a K. Left out: piece 1's first QST, the west coast station's call after K, the `E` and `TEA` between `AS` and `BT`, and the Y cut by a piece boundary.
+- **Confidence:** a stretch is high where the offline read and the live text agree on every word, and medium where any word differed or was corrected. That makes 43 stretches, 18 high and 25 medium, 2151 letters.
+- **Scoring:** each piece is read cold through the live path, and a letter is invented where no offline mark lies under it.
+- **The guard** holds the table to its last row.
+
+| w1aw | score | right | wrong | invented | spaces |
+|---|---|---|---|---|---|
+| HEAD | 2044 | 2081 of 2151 | 37 | 0 | 437 of 440, 20 added |
+| task 1 | 2059 | 2096 | 37 | 0 | 437 of 440, 20 added |
+| task 2 | **2097** | 2116 | 19 | 0 | 438 of 440, 11 added |
+
+The twelve read 238 throughout, and the random carrier prints at seed 5195 only, as at HEAD. Nothing keys or transmits, and nothing is written to the radio.
+
+---
 id: HM-DEC-257
 date: 2026-10-07
 refs: work instruction 553, HM-DEC-233, HM-DEC-256, tag before-level-marks, src/Hamlet.RadioEngine/Cw/CwEnvelopeDetector.cs, src/Hamlet.RadioEngine/Cw/CwSenderGate.cs, src/Hamlet.RadioEngine/Cw/CwMark.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheWindowsOwnViewTests.cs, docs/cw-scoreboard.md
