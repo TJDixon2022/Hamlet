@@ -4,6 +4,51 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-257
+date: 2026-10-07
+refs: work instruction 553, HM-DEC-233, HM-DEC-256, tag before-level-marks, src/Hamlet.RadioEngine/Cw/CwEnvelopeDetector.cs, src/Hamlet.RadioEngine/Cw/CwSenderGate.cs, src/Hamlet.RadioEngine/Cw/CwMark.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheWindowsOwnViewTests.cs, docs/cw-scoreboard.md
+---
+
+**Inside a station's own window, a mark is read by level.** Ordered by the owner in work instruction 553, 2026-10-07. HEAD was tagged `before-level-marks` and pushed before any engine change. R88 was lifted for the owner's twelve recordings, the three scan catches and W1AW's `cw-2026-10-06-212015`, and no other.
+
+**Why.** Every decision on what is read is made on the shape side, and what remains weak is how audio becomes marks. Once a station stands, Hamlet knows its pitch, dit, key-down level and key-up level, and inside its own window the per-hop shape tests only cost it marks.
+
+**Measured first, on the window's own view** (each fall under the key-down level as a share of the station's contrast; a fall under half a dit is a dip inside a mark, since Morse's shortest gap is a dit):
+- **Real gaps** fall 0.64 or more nineteen times in twenty, and synthetic gaps never under 0.65.
+- **Dips** have a median of 0.30. The strong catch's 72 never pass 0.77. Two weak hands' recordings have dips to full depth, so no level separates them perfectly.
+
+**Shipped: marks by level inside a standing station's window.**
+- **Up and down:** a mark starts where the window rises past **0.4** of the contrast under the key-down level, and ends where it falls past **0.6**.
+  - 0.6 is under the real gaps' fifth percentile, so a real gap ends a mark.
+  - 0.4 is the midpoint less the same tenth of the contrast, wider than the window's own ripple: under half a decibel on a strong signal, 0.8 dB on an 8 dB contrast.
+- **The levels:** the key-up level is the median of the window between marks over two seconds, seeded from the quieter half of the audio the window opened on. Below 6 dB of contrast the old path runs.
+- **No per-hop test:** a mark read by level meets no flat-top, edge, narrowness or shape test. It must be at least **half the dit the window opened on**, held while the window stays open: Morse's shortest mark is a dit, and half the current dit let short noise marks drag the dit down.
+- **Unchanged:** a mark's times are still its crossings less the window's delay, and before a station stands nothing changes.
+
+**Shipped: the window opens sooner.** It opens on the sender the reader holds qualified and waiting for its first pick (two keyed runs, two kinds, its own letter gaps), not only once that sender prints. This is that point, not the bare first two kinds the order named. It opens 0.25 to 1 s sooner on most stretches, and 12 s sooner on `221851`.
+
+**Built, measured, not shipped: the cold re-read.**
+- **What it does:** when the window opens, the audio from as far back as the detector holds (eight seconds) is read again by level, and the reader replaces that sender's unprinted marks over the stretch.
+- **Measured:** it read 208, with the first recording broken (`FER TN` for `FER C`) and two letters in a silence, while W1AW gained `EPE II E ND`.
+- **Left off:** the code stays behind its switch. With it off, the raw audio past two seconds is invisible to every other reader, and the board reads as without it.
+
+**Results.**
+
+| | score | right | wrong | invented | spaces | in a silence |
+|---|---|---|---|---|---|---|
+| HEAD | 227 | 248 | 19 | 2 | 65 of 87, 2 added | 1 |
+| task 2 | 227 | 247 | 20 | 0 | 65 of 87, 2 added | 0 |
+| task 3 | **238** | 252 | 13 | 1 | 65 of 87, 2 added | 0 |
+
+- **W1AW read cold:** `E NE II AND`, **42 of 44** (40 at HEAD).
+- **The strong catch:** 108 to **136** of 152 against its pending reference, wrong 35 to 10. Four of its nine broken dahs now read whole.
+- **The second station catch:** 25 to 22 of 35.
+- **The weak bench case** (25 WPM through the filter with AGC at 8, 10, 12 and 24 dB): 78, 79, 79 and 79 of 79 dahs before and after.
+- **Noise and limits:** noise prints nothing, the random carrier prints at seed 5195 only, and the first recording reads whole.
+
+The scoreboard guard now holds the board at 238. Nothing keys or transmits, and nothing is written to the radio.
+
+---
 id: HM-DEC-256
 date: 2026-10-07
 refs: work instruction 552, HM-DEC-254, HM-DEC-255, HM-DEC-155, R88, src/Hamlet.RadioEngine/Cw/CwSequenceShape.cs, src/Hamlet.RadioEngine/Explore/ModeLens.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheScoreboardGuardsCwTests.cs, tests/Hamlet.RadioEngine.Tests/Cw/AStationTunedInColdTests.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheShapeScoreTakenApartTests.cs, docs/carry-forward-tests.txt, docs/cw-scoreboard.md

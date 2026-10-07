@@ -2,12 +2,12 @@ PROTOCOL: 2
 PROJECT: Hamlet
 STATE: COMPLETED
 TASK: closing
-WORK_INSTRUCTION: 552 - a carrier keys down too much; the scoreboard guards CW (run by hand)
+WORK_INSTRUCTION: 553 - inside a station's own window, a mark is read by level (run by hand)
 BALL: tim
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-10-07T15:02:36-04:00
-NOTE: Unit 552 done - key-down term ships; cold start traced to the detector, not shipped; CW tab keeps digital names; the scoreboard guards CW
+UPDATED: 2026-10-07T16:03:22-04:00
+NOTE: Unit 553 done - marks by level in a station's window; window opens on the waiting sender; scoreboard 227 to 238; cold re-read built, off
 
 ---
 

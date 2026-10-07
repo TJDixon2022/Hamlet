@@ -1,75 +1,66 @@
 ## 1. What Claude did
 
-Development computer, project gate `PROJECT: Hamlet` checked against `PROJECT_CARD.md`, the order's five checks and `Hamlet.sln`: Hamlet confirmed. Nothing here is evidence about the radio. Branch `main`. Run by hand: `SESSION.lock` taken at 14:44:04 and released at the end, nothing written to `RUN_LEDGER.md`, nothing under `tools\arbiter\` touched, no box ticked in `PHASE_PLAN.md`. Version 1.13.236 to 1.13.237. Ruling HM-DEC-256, the number the order gave. Nothing was recorded under §12.1. R88 was lifted only as the order named. Every test run was one filtered invocation, the longest under three minutes.
+Development computer, project gate `PROJECT: Hamlet` checked against `PROJECT_CARD.md`, the order's five checks and `Hamlet.sln`: Hamlet confirmed. Nothing here is evidence about the radio. Branch `main`. Run by hand: `SESSION.lock` taken at 15:36:05 and released at the end, nothing written to `RUN_LEDGER.md`, nothing under `tools\arbiter\` touched, no box ticked in `PHASE_PLAN.md`. **HEAD tagged `before-level-marks` and pushed before any engine change.** Version 1.13.237 to 1.13.238. Ruling HM-DEC-257, the number the order gave. Nothing was recorded under §12.1. R88 was lifted only as the order named. Every test run was one filtered invocation; the longest was the app carry-forward line, 2.5 minutes.
 
-**Task 1, a carrier keys down too much to be Morse** (`6c092449`), **shipped**:
-- **Measured:** each sender's key-down share is its marks over its marks and the gaps between them up to a word gap (seven dits), over the same recent marks the score already reads, with pauses left out. It was measured on unit 550's four classes (section 3).
-- **The term, `KeyDown`:**
-  - one up to Morse's ceiling, **15 of 22**: the letter `0` over and over, five dahs and their gaps, then a letter gap;
-  - falling straight to nought at a share of one, a key that never comes up;
-  - the form and the window are the author's.
-- **Result:**
-  - The noise burst falls from 0.69 to **0.26**.
-  - Junk's 75th percentile falls from 0.40 to 0.29, its 90th from 0.67 to 0.61, its 95th from 0.69 to 0.65.
-  - Real hands keep their median of 0.76; their 5th percentile moves 0.46 to 0.44.
-  - **The carrier catch stays at 0.68:** by the gate's marks it is keyed down 0.64 of its sending, under Morse's ceiling.
-  - The scoreboard reads exactly as at HEAD.
+**Task 1, the window's own view** (`49229886`):
+- **What `TheWindowsOwnViewTests` measures:** a trace of the sender's own window, hop by hop, with the sender's key-down level beside it.
+  - **Excursions:** every stretch where the window sits more than 3 dB under the key-down level, its depth as a share of the station's contrast.
+  - **Dips and gaps:** an excursion shorter than half the dit is a dip inside a mark, since Morse's shortest gap is a whole dit; anything longer is a gap.
+  - **Sources:** W1AW, the strong 860 Hz catch, the owner's scored stretches, and synthetic 25 WPM calls at 8, 10, 12 and 24 dB through the filter with the bench's AGC.
+- **Real gaps** fall 0.64 of the contrast or more nineteen times in twenty (0.36 at the 1st percentile); synthetic gaps never under 0.65.
+- **Dips** have a median of 0.30. The strong catch's 72 never pass 0.77; two weak hands' recordings (`221502`, `221851`) have dips to full depth, so no level separates the two perfectly. Section 3 has the full table.
+- **Committed off:** the commit carries the level path, the window opening on the waiting sender, and the cold re-read with the gate's replacement, all behind switches, all off. It reads exactly as HEAD.
 
-**Task 2, a station tuned in cold** (`c57b4c70`), **traced, not shipped:**
-- **The premise doesn't hold here.** `AStationTunedInColdTests` prints every letter of W1AW's opening with the sender's split and letter line at the moment it printed. They are 117 ms and 113 ms, against 119 and 111 at the end of the recording, and every letter's labels are what the end's lines give. The backlog is already read with what is known at the pick: printing re-splits a sender's unprinted runs at its current lines every time.
-- **The cause is marks the detector never produced.** Dumping every mark it called in the first 4.5 s:
-  - **P's first dah** (about 0.42 to 0.62 s) was never called, while the detector had no gap level yet; its contrast reads NaN until 1.3 s.
-  - **N's dah in AND** was called as 60 ms of its 205.
-  - Every mark the detector did call was printed.
-- **No code changed.** Re-reading the backlog cannot bring back a mark that was never called. The test stays as the trace and asserts nothing.
+**Task 2, marks by level inside a standing station's window** (`c5efa0e1`), **shipped:**
+- **The rule:** inside the window a mark starts where the window rises past **0.4** of the contrast under the key-down level and ends where it falls past **0.6**.
+  - The key-up level is the median of the window between marks over two seconds, seeded from the quieter half of the audio the window opened on. Below 6 dB of contrast the old path runs.
+  - 0.6 sits under the gaps' fifth percentile, so a real gap ends a mark. 0.4 is the midpoint less the same tenth, wider than the window's ripple (under 0.5 dB strong, 0.8 dB on an 8 dB contrast).
+- **No per-hop test:** a mark read by level meets no flat-top, edge, narrowness or shape test, but must be at least **half the sender's dit**.
+  - Without that floor, the second station catch fell from 25 to 6 of 35. Short noise marks crossed the line, and the window retuned from 470 Hz to 516 Hz and lost the station.
+- **Before a station stands nothing changes;** a mark's times are its crossings less the window's delay, as before.
+- **The board:** 227 held; invented 2 to 0; nothing in a silence.
+- **The cold re-read was built and is not shipped.**
+  - **What it does:** an eight-second raw history; at the window's opening the stretch is read again by level and handed to the gate, which rebuilds the sender (if it has printed nothing) with those marks in place of the grid's.
+  - **Measured:** score **208**, the first recording broken (`FER TN`), two letters in a silence. W1AW gained `EPE II E ND`.
+  - **Left off:** it stays behind its switch, with the raw history past two seconds invisible to every other reader, so the board reads as without it.
 
-**Task 3, the digital watering holes keep their names** (`834dcd0b`), **shipped:**
-- On the CW tab a shared block the band data names for a digital mode keeps its name in CW's colour: RTTY, FT4, PSK31, FT8, JS8, `auto` and `Data`. Open ground is named CW.
-- The Digital and Voice tabs are unchanged.
-- The 40 m test is updated, and the app test still shows a tab change writing only its own mode.
-
-**Task 4, the scoreboard is the CW guard** (`42a61639`), **shipped, at your yes:**
-- **Retired, naming HM-DEC-256:** `TheAdjudicatedReadingsKeepReadingTests` and `CwFixtureTests.TheCleanRecordingsDecodeExactly` carry a Skip; the thirteen `cw-2026-08-25` rows are gone from `TheCapturesThatDecodeKeepDecodingTests`' floors.
-- **The guard,** `TheScoreboardGuardsCwTests.TheScoreboardFallsNowhere`, runs the scoreboard and holds it to the **last unit row** of `docs\cw-scoreboard.md`:
-  - the score not below it, spaces right not below it, spaces added not above it, no more letters in a silence;
-  - the random carrier at no more seeds than a new guard line in that file records (1 of 20, seed 5195);
-  - the first recording whole, and loud noise silent.
-- **A second test** checks that the guard reads the last unit row and not the scan table's rows after it.
-- **The carry-forward line lives in `docs\carry-forward-tests.txt`**, on its engine line (line 9). Section 3 shows it.
-- I did not run the retired guards: they read the corpus R88 bars.
+**Task 3, the window opens sooner** (`3d7dc677`), **shipped:**
+- **Measured how long the window takes to open** (section 3).
+- **Where it opens now:** on the sender the reader holds qualified and **waiting for its first pick** (two keyed runs, two kinds, its own letter gaps), not only once it prints. That is the reader's own qualification, a little later than the bare first two kinds the order named.
+- **The dit floor** now uses the dit the window opened on, held while it stays open. The sender's current dit let short noise marks drag the dit down; with it the second catch fell to 6 of 35 again.
+- **The board:** **238**.
 
 **Records:**
-- `docs\cw-scoreboard.md`: a row per task, and the guard line.
-- `docs\carry-forward-tests.txt`: the engine line, the guards table, and a dated note.
-- `PHASE_OUTCOME.md`, both copies: `## UNIT 552 - STEP 12`.
-- `PHASE_STATUS.md`, both copies: names 552, that line only.
-- `Directory.Build.props`: 1.13.237.
+- `docs\cw-scoreboard.md`: a row per task.
+- `PHASE_OUTCOME.md`, both copies: `## UNIT 553 - STEP 12`.
+- `PHASE_STATUS.md`, both copies: names 553, that line only.
+- `Directory.Build.props`: 1.13.238.
 - `CLAUDE.md` §1: a row.
-- `DECISIONS.md`: HM-DEC-256.
+- `DECISIONS.md`: HM-DEC-257.
 
 **Build** `-warnaserror`: no warnings.
 
-**App carry-forward:** 277, 276 and 277 of 278 over three runs. Every failure was `You've caused dispatcher loop`, thrown by Avalonia's headless session, and it landed on a different test each run:
-- `TheCarrierHoldsTheButtonsTests`
-- `ThePowerIsOfferedTests` (twice)
-- `BindingHealthTests`
+**The scoreboard guard** passes after each task; it now holds the board at 238.
 
-Each passes alone (11 of 11 together). It is the dispatcher-loop failure units 544 and 548 named.
+**The scan's tests:** 123 of 123.
+
+**App carry-forward:** 275 of 278. All three failures were `You've caused dispatcher loop`, and the three pass alone (16 of 16).
 
 ## 2. What the owner should expect
 
 Rebuild and run as usual.
 
-- **The noise burst now scores 0.26, from 0.69,** because its key was down 88% of the time, and Morse never keeps the key down more than 68%: a run of zeros is the most any text can do. Junk as a whole sits lower.
-- **The fading carrier the scan caught still scores 0.68.** By the marks Hamlet sees, its key is down only 64% of the time, which Morse can do, so this test can't tell it from a station. It is the one bit of junk still scoring like a real hand.
-- **A station tuned in cold still loses its first letter or two.** W1AW read from its first second still prints `E NE II AEED` for `PE II AND`.
-  - The idea was to re-read those first letters once Hamlet knows the sender, and it would change nothing: they are already read with everything Hamlet knows by then.
-  - The real fault is earlier. For the first second or so, before Hamlet has measured the band's quiet level at that pitch, it misses whole dahs, or catches only the start of one. That is the next thing to fix, in the detector rather than the decoder.
-- **On the CW tab the map is amber across the shared stretch as before, but the digital spots keep their names:** FT8, FT4, JS8, PSK31, RTTY and the rest, so you can still see where the digital crowd sits. The Digital and Voice tabs haven't changed.
-- **The scoreboard now guards every unit.** The old CW checks, which read recordings that are off limits and tested a decoder that no longer exists, are retired. In their place a test reruns the scoreboard and fails if the score, the spaces, or any of the hard limits read worse than the last recorded row.
-- **The scoreboard:** 227 before, 227 after every task, everything else exactly as before.
-- **What will look wrong but is not:** the app's test line shows one failure per run, a different test each time, the "dispatcher loop" fault the test framework throws. Each of those tests passes on its own.
-- Pushed to `main`.
+- **Once Hamlet has a station, it finds the station's marks by level.** It already watched a station through a narrow window tuned to its pitch, but still judged every mark there with the tests it uses to find stations in the noise: whether the top is flat, whether the edges are sharp. A weak or fluttering dah failed those and came out as two dits or nothing.
+  - Now, inside that window, a mark is simply the time the signal sits above the point between the station's own loud and quiet levels, with a margin either side so a wobble doesn't start or stop one.
+  - The tests still decide what counts as a station in the first place.
+- **The window opens sooner.** It used to open only once a station printed. It now opens as soon as Hamlet has decided it's a station and is waiting out a word gap before printing it, usually a quarter to a full second sooner, once twelve seconds sooner.
+- **The fluttering station** (the strong 860 Hz one the scan caught) reads far better: 136 of 152 letters against 108, wrong letters 35 to 10. Four of its nine dahs that used to break in two now read as one.
+- **W1AW tuned in cold** now prints `E NE II AND` for `PE II AND`, gaining AND. P is still missed: it arrives in the first second, before Hamlet has decided there's a station.
+- **The weak bench test** (25 WPM through the filter at 8 to 24 dB) already read every dah but one at 8 dB, and still does.
+- **The scoreboard:** 227 before, **238** after. No letter prints in a silence any more, noise prints nothing, and the first recording reads whole.
+- **One thing reads a little worse:** the second, weaker station the scan caught gives 22 of 35 letters where it gave 25.
+- **What will look wrong but is not:** the app's test line shows failures one at a time, a different test each run, all the "dispatcher loop" fault; each passes on its own.
+- Pushed to `main`, with the tag `before-level-marks`.
 
 ## 3. What you should see
 
@@ -78,89 +69,81 @@ Rebuild and run as usual.
 | unit | right | wrong | invented | score | printed in silence | spaces |
 |---|---|---|---|---|---|---|
 | HEAD | 248 of 288 | 19 | 2 | **227** | 1 | 65 of 87, 2 added |
-| 552 task 1 | 248 of 288 | 19 | 2 | **227** | 1, as at HEAD | 65 of 87, 2 added |
-| 552 task 2 | 248 of 288 | 19 | 2 | **227** | 1, as at HEAD | 65 of 87, 2 added |
-| 552 task 3 | 248 of 288 | 19 | 2 | **227** | 1, as at HEAD | 65 of 87, 2 added |
-| 552 task 4 | 248 of 288 | 19 | 2 | **227** | 1, as at HEAD | 65 of 87, 2 added |
+| 553 task 1 | 248 of 288 | 19 | 2 | **227** | 1, as at HEAD | 65 of 87, 2 added |
+| 553 task 2 | 247 of 288 | 20 | 0 | **227** | 0 | 65 of 87, 2 added |
+| 553 task 3 | 252 of 288 | 13 | 1 | **238** | 0 | 65 of 87, 2 added |
 
-Each task's whole table was identical to HEAD's, line for line. The random carrier prints at seed 5195 only, as at HEAD.
+Measured along the way, not shipped:
 
-**The key-down share by class** (the gate's senders, a sample each second of audio):
+| state | score | what |
+|---|---|---|
+| level marks, no dit floor | 228 | the second catch 6 of 35 |
+| level marks with the cold re-read and the waiting window | 208 | the first recording `FER TN`, 2 letters in a silence |
+| level marks with the waiting window, the dit floor at the current dit | 239 | the second catch 6 of 35 |
 
-| class | samples | min | p5 | p25 | median | p75 | p95 | max |
+**Task 1, the window's own view:** depth as a share of the station's contrast; dips are falls shorter than half a dit.
+
+| class | gaps: count | p1 | p5 | median | dips: count | median | p95 | max |
 |---|---|---|---|---|---|---|---|---|
-| W1AW | 25 | 0.349 | 0.380 | 0.422 | 0.479 | 0.517 | 0.536 | 0.537 |
-| real hands | 263 | 0.340 | 0.438 | 0.499 | 0.535 | 0.574 | 0.621 | 0.819 |
-| synthetic clean | 232 | 0.552 | 0.566 | 0.585 | 0.598 | 0.618 | 0.648 | 0.662 |
-| junk | 309 | 0.363 | 0.387 | 0.437 | 0.479 | 0.619 | 0.870 | 0.928 |
+| W1AW | 97 | 0.19 | 0.63 | 1.00 | 0 | | | |
+| the strong catch | 387 | 0.46 | 0.60 | 1.00 | 72 | 0.28 | 0.69 | 0.77 |
+| the owner's stretches | 858 | 0.25 | 0.59 | 1.00 | 166 | 0.31 | 0.94 | 1.72 |
+| 25 WPM synthetic, 8 to 24 dB | 494 | 0.73 | 0.78 | 1.00 | 0 | | | |
+| all | 1836 | 0.36 | 0.64 | 1.00 | 238 | 0.30 | 0.90 | 1.72 |
 
-**Per source, the two the order named:**
+Dips last 5 to 35 ms, median 10. The full-depth dips are on `221502` and `221851`, two weak hands.
 
-| source | key-down share | score before | score after |
+**How long the window takes to open**, from the first mark the detector called:
+
+| source | first mark | opens on the printed sender | opens on the waiting sender |
 |---|---|---|---|
-| the carrier catch `catch-154614-7047190` | 0.64 (0.61 to 0.70) | 0.68 | 0.68 |
-| noise 180 s, seed 5370 | 0.88 (0.84 to 0.89) | 0.69 | **0.26** |
+| W1AW | 0.30 s | 4.12 s | 3.19 s |
+| `200157` | 0.17 s | 3.51 s | 3.18 s |
+| `144045` | 0.10 s | 5.34 s | 4.57 s |
+| `221745` | 1.17 s | 13.54 s | 9.59 s |
+| `221851` | 0.79 s | 16.29 s | 3.90 s |
+| 25 WPM, any strength | 3.01 s | 5.36 to 5.72 s | 5.09 to 5.47 s |
 
-The one real hand over Morse's ceiling is the station catch `catch-153810-7033367`, at 0.82 in one sample. Its median score moves 0.68 to 0.66.
+**W1AW read cold** (the scoreboard's stretch, reference `PE II AND TYPE IV RADIO EMISSIONS HOWEVER, THIS CME IS`):
 
-**The score's percentiles, before and after:**
+| state | reads | right |
+|---|---|---|
+| HEAD | `E NE II AEED TYPE IV RADIO EMISSIONS HOWEVER, THIS NME IS` | 40 of 44 |
+| task 2 | `E NE II AEED TYPE IV …` | 40 of 44 |
+| task 3 | `E NE II AND TYPE IV RADIO EMISSIONS HOWEVER, THIS NME IS` | **42 of 44** |
+| with the cold re-read (not shipped) | `EPE II E ND TYPE IV …` | 42 of 44 |
 
-| class | p5 before | p5 after | median before | median after | p75 before | p75 after | p95 before | p95 after |
-|---|---|---|---|---|---|---|---|---|
-| W1AW | 0.868 | 0.868 | 0.937 | 0.937 | 0.940 | 0.940 | 0.942 | 0.942 |
-| real hands | 0.459 | 0.442 | 0.757 | 0.757 | 0.879 | 0.879 | 0.937 | 0.937 |
-| synthetic clean | 0.892 | 0.892 | 0.949 | 0.949 | 0.950 | 0.950 | 0.951 | 0.951 |
-| junk | 0.011 | 0.011 | 0.106 | 0.101 | 0.403 | **0.289** | 0.691 | **0.653** |
+**The nine broken dahs on `catch-153810-7033367`:**
+- At HEAD all 9 stood in two or more pieces.
+- After task 2 and after task 3, 5 do and 4 read whole.
+- The catch against its pending reference went from **108 to 136 of 152**, wrong 35 to 10. With the old kept-line setting off it reads 97 at HEAD and 130 after.
+- The second station catch, `catch-154819-7050903`, reads 25 of 35 at HEAD and **22** after.
 
-**W1AW read cold, before and after:** `E NE II AEED TYPE IV RADIO EMISSIONS HOWEVER, THIS NME IS` both, since task 2 changed nothing. The trace:
+**The weak table** (25 WPM, the bench's AGC, through the filter; 79 dahs sent):
 
-```
-at the end: split 119 ms, letter line 111 ms
-0.30-0.36 s printed at 4.12 s `E`: marks 60 ms; split then 117, letter line then 113; labels at the end .
-0.70-1.02 s printed at 4.12 s `N`: marks 205 55 ms, gaps 65 ms; split then 117, letter line then 113; labels at the end -.
-...
-3.39-3.45 s printed at 4.30 s `E`: marks 60 ms; ...; labels at the end .
-3.63-3.70 s printed at 4.30 s `E`: marks 70 ms; ...; labels at the end .
-mark 0.300-0.360 s, 60 ms at 600 Hz, -17.6 dB, contrast NaN, keyed, printed
-mark 0.695-0.900 s, 205 ms at 600 Hz, -17.7 dB, contrast NaN, keyed, printed
-mark 3.385-3.445 s, 60 ms at 600 Hz, -17.4 dB, contrast 9.4, keyed, printed
-mark 3.630-3.700 s, 70 ms at 600 Hz, -17.9 dB, contrast 9.8, keyed, printed
-```
+| strength | before | after |
+|---|---|---|
+| 8 dB | 78, `NEQ CQCQ DE K1ABC K1ABC K1ABC K TEST DE W1XYZ W1XYZ K` | 78, the same |
+| 10 dB | 79, read whole | 79, read whole |
+| 12 dB | 79, read whole | 79, read whole |
+| 24 dB | 79, read whole | 79, read whole |
 
-No mark between 0.36 and 0.695 s, where P's first dah was. N's dah ends at 3.445 s, 60 ms long.
+The order's "about 5 dahs of 40" was not seen on this bench: the call here is keyed clean with the bench's 1 dB AGC.
 
-**The guard's line**, in `docs\carry-forward-tests.txt`, line 9, the engine invocation. Its last name is the guard:
+**Noise:**
+- All four loud-noise runs print nothing.
+- The random carrier prints at seed 5195 only (`N N AETOTTNEAI AN`), as at HEAD.
+- Nothing prints in a silence.
 
-```
-timeout 480 dotnet test tests/Hamlet.RadioEngine.Tests/Hamlet.RadioEngine.Tests.csproj --filter "FullyQualifiedName~TheUnslottedSendTests|...|FullyQualifiedName~TheOliviaModulatorTests.EachMacroAndATypedLineComeBackIdentical|FullyQualifiedName~TheScoreboardGuardsCwTests"
-```
-
-The guards table in the same file now reads:
-
-```
-CW     read  TheScoreboardGuardsCwTests, the scoreboard held to its last recorded row   engine   unit 552, HM-DEC-256
-```
-
-The guard run, against the row then last, 552 task 3:
-
-```
-recorded, 552 task 3: score 227, spaces 65 right and 2 added, 1 in a silence, the carrier at 1 seeds
-now: score 227, spaces 65 right and 2 added, 1 in a silence, the carrier at 1 seeds; the first recording reads `FER C HAT<BT> BEST 7V 73 <SK> KC4ZGP DEWA`
-```
-
-`TheLastUnitRowIsWhatTheGuardReads` passes.
-
-**Other tests:**
-- The 40 m test and the app's tab test pass.
-- `TheShapeScoreTakenApartTests` passes.
-- The app carry-forward results are in section 1.
+**The QSO handover:** the reply tests are red as at HEAD. The synthetic QSO reads exactly as at HEAD; `144020`'s reply reads `IAN` where HEAD read `IEN`, against a reference `IUN`.
 
 ## 4. What's blocking us
 
-- **The carrier catch still scores 0.68.** Its key-down share by the gate's marks is 0.64, under Morse's ceiling. The scan's own frame-by-frame key-up share calls it a carrier, but the gate's marks do not see that way, and no CW term measured so far separates it from the roughest hands.
-- **The cold start is in the detector.** Before it has a gap level at a pitch it misses whole dahs (contrast NaN for the first 1.3 s) or cuts them short. Re-reading the opening audio through the sender's own window once that opens is the likely repair, a detector change.
-- **The dispatcher-loop failure** in the app's test run hits one test per run and is not this unit's. The order asked for the line green, and it is green only test by test.
-- **The engine carry-forward line was not run whole**, to keep runs short. Its new CW guard was run alone and passes.
+- **The cold start is still half done.** W1AW's P arrives before any sender has qualified. The re-read that would recover it, built and switchable, reads 208 with the first recording broken.
+- **Junk and weak hands still overlap in depth.** Two weak hands' recordings have dips to full depth, so the 0.6 line breaks some of their dahs and no level separates them.
+- **The second station catch** reads 22 of 35, three letters under HEAD's 25.
+- **The window opens on the reader's qualification** (two keyed runs, two kinds, its own letter gaps). Opening on the bare first two kinds, as the order named, was not tried.
+- **The dispatcher-loop failure** in the app's test line hits a different test each run and is not this unit's.
 
 ### Asks still outstanding
 
@@ -173,3 +156,9 @@ now: score 227, spaces 65 right and 2 added, 1 in a silence, the carrier at 1 se
   - No change for it sits in the tree.
 - **Unit 550, 2026-10-07:** the handover margin, 0.16, and the challenger's 15 s are the author's figures from measurement, and no recording yet shows the margin acting. It waits on the owner, and the change sits in `src/Hamlet.RadioEngine/Cw/CwSenderGate.cs`.
 - **Unit 552, 2026-10-07:** the key-down term's form, one to Morse's 15 of 22 and straight to nought at a key never up, is the author's. It waits on the owner, and the change sits in `src/Hamlet.RadioEngine/Cw/CwSequenceShape.cs`.
+- **Unit 553, 2026-10-07:** these figures are the author's from measurement, and wait on the owner:
+  - the hysteresis, 0.4 up and 0.6 down;
+  - the half-dit floor on the dit the window opened on;
+  - opening the window on the waiting sender.
+
+  The change sits in `src/Hamlet.RadioEngine/Cw/CwEnvelopeDetector.cs`.
