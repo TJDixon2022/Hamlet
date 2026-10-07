@@ -1,6 +1,7 @@
 using System.Globalization;
 using Hamlet.RadioEngine.Audio;
 using Hamlet.RadioEngine.Bands;
+using Hamlet.RadioEngine.Cw;
 
 namespace Hamlet.RadioEngine.Capture;
 
@@ -10,12 +11,16 @@ namespace Hamlet.RadioEngine.Capture;
 /// <param name="Scanning">Whether the scan is moving the dial.</param>
 /// <param name="FrequencyHz">Where the dial is, or null where unread.</param>
 /// <param name="FilterWidthHz">The radio's filter width, or null where unread.</param>
+/// <param name="SendersHeld">How many senders the gate holds.</param>
+/// <param name="AudioLostMilliseconds">Audio lost before the decode since listening began.</param>
 public sealed record AutoCaptureConditions(
     bool Listening,
     bool InCw,
     bool Scanning,
     long? FrequencyHz,
-    double? FilterWidthHz);
+    double? FilterWidthHz,
+    int SendersHeld = 0,
+    double AudioLostMilliseconds = 0);
 
 /// <summary>
 /// **HAMLET CAPTURES FOR ITSELF** (work instruction 549, HM-DEC-253): every W1AW session the radio sits on, whole.
@@ -42,6 +47,11 @@ public sealed class CwAutoCapture : IDisposable
     private ContinuousCapture? _w1aw;
     private W1awScheduleState? _session;
     private W1awMorseRow? _row;
+
+    // **ITS OWN FIVE-MINUTE RING, WHATEVER RECORD IS SET TO** (task 2): a trouble capture holds the five minutes before it.
+    private readonly AudioTap _ring = new(AudioTap.MaximumSecondsKept);
+    private readonly TroubleWatch _watch = new();
+    private readonly List<string> _troubleFolders = new();
 
     /// <summary>The automatic capture.</summary>
     /// <param name="autoFolder">Where automatic captures go: <c>captures\auto</c> under Hamlet's data folder.</param>
@@ -152,6 +162,8 @@ public sealed class CwAutoCapture : IDisposable
     {
         // **ONE REFERENCE, READ WITHOUT A LOCK**: the callback never waits on a tick, and a tick that is stopping a capture
         // takes the reference away before it waits for the queue to drain.
+        _ring.Take(samples, sampleRate);
+
         var writing = Volatile.Read(ref _writing);
 
         if (writing?.Feed is not null)
@@ -209,6 +221,114 @@ public sealed class CwAutoCapture : IDisposable
         }
 
         Finish(ending);
+        Trouble(now, at);
+    }
+
+    /// <summary>A character the terminal printed, from the chain's thread: what the stray-letter trigger reads.</summary>
+    /// <param name="character">The character, or a word gap.</param>
+    public void Character(CwCharacter character) => _watch.Character(character, _clock());
+
+    /// <summary>The trouble captures saved so far, by folder name, oldest first.</summary>
+    public IReadOnlyList<string> TroubleFolders
+    {
+        get { lock (_gate) { return _troubleFolders.ToList(); } }
+    }
+
+    /// <summary>The last trigger that fired, or null: for the line and the telemetry.</summary>
+    public TroubleFired? LastTrouble { get; private set; }
+
+    // **ANYWHERE ELSE, WHILE LISTENING IN CW AND NOT SCANNING** (task 2): a trigger saves the ring's last five minutes; during
+    // a W1AW capture it is noted on that capture's sheet instead, since the capture already holds the audio.
+    private void Trouble(AutoCaptureConditions now, DateTime at)
+    {
+        if (!now.Listening || !now.InCw || now.Scanning)
+        {
+            _watch.Pause(now.AudioLostMilliseconds);
+            return;
+        }
+
+        foreach (var fired in _watch.Observe(at, now.SendersHeld, now.AudioLostMilliseconds))
+        {
+            LastTrouble = fired;
+
+            var capture = W1awCapture;
+
+            if (capture is not null)
+            {
+                capture.Note($"trigger    {fired.AtUtc:HH:mm:ss} UTC  {fired.Detail}  (noted here instead of saving again)");
+                continue;
+            }
+
+            SaveTrouble(fired);
+        }
+    }
+
+    private void SaveTrouble(TroubleFired fired)
+    {
+        // Everything the ring holds: five minutes once it has heard five, and less, never padded, before then.
+        var audio = _ring.Snapshot();
+
+        if (audio is null || audio.Samples.Length == 0)
+        {
+            return;
+        }
+
+        var name = $"trouble-{fired.AtUtc:yyyy-MM-dd-HHmmss}-{fired.Token}";
+        var folder = Path.Combine(AutoFolder, name);
+        var seen = _ring.SamplesSeen;
+        var extra = SheetExtra?.Invoke() ?? string.Empty;
+
+        lock (_gate)
+        {
+            _troubleFolders.Add(name);
+        }
+
+        void Write()
+        {
+            try
+            {
+                WavAudio.Write(Path.Combine(folder, "capture.wav"), audio);
+                File.WriteAllText(Path.Combine(folder, "capture.txt"), TroubleSheet(fired, audio, seen, extra));
+            }
+            catch (Exception)
+            {
+                // Never-throw (§8): a trouble capture that cannot be written is lost, and listening goes on.
+            }
+        }
+
+        if (_threaded)
+        {
+            _ = Task.Run(Write);
+        }
+        else
+        {
+            Write();
+        }
+    }
+
+    private static string TroubleSheet(TroubleFired fired, MonoAudio audio, long seen, string extra)
+    {
+        var lines = new List<string>
+        {
+            "captured   automatically, trouble (work instruction 549)",
+            $"trigger    {fired.Detail}",
+            $"fired      {fired.AtUtc:yyyy-MM-dd HH:mm:ss} UTC",
+            string.Format(
+                CultureInfo.InvariantCulture,
+                "seconds    {0:0.0}  (the audio before the trigger, from Hamlet's own five-minute ring, whatever Record is set to; less where it had not yet heard five minutes)",
+                audio.Duration.TotalSeconds),
+            $"sampleRate {audio.SampleRate}",
+            $"audioSeen  {seen} samples  (the last of them is the moment it fired)",
+            "cooldown   this trigger waits ten minutes before it saves again",
+        };
+
+        if (extra.Length > 0)
+        {
+            lines.Add(string.Empty);
+            lines.Add(extra);
+        }
+
+        return string.Join(Environment.NewLine, lines) + Environment.NewLine;
     }
 
     /// <summary>End any capture under way, as listening stopping does.</summary>

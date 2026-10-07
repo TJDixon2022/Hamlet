@@ -69,11 +69,24 @@ public sealed partial class MainWindowViewModel
         };
         _autoCapture.Listen(source);
         _lastAutoTickUtc = DateTime.MinValue;
+
+        // **WHAT THE TERMINAL PRINTS**, for the stray-letter trigger (task 2), on the chain's thread.
+        if (_decoder is not null)
+        {
+            _decoder.CharacterSettled += OnSettledForAutoCapture;
+        }
     }
+
+    private void OnSettledForAutoCapture(CwCharacter character) => _autoCapture?.Character(character);
 
     /// <summary>Stop it: a capture under way ends, saying listening stopped.</summary>
     private void StopAutoCapture()
     {
+        if (_decoder is not null)
+        {
+            _decoder.CharacterSettled -= OnSettledForAutoCapture;
+        }
+
         _autoCapture?.Dispose();
         _autoCapture = null;
         AutoCaptureLine = string.Empty;
@@ -104,7 +117,14 @@ public sealed partial class MainWindowViewModel
         // **THE SHEET'S OWN LINES ARE COMPOSED HERE, ON THE APP'S THREAD**, and handed to the capture's as one string.
         Volatile.Write(ref _autoSheetExtra, AutoSheetLines());
 
-        auto.Tick(new AutoCaptureConditions(IsDecoding, inCw, IsCatchScanning, hz, state.FilterBandwidthHz));
+        auto.Tick(new AutoCaptureConditions(
+            IsDecoding,
+            inCw,
+            IsCatchScanning,
+            hz,
+            state.FilterBandwidthHz,
+            _decoder?.ShapeSide.Senders.Count ?? 0,
+            _liveFeed?.Continuity.LostMilliseconds ?? 0));
 
         AutoCaptureLine = auto.Line;
         AutoCaptureTip = auto.Tip;
