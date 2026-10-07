@@ -11491,6 +11491,9 @@ public partial class MainWindowViewModel : ObservableObject
         _liveFeed = new CwLiveFeed(_decoder, _envelope);
         _liveFeed.Listen(_audioInput);
 
+        // **AND HAMLET CAPTURES FOR ITSELF** (work instruction 549, HM-DEC-253): every W1AW session it sits on, on the same audio.
+        StartAutoCapture(_audioInput);
+
         _audioInput.Start();
 
         AudioInputName = _audioInput.DeviceName;
@@ -11574,6 +11577,7 @@ public partial class MainWindowViewModel : ObservableObject
 
         _liveFeed?.Dispose();
         _liveFeed = null;
+        StopAutoCapture();
         _envelope?.Listen(null);
         _envelope = null;
         CwHearing.ObserveScope(CwScopeFrame.Empty);
@@ -11686,6 +11690,7 @@ public partial class MainWindowViewModel : ObservableObject
         OnPropertyChanged(nameof(HasCaptureNote));
 
         NoteDecodeQuality();
+        TickAutoCapture();
 
         // OFFERED, NEVER ASSERTED (HM-DEC-059, HM-OPEN-006). The decoder
         // measured what the other station is sending at, so Hamlet may say so.

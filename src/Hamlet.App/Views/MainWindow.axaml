@@ -1669,8 +1669,17 @@
                              thing again in a longer way. -->
                         <ctl:HintMarkControl Kind="Tip" HorizontalAlignment="Left"
                             VerticalAlignment="Center"
-                            IsVisible="{Binding !CatchScanLine.Length}"
+                            IsVisible="{Binding ShowsTerminalHint}"
                             Text="what the radio is hearing, as it arrives" />
+                        <!-- WHAT THE AUTOMATIC CAPTURE IS DOING (work instruction 549, HM-DEC-253), in the same cell, so the one
+                             layout holds: "capturing W1AW · code practice · piece 3 · 12:40". Its hover says where the files go. -->
+                        <TextBlock x:Name="AutoCaptureLine"
+                                   Text="{Binding AutoCaptureLine}"
+                                   IsVisible="{Binding ShowsAutoCaptureLine}"
+                                   ToolTip.Tip="{Binding AutoCaptureTip}"
+                                   ToolTip.ShowDelay="300"
+                                   VerticalAlignment="Center" FontSize="11"
+                                   TextTrimming="CharacterEllipsis" />
                         <!-- WHAT THE SCAN IS DOING (work instruction 540), in the hint's own cell, so the one layout
                              holds and nothing moves when it appears. -->
                         <TextBlock x:Name="ScanLine"
