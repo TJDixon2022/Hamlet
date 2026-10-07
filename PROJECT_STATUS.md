@@ -2,12 +2,12 @@ PROTOCOL: 2
 PROJECT: Hamlet
 STATE: COMPLETED
 TASK: closing
-WORK_INSTRUCTION: 551 - the map follows the tab (run by hand)
+WORK_INSTRUCTION: 552 - a carrier keys down too much; the scoreboard guards CW (run by hand)
 BALL: tim
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-10-07T14:38:43-04:00
-NOTE: Unit 551 done - the map follows the tab; the owner's two yeses on HM-DEC-253; the scan's ear behind a queue; scoreboard 227
+UPDATED: 2026-10-07T15:02:36-04:00
+NOTE: Unit 552 done - key-down term ships; cold start traced to the detector, not shipped; CW tab keeps digital names; the scoreboard guards CW
 
 ---
 

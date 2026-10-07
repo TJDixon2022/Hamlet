@@ -4,6 +4,45 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-256
+date: 2026-10-07
+refs: work instruction 552, HM-DEC-254, HM-DEC-255, HM-DEC-155, R88, src/Hamlet.RadioEngine/Cw/CwSequenceShape.cs, src/Hamlet.RadioEngine/Explore/ModeLens.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheScoreboardGuardsCwTests.cs, tests/Hamlet.RadioEngine.Tests/Cw/AStationTunedInColdTests.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheShapeScoreTakenApartTests.cs, docs/carry-forward-tests.txt, docs/cw-scoreboard.md
+---
+
+**A carrier keys down too much to be Morse; the scoreboard guards CW.** Ordered by the owner in work instruction 552, 2026-10-07. R88 was lifted for the owner's twelve recordings, the three scan catches and W1AW's `cw-2026-10-06-212015`, and no other.
+
+**Shipped: the key-down term.**
+- **The term:** the shape score multiplies in one more, `KeyDown`. It is one while the key is down no more of a sender's sending than Morse ever keeps it, and falls straight to nought at a key that never comes up.
+- **Morse's ceiling is 15 of 22, 68%:** the letter `0` sent over and over, five dahs (15 units down) and their four gaps, then a letter gap. Ordinary text sits well under it.
+- **The window:** the sender's recent marks, with the gaps between them up to a word gap of seven dits; its pauses past that are left out.
+- **Measured key-down share, medians (range):** W1AW 0.48 (0.35 to 0.54), real hands 0.53 (0.34 to 0.82), synthetic clean 0.60 (0.55 to 0.66), junk 0.48 (0.36 to 0.93).
+- **What it did:**
+  - The noise burst in three minutes of loud noise, keyed down 0.88, falls from 0.69 to 0.26.
+  - Junk's 75th percentile falls from 0.40 to 0.29, its 90th from 0.67 to 0.61.
+  - Real hands keep their median of 0.76, their 5th percentile 0.46 to 0.44.
+  - **The carrier catch stays at 0.68:** keyed down 0.64 of its sending by the gate's marks, under Morse's ceiling, so this term does not see it.
+
+**Not shipped: re-reading a cold sender's backlog at its pick.** W1AW read from its first second prints `E NE II AEED` for `PE II AND`.
+- **Labelling is not the cause:** every letter is labelled at its pick exactly as the sender's lines at the end would label it (split 117 ms then, 119 at the end; letter line 113, then 111).
+- **The marks are missing:** the detector never called P's first dah, at 0.42 to 0.62 s, before it had a gap level, and called N's dah as 60 ms of its 205. Every mark it called was printed.
+- **So the re-read cannot work:** it cannot bring back a mark never called, and nothing was changed. `AStationTunedInColdTests` keeps the trace.
+
+**Shipped: the digital watering holes keep their names on the CW tab** (amends HM-DEC-255 on this one point). A shared block the band data names for a digital mode is painted in CW's colour and keeps its own name: RTTY, FT4, PSK31, FT8, JS8, `auto` and `Data`. Open ground is named CW. The Digital and Voice tabs are unchanged, and a tab change still writes only the tab's own mode.
+
+**Shipped: the scoreboard is the CW guard.** **The owner, 2026-10-07: *yes*.**
+- **Retired:** the three CW read guards on the carry-forward line, which read the corpus R88 bars and were pinned to the decoder that came out.
+  - `TheAdjudicatedReadingsKeepReadingTests` and `CwFixtureTests.TheCleanRecordingsDecodeExactly` carry a Skip naming this ruling.
+  - The thirteen `cw-2026-08-25` rows are gone from `TheCapturesThatDecodeKeepDecodingTests`' floor data.
+- **The guard:** `TheScoreboardGuardsCwTests.TheScoreboardFallsNowhere` stands on the engine line of `docs\carry-forward-tests.txt` and asserts no regression against the last unit row in `docs\cw-scoreboard.md`:
+  - the score not below it, spaces right not below it, spaces added not above it;
+  - letters in a silence no more;
+  - the random carrier at no more seeds than that file's guard line records (1 of 20, seed 5195);
+  - the first recording whole, and loud noise silent.
+- **Why not the scoreboard's own test:** it is red on two hard limits known since before this unit, and a guard that is red says nothing.
+
+**The scoreboard reads 227** after every task, every scored stretch and every hard limit as at HEAD. Nothing keys or transmits, and nothing is written to the radio.
+
+---
 id: HM-DEC-255
 date: 2026-10-07
 refs: work instruction 551, HM-DEC-207, HM-DEC-032, HM-DEC-253, HM-DEC-252, src/Hamlet.RadioEngine/Explore/ModeLens.cs, src/Hamlet.App/ViewModels/MainWindowViewModel.cs, src/Hamlet.App/Views/MainWindow.axaml, src/Hamlet.RadioEngine/Scan/CwCatchEar.cs, src/Hamlet.RadioEngine/Scan/CwCatchScan.cs, tests/Hamlet.RadioEngine.Tests/Explore/TheMapFollowsTheTabTests.cs, tests/Hamlet.App.Tests/ViewModels/TheMapFollowsTheTabTests.cs, tests/Hamlet.RadioEngine.Tests/Scan/TheCatchScanTests.cs

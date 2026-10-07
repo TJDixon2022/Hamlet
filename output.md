@@ -1,142 +1,166 @@
 ## 1. What Claude did
 
-Development computer, project gate `PROJECT: Hamlet` checked against `PROJECT_CARD.md`, the order's five checks and `Hamlet.sln`: Hamlet confirmed. Nothing here is evidence about the radio. Branch `main`. Run by hand: `SESSION.lock` taken at 14:20:32 and released at the end, nothing written to `RUN_LEDGER.md`, nothing under `tools\arbiter\` touched, no box ticked in `PHASE_PLAN.md`. Version 1.13.235 to 1.13.236. Ruling HM-DEC-255, the number the order gave. Nothing was recorded under §12.1. No recording was read except by the scoreboard. All three tasks were done; none was dropped.
+Development computer, project gate `PROJECT: Hamlet` checked against `PROJECT_CARD.md`, the order's five checks and `Hamlet.sln`: Hamlet confirmed. Nothing here is evidence about the radio. Branch `main`. Run by hand: `SESSION.lock` taken at 14:44:04 and released at the end, nothing written to `RUN_LEDGER.md`, nothing under `tools\arbiter\` touched, no box ticked in `PHASE_PLAN.md`. Version 1.13.236 to 1.13.237. Ruling HM-DEC-256, the number the order gave. Nothing was recorded under §12.1. R88 was lifted only as the order named. Every test run was one filtered invocation, the longest under three minutes.
 
-**Task 1, the map follows the tab** (`7f960e49`):
-- **How a block gets its colour:**
-  - Every block of the band carries a family: from `data\bands\us-neighborhoods.json`, or `Open` and `Phone` filled in from the band's structure, or `OutsideTheBand` past the edges.
-  - The map paints that family's colour from `ModePalette`.
-  - At 7.0475 the data's W1AW block is 500 Hz of Morse between the RTTY row and FT4 sprint. On a 300 kHz map that is a sliver, so the stretch read purple.
-- **Shared** is the licence's word: a block where the operator's licence lets him send both Morse and data over all of it (its ends and its middle). With his class unknown, it is where any class may.
-- **`ModeLens`** (engine, `Explore`) is the one rule:
-  - On the CW tab every shared block is painted and named CW; on the Digital tab, Data; on the Voice tab, as the band data says.
-  - A block already of the tab's family keeps its own name, so on the Digital tab FT8 stays `FT8` and the W1AW block becomes `Data`.
-- **What reads it:**
-  - The view model publishes `MapNeighborhoods` through the lens, and the map binds to it.
-  - The green zone's header takes its word from the same block, so it says Morse where the map paints CW and Digital where it paints Data.
-  - Everything that decides anything (mode follow, the receiver conditions, the story card) still reads the band data's own blocks.
-- **When it repaints:** on a tab change and on a licence change, through the code that already redraws the licence card. It writes nothing to the radio, and nothing on screen moves: only colours and labels change.
-- **40 m's shared blocks** are in section 3.
+**Task 1, a carrier keys down too much to be Morse** (`6c092449`), **shipped**:
+- **Measured:** each sender's key-down share is its marks over its marks and the gaps between them up to a word gap (seven dits), over the same recent marks the score already reads, with pauses left out. It was measured on unit 550's four classes (section 3).
+- **The term, `KeyDown`:**
+  - one up to Morse's ceiling, **15 of 22**: the letter `0` over and over, five dahs and their gaps, then a letter gap;
+  - falling straight to nought at a share of one, a key that never comes up;
+  - the form and the window are the author's.
+- **Result:**
+  - The noise burst falls from 0.69 to **0.26**.
+  - Junk's 75th percentile falls from 0.40 to 0.29, its 90th from 0.67 to 0.61, its 95th from 0.69 to 0.65.
+  - Real hands keep their median of 0.76; their 5th percentile moves 0.46 to 0.44.
+  - **The carrier catch stays at 0.68:** by the gate's marks it is keyed down 0.64 of its sending, under Morse's ceiling.
+  - The scoreboard reads exactly as at HEAD.
 
-**Task 2, your two yeses** (`a31e8fc5`):
-- Recorded as a dated addendum at the end of HM-DEC-253's record; its text is unchanged, as the project corrects rulings.
-  - **Stray letters:** six or more letters of one or two elements, each printed alone, within 10 seconds.
-  - **On W1AW's frequency:** within half the radio's filter width, or 250 Hz where unread.
-- Both are off the outstanding asks below. No code changed.
+**Task 2, a station tuned in cold** (`c57b4c70`), **traced, not shipped:**
+- **The premise doesn't hold here.** `AStationTunedInColdTests` prints every letter of W1AW's opening with the sender's split and letter line at the moment it printed. They are 117 ms and 113 ms, against 119 and 111 at the end of the recording, and every letter's labels are what the end's lines give. The backlog is already read with what is known at the pick: printing re-splits a sender's unprinted runs at its current lines every time.
+- **The cause is marks the detector never produced.** Dumping every mark it called in the first 4.5 s:
+  - **P's first dah** (about 0.42 to 0.62 s) was never called, while the detector had no gap level yet; its contrast reads NaN until 1.3 s.
+  - **N's dah in AND** was called as 60 ms of its 205.
+  - Every mark the detector did call was printed.
+- **No code changed.** Re-reading the backlog cannot bring back a mark that was never called. The test stays as the trace and asserts nothing.
 
-**Task 3, the scan's ear off the sound card's thread** (`72ceba28`):
-- **Before:** the ear ran its own CW chain inside the capture callback while a scan was on.
-- **Now:**
-  - The callback records the chunk for the catch's WAV and hands it to the same bounded queue the terminal uses (`AudioHandoff`).
-  - The chain reads the chunk on the ear's own thread.
-  - Everything that reads the ear back (its sense, its tone finder, the key-up share, the end of a catch) first waits for it to catch up, on the scan's thread.
-- **Counted the same way:** dropped chunks and holes, carried on each catch's JSON as `earDroppedChunks` and `earHoles`, counted from the catch's start.
-- **The test worlds** push audio much faster than real time, and their 10 ms chunks would overflow a three-second queue of 30 slots in 0.3 s. Four test worlds now let the ear catch up after each chunk, as real-time audio would: the scan world, the span world, the carrier test and the ear-against-app test.
+**Task 3, the digital watering holes keep their names** (`834dcd0b`), **shipped:**
+- On the CW tab a shared block the band data names for a digital mode keeps its name in CW's colour: RTTY, FT4, PSK31, FT8, JS8, `auto` and `Data`. Open ground is named CW.
+- The Digital and Voice tabs are unchanged.
+- The 40 m test is updated, and the app test still shows a tab change writing only its own mode.
+
+**Task 4, the scoreboard is the CW guard** (`42a61639`), **shipped, at your yes:**
+- **Retired, naming HM-DEC-256:** `TheAdjudicatedReadingsKeepReadingTests` and `CwFixtureTests.TheCleanRecordingsDecodeExactly` carry a Skip; the thirteen `cw-2026-08-25` rows are gone from `TheCapturesThatDecodeKeepDecodingTests`' floors.
+- **The guard,** `TheScoreboardGuardsCwTests.TheScoreboardFallsNowhere`, runs the scoreboard and holds it to the **last unit row** of `docs\cw-scoreboard.md`:
+  - the score not below it, spaces right not below it, spaces added not above it, no more letters in a silence;
+  - the random carrier at no more seeds than a new guard line in that file records (1 of 20, seed 5195);
+  - the first recording whole, and loud noise silent.
+- **A second test** checks that the guard reads the last unit row and not the scan table's rows after it.
+- **The carry-forward line lives in `docs\carry-forward-tests.txt`**, on its engine line (line 9). Section 3 shows it.
+- I did not run the retired guards: they read the corpus R88 bars.
 
 **Records:**
-- `docs\cw-scoreboard.md`: a row per task.
-- `PHASE_OUTCOME.md`, both copies: `## UNIT 551 - STEP 12`.
-- `PHASE_STATUS.md`, both copies: names 551, that line only.
-- `Directory.Build.props`: 1.13.236.
+- `docs\cw-scoreboard.md`: a row per task, and the guard line.
+- `docs\carry-forward-tests.txt`: the engine line, the guards table, and a dated note.
+- `PHASE_OUTCOME.md`, both copies: `## UNIT 552 - STEP 12`.
+- `PHASE_STATUS.md`, both copies: names 552, that line only.
+- `Directory.Build.props`: 1.13.237.
 - `CLAUDE.md` §1: a row.
-- `DECISIONS.md`: HM-DEC-255, and the HM-DEC-253 addendum.
+- `DECISIONS.md`: HM-DEC-256.
 
-**Build** `-warnaserror`: no warnings. **App carry-forward:** 278 of 278.
+**Build** `-warnaserror`: no warnings.
+
+**App carry-forward:** 277, 276 and 277 of 278 over three runs. Every failure was `You've caused dispatcher loop`, thrown by Avalonia's headless session, and it landed on a different test each run:
+- `TheCarrierHoldsTheButtonsTests`
+- `ThePowerIsOfferedTests` (twice)
+- `BindingHealthTests`
+
+Each passes alone (11 of 11 together). It is the dispatcher-loop failure units 544 and 548 named.
 
 ## 2. What the owner should expect
 
 Rebuild and run as usual.
 
-- **On the CW tab the map shows CW** wherever your licence lets you send both Morse and data. The whole stretch from 7.025 to 7.125 on 40 m is now amber, RTTY row, FT4, FT8 and the rest included, each labelled `CW`. At W1AW's 7.0475 the header still says `Morse`, and now the map agrees.
-- **On the Digital tab it shows Data** over the same stretch. CW main street, the QRP watering hole and the W1AW sliver turn purple and say `Data`, and the header there says `Digital`.
-- **On the Voice tab** the map is as it always was.
-- **What never changes colour:**
-  - the phone end from 7.125 up, where data isn't allowed;
-  - the CW fast lane at 7.000 to 7.025, which a General can only listen to (on an Extra licence it would change with the tab too);
-  - the grey `not ham` either side of the band.
-- **Switching tabs only repaints.** The radio is told nothing more than the one mode change each tab already makes.
-- **Your two yeses are on the record:** the stray-letter trigger and the W1AW tolerance are now your rulings, not mine, and they're gone from the open questions.
-- **The scan's ear no longer works on the sound card's own thread.**
-  - Like the terminal's decoder since unit 548, it reads behind a queue, so a busy moment in the scan can't make the sound card lose audio.
-  - Each catch's WAV is still recorded in full, and each catch's JSON now says if the ear ever fell behind (`earDroppedChunks`, `earHoles`, both 0 when it kept up).
-- **The scoreboard:** 227, exactly as before, after every task.
-- **One app test is red, and was red before this unit:** `TheGreenZoneTests.NoBandPillIsOnTheGreenZoneAndTheMapTookTheirWidth`, a layout measurement of the world-clock map's place. It fails identically at HEAD.
+- **The noise burst now scores 0.26, from 0.69,** because its key was down 88% of the time, and Morse never keeps the key down more than 68%: a run of zeros is the most any text can do. Junk as a whole sits lower.
+- **The fading carrier the scan caught still scores 0.68.** By the marks Hamlet sees, its key is down only 64% of the time, which Morse can do, so this test can't tell it from a station. It is the one bit of junk still scoring like a real hand.
+- **A station tuned in cold still loses its first letter or two.** W1AW read from its first second still prints `E NE II AEED` for `PE II AND`.
+  - The idea was to re-read those first letters once Hamlet knows the sender, and it would change nothing: they are already read with everything Hamlet knows by then.
+  - The real fault is earlier. For the first second or so, before Hamlet has measured the band's quiet level at that pitch, it misses whole dahs, or catches only the start of one. That is the next thing to fix, in the detector rather than the decoder.
+- **On the CW tab the map is amber across the shared stretch as before, but the digital spots keep their names:** FT8, FT4, JS8, PSK31, RTTY and the rest, so you can still see where the digital crowd sits. The Digital and Voice tabs haven't changed.
+- **The scoreboard now guards every unit.** The old CW checks, which read recordings that are off limits and tested a decoder that no longer exists, are retired. In their place a test reruns the scoreboard and fails if the score, the spaces, or any of the hard limits read worse than the last recorded row.
+- **The scoreboard:** 227 before, 227 after every task, everything else exactly as before.
+- **What will look wrong but is not:** the app's test line shows one failure per run, a different test each time, the "dispatcher loop" fault the test framework throws. Each of those tests passes on its own.
 - Pushed to `main`.
 
 ## 3. What you should see
-
-**40 m's blocks on each tab, for a General licensee** (`TheMapFollowsTheTabTests.FortyMetresOnEachTab`):
-
-| block | kHz | the data says | shared | CW tab | Digital tab | Voice tab |
-|---|---|---|---|---|---|---|
-| not ham | 6975–7000 | outside | no | not ham | not ham | not ham |
-| CW fast lane (CW DX) | 7000–7025 | Morse | **no** (listen-only) | CW DX | CW DX | CW DX |
-| CW main street | 7025–7030 | Morse | yes | CW | **Data** | CW |
-| QRP watering hole | 7030–7040 | Morse | yes | QRP | **Data** | QRP |
-| RTTY row | 7040–7047.25 | data | yes | **CW** | RTTY | RTTY |
-| W1AW | 7047.25–7047.75 | Morse | yes | CW | **Data** | CW |
-| FT4 sprint | 7047.75–7050 | data | yes | **CW** | FT4 | FT4 |
-| CW main street | 7050–7070 | Morse | yes | CW | **Data** | CW |
-| PSK31 ribbons | 7070–7074 | data | yes | **CW** | PSK31 | PSK31 |
-| FT8 city | 7074–7077 | data | yes | **CW** | FT8 | FT8 |
-| open ground | 7077–7078 | open | yes | **CW** | **Data** | open |
-| JS8 keyboard corner | 7078–7081 | data | yes | **CW** | JS8 | JS8 |
-| RTTY and data | 7081–7100 | data | yes | **CW** | Data | Data |
-| automatic stations | 7100–7105 | data | yes | **CW** | auto | auto |
-| RTTY and data | 7105–7125 | data | yes | **CW** | Data | Data |
-| Phone downtown (SSB DX) | 7125–7171 | voice | no | SSB DX | SSB DX | SSB DX |
-| Picture street (SSTV) | 7171–7174 | voice | no | SSTV | SSTV | SSTV |
-| Ragchew boulevard (SSB) | 7174–7290 | voice | no | SSB | SSB | SSB |
-| AM corner | 7290–7293 | voice | no | AM | AM | AM |
-| Phone side (SSB) | 7293–7300 | voice | no | SSB | SSB | SSB |
-| not ham | 7300–7325 | outside | no | not ham | not ham | not ham |
-
-Bold is a block whose colour changed. For an Extra licensee the CW fast lane is shared too, and turns Data on the Digital tab.
-
-**The tests:**
-- `TheMapFollowsTheTabTests` (engine, 3), passing:
-  - at 7.045, 7.0475 and 7.049 the blocks are CW on the CW tab and Data on the Digital tab, and the W1AW block is named `Data` there;
-  - the SSB end and `not ham` at 6.990 and 7.310 are the same block on all three tabs;
-  - the Voice tab is the data's own map;
-  - a General's DX window is not shared.
-- `TheMapFollowsTheTabTests.AtW1awTheMapAndTheHeaderFollowTheTabAndWriteNothing` (app), passing:
-
-  ```
-  CW tab: the map paints 7.0475 Cw `CW`, the header says `Morse`
-  Digital tab: the map paints 7.0475 Digital `Data`, the header says `Digital`
-  Voice tab: the map paints 7.0475 Cw `CW`, the header says `Morse`
-  CW tab: the map paints 7.0475 Cw `CW`, the header says `Morse`
-  radio writes: Cw data False filter -, Usb data True filter 1, Lsb data False filter -, Cw data False filter -; setting writes: 0
-  ```
-
-  The four writes are the tab's own, one per tab change (HM-DEC-207); the repaint adds none.
-- `TheCatchScanTests.ASlowEarLosesNothing`, passing:
-
-  ```
-  as it is: Positive, 27.50 s, WAV 220000 samples, longest delivery 0.210 ms: `RQ CQ DE W1AW W1AW W1AW K`
-  slow ear: Positive, 27.50 s, WAV 220000 samples, longest delivery 0.096 ms: `RQ CQ DE W1AW W1AW W1AW K`
-  ```
-
-  No chunk dropped, no hole. `APositiveThatStopsIsLeftAfterItsSilence` reads that same `RQ CQ DE W1AW W1AW W1AW K` at HEAD, so the queue changed nothing in what the ear hears.
-- **The scan's tests:** 123 of 123, the new one included.
-- **Binding health and the tab-is-the-mode tests** pass. `NoBandPillIsOnTheGreenZoneAndTheMapTookTheirWidth` is red here and at HEAD.
-- **App carry-forward:** 278 of 278.
 
 **The scoreboard rows:**
 
 | unit | right | wrong | invented | score | printed in silence | spaces |
 |---|---|---|---|---|---|---|
-| 551 task 1 | 248 of 288 | 19 | 2 | **227** | 1, as at HEAD | 65 of 87, 2 added |
-| 551 task 2 | 248 of 288 | 19 | 2 | **227** | 1, as at HEAD | 65 of 87, 2 added |
-| 551 task 3 | 248 of 288 | 19 | 2 | **227** | 1, as at HEAD | 65 of 87, 2 added |
+| HEAD | 248 of 288 | 19 | 2 | **227** | 1 | 65 of 87, 2 added |
+| 552 task 1 | 248 of 288 | 19 | 2 | **227** | 1, as at HEAD | 65 of 87, 2 added |
+| 552 task 2 | 248 of 288 | 19 | 2 | **227** | 1, as at HEAD | 65 of 87, 2 added |
+| 552 task 3 | 248 of 288 | 19 | 2 | **227** | 1, as at HEAD | 65 of 87, 2 added |
+| 552 task 4 | 248 of 288 | 19 | 2 | **227** | 1, as at HEAD | 65 of 87, 2 added |
 
-Each task's whole table was identical to HEAD's, line for line.
+Each task's whole table was identical to HEAD's, line for line. The random carrier prints at seed 5195 only, as at HEAD.
+
+**The key-down share by class** (the gate's senders, a sample each second of audio):
+
+| class | samples | min | p5 | p25 | median | p75 | p95 | max |
+|---|---|---|---|---|---|---|---|---|
+| W1AW | 25 | 0.349 | 0.380 | 0.422 | 0.479 | 0.517 | 0.536 | 0.537 |
+| real hands | 263 | 0.340 | 0.438 | 0.499 | 0.535 | 0.574 | 0.621 | 0.819 |
+| synthetic clean | 232 | 0.552 | 0.566 | 0.585 | 0.598 | 0.618 | 0.648 | 0.662 |
+| junk | 309 | 0.363 | 0.387 | 0.437 | 0.479 | 0.619 | 0.870 | 0.928 |
+
+**Per source, the two the order named:**
+
+| source | key-down share | score before | score after |
+|---|---|---|---|
+| the carrier catch `catch-154614-7047190` | 0.64 (0.61 to 0.70) | 0.68 | 0.68 |
+| noise 180 s, seed 5370 | 0.88 (0.84 to 0.89) | 0.69 | **0.26** |
+
+The one real hand over Morse's ceiling is the station catch `catch-153810-7033367`, at 0.82 in one sample. Its median score moves 0.68 to 0.66.
+
+**The score's percentiles, before and after:**
+
+| class | p5 before | p5 after | median before | median after | p75 before | p75 after | p95 before | p95 after |
+|---|---|---|---|---|---|---|---|---|
+| W1AW | 0.868 | 0.868 | 0.937 | 0.937 | 0.940 | 0.940 | 0.942 | 0.942 |
+| real hands | 0.459 | 0.442 | 0.757 | 0.757 | 0.879 | 0.879 | 0.937 | 0.937 |
+| synthetic clean | 0.892 | 0.892 | 0.949 | 0.949 | 0.950 | 0.950 | 0.951 | 0.951 |
+| junk | 0.011 | 0.011 | 0.106 | 0.101 | 0.403 | **0.289** | 0.691 | **0.653** |
+
+**W1AW read cold, before and after:** `E NE II AEED TYPE IV RADIO EMISSIONS HOWEVER, THIS NME IS` both, since task 2 changed nothing. The trace:
+
+```
+at the end: split 119 ms, letter line 111 ms
+0.30-0.36 s printed at 4.12 s `E`: marks 60 ms; split then 117, letter line then 113; labels at the end .
+0.70-1.02 s printed at 4.12 s `N`: marks 205 55 ms, gaps 65 ms; split then 117, letter line then 113; labels at the end -.
+...
+3.39-3.45 s printed at 4.30 s `E`: marks 60 ms; ...; labels at the end .
+3.63-3.70 s printed at 4.30 s `E`: marks 70 ms; ...; labels at the end .
+mark 0.300-0.360 s, 60 ms at 600 Hz, -17.6 dB, contrast NaN, keyed, printed
+mark 0.695-0.900 s, 205 ms at 600 Hz, -17.7 dB, contrast NaN, keyed, printed
+mark 3.385-3.445 s, 60 ms at 600 Hz, -17.4 dB, contrast 9.4, keyed, printed
+mark 3.630-3.700 s, 70 ms at 600 Hz, -17.9 dB, contrast 9.8, keyed, printed
+```
+
+No mark between 0.36 and 0.695 s, where P's first dah was. N's dah ends at 3.445 s, 60 ms long.
+
+**The guard's line**, in `docs\carry-forward-tests.txt`, line 9, the engine invocation. Its last name is the guard:
+
+```
+timeout 480 dotnet test tests/Hamlet.RadioEngine.Tests/Hamlet.RadioEngine.Tests.csproj --filter "FullyQualifiedName~TheUnslottedSendTests|...|FullyQualifiedName~TheOliviaModulatorTests.EachMacroAndATypedLineComeBackIdentical|FullyQualifiedName~TheScoreboardGuardsCwTests"
+```
+
+The guards table in the same file now reads:
+
+```
+CW     read  TheScoreboardGuardsCwTests, the scoreboard held to its last recorded row   engine   unit 552, HM-DEC-256
+```
+
+The guard run, against the row then last, 552 task 3:
+
+```
+recorded, 552 task 3: score 227, spaces 65 right and 2 added, 1 in a silence, the carrier at 1 seeds
+now: score 227, spaces 65 right and 2 added, 1 in a silence, the carrier at 1 seeds; the first recording reads `FER C HAT<BT> BEST 7V 73 <SK> KC4ZGP DEWA`
+```
+
+`TheLastUnitRowIsWhatTheGuardReads` passes.
+
+**Other tests:**
+- The 40 m test and the app's tab test pass.
+- `TheShapeScoreTakenApartTests` passes.
+- The app carry-forward results are in section 1.
 
 ## 4. What's blocking us
 
-- **`TheGreenZoneTests.NoBandPillIsOnTheGreenZoneAndTheMapTookTheirWidth`** is red at HEAD and here: the world-clock map's height reads 119 against the band's. It was not touched.
-- **Shared is judged at a block's ends and middle.** In this data every privilege boundary falls on a block's edge. A future block straddling one inside would be judged by those three points.
-- **The scratch worktree of HEAD** used to check the inherited red was removed at the end.
+- **The carrier catch still scores 0.68.** Its key-down share by the gate's marks is 0.64, under Morse's ceiling. The scan's own frame-by-frame key-up share calls it a carrier, but the gate's marks do not see that way, and no CW term measured so far separates it from the roughest hands.
+- **The cold start is in the detector.** Before it has a gap level at a pitch it misses whole dahs (contrast NaN for the first 1.3 s) or cuts them short. Re-reading the opening audio through the sender's own window once that opens is the likely repair, a detector change.
+- **The dispatcher-loop failure** in the app's test run hits one test per run and is not this unit's. The order asked for the line green, and it is green only test by test.
+- **The engine carry-forward line was not run whole**, to keep runs short. Its new CW guard was run alone and passes.
 
 ### Asks still outstanding
 
@@ -148,3 +172,4 @@ Each task's whole table was identical to HEAD's, line for line.
   - The ask stands only for the timing-only path.
   - No change for it sits in the tree.
 - **Unit 550, 2026-10-07:** the handover margin, 0.16, and the challenger's 15 s are the author's figures from measurement, and no recording yet shows the margin acting. It waits on the owner, and the change sits in `src/Hamlet.RadioEngine/Cw/CwSenderGate.cs`.
+- **Unit 552, 2026-10-07:** the key-down term's form, one to Morse's 15 of 22 and straight to nought at a key never up, is the author's. It waits on the owner, and the change sits in `src/Hamlet.RadioEngine/Cw/CwSequenceShape.cs`.
