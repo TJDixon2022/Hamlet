@@ -175,6 +175,15 @@ public sealed record CwCatch(
     /// <summary>The catch's own JSON file name.</summary>
     [JsonIgnore]
     public string Json => Path.ChangeExtension(Wav, ".json");
+
+    /// <summary>
+    /// Chunks the ear's queue dropped during the catch because its chain fell behind; the WAV is recorded before the queue and
+    /// holds them (work instruction 551, task 3).
+    /// </summary>
+    public long EarDroppedChunks { get; init; }
+
+    /// <summary>Times the ear's chain went on past audio its queue had dropped, during the catch.</summary>
+    public long EarHoles { get; init; }
 }
 
 /// <summary>A catch's line in scan.json.</summary>
@@ -982,7 +991,11 @@ public sealed class CwCatchScan
             start, _utcNow(), dial, dial, peak.Level, peak.Floor,
             isCarrier ? CatchKind.Carrier : sense.ShapeSeen ? CatchKind.Positive : CatchKind.Negative, left,
             heard.Stations, heard.Text, heard.Letters, heard.Lights, radio, wav, heard.SampleRate, heard.Seconds,
-            peak.FrequencyHz, tone?.Hz, survey, toneAfter, _toneFollowsDial);
+            peak.FrequencyHz, tone?.Hz, survey, toneAfter, _toneFollowsDial)
+        {
+            EarDroppedChunks = heard.EarDroppedChunks,
+            EarHoles = heard.EarHoles,
+        };
 
         Write(caught.Json, caught);
 
@@ -1155,7 +1168,11 @@ public sealed class CwCatchScan
         var caught = new CwCatch(
             start, _utcNow(), dial, kind == CatchKind.Empty ? peak.FrequencyHz : dial, peak.Level, peak.Floor, sense.ShapeSeen ? CatchKind.Positive : kind, left,
             heard.Stations, heard.Text, heard.Letters, heard.Lights, radio, wav, heard.SampleRate, heard.Seconds,
-            peak.FrequencyHz, tone?.Hz, survey, null, _toneFollowsDial);
+            peak.FrequencyHz, tone?.Hz, survey, null, _toneFollowsDial)
+        {
+            EarDroppedChunks = heard.EarDroppedChunks,
+            EarHoles = heard.EarHoles,
+        };
 
         Write(caught.Json, caught);
 

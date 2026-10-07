@@ -70,6 +70,9 @@ public sealed class TheEarHearsAsTheAppDoesTests
         for (var at = 0; at + (Rate / 100) <= samples.Length; at += Rate / 100)
         {
             source.Push(new AudioChunk(at, Rate, samples.AsSpan(at, Rate / 100)));
+
+            // Real time on the air: the ear reads behind a queue (work instruction 551), and is let catch up after each chunk.
+            ear.CatchUpForTests();
         }
 
         var green = ear.Sense().ShapeSeen;
@@ -127,6 +130,9 @@ public sealed class TheEarHearsAsTheAppDoesTests
         for (var at = 0; at + (Rate / 100) <= samples.Length; at += Rate / 100)
         {
             source.Push(new AudioChunk(at, Rate, samples.AsSpan(at, Rate / 100)));
+
+            // Real time on the air: the ear reads behind a queue (work instruction 551), and is let catch up after each chunk.
+            ear.CatchUpForTests();
         }
 
         var heard = ear.End(null);

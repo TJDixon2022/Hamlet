@@ -77,10 +77,15 @@ internal sealed class SpanWorld : IDisposable
         return world;
     }
 
+    private CwCatchEar? _ear;
+
     public async Task<(CwCatchScan Scan, CwScanSummary Summary)> Run(string folder, CwScanSettings settings, Action<CwCatchScan>? started = null)
     {
         using var ear = new CwCatchEar(Audio, 600, 500);
         var scan = new CwCatchScan(Rig, Monitor, Scope, ear, ListenOnly, new TheCatchScanTests.MemoryHome(), folder, settings, Delay, () => Now);
+
+        // Real time on the air: the ear reads behind a queue (work instruction 551), and is let catch up after each chunk.
+        _ear = ear;
 
         started?.Invoke(scan);
 
@@ -138,6 +143,7 @@ internal sealed class SpanWorld : IDisposable
         }
 
         Audio.Push(new AudioChunk(_sample, Rate, chunk));
+        _ear?.CatchUpForTests();
         _sample += n;
         Seconds += ChunkSeconds;
         Now = Now.AddSeconds(ChunkSeconds);

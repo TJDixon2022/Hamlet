@@ -183,6 +183,55 @@ public sealed class TheCatchScanTests : IDisposable
         Assert.InRange(silent, CwCatchScan.SilentSeconds - 2, CwCatchScan.SilentSeconds + 3);
     }
 
+    /// <remarks>
+    /// **A SLOW EAR LOSES NOTHING** (work instruction 551, task 3): the same positive, once with the ear as it is and once with
+    /// it made slow, two milliseconds spun before each 10 ms chunk it reads. The ear reads behind a queue, so the sound
+    /// card's callback stays quick while the ear is slow, the catch is the same catch with the same text, and its WAV holds
+    /// every sample of it, recorded on the callback.
+    /// </remarks>
+    [Fact]
+    public async Task ASlowEarLosesNothing()
+    {
+        async Task<(CwCatch Catch, int WavSamples, double LongestPushMs)> RunOnce(bool slow)
+        {
+            using var world = await ScanWorld.Ready(keepsSending: false);
+
+            if (slow)
+            {
+                world.EarSlow = () =>
+                {
+                    var until = System.Diagnostics.Stopwatch.GetTimestamp() + (System.Diagnostics.Stopwatch.Frequency / 500);
+
+                    while (System.Diagnostics.Stopwatch.GetTimestamp() < until)
+                    {
+                    }
+                };
+            }
+
+            var folder = Path.Combine(_folder, slow ? "slow" : "as-is");
+            var (scan, summary) = await world.Run(folder, Short with { Length = TimeSpan.FromMinutes(2) });
+            var first = Read<CwCatch>(scan, summary.Catches[0].Json);
+
+            return (first, WavAudio.Read(Path.Combine(scan.ScanFolder!, first.Wav)).Samples.Length, world.Audio.LongestPushMs);
+        }
+
+        var asIs = await RunOnce(slow: false);
+        var slow = await RunOnce(slow: true);
+
+        _output.WriteLine($"as it is: {asIs.Catch.Kind}, {asIs.Catch.Seconds:0.00} s, WAV {asIs.WavSamples} samples, longest delivery {asIs.LongestPushMs:0.000} ms: `{asIs.Catch.Text}`");
+        _output.WriteLine($"slow ear: {slow.Catch.Kind}, {slow.Catch.Seconds:0.00} s, WAV {slow.WavSamples} samples, longest delivery {slow.LongestPushMs:0.000} ms: `{slow.Catch.Text}`");
+
+        Assert.Equal(asIs.Catch.Kind, slow.Catch.Kind);
+        Assert.Equal(asIs.Catch.Text, slow.Catch.Text);
+        Assert.Equal(asIs.WavSamples, slow.WavSamples);
+        Assert.Equal((int)Math.Round(slow.Catch.Seconds * ScanWorld.Rate), slow.WavSamples);
+        Assert.Equal(0, slow.Catch.EarDroppedChunks);
+        Assert.Equal(0, slow.Catch.EarHoles);
+
+        // The callback never waits on the ear: well under the 2 ms the slow ear spends on every chunk.
+        Assert.True(slow.LongestPushMs < 2, $"a delivery took {slow.LongestPushMs:0.000} ms");
+    }
+
     /// <remarks>Test 4: the scan stops on its own at its length, set short here, and the catch under way says so.</remarks>
     [Fact]
     public async Task TheScanStopsOnItsOwnAtItsLength()
@@ -362,6 +411,17 @@ public sealed class TheCatchScanTests : IDisposable
         /// </summary>
         public int ToneSign { get; set; } = 1;
 
+        /// <summary>Run before each chunk the ear reads, to make it slow (work instruction 551, task 3).</summary>
+        public Action? EarSlow { get; set; }
+
+        /// <summary>Whether the world waits for the ear after each chunk, as real time would; on unless a test asks otherwise.</summary>
+        public bool EarPaced { get; set; } = true;
+
+        /// <summary>How many samples the world has pushed in all.</summary>
+        public long PushedSamples { get; private set; }
+
+        private CwCatchEar? _ear;
+
         private double Seconds { get; set; }
 
         public static async Task<ScanWorld> Ready(bool keepsSending)
@@ -379,8 +439,10 @@ public sealed class TheCatchScanTests : IDisposable
 
         public async Task<(CwCatchScan Scan, CwScanSummary Summary)> Run(string folder, CwScanSettings settings, Action<CwCatchScan>? started = null)
         {
-            using var ear = new CwCatchEar(Audio, 600, 500);
+            using var ear = new CwCatchEar(Audio, 600, 500) { SlowForTests = EarSlow };
             var scan = new CwCatchScan(Rig, Monitor, Scope, ear, ListenOnly, new MemoryHome(), folder, settings, Delay, () => Now);
+
+            _ear = EarPaced ? ear : null;
 
             started?.Invoke(scan);
 
@@ -442,6 +504,11 @@ public sealed class TheCatchScanTests : IDisposable
             }
 
             Audio.Push(new AudioChunk(_sample, Rate, chunk));
+
+            // **AUDIO ARRIVES IN REAL TIME ON THE AIR** (work instruction 551, task 3): the ear reads behind a queue, and a world
+            // that pushes faster than real time lets it catch up after each chunk, as the air would.
+            _ear?.CatchUpForTests();
+            PushedSamples += n;
             _sample += n;
             Seconds += ChunkSeconds;
             Now = Now.AddSeconds(ChunkSeconds);
@@ -529,7 +596,16 @@ public sealed class TheCatchScanTests : IDisposable
 
         public event AudioChunkHandler? SamplesReady;
 
-        public void Push(AudioChunk chunk) => SamplesReady?.Invoke(in chunk);
+        /// <summary>The longest one delivery took, the callback included, in milliseconds (work instruction 551, task 3).</summary>
+        public double LongestPushMs { get; private set; }
+
+        public void Push(AudioChunk chunk)
+        {
+            var started = System.Diagnostics.Stopwatch.GetTimestamp();
+
+            SamplesReady?.Invoke(in chunk);
+            LongestPushMs = Math.Max(LongestPushMs, System.Diagnostics.Stopwatch.GetElapsedTime(started).TotalMilliseconds);
+        }
 
         public void Start()
         {

@@ -46,6 +46,7 @@ public sealed class ACarrierIsACarrierTests
         for (var at = 0; at + chunk <= samples.Length; at += chunk)
         {
             source.Push(new AudioChunk(at, rate, samples.AsSpan(at, chunk).ToArray()));
+            ear.CatchUpForTests();
 
             if (!judged && at >= CwCatchScan.CarrierListen.TotalSeconds * rate)
             {

@@ -41,7 +41,14 @@ public sealed record CatchHeard(
     IReadOnlyList<CatchLetter> Letters,
     IReadOnlyList<CatchLight> Lights,
     int SampleRate,
-    double Seconds);
+    double Seconds)
+{
+    /// <summary>Chunks the ear's queue dropped during this catch because its chain fell behind (work instruction 551, task 3).</summary>
+    public long EarDroppedChunks { get; init; }
+
+    /// <summary>Times the ear's chain went on past audio its queue had dropped, during this catch.</summary>
+    public long EarHoles { get; init; }
+}
 
 /// <summary>
 /// **THE SCAN'S OWN EAR** (work instruction 540, HM-DEC-244): it records a catch's audio whole and reads it through the
@@ -53,6 +60,12 @@ public sealed record CatchHeard(
 /// Hamlet shows on the CW tab is exactly what it was, and every catch starts with no sender held from the last place.</para>
 /// <para>**THE WAV IS THE AUDIO AS HEARD**, at the source's own rate: 48 kHz from the IC-7300's USB codec, so a catch
 /// replays through any later build exactly as this one heard it.</para>
+/// <para>**BEHIND A QUEUE, OFF THE SOUND CARD'S THREAD** (work instruction 551, task 3). The terminal's decode was moved off the
+/// capture's callback after lost audio was shown to turn clean W1AW into junk (work instruction 548); the ear ran its own chain
+/// there while a scan was on. Now the callback records the chunk for the WAV and hands it to the same bounded queue
+/// (`AudioHandoff`); the chain reads it on the ear's own thread. A chunk the queue drops and a hole the chain reads across are
+/// counted, and each catch's JSON carries them. Everything that reads the ear back waits for it to catch up first, on the
+/// scan's thread.</para>
 /// </remarks>
 public sealed class CwCatchEar : IDisposable
 {
@@ -69,7 +82,18 @@ public sealed class CwCatchEar : IDisposable
     private long _sequence;
     private long _samples;
     private int _rate;
-    private bool _listening;
+    private volatile bool _listening;
+
+    // **BEHIND A QUEUE, OFF THE SOUND CARD'S THREAD** (work instruction 551, task 3): the callback records the chunk and hands
+    // it over; the chain reads it on a thread of its own, as the terminal's does (work instruction 548).
+    private readonly object _record = new();
+    private readonly AudioHandoff _handoff;
+    private readonly Thread _worker;
+    private float[] _fromQueue = new float[1];
+    private long _expectedNext = -1;
+    private long _holes;
+    private long _droppedAtBegin;
+    private long _holesAtBegin;
     private bool _shapeSeen;
     private double _lastMarkSeconds = double.NegativeInfinity;
     private CwShapeLight _light = CwShapeLight.Listening;
@@ -88,8 +112,31 @@ public sealed class CwCatchEar : IDisposable
         _pitchHz = pitchHz;
         _widthHz = widthHz;
         _radio = radio;
+        _handoff = new AudioHandoff(
+            Math.Max(1, source.SampleRate), Math.Max(1, source.SampleRate * WasapiAudioSource.BufferMilliseconds / 1000));
+        _worker = new Thread(Drain) { IsBackground = true, Name = "scan-ear" };
+        _worker.Start();
         _source.SamplesReady += OnSamples;
     }
+
+    /// <summary>Chunks the ear's queue dropped because its chain fell behind: counted, as the terminal's are.</summary>
+    public long DroppedChunks => _handoff.DroppedChunks;
+
+    /// <summary>Samples in them.</summary>
+    public long DroppedSamples => _handoff.DroppedSamples;
+
+    /// <summary>How many times the chain went on after audio the queue had dropped.</summary>
+    public long Holes => Interlocked.Read(ref _holes);
+
+    // Let the chain read everything handed over so far before anything is read back from it; a slow chain is waited for
+    // here, on the scan's thread, and never on the sound card's.
+    private void CatchUp() => _handoff.WaitUntilDrained(TimeSpan.FromSeconds(5));
+
+    /// <summary>Wait until the chain has read every chunk handed over: for a test world, whose audio arrives faster than real time.</summary>
+    internal void CatchUpForTests() => CatchUp();
+
+    /// <summary>Run before each chunk the chain reads: for a test that makes the ear slow.</summary>
+    internal Action? SlowForTests { get; set; }
 
     private readonly Func<Rig.RigState>? _radio;
 
@@ -102,9 +149,18 @@ public sealed class CwCatchEar : IDisposable
     /// <summary>Begin a catch: forget the last one, start recording and reading.</summary>
     public void Begin()
     {
-        lock (_gate)
+        CatchUp();
+
+        lock (_record)
         {
             _audio.Clear();
+        }
+
+        lock (_gate)
+        {
+            _expectedNext = -1;
+            _droppedAtBegin = _handoff.DroppedChunks;
+            _holesAtBegin = Interlocked.Read(ref _holes);
             _letters.Clear();
             _lights.Clear();
             _text.Clear();
@@ -124,6 +180,8 @@ public sealed class CwCatchEar : IDisposable
     /// <summary>What the catch has heard so far.</summary>
     public CatchSense Sense()
     {
+        CatchUp();
+
         lock (_gate)
         {
             var heard = _rate > 0 ? _samples / (double)_rate : 0;
@@ -166,9 +224,15 @@ public sealed class CwCatchEar : IDisposable
         float[] audio;
         int rate;
 
+        CatchUp();
+
         lock (_gate)
         {
             rate = _rate > 0 ? _rate : _source.SampleRate;
+        }
+
+        lock (_record)
+        {
             audio = _audio.SelectMany(a => a).ToArray();
         }
 
@@ -247,10 +311,15 @@ public sealed class CwCatchEar : IDisposable
         float[] audio;
         int rate;
 
+        CatchUp();
+
         lock (_gate)
         {
             rate = _rate > 0 ? _rate : _source.SampleRate;
+        }
 
+        lock (_record)
+        {
             var want = (int)(seconds * rate);
             var all = _audio.SelectMany(a => a).ToArray();
 
@@ -354,12 +423,12 @@ public sealed class CwCatchEar : IDisposable
         int rate;
         CatchHeard heard;
 
-        lock (_gate)
-        {
-            _listening = false;
-            _chain?.Decoder.Flush();
+        // Nothing more is recorded or handed over; what was is read to the end before the catch is closed.
+        _listening = false;
+        CatchUp();
 
-            rate = _rate > 0 ? _rate : _source.SampleRate;
+        lock (_record)
+        {
             samples = new float[_audio.Sum(a => a.Length)];
 
             var at = 0;
@@ -370,6 +439,15 @@ public sealed class CwCatchEar : IDisposable
                 at += chunk.Length;
             }
 
+            _audio.Clear();
+        }
+
+        lock (_gate)
+        {
+            _chain?.Decoder.Flush();
+
+            rate = _rate > 0 ? _rate : _source.SampleRate;
+
             var reading = _chain?.Decoder.ShapeSide;
 
             heard = new CatchHeard(
@@ -378,9 +456,11 @@ public sealed class CwCatchEar : IDisposable
                 _letters.ToList(),
                 _lights.ToList(),
                 rate,
-                rate > 0 ? samples.Length / (double)rate : 0);
-
-            _audio.Clear();
+                rate > 0 ? samples.Length / (double)rate : 0)
+            {
+                EarDroppedChunks = _handoff.DroppedChunks - _droppedAtBegin,
+                EarHoles = Interlocked.Read(ref _holes) - _holesAtBegin,
+            };
         }
 
         if (wavPath is not null)
@@ -395,17 +475,63 @@ public sealed class CwCatchEar : IDisposable
     public void Dispose()
     {
         _source.SamplesReady -= OnSamples;
-        _chain?.Dispose();
+        _handoff.Close(discard: true);
+        _worker.Join(TimeSpan.FromSeconds(2));
+
+        lock (_gate)
+        {
+            _chain?.Dispose();
+        }
     }
 
+    // **ON THE SOUND CARD'S THREAD: RECORD AND HAND OVER, NOTHING MORE** (work instruction 551, task 3). The catch's WAV is
+    // kept here, whole, whatever the chain behind the queue does; the chain reads the chunk on the ear's own thread.
     private void OnSamples(in AudioChunk chunk)
+    {
+        if (!_listening)
+        {
+            return;
+        }
+
+        lock (_record)
+        {
+            _audio.Add(chunk.Samples.ToArray());
+        }
+
+        _handoff.Offer(chunk.FirstSampleIndex, chunk.SampleRate, chunk.Samples);
+    }
+
+    private void Drain()
+    {
+        while (_handoff.Take(ref _fromQueue, out var count, out var first, out var rate))
+        {
+            try
+            {
+                SlowForTests?.Invoke();
+                Hear(first, rate, _fromQueue.AsSpan(0, count));
+            }
+            catch
+            {
+                // Never-throw (§8): a chunk that failed to read is lost, and the ear lives.
+            }
+
+            _handoff.Completed();
+        }
+    }
+
+    private void Hear(long first, int rate, ReadOnlySpan<float> samples)
     {
         lock (_gate)
         {
-            if (!_listening)
+            // **A HOLE IS COUNTED, NOT FILLED**, as the terminal's feed counts it (work instruction 548).
+            if (_expectedNext >= 0 && first > _expectedNext)
             {
-                return;
+                Interlocked.Increment(ref _holes);
             }
+
+            _expectedNext = first + samples.Length;
+
+            var chunk = new AudioChunk(first, rate, samples);
 
             if (_chain is null)
             {
@@ -431,7 +557,6 @@ public sealed class CwCatchEar : IDisposable
                 _chain.Detector.SetPassband(_pitchHz, _widthHz);
             }
 
-            _audio.Add(chunk.Samples.ToArray());
             _samples += chunk.Samples.Length;
             _chain.Process(chunk);
 
