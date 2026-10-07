@@ -44,9 +44,17 @@ public sealed class TheMapFollowsTheTabTests(ITestOutputHelper output)
         foreach (var hz in new long[] { 7_045_000, 7_047_500, 7_049_000 })
         {
             Assert.Equal(ModeFamily.Cw, At(cw, hz).Family);
-            Assert.Equal(ModeLens.CwName, At(cw, hz).ShortName);
             Assert.Equal(ModeFamily.Digital, At(digital, hz).Family);
         }
+
+        // **ON THE CW TAB A DIGITAL WATERING HOLE KEEPS ITS NAME** (work instruction 552, task 3), in CW's colour; the W1AW block is
+        // Morse already and keeps `CW`; open ground is named CW.
+        Assert.Equal("RTTY", At(cw, 7_045_000).ShortName);
+        Assert.Equal(ModeLens.CwName, At(cw, 7_047_500).ShortName);
+        Assert.Equal("FT4", At(cw, 7_049_000).ShortName);
+        Assert.Equal("FT8", At(cw, 7_075_000).ShortName);
+        Assert.Equal(ModeFamily.Cw, At(cw, 7_075_000).Family);
+        Assert.Equal(ModeLens.CwName, At(cw, 7_077_500).ShortName);
 
         // On the Digital tab the W1AW block is named Data; RTTY row and FT4 sprint keep their own names, being data already.
         Assert.Equal(ModeLens.DataName, At(digital, 7_047_500).ShortName);

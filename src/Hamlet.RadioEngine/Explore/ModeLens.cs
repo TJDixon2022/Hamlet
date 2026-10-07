@@ -80,7 +80,10 @@ public static class ModeLens
         return hood with
         {
             Family = family,
-            ShortName = family == ModeFamily.Cw ? CwName : DataName,
+            // **A DIGITAL WATERING HOLE KEEPS ITS NAME ON THE CW TAB** (work instruction 552, task 3): FT8 at 7.074, FT4, JS8, PSK31
+            // and the rest are painted Morse and still say where the digital crowd sits. Open ground is named CW, and on the Digital
+            // tab every Morse block is named Data, as before.
+            ShortName = family == ModeFamily.Cw ? (hood.Family == ModeFamily.Digital ? hood.ShortName : CwName) : DataName,
         };
     }
 
