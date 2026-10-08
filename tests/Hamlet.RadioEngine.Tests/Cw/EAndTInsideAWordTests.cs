@@ -28,6 +28,10 @@ public sealed class EAndTInsideAWordTests(ITestOutputHelper output)
     [InlineData("HUNDREDS OF KILOMETERS")]
     [InlineData("INSPIRED TO ATTEMPT A TRANSVERTER")]
     [InlineData("A BETTER LETTER")]
+    [InlineData("ADVOCATE TILL HE WENT")]
+    [InlineData("FOR THE LAST TEN YEARS")]
+    [InlineData("IT IS LEGITIMATE TO INFER")]
+    [InlineData("AT THE TEST")]
     public void TheWordReadsWhole(string sent)
     {
         var read = Read(sent, 5540 + sent.Length);

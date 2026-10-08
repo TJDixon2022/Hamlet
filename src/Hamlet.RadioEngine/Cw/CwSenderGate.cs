@@ -697,10 +697,11 @@ public sealed class CwSenderGate
 
         // **THREE LONE LETTERS IN A ROW ARE DROPPED TOGETHER** (removed in work instruction 534; back in 541, HM-DEC-245, when
         // the score counted what is wrong and invented as well as what is right).
-        // **NEVER INSIDE A WORD** (work instruction 554, task 1, HM-DEC-258): English puts ETE and TTE inside words all day -
-        // DETECT, DETERMINED, KILOMETERS, ATTEMPT, LETTER - and W1AW's were dropped live. A row with a letter of two marks or
-        // more just before and just after it, and no word gap between, is inside a word and prints.
-        if (CwRules.On(CwRules.ThreeLone) && last - first + 1 >= 3 && !InsideAWord(sender, first, last, nextFrom))
+        // **ONLY WHEN EACH IS A WORD BY ITSELF** (work instruction 555, task 1, HM-DEC-259, the owner's ruling at one letter's
+        // cost on the twelve): English puts E and T in a row inside words and across them all day - DETECT, ADVOCATE TILL,
+        // LAST TEN, AT THE TEST - and noise prints its one-mark letters each alone. A row touching any bigger letter, on either
+        // side, or with any gap inside it short of a word gap, is text.
+        if (CwRules.On(CwRules.ThreeLone) && last - first + 1 >= 3 && EachAWord(sender, first, last, nextFrom))
         {
             return false;
         }
@@ -712,31 +713,24 @@ public sealed class CwSenderGate
     }
 
     /// <summary>
-    /// Whether a row of one-mark letters lies inside one word: a letter of two marks or more just before it and just after it,
-    /// and no word gap anywhere from the one to the other, by the sender's own lines (work instruction 554, task 1). D-ETE-CT,
-    /// KILOM-ETE-RS, A-TTE-MPT and B-ETTE-R are; a row at a word's start or end, or standing alone, is not.
+    /// Whether every letter of a row of one-mark letters is printed alone as a word, the way noise prints: a word gap before the
+    /// row (or nothing before it), between each two of its letters, and after it (or nothing after it yet), by the sender's own
+    /// lines (work instruction 555, task 1). `E T E T E` is; ADVOCA-TE T-ILL, LAS-T TE-N and A-T THE are not.
     /// </summary>
-    private static bool InsideAWord(Sender sender, int first, int last, double? nextFrom)
+    private static bool EachAWord(Sender sender, int first, int last, double? nextFrom)
     {
         var runs = sender.Ended;
         var lines = sender.Lines;
 
-        if (first == 0 || runs[first - 1].Length < 2)
+        for (var i = Math.Max(1, first); i <= last; i++)
         {
-            return false;
-        }
-
-        for (var i = first; i <= last; i++)
-        {
-            if (lines.KindOf(runs[i][0].FromSeconds - runs[i - 1][^1].ToSeconds) == CwGapKind.Word)
+            if (lines.KindOf(runs[i][0].FromSeconds - runs[i - 1][^1].ToSeconds) != CwGapKind.Word)
             {
                 return false;
             }
         }
 
-        var nextLength = last + 1 < runs.Count ? runs[last + 1].Length : sender.Open.Count;
-
-        return nextFrom is { } from && nextLength >= 2 && lines.KindOf(from - runs[last][^1].ToSeconds) != CwGapKind.Word;
+        return nextFrom is not { } from || lines.KindOf(from - runs[last][^1].ToSeconds) == CwGapKind.Word;
     }
 
     /// <summary>

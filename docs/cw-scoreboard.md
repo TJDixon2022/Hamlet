@@ -346,6 +346,7 @@ guard: the random carrier prints at 1 of 20 seeds (5195), recorded at unit 552
 | 554 task 1 | 2026-10-07 | 252 of 288 | 13 | 1 | **238** | 0 | 65 of 87, 2 added | three one-mark letters in a row are dropped only where they do not lie inside a word, a letter of two marks or more just before and after with no word gap between: DETECT, DETERMINED, KILOMETERS, ATTEMPT and BETTER LETTER read whole at 30 WPM, five lone E and T still print nothing; the random carrier prints at seed 5195 only, its text longer |
 | 554 task 2 | 2026-10-07 | 252 of 288 | 14 | 0 | **238** | 0 | 65 of 87, 2 added | a mark read by level is trimmed to where it stands at its sender's level: an end comes in where two hops or more lie under half the sender's amplitude, and only where what is left stands within 3 dB of the key-down level; W1AW's 2026-10-07 replay read AND as TND because the AGC lifts a word gap's noise over the window's up line, and now reads its fast text whole (DETECT, DETERMINED, ATTEMPT, EFFECTIVE, SPECTRUM, PRETTY), 19 places differing from live where there were 74; `221745`'s invented letter becomes a wrong one; the strong catch 137 of 152 with 12 wrong (136 and 10 at HEAD), the second 22 of 35 as at HEAD |
 | 554 task 3 | 2026-10-07 | 252 of 288 | 14 | 0 | **238** | 0 | 65 of 87, 2 added | W1AW's four pieces of 2026-10-07 join as their own `w1aw` table below, 2151 letters from an offline read anchored on the live text and English, 2044 at HEAD, 2059 after task 1, 2097 after task 2; the guard holds it; nothing that reads changed |
+| 555 task 1 | 2026-10-07 | 254 of 288 | 17 | 0 | **237** | 0 | 67 of 87, 3 added | three one-mark letters in a row are dropped only where each is printed alone as a word: ADVOCATE TILL, LAST TEN, LEGITIMATE TO and AT THE TEST read whole at 30 WPM, five lone E and T still print nothing; **237, one under 238, at the owner's ruling, who accepted that cost (work instruction 555)**; spaces 65 to 67 right, added 2 to 3; the random carrier prints at seed 5195 only, as at HEAD; the w1aw table 2097 to 2112 |
 
 ## Scans (work instruction 544, HM-DEC-248)
 
@@ -390,6 +391,7 @@ high and 25 medium, 2151 letters, all totalled.
 | 554 task 1 | 2026-10-07 | **2059** | 2096 of 2151 | 37 | 0 | 437 of 440, 20 added | E and T inside a word are not noise |
 | 554 task 2 | 2026-10-07 | **2097** | 2116 of 2151 | 19 | 0 | 438 of 440, 11 added | a mark read by level stands at its sender's level |
 | 554 task 3 | 2026-10-07 | **2097** | 2116 of 2151 | 19 | 0 | 438 of 440, 11 added | the table and its guard; nothing that reads changed |
+| 555 task 1 | 2026-10-07 | **2112** | 2131 of 2151 | 19 | 0 | 438 of 440, 11 added | three one-mark letters in a row are dropped only where each is printed alone as a word |
 
 ### W1AW stretches at unit 554 task 3
 
