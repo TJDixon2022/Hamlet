@@ -533,6 +533,30 @@ internal sealed class CwPatternGate
             ? (s.Count, s.DitSeconds, s.PitchHz, s.LevelDb, s.RecentList)
             : null;
 
+    /// <summary>
+    /// **A CANDIDATE** (work instruction 558, task 1, HM-DEC-262): every sequence, standing or not, holding at least
+    /// <paramref name="minMarks"/> marks with its last within <paramref name="windowSeconds"/>: its id, pitch, level, dit and
+    /// recent marks, for the provisional window that reads it. A sequence's marks agree in pitch within <see cref="AgreeHz"/>
+    /// by construction, so each is at a steady pitch. Reads only.
+    /// </summary>
+    /// <param name="nowSeconds">The detector's audio clock.</param>
+    /// <param name="minMarks">The fewest marks.</param>
+    /// <param name="windowSeconds">How recent its last mark must be.</param>
+    /// <returns>One entry per candidate, in no order.</returns>
+    public IReadOnlyList<(int Id, double PitchHz, double LevelDb, double DitSeconds, IReadOnlyList<CwMark> Recent)> Candidates(double nowSeconds, int minMarks, double windowSeconds)
+        => _sequences
+            .Where(s => s.Count >= minMarks && nowSeconds - s.LastToSeconds <= windowSeconds && s.Lengths() is not null && s.Shape.Score > 0)
+            .Select(s => (s.Id, s.PitchHz, s.LevelDb, s.DitSeconds, s.RecentList))
+            .ToList();
+
+    /// <summary>A sequence the gate still keeps, standing or not, as <see cref="Sender"/> reports a standing one (work instruction 558).</summary>
+    /// <param name="id">The sequence.</param>
+    /// <returns>Its count, dit, pitch, level and recent marks; or null once it is gone.</returns>
+    public (int Count, double DitSeconds, double PitchHz, double LevelDb, IReadOnlyList<CwMark> Recent)? Candidate(int id)
+        => _sequences.FirstOrDefault(s => s.Id == id) is { } s
+            ? (s.Count, s.DitSeconds, s.PitchHz, s.LevelDb, s.RecentList)
+            : null;
+
     /// <summary>One standing sequence as <see cref="Standing"/> reports it (work instruction 519).</summary>
     /// <param name="Id">Which sequence, the same for as long as it lives.</param>
     /// <param name="PitchHz">The mean of its recent marks' pitch.</param>

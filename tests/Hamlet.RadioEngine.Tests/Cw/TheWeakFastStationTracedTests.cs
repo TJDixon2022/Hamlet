@@ -15,17 +15,19 @@ namespace Hamlet.RadioEngine.Tests.Cw;
 /// </summary>
 public sealed class TheWeakFastStationTracedTests(ITestOutputHelper output)
 {
-    private const string Name = "cw-2026-10-03-143906";
-
     /// <remarks>
     /// The plain read at the station's pitch; every sender the gate held, second by second; the window's contrast while it
     /// was open; and every letter printed, with its pitch and its marks. Asserts nothing about the text.
     /// </remarks>
-    [Fact]
-    public void WhereTheChainLosesIt()
+    [Theory]
+    [InlineData("cw-2026-10-03-143906")]
+    [InlineData("cw-2026-10-03-144020")]
+    [InlineData("cw-2026-10-03-221548")]
+    [InlineData("cw-2026-10-03-221530")]
+    public void WhereTheChainLosesIt(string name)
     {
-        var audio = WavAudio.Read(TheOwnersRecordingReadsTests.Wav(Name));
-        var (pitch, width) = TheRecordingsScoreboardTests.RadioState(Name);
+        var audio = WavAudio.Read(TheOwnersRecordingReadsTests.Wav(name));
+        var (pitch, width) = TheRecordingsScoreboardTests.RadioState(name);
         var inv = CultureInfo.InvariantCulture;
 
         foreach (var tone in new[] { 500.0, 514.0, 525.0 })
@@ -56,7 +58,7 @@ public sealed class TheWeakFastStationTracedTests(ITestOutputHelper output)
             {
                 var shapes = gate.SenderShapes;
 
-                output.WriteLine(string.Create(inv, $"{(at + chunk) / audio.SampleRate,2} s | {string.Join(" | ", shapes.Select(s => $"{s.PitchHz:0} Hz shape {s.Shape.Score:0.00} marks {s.Marks}{(s.Qualified ? " qualified" : string.Empty)}{(s.Printed ? " PRINTED" : string.Empty)}"))}"));
+                output.WriteLine(string.Create(inv, $"{(at + chunk) / audio.SampleRate,2} s | {string.Join(" | ", shapes.Select(s => $"{s.PitchHz:0} Hz shape {s.Shape.Score:0.00} marks {s.Marks}{(s.Qualified ? " qualified" : string.Empty)}{(s.Printed ? " PRINTED" : string.Empty)}"))} || windows {chain.Detector.CandidateWindowsNow} lane {chain.Detector.OwnWindowPitchHz:0}"));
             }
         }
 
