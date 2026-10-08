@@ -87,11 +87,17 @@ public sealed class CwChain : IDisposable
         return (pitch, width);
     }
 
-    /// <summary>Set the detector's passband from what Hamlet knows about the radio, as the app does on every scope tick.</summary>
+    /// <summary>The passband held across an unread tick (work instruction 555, task 2, HM-DEC-259).</summary>
+    public CwPassbandHold Hold { get; } = new();
+
+    /// <summary>
+    /// Set the detector's passband from what Hamlet knows about the radio, as the app does on every scope tick, holding the
+    /// last pitch and filter read across a tick where either goes unread (<see cref="CwPassbandHold"/>).
+    /// </summary>
     /// <param name="state">What Hamlet knows about the radio.</param>
     public void SetPassband(RigState state)
     {
-        var (pitch, width) = Passband(state);
+        var (pitch, width) = Hold.Update(state);
 
         Detector.SetPassband(pitch, width);
     }

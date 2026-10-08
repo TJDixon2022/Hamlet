@@ -1836,12 +1836,14 @@ public static class AppEvents
     /// </summary>
     /// <param name="telemetry">Sink, or null.</param>
     /// <param name="sample">The sample.</param>
+    /// <param name="appVersion">The app's version, so a row says which build heard it (work instruction 555).</param>
+    /// <param name="passbandRebuilds">How many times the detector rebuilt its passband since listening started (work instruction 555).</param>
     /// <remarks>
     /// The audio, every sender held with its pitch, shape, marks, whether it has qualified and which is printed, the letters
     /// printed, the light, and an automatic capture under way by its folder's name alone: no path, no text, no callsign
     /// (HM-DEC-018).
     /// </remarks>
-    public static void CwListen(ITelemetry? telemetry, CwListenSample sample)
+    public static void CwListen(ITelemetry? telemetry, CwListenSample sample, string? appVersion = null, int? passbandRebuilds = null)
         => telemetry?.Write(
             TelemetryCategory.Cw,
             "cw_listen",
@@ -1866,6 +1868,8 @@ public static class AppEvents
                 ["lettersPrinted10s"] = sample.LettersPrinted,
                 ["light"] = sample.Light,
                 ["capture"] = sample.CaptureUnderWay,
+                ["appVersion"] = appVersion,
+                ["passbandRebuilds"] = passbandRebuilds,
             });
 
     /// <summary>

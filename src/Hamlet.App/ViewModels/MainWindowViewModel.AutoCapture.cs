@@ -28,6 +28,10 @@ public sealed partial class MainWindowViewModel
     private CwListenSampler _listenSampler = new();
     private long _lastQualityLetters = -1;
 
+    // The capture under way when the senders were last noted, and the senders held when it began (work instruction 555).
+    private string? _captureNoted;
+    private string _sendersAtCaptureStart = "no capture under way";
+
     /// <summary>Where automatic captures go: <c>captures\auto</c> under Hamlet's data folder, and nothing else is ever deleted.</summary>
     internal static string AutoCaptureFolder => Path.Combine(CaptureFolder, "auto");
 
@@ -132,6 +136,15 @@ public sealed partial class MainWindowViewModel
             _decoder?.ShapeSide.Senders.Count ?? 0,
             _liveFeed?.Continuity.LostMilliseconds ?? 0));
 
+        // **THE SENDERS HELD WHEN THE CAPTURE BEGAN** (work instruction 555, task 2), noted on the first tick it is under way.
+        if (auto.CaptureUnderWay != _captureNoted)
+        {
+            _captureNoted = auto.CaptureUnderWay;
+            _sendersAtCaptureStart = _captureNoted is null
+                ? "no capture under way"
+                : string.Create(CultureInfo.InvariantCulture, $"{SendersForTheRecord(_decoder?.ShapeSide ?? CwShapeSideReading.Nothing)}  (at {now:HH:mm:ss} UTC, when the capture began)");
+        }
+
         AutoCaptureLine = auto.Line;
         AutoCaptureTip = auto.Tip;
 
@@ -139,7 +152,7 @@ public sealed partial class MainWindowViewModel
         if (_liveFeed?.Continuity is { } audio
             && _listenSampler.Sample(now, audio, _decoder?.ShapeSide ?? CwShapeSideReading.Nothing, CwHearing.ShapeLightWords, auto.CaptureUnderWay) is { } sample)
         {
-            AppEvents.CwListen(_telemetry, sample);
+            AppEvents.CwListen(_telemetry, sample, AboutViewModel.AppVersion, _envelope?.PassbandRebuilds);
         }
     }
 
@@ -158,6 +171,9 @@ public sealed partial class MainWindowViewModel
             $"pitch      {PitchForTheRecord(shape)}",
             $"speed      {SpeedForTheRecord(shape)}",
             $"senders    {SendersForTheRecord(shape)}",
+            $"at start   {_sendersAtCaptureStart}",
+            $"version    {AboutViewModel.AppVersion}",
+            $"rebuilds   {(_envelope is { } env ? string.Create(CultureInfo.InvariantCulture, $"{env.PassbandRebuilds}  (times the detector rebuilt its passband since listening started)") : "not counted  (nothing is listening)")}",
             $"audio      {(_liveFeed?.Continuity is { } audio ? audio.SheetLine + "  (since the decoder started listening)" : "not counted  (nothing is listening)")}",
             string.Format(CultureInfo.InvariantCulture, "composed   {0:yyyy-MM-dd HH:mm:ss} UTC  (these lines, as the app last had them)", DateTime.UtcNow),
             string.Empty,

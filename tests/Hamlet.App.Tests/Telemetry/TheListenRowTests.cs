@@ -108,7 +108,7 @@ public sealed class TheListenRowTests(ITestOutputHelper output)
 
                 if (sampler.Sample(now, feed.Continuity, decoder.ShapeSide, "reading", now.Second < 30 ? null : "w1aw-2026-10-07-205900") is { } sample)
                 {
-                    AppEvents.CwListen(rows, sample);
+                    AppEvents.CwListen(rows, sample, "1.13.240", 1);
                 }
             }
         }
@@ -119,6 +119,10 @@ public sealed class TheListenRowTests(ITestOutputHelper output)
         }
 
         Assert.Equal(6, rows.All.Count);
+
+        // The build that heard it and the passband rebuilds since listening started (work instruction 555, task 2).
+        Assert.All(rows.All, r => Assert.Equal("1.13.240", r.Data["appVersion"]));
+        Assert.All(rows.All, r => Assert.Equal(1, r.Data["passbandRebuilds"]));
         Assert.All(rows.All, r => Assert.Equal("cw_listen", r.Event));
         Assert.Contains(rows.All, r => (long)r.Data["lettersPrinted10s"]! > 0);
         Assert.Contains(rows.All, r => (double)r.Data["audioLostLast10sMs"]! > 0);

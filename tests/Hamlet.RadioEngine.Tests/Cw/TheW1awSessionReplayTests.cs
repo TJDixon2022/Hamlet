@@ -1,6 +1,7 @@
 using System.Globalization;
 using Hamlet.RadioEngine.Audio;
 using Hamlet.RadioEngine.Cw;
+using Hamlet.RadioEngine.Rig;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -27,7 +28,7 @@ public sealed class TheW1awSessionReplayTests(ITestOutputHelper output)
         double Seconds);
 
     /// <summary>Replays the four pieces as one stream.</summary>
-    internal static Replay Run(int chunkMs = 10, bool wholeBand = false, Action<CwEnvelopeDetector>? setUp = null, Action<double>? onChunk = null, float[]? before = null)
+    internal static Replay Run(int chunkMs = 10, bool wholeBand = false, Action<CwEnvelopeDetector>? setUp = null, Action<double>? onChunk = null, float[]? before = null, Func<double, RigState>? rig = null)
     {
         var (pitch, width) = TheRecordingsScoreboardTests.RadioState(Pieces[0]);
         var rate = WavAudio.Read(TheOwnersRecordingReadsTests.Wav(Pieces[0])).SampleRate;
@@ -39,7 +40,15 @@ public sealed class TheW1awSessionReplayTests(ITestOutputHelper output)
         var space = false;
         long index = 0;
 
-        chain.Detector.SetPassband(wholeBand ? null : pitch, wholeBand ? null : width);
+        if (rig is null)
+        {
+            chain.Detector.SetPassband(wholeBand ? null : pitch, wholeBand ? null : width);
+        }
+        else
+        {
+            chain.SetPassband(rig(0));
+        }
+
         setUp?.Invoke(chain.Detector);
         gate.CharacterRead += c => space |= c.Text == MorseAlphabet.WordGap;
         gate.RunRead += (c, run) =>
@@ -56,6 +65,12 @@ public sealed class TheW1awSessionReplayTests(ITestOutputHelper output)
             {
                 chain.Process(new AudioChunk(index + at, rate, samples.AsSpan(at, chunk)));
                 onChunk?.Invoke((index + at + chunk) / (double)rate);
+
+                // The app sets the passband from the rig state on every scope tick, twenty a second (work instruction 555, task 2).
+                if (rig is not null && (index + at + chunk) % (rate / 20) == 0)
+                {
+                    chain.SetPassband(rig((index + at + chunk) / (double)rate));
+                }
 
                 if ((index + at + chunk) % rate == 0)
                 {

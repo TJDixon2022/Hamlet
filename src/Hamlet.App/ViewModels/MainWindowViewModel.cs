@@ -206,6 +206,9 @@ public partial class MainWindowViewModel : ObservableObject
     /// </summary>
     private CwEnvelopeDetector? _envelope;
 
+    // The passband held across an unread tick, one per listen (work instruction 555, HM-DEC-259).
+    private CwPassbandHold _passbandHold = new();
+
     // The chain fed from a queue off the capture's thread, and its audio counters (work instruction 548).
     private CwLiveFeed? _liveFeed;
 
@@ -11487,6 +11490,7 @@ public partial class MainWindowViewModel : ObservableObject
         // **THE OSCILLOSCOPE RIDES ALONG TOO** (work instruction 476, HM-DEC-185). The same
         // samples the decoder gets, walked at the same hop; it drives nothing.
         _envelope = new CwEnvelopeDetector(_audioInput.SampleRate);
+        _passbandHold = new CwPassbandHold();
         // Fed by the live feed below, behind the queue (work instruction 548).
 
         // **ONE WIRING FOR EVERY LISTENER** (work instruction 542, HM-DEC-246): the detector and the decoder are wired to each
@@ -12390,8 +12394,9 @@ public partial class MainWindowViewModel : ObservableObject
         var cw = state[RigField.Mode] is { IsKnown: true, Number: { } mode }
                  && CivValues.IsCw((CivMode)(int)mode);
 
-        // The radio's pitch and filter in CW, the whole band otherwise: the one rule every listener takes (work instruction 542).
-        var (pitch, width) = CwChain.Passband(state);
+        // The radio's pitch and filter in CW, the whole band otherwise: the one rule every listener takes (work instruction 542),
+        // held across a tick where either goes unread (work instruction 555, HM-DEC-259).
+        var (pitch, width) = _passbandHold.Update(state);
 
         envelope.SetPassband(pitch, width);
 

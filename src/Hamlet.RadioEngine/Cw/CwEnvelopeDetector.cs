@@ -460,6 +460,25 @@ public sealed class CwEnvelopeDetector
         }
     }
 
+    // Every time the bins were built, the constructor's whole band included (work instruction 555).
+    private int _passbandSets;
+
+    /// <summary>
+    /// How many times the passband changed and the bins were rebuilt since the detector was made, its first whole band not
+    /// counted (work instruction 555, task 2, HM-DEC-259). Each rebuild shuts the sender's window and clears the bins' history,
+    /// so the capture sheet and the 10-second row carry it: one or two on a steady radio, more where the passband flickered.
+    /// </summary>
+    public int PassbandRebuilds
+    {
+        get
+        {
+            lock (_gate)
+            {
+                return _passbandSets - 1;
+            }
+        }
+    }
+
     /// <summary>
     /// Where the bins run: the radio's CW pitch plus and minus half its filter width, or the
     /// whole audio band where either is unknown.
@@ -495,6 +514,7 @@ public sealed class CwEnvelopeDetector
             _lowHz = low;
             _highHz = high;
             _fromRig = fromRig;
+            _passbandSets++;
 
             // A new passband is new bins; what the old ones held is about other pitches.
             var first = Math.Max(1, (int)Math.Ceiling(low / BinSpacingHz));
