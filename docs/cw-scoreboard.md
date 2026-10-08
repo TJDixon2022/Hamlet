@@ -348,6 +348,7 @@ guard: the random carrier prints at 1 of 20 seeds (5195), recorded at unit 552
 | 554 task 3 | 2026-10-07 | 252 of 288 | 14 | 0 | **238** | 0 | 65 of 87, 2 added | W1AW's four pieces of 2026-10-07 join as their own `w1aw` table below, 2151 letters from an offline read anchored on the live text and English, 2044 at HEAD, 2059 after task 1, 2097 after task 2; the guard holds it; nothing that reads changed |
 | 555 task 1 | 2026-10-07 | 254 of 288 | 17 | 0 | **237** | 0 | 67 of 87, 3 added | three one-mark letters in a row are dropped only where each is printed alone as a word: ADVOCATE TILL, LAST TEN, LEGITIMATE TO and AT THE TEST read whole at 30 WPM, five lone E and T still print nothing; **237, one under 238, at the owner's ruling, who accepted that cost (work instruction 555)**; spaces 65 to 67 right, added 2 to 3; the random carrier prints at seed 5195 only, as at HEAD; the w1aw table 2097 to 2112 |
 | 555 task 2 | 2026-10-07 | 254 of 288 | 17 | 0 | **237** | 0 | 67 of 87, 3 added | a passband already known is held until a new reading replaces it: an unread pitch or filter changes nothing; another mode or a radio with nothing read gives the whole band. On W1AW's session with the pitch read dropped for one tick every 20 s and three ticks every 20 s, the text differed from the steady replay in 101 places and stray senders stood at 375 and 475 Hz; held, 0 places, the same senders, one rebuild. No 550 Hz sender either way. The sheet and the 10-second row carry the app's version and the rebuilds, the sheet the senders at the capture's start; nothing that reads changed |
+| 555 task 3 | 2026-10-07 | 254 of 288 | 17 | 0 | **237** | 0 | 67 of 87, 3 added | H at 35 WPM traced, not changed: in piece 2's 35 WPM text 5 of 6 H read whole, every dit 34 to 41 ms; the H of LAY THE at 257.8 s opens with a dit broken into pieces 6 to 10 dB under the key-down level, the offline read loses it too (`TSE`) and the gate makes `I`; `THE HELD HABITS OF HIS SMITH` at 35 WPM reads whole steady and with a 6 dB fade; nothing that reads changed |
 
 ## Scans (work instruction 544, HM-DEC-248)
 
@@ -394,6 +395,7 @@ high and 25 medium, 2151 letters, all totalled.
 | 554 task 3 | 2026-10-07 | **2097** | 2116 of 2151 | 19 | 0 | 438 of 440, 11 added | the table and its guard; nothing that reads changed |
 | 555 task 1 | 2026-10-07 | **2112** | 2131 of 2151 | 19 | 0 | 438 of 440, 11 added | three one-mark letters in a row are dropped only where each is printed alone as a word |
 | 555 task 2 | 2026-10-07 | **2112** | 2131 of 2151 | 19 | 0 | 438 of 440, 11 added | a passband already known is held until a new reading replaces it; nothing that reads changed |
+| 555 task 3 | 2026-10-07 | **2112** | 2131 of 2151 | 19 | 0 | 438 of 440, 11 added | H at 35 WPM traced; nothing that reads changed |
 
 ### W1AW stretches at unit 554 task 3
 
