@@ -353,6 +353,7 @@ guard: the random carrier prints at 1 of 20 seeds (5195), recorded at unit 552
 | 556 task 2 | 2026-10-07 | 254 of 288 | 17 | 0 | **237** | 0 | 67 of 87, 3 added | the owner's ruling recorded: a measured figure that ships stands; the asks list cleared of such figures; no code changed |
 | 556 task 3 | 2026-10-07 | 254 of 288 | 17 | 0 | **237** | 0 | 67 of 87, 3 added | word spaces found, not changed: of 20 missing, 6 are word gaps as short as the sender's own letter gaps (137 to 252 ms against clusters of 171 to 222), 5 sit beside a letter not printed, 5 are word gaps under the line with the word cluster shown and 4 before any word cluster; the 3 added are letter gaps over the line. The largest group cannot be told from a letter gap by any gap, so nothing shipped |
 | 556 task 4 | 2026-10-07 | 254 of 288 | 17 | 0 | **237** | 0 | 67 of 87, 3 added | the broken dahs traced, not changed: on the strong catch 7 of 9 dahs stand in two pieces on this tree; 6 dip past the 0.6 down line (0.60, 0.76, 0.85, 1.03, 1.04 and 1.14 of the contrast), the 2 whole ones dip 0.52 and 0.45, the window had not opened at the ninth. The sender's own gaps on the same window run p1 0.78, p5 0.91. A down step at its gaps' fifth percentile joined all but one dah and read 196 on the twelve, the first recording broken, and 783 on w1aw: a gap shallower than the step no longer ends a mark, is never counted, and the step climbs. Not shipped |
+| 556 task 5 | 2026-10-07 | 254 of 288 | 17 | 0 | **237** | 0 | 67 of 87, 3 added | the weak fast station traced, not changed: on `143906` the sender at 515 Hz qualifies at 7 s on 19 marks, most of them noise blips of 20 to 35 ms where the plain read's dit is 47 ms; silent from 7 to 15 s it is not picked until 19 s, when its backlog prints the blips as `I E E I I E N I E E`; its lines, drawn partly from them, split QS into `T T A E E` at 15 to 18 s; its window opens at 18.26 s at 12.5 dB of contrast and from there it reads `DE WB2FU`. No plain fix: telling the blips from its dits needs a figure set from this recording |
 
 ## Scans (work instruction 544, HM-DEC-248)
 
@@ -404,6 +405,7 @@ high and 25 medium, 2151 letters, all totalled.
 | 556 task 2 | 2026-10-07 | **2112** | 2131 of 2151 | 19 | 0 | 438 of 440, 11 added | the owner's ruling recorded; no code changed |
 | 556 task 3 | 2026-10-07 | **2112** | 2131 of 2151 | 19 | 0 | 438 of 440, 11 added | word spaces found by cause on the twelve; nothing changed |
 | 556 task 4 | 2026-10-07 | **2112** | 2131 of 2151 | 19 | 0 | 438 of 440, 11 added | the broken dahs traced; a down step from the sender's own gaps read 783 here and did not ship; nothing changed |
+| 556 task 5 | 2026-10-07 | **2112** | 2131 of 2151 | 19 | 0 | 438 of 440, 11 added | the weak fast station traced; nothing changed |
 
 ### W1AW stretches at unit 554 task 3
 
