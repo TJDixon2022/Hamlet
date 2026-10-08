@@ -4,6 +4,54 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-263
+date: 2026-10-08
+refs: work instruction 559, HM-DEC-258, HM-DEC-262, R88, tests/fixtures/cw/captured/cw-2026-10-08-121324.wav, tests/fixtures/cw/captured/cw-2026-10-08-121357.wav, tests/fixtures/cw/captured/cw-2026-10-08-121414.wav, src/Hamlet.RadioEngine/Cw/CwEnvelopeDetector.cs, src/Hamlet.RadioEngine/Cw/CwPatternGate.cs, tests/Hamlet.RadioEngine.Tests/Cw/Km3stuReadsFromHisCqTests.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheRecordingsScoreboardTests.cs, docs/cw-scoreboard.md
+---
+
+**KM3STU reads from his CQ: the cause found, the candidate windows kept off.** Ordered by the owner in work instruction 559, 2026-10-08.
+
+**R88 is lifted for KM3STU's three recordings of 2026-10-08 12:13 UTC**, `cw-2026-10-08-121324`, `-121357` and `-121414`, committed with their sheets, besides the owner's twelve, the three scan catches, W1AW's `cw-2026-10-06-212015` and the four pieces of 2026-10-07, and no other.
+
+**The cause.** KM3STU, a POTA activator on 7.0442 MHz, keyed his tone at 800 Hz, 200 Hz above the radio's 600 Hz pitch and 50 Hz inside the 500 Hz filter's edge, about 13 dB over the noise at 20 to 22 WPM. Live, Hamlet printed nothing for the whole first recording. Read through the app's chain with the windows off:
+- **The grid read his dahs broken or not at all.** Where a plain read finds dahs of 155 to 170 ms, the grid offered 85 + 20 or nothing.
+- **It called noise humps beside his dits.** Pieces of 20 to 35 ms at 2 to 7 dB of their own contrast sat beside his 45 ms dits, in the gaps the radio's AGC lifts.
+- **So his shape stayed too low to print.** The sequence that stood for him at 798 Hz mixed the humps with his dits and scored a shape of 0.03 to 0.2. The gate lets a sender go under 0.1 and never picks one under it, and he reached 0.50 once, at 19 s.
+
+**The windows on.** A provisional window opened on him at 15 s and read his dahs whole (150 to 163 ms) and his dits at 50, and he printed from 18 s. Then:
+- **The humps came in too.** The window called the same humps, about −24 dB against his −19.5, over an up line only 0.4 of an 11 dB contrast under his level.
+- **They pulled his own window off his tone.** His window takes its pitch from his last four marks; with the humps among them it opened at 831 Hz, 31 Hz off, and read him weaker.
+- **He was let go.** His shape fell to nought.
+
+**Shipped, inside the provisional window only: a mark stands at its candidate's level.** A mark read by level in a provisional window must have its top within twice a flat top's wobble, 3 dB, of its candidate's level. A key held down holds its level; a noise hump crosses the up line and peaks under it.
+- **Not in the station's own window:** there the same rule read 236 and 235 and printed `?` and `E` inside `221502`'s silence, where a fading station's key-downs fall under it, even when kept to marks shorter than a dit.
+- **It is part of the windows,** so it is off with them.
+
+**The windows on, measured:**
+
+| | the board with KM3STU | the twelve without | w1aw | `121324` reads |
+|---|---|---|---|---|
+| windows off (as shipped) | 275 | 237 | 2112 | `IEU EE IE TSIE A EAEE IAGAK`, 4 of 19 |
+| windows on | 297 | 234 | 2111 | `INOTA DE KM3STU K KQ4PAK`, 18 of 19 |
+
+- **`143906`** reads `IEE I I E NUVEE T QSYDEWB2FU` with them on.
+- **The bar has three parts, and all are missed:** the first recording reads `NOTA DE`, not `POTA DE KM3STU`; the original stretches read 234, not 237; w1aw falls by one.
+- **So the windows stay off.** The original stretches' loss is the same as last unit's: one borderline gap inside CHAMPION's O on `221530` flips when its first marks are read through a window, and one letter is invented on `221851`.
+
+**The board.** KM3STU's three recordings join the table as three stretches at 800 Hz, one a recording, since stretches side by side at one pitch take each other's edge letters:
+
+| recording | span | confidence | reference |
+|---|---|---|---|
+| `121324` | 14.6 to 30 s | medium | `POTA DE KM3STU K KQ 4PA K` |
+| `121357` | 14.3 to 29.3 s | high | `55N 55N VA VA BK BK` |
+| `121414` | 0.3 to 24.1 s | high | `R 55N 55N VA VA BK BK TU RON VA ES 72 KM3STU` |
+
+- **The total:** 275 with them, 237 without, as at HEAD. The scoreboard prints both.
+- **Not done:** the low-confidence stretches (task 2) were not re-read.
+
+Nothing keys or transmits, and nothing is written to the radio.
+
+---
 id: HM-DEC-262
 date: 2026-10-08
 refs: work instruction 558, HM-DEC-233, HM-DEC-257, HM-DEC-258, R88, tag before-candidate-windows, src/Hamlet.RadioEngine/Cw/CwEnvelopeDetector.cs, src/Hamlet.RadioEngine/Cw/CwPatternGate.cs, tests/Hamlet.RadioEngine.Tests/Cw/ACandidateGetsAWindowTests.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheWeakFastStationTracedTests.cs, docs/cw-scoreboard.md

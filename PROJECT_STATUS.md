@@ -2,12 +2,12 @@ PROTOCOL: 2
 PROJECT: Hamlet
 STATE: COMPLETED
 TASK: closing
-WORK_INSTRUCTION: 558 - a candidate gets a window before it stands (run by hand)
+WORK_INSTRUCTION: 559 - the candidate windows against KM3STU (run by hand)
 BALL: tim
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-10-08T08:43:46-04:00
-NOTE: Unit 558 done - candidate windows built and measured 234 and 2111, kept off; the 13 dB POTA case reads whole on the bench either way; 237 and 2112
+UPDATED: 2026-10-08T11:06:37-04:00
+NOTE: Unit 559 done - KM3STU cause found (humps and broken dahs at the filter edge); windows read his CQ but cost 3 and 1, kept off; board 275 with his three, 237 without
 
 ---
 
