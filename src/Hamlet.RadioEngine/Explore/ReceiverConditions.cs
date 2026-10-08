@@ -203,6 +203,24 @@ public static class ReceiverConditions
         => hood is null ? Array.Empty<ReceiverCondition>() : ForTab(hood.ShortName, hood);
 
     /// <summary>
+    /// What the receiver has to be for a tab's mode, with the operator's own choices applied (work instruction 564,
+    /// HM-DEC-268): on the CW tab his choice of AGC replaces the row's, or takes the row out where he chose to leave the radio
+    /// alone. The engine applies them, so the view model names no control (§0.1).
+    /// </summary>
+    /// <param name="mode">The mode row the tab means, as the file spells it: `CW`, `FT8`.</param>
+    /// <param name="hood">The block the dial is in, or null.</param>
+    /// <param name="choices">The operator's choices.</param>
+    /// <returns>The conditions to apply.</returns>
+    public static IReadOnlyList<ReceiverCondition> ForTab(string? mode, Neighborhood? hood, ReceiverChoices choices)
+    {
+        ArgumentNullException.ThrowIfNull(choices);
+
+        var rows = ForTab(mode, hood);
+
+        return mode == "CW" ? CwAgc.Apply(rows, choices.CwAgc) : rows;
+    }
+
+    /// <summary>
     /// What the receiver has to be for a tab's mode, with the block under the dial's scope span
     /// spoken beside it (work instruction 503, R111).
     /// </summary>

@@ -1613,13 +1613,13 @@
                                 Content="⋯"
                                 FontSize="11" Padding="6,2"
                                 IsEnabled="{Binding !IsCatchScanning}"
-                                ToolTip.Tip="The scan's length, how long it watches each span, how long it stays where a shape forms and where none does, and how much Record keeps."
+                                ToolTip.Tip="The scan's length, how long it watches each span, how long it stays where a shape forms and where none does, how much Record keeps, and what Hamlet sets the AGC to in CW."
                                 ToolTip.ShowDelay="300">
                             <Button.Flyout>
                                 <Flyout Placement="BottomEdgeAlignedRight">
                                     <StackPanel Spacing="6" Width="250">
                                         <TextBlock Text="{Binding CatchScanSettingsLine}" TextWrapping="Wrap" FontSize="11" />
-                                        <Grid ColumnDefinitions="*,110" RowDefinitions="Auto,Auto,Auto,Auto,Auto" RowSpacing="4">
+                                        <Grid ColumnDefinitions="*,110" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto" RowSpacing="4">
                                             <TextBlock Grid.Row="0" Text="scan length, minutes" VerticalAlignment="Center" FontSize="11" />
                                             <NumericUpDown Grid.Row="0" Grid.Column="1" Minimum="1" Maximum="600" Increment="5"
                                                            FormatString="0" Value="{Binding CatchScanMinutes}" />
@@ -1637,6 +1637,14 @@
                                                        ToolTip.Tip="How much Record keeps, from half a minute to five minutes. Five minutes holds about 58 MB while Hamlet listens, and it takes effect the next time Hamlet starts listening." />
                                             <NumericUpDown Grid.Row="4" Grid.Column="1" Minimum="30" Maximum="300" Increment="30"
                                                            FormatString="0" Value="{Binding RecordSeconds}" />
+                                            <!-- AGC IN CW (work instruction 564, HM-DEC-268): what Hamlet sets the radio's AGC to on entering
+                                                 the CW tab, kept across restarts. His own hand on the radio still wins. -->
+                                            <TextBlock Grid.Row="5" Text="AGC in CW" VerticalAlignment="Center" FontSize="11"
+                                                       ToolTip.Tip="What Hamlet sets the radio's AGC to when you come to the CW tab. Slow lets the gain settle on the station and hold through the gaps between dits, so the hiss stays flat. Whatever you then set on the radio yourself stays until you next come to the CW tab, and leaving CW puts back what the radio had before." />
+                                            <ComboBox x:Name="AgcInCwChoice" Grid.Row="5" Grid.Column="1" FontSize="11"
+                                                      HorizontalAlignment="Stretch"
+                                                      ItemsSource="{x:Static vm:MainWindowViewModel.AgcInCwChoices}"
+                                                      SelectedItem="{Binding AgcInCw}" />
                                         </Grid>
                                     </StackPanel>
                                 </Flyout>

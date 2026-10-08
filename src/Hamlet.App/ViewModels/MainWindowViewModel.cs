@@ -596,6 +596,14 @@ public partial class MainWindowViewModel : ObservableObject
         // **HM-DEC-056 IS UNTOUCHED AND STILL GOVERNS.** This goes through the
         // same settle timer as before, so a mode he then sets on the radio's own
         // knob wins, and the app says so and does not write it back.
+        //
+        // **LEAVING CW PUTS THE AGC BACK** (work instruction 564, HM-DEC-268): what the radio had before Hamlet changed it on
+        // entering CW, unless his hand has moved it since. The Digital and Voice tabs write no AGC of their own.
+        if (value != "CW")
+        {
+            _ = RestoreCwAgcAsync();
+        }
+
         _tabWrittenFor = null;
         _conditionsSetForTab = null;
         _modeFollow = _modeFollow.Rearmed();
@@ -9352,6 +9360,7 @@ public partial class MainWindowViewModel : ObservableObject
 
         // The scan's three settings, as the operator last left them (work instruction 541).
         LoadCatchScanSettings();
+        LoadAgcInCw();
         _telemetry = telemetry;
 
         // The terminal names BT and AR by the operator's setting, read as each
@@ -12229,6 +12238,10 @@ public partial class MainWindowViewModel : ObservableObject
             // **WHAT THE LIVE PATH LOST** (work instruction 548, task 2): audio that never reached the decode since it started
             // listening, the longest a capture callback came late, and the deepest the queue got.
             $"audio      {(_liveFeed?.Continuity is { } audioLine ? audioLine.SheetLine + "  (since the decoder started listening; lost counts what the queue dropped and what the capture fell short of real time by, past one 100 ms buffer)" : "not counted  (nothing is listening)")}",
+
+            // **THE AGC AND WHOSE IT IS** (work instruction 564, HM-DEC-268): as the radio reports it, and whether Hamlet set it
+            // for CW, the hand moved it, or it was the radio's own; so a sheet on SLOW and one on FAST can be told apart.
+            AgcSheetLine(),
             "",
         };
 
@@ -13564,7 +13577,9 @@ public partial class MainWindowViewModel : ObservableObject
             return;
         }
 
-        var conditions = IsCwMode ? ReceiverConditions.ForTab("CW", null)
+        // **THE OPERATOR'S OWN CHOICES GO WITH THE TAB'S ROW** (work instruction 564, HM-DEC-268): on the CW tab, the AGC he chose
+        // beside the scan's settings, applied by the engine, so nothing here names a control.
+        var conditions = IsCwMode ? ReceiverConditions.ForTab("CW", null, ReceiverChoicesNow)
             : IsDigitalMode ? ReceiverConditions.ForTab("FT8", here)
             : Array.Empty<ReceiverCondition>();
 
@@ -13614,7 +13629,9 @@ public partial class MainWindowViewModel : ObservableObject
             // narrating the whole thing would have hidden three admissions behind
             // a hover. `Admissions` filters the same clauses out of the same
             // results and those go on the bar.
-            var say = ReceiverSetupVoice.Say(results);
+            // **THE STORY LINE SAYS IT ONCE WHEN IT SETS IT** (work instruction 564): `AGC set to SLOW for CW.`, ahead of the
+            // rest, and what was changed is kept so leaving CW can put it back.
+            var say = (IsCwMode ? KeepWhatTheTabChanged(results) : "") + ReceiverSetupVoice.Say(results);
 
             if (say.Length > 0)
             {

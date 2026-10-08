@@ -51,12 +51,17 @@ public enum ConditionOutcome
 /// When <paramref name="NowText"/> was read, or null where it was not (work
 /// instruction 411: a read-back is stated with its time).
 /// </param>
+/// <param name="WasNumber">
+/// What the radio said before as a number on the read's scale, where Hamlet changed it, so it can be put back (work
+/// instruction 564: the AGC on leaving CW).
+/// </param>
 public sealed record ConditionResult(
     ReceiverCondition Condition,
     ConditionOutcome Outcome,
     string? WasText = null,
     string? NowText = null,
-    DateTime? NowAtUtc = null);
+    DateTime? NowAtUtc = null,
+    int? WasNumber = null);
 
 /// <summary>What Hamlet last set, so it can tell its own hand from the operator's.</summary>
 /// <param name="LastSet">
@@ -340,7 +345,7 @@ public static class ReceiverSetup
             memory = memory.Remember(field, wantedAsRead);
 
             results.Add(new ConditionResult(
-                condition, ConditionOutcome.Changed, before.Text, after.Text));
+                condition, ConditionOutcome.Changed, before.Text, after.Text, WasNumber: now));
         }
 
         return (results, memory);

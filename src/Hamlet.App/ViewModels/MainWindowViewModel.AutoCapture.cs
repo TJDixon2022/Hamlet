@@ -152,7 +152,9 @@ public sealed partial class MainWindowViewModel
         if (_liveFeed?.Continuity is { } audio
             && _listenSampler.Sample(now, audio, _decoder?.ShapeSide ?? CwShapeSideReading.Nothing, CwHearing.ShapeLightWords, auto.CaptureUnderWay) is { } sample)
         {
-            AppEvents.CwListen(_telemetry, sample, AboutViewModel.AppVersion, _envelope?.PassbandRebuilds);
+            var (agc, agcSetBy) = AgcForTheRecord();
+
+            AppEvents.CwListen(_telemetry, sample, AboutViewModel.AppVersion, _envelope?.PassbandRebuilds, agc, agcSetBy);
         }
     }
 
@@ -175,6 +177,7 @@ public sealed partial class MainWindowViewModel
             $"version    {AboutViewModel.AppVersion}",
             $"rebuilds   {(_envelope is { } env ? string.Create(CultureInfo.InvariantCulture, $"{env.PassbandRebuilds}  (times the detector rebuilt its passband since listening started)") : "not counted  (nothing is listening)")}",
             $"audio      {(_liveFeed?.Continuity is { } audio ? audio.SheetLine + "  (since the decoder started listening)" : "not counted  (nothing is listening)")}",
+            AgcSheetLine(),
             string.Format(CultureInfo.InvariantCulture, "composed   {0:yyyy-MM-dd HH:mm:ss} UTC  (these lines, as the app last had them)", DateTime.UtcNow),
             string.Empty,
         };

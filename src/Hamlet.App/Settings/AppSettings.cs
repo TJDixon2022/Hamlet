@@ -151,6 +151,12 @@ public sealed class AppSettings
     /// <summary>How many seconds Record keeps (work instruction 548, task 3): thirty unless the operator set another, up to 300.</summary>
     public int RecordSeconds { get; set; } = 30;
 
+    /// <summary>
+    /// What Hamlet sets the radio's AGC to on the CW tab (work instruction 564, HM-DEC-268): `slow` unless the operator chose
+    /// `mid`, `fast` or `leave`, which writes nothing. Stored as a word so somebody reading their own settings file can see it.
+    /// </summary>
+    public string AgcInCw { get; set; } = "slow";
+
     /// <summary>Per-panel expand/collapse state, keyed by panel id. An absent
     /// key means expanded — a new panel arrives open (HM-DEC-021).</summary>
     public Dictionary<string, bool> PanelExpanded { get; set; } = new();

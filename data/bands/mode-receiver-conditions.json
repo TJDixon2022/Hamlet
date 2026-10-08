@@ -77,12 +77,12 @@
         },
         {
           "control": "AGC",
-          "says": "slow gain rides over the gaps and hides the keying",
+          "says": "fast gain turns the noise up in every gap between the dits",
           "field": "agc",
-          "wanted": 1,
-          "wantedText": "fast",
+          "wanted": 3,
+          "wantedText": "slow",
           "confirmed": true,
-          "because": "Automatic gain control follows the signal up and down, and Morse is a signal that stops several times a second. Fast is the standard setting for CW because it tracks the keying itself rather than pumping across it; on slow the receiver holds its gain through the gaps and the contrast the decoder needs between key-down and key-up is reduced."
+          "because": "Automatic gain control turns the receiver down when a signal arrives and back up when it goes, and Morse goes away several times a second. On fast the gain climbs again in every gap between the elements, so the hiss swells and sinks in the station's own rhythm and each key-down lands with a small overshoot, which is what the decoder kept tripping over. On slow the gain settles on the station's peak and holds through the gaps, so the background stays flat and the marks stand clear of it, which is why CW operators run it slow. The owner asked for it on 2026-10-08 (HM-DEC-268), the choice of slow, mid, fast or leaving it alone sits beside the scan's settings, and what he sets on the radio himself holds until he next comes to the CW tab."
         },
         {
           "control": "RF gain",

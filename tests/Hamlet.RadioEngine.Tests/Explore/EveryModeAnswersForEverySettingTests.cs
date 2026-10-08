@@ -139,7 +139,7 @@ public sealed class EveryModeAnswersForEverySettingTests
             (RigField.ManualNotch, 0),
             (RigField.NoiseBlanker, 0),
             (RigField.NoiseReduction, 0),
-            (RigField.Agc, 1),
+            (RigField.Agc, 3), // SLOW for CW at the owner's word (work instruction 564, HM-DEC-268)
             (RigField.RfGain, 255),
             (RigField.Squelch, 0),
         })

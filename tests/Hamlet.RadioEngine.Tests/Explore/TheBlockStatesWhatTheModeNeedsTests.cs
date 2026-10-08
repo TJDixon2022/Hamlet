@@ -201,8 +201,8 @@ public sealed class TheBlockStatesWhatTheModeNeedsTests
             Assert.Equal(0, notch.Wanted);
             Assert.True(notch.CanBeWritten);
 
-            // **AGC IS FAST FOR CW**, which reverses unit 043's unruled guess.
-            Assert.Equal(1, conditions.Single(c => c.Field == RigField.Agc).Wanted);
+            // **AGC IS SLOW FOR CW** (work instruction 564, HM-DEC-268): the owner's choice, superseding FAST.
+            Assert.Equal(3, conditions.Single(c => c.Field == RigField.Agc).Wanted);
 
             // **THE ATTENUATOR IS STILL A RULE.**
             Assert.True(

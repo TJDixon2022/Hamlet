@@ -189,7 +189,7 @@ public sealed partial class MainWindowViewModel
     /// <summary>The scan's settings in words, for the popover's heading.</summary>
     public string CatchScanSettingsLine => string.Create(
         CultureInfo.InvariantCulture,
-        $"runs {CatchScanMinutes} min · watches each span {CatchSurveySeconds} s · stays up to {CatchPositiveStaySeconds} s on a shape · {CatchNegativeStaySeconds} s where none forms · Record keeps {RecordSeconds} s");
+        $"runs {CatchScanMinutes} min · watches each span {CatchSurveySeconds} s · stays up to {CatchPositiveStaySeconds} s on a shape · {CatchNegativeStaySeconds} s where none forms · Record keeps {RecordSeconds} s · AGC in CW {AgcInCw}");
 
     // While the settings are being read in at start, a change is not a change to save.
     private bool _loadingCatchScanSettings;
