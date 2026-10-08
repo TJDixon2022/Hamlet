@@ -4,6 +4,36 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-261
+date: 2026-10-08
+refs: work instruction 557, HM-DEC-260, R88, src/Hamlet.RadioEngine/Cw/CwDecoder.cs, src/Hamlet.RadioEngine/Cw/CwEnvelopeDetector.cs, src/Hamlet.RadioEngine/Cw/CwSenderGate.cs, docs/cw-scoreboard.md
+---
+
+**No mark shorter than Morse's fastest dit makes a station: measured, not shipped.** Ordered by the owner in work instruction 557, 2026-10-08. R88 was lifted for the owner's twelve recordings, the three scan catches, W1AW's `cw-2026-10-06-212015` and the four pieces of 2026-10-07; no recording was added.
+
+**The ceiling.** The order took its floor from a 40 WPM speed-search ceiling. The tree has no such ceiling: the fastest speed it names is **48 WPM**, `CwDecoder.FastestPlausibleWpm`, "the fastest the radio's own keyer sends", which bounds the printed speed; a dit there is 25 ms, and the detector's shortest bar, `CwEnvelopeDetector.ShortestBarMs`, is the same 25 ms. The floor was built from that number, `1.2 / FastestPlausibleWpm`, so one number would rule both, and 40 WPM was measured beside it for the report only.
+
+**Measured, in the gate where a mark joins a sender:**
+
+| floor | applied to | the twelve | invented | w1aw | `143906` reads |
+|---|---|---|---|---|---|
+| none (HEAD) | | 237 | 0 | 2112 | `IEE I I E NIEE IE T T AEEYDEWB2FU` |
+| 48 WPM, 25 ms | every sender | 235 | 0 | 2112 | `I I E NEEE E ITTKIWDEWB2FU` |
+| 40 WPM, 30 ms | every sender | 230 | 2 | 2108 | nothing |
+| 48 WPM, 25 ms | senders not yet qualified | 230 | 5 | 2112 | `I I E NIEE IE T T AEEYDEWB2FU` |
+| 40 WPM, 30 ms | senders not yet qualified | 227 | 5 | 2112 | nothing |
+
+- **On every sender** the floor drops pieces of real letters on qualified stations: `221805` loses a letter right and `221745` another, while `221548`'s low stretch sheds wrong letters (`I M IEE IEE E` to `I M RW`) and `221851`, unscored, begins to print.
+- **On senders not yet qualified only**, a junk sender on `221851`, stripped of its blips, qualifies and prints five invented letters.
+- **The weak fast station** never reads better: its blips run 20 to 35 ms, so a 25 ms floor leaves many, and at 30 ms nothing of it stands at all.
+
+**Every variant lowered the twelve, so nothing shipped**; the engine is as at HEAD.
+
+**The carrier and noise.** Under every floor the random carrier printed at seed 5195 only, as at HEAD (at 40 WPM `TGTE TEAETOTTNEAIT TAN`), and the four loud-noise runs printed nothing. The guard line is unchanged.
+
+Both tables held at 237 and 2112. Nothing keys or transmits, and nothing is written to the radio.
+
+---
 id: HM-DEC-260
 date: 2026-10-07
 refs: work instruction 556, HM-DEC-139, HM-DEC-237, HM-DEC-254, HM-DEC-257, HM-DEC-258, HM-DEC-259, R88, src/Hamlet.RadioEngine/Cw/CwSenderGate.cs, src/Hamlet.RadioEngine/Cw/CwEnvelopeDetector.cs, tests/Hamlet.RadioEngine.Tests/Cw/AReplyBeginsWhereTheOtherEndsTests.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheSpacesByCauseTests.cs, tests/Hamlet.RadioEngine.Tests/Scan/TheBrokenDahsTests.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheWeakFastStationTracedTests.cs, docs/cw-scoreboard.md
