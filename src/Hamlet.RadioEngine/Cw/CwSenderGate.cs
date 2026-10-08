@@ -442,6 +442,18 @@ public sealed class CwSenderGate
 
     private double _printedThrough = double.NegativeInfinity;
 
+    // The sender the terminal last printed, kept after it is released, so a sender given the terminal next is cut to a
+    // reply's overlap with it (work instruction 556).
+    private Sender? _owner;
+
+    /// <summary>
+    /// How long a challenger may have stood while the printed sender kept keying and still be a reply, ten seconds (work
+    /// instruction 556, task 1, HM-DEC-260): a reply begins as the other's over ends, doubling at most its callsigns and a
+    /// word, which at 15 WPM is a few seconds and at 10 WPM under ten. A sender that stood longer beside a station still
+    /// keying was not waiting to reply. The author's, from what an over is.
+    /// </summary>
+    internal const double ReplyOverlapSeconds = 10;
+
     private void Print(double heardSeconds)
     {
         // A printed sender silent longer than the hold lets another be printed; at the end of the
@@ -533,6 +545,17 @@ public sealed class CwSenderGate
             _station = better.Sender;
         }
 
+        // **A SENDER THAT STOOD BESIDE A STATION STILL KEYING IS NOT A REPLY** (work instruction 556, task 1, HM-DEC-260):
+        // while the sender last printed has been silent under ReplyOverlapSeconds, one that stood longer than that while it
+        // kept keying is not picked; W1AW pauses a second or two between sections and resumes, and the sender beside it was
+        // never waiting to reply. Past that silence the printed one has stopped, and the other may have the terminal.
+        if (_station is null && _owner is not null && double.IsFinite(heardSeconds) && heardSeconds - _owner.LastToSeconds < ReplyOverlapSeconds)
+        {
+            var owner = _owner;
+
+            qualified.RemoveAll(q => q.Sender != owner && !double.IsNaN(q.Sender.QualifiedSince) && owner.LastToSeconds - q.Sender.QualifiedSince > ReplyOverlapSeconds);
+        }
+
         // **AND THE FIRST PICK WAITS ONE WORD GAP** (work instruction 520): when the first sender qualifies, the
         // reader waits one of its word gaps for others to qualify, then prints the best-shaped. Its letters are
         // banked meanwhile and print a word late; at the end of the audio nothing waits.
@@ -556,6 +579,28 @@ public sealed class CwSenderGate
         if (_station is not null)
         {
             _waitingSince = double.NaN;
+        }
+
+        // **A REPLY BEGINS WHERE THE OTHER ENDS** (work instruction 556, task 1, HM-DEC-260): when the terminal passes from a
+        // sender it printed to another, the new sender's backlog is only what it sent since the printed one last keyed, less
+        // one of its word gaps, the overlap a real reply has; and none at all where it stood longer than ReplyOverlapSeconds
+        // while the printed one kept keying, since nobody calls over another for that long. At W1AW's section breaks a sender
+        // that had stood beside it for minutes printed every partial letter it held in one burst.
+        if (_station is not null && _owner is not null && _station != _owner && CwRules.On(CwRules.Backlog))
+        {
+            var ownerLast = _owner.LastToSeconds;
+            var stoodWhileKeying = double.IsNaN(_station.QualifiedSince) ? 0 : ownerLast - _station.QualifiedSince;
+            var from = stoodWhileKeying > ReplyOverlapSeconds ? double.PositiveInfinity : ownerLast - _station.WordGapSeconds;
+
+            while (_station.PrintedRuns < _station.Ended.Count && _station.Ended[_station.PrintedRuns][0].FromSeconds < from)
+            {
+                _station.PrintedRuns++;
+            }
+        }
+
+        if (_station is not null)
+        {
+            _owner = _station;
         }
 
         // The pitch of the sender being printed, for the panel on the screen's thread (work
