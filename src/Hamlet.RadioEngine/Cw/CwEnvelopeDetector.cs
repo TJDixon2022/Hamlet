@@ -264,6 +264,12 @@ public sealed class CwEnvelopeDetector
     private readonly List<CwMark> _candidates = new();
     private readonly CwPatternGate _pattern = new();
 
+    /// <summary>Every mark offered to the pattern gate in the last minute, stood or not: for the tests' traces (work instruction 559).</summary>
+    internal IReadOnlyList<CwMark> OfferedNow => _candidates.ToList();
+
+    /// <summary>The pattern gate's sequences now, one line each: for the tests' traces (work instruction 559).</summary>
+    internal string SequencesNow(double nowSeconds) => _pattern.Describe(nowSeconds);
+
     // The sequences that stood at the last hop, for the tests' report of their shapes (work instruction 550, task 1).
     private IReadOnlyList<CwPatternGate.StandingSequence> _standingNow = Array.Empty<CwPatternGate.StandingSequence>();
 
@@ -1257,7 +1263,7 @@ public sealed class CwEnvelopeDetector
             else if (w.Span >= 0 && level < downLine)
             {
                 var top = TrimToTop(lane, w.Span, h - 1, seq.LevelDb);
-                OfferLaneSpan(top.From, top.To, hop, nowSeconds, byLevel: true, window: w);
+                OfferLaneSpan(top.From, top.To, hop, nowSeconds, byLevel: true, window: w, keyDownDb: seq.LevelDb);
                 w.Span = -1;
             }
 
@@ -1391,7 +1397,7 @@ public sealed class CwEnvelopeDetector
             }
             else if (span >= 0 && level < downLine)
             {
-                OfferLaneSpan(span, h - 1, hop, nowSeconds, byLevel: true, into: found);
+                OfferLaneSpan(span, h - 1, hop, nowSeconds, byLevel: true, into: found, keyDownDb: sender.LevelDb);
                 span = -1;
             }
         }
@@ -1506,7 +1512,7 @@ public sealed class CwEnvelopeDetector
                 else if (_laneSpan >= 0 && level < downLine)
                 {
                     var top = TrimToTop(lane, _laneSpan, h - 1, sender.LevelDb);
-                    OfferLaneSpan(top.From, top.To, hop, nowSeconds, byLevel: true);
+                    OfferLaneSpan(top.From, top.To, hop, nowSeconds, byLevel: true, keyDownDb: sender.LevelDb);
 
                     _laneSpan = -1;
                 }
@@ -1597,7 +1603,7 @@ public sealed class CwEnvelopeDetector
     }
 
     /// <summary>One stretch of the sender's window over half its amplitude, offered as a candidate if it passes a mark's tests.</summary>
-    private void OfferLaneSpan(long a, long b, long hop, double nowSeconds, bool byLevel = false, List<CwMark>? into = null, Window? window = null)
+    private void OfferLaneSpan(long a, long b, long hop, double nowSeconds, bool byLevel = false, List<CwMark>? into = null, Window? window = null, double keyDownDb = double.NaN)
     {
         var lane = window?.Bin ?? _laneBin!;
         var senderLane = window?.Lane ?? _lane;
@@ -1624,6 +1630,17 @@ public sealed class CwEnvelopeDetector
         }
 
         var level = MeanLevel(lane, start, end);
+
+        // **A MARK READ BY LEVEL STANDS AT ITS SENDER'S LEVEL** (work instruction 559, task 1, HM-DEC-263): a key held down holds the
+        // key-down level, within twice a flat top's wobble; a noise hump in a gap the radio's AGC has lifted crosses the up line
+        // and peaks under it. On KM3STU, 13 dB over the noise at the filter's edge, such humps 4 to 5 dB under his level were called
+        // as 20 to 35 ms marks, broke his dits' tightness and pulled his window's pitch 31 Hz off his tone. In a provisional window only:
+        // a station's own window holds a sender already printed, and there the rule dropped a fading station's key-downs.
+        if (byLevel && window is not null && double.IsFinite(keyDownDb) && level < keyDownDb - (2 * FlatToleranceDb))
+        {
+            return;
+        }
+
         var half = level + HalfAmplitudeDb;
         var from0 = start;
 

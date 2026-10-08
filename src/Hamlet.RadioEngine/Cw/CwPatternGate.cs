@@ -549,6 +549,19 @@ internal sealed class CwPatternGate
             .Select(s => (s.Id, s.PitchHz, s.LevelDb, s.DitSeconds, s.RecentList))
             .ToList();
 
+    /// <summary>
+    /// Every sequence heard in the last two seconds, for the tests' traces (work instruction 559): its pitch, marks, whether it
+    /// stands, its marks' lengths in milliseconds, whether they split in two, and its shape.
+    /// </summary>
+    /// <param name="nowSeconds">The detector's audio clock.</param>
+    /// <returns>One line per sequence, separated by ` | `.</returns>
+    internal string Describe(double nowSeconds)
+        => string.Join(" | ", _sequences
+            .Where(s => nowSeconds - s.LastToSeconds <= 2)
+            .Select(s => string.Create(
+                System.Globalization.CultureInfo.InvariantCulture,
+                $"{s.PitchHz:0} Hz {s.Count} marks{(s.Standing ? " STANDING" : string.Empty)} [{string.Join(' ', s.RecentList.Select(m => $"{(m.ToSeconds - m.FromSeconds) * 1000:0}"))}]{(s.Lengths() is null ? " one length" : string.Empty)} shape {s.Shape.Score:0.00}")));
+
     /// <summary>A sequence the gate still keeps, standing or not, as <see cref="Sender"/> reports a standing one (work instruction 558).</summary>
     /// <param name="id">The sequence.</param>
     /// <returns>Its count, dit, pitch, level and recent marks; or null once it is gone.</returns>

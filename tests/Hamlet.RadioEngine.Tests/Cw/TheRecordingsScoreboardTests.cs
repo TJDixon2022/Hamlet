@@ -13,7 +13,7 @@ namespace Hamlet.RadioEngine.Tests.Cw;
 /// suck."* And: *"I want to run it against all the recordings that we've done over the last two days."*
 /// </summary>
 /// <remarks>
-/// <para>R88 is lifted for the owner's twelve recordings and W1AW's `cw-2026-10-06-212015` (work instruction 547), named in <see cref="Stretches"/>, and no other. Each is read through
+/// <para>R88 is lifted for the owner's twelve recordings, W1AW's `cw-2026-10-06-212015` (work instruction 547) and KM3STU's three recordings of 2026-10-08 (work instruction 559), named in <see cref="Stretches"/>, and no other. Each is read through
 /// the live path as the app wires it - the detector, the sender's window, the gate and the reader - at the radio's state
 /// from its own sheet, and what printed is scored against the web session's references, letters right with spaces
 /// ignored, by the scorer's edit distance with free ends.</para>
@@ -100,7 +100,19 @@ public sealed class TheRecordingsScoreboardTests
         // its own 70 and 205 ms marks and 70, 210 and 490 ms gaps.
         new("cw-2026-10-06-212015", 599.9, 0, 30, "PE II AND TYPE IV RADIO EMISSIONS HOWEVER, THIS CME IS", Confidence.High, 120, 121, 321,
             ". [190] .--. [192] . [456] .. [188] .. [456] .- [192] -. [186] -.. [451] - [190] -.-- [178] .--. [191] . [454] .. [185] ...- [451] .-. [186] .- [187] -.. [188] .. [185] --- [452] . [186] -- [190] .. [188] ... [187] ... [185] .. [191] --- [189] -. [182] ... [989] .... [190] --- [187] .-- [188] . [164] ...- [188] . [193] .-..--..-- [450] - [191] .... [191] .. [191] ... [445] ...-. [190] -- [194] . [456] .. [192] ..."),
+
+        // **KM3STU, A POTA ACTIVATOR ON 7.0442 MHz** (work instruction 559; R88 lifted for these three): his tone at 800 Hz, 200 Hz
+        // above the radio's pitch, about 13 dB over the noise, 20 to 22 WPM. The references are the web session's plain reads
+        // where they agree with what Hamlet printed live; one stretch a recording, since stretches at one pitch side by side
+        // take each other's edge letters. The first recording's stretch holds his CQ, `POTA DE KM3STU`, which alone would be
+        // high, with the `K KQ 4PA K` after it, and is medium; the opening `E EE` and the third's tail `EE EE CQ GE` are left out.
+        new("cw-2026-10-08-121324", 800, 14.6, 30, "POTA DE KM3STU K KQ 4PA K", Confidence.Medium, 0, 0, 0, string.Empty),
+        new("cw-2026-10-08-121357", 800, 14.3, 29.3, "55N 55N VA VA BK BK", Confidence.High, 0, 0, 0, string.Empty),
+        new("cw-2026-10-08-121414", 800, 0.3, 24.1, "R 55N 55N VA VA BK BK TU RON VA ES 72 KM3STU", Confidence.High, 0, 0, 0, string.Empty),
     ];
+
+    /// <summary>The recordings that joined the board in work instruction 559, so a total can be read with and without them.</summary>
+    internal static readonly string[] AddedAt559 = ["cw-2026-10-08-121324", "cw-2026-10-08-121357", "cw-2026-10-08-121414"];
 
     /// <summary>One letter the reader printed: when its last mark ended, its pitch, its text.</summary>
     internal readonly record struct Printed(double Seconds, double PitchHz, string Text, bool SpaceBefore = false, CwGapLines? Lines = null, double From = double.NaN);
@@ -565,6 +577,13 @@ public sealed class TheRecordingsScoreboardTests
         var board = Score();
 
         _output.WriteLine(Table(board));
+
+        // **WITH AND WITHOUT KM3STU** (work instruction 559): the board's total over the stretches it held before, so the
+        // yardstick's change is not mistaken for Hamlet's.
+        var before = board.Stretches.Where(s => s.Stretch.Confidence >= Confidence.Medium && !AddedAt559.Contains(s.Stretch.Recording)).ToList();
+        var inventedBefore = board.InventedBy.Where(i => !AddedAt559.Contains(i.Key)).Sum(i => i.Value.Count);
+
+        _output.WriteLine($"without KM3STU's three: **{before.Sum(s => s.Right)} of {before.Sum(s => s.ReferenceLetters)}** letters right, **{before.Sum(s => s.Wrong)}** wrong; **{inventedBefore}** invented; **score {before.Sum(s => s.Right) - before.Sum(s => s.Wrong) - inventedBefore}**");
 
         foreach (var (recording, text) in board.Unassigned)
         {

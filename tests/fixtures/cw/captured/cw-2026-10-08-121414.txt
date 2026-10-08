@@ -1,0 +1,71 @@
+captured   2026-10-08 12:14:14 UTC
+audioSeen  1699883520 samples
+fingerprint cf90ef680851
+seconds    30.0
+sampleRate 48000
+frequency  7044200 Hz  (read from the radio a moment ago)
+band       40 m  (from the frequency the radio reported)
+broadcast  the radio volunteered nothing while this recording was being made, and the setting reads on; 34 of 3402023 frames since the link came up were the radio announcing something
+
+inputPeak  -13.1 dBFS  (over the whole recording)
+meterPeak  -13.3 dBFS  (the moment it was kept)
+inputFloor -21.6 dBFS  (the level meter's running floor at the moment it was kept, carried across everything heard, falling quickly to a quiet stretch and rising slowly to a loud one; not a figure about this recording alone)
+clipping   False  (over the 0.2 seconds the level meter last measured when it was kept, the stretch meterPeak is over; not the whole recording)
+pitch      nobody printed
+tonePeak   not measured  (nobody was printed, so there is no tone in this recording to say the strength of)
+speed      nobody printed
+inThis     33 letters printed, 121 marks stood  (in the 30.0 seconds of audio in this file)
+text       NAT 4PAK IEE■ N TR I5N 55N VAVABK BK TURON VA ES72KM3STU
+textCovers everything read since the transcript was cleared at 12:12:53 UTC, about a minute ago
+senders    799 Hz shape 0.83, 158 marks; 837 Hz shape 0.00, 28 marks
+keying     retired  (the independent keying sweep came out with the old decoder, work instruction 545; the senders line above says what the gate held)
+duty       not measured  (nobody was printed, so there is no station to measure the keying of)
+audio      lost 61 ms, longest stall 60 ms, queue peak 1  (since the decoder started listening; lost counts what the queue dropped and what the capture fell short of real time by, past one 100 ms buffer)
+
+sinceLast  17 letters printed, 64 marks stood  (since the previous capture)
+
+Frequency            7.044200 MHz
+Mode                 CW
+DataMode             off
+FilterSelection      FIL2
+FilterBandwidth      500 Hz
+SMeter               S5
+TransmitStatus       receiving
+Overflow             not overloading
+TwinPbtOuter         unknown
+TwinPbtInner         undocumented
+Rit                  undocumented
+Swr                  unknown
+PowerOut             unknown
+RfPower              31%
+RfGain               100%
+Squelch              0%
+SquelchStatus        open
+Agc                  FAST
+Preamp               off
+Attenuator           off
+NoiseBlanker         off
+NoiseBlankerLevel    50%
+NoiseReduction       off
+NoiseReductionLevel  28%
+AutoNotch            off
+ManualNotch          off
+BreakIn              full
+KeyerSpeed           20 WPM
+CwPitch              600 Hz
+AccUsbOutputSelect   AF
+AccUsbAfLevel        80%
+NotchPosition        unknown
+FilterShape          unknown
+AfLevel              unknown
+RfSqlFunction        unknown
+BreakInDelay         unknown
+AntennaTuner         unknown
+Alc                  unknown
+AccUsbSquelch        open regardless of squelch
+Split                off
+ScopeOn              on
+ScopeOutput          on
+CivUsbPort           unknown
+CivTransceive        on
+Vfo                  undocumented
