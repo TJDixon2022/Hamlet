@@ -4,6 +4,33 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-265
+date: 2026-10-08
+refs: work instruction 561, HM-DEC-254, HM-DEC-264, R88, src/Hamlet.RadioEngine/Cw/CwSenderGate.cs, src/Hamlet.RadioEngine/Cw/CwRules.cs, tests/Hamlet.RadioEngine.Tests/Cw/AStationPrintsOnceSureTests.cs, tests/Hamlet.RadioEngine.Tests/Scan/TheCatchScanTests.cs, docs/cw-scoreboard.md
+---
+
+**A station prints once Hamlet is sure of it.** Ordered by the owner in work instruction 561, 2026-10-08, after a weak portable station on the air printed `I RM T REIE E EIT A E AEI EE ETIEI E IE I HEE EIEEAENOH/P N K`. R88 was lifted for the owner's twelve recordings, KM3STU's three, the three scan catches, W1AW's `cw-2026-10-06-212015` and the four pieces of 2026-10-07; no recording was added.
+
+**The lines.** A sender is first printed only once its shape has reached **0.4**, the light's green line (`CwShapeLights.GreenScore`, read rather than copied). Once it has reached that line it is held, and let go only under **0.1**, as before, so a rough hand that dips mid-sentence stays printed. The backlog that prints when it begins is read as before. The rule is `CwRules.SureFirst`, on.
+
+**The measurement, taken first.**
+- For every station given the terminal on both tables and the three scan catches, the trace recorded the shape at its first print, its peak in its first ten seconds, and when it reached 0.4.
+- Every one had reached 0.4 by the time it was picked. The two that printed under it, `221502` at 3.5 s (shape 0.26) and `221745` at 24.7 s (0.16, a sender printed before and picked again), had passed 0.4 earlier.
+- No stretch would print later and none would never print.
+
+**What shipped, and what it changed.**
+- **Both tables hold, every stretch unchanged:** 297 (234 without KM3STU's three) and 2111. Noise prints nothing, the random carrier prints at seed 5195 only, as before, and the first recording reads whole. Both guards pass.
+- **The rule changed nothing in any case measured,** off or on:
+  - `143906` reads `IEE I I E NUVEE T QSYDEWB2FU` and `121324` reads `INOTA DE KM3STU K KQ4PAK`.
+  - A synthetic weak caller at 10 dB strengthening to 16 dB reads whole.
+  - At 6 and 8 dB, strengthening by 6, it reads `E EU` and `N EQ` before its call.
+- **The junk before a weak call is the backlog of a sender already over 0.4.** It is read when the sender is picked, as the order kept it.
+
+**Task 2:** the low-confidence stretches `143951`, `221548` at 598 Hz and `221851` were read offline again at envelope cutoffs of 30, 40 and 60 Hz. None agrees with its reference at any cutoff, so all stay low and the totals stand.
+
+**Task 3:** `TheCatchScanTests.ASlowEarLosesNothing` asserts no chunk dropped, no hole, the same WAV length and the same text, and reports its longest delivery rather than asserting a wall-clock figure.
+
+---
 id: HM-DEC-264
 date: 2026-10-08
 supersedes: HM-DEC-262 and HM-DEC-263 (on the candidate windows being off)

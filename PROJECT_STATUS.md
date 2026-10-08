@@ -2,12 +2,12 @@ PROTOCOL: 2
 PROJECT: Hamlet
 STATE: COMPLETED
 TASK: closing
-WORK_INSTRUCTION: 560 - the candidate windows ship, at the owner.s word (run by hand)
+WORK_INSTRUCTION: 561 - a station prints once Hamlet is sure of it (run by hand)
 BALL: tim
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-10-08T11:43:52-04:00
-NOTE: Unit 560 done - candidate windows on at the owner's word; guards at 297 and 2111; KM3STU reads his CQ (NOTA for POTA); read-back reverted; 48 WPM stands
+UPDATED: 2026-10-08T12:18:46-04:00
+NOTE: Unit 561 done - 0.4 print line shipped, changes nothing measured; junk before a weak call is the backlog; boards 297 and 2111
 
 ---
 

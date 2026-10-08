@@ -1,52 +1,47 @@
 ## 1. What Claude did
 
-Development computer, project gate `PROJECT: Hamlet` checked against `PROJECT_CARD.md`, the order's five checks (`SHACK_FACTS.md`, `CwSenderLane.cs`, `cw-2026-10-08-121324.wav` present; no `CoreHMI.sln`, no `MURC.sln`) and `Hamlet.sln`: Hamlet confirmed. Nothing here is evidence about the radio. Branch `main`. Run by hand: `SESSION.lock` taken at 11:28:36 through `tools\arbiter\lock.bat take` and released at the end, nothing written to `RUN_LEDGER.md`, nothing under `tools\arbiter\` touched, no box ticked in `PHASE_PLAN.md`. R88 lifted only as the order named, and no recording added. Version 1.13.244 to **1.13.245**. Ruling **HM-DEC-264**, the number the order gave. Nothing was recorded under §12.1. Every test run was one filtered invocation; scripts went in `.run-unit\unit560-*.sh`, not committed.
+Development computer, project gate `PROJECT: Hamlet` checked against `PROJECT_CARD.md`, the order's five checks (`SHACK_FACTS.md`, `CwSenderGate.cs`, `cw-2026-10-08-121324.wav` present; no `CoreHMI.sln`, no `MURC.sln`) and `Hamlet.sln`: Hamlet confirmed. Nothing here is evidence about the radio. Branch `main`. Run by hand: `SESSION.lock` taken at 11:58:18 through `tools\arbiter\lock.bat take` and released at the end, nothing written to `RUN_LEDGER.md`, nothing under `tools\arbiter\` touched, no box ticked in `PHASE_PLAN.md`. R88 lifted only as the order named, and no recording added. Version 1.13.245 to **1.13.246**. Ruling **HM-DEC-265**, the number the order gave. Nothing was recorded under §12.1. Both boards were run at HEAD and after every task, each one filtered `dotnet test` with a timeout.
 
-**Task 1, the windows go on** (`8fb6f94d`), **shipped at the owner's word:**
-- **The windows:** `CwEnvelopeDetector.CandidateWindows` is on by default, with the level rule for marks in a provisional window. The environment switch is gone, and the tag `before-candidate-windows` holds the tree without them.
-- **Re-measured at HEAD:** every stretch reads exactly as last unit measured with them on. 297 with KM3STU's three, 234 without, w1aw 2111.
-  - Noise prints nothing, the carrier prints at seed 5195 only, and the first recording reads whole.
-  - One letter is invented, on `221851`.
-- **Both guards' rows reset** to these, naming the owner's ruling: the twelve-plus-three at 297 and w1aw at 2111. The scoreboard still prints the twelve's total without KM3STU's three.
-- **The light:** `Km3stuReadsFromHisCqTests` now traces it each second.
-- **The scan's and the light's tests:** 133 run together, one failed. `TheCatchScanTests.ASlowEarLosesNothing` timed a delivery at 4.2 ms against 2 ms under the load of the whole run. Alone it passed twice, at 0.06 and 0.02 ms. Everything else passed.
+**Task 1, a station prints once its shape reaches 0.4** (`cb2d2ee4`), shipped:
+- **Measured first:** `AStationPrintsOnceSureTests.TheShapeAtFirstPrint` traced every station given the terminal on both tables and the three scan catches. Every one had reached 0.4 by the time it was picked.
+  - Two printed under 0.4: `221502` at 3.5 s (shape 0.26) and `221745` at 24.7 s (0.16, the same sender picked again). Both had passed 0.4 earlier.
+  - No stretch would print later, and none would never print.
+- **The rule:**
+  - `CwSenderGate` latches `Sure` on a sender once its shape reaches `PrintScore`, which reads the light's own `CwShapeLights.GreenScore` (0.4).
+  - A sender is first picked only when `Sure`. Release under 0.1 and the backlog are unchanged.
+  - It is the rule `CwRules.SureFirst`, on.
+- **Result: both tables and every stretch unchanged,** 297 (234 without KM3STU's three) and 2111. Guards 4 of 4.
+  - With the rule off and on, the weak cases read identically: `143906`, `121324`, `221502`, `221745`, and synthetic weak callers from 4 to 10 dB that strengthen by 6 dB.
+  - **The junk before a weak call comes from the backlog** of a sender already over 0.4 when it is picked, which the order kept as it was.
 
-**Task 2, `NOTA` for `POTA`** (`64dc6557`, the rows): **the cold re-read in a candidate's window was built and reverted.**
-- **What it did:** when a candidate's window opened, the audio from its first mark was read through it by level, and the gate rebuilt the unprinted sender from those marks.
-- **Result:** 230 with KM3STU's three, 169 without, and 1887 on w1aw. `POTA` still read `NOTA`.
-- **Why:** the window's two seconds of backfill hold too little settled level to read a station's opening against.
+**Task 2, the low-confidence stretches** (`5f3928e9`): `143951`, `221548` at 598 Hz and `221851` were read offline again at envelope cutoffs of 30, 40 and 60 Hz. None agrees with its reference at any cutoff, so all stay low and the totals stand.
 
-**Task 3, housekeeping:**
-- **The 48 WPM ceiling stands,** recorded in HM-DEC-264, and the ask is off the list.
-- **The low-confidence stretches** were not re-read (dropped).
+**Task 3, the scan test** (`e1ec34a1`): `ASlowEarLosesNothing` already asserted no dropped chunk, no hole, the same WAV length and the same text. Its wall-clock assertion is gone, and the delivery time is reported: 0.70 ms as it is, 0.04 ms with the slow ear. It passes.
 
 **Records:**
-- `docs\cw-scoreboard.md`: rows for tasks 1 and 2 in both tables, the guard rows at 297 and 2111.
-- `PHASE_OUTCOME.md`, both copies: `## UNIT 560 - STEP 12`.
-- `PHASE_STATUS.md`, both copies: names 560.
-- `Directory.Build.props`: 1.13.245.
+- `docs\cw-scoreboard.md`: rows for tasks 1 and 2 in both tables.
+- `PHASE_OUTCOME.md`, both copies: `## UNIT 561 - STEP 12`.
+- `PHASE_STATUS.md`, both copies: names 561.
+- `Directory.Build.props`: 1.13.246.
 - `CLAUDE.md` §1: a row.
-- `DECISIONS.md`: HM-DEC-264, superseding HM-DEC-262 and 263 on the windows being off.
+- `DECISIONS.md`: HM-DEC-265.
 
-**Build** `Hamlet.sln -warnaserror`: 0 warnings, 0 errors.
-
-**Both guards:** 4 of 4. **The decision-log and voice tests:** 7 of 7. **App carry-forward:** 278 of 278.
+**Build** `Hamlet.sln -warnaserror`: 0 warnings, 0 errors. **Guards:** 4 of 4. **Decision-log and voice tests:** 7 of 7. **App carry-forward:** 278 of 278.
 
 ## 2. What the owner should expect
 
 Rebuild and run as usual.
 
-- **A weak or off-pitch station now gets its own listening window from its first seconds,** as soon as Hamlet has heard a few marks that include a dot and a dash. Before, it had to prove itself on the coarse search first, and a weak one 200 Hz off your pitch never did.
-- **KM3STU:** his first recording now reads `INOTA DE KM3STU K KQ4PAK`. Live it printed nothing.
-- **The weak fast station** reads `QSY DE WB2FU`.
-- **The light** goes amber as soon as his window opens and green while he's printing. Before, it never went green for him.
-- **`POTA` still reads `NOTA`.** His P's first dot comes before his window opens. Re-reading the audio from his first mark through the window broke far more than it fixed, so it isn't in.
-- **The cost you accepted:** 3 letters on your twelve original recordings and 1 on W1AW. W1AW still starts `E NE II AND` without its P. The first word of a reply reads as before.
-- **The scoreboards** now hold at what this reads:
+- **Before a weak station's call you will still see junk.** On the recordings, `143906` still opens `IEE I I E NUVEE T` before `QSY DE WB2FU`, and a weak synthetic caller still opens `E EU` or `N EQ`.
+  - The new rule holds a station back until its shape reaches the green line, 0.4.
+  - But every station on your recordings had already reached 0.4 by the time Hamlet picked it. The junk is what it heard from that station before it was sure, printed all at once as the backlog when it starts.
+  - The order kept that backlog as it was, so the rule changed nothing here. Your on-air case from today isn't in the tree, so I couldn't measure it.
+- **No rough hand prints later.** Every stretch reads letter for letter as before.
+- **The scoreboards** hold:
   - **297** for your twelve plus KM3STU's three, which is **234** without his three.
-  - **2111** for W1AW.
-  - The guards check against these from now on.
-- **The 48 WPM top speed stands,** as you said, and it's off the questions list.
+  - **2111** on W1AW.
+- **The three low-confidence stretches stay low:** a careful re-read still disagrees with each reference.
+- **The scan's timing test** no longer fails under load.
 - Pushed to `main`.
 
 ## 3. What you should see
@@ -55,62 +50,79 @@ Rebuild and run as usual.
 
 | unit | right | wrong | invented | score | printed in silence | spaces |
 |---|---|---|---|---|---|---|
-| HEAD (windows off), with KM3STU's three | 304 of 353 | 29 | 0 | **275** | 0 | 79 of 110, 6 added |
-| HEAD, the twelve alone | 254 of 288 | 17 | 0 | **237** | 0 | 67 of 87, 3 added |
-| 560 task 1 (windows on), with KM3STU's three — **the guard's row** | 318 of 353 | 20 | 1 | **297** | 0 | 83 of 110, 3 added |
-| 560 task 1, the twelve alone | 254 of 288 | 19 | 1 | **234** | | |
-| 560 task 2 | 318 of 353 | 20 | 1 | **297** | 0 | 83 of 110, 3 added |
-| (the read-back, reverted) | 250 of 353 | 20 | 0 | 230 | 0 | 72 of 110, 5 added |
+| HEAD, with KM3STU's three | 318 of 353 | 20 | 1 | **297** | 0 | 83 of 110, 3 added |
+| 561 task 1 | 318 of 353 | 20 | 1 | **297** (234 without) | 0 | 83 of 110, 3 added |
+| 561 task 2 | 318 of 353 | 20 | 1 | **297** | 0 | 83 of 110, 3 added |
+| 561 task 3 | 318 of 353 | 20 | 1 | **297** | 0 | 83 of 110, 3 added |
 
 | w1aw | score | right | wrong | invented | spaces |
 |---|---|---|---|---|---|
-| HEAD | 2112 | 2131 of 2151 | 19 | 0 | 438 of 440, 11 added |
-| 560 task 1 — **the guard's row** | **2111** | 2131 of 2151 | 20 | 0 | 438 of 440, 11 added |
-| 560 task 2 | **2111** | 2131 of 2151 | 20 | 0 | 438 of 440, 11 added |
-| (the read-back, reverted) | 1887 | 1910 of 2151 | 23 | 0 | 391 of 440, 11 added |
+| HEAD | **2111** | 2131 of 2151 | 20 | 0 | 438 of 440, 11 added |
+| 561 tasks 1 to 3 | **2111** | 2131 of 2151 | 20 | 0 | 438 of 440, 11 added |
 
-**KM3STU's three and the weak station:**
+Noise prints nothing; the random carrier prints at seed 5195 only, as at HEAD; the first recording reads whole.
 
-| recording | live | HEAD | now |
-|---|---|---|---|
-| `121324` | nothing | `IEU EE IE TSIE A EAEE IAGAK` (4 of 19) | `INOTA DE KM3STU K KQ4PAK` (18 of 19) |
-| `121357` | `NAT 4PAK IEE■ N TR I5N 55N VAVABK BK TU` | `… RR UR 55N 55N VAVABK BKT` (14 of 14) | `… RR UR 55N 55NVAVABK BKT` (14 of 14) |
-| `121414` | `… TURON VA ES72KM3STU` | `R 55N 55N VA VA BK BKTURON VA ES72KM3STUEE` (32 of 32) | the same |
-| `143906` | | `IEE I I E NIEE IE T T AEEYDEWB2FU` | `IEE I I E NUVEE T QSYDEWB2FU` |
+**The first-print measurement** (each time a station was given the terminal; identical with the rule on):
 
-**W1AW cold and the reply's first word:**
+| recording | first print | pitch | shape then | peak in 10 s | reached 0.4 | letters | before 0.4 |
+|---|---|---|---|---|---|---|---|
+| `200157` | 3.63 s / 10.55 / 16.67 | 663 Hz | 0.85 / 0.92 / 0.92 | 0.91 to 0.94 | at once | 5 / 6 / 13 | 0 |
+| `143906` | 16.49 s | 515 Hz | 0.52 | 0.78 | at once | 13 | 0 |
+| `143951` | 19.96 / 29.66 s | 500 Hz | 0.73 / 0.80 | 0.73 / 0.80 | at once | 12 / 1 | 0 |
+| `144020` | 5.11 / 17.44 / 18.79 s | 500 / 600 / 600 Hz | 0.83 / 0.85 / 0.87 | 0.85 to 0.90 | at once | 8 / 1 / 14 | 0 |
+| `144045` | 5.39 s | 600 Hz | 0.83 | 0.94 | at once | 18 | 0 |
+| `221502` | **3.50 s** / 13.19 | 491 / 499 Hz | **0.26** / 0.71 | 0.78 / 0.89 | **5.57 s** / at once | 14 / 12 | **4, `ITSM`** |
+| `221530` | 3.15 / 12.76 / 24.51 s | 491 / 599 / 599 Hz | 0.76 / 0.66 / 0.94 | 0.76 to 0.95 | at once | 12 / 18 / 9 | 0 |
+| `221548` | 4.59 / 6.11 / 20.34 s | 599 / 599 / 500 Hz | 0.81 / 0.82 / 0.79 | 0.81 to 0.94 | at once | 0 / 20 / 17 | 0 |
+| `221745` | 10.10 / 15.55 / 17.36 / **24.71 s** | 501 to 502 Hz | 0.49 / 0.70 / 0.70 / **0.16** | 0.61 / 0.72 / 0.78 / 0.23 | at once, then **never** | 8 / 1 / 10 / 2 | **2, `TO`** |
+| `221805` | 17.77 s | 601 Hz | 0.71 | 0.79 | at once | 17 | 0 |
+| `221828` | 3.21 s | 601 Hz | 0.62 | 0.80 | at once | 38 | 0 |
+| `221851` | 8.52 / 20.83 / 22.58 / 24.29 / 29.19 s | 601 to 604 Hz | 0.61 to 0.80 | 0.61 to 0.80 | at once | 11 / 0 / 2 / 2 / 0 | 0 |
+| `212015` W1AW | 3.93 / 18.74 / 28.23 s | 600 Hz | 0.82 / 0.94 / 0.94 | 0.94 | at once | 22 / 13 / 4 | 0 |
+| `121324` | 17.74 / 28.05 s | 800 Hz | 0.78 / 0.84 | 0.85 / 0.91 | at once | 13 / 1 | 0 |
+| `121357` | 17.89 s | 799 Hz | 0.82 | 0.93 | at once | 15 | 0 |
+| `121414` | 7.55 s | 800 Hz | 0.90 | 0.93 | at once | 26 | 0 |
+| W1AW pieces 1 to 4 | 11 picks | 600 to 602 Hz | 0.73 to 0.95 | 0.94 to 0.95 | at once | 20 to 726 | 0 |
+| catch `153810` | 6 picks | 856 to 859 Hz | 0.47 to 0.80 | 0.79 to 0.82 | at once | 7 to 66 | 0 |
+| catch `154819` | 3 picks | 470 to 471 Hz | 0.46 to 0.82 | 0.68 to 0.82 | at once | 1 to 10 | 0 |
+| catch `154614` | none | | | | | | |
 
-| | HEAD | now | with the read-back (reverted) |
-|---|---|---|---|
-| W1AW cold, `212015` | `E NE II AND … THIS NME IS` | the same, no P | `■E II AND …` |
-| synthetic QSO reply | `TAW DE K3ZZ K3ZZ K` | the same | |
-| `144020` reply | `WX IN NETAGIT IAN TEMP` | the same | nothing |
+`221502`'s first pick and `221745`'s fourth were senders already `Sure` from earlier, so the rule lets both print as before.
 
-**The light on KM3STU's first recording**, second by second:
+**The weak cases, before and after** (identical with the rule off and on):
 
-| s | his sender | windows | light |
-|---|---|---|---|
-| 1 to 14 | none | none | `Listening` |
-| 15 | none yet | window 793 Hz | `Forming` |
-| 16 | 799 Hz, shape 0.19 | window 800 Hz | `Forming` |
-| 17 | 799 Hz, 0.71 | window 799 Hz | `Forming` |
-| 18 to 22 | 799 Hz, 0.78 to 0.85, PRINTED | his own window 799 to 800 Hz | `Reading` |
-| 23 to 28 | 799 Hz, between his calls | 799 Hz | `Forming` |
-| 29 | 799 Hz, 0.91, PRINTED | 799 Hz | `Reading` |
+| case | reads |
+|---|---|
+| `143906` | `IEE I I E NUVEE T QSYDEWB2FU` |
+| `121324` | `INOTA DE KM3STU K KQ4PAK` |
+| synthetic caller, 10 dB then 16 dB | `CQ CQ DE N1XYZ N1XYZ K CQ CQ DE N1XYZ N1XYZ K` |
+| the same at 8 then 14 dB | `N EQ CQ DE N1XYZ N1XYZ K CQ CQ DE N1XYZ N1XYZ K` |
+| the same at 6 then 12 dB | `E EU CQ DE N1XYZ N1XYZ K CQ CQ DE N1XYZ N1XYZ K` |
+| the same at 4 then 10 dB | `CQ CQ DE N1XYZ N1XYZ K` (the weak call not read) |
 
-With the windows off (HEAD) he never printed, so the light never went past `Forming`.
+**The low-confidence stretches read again:**
+
+| stretch | reference | 30 Hz | 40 Hz | 60 Hz |
+|---|---|---|---|---|
+| `143951` | `O WAEIIEURD U AGN ES` | `OWAEIIEUAK U AGN ES` | `O WAEIIEUAK U AGN EES` | `O WUEIIEUAK V APR ESE` |
+| `221548` at 598 Hz | `2 I LEARNED CW USING A V BPLX Z EPS` | `E2ILE<AR>ED CW USFGA V BPL■ EZ EPS` | `E2ILEARED CW US■GA V BP■ EZ EPS` | `E2ILEARED CW US■GA V BP■ E■ EPSE` |
+| `221851` | `BEST 73 <AR> W2L CQ DE NA8SB K` | `IBESTTH3<AR>W2LCQ DE NA8SBK ■ X ■ RR X STRAY GN` | `… ■ V ■ RR TU STRAY DN` | `… ■ E X ■ RR TU ESTRAY DN` |
 
 ## 4. What's blocking us
 
-- **`POTA` reads `NOTA`:** the station's first dit comes before its window opens, and the read-back measured far worse.
-- **W1AW cold** still misses its P, for the same reason.
-- **The low-confidence stretches** (`221851`, `221548` at 598 Hz, `143951`) were not re-read.
-- **`TheCatchScanTests.ASlowEarLosesNothing`** times a delivery under 2 ms. It failed once under the load of a 133-test run, and passes alone.
+- **The junk before a weak call is in the backlog,** not in when a station starts printing. Removing it means a ruling on the backlog, below.
+- **Today's on-air recording of the portable station** isn't in the tree, so the case that prompted this unit was not measured.
+- **`221851`'s stretch runs to 30 s,** but its reference stops at `K`. Even a perfect read would not agree until the stretch is cut, and that is a reference change.
+
+**Ask, raised 2026-10-08:** when a station is first printed, does its backlog start from where its shape first reached 0.4, rather than from its first mark?
+- **Why:** the junk before a weak call is marks the sender made before Hamlet was sure of it. They print as backlog at the pick, so the 0.4 line does not remove them.
+- **What it would cost:** a reply's first letters on a station that strengthens slowly, the loss unit 533 fixed (`HM-DEC-237`, a reply read from its first letter).
+- **Not built,** because the order kept the backlog as it is and what the screen shows is the owner's.
+- **Change in the tree:** none.
 
 ### Asks still outstanding
 
-The 48 WPM ceiling is ruled (HM-DEC-264) and dropped from the queue.
-
+- **Unit 561, 2026-10-08:** whether a station's backlog starts where its shape first reached 0.4. Waiting on the owner. No change for it sits in the tree.
 - **Unit 520, 2026-10-01:** how a mark finds its own tone beside a louder one. Partly answered by unit 524; still open before a sender stands.
 - **Unit 440's item 1:** MET-COVERAGE counts wrong sure characters. Raised 2026-09-25 and waiting on the owner. No change for it sits in the tree.
 - **Unit 440's item 2:** R72 is cited as HM-DEC-175. Raised 2026-09-25 and scheduled as step 8 record work under R80.
