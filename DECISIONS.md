@@ -4,6 +4,28 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-259
+date: 2026-10-07
+supersedes: HM-DEC-258 (on which lone letters are dropped)
+refs: work instruction 555, HM-DEC-245, HM-DEC-258, R88, src/Hamlet.RadioEngine/Cw/CwSenderGate.cs, src/Hamlet.RadioEngine/Cw/CwPassbandHold.cs, src/Hamlet.RadioEngine/Cw/CwChain.cs, src/Hamlet.RadioEngine/Cw/CwEnvelopeDetector.cs, src/Hamlet.App/ViewModels/MainWindowViewModel.AutoCapture.cs, src/Hamlet.App/Telemetry/AppEvents.cs, tests/Hamlet.RadioEngine.Tests/Cw/EAndTInsideAWordTests.cs, tests/Hamlet.RadioEngine.Tests/Cw/APassbandIsHeldTests.cs, tests/Hamlet.RadioEngine.Tests/Cw/AFlickeringPassbandTests.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheHAt35WpmTests.cs, docs/cw-scoreboard.md
+---
+
+**Lone letters are noise only as words; a passband that flickers does not make senders.** Ordered by the owner in work instruction 555, 2026-10-07. R88 was lifted for the owner's twelve recordings, the three scan catches, W1AW's `cw-2026-10-06-212015` and the four pieces of W1AW's session of 2026-10-07; no recording was added.
+
+**The owner's ruling, and its cost.** Three or more one-mark letters in a row are dropped **only when each of them is printed alone as a word**: a word gap before the row (or nothing before it), between each two of its letters, and after it. A row touching any bigger letter on either side, or with any gap inside it short of a word gap, is text. The qualifying run live printed `ADVOCA ILL`, `LAS N YEARS` and `LEGITIMA O`, rows that crossed a word gap and were dropped under HM-DEC-258's inside-a-word test. **The owner accepted one letter's cost on the twelve: they read 237 against 238** (254 right, 17 wrong, 0 invented, 67 of 87 spaces with 3 added). Nothing prints in a silence, the random carrier prints at seed 5195 only as before, and the w1aw table rises from 2097 to **2112**. `ADVOCATE TILL HE WENT`, `FOR THE LAST TEN YEARS`, `IT IS LEGITIMATE TO INFER` and `AT THE TEST` at 30 WPM through the filter with the bench's AGC read whole where HEAD read `ADVOCA ILL`, `LAS N`, `LEGITIMA O` and `AT TH ST`; `E T E T E` as five lone words still reads nothing. The guard's row records 237 under this ruling.
+
+**The hold rule.** A passband already known is held until a new reading replaces it (`CwPassbandHold`, used by the chain and by the app's scope tick):
+- **An unread tick changes nothing.** The app sets the detector's passband twenty times a second; an unread CW pitch or filter used to sum the whole band and rebuild the bins, then rebuild them again when the reading returned.
+- **What changes it:** a known pitch or width different from the one held; a mode read as anything but CW or CW-R, which gives the whole band and lets the hold go; a rig state with nothing known, as before the radio first answers and after it disconnects.
+- **How long:** as long as the radio stays connected and in CW, however many ticks go unread. A missed poll says nothing about the radio, whose pitch and filter change only when it reports a different value; the rig state's own provenance still says the field is unread wherever it is shown.
+- **Measured** on W1AW's four pieces with a scripted rig state, the pitch read dropped for one tick every 20 s and for three ticks every 20 s, ten seconds apart. Before: 101 places differing from the steady replay, stray senders at 375 Hz (8 marks) and 475 Hz (5 marks), W1AW's marks 5630 against 5772. After: no place differing, the same four senders as steady, one rebuild. **No sender at 550 Hz appeared either way**, so the flicker is not the ghost; what made it stays unknown.
+- **The record:** the capture sheet and the 10-second `cw_listen` row carry the app's version and the number of passband rebuilds since listening started; the sheet also carries the senders held when the capture began. The next live session's sheets answer which build ran and whether the passband moved.
+
+**The H trace.** In piece 2's 35 WPM text, 5 of 6 H read whole, each dit 34 to 41 ms with 28 to 31 ms gaps. The H of LAY THE at 257.8 s opens with a dit broken into pieces 6 to 10 dB under the station's key-down level; the offline read loses it too (`TSE`), live printed `T IE`, and the gate makes `I`. A synthetic `THE HELD HABITS OF HIS SMITH` at 35 WPM through the filter with the bench's AGC reads whole, steady and with a 6 dB fade. No plain cause in the decoder was found and nothing was changed for it; the qualifying run's recording, where the fault was common, is not in the tree.
+
+Nothing keys or transmits, and nothing is written to the radio.
+
+---
 id: HM-DEC-258
 date: 2026-10-07
 refs: work instruction 554, HM-DEC-245, HM-DEC-256, HM-DEC-257, R88, src/Hamlet.RadioEngine/Cw/CwSenderGate.cs, src/Hamlet.RadioEngine/Cw/CwEnvelopeDetector.cs, tests/Hamlet.RadioEngine.Tests/Cw/EAndTInsideAWordTests.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheW1awSessionReplayTests.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheW1awTableTests.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheScoreboardGuardsCwTests.cs, docs/cw-scoreboard.md
