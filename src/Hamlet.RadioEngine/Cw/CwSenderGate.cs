@@ -85,6 +85,14 @@ public sealed class CwSenderGate
     internal const double ReleaseScore = 0.1;
 
     /// <summary>
+    /// The shape a sender must have reached once before it is first printed: the light's green line, 0.4 (work instruction
+    /// 561, HM-DEC-265). A weak station given its own window within seconds printed its marks from the moment it was barely
+    /// detectable; Hamlet now waits until it is sure. Reached once, it is held as before and let go only under ReleaseScore,
+    /// so a rough hand that dips mid-sentence stays printed. One line, the light's own.
+    /// </summary>
+    internal const double PrintScore = CwShapeLights.GreenScore;
+
+    /// <summary>
     /// How far above the printed sender a challenger must score to take the terminal at a pause: 0.16 (work instruction 550,
     /// task 3). The median spread of a real hand's own score over a minute, measured on the owner's recordings and both station
     /// catches (0.158; W1AW's 0.009, synthetic calls' 0.002): a challenger must beat the printed sender by more than a hand
@@ -502,6 +510,7 @@ public sealed class CwSenderGate
             foreach (var s in _senders)
             {
                 s.QualifiedSince = !Qualifies(s) ? double.NaN : double.IsNaN(s.QualifiedSince) ? heardSeconds : s.QualifiedSince;
+                s.Sure |= s.Shape.Score >= PrintScore;
             }
         }
 
@@ -522,6 +531,10 @@ public sealed class CwSenderGate
             // loud noise still printing nothing. **A CANDIDATE STANDS AT THE RELEASE LINE** (work instruction 550, task 2): nothing
             // is picked under the score it would be let go at; on the rebuilt score that is 0.1, under every real hand measured.
             .Where(s => !ShapePicks || s.Score >= ReleaseScore)
+
+            // **A STATION PRINTS ONCE HAMLET IS SURE OF IT** (work instruction 561, HM-DEC-265): and it is picked only once its
+            // shape has reached the green line, PrintScore, at least once. Its backlog is read as before.
+            .Where(s => !ShapePicks || !CwRules.On(CwRules.SureFirst) || s.Sender == _station || s.Sender.Sure)
             .OrderByDescending(s => ShapePicks ? s.Score : s.Sender.Marks)
             .ThenByDescending(s => ShapePicks ? 0 : s.Sender.Reference.Level)
             .ToList();
@@ -1029,6 +1042,9 @@ public sealed class CwSenderGate
 
         /// <summary>When it last began to qualify, on the gate's clock; NaN while it does not (work instruction 550, task 3).</summary>
         public double QualifiedSince { get; set; } = double.NaN;
+
+        /// <summary>Whether its shape has reached PrintScore at least once (work instruction 561).</summary>
+        public bool Sure { get; set; }
 
         public int Marks { get; private set; }
 

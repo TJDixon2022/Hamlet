@@ -83,6 +83,9 @@ internal static class CwRules
     /// </summary>
     public const string SpacingNow = "three words in a row are a new spacing";
 
+    /// <summary>A sender is first printed only once its shape has reached the green line, 0.4 (work instruction 561).</summary>
+    public const string SureFirst = "printed once sure";
+
     /// <summary>Every rule kept, in the order the work instruction names them.</summary>
     /// <remarks>
     /// **THREE RULES EARNED THEIR PLACE; TEN LEFT THE TREE** (work instruction 541, HM-DEC-245): of the thirteen work
@@ -94,7 +97,7 @@ internal static class CwRules
     [
         LoneLetter, ColdStartWordLine, SpeedRetry, Settle, OwnWindow, Release, FirstPickWait, Backlog, SilentNotCandidate, Edges,
         MarkShape, KindsHeld, GapKinds, OverlapSplit, GapCrossing, CrowdsNarrowed, Narrowness, ThreeLone, NeighbourGaps, KeptSplit,
-        SpacingNow,
+        SpacingNow, SureFirst,
     ];
 
     [ThreadStatic]
