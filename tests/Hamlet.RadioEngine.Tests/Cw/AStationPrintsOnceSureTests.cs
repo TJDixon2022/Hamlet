@@ -210,6 +210,31 @@ public sealed class AStationPrintsOnceSureTests(ITestOutputHelper output)
         }
     }
 
+    /// <remarks>
+    /// Work instruction 562, task 2: `221851`'s letters read offline with the time each begins, to find where its reference
+    /// ends at `K`, and the stretch read again cut there. Asserts nothing.
+    /// </remarks>
+    [Fact]
+    public void TheSignOffCutAtItsK()
+    {
+        var inv = CultureInfo.InvariantCulture;
+        var s = TheRecordingsScoreboardTests.Stretches.Single(x => x.Recording == "cw-2026-10-03-221851");
+        var audio = WavAudio.Read(TheOwnersRecordingReadsTests.Wav(s.Recording));
+        var marks = TheW1awTableTests.OfflineMarks(audio.Samples, audio.SampleRate, s.PitchHz);
+        var letters = TheW1awTableTests.OfflineLetters(marks);
+
+        output.WriteLine(string.Join(' ', letters.Select(l => string.Create(inv, $"{(l.SpaceBefore ? "| " : string.Empty)}{l.Text}@{l.From:0.00}"))));
+        output.WriteLine(string.Join(' ', marks.Select(m => string.Create(inv, $"{m.From:0.00}-{m.To:0.00}"))));
+
+        foreach (var to in new[] { 30.0, 16.5 })
+        {
+            var (_, read) = TheRecordingsScoreboardTests.ReadOffline(s with { To = to }, audio.Samples, audio.SampleRate);
+            var same = TheRecordingsScoreboardTests.Letters(read) == TheRecordingsScoreboardTests.Letters(s.Reference);
+
+            output.WriteLine(string.Create(inv, $"to {to:0.0} s: `{read.Trim()}`{(same ? " - agrees" : string.Empty)}"));
+        }
+    }
+
     /// <summary>
     /// A synthetic weak caller: `CQ CQ DE N1XYZ N1XYZ K` sent twice at 20 WPM and 700 Hz, the first time at 10 dB and the second
     /// at 16 dB, through the filter, read at a 600 Hz pitch and a 500 Hz filter.

@@ -92,7 +92,9 @@ public sealed class TheRecordingsScoreboardTests
         new("cw-2026-10-03-221828", 601.3, 0, 30, "FER ANOTHER FB QSO ES HOPE U HAVE AGN ED ES BEST 73 <AR> W", Confidence.Medium, 150, 125, 330,
             "[310] ..-. [190] . [160] .-. [370] .- [205] -. [215] --- [210] - [135] .... [270] . [180] .-. [420] ..-. [205] -... [350] --.- [185] ... [205] --- [305] . [155] ... [505] .... [225] --- [140] .--. [275] . [565] ..- [445] .... [275] .- [245] ...- [180] . [425] .- [185] --. [195] -. [550] . [215] -.. [545] . [185] ... [285] -... [220] . [195] ... [225] - [222] --... [190] ...-- [128] .-.-. [195] .-- [168] ..--"),
         // The sign-off corrected (work instruction 535), as above: 73 <AR> W2L where the web session wrote EEV CW 2L.
-        new("cw-2026-10-03-221851", 601.3, 0, 30, "BEST 73 <AR> W2L CQ DE NA8SB K", Confidence.Low, 150, 125, 330,
+        // Cut at its K (work instruction 562, task 2): the K begins at 15.54 s on the offline read, and after it another station
+        // keys `RR TU` and more that the reference never held.
+        new("cw-2026-10-03-221851", 601.3, 0, 16.5, "BEST 73 <AR> W2L CQ DE NA8SB K", Confidence.Low, 150, 125, 330,
             ".. [285] -... [220] . [195] ... [225] - [223] --... [190] ...-- [129] .-.-. [195] .-- [169] ..--- [160] .-.. [230] -.-. [200] --.- [345] -.. [250] . [485] -. [180] .- [165] ---.. [245] ... [320] -... [155] -.- [1970] . [1070] . [370] . [475] -.....- [650] . [545] ... [900] . [235] ... [960] . [350] .. [250] .-. [265] .- [225] ...- [570] ... [160] . [190] . [675]"),
         // **W1AW'S BULLETIN, THE FIRST STRONG MACHINE SIGNAL ON THE BOARD** (work instruction 547, task 1; R88 lifted for it):
         // 17 WPM, dit 70 ms, dah 205, S9. The opening `PE` follows a cut mark; `CME` from the bulletin, where the signal weakens
