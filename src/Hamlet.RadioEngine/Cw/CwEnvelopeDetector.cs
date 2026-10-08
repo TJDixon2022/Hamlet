@@ -398,11 +398,12 @@ public sealed class CwEnvelopeDetector
 
     /// <summary>
     /// **A CANDIDATE GETS A WINDOW BEFORE IT STANDS** (work instruction 558, task 1, HM-DEC-262): whether a sequence that has not
-    /// yet become the printed or waiting sender is read through a provisional window of its own. **Off**, and on only where the
-    /// environment sets <c>HAMLET_CANDIDATE_WINDOWS=1</c>: measured on, the twelve read 234 against 237 and the w1aw table 2111
-    /// against 2112, so it did not ship. Off, a candidate is read on the grid until its window opens, as before.
+    /// yet become the printed or waiting sender is read through a provisional window of its own; **on** (work instruction 560,
+    /// HM-DEC-264). The owner shipped it accepting its cost, 3 letters on the original twelve and 1 on the w1aw table, for KM3STU's
+    /// CQ and the weak fast station's call. Off, for the tests' before, a candidate is read on the grid until its window opens;
+    /// the tag `before-candidate-windows` holds the tree without it.
     /// </summary>
-    internal bool CandidateWindows { get; set; } = Environment.GetEnvironmentVariable("HAMLET_CANDIDATE_WINDOWS") == "1";
+    internal bool CandidateWindows { get; set; } = true;
 
     /// <summary>
     /// The fewest marks a sequence holds to get a provisional window: three (work instruction 558). One mark is any tone and two

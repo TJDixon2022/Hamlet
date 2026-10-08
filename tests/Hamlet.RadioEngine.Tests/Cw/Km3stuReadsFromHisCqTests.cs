@@ -10,8 +10,8 @@ namespace Hamlet.RadioEngine.Tests.Cw;
 /// <summary>
 /// **KM3STU READS FROM HIS CQ** (work instruction 559, HM-DEC-263): a POTA activator on 7.0442 MHz, 2026-10-08 12:13 UTC, his
 /// tone at 800 Hz, 200 Hz above the radio's 600 Hz pitch, about 13 dB over the noise, 20 to 22 WPM. Live, Hamlet printed
-/// nothing for the whole first recording. R88 is lifted for these three recordings. Whether candidates get windows follows
-/// <c>HAMLET_CANDIDATE_WINDOWS</c>, so the same trace reads with them off and on.
+/// nothing for the whole first recording. R88 is lifted for these three recordings. Candidates get windows by default since
+/// work instruction 560.
 /// </summary>
 public sealed class Km3stuReadsFromHisCqTests(ITestOutputHelper output)
 {
@@ -67,7 +67,7 @@ public sealed class Km3stuReadsFromHisCqTests(ITestOutputHelper output)
             output.WriteLine(string.Create(inv, $"{t,2} s | plain {string.Join(' ', p.Select(m => $"{(m.To - m.From) * 1000:0}{m.Kind}"))}"));
             output.WriteLine(string.Create(inv, $"     | grid offered (t-1.5..t-0.5) {string.Join(' ', offered.Select(m => $"{m.FromSeconds:0.00}:{m.LengthMs:0}ms {m.PitchHz:0}Hz {m.LevelDb:0.0}dB c{m.OwnContrastDb:0.0}"))}"));
             output.WriteLine(string.Create(inv, $"     | stood near 800: {stood.Count} | sequences: {string.Join(" | ", sequences)}"));
-            output.WriteLine(string.Create(inv, $"     | senders {string.Join(" | ", gate.SenderShapes.Select(s => $"{s.PitchHz:0} Hz shape {s.Shape.Score:0.00} marks {s.Marks}{(s.Qualified ? " qualified" : string.Empty)}{(s.Printed ? " PRINTED" : string.Empty)}"))} || windows {chain.Detector.CandidateWindowsNow} lane {chain.Detector.OwnWindowPitchHz:0}"));
+            output.WriteLine(string.Create(inv, $"     | senders {string.Join(" | ", gate.SenderShapes.Select(s => $"{s.PitchHz:0} Hz shape {s.Shape.Score:0.00} marks {s.Marks}{(s.Qualified ? " qualified" : string.Empty)}{(s.Printed ? " PRINTED" : string.Empty)}"))} || windows {chain.Detector.CandidateWindowsNow} lane {chain.Detector.OwnWindowPitchHz:0} || light {chain.Detector.Reading.ShapeLight}"));
         }
 
         chain.Decoder.Flush();

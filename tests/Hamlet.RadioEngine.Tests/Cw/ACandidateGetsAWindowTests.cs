@@ -5,8 +5,8 @@ namespace Hamlet.RadioEngine.Tests.Cw;
 
 /// <summary>
 /// **A CANDIDATE GETS A WINDOW BEFORE IT STANDS** (work instruction 558, task 1, HM-DEC-262): the weak fast station and a weak
-/// POTA call 200 Hz off the pitch, read through the app's chain. Whether candidates get windows follows the
-/// <c>HAMLET_CANDIDATE_WINDOWS</c> environment variable, so the same tests read before and after.
+/// POTA call 200 Hz off the pitch, read through the app's chain, where candidates get windows by default since work
+/// instruction 560.
 /// </summary>
 public sealed class ACandidateGetsAWindowTests(ITestOutputHelper output)
 {
