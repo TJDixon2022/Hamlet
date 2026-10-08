@@ -350,6 +350,8 @@ guard: the random carrier prints at 1 of 20 seeds (5195), recorded at unit 552
 | 555 task 2 | 2026-10-07 | 254 of 288 | 17 | 0 | **237** | 0 | 67 of 87, 3 added | a passband already known is held until a new reading replaces it: an unread pitch or filter changes nothing; another mode or a radio with nothing read gives the whole band. On W1AW's session with the pitch read dropped for one tick every 20 s and three ticks every 20 s, the text differed from the steady replay in 101 places and stray senders stood at 375 and 475 Hz; held, 0 places, the same senders, one rebuild. No 550 Hz sender either way. The sheet and the 10-second row carry the app's version and the rebuilds, the sheet the senders at the capture's start; nothing that reads changed |
 | 555 task 3 | 2026-10-07 | 254 of 288 | 17 | 0 | **237** | 0 | 67 of 87, 3 added | H at 35 WPM traced, not changed: in piece 2's 35 WPM text 5 of 6 H read whole, every dit 34 to 41 ms; the H of LAY THE at 257.8 s opens with a dit broken into pieces 6 to 10 dB under the key-down level, the offline read loses it too (`TSE`) and the gate makes `I`; `THE HELD HABITS OF HIS SMITH` at 35 WPM reads whole steady and with a 6 dB fade; nothing that reads changed |
 | 556 task 1 | 2026-10-07 | 254 of 288 | 17 | 0 | **237** | 0 | 67 of 87, 3 added | a reply begins where the other ends: a sender given the terminal prints only what it sent since the printed one last keyed, less one word gap, and none of its past where it stood over 10 s while that one kept keying; such a sender is not picked while the printed one has been silent under 10 s. A synthetic W1AW with a 2 s pause and a sender beside it the whole time: at HEAD 56 letters keyed before the pause printed in a burst and W1AW never resumed; now none, and W1AW's second half reads whole. The QSO reply tests read as at HEAD; nothing on either table changed |
+| 556 task 2 | 2026-10-07 | 254 of 288 | 17 | 0 | **237** | 0 | 67 of 87, 3 added | the owner's ruling recorded: a measured figure that ships stands; the asks list cleared of such figures; no code changed |
+| 556 task 3 | 2026-10-07 | 254 of 288 | 17 | 0 | **237** | 0 | 67 of 87, 3 added | word spaces found, not changed: of 20 missing, 6 are word gaps as short as the sender's own letter gaps (137 to 252 ms against clusters of 171 to 222), 5 sit beside a letter not printed, 5 are word gaps under the line with the word cluster shown and 4 before any word cluster; the 3 added are letter gaps over the line. The largest group cannot be told from a letter gap by any gap, so nothing shipped |
 
 ## Scans (work instruction 544, HM-DEC-248)
 
@@ -398,6 +400,8 @@ high and 25 medium, 2151 letters, all totalled.
 | 555 task 2 | 2026-10-07 | **2112** | 2131 of 2151 | 19 | 0 | 438 of 440, 11 added | a passband already known is held until a new reading replaces it; nothing that reads changed |
 | 555 task 3 | 2026-10-07 | **2112** | 2131 of 2151 | 19 | 0 | 438 of 440, 11 added | H at 35 WPM traced; nothing that reads changed |
 | 556 task 1 | 2026-10-07 | **2112** | 2131 of 2151 | 19 | 0 | 438 of 440, 11 added | a reply begins where the other ends; nothing that reads changed |
+| 556 task 2 | 2026-10-07 | **2112** | 2131 of 2151 | 19 | 0 | 438 of 440, 11 added | the owner's ruling recorded; no code changed |
+| 556 task 3 | 2026-10-07 | **2112** | 2131 of 2151 | 19 | 0 | 438 of 440, 11 added | word spaces found by cause on the twelve; nothing changed |
 
 ### W1AW stretches at unit 554 task 3
 
