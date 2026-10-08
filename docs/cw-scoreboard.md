@@ -361,6 +361,7 @@ guard: the random carrier prints at 1 of 20 seeds (5195), recorded at unit 552
 | 560 task 1 | 2026-10-08 | 318 of 353 | 20 | 1 | **297** | 0 | 83 of 110, 3 added | the candidate windows ship at the owner's word, accepting their cost (work instruction 560, HM-DEC-264): 297 with KM3STU's three, **234 without**, from 275 and 237; `121324` reads `INOTA DE KM3STU K KQ4PAK`, 18 of 19; `143906` `QSY DE WB2FU`; one letter invented on `221851`; noise nothing, the carrier at seed 5195 only, the first recording whole. **The guard holds the board here, by the owner's ruling** |
 | 560 task 2 | 2026-10-08 | 318 of 353 | 20 | 1 | **297** | 0 | 83 of 110, 3 added | the cold re-read in a candidate's window, built and reverted: reading the audio from a candidate's first mark through its window when it opens, the sender rebuilt from those marks, read 230 with KM3STU's three and 169 without, w1aw 1887, many first letters `■` and whole stretches empty, and `121324` still `INOTA DE KM3STU`; the engine is as at task 1 |
 | 561 task 1 | 2026-10-08 | 318 of 353 | 20 | 1 | **297** | 0 | 83 of 110, 3 added | a station is first printed only once its shape has reached the green line, 0.4, and held to 0.1 as before (work instruction 561, HM-DEC-265): every stretch reads as at HEAD, 234 without KM3STU's three. Measured first, every station given the terminal on both tables and the scan catches had reached 0.4 by the time it was picked; the two that printed under it (`221502` at 0.26, `221745` at 0.16) had passed it before. The junk before a call (`143906` `IEE I I E NUVEE T`) is the backlog of a sender already over 0.4, read as before |
+| 561 task 2 | 2026-10-08 | 318 of 353 | 20 | 1 | **297** | 0 | 83 of 110, 3 added | the low-confidence stretches read offline again at envelope cutoffs of 30, 40 and 60 Hz: `143951` reads `EUAK` where the reference has `EURD`; `221548` at 598 Hz `LEARED` and `US■GA`; `221851` `TH3` for `73`, and keying after `K` the reference does not hold. None agrees at any cutoff, so all stay low and the totals stand |
 
 ## Scans (work instruction 544, HM-DEC-248)
 
@@ -420,6 +421,7 @@ high and 25 medium, 2151 letters, all totalled.
 | 560 task 1 | 2026-10-08 | **2111** | 2131 of 2151 | 20 | 0 | 438 of 440, 11 added | the candidate windows ship at the owner's word, accepting their cost of one letter here (HM-DEC-264); **the guard holds the table here, by the owner's ruling** |
 | 560 task 2 | 2026-10-08 | **2111** | 2131 of 2151 | 20 | 0 | 438 of 440, 11 added | the cold re-read in a candidate's window read 1887 here and was reverted; nothing that reads changed |
 | 561 task 1 | 2026-10-08 | **2111** | 2131 of 2151 | 20 | 0 | 438 of 440, 11 added | a station is first printed only once its shape has reached 0.4 (HM-DEC-265); W1AW reached it before every pick, nothing changed |
+| 561 task 2 | 2026-10-08 | **2111** | 2131 of 2151 | 20 | 0 | 438 of 440, 11 added | test only; nothing that reads changed |
 
 ### W1AW stretches at unit 554 task 3
 

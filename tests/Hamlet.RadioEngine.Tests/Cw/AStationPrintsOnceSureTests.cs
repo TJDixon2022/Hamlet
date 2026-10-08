@@ -185,6 +185,31 @@ public sealed class AStationPrintsOnceSureTests(ITestOutputHelper output)
         }
     }
 
+    /// <remarks>
+    /// Task 2: the three low-confidence stretches read offline again at three envelope cutoffs, 30, 40 and 60 Hz, beside their
+    /// references. A stretch is promoted only where every read agrees with its reference. Asserts nothing.
+    /// </remarks>
+    [Fact]
+    public void TheLowStretchesReadAgain()
+    {
+        var low = TheRecordingsScoreboardTests.Stretches.Where(s => s.Confidence == TheRecordingsScoreboardTests.Confidence.Low);
+
+        foreach (var s in low)
+        {
+            var audio = WavAudio.Read(TheOwnersRecordingReadsTests.Wav(s.Recording));
+
+            output.WriteLine($"{s.Recording} at {s.PitchHz:0} Hz, {s.From}-{s.To} s, reference `{s.Reference}`");
+
+            foreach (var cutoff in new[] { 30.0, 40, 60 })
+            {
+                var (_, letters) = TheRecordingsScoreboardTests.ReadOffline(s, audio.Samples, audio.SampleRate, cutoff);
+                var same = TheRecordingsScoreboardTests.Letters(letters) == TheRecordingsScoreboardTests.Letters(s.Reference);
+
+                output.WriteLine($"  {cutoff:0} Hz: `{letters.Trim()}`{(same ? " - agrees" : string.Empty)}");
+            }
+        }
+    }
+
     /// <summary>
     /// A synthetic weak caller: `CQ CQ DE N1XYZ N1XYZ K` sent twice at 20 WPM and 700 Hz, the first time at 10 dB and the second
     /// at 16 dB, through the filter, read at a 600 Hz pitch and a 500 Hz filter.
