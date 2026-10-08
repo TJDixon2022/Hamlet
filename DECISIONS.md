@@ -4,6 +4,47 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-268
+date: 2026-10-08
+refs: work instruction 564, HM-DEC-084, HM-DEC-174, HM-DEC-191, HM-DEC-207, data/bands/mode-receiver-conditions.json, src/Hamlet.RadioEngine/Rig/CwAgc.cs, src/Hamlet.App/ViewModels/MainWindowViewModel.CwAgc.cs, tests/Hamlet.App.Tests/ViewModels/HamletSetsAgcForCwTests.cs, docs/agc-comparison.md
+---
+
+**Hamlet sets AGC for CW, as it sets the preamp.** Ordered by the owner in work instruction 564, 2026-10-08, who asked how to change the radio's AGC: *"I have no idea how to do that."* He should not have to. No recording was added and nothing keys or transmits; both scoreboards read exactly as at HEAD, 297 and 2111.
+
+**The premise, half right.** Hamlet already wrote the AGC on entering CW, and it wrote **FAST**.
+- **Where it came from:** the CW row of `data/bands/mode-receiver-conditions.json`, since 2026-08-29, on the reasoning that fast "tracks the keying". That is why every capture sheet for a month read FAST.
+- **Why that was wrong for the decoder:** on CW, FAST turns the gain back up in every gap between elements, so the floor pumps in the station's own rhythm and every key-down overshoots. The decoder's traces named it for a week.
+
+**The command.** `16 12`: `00` off, `01` FAST, `02` MID, `03` SLOW (IC-7300 Full Manual `A7292-4EX-6`, p. 19-3). It is read before it is written and read back after (HM-DEC-084).
+
+**What ships.**
+- **The default:** the CW row asks for **SLOW**, written once on entering the CW tab or connecting in CW, as the preamp is.
+- **The story line** says `AGC set to SLOW for CW.` when it sets it.
+- **The setting, `AGC in CW`,** is the last row of the scan's settings popover: SLOW (default), MID, FAST, or leave the radio alone.
+  - It is kept across restarts as `AgcInCw`.
+  - The engine applies it to the CW row (`ReceiverConditions.ForTab(..., ReceiverChoices)`), so the view model's receive path still names no control.
+  - Leave the radio alone takes the row out, so nothing is written.
+- **The hand wins** (HM-DEC-174): an AGC he sets on the radio after Hamlet set it stays, and is not set again until he next comes to the CW tab.
+- **Leaving CW puts back** the AGC the radio had before Hamlet changed it, unless his hand has moved it since.
+- **The Digital and Voice tabs write no AGC.** The FT8 row's AGC stays unconfirmed and spoken only.
+- **The record:** every capture sheet carries an `agc` line, and every `cw_listen` row carries `agc` and `agcSetBy`. Each gives the AGC as the radio reports it, and whether Hamlet set it, the hand did, or it was the radio's own.
+- **Listen-only holds.** AGC is a receive setting.
+
+**Tests.** Eight fake-rig tests in `HamletSetsAgcForCwTests`:
+- entering CW sets SLOW once, and says so;
+- a hand change is not overridden;
+- leaving CW puts FAST back;
+- a hand change before leaving is left alone;
+- the Digital and Voice tabs write no AGC;
+- leave the radio alone writes nothing;
+- the sheet and the row carry the AGC and who set it;
+- the choice is kept.
+
+Two engine tests that pinned the CW row at FAST now pin SLOW, and the view model's receive path still names no control.
+
+**Task 2.** `docs/agc-comparison.md` says how to compare SLOW against FAST in one evening: the setting to flip, what to capture, what to send the web session and what it will measure.
+
+---
 id: HM-DEC-267
 date: 2026-10-08
 refs: work instruction 563, src/Hamlet.App/Controls/UiTimers.cs, src/Hamlet.App/ViewModels/MainWindowViewModel.cs, tests/Hamlet.App.Tests/TimersStopWithTheirTest.cs, docs/carry-forward-tests.txt

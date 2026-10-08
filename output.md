@@ -1,98 +1,103 @@
 ## 1. What Claude did
 
-Development computer, project gate `PROJECT: Hamlet` checked against `PROJECT_CARD.md`, the order's five checks (`SHACK_FACTS.md`, `docs\carry-forward-tests.txt`, `docs\cw-scoreboard.md` present; no `CoreHMI.sln`, no `MURC.sln`) and `Hamlet.sln`: Hamlet confirmed. Nothing here is evidence about the radio. Branch `main`. Run by hand: `SESSION.lock` taken at 13:45:54 through `tools\arbiter\lock.bat take` and released at the end, nothing written to `RUN_LEDGER.md`, nothing under `tools\arbiter\` touched, no box ticked in `PHASE_PLAN.md`. No recording added; nothing keys or transmits. Version 1.13.247 to **1.13.248**. Ruling **HM-DEC-267**, the number the order gave. Nothing was recorded under §12.1.
+Development computer, project gate `PROJECT: Hamlet` checked against `PROJECT_CARD.md`, the order's five checks (`SHACK_FACTS.md`, `src\Hamlet.App\ViewModels\MainWindowViewModel.cs`, `docs\cw-scoreboard.md` present; no `CoreHMI.sln`, no `MURC.sln`) and `Hamlet.sln`: Hamlet confirmed. Nothing here is evidence about the radio. Branch `main`. Run by hand: `SESSION.lock` taken at 16:21:07 through `tools\arbiter\lock.bat take` and released at the end, nothing written to `RUN_LEDGER.md`, nothing under `tools\arbiter\` touched, no box ticked in `PHASE_PLAN.md`. No recording added; nothing keys or transmits; the one new radio write is the AGC in CW. Version 1.13.248 to **1.13.249**. Ruling **HM-DEC-268**, the number the order gave. Nothing was recorded under §12.1.
 
-**Task 1, the dispatcher-loop failure found and gone** (`09205f24`).
-- **What throws it:** Avalonia 11.3.0's `Dispatcher.ResetForUnitTests`, read in its source. As each headless test starts, it runs every leftover job on the dispatcher and queues any timer that has come due after each one. If that takes more than five seconds it throws `You've caused dispatcher loop` on whichever test is starting.
-- **How it was found:** a temporary assembly hook logged each test's start and end and the jobs left in the dispatcher's queue, the queue read for diagnosis only, and not committed.
-- **Leak 1, the view model's timers:** every `MainWindowViewModel` a test builds starts its timers, because the `DispatcherTimer` constructor that takes a handler starts it. Nothing stopped them: scope at 50 ms, dwell and decode at 250 ms, age at 1 s.
-  - Plain `[Fact]` tests build view models off the headless dispatcher, so their ticks queued there unrun.
-  - After `ThePsk31TelemetryTests.NoiseProducesCandidatesThatNeverCrossAndNoCarriers`, the queue held `DispatcherTimer.FireTick` only, up to 200 of them. The next two headless tests, `TheFavoritesAreUnderTheGreenZoneTests`, each spent five seconds failing. The gap in the trace was 13 s.
-- **Leak 2, the view model's settled snapshot:** posted after a five-second `Task.Delay` that nothing could cancel, so it landed on whichever test's dispatcher was current. Up to 97 `WriteSettledSnapshot` jobs were queued at once.
-  - With the timers fixed and this not yet fixed, one run in five still failed (run 4: 275 of 278).
-- **The fix, at the source:**
-  - `src\Hamlet.App\Controls\UiTimers.cs` records every timer the app makes: the view model's nine, the six controls' and the two windows'. It runs the snapshot's delay as a cancellable post.
-  - An assembly hook, `tests\Hamlet.App.Tests\TimersStopWithTheirTest.cs`, stops and cancels them all when each test ends. On a headless test that is on the dispatcher, just before Avalonia's own drain.
-  - Nothing is retried and nothing is run one by one.
-  - In the app, the only change is that the snapshot's delay goes through `UiTimers.PostAfter`. Nothing in the app calls `StopAll`.
-- **What it leaves:** Avalonia's own one-shot press-and-hold timers, 300 ms, which fire once each, and a few transmit continuations that post once.
-- **Proved:** the app carry-forward line, five runs in a row, 278 of 278 each. Runs one and two came before a comment-only change to the hook.
+**Task 1, AGC SLOW in CW, the hand winning** (`19d95c18`).
+- **The premise was half right.** Hamlet already wrote the AGC on entering CW, and wrote **FAST**. The CW row of `data\bands\mode-receiver-conditions.json` had asked for `agc` = 1 since 2026-08-29 (`16f4a4c4`), which is why every sheet read FAST. No ruling chose it; the row's own reasoning did.
+- **The command:** `16 12`, read before write and read back after, through the existing receiver setup: `00` off, `01` FAST, `02` MID, `03` SLOW (Full Manual `A7292-4EX-6`, p. 19-3, already in `CivWrites.Agc` and `CivReads.Agc`).
+- **The row** now asks for SLOW (`03`), with its operator-facing reason rewritten.
+  - It is written once on entering the CW tab or connecting in CW, as the preamp is.
+  - The story line opens `AGC set to SLOW for CW.`
+- **The setting:** `AGC in CW`, the last row of the scan's settings popover (`⋯` beside Scan). It offers SLOW (default), MID, FAST and leave the radio alone.
+  - It is kept as `AgcInCw` in `settings.json`, and the popover's heading names it.
+  - The engine applies it (`ReceiverConditions.ForTab(..., ReceiverChoices)` and `CwAgc.Apply`). Leave alone takes the row out, so nothing is written.
+- **The hand wins:** the existing memory of what a tune-in left keeps a hand change, and nothing re-sets it until the CW tab is next entered.
+- **Leaving CW** puts back what the radio had before Hamlet changed it (`CwAgc.RestoreAsync`), unless his hand has moved it since. That restore is the only write the restore makes.
+- **The Digital and Voice tabs write no AGC.** The FT8 row's AGC was already unconfirmed and spoken only.
+- **The record:**
+  - Both capture sheets (Record and the automatic ones) gain `agc        SLOW  (set by Hamlet; Hamlet's choice for CW is SLOW)`.
+  - Each `cw_listen` row gains `agc` and `agcSetBy`.
+  - Whose it is reads `set by Hamlet`, `already so when Hamlet looked`, `set by hand`, `not Hamlet's, the CW tab is not the mode`, `the radio's own, Hamlet is set to leave it alone`, or `unknown, the radio has not said`.
+- **Tests:** eight new fake-rig tests in `tests\Hamlet.App.Tests\ViewModels\HamletSetsAgcForCwTests.cs`, all passing.
+- **Existing tests:**
+  - **Updated to SLOW:** two engine tests pinned the CW row at FAST: `EveryModeAnswersForEverySettingTests.MorseStatesWhatMorseNeeds` and `TheBlockStatesWhatTheModeNeedsTests.TheMorseBlocksStateWhatMorseNeeds`.
+  - **Kept as written:** `ModeFollowsTheMapAgainTests.NothingButTheModeIsEverWritten` checks that the view model's receive path names no control. My first version named the AGC there. Rather than weaken the test, the choice now travels to the engine as one record, and the test passes unchanged.
 
-**Task 2, the engine line run whole once:** completed under its 480 s timeout, in 386 s, at 153 of 154.
-- **The one red:** `TheRsidDetectorTests.TheDetectorKeepsUpWithRealTime`. It divides the whole process's CPU time by the audio's length while other test classes run beside it: 1.579 of real time there, 0.079 alone, where it passes.
-- **A finding only;** not fixed.
+**Task 2, the comparison** (`60a40c4c`): `docs\agc-comparison.md`, one page.
+- The setting to flip.
+- What to capture: a W1AW session on each setting, or two ragchews.
+- What to send: the capture folders and the day's telemetry.
+- What the web session will measure: letters right against W1AW, junk before weak calls, the printed sender's shape score, and the noise humps between letters.
 
 **Records:**
-- `PHASE_OUTCOME.md`, both copies: `## UNIT 563 - STEP 12`.
-- `PHASE_STATUS.md`, both copies: names 563.
-- `Directory.Build.props`: 1.13.248.
+- `PHASE_OUTCOME.md`, both copies: `## UNIT 564 - STEP 12`.
+- `PHASE_STATUS.md`, both copies: names 564.
+- `Directory.Build.props`: 1.13.249.
 - `CLAUDE.md` §1: a row.
-- `DECISIONS.md`: HM-DEC-267.
-- `docs\cw-scoreboard.md`: a 563 row in each table, unchanged.
+- `DECISIONS.md`: HM-DEC-268.
+- `docs\cw-scoreboard.md`: a 564 row in each table, unchanged.
 
-**Build** `Hamlet.sln -warnaserror`: 0 warnings, 0 errors. **Guards:** both boards as at HEAD. **Decision-log and voice tests:** 7 of 7.
+**Build** `Hamlet.sln -warnaserror`: 0 warnings, 0 errors. **Guards:** 4 of 4. **Decision-log and voice tests:** 7 of 7. **App carry-forward:** 278 of 278 in 2 m 11 s.
 
 ## 2. What the owner should expect
 
-**Nothing about reading changed.** Rebuild if you like, but Hamlet reads exactly as before:
-- **297** on your twelve plus KM3STU's three, **234** without his three.
-- **2111** on W1AW.
-- Every stretch is letter for letter the same.
+**Rebuild.** You won't need to touch the AGC on the radio any more.
 
-**What was leaking:** every time a test built the app's main screen without a window, its timers kept ticking after the test ended, along with a snapshot it writes five seconds after it opens. Those leftovers piled up behind tests that don't run a screen, and the next test that did had to work through all of them before it could start. Past five seconds Avalonia gave up, and that test failed. That's why it was a different test each time.
+**What happens now:**
+- **When you come to the CW tab, Hamlet sets the radio's AGC to SLOW,** once, and the status line says `AGC set to SLOW for CW.` It also does this when it connects while you're on CW.
+- **Why SLOW:** it lets the gain settle on the station and hold through the gaps between dits, so the hiss stays flat instead of swelling in every gap.
+- **It was Hamlet that set FAST before.** The CW settings asked for FAST, which is why every sheet said FAST.
+- **If you turn the AGC on the radio yourself, that wins.** Hamlet leaves it where you put it until you next come to the CW tab.
+- **When you leave CW for Digital or Voice,** Hamlet puts the AGC back to what the radio had before, unless you've changed it yourself.
+- **Digital and Voice never touch the AGC.**
 
-**Now each test stops its own timers when it ends:**
-- The app's test line ran clean five times in a row.
-- It's about 20 seconds faster, and the reports won't need to explain away a red any more.
-- In the app itself, the screen's timers run as before.
+**Where the setting is:** on the CW tab, the small `⋯` button beside **Scan**; its last row is **AGC in CW**. Your choices are SLOW (the default), MID, FAST, or leave the radio alone. It's remembered across restarts, and it takes effect the next time you come to the CW tab: switch to Digital and back to make it take effect at once.
 
-**The engine's test line, run whole for the first time in weeks,** finishes in about six and a half minutes. It has one red of the same kind: a speed check on the RSID detector that counts the other tests' work as its own. It passes alone.
+**Every capture sheet and every ten-second telemetry row now says what the AGC was and who set it.**
 
-Pushed to `main`.
+**Tonight, to compare** (all in `docs\agc-comparison.md`):
+1. Listen to a W1AW session on SLOW (Hamlet records it by itself), then set FAST, go to Digital and back to CW, and listen to the next session.
+2. If no W1AW session suits, record two ragchews instead, one on each setting.
+3. Don't touch the radio's AGC during a run.
+4. Send the web session the capture folders and the day's telemetry file.
+
+**Reading is unchanged:** **297** on your twelve plus KM3STU's three (**234** without), and **2111** on W1AW. Pushed to `main`.
 
 ## 3. What you should see
 
-**The app carry-forward line, five runs in a row** (with the fix):
+**The fake-rig tests** (`HamletSetsAgcForCwTests`, all passing):
 
-| run | count | time |
-|---|---|---|
-| 1 | 278 of 278 | 2 m 14 s |
-| 2 | 278 of 278 | 2 m 14 s |
-| 3 | 278 of 278 | 2 m 11 s |
-| 4 | 278 of 278 | 2 m 8 s |
-| 5 | 278 of 278 | 2 m 10 s |
-
-**Before the fix, and with half of it:**
-- At HEAD: 276 of 278 and 277 of 278 last unit, each about 2 m 26 s to 2 m 32 s.
-- With the timers stopped and the snapshot not yet cancellable: 278, 278, 278, 275, 278.
+| test | what it shows |
+|---|---|
+| `EnteringCwSetsSlowOnce` | radio on FAST; entering CW writes `03` once and moving the dial writes nothing more; the story line opens `AGC set to SLOW for CW.` |
+| `AHandChangeIsNotOverridden` | after SLOW, the radio set to MID by hand; another tune-in on CW writes nothing; the record says `MID`, `set by hand` |
+| `LeavingCwPutsBackWhatTheRadioHad` | writes `03` then `01`; the radio ends on FAST; says `AGC put back to FAST, as it was before CW.` |
+| `LeavingCwAfterAHandChangeLeavesHisSetting` | writes `03` only; the radio stays on his MID |
+| `TheDigitalAndVoiceTabsWriteNoAgc` | no AGC write on either tab; the radio stays on FAST |
+| `LeaveAloneWritesNothing` | no AGC write; the record says `FAST`, `the radio's own, Hamlet is set to leave it alone` |
+| `TheSheetAndTheRowCarryTheAgcAndWhoSetIt` | sheet `agc        SLOW  (set by Hamlet; Hamlet's choice for CW is SLOW)`; row `agc` SLOW, `agcSetBy` set by Hamlet |
+| `TheChoiceIsKept` | FAST chosen, stored as `fast`, read back as FAST by a new view model |
 
 **Both scoreboards' rows:**
 
 | unit | right | wrong | invented | score | printed in silence | spaces |
 |---|---|---|---|---|---|---|
 | HEAD | 318 of 353 | 20 | 1 | **297** | 0 | 83 of 110, 3 added |
-| 563 task 1 | 318 of 353 | 20 | 1 | **297** (234 without) | 0 | 83 of 110, 3 added |
+| 564 task 1 | 318 of 353 | 20 | 1 | **297** (234 without) | 0 | 83 of 110, 3 added |
 
 | w1aw | score | right | wrong | invented | spaces |
 |---|---|---|---|---|---|
 | HEAD | **2111** | 2131 of 2151 | 20 | 0 | 438 of 440, 11 added |
-| 563 task 1 | **2111** | 2131 of 2151 | 20 | 0 | 438 of 440, 11 added |
+| 564 task 1 | **2111** | 2131 of 2151 | 20 | 0 | 438 of 440, 11 added |
 
 Every stretch reads as at HEAD. Noise prints nothing, the carrier at seed 5195 as before, and the first recording whole.
 
-**The engine line, run whole once:**
-
-| | |
-|---|---|
-| completed | yes, in 386 s, under its 480 s timeout |
-| count | 153 of 154 |
-| red | `TheRsidDetectorTests.TheDetectorKeepsUpWithRealTime`: `psk31-four-signals.wav` cpu/audio 1.579 (wall 6.09 s for 38.59 s of audio) |
-| alone | passes: cpu/audio 0.079 |
-
 ## 4. What's blocking us
 
-- **`TheRsidDetectorTests.TheDetectorKeepsUpWithRealTime`** reads the whole process's CPU while other test classes run beside it, so the engine line run whole is red on it. It needs its own CPU measure or a collection of its own; not fixed here.
-- **Two reply tests stay red at HEAD:** `AReplyIsReadFromItsFirstLetterTests`' synthetic QSO (`TAW`) and `144020` (`IAN`).
+- **SLOW against FAST has not been measured on the air.** The default is the owner's order, and `docs\agc-comparison.md` is how to measure it.
+- **Changing `AGC in CW` while on the CW tab** takes effect only on the next entry to CW. Switching to Digital and back does it at once.
+- **`TheRsidDetectorTests.TheDetectorKeepsUpWithRealTime`** reads the whole process's CPU and is red when the engine line runs whole. Not touched here.
+- **Two reply tests stay red at HEAD:** `TAW` and `IAN`.
 
 ### Asks still outstanding
 

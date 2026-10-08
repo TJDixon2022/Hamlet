@@ -2,12 +2,12 @@ PROTOCOL: 2
 PROJECT: Hamlet
 STATE: COMPLETED
 TASK: closing
-WORK_INSTRUCTION: 563 - the app test line stops flaking (run by hand)
+WORK_INSTRUCTION: 564 - Hamlet sets AGC for CW, as it sets the preamp (run by hand)
 BALL: tim
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-10-08T14:38:55-04:00
-NOTE: Unit 563 done - app test line clean five runs; leaks were VM timers and the settled-snapshot delay; engine line whole 153 of 154
+UPDATED: 2026-10-08T16:37:46-04:00
+NOTE: Unit 564 done - AGC SLOW in CW, the hand winning, restored on leaving CW; boards 297 and 2111; app line 278
 
 ---
 
