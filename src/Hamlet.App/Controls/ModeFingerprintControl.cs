@@ -68,6 +68,7 @@ public sealed class ModeFingerprintControl : Control
     public ModeFingerprintControl()
     {
         _timer = new DispatcherTimer(Tick, DispatcherPriority.Background, OnTick);
+        UiTimers.Track(_timer, nameof(ModeFingerprintControl));
     }
 
     /// <summary>Which mode to animate.</summary>

@@ -230,6 +230,7 @@ public sealed class AchievementMarkControl : Control
         // enough for one small arc and cheap enough to run beside a decoder.
         _timer = new DispatcherTimer(
             TimeSpan.FromMilliseconds(40), DispatcherPriority.Background, OnTick);
+        UiTimers.Track(_timer, nameof(AchievementMarkControl));
     }
 
     /// <summary>True where something has been earned that he has not looked at.</summary>

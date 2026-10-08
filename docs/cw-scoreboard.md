@@ -364,6 +364,7 @@ guard: the random carrier prints at 1 of 20 seeds (5195), recorded at unit 552
 | 561 task 2 | 2026-10-08 | 318 of 353 | 20 | 1 | **297** | 0 | 83 of 110, 3 added | the low-confidence stretches read offline again at envelope cutoffs of 30, 40 and 60 Hz: `143951` reads `EUAK` where the reference has `EURD`; `221548` at 598 Hz `LEARED` and `US■GA`; `221851` `TH3` for `73`, and keying after `K` the reference does not hold. None agrees at any cutoff, so all stay low and the totals stand |
 | 562 task 1 | 2026-10-08 | 318 of 353 | 20 | 1 | **297** | 0 | 83 of 110, 3 added | the owner's rule, a station's backlog from the mark at which its shape first reached 0.4 (work instruction 562), built and **not shipped**: 301 right, 15 wrong, **285**, 75 of 110 spaces, and the first recording read `ER C HAT`, a hard limit broken. The shape reaches 0.4 one to three letters into a real station's sending, so the cut took `F` of `FER`, `ES` of `ES OK`, `N TE` of `N TEMP`, W1AW's `PE`, KM3STU's `NOT` and a reply's first letters, while `143906` kept `NUVEE T`, its junk sender having passed 0.4 during the junk. Started a word gap earlier it read 287. The engine is as at HEAD |
 | 562 task 2 | 2026-10-08 | 318 of 353 | 20 | 1 | **297** | 0 | 83 of 110, 3 added | `221851`'s stretch cut at its `K`, 16.5 s: offline it reads `IBESTTH3<AR>W2LCQ DE NA8SBK` against `BEST 73 <AR> W2L CQ DE NA8SB K`, a leading `I` and `TH3` for `73`, so it stays low; live it reads `SESE E IE EIEA2LCQ DE NA8SBN`. The totals stand |
+| 563 task 1 | 2026-10-08 | 318 of 353 | 20 | 1 | **297** | 0 | 83 of 110, 3 added | the app's tests stop their timers (work instruction 563, HM-DEC-267); nothing in the engine changed and every stretch reads as at HEAD |
 
 ## Scans (work instruction 544, HM-DEC-248)
 
@@ -426,6 +427,7 @@ high and 25 medium, 2151 letters, all totalled.
 | 561 task 2 | 2026-10-08 | **2111** | 2131 of 2151 | 20 | 0 | 438 of 440, 11 added | test only; nothing that reads changed |
 | 562 task 1 | 2026-10-08 | **2111** | 2131 of 2151 | 20 | 0 | 438 of 440, 11 added | the backlog from where the shape reached 0.4 read 2112 here (437 of 440 spaces) but 285 on the twelve-plus-three with the first recording broken, and was not shipped |
 | 562 task 2 | 2026-10-08 | **2111** | 2131 of 2151 | 20 | 0 | 438 of 440, 11 added | test only; nothing that reads changed |
+| 563 task 1 | 2026-10-08 | **2111** | 2131 of 2151 | 20 | 0 | 438 of 440, 11 added | the app's tests stop their timers; nothing that reads changed |
 
 ### W1AW stretches at unit 554 task 3
 

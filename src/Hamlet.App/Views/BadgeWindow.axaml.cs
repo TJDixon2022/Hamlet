@@ -2,6 +2,7 @@ using System;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
+using Hamlet.App.Controls;
 using Hamlet.App.ViewModels;
 
 namespace Hamlet.App.Views;
@@ -49,7 +50,7 @@ public partial class BadgeWindow : Window
     {
         InitializeComponent();
 
-        _leaves = new DispatcherTimer { Interval = Stays };
+        _leaves = UiTimers.Track(new DispatcherTimer { Interval = Stays }, nameof(BadgeWindow));
         _leaves.Tick += (_, _) => Leave();
 
         Opened += (_, _) => _leaves.Start();

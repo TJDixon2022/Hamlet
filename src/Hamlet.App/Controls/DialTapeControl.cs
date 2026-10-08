@@ -124,6 +124,7 @@ public sealed class DialTapeControl : Control
     {
         _coastTimer = new DispatcherTimer(
             TimeSpan.FromMilliseconds(16), DispatcherPriority.Render, OnCoastTick);
+        UiTimers.Track(_coastTimer, nameof(DialTapeControl));
         _coastTimer.Stop();
         Cursor = _dragCursor;
         ClipToBounds = true;

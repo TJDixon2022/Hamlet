@@ -2,6 +2,7 @@ using System.Globalization;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Threading;
+using Hamlet.App.Controls;
 using Hamlet.App.ViewModels;
 using Hamlet.RadioEngine.Contacts;
 
@@ -101,7 +102,7 @@ public partial class MainWindow : Window
     /// <summary>Restart the settle clock, because the list has just moved.</summary>
     private void TheDecodedListMoved()
     {
-        _decodedSettle ??= new DispatcherTimer { Interval = Settle };
+        _decodedSettle ??= UiTimers.Track(new DispatcherTimer { Interval = Settle }, nameof(MainWindow) + ".decoded");
 
         _decodedSettle.Stop();
         _decodedSettle.Tick -= OnDecodedListSettled;
@@ -112,7 +113,7 @@ public partial class MainWindow : Window
     /// <summary>Restart the settle clock, because the cards have just moved.</summary>
     private void TheCardsMoved()
     {
-        _cardsSettle ??= new DispatcherTimer { Interval = Settle };
+        _cardsSettle ??= UiTimers.Track(new DispatcherTimer { Interval = Settle }, nameof(MainWindow) + ".cards");
 
         _cardsSettle.Stop();
         _cardsSettle.Tick -= OnCardsSettled;

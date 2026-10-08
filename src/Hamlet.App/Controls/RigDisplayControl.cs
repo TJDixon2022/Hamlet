@@ -200,6 +200,7 @@ public sealed class RigDisplayControl : Control
         _clockTimer = new DispatcherTimer(
             TimeSpan.FromSeconds(1), DispatcherPriority.Background,
             (_, _) => InvalidateVisual());
+        UiTimers.Track(_clockTimer, nameof(RigDisplayControl));
         AttachedToVisualTree += (_, _) => _clockTimer.Start();
         DetachedFromVisualTree += (_, _) => _clockTimer.Stop();
     }

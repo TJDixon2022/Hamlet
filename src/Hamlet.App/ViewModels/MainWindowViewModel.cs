@@ -9617,6 +9617,18 @@ public partial class MainWindowViewModel : ObservableObject
             TimeSpan.FromMinutes(10), DispatcherPriority.Background, OnClockTick);
         _clockTimer.Start();
 
+        // Every timer above is known by name, so the headless tests can stop them all when a test ends (work instruction 563).
+        foreach (var (timer, owner) in new[]
+        {
+            (_rigSendTimer, nameof(_rigSendTimer)), (_w1awScheduleTimer, nameof(_w1awScheduleTimer)),
+            (_modeSettleTimer, nameof(_modeSettleTimer)), (_dwellTimer, nameof(_dwellTimer)),
+            (_spotRefreshTimer, nameof(_spotRefreshTimer)), (_ageTimer, nameof(_ageTimer)), (_decodeTimer, nameof(_decodeTimer)),
+            (_scopeTimer, nameof(_scopeTimer)), (_clockTimer, nameof(_clockTimer)),
+        })
+        {
+            UiTimers.Track(timer, nameof(MainWindowViewModel) + "." + owner);
+        }
+
         // The first reading is wanted before ten minutes have passed, and the
         // query is awaited nowhere: it lands when it lands.
         _ = QueryTheClockAsync();
@@ -9633,10 +9645,9 @@ public partial class MainWindowViewModel : ObservableObject
         // snapshot was never written in a test and the fault would have shipped
         // looking green. The gather reads this type's own state, so it is posted to
         // the UI thread rather than run on the delay's own.
-        _ = Task.Delay(SettledSnapshotAfter).ContinueWith(
-            _ => Dispatcher.UIThread.Post(
-                WriteSettledSnapshot, DispatcherPriority.Background),
-            TaskScheduler.Default);
+        // **AND IT CAN BE CANCELLED** (work instruction 563): a view model a test built and dropped posted its snapshot onto
+        // whichever test's dispatcher was current five seconds later, up to ninety-seven of them queued at once.
+        UiTimers.PostAfter(SettledSnapshotAfter, WriteSettledSnapshot, DispatcherPriority.Background);
         _ageTimer.Stop();
 
         _activitySource = BuildSources();

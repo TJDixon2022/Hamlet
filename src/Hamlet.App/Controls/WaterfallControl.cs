@@ -117,6 +117,7 @@ public sealed class WaterfallControl : Control
 
         _blitTimer = new DispatcherTimer(
             BlitInterval, DispatcherPriority.Render, OnBlitTick);
+        UiTimers.Track(_blitTimer, nameof(WaterfallControl));
     }
 
     /// <summary>The engine source being drawn.</summary>

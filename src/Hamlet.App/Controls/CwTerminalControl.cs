@@ -102,6 +102,7 @@ public sealed class CwTerminalControl : SelectableTextBlock
 
         _timer = new DispatcherTimer(
             DrainInterval, DispatcherPriority.Background, OnDrainTick);
+        UiTimers.Track(_timer, nameof(CwTerminalControl));
     }
 
     /// <summary>The transcript to show.</summary>
