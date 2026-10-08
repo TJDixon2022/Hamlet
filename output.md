@@ -1,42 +1,58 @@
 ## 1. What Claude did
 
-Development computer, project gate `PROJECT: Hamlet` checked against `PROJECT_CARD.md`, the order's five checks (`SHACK_FACTS.md`, `CwPatternGate.cs`, `cw-2026-10-03-143906.wav` present; no `CoreHMI.sln`, no `MURC.sln`) and `Hamlet.sln`: Hamlet confirmed. Nothing here is evidence about the radio. Branch `main`. Run by hand: `SESSION.lock` taken at 08:00:43 through `tools\arbiter\lock.bat take` and released at the end, nothing written to `RUN_LEDGER.md`, nothing under `tools\arbiter\` touched, no box ticked in `PHASE_PLAN.md`. R88 lifted only as the order named, and no recording added. Version 1.13.241 to **1.13.242**. Ruling **HM-DEC-261**, the number the order gave. Nothing was recorded under §12.1. Every test run was one filtered invocation; scripts went in `.run-unit\unit557-*.sh`, not committed. Both scoreboards ran after every variant and after each task.
+Development computer, project gate `PROJECT: Hamlet` checked against `PROJECT_CARD.md`, the order's five checks (`SHACK_FACTS.md`, `CwSenderLane.cs`, `cw-2026-10-03-143906.wav` present; no `CoreHMI.sln`, no `MURC.sln`) and `Hamlet.sln`: Hamlet confirmed. Nothing here is evidence about the radio. Branch `main`. Run by hand: `SESSION.lock` taken at 08:22:51 through `tools\arbiter\lock.bat take` and released at the end, nothing written to `RUN_LEDGER.md`, nothing under `tools\arbiter\` touched, no box ticked in `PHASE_PLAN.md`. **HEAD was tagged `before-candidate-windows` and pushed before any engine change.** R88 lifted only as the order named, and no recording added. Version 1.13.242 to **1.13.243**. Ruling **HM-DEC-262**, the number the order gave. Nothing was recorded under §12.1. Every test run was one filtered invocation; scripts went in `.run-unit\unit558-*.sh`, not committed.
 
-**Task 1, a floor under the fastest dit: measured, not shipped** (`1f4d210a`, the scoreboard rows; the engine is as at HEAD).
-- **Where the ceiling lives:** there is no 40 WPM ceiling in the tree.
-  - The fastest speed it names is **48 WPM**, `CwDecoder.FastestPlausibleWpm`, "the fastest the radio's own keyer sends". It bounds the printed speed.
-  - A dit at 48 WPM is 25 ms, and the detector's shortest bar, `CwEnvelopeDetector.ShortestBarMs`, is the same 25 ms.
-- **The floor was built from that number,** `1.2 / FastestPlausibleWpm`, in the gate where a mark joins a sender. 40 WPM was measured beside it through an environment variable, for this report only. Four variants were measured (section 3).
-- **Every variant lowered the twelve:** 235, 230, 230 and 227. Some invented letters, and none made `143906` read better. Under the order's bar, that neither table may fall, nothing shipped and the change was reverted.
-- **Not built:** the synthetic cases the order named (a 25 WPM call at 11 dB with blips before it, and a 40 WPM call). The real recordings had already decided the task.
+**Task 1, a candidate gets a window before it stands** (`faa32330`): built, measured, **in the tree switched off**.
+- **What was built:**
+  - `CwPatternGate.Candidates` lists every sequence, standing or not, holding 3 marks or more with two lengths and some shape.
+  - The detector opens a provisional `Window` on each, the station's own window: mixed at its pitch, filtered to its dit, the last two seconds read through it.
+  - Each window reads marks by level as a standing station's does, at the 0.4 up and 0.6 down lines, trimmed, at least half a dit, and its marks go to the pattern gate.
+  - The grid gives way within two bins of a window that reads.
+  - At most 4 windows at once, the loudest first, two bins clear of the station's window and of each other. A window is lost after 4.4 s without a mark.
+  - The station's own window takes over unchanged once the candidate is printed or waiting.
+- **The figures and their reasons** are in HM-DEC-262 and the code.
+- **Measured** (section 3):
+  - As first built, the windows sat on noise and on a station's shadows: 147 on the twelve and 1314 on w1aw.
+  - The two-bin rule, two lengths and some shape brought it to **234 and 2111**, under 237 and 2112.
+  - **Under the bar, so it is off.** `HAMLET_CANDIDATE_WINDOWS=1` turns it on for the next unit.
+- **The five cases** (section 3):
+  - The synthetic 13 dB POTA call reads whole on and off, so the bench does not reproduce KM3STU's failure.
+  - `143906` reads a little more of its call.
+  - The replies and W1AW cold read as at HEAD.
+- **Not done:** the cold re-read was not tried again.
+- **Tests:** `ACandidateGetsAWindowTests` (cases 1 and 2), and `TheWeakFastStationTracedTests` now traces four recordings with the windows open each second.
 
-**Task 2, the carrier and noise:** answered by the same runs, since each board run carries the hard limits.
-- The random carrier printed at seed 5195 only under every floor, as at HEAD.
-- The four loud-noise runs printed nothing.
-- The guard line is unchanged.
+**Task 2, the light and the scan:** dropped. With the windows off, nothing reaches the light or the scan's ear.
 
 **Records:**
-- `docs\cw-scoreboard.md`: rows for both tasks in both tables.
-- `PHASE_OUTCOME.md`, both copies: `## UNIT 557 - STEP 12`.
-- `PHASE_STATUS.md`, both copies: names 557.
-- `Directory.Build.props`: 1.13.242.
+- `docs\cw-scoreboard.md`: a row in both tables.
+- `PHASE_OUTCOME.md`, both copies: `## UNIT 558 - STEP 12`.
+- `PHASE_STATUS.md`, both copies: names 558.
+- `Directory.Build.props`: 1.13.243.
 - `CLAUDE.md` §1: a row.
-- `DECISIONS.md`: HM-DEC-261.
+- `DECISIONS.md`: HM-DEC-262.
 
 **Build** `Hamlet.sln -warnaserror`: 0 warnings, 0 errors.
 
-**Both guards:** 4 of 4. **The decision-log and voice tests:** 7 of 7. **App carry-forward:** 278 of 278.
+**Both guards:** 4 of 4. **The decision-log and voice tests:** 7 of 7.
+
+**App carry-forward:** 276 of 278.
+- `TheWindowHoldsBelowItsMinimumTests.TheWorkingPanelsScrollInsideThemselvesRatherThanCollapsing` failed with `You've caused dispatcher loop`.
+- `TheStopIsAlwaysOnScreenTests.AtEachOf354sNineSizesStopIsInTheStatusBarAndOnTheWindow` failed with `You've caused dispatcher loop`.
+- Both pass alone (2 of 2).
 
 ## 2. What the owner should expect
 
-Rebuild and run as usual. **Nothing about reading Morse changed this time.**
+Rebuild and run as usual. **Nothing about reading Morse changed this time**: the new piece is built and switched off.
 
-- **The weak fast station reads as before:** junk at the start, then `DE WB2FU` once Hamlet has hold of it.
-- **Hamlet still builds a station partly out of noise blips** before it starts sending properly.
-- **Why the floor didn't work:** throwing away every mark shorter than the fastest Morse dot cost real letters elsewhere, because a real dash that dips in the middle leaves short pieces too. Doing it only for stations not yet confirmed let a junk sender look cleaner, and it printed letters that were never sent. Every version lost letters on your twelve recordings, so none went in.
-- **The speed ceiling:** the work order said Hamlet reads up to 40 WPM. The code's ceiling is 48 WPM, the fastest your radio's keyer sends. Even at 40 the floor did worse. Whether the ceiling should be 40 is yours to say (section 4).
-- **The carrier and noise:** the random-carrier test still prints at the same one seed out of twenty, and the loud noise prints nothing, with or without any floor.
-- **Both scoreboards:** 237 and 2112, unchanged.
+- **What I built:** your idea, giving a weak station its own listening window before it has proved itself. Hamlet hears a station much better once it has its own window, tuned to its tone and its speed. Until now that window opened only after the station had stood, and a weak station like KM3STU's never stood on the few marks the coarse search found.
+- **What it did:** turned on, it read a little more of the weak fast station (`… QIKEEIEWB2FU …` where it had `… T T AEEYDEWB2FU`). But it cost 3 letters on your twelve recordings and 1 on W1AW, so under the rule that neither scoreboard may fall it's off.
+- **Why it cost letters:** at first the windows sat on noise and on a station's own shadow a bin or two away, and read the same station twice at two pitches. Keeping them away from each other and requiring a dot and a dash first fixed most of that. On one recording a station's first two seconds, read through its early window, still shifted its timing enough to turn an O into M and T.
+- **KM3STU's case:** I couldn't reproduce it on the bench. A made-up 22 WPM POTA call at 13 dB with its tone 200 Hz off reads whole with or without the windows. Whatever made your real one go unread for 30 seconds is something the bench signal doesn't have. Your recording of it isn't in the tree.
+- **The first word of a reply:** reads exactly as before.
+- **W1AW cold:** reads as before. It still starts `E NE II AND`, without the P.
+- **The cost:** at most four extra windows at once, each one small filter per sample. A 30-second recording read in the same second either way.
+- **Both scoreboards:** 237 and 2112.
 - Pushed to `main`.
 
 ## 3. What you should see
@@ -46,45 +62,52 @@ Rebuild and run as usual. **Nothing about reading Morse changed this time.**
 | unit | right | wrong | invented | score | printed in silence | spaces |
 |---|---|---|---|---|---|---|
 | HEAD | 254 of 288 | 17 | 0 | **237** | 0 | 67 of 87, 3 added |
-| 557 tasks 1 and 2 | 254 of 288 | 17 | 0 | **237** | 0 | 67 of 87, 3 added |
+| 558 task 1 (windows off) | 254 of 288 | 17 | 0 | **237** | 0 | 67 of 87, 3 added |
 
 | w1aw | score | right | wrong | invented | spaces |
 |---|---|---|---|---|---|
 | HEAD | **2112** | 2131 of 2151 | 19 | 0 | 438 of 440, 11 added |
-| 557 tasks 1 and 2 | **2112** | 2131 of 2151 | 19 | 0 | 438 of 440, 11 added |
+| 558 task 1 (windows off) | **2112** | 2131 of 2151 | 19 | 0 | 438 of 440, 11 added |
 
-**The floor, measured and reverted:**
+**The windows on, version by version:**
 
-| floor | applied to | the twelve | invented | w1aw | `143906` reads |
-|---|---|---|---|---|---|
-| none (HEAD) | | 237 | 0 | 2112 | `IEE I I E NIEE IE T T AEEYDEWB2FU` |
-| 48 WPM, 25 ms | every sender | 235 | 0 | 2112 | `I I E NEEE E ITTKIWDEWB2FU` |
-| 40 WPM, 30 ms | every sender | 230 | 2 | 2108 | nothing |
-| 48 WPM, 25 ms | senders not yet qualified | 230 | 5 | 2112 | `I I E NIEE IE T T AEEYDEWB2FU` |
-| 40 WPM, 30 ms | senders not yet qualified | 227 | 5 | 2112 | nothing |
+| version | the twelve | right | wrong | invented | in silence | spaces | w1aw |
+|---|---|---|---|---|---|---|---|
+| any sequence of 3 marks | 147 | 182 | 27 | 8 | 0 | 59 of 87, 12 added | 1314 |
+| and 2 bins clear of the station and of each other | 221 | 239 | 14 | 4 | 4 | 64 of 87, 5 added | 2072 |
+| and two lengths shown | 234 | 255 | 18 | 3 | 0 | 70 of 87, 5 added | 2111 |
+| and some shape (as kept, off) | 234 | 254 | 19 | 1 | 0 | 69 of 87, 3 added | 2111 |
 
-**What moved on the twelve with the floor on every sender, 48 WPM:**
+With the windows on as kept, the stretches that move:
 
-| stretch | HEAD | with the floor |
+| stretch | HEAD | windows on |
 |---|---|---|
-| `221805` | `E 40T U THESE DAYS. …`, 28 right | `40T U THESE DAYS. …`, 27 right |
-| `221745` | `TEIAND TMN40M …`, 21 right | `T IAND TMN40M …`, 20 right |
-| `221548`, low | `I M IEE IEE E USINGA …`, 5 wrong | `I M RW USINGA …`, 1 wrong |
-| `221851`, low | nothing | `SES EIEAET EI G IENAAEIBK`, 6 right, 14 wrong |
+| `221530` 492 Hz | `6 CHA MPION`, 9 of 11 | `6 C HA MPIMTN`, 7 of 11, 2 wrong |
+| `221828` | `… ESBEST SV A MU`, 37 of 41, 10 of 14 spaces | `… ESBEST SV <AR>WU`, 39 of 41, 12 of 14 spaces |
+| `221548` low | `I M IEE IEE E USINGA V …`, 18 of 26 | `I M EEEARED CW USINGA V …`, 22 of 26 |
+| `221851` low | nothing | `SESE E IE EIEA2LCQ DE NA8SBN NA EI`, 12 of 20, 1 invented |
+| `143951` low | `O WAE EEIEWRK T AGN ES`, 11 of 16 | `O WAE IIEURK T AGN ES`, 14 of 16 |
 
-With the floor on senders not yet qualified, `221851` prints `… XETESTA RF EE■ EISNR` with **5 letters invented**.
+**The five cases**, windows off (HEAD) and on (as kept):
 
-**The synthetic cases:** not built (section 1).
+| case | off | on |
+|---|---|---|
+| 1. `143906` | `IEE I I E NIEE IE T T AEEYDEWB2FU` | `IEE I I E NUVEE T QIKEEIEWB2FU AEE` |
+| 2. 22 WPM POTA call, 13 dB, 800 Hz | `CQ POTA DE KM3STU KM3STU K`, first letter at 3.60 s | the same |
+| 3. synthetic QSO reply | `TAW DE K3ZZ K3ZZ K` | the same |
+| 3. `144020` reply | `WX IN NETAGIT IAN TEMP` | the same |
+| 4. W1AW cold | `E NE II AND TYPE IV RADIO EMISSIONS HOWEVER, THIS NME IS` | the same |
+| 5. noise, carrier, first recording | noise nothing; seed 5195 only; reads whole | the same |
 
-**The carrier seeds:**
-- HEAD and both 48 WPM variants: 1 of 20 prints, seed 5195, `NTTTTNTE TEAETOTTNEAIT TAN`.
-- Both 40 WPM variants: 1 of 20, seed 5195, `TGTE TEAETOTTNEAIT TAN`.
-- Loud noise, 30 s at seeds 5130 and 5220 and 180 s at 5280 and 5370: nothing in every run.
+**The window cost:**
+- At most 4 windows, each one mixer and one fourth-order low-pass on every sample, and the level reading of a few hops each hop.
+- Reading a 30 s recording took 1 s with windows on and off.
+- The scoreboard and w1aw runs took the same time.
 
 ## 4. What's blocking us
 
-- **The weak fast station** still stands on noise blips before it keys. A floor at the fastest dit can't separate them without costing real letters, and no other rule has been measured yet.
-- **The ceiling:** the work order puts Hamlet's ceiling at 40 WPM; the tree's is 48, the radio keyer's fastest. The floor was measured at both, and both cost letters.
+- **KM3STU's failure doesn't reproduce on the bench.** A synthetic 13 dB call 200 Hz off the pitch reads whole at HEAD, so the window can't be tested against the case it was built for. The live recording isn't in the tree (R88).
+- **The candidate windows** read the twelve at 234 and w1aw at 2111. What remains is a station's first marks read through an early window shifting its timing lines (`221530`'s O), and one invented letter on `221851`.
 
 ### Asks still outstanding
 

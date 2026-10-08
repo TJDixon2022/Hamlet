@@ -4,6 +4,59 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-262
+date: 2026-10-08
+refs: work instruction 558, HM-DEC-233, HM-DEC-257, HM-DEC-258, R88, tag before-candidate-windows, src/Hamlet.RadioEngine/Cw/CwEnvelopeDetector.cs, src/Hamlet.RadioEngine/Cw/CwPatternGate.cs, tests/Hamlet.RadioEngine.Tests/Cw/ACandidateGetsAWindowTests.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheWeakFastStationTracedTests.cs, docs/cw-scoreboard.md
+---
+
+**A candidate gets a window before it stands: built, measured, kept off.** Ordered by the owner in work instruction 558, 2026-10-08. HEAD was tagged `before-candidate-windows` and pushed before any engine change. R88 was lifted for the owner's twelve recordings, the three scan catches, W1AW's `cw-2026-10-06-212015` and the four pieces of 2026-10-07; no recording was added.
+
+**Why.** On the air on 2026-10-08 a POTA activator, KM3STU, calling CQ at about 13 dB with his tone at 800 Hz, printed nothing for the first 30 seconds: the grid found 8 marks, and a station's own window opens only once it stands.
+
+**Built.**
+- **A candidate** is a pattern sequence, standing or not, other than the one the station's window reads.
+  - It holds **3 marks or more**: one mark is any tone and two any pair, and three agreeing in pitch and level is the least that has a gap to measure as well as a length.
+  - Its marks show **two lengths**, a dit and a dah, as the light's forming count already asks.
+  - Its marks score **some shape**, as standing already asks.
+- **The window** is the station's own window, opened on the candidate.
+  - It is mixed at its pitch and filtered to its dit as measured so far, with the last two seconds read through it.
+  - It reads by level at the station's 0.4 and 0.6, trimmed to the top, each mark at least half the dit.
+  - It is retuned as the candidate's marks grow. Its marks go to the pattern gate, so the candidate stands and qualifies on them.
+  - Once it reads by level, the grid gives way within two bins of it.
+- **The cost is bounded.**
+  - At most **4 windows** at once, the loudest first: a 500 Hz filter holds four stations 100 Hz apart, more than a CW band has calling in one passband.
+  - A window is lost after **4.4 s**, `CwPatternGate.SilenceSeconds`, without a mark: the longest a 5 WPM sender is silent inside its sending.
+  - Each window is one mixer and one fourth-order low-pass on every sample, and a few hops of level reading.
+  - Reading a 30 s recording took the same second with windows on and off.
+- **Not on a shadow:** no window opens within two bins of the station's window or of a louder candidate.
+
+**Measured.**
+
+| version | the twelve | invented | in silence | w1aw |
+|---|---|---|---|---|
+| HEAD | 237 | 0 | 0 | 2112 |
+| windows on any 3-mark sequence | 147 | 8 | | 1314 |
+| and 2 bins clear of the station's window and of each other | 221 | 4 | 4 | 2072 |
+| and two lengths shown | 234 | 3 | 0 | 2111 |
+| and some shape (as kept) | 234 | 1 | 0 | 2111 |
+
+- **First built,** the windows opened on noise and on a station's shadows 25 to 50 Hz away, which read the same station again at another pitch.
+- **As kept:**
+  - **Gains:** `221828` gains 2 letters and spaces, and `221548`'s low stretch reads `I M EEEARED CW USINGA V …` for `I M IEE IEE E USINGA …`.
+  - **Losses:** `221530`'s opening station loses CHAMPION's O (`6 C HA MPIMTN`), its first marks read through the window having shifted its lines, and one letter is invented on `221851`.
+
+**The five cases**, with windows on:
+1. **`143906`** reads `IEE I I E NUVEE T QIKEEIEWB2FU AEE` (at HEAD `IEE I I E NIEE IE T T AEEYDEWB2FU`).
+2. **The synthetic 22 WPM POTA call at 13 dB, 200 Hz off the pitch,** reads `CQ POTA DE KM3STU KM3STU K` with windows on and off. The bench does not reproduce the live failure.
+3. **The QSO replies** read as at HEAD (`144020`'s `IAN` for `IUN`; the synthetic reply's `TAW`).
+4. **W1AW cold** reads as at HEAD, `E NE II AND …`, without its P.
+5. **Noise** prints nothing, the carrier prints at seed 5195 only, and the first recording reads whole with windows on as kept.
+
+**The twelve and w1aw both fell, so it did not ship.** It is in the tree switched off, on only where `HAMLET_CANDIDATE_WINDOWS=1`. Off, both tables read as at HEAD. The cold re-read was not tried again, and the light and the scan (task 2) were not changed.
+
+Nothing keys or transmits, and nothing is written to the radio.
+
+---
 id: HM-DEC-261
 date: 2026-10-08
 refs: work instruction 557, HM-DEC-260, R88, src/Hamlet.RadioEngine/Cw/CwDecoder.cs, src/Hamlet.RadioEngine/Cw/CwEnvelopeDetector.cs, src/Hamlet.RadioEngine/Cw/CwSenderGate.cs, docs/cw-scoreboard.md
