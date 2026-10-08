@@ -4,6 +4,30 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-266
+date: 2026-10-08
+refs: work instruction 562, HM-DEC-237, HM-DEC-260, HM-DEC-265, R88, tests/Hamlet.RadioEngine.Tests/Cw/TheBacklogStartsWhereSureTests.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheRecordingsScoreboardTests.cs, docs/cw-scoreboard.md
+---
+
+**The backlog starts where Hamlet became sure: built, measured, not shipped.** The owner, 2026-10-08, answering the ask of HM-DEC-265: *"yes"*. That is, when a station is first printed, its backlog starts from the mark at which its shape first reached the green line, 0.4, and marks before that are dropped unprinted. R88 was lifted for the owner's twelve recordings, KM3STU's three, the three scan catches, W1AW's `cw-2026-10-06-212015` and the four pieces of 2026-10-07; no recording was added.
+
+**Built exactly as ruled, and below the order's own bar.**
+- **The scores:** the twelve-plus-three read **285** against 297 (301 right, 15 wrong, 75 of 110 spaces), and the w1aw table **2112** against 2111.
+- **A hard limit broke:** the first recording read `ER C HAT`.
+- **The shape reaches 0.4 one to three letters into a real station's sending**, so the cut took the first letters of nearly every station:
+  - `FER` became `ER`, `ES OK` became `OK`, and `N TEMP` became `MP`.
+  - W1AW lost `PE`, and KM3STU's `INOTA` became `A`.
+- **The reply cases lost letters too:**
+  - The synthetic QSO read `Q CQ … W DE K3ZZ`.
+  - `144020`'s reply read `X IN`.
+  - A sender that never takes over read `Q CQ CQ`, and that test went red.
+- **The junk it was meant to remove stayed in part:** `143906` kept `NUVEE T` before `QSY`, its junk sender having passed 0.4 during the junk.
+- **Started one of the sender's word gaps earlier,** it read 287.
+- **The engine is as at HEAD.** The three cases are kept as tests that print their readings and assert nothing.
+
+**Task 2:** `221851`'s stretch is cut at its `K`, 16.5 s. Read offline it is `IBESTTH3<AR>W2LCQ DE NA8SBK` against `BEST 73 <AR> W2L CQ DE NA8SB K`, so it stays low and the totals stand at 297 and 2111.
+
+---
 id: HM-DEC-265
 date: 2026-10-08
 refs: work instruction 561, HM-DEC-254, HM-DEC-264, R88, src/Hamlet.RadioEngine/Cw/CwSenderGate.cs, src/Hamlet.RadioEngine/Cw/CwRules.cs, tests/Hamlet.RadioEngine.Tests/Cw/AStationPrintsOnceSureTests.cs, tests/Hamlet.RadioEngine.Tests/Scan/TheCatchScanTests.cs, docs/cw-scoreboard.md
