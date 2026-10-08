@@ -2,12 +2,12 @@ PROTOCOL: 2
 PROJECT: Hamlet
 STATE: COMPLETED
 TASK: closing
-WORK_INSTRUCTION: 555 - lone letters are noise only as words; a passband that flickers; the qualifying run (run by hand)
+WORK_INSTRUCTION: 556 - a reply begins where the other ends; measured figures stand; back to the wild (run by hand)
 BALL: tim
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-10-07T20:29:13-04:00
-NOTE: Unit 555 done - lone letters noise only as words, 237 at the owner's ruling; passband held across unread ticks; w1aw 2112; H traced
+UPDATED: 2026-10-07T21:33:00-04:00
+NOTE: Unit 556 done - a reply begins where the other ends; measured figures stand; spaces, dahs and the weak station traced; 237 and 2112
 
 ---
 

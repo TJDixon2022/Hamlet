@@ -4,6 +4,30 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-260
+date: 2026-10-07
+refs: work instruction 556, HM-DEC-139, HM-DEC-237, HM-DEC-254, HM-DEC-257, HM-DEC-258, HM-DEC-259, R88, src/Hamlet.RadioEngine/Cw/CwSenderGate.cs, src/Hamlet.RadioEngine/Cw/CwEnvelopeDetector.cs, tests/Hamlet.RadioEngine.Tests/Cw/AReplyBeginsWhereTheOtherEndsTests.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheSpacesByCauseTests.cs, tests/Hamlet.RadioEngine.Tests/Scan/TheBrokenDahsTests.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheWeakFastStationTracedTests.cs, docs/cw-scoreboard.md
+---
+
+**The owner, 2026-10-07: a figure the author sets from measurement, with its reason, that ships on the scoreboard, stands as the author's unless the owner says otherwise. It is not an outstanding ask.** Cleared from the outstanding asks on that ruling: the handover margin and the challenger's 15 s; the key-down term's form; the hysteresis, the half-dit floor and the window opening on the waiting sender; the trim's two hops and 3 dB; the w1aw reference's corrections; what lets a held passband go, and the senders noted at a capture's start. The four older asks stay.
+
+**A reply begins where the other ends; a measured figure that ships stands.** Ordered by the owner in work instruction 556, 2026-10-07. R88 was lifted for the owner's twelve recordings, the three scan catches, W1AW's `cw-2026-10-06-212015` and the four pieces of 2026-10-07; no recording was added.
+
+**Why.** Live, at every section break of W1AW on 2026-10-07, the terminal printed a block of junk. W1AW paused a second or two after `QST DE W1AW <AS>` and was released; the terminal went to a sender that had stood beside it; and that sender printed its backlog, every letter it had accumulated since it stood, minutes of them. The backlog was built for a QSO reply that starts a second or two before the first station stops (HM-DEC-237).
+
+**The backlog rule, shipped:**
+- **When the terminal passes from a sender it printed to another, the new sender's backlog is only what it sent since the printed one last keyed, less one of its word gaps**, the overlap a real reply has. Older letters are dropped unprinted.
+- **A sender that stood longer than `ReplyOverlapSeconds`, ten seconds, while the printed one kept keying is not a reply.** It prints no backlog at all when it takes the terminal, and it is not picked while the printed one has been silent under ten seconds, so a station pausing between sections is picked again when it resumes. The figure is the author's, from what an over is: a reply begins as the other's over ends, doubling at most its callsigns and a word, a few seconds at 15 WPM and under ten at 10 WPM.
+- **Measured:** a synthetic W1AW, 25 WPM, with a 2 s pause, and a second sender 10 dB weaker beside it the whole time. At HEAD, at the pause, 56 letters that sender keyed before it printed in a burst, it kept the terminal and W1AW's second half never printed. Now nothing of it prints and W1AW's second half reads whole. The owner's QSO of 14:40:20 and the synthetic QSO read as at HEAD (`IAN` for `IUN`, and `TAW` for the reply's `W1AW`, both red before and after). Both tables held at 237 and 2112.
+
+**Traced, nothing shipped:**
+- **Word spaces.** Of the twelve's 20 missing spaces, 6 are word gaps as short as the sender's own letter gaps (137 to 252 ms against clusters of 171 to 222 ms), 5 sit beside a letter not printed, 5 are word gaps under the line with the word cluster shown and 4 before any word cluster; the 3 added are letter gaps over the line. The largest group cannot be told from a letter gap by any gap.
+- **The broken dahs.** On the strong catch 7 of 9 dahs stand in two pieces on this tree. Six dip past the 0.6 down line, at 0.60, 0.76, 0.85, 1.03, 1.04 and 1.14 of the contrast; the two whole ones dip 0.52 and 0.45. The sender's own gaps on the same window run p1 0.78 and p5 0.91, so half the dips are as deep as its gaps. A down step at the fifth percentile of its gaps' depths joined all but one dah, and read 196 on the twelve (the first recording broken) and 783 on w1aw: a gap shallower than the step no longer ends a mark, is never counted, and the step climbs. It was taken out.
+- **The weak fast station** (`143906`). The sender qualifies at 7 s on 19 marks, most of them noise blips of 20 to 35 ms where the plain read's dit is 47 ms; silent from 7 to 15 s, it is not picked until 19 s, when its backlog prints the blips; its lines, drawn partly from them, split QS into `T T A E E`; its window opens at 18.26 s at 12.5 dB of contrast, and from there it reads `DE WB2FU`. Telling the blips from its dits needs a figure set from this recording.
+
+Nothing keys or transmits, and nothing is written to the radio.
+
+---
 id: HM-DEC-259
 date: 2026-10-07
 supersedes: HM-DEC-258 (on which lone letters are dropped)
