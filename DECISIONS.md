@@ -4,6 +4,38 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-264
+date: 2026-10-08
+supersedes: HM-DEC-262 and HM-DEC-263 (on the candidate windows being off)
+refs: work instruction 560, HM-DEC-261, HM-DEC-262, HM-DEC-263, R88, tag before-candidate-windows, src/Hamlet.RadioEngine/Cw/CwEnvelopeDetector.cs, src/Hamlet.RadioEngine/Cw/CwDecoder.cs, tests/Hamlet.RadioEngine.Tests/Cw/Km3stuReadsFromHisCqTests.cs, docs/cw-scoreboard.md
+---
+
+**The candidate windows ship.** Ordered by the owner in work instruction 560, 2026-10-08: *"ship the candidate windows, accepting the cost."* R88 was lifted for the owner's twelve recordings, KM3STU's three of 2026-10-08, the three scan catches, W1AW's `cw-2026-10-06-212015` and the four pieces of 2026-10-07; no recording was added.
+
+**The cost accepted:** 3 letters on the original twelve (237 to 234) and 1 on the w1aw table (2112 to 2111), for KM3STU's CQ and the weak fast station's call.
+
+**Shipped.**
+- **The windows are on by default,** with the level rule for marks in a provisional window, and the environment switch is gone. The tag `before-candidate-windows` holds the tree without them.
+- **Re-measured at HEAD,** every stretch reads exactly as work instruction 559 measured with them on:
+  - **297** with KM3STU's three, **234** without, and **2111** on the w1aw table.
+  - One letter is invented, on `221851`.
+  - Noise prints nothing, the random carrier prints at seed 5195 only, and the first recording reads whole.
+- **The guards' new rows, by the owner's ruling:** the twelve-plus-three at **297** (318 of 353 right, 20 wrong, 1 invented, 83 of 110 spaces, 3 added); the w1aw table at **2111** (2131 of 2151, 20 wrong). The scoreboard still prints the twelve's total without KM3STU's three, now 234.
+- **What a weak station does now:**
+  - KM3STU's first recording reads `INOTA DE KM3STU K KQ4PAK`, 18 of 19, where nothing printed. `143906` reads `IEE I I E NUVEE T QSYDEWB2FU`.
+  - The light goes amber, a shape forming, when his window opens at 15 s, and green while he prints from 18 s. Before, he never printed and it never went green.
+  - The scan's tests and the light's pass. One scan timing check (`ASlowEarLosesNothing`, a delivery under 2 ms) failed once under the load of 133 tests at once and passed twice alone, under 0.25 ms.
+
+**Task 2, the cold re-read in a candidate's window: built and reverted.** When a candidate's window opened, the audio from its first mark was read through it by level and the sender rebuilt from those marks.
+- **Result:** it read 230 with KM3STU's three and 169 without, and 1887 on w1aw. Many first letters came out `■`, and whole stretches printed nothing (`221745`, `221548` at 498 Hz, the 14:40:20 reply).
+- **`POTA` still read `NOTA`.**
+- **W1AW cold** reads `E NE II AND …` without its P, as before. The first word of a reply reads as before: the synthetic QSO's `TAW` for `W1AW`, and `144020`'s `WX IN NETAGIT IAN`.
+
+**The 48 WPM ceiling stands,** as `CwDecoder.FastestPlausibleWpm` has it: the owner, 2026-10-08. The ask from work instruction 557 is answered and off the list.
+
+The low-confidence stretches were not re-read. Nothing keys or transmits, and nothing is written to the radio.
+
+---
 id: HM-DEC-263
 date: 2026-10-08
 refs: work instruction 559, HM-DEC-258, HM-DEC-262, R88, tests/fixtures/cw/captured/cw-2026-10-08-121324.wav, tests/fixtures/cw/captured/cw-2026-10-08-121357.wav, tests/fixtures/cw/captured/cw-2026-10-08-121414.wav, src/Hamlet.RadioEngine/Cw/CwEnvelopeDetector.cs, src/Hamlet.RadioEngine/Cw/CwPatternGate.cs, tests/Hamlet.RadioEngine.Tests/Cw/Km3stuReadsFromHisCqTests.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheRecordingsScoreboardTests.cs, docs/cw-scoreboard.md

@@ -2,12 +2,12 @@ PROTOCOL: 2
 PROJECT: Hamlet
 STATE: COMPLETED
 TASK: closing
-WORK_INSTRUCTION: 559 - the candidate windows against KM3STU (run by hand)
+WORK_INSTRUCTION: 560 - the candidate windows ship, at the owner.s word (run by hand)
 BALL: tim
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-10-08T11:06:37-04:00
-NOTE: Unit 559 done - KM3STU cause found (humps and broken dahs at the filter edge); windows read his CQ but cost 3 and 1, kept off; board 275 with his three, 237 without
+UPDATED: 2026-10-08T11:43:52-04:00
+NOTE: Unit 560 done - candidate windows on at the owner's word; guards at 297 and 2111; KM3STU reads his CQ (NOTA for POTA); read-back reverted; 48 WPM stands
 
 ---
 
