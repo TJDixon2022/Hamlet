@@ -352,6 +352,7 @@ guard: the random carrier prints at 1 of 20 seeds (5195), recorded at unit 552
 | 556 task 1 | 2026-10-07 | 254 of 288 | 17 | 0 | **237** | 0 | 67 of 87, 3 added | a reply begins where the other ends: a sender given the terminal prints only what it sent since the printed one last keyed, less one word gap, and none of its past where it stood over 10 s while that one kept keying; such a sender is not picked while the printed one has been silent under 10 s. A synthetic W1AW with a 2 s pause and a sender beside it the whole time: at HEAD 56 letters keyed before the pause printed in a burst and W1AW never resumed; now none, and W1AW's second half reads whole. The QSO reply tests read as at HEAD; nothing on either table changed |
 | 556 task 2 | 2026-10-07 | 254 of 288 | 17 | 0 | **237** | 0 | 67 of 87, 3 added | the owner's ruling recorded: a measured figure that ships stands; the asks list cleared of such figures; no code changed |
 | 556 task 3 | 2026-10-07 | 254 of 288 | 17 | 0 | **237** | 0 | 67 of 87, 3 added | word spaces found, not changed: of 20 missing, 6 are word gaps as short as the sender's own letter gaps (137 to 252 ms against clusters of 171 to 222), 5 sit beside a letter not printed, 5 are word gaps under the line with the word cluster shown and 4 before any word cluster; the 3 added are letter gaps over the line. The largest group cannot be told from a letter gap by any gap, so nothing shipped |
+| 556 task 4 | 2026-10-07 | 254 of 288 | 17 | 0 | **237** | 0 | 67 of 87, 3 added | the broken dahs traced, not changed: on the strong catch 7 of 9 dahs stand in two pieces on this tree; 6 dip past the 0.6 down line (0.60, 0.76, 0.85, 1.03, 1.04 and 1.14 of the contrast), the 2 whole ones dip 0.52 and 0.45, the window had not opened at the ninth. The sender's own gaps on the same window run p1 0.78, p5 0.91. A down step at its gaps' fifth percentile joined all but one dah and read 196 on the twelve, the first recording broken, and 783 on w1aw: a gap shallower than the step no longer ends a mark, is never counted, and the step climbs. Not shipped |
 
 ## Scans (work instruction 544, HM-DEC-248)
 
@@ -402,6 +403,7 @@ high and 25 medium, 2151 letters, all totalled.
 | 556 task 1 | 2026-10-07 | **2112** | 2131 of 2151 | 19 | 0 | 438 of 440, 11 added | a reply begins where the other ends; nothing that reads changed |
 | 556 task 2 | 2026-10-07 | **2112** | 2131 of 2151 | 19 | 0 | 438 of 440, 11 added | the owner's ruling recorded; no code changed |
 | 556 task 3 | 2026-10-07 | **2112** | 2131 of 2151 | 19 | 0 | 438 of 440, 11 added | word spaces found by cause on the twelve; nothing changed |
+| 556 task 4 | 2026-10-07 | **2112** | 2131 of 2151 | 19 | 0 | 438 of 440, 11 added | the broken dahs traced; a down step from the sender's own gaps read 783 here and did not ship; nothing changed |
 
 ### W1AW stretches at unit 554 task 3
 

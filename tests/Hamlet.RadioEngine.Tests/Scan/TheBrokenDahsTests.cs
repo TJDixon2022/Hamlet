@@ -109,6 +109,84 @@ public sealed class TheBrokenDahsTests
         Assert.NotEmpty(chain.Text);
     }
 
+    /// <remarks>
+    /// Work instruction 556, task 4: the detector's own window over the catch, its level each hop as a share of the station's
+    /// contrast under the key-down level (key-up the window's own median between marks). At each of the nine dahs: the
+    /// deepest share inside it, and whether it passes the 0.6 down line, the stood pieces beside. And the sender's own gaps on
+    /// the same window, every fall under a third of the contrast lasting half a dit or more, with their depths' percentiles.
+    /// Asserts only that the station is heard.
+    /// </remarks>
+    [Fact]
+    public void TheDownCrossingAtEachDah()
+    {
+        var audio = WavAudio.Read(TheStrongStationsOverTests.Wav(TheStrongStationsOverTests.Main));
+        var chain = TheStrongStationsOverTests.ReadChain(audio.Samples, audio.SampleRate);
+        var plain = TheStrongStationsOverTests.ReadPlain(audio.Samples, audio.SampleRate, chain.PitchHz);
+
+        using var own = new CwChain(audio.SampleRate);
+        var trace = new List<(double Seconds, double LaneDb, double SenderDb, double DitSeconds, double DelaySeconds)>();
+        var keyUp = new List<(double Seconds, double? KeyUpDb)>();
+
+        own.Detector.LaneTrace = trace;
+        own.Detector.LaneKeyUpTrace = keyUp;
+        own.Detector.SetPassband(600, 500);
+
+        for (var at = 0; at + (audio.SampleRate / 100) <= audio.Samples.Length; at += audio.SampleRate / 100)
+        {
+            own.Process(new AudioChunk(at, audio.SampleRate, audio.Samples.AsSpan(at, audio.SampleRate / 100)));
+        }
+
+        // Each hop: audio time, the share under the key-down level, and the dit.
+        var share = trace.Zip(keyUp, (t, k) => (At: t.Seconds - t.DelaySeconds, Share: k.KeyUpDb is { } up && t.SenderDb - up > 0 ? (t.SenderDb - t.LaneDb) / (t.SenderDb - up) : double.NaN, t.DitSeconds)).ToList();
+
+        foreach (var t in Times)
+        {
+            var dah = plain.Marks.Where(m => m.Kind == '-' && m.From > t - 0.08 && m.From < t + 0.08).OrderBy(m => Math.Abs(m.From - t)).FirstOrDefault();
+
+            if (dah is null)
+            {
+                _output.WriteLine(string.Create(Invariant, $"{t:0.00} s: no dah in the plain read"));
+                continue;
+            }
+
+            var inside = share.Where(s => s.At >= dah.From + 0.015 && s.At <= dah.To - 0.015 && double.IsFinite(s.Share)).ToList();
+            var deepest = inside.Count > 0 ? inside.Max(s => s.Share) : double.NaN;
+            var stood = chain.Marks.Where(m => Math.Abs(m.PitchHz - chain.PitchHz) <= 30 && m.ToSeconds > dah.From && m.FromSeconds < dah.To).ToList();
+            var profile = string.Concat(share.Where(s => s.At >= dah.From - 0.02 && s.At <= dah.To + 0.02).Select(s => !double.IsFinite(s.Share) ? '?' : s.Share < 0.4 ? '#' : s.Share < 0.6 ? '+' : '.'));
+
+            _output.WriteLine(string.Create(Invariant, $"dah {t:0.00} s ({(dah.To - dah.From) * 1000:0} ms): deepest share {deepest:0.00}, {(deepest >= 0.6 ? "passes" : "short of")} the 0.6 down line; window {profile}; stood {stood.Count} piece(s)"));
+        }
+
+        // The sender's own gaps on its window: falls past a third of the contrast lasting half a dit or more.
+        var gaps = new List<double>();
+        var run = new List<(double At, double Share, double Dit)>();
+
+        foreach (var s in share.Append((At: double.PositiveInfinity, Share: 0.0, DitSeconds: 0.0)))
+        {
+            if (double.IsFinite(s.Share) && s.Share > 0.33 && (run.Count == 0 || s.At - run[^1].At < 0.006))
+            {
+                run.Add((s.At, s.Share, s.DitSeconds));
+                continue;
+            }
+
+            if (run.Count > 0 && run[^1].At - run[0].At + 0.005 >= 0.5 * run[0].Dit)
+            {
+                gaps.Add(Math.Min(1, run.Max(r => r.Share)));
+            }
+
+            run.Clear();
+        }
+
+        var sorted = gaps.Order().ToList();
+
+        if (sorted.Count > 0)
+        {
+            _output.WriteLine(string.Create(Invariant, $"the sender's own gaps: {sorted.Count}; depth p1 {sorted[sorted.Count / 100]:0.00}, p5 {sorted[sorted.Count / 20]:0.00}, p10 {sorted[sorted.Count / 10]:0.00}, median {sorted[sorted.Count / 2]:0.00}"));
+        }
+
+        Assert.NotEmpty(chain.Text);
+    }
+
     /// <summary>The sender's own window as the detector builds it, tuned to the station and its dit: its level every 5 ms.</summary>
     private static List<(double At, double Db)> Lane(MonoAudio audio, double pitchHz, double ditSeconds)
     {

@@ -315,6 +315,9 @@ public sealed class CwEnvelopeDetector
     /// </summary>
     internal List<(double Seconds, double LaneDb, double SenderDb, double DitSeconds, double DelaySeconds)>? LaneTrace { get; set; }
 
+    /// <summary>The key-up level the window reads marks against, beside each <see cref="LaneTrace"/> row (work instruction 556, task 4).</summary>
+    internal List<(double Seconds, double? KeyUpDb)>? LaneKeyUpTrace { get; set; }
+
     /// <summary>
     /// Whether marks inside a standing station's own window are read by level (work instruction 553, task 2, HM-DEC-257); on.
     /// Off, they are stretches over half the sender's amplitude put through the per-hop tests, as before, for the tests' before.
@@ -794,6 +797,7 @@ public sealed class CwEnvelopeDetector
             if (LaneTrace is { } trace && _pattern.Sender(_laneId) is { } traced)
             {
                 trace.Add((hop * HopMs / 1000, _lane.LevelDb, traced.LevelDb, traced.DitSeconds, _lane.DelaySeconds));
+                LaneKeyUpTrace?.Add((hop * HopMs / 1000, KeyUpDb()));
             }
         }
 
