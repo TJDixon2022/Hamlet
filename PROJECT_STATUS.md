@@ -2,12 +2,12 @@ PROTOCOL: 2
 PROJECT: Hamlet
 STATE: COMPLETED
 TASK: closing
-WORK_INSTRUCTION: 562 - the backlog starts where Hamlet became sure (run by hand)
+WORK_INSTRUCTION: 563 - the app test line stops flaking (run by hand)
 BALL: tim
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-10-08T13:38:32-04:00
-NOTE: Unit 562 done - backlog-from-0.4 built, read 285 and broke the first recording, not shipped; boards 297 and 2111
+UPDATED: 2026-10-08T14:38:55-04:00
+NOTE: Unit 563 done - app test line clean five runs; leaks were VM timers and the settled-snapshot delay; engine line whole 153 of 154
 
 ---
 

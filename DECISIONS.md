@@ -4,6 +4,34 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-267
+date: 2026-10-08
+refs: work instruction 563, src/Hamlet.App/Controls/UiTimers.cs, src/Hamlet.App/ViewModels/MainWindowViewModel.cs, tests/Hamlet.App.Tests/TimersStopWithTheirTest.cs, docs/carry-forward-tests.txt
+---
+
+**The app's test line stops flaking.** Ordered by the owner in work instruction 563, 2026-10-08. No recording was added and nothing keys or transmits; both scoreboards read exactly as at HEAD, 297 and 2111.
+
+**What threw it.**
+- Avalonia's headless session resets the dispatcher as each test starts. The reset runs every leftover job and throws "You've caused dispatcher loop" past five seconds (`Dispatcher.ResetForUnitTests`, 11.3.0). After each job it also queues any timer that has come due.
+- **The first leak: the view model's timers.** Every `MainWindowViewModel` a test builds starts its timers, because the DispatcherTimer constructor that takes a handler starts it: scope at 50 ms, dwell and decode at 250 ms, age at a second. Nothing stopped them.
+  - Plain `[Fact]` tests run off the headless dispatcher, so their ticks queued there unrun.
+  - Traced: after `ThePsk31TelemetryTests` the queue held only `DispatcherTimer.FireTick`, up to two hundred. The two headless tests after it, `TheFavoritesAreUnderTheGreenZoneTests`, each spent five seconds failing.
+- **The second leak: the view model's settled snapshot.** It is posted after a five-second `Task.Delay` that nothing could cancel, so it landed on whichever test's dispatcher was current. Up to ninety-seven `WriteSettledSnapshot` jobs were queued at once.
+
+**The fix, at the source.**
+- `UiTimers` records every timer the app makes, the view model's nine, six controls' and the two windows', and runs the snapshot's delay as a cancellable post.
+- An assembly-level hook in the app tests, `TimersStopWithTheirTest`, stops and cancels them all when each test ends. On a headless test that is on the dispatcher, just before Avalonia's own drain.
+- Nothing is retried and nothing is run one by one. In the app it changes nothing a person sees; the hook is the only caller of `StopAll`.
+- **What it leaves:** Avalonia's own one-shot press-and-hold gesture timers, which fire once each, and a few transmit continuations that post once.
+
+**Proved.** The app carry-forward line ran five times in a row at 278 of 278: 2 min 14 s, 2 min 14 s, 2 min 11 s, 2 min 8 s and 2 min 10 s, against about 2 min 30 s before. Runs one and two came before a comment-only change to the hook.
+
+**Task 2, a finding only.** The engine carry-forward line, run whole once under its 480 s timeout, completed in 6 min 24 s at 153 of 154.
+- **The one red:** `TheRsidDetectorTests.TheDetectorKeepsUpWithRealTime`, which divides the whole process's CPU time by the audio's length, while the engine assembly runs other test classes beside it.
+- **The figures:** 1.579 of real time in the whole line, 0.079 alone, where it passes.
+- **Not fixed here.**
+
+---
 id: HM-DEC-266
 date: 2026-10-08
 refs: work instruction 562, HM-DEC-237, HM-DEC-260, HM-DEC-265, R88, tests/Hamlet.RadioEngine.Tests/Cw/TheBacklogStartsWhereSureTests.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheRecordingsScoreboardTests.cs, docs/cw-scoreboard.md
