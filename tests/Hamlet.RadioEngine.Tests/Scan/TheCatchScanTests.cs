@@ -228,8 +228,9 @@ public sealed class TheCatchScanTests : IDisposable
         Assert.Equal(0, slow.Catch.EarDroppedChunks);
         Assert.Equal(0, slow.Catch.EarHoles);
 
-        // The callback never waits on the ear: well under the 2 ms the slow ear spends on every chunk.
-        Assert.True(slow.LongestPushMs < 2, $"a delivery took {slow.LongestPushMs:0.000} ms");
+        // **WHAT IT MEANS, NOT A STOPWATCH** (work instruction 561, task 3): a callback that waited on the slow ear would drop
+        // chunks or leave holes, asserted above, and change the ear's text. The longest delivery is reported, not asserted: a
+        // wall-clock figure failed once at 4.2 ms under a run of 133 tests and passed alone at 0.06.
     }
 
     /// <remarks>Test 4: the scan stops on its own at its length, set short here, and the catch under way says so.</remarks>
