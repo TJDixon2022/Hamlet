@@ -352,8 +352,8 @@ public sealed class TheWeakEndTests(ITestOutputHelper output)
         var chain = Chain(audio.Samples, audio.SampleRate, r.ToneHz);
         var stage =
             chain.Offered < sent.Count / 10 ? "detector"
-            : chain.SequenceMarks < 3 ? "candidate"
-            : double.IsNaN(chain.FirstWindowSeconds) && double.IsNaN(chain.FirstSenderSeconds) ? "hold"
+            : chain.SequenceMarks < 3 ? "detector"
+            : double.IsNaN(chain.FirstWindowSeconds) && double.IsNaN(chain.FirstSenderSeconds) ? "candidate"
             : double.IsNaN(chain.FirstSenderSeconds) ? "window"
             : chain.SenderShape < CwSenderGate.PrintScore ? "sure"
             : !chain.Printed ? "marks"
