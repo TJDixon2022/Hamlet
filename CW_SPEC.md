@@ -53,6 +53,15 @@ be honest; it does not say how they render it.
 
 Confirmed by Tim 2026-09-25.
 
+**The finders, 2026-10-09 (work instruction 569, HM-DEC-273).** Two finders read the audio inside the detector, side by side.
+- **The grid:** Goertzel bins every 25 Hz through a 10 ms window, about 150 Hz wide. It finds every station the boards hold and remains the finder for each station it stands.
+- **The lane bank:** across the rig's passband only, a lane every 25 Hz at three dits (100, 60 and 40 ms, about 12, 20 and 30 WPM).
+  - The audio is averaged to about 4 kHz and mixed per pitch. The sender window's fourth-order Butterworth then runs at about 2 kHz, and its marks are called by the level rule against the lane's own key-up and key-down once that contrast is 12 dB.
+  - Its marks form sequences in pattern gates of its own, the same class and rules as the grid's, at about 15 per cent of the chain's CPU.
+- **Why the bank:** the grid breaks a 5 dB station into pieces of one length that never stand. The bank reads the same station's true dits and dahs, shape 0.88.
+- **The handover, staged and off by default:** a bank lane's station goes to the sender gate only where the grid has nothing standing, no candidate and no window within 50 Hz. Only the best-shaped lane's marks go, and the grid's marks near it are kept out while it holds.
+- **Why it is off:** on, it read the four 5 dB CQs at 15 to 17 of 21 where nothing read. But it cost the twelve-plus-three six letters, made a second random carrier print, and read none of the working fixtures at half, so the next unit starts from here.
+
 ## 3. Four layers, kept apart
 
 | Layer | Holds | Lives in | Changed by |

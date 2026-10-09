@@ -4,6 +4,46 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-273
+date: 2026-10-09
+refs: work instruction 569, HM-DEC-272, tag before-lane-bank, src/Hamlet.RadioEngine/Cw/CwLaneBank.cs, src/Hamlet.RadioEngine/Cw/CwEnvelopeDetector.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheWeakEndTests.cs, docs/cw-survey-2026-10-09.md, CW_SPEC.md, docs/cw-scoreboard.md
+---
+
+**The lane bank: the window finds the stations the grid cannot. Built and running; its handover kept off.** Ordered by the owner in work instruction 569, 2026-10-09, on the trace of HM-DEC-272. Opened at the true pitch, the sender's own window read all four 5 dB CQs 21 of 21, and none of them was ever found. The owner's direction: the window becomes the finder, staged; the lanes find what the grid cannot and the grid keeps what it finds today. HEAD was tagged `before-lane-bank` first.
+
+**The bank** (`CwLaneBank`) stands across the rig's passband only, beside the grid; there is no bank without a rig passband.
+- **Lanes:** one every `SpacingHz`, 25 Hz, the grid's own spacing; twenty for a 500 Hz filter.
+- **Dits:** three per pitch, `DitSeconds` 100, 60 and 40 ms, about 12, 20 and 30 WPM.
+- **Its filters:** the audio is averaged to about 4 kHz and mixed per pitch with one rotating oscillator, and each lane's fourth-order Butterworth runs at about 2 kHz. Each lane takes the cutoff and delay the sender's own window takes for its dit.
+- **Its marks:** each lane keeps three seconds of its own levels and takes its key-up and key-down from them. It calls nothing until that contrast is `MinContrastDb`, 12 dB; noise alone spreads about 8 dB there, and at 10 dB a loud noise run stood five marks at 0.68.
+  - A mark rises at 0.4 of the contrast under key-down.
+  - It ends only once the level has stayed under 0.6 for a quarter of the lane's dit; one hop of noise had broken a dah in two.
+  - It is at least half the lane's dit.
+- **Its gates:** pattern gates of its own, one per dit, the same class and rules as the grid's. Nothing in the gate changed.
+
+**Task 1, what the bank does.**
+- **The weak CQ:** on `cq-18wpm-5db` its lanes at 600 and 625 Hz read the station's own marks, 55 to 65 and 185 to 205 ms against a keyed 67 and 200, two lengths from 1.8 s, shape 0.88. The grid's pieces never stood there.
+- **Noise:** on the scoreboard's loud-noise runs it calls nothing.
+- **The random carriers:** 24 dB tones keyed at random, read cleanly at shapes 0.69 to 0.78.
+- **Cost:** 15 per cent of the chain's CPU on W1AW piece-04, 4.6 s for 283 s at 48 kHz. Run at the audio's own rate it was 86 per cent, so the lanes stayed 25 Hz apart rather than halving. At 50 Hz a station between two lanes would sit outside a 100 ms dit's cutoff in both.
+- **The boards:** both read exactly as at HEAD. The capture sheets and `cw_listen` carry a bank line: lanes held, how many stand, and the best standing lane.
+
+**Task 2, the handover** (`CwEnvelopeDetector.LaneHandover`), built and **kept off by default**.
+- **The rule:** a bank lane's station goes to the sender gate only where the grid has nothing standing, no candidate, and neither a provisional window nor the station's own window within `HandoverHz`, 50 Hz.
+  - The best-shaped standing lane holds the station, and only its marks are handed on.
+  - While it holds, the grid's marks within 50 Hz are not offered.
+  - It is let go when its sequence stops standing.
+- **On, at the bank as it ships:**
+  - The four 5 dB CQs read 15, 16, 16 and 17 of 21 where they read nothing.
+  - The twelve-plus-three fell from 297 to 291, 313 right and 21 wrong; at 10 dB of lane contrast it had fallen to 281 with 15 invented.
+  - The random carrier printed at a second seed, 5209.
+  - None of the five working fixtures read half (1, 3, 3, 0 and 0 of their letters). On at least two the grid stands, so the staged rule leaves them to it.
+  - W1AW held at 2111.
+- **Off,** every reading is as at HEAD: the twelve-plus-three at **297** (234 without KM3STU's three) and W1AW at **2111**, both guards passing.
+
+**Task 3, the survey:** rerun with the bank running and the handover off. Every group's figures are as before, with a `rerun` line in its header. 0 dB stays unread, at most 3 of 21 with the handover on.
+
+---
 id: HM-DEC-272
 date: 2026-10-09
 refs: work instruction 568, HM-DEC-271, docs/cw-survey-2026-10-09.md, tests/Hamlet.RadioEngine.Tests/Cw/TheWeakEndTests.cs, src/Hamlet.RadioEngine/Cw/CwPatternGate.cs, src/Hamlet.RadioEngine/Cw/CwEnvelopeDetector.cs, docs/cw-scoreboard.md

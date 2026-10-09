@@ -482,6 +482,24 @@ public sealed class TheWeakEndTests(ITestOutputHelper output)
         output.WriteLine(string.Create(Inv, $"first sent at {sent[0].From:0.00} s; {marks.Count} marks handed on"));
     }
 
+    /// <remarks>
+    /// Work instruction 569: `two-station`, which prints nothing today, read with the handover off and on. Reported, not required.
+    /// Asserts nothing.
+    /// </remarks>
+    [Fact]
+    public void TheTwoStationFixture()
+    {
+        var wav = Path.Combine(CwFixtures.Folder, "receiver", "two-station.wav");
+        var audio = WavAudio.Read(wav);
+
+        foreach (var handover in new[] { false, true })
+        {
+            var read = Chain(audio.Samples, audio.SampleRate, 615, handover);
+
+            output.WriteLine($"handover {(handover ? "on" : "off")}: `{read.Text}` against `CQ CQ DE N0CALL K N0CALL DE W1XYZ K`, {TheRecordingsScoreboardTests.Right(read.Text, "CQ CQ DE N0CALL K N0CALL DE W1XYZ K")} of 27");
+        }
+    }
+
     /// <remarks>The pattern gate's sequences at the pitch, every two seconds, on two 5 dB CQs. Asserts nothing.</remarks>
     [Fact]
     public void TheSequencesAtThePitch()

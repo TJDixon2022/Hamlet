@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
+STATE: EXECUTING
 TASK: closing
-WORK_INSTRUCTION: 568 - the weak end (run by hand)
-BALL: tim
-NEXT_PASTE: output.md -> Claude Web
+WORK_INSTRUCTION: 569 - the lane bank (run by hand)
+BALL: code
+NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-10-09T10:49:25-04:00
-NOTE: Unit 568 done - weak stations die at candidacy (grid pieces of one length); own window reads them; fix not shipped; boards 297 and 2111
+UPDATED: 2026-10-09T12:00:59-04:00
+NOTE: Three tasks committed; records and report
 
 ---
 
