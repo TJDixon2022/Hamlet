@@ -154,7 +154,7 @@ public sealed partial class MainWindowViewModel
         {
             var (agc, agcSetBy) = AgcForTheRecord();
 
-            AppEvents.CwListen(_telemetry, sample, AboutViewModel.AppVersion, _envelope?.PassbandRebuilds, agc, agcSetBy);
+            AppEvents.CwListen(_telemetry, sample, AboutViewModel.AppVersion, _envelope?.PassbandRebuilds, agc, agcSetBy, _envelope?.BankLine());
         }
     }
 
@@ -178,6 +178,7 @@ public sealed partial class MainWindowViewModel
             $"rebuilds   {(_envelope is { } env ? string.Create(CultureInfo.InvariantCulture, $"{env.PassbandRebuilds}  (times the detector rebuilt its passband since listening started)") : "not counted  (nothing is listening)")}",
             $"audio      {(_liveFeed?.Continuity is { } audio ? audio.SheetLine + "  (since the decoder started listening)" : "not counted  (nothing is listening)")}",
             AgcSheetLine(),
+            $"bank       {_envelope?.BankLine() ?? "not running  (nothing is listening)"}  (the lane bank, work instruction 569)",
             string.Format(CultureInfo.InvariantCulture, "composed   {0:yyyy-MM-dd HH:mm:ss} UTC  (these lines, as the app last had them)", DateTime.UtcNow),
             string.Empty,
         };

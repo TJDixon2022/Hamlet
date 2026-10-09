@@ -83,6 +83,9 @@ internal static class CwRules
     /// </summary>
     public const string SpacingNow = "three words in a row are a new spacing";
 
+    /// <summary>The lane bank stands lanes across the rig's passband (work instruction 569).</summary>
+    public const string LaneBank = "the lane bank";
+
     /// <summary>A sender is first printed only once its shape has reached the green line, 0.4 (work instruction 561).</summary>
     public const string SureFirst = "printed once sure";
 

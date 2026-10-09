@@ -264,6 +264,34 @@ public sealed class CwEnvelopeDetector
     private readonly List<CwMark> _candidates = new();
     private readonly CwPatternGate _pattern = new();
 
+    // The lane bank, across the rig's passband (work instruction 569, HM-DEC-273); null where the passband is not the rig's.
+    private CwLaneBank? _bank;
+
+    /// <summary>The lane bank, for the tests' traces and the record; null where the passband is not the rig's (work instruction 569).</summary>
+    internal CwLaneBank? Bank => _bank;
+
+    /// <summary>
+    /// The bank in one line for the record (work instruction 569): lanes held, sequences standing, and the best standing lane's
+    /// pitch and shape; "no bank" where the passband is not the rig's.
+    /// </summary>
+    public string BankLine()
+    {
+        lock (_gate)
+        {
+            if (_bank is null)
+            {
+                return "no bank";
+            }
+
+            var standing = _bank.Standing(_samplesSeen / (double)SampleRate);
+            var best = standing.OrderByDescending(s => s.Sequence.Shape.Score).FirstOrDefault();
+
+            return standing.Count == 0
+                ? string.Create(CultureInfo.InvariantCulture, $"{_bank.Lanes} lanes, none standing")
+                : string.Create(CultureInfo.InvariantCulture, $"{_bank.Lanes} lanes, {standing.Count} standing, best {best.Sequence.PitchHz:0} Hz shape {best.Sequence.Shape.Score:0.00} at a {CwLaneBank.DitSeconds[best.Dit] * 1000:0} ms dit");
+        }
+    }
+
     /// <summary>Every mark offered to the pattern gate in the last minute, stood or not: for the tests' traces (work instruction 559).</summary>
     internal IReadOnlyList<CwMark> OfferedNow => _candidates.ToList();
 
@@ -611,6 +639,7 @@ public sealed class CwEnvelopeDetector
                 .ToArray();
             _laneBin = null;
             _windows.Clear();
+            _bank = fromRig && CwRules.On(CwRules.LaneBank) ? new CwLaneBank(SampleRate, HopSamples, low, high) : null;
             _laneId = -1;
             _watched = _bins.Length / 2;
             _hop = 0;
@@ -729,6 +758,8 @@ public sealed class CwEnvelopeDetector
                 {
                     w.Lane.Push(s);
                 }
+
+                _bank?.Push(s);
 
                 if (++_hopFill == HopSamples)
                 {
@@ -925,6 +956,10 @@ public sealed class CwEnvelopeDetector
 
         FollowSender(chosen, standing, hop);
         UpdateWindows(hop, nowSeconds);
+
+        // **THE LANE BANK READS ALONGSIDE** (work instruction 569, task 1): its marks form sequences in its own gates and are
+        // handed to nobody yet.
+        _bank?.Hop(nowSeconds);
 
         foreach (var s in standing)
         {

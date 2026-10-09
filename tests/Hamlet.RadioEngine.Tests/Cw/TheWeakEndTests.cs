@@ -304,6 +304,141 @@ public sealed class TheWeakEndTests(ITestOutputHelper output)
         }
     }
 
+    /// <summary>
+    /// The bank's sequences over a run, sampled every quarter second: for each pitch and dit, the most marks, the best shape, and the
+    /// first second its recent marks split into two lengths at a ratio of two or more (work instruction 569).
+    /// </summary>
+    internal static List<(double PitchHz, double DitMs, int Marks, double Shape, double TwoLengthsAt, string Lengths)> BankTrace(float[] samples, int rate)
+    {
+        using var chain = new CwChain(rate);
+        var chunk = rate / 100;
+        var seen = new Dictionary<(double, int), (double PitchHz, double DitMs, int Marks, double Shape, double TwoLengthsAt, string Lengths)>();
+
+        chain.Detector.SetPassband(600, 500);
+
+        for (var at = 0; at + chunk <= samples.Length; at += chunk)
+        {
+            chain.Process(new AudioChunk(at, rate, samples.AsSpan(at, chunk)));
+
+            if ((at + chunk) % (rate / 4) != 0 || chain.Detector.Bank is not { } bank)
+            {
+                continue;
+            }
+
+            var now = (at + chunk) / (double)rate;
+
+            for (var d = 0; d < bank.Gates.Count; d++)
+            {
+                foreach (var line in bank.Gates[d].Describe(now).Split(" | ", StringSplitOptions.RemoveEmptyEntries))
+                {
+                    var parts = line.Split(' ');
+                    var hz = double.Parse(parts[0], Inv);
+                    var marks = int.Parse(parts[2], Inv);
+                    var s = line.LastIndexOf("shape ", StringComparison.Ordinal);
+                    var shape = double.Parse(line[(s + 6)..], Inv);
+                    var lengths = line[(line.IndexOf('[', StringComparison.Ordinal) + 1)..line.IndexOf(']', StringComparison.Ordinal)];
+                    var two = !line.Contains("one length", StringComparison.Ordinal);
+                    var key = (Math.Round(hz / 25) * 25, d);
+                    (double PitchHz, double DitMs, int Marks, double Shape, double TwoLengthsAt, string Lengths) was = seen.TryGetValue(key, out var w) ? w : (key.Item1, CwLaneBank.DitSeconds[d] * 1000, 0, 0.0, double.NaN, string.Empty);
+
+                    seen[key] = (was.PitchHz, was.DitMs, Math.Max(was.Marks, marks), Math.Max(was.Shape, shape), double.IsNaN(was.TwoLengthsAt) && two ? now : was.TwoLengthsAt, shape >= was.Shape ? lengths : was.Lengths);
+                }
+            }
+        }
+
+        return seen.Values.OrderByDescending(v => v.Shape).ToList();
+    }
+
+    /// <remarks>
+    /// Work instruction 569, task 1: on `cq-18wpm-5db` a bank lane at the station's pitch shows two lengths by ten seconds and
+    /// reaches a shape of 0.6, where the grid's pieces never stand.
+    /// </remarks>
+    [Fact]
+    public void TheBankFindsTheWeakCq()
+    {
+        var (_, wav, r) = Files().Single(f => f.Name == "cq-18wpm-5db");
+        var audio = WavAudio.Read(wav);
+        var trace = BankTrace(audio.Samples, audio.SampleRate);
+
+        foreach (var t in trace.Take(8))
+        {
+            output.WriteLine(string.Create(Inv, $"{t.PitchHz:0} Hz at a {t.DitMs:0} ms dit: {t.Marks} marks, best shape {t.Shape:0.00}, two lengths from {t.TwoLengthsAt:0.0} s, [{t.Lengths}]"));
+        }
+
+        var station = trace.Where(t => Math.Abs(t.PitchHz - r.ToneHz) <= 25).OrderByDescending(t => t.Shape).First();
+
+        Assert.True(station.TwoLengthsAt <= 10, $"two lengths only from {station.TwoLengthsAt:0.0} s");
+        Assert.True(station.Shape >= 0.6, $"best shape {station.Shape:0.00}");
+    }
+
+    /// <remarks>
+    /// Work instruction 569, task 1: on the scoreboard's loud-noise runs and the random carriers, no bank sequence reaches a shape of
+    /// 0.4. Prints every run's best; asserts the noise runs.
+    /// </remarks>
+    [Fact]
+    public void TheBankFindsNothingInNoise()
+    {
+        var worst = 0.0;
+
+        foreach (var (seconds, seed) in new[] { (30, 5190 + 30), (180, 5190 + 180), (30, 5100 + 30), (180, 5100 + 180) })
+        {
+            var noise = Hamlet.RadioEngine.Training.CwSignal.Generate(new Hamlet.RadioEngine.Training.CwSignalRequest(
+                " ", SampleRate: 8000, Amplitude: 0, NoiseAmplitude: 0.3, LeadInSeconds: seconds / 2.0, TailSeconds: seconds / 2.0, Seed: seed)).Samples;
+            var best = BankTrace(noise, 8000).FirstOrDefault();
+
+            worst = Math.Max(worst, best.Shape);
+            output.WriteLine(string.Create(Inv, $"{seconds} s of loud noise, seed {seed}: best {best.PitchHz:0} Hz, {best.Marks} marks, shape {best.Shape:0.00}"));
+        }
+
+        foreach (var seed in Enumerable.Range(5193, 20))
+        {
+            var carrier = TheShapePicksTheSenderTests.Noise(25, 5192);
+
+            TheShapePicksTheSenderTests.Key(carrier, TheShapePicksTheSenderTests.RandomKeying(2.5, 23, seed), 625, 24);
+
+            var best = BankTrace(carrier, 8000).FirstOrDefault();
+
+            output.WriteLine(string.Create(Inv, $"a carrier keyed at random, seed {seed}: best {best.PitchHz:0} Hz, {best.Marks} marks, shape {best.Shape:0.00}"));
+        }
+
+        Assert.True(worst < 0.4, $"a bank sequence on noise reached {worst:0.00}");
+    }
+
+    /// <remarks>
+    /// Work instruction 569, task 1: what the bank costs. W1AW's piece-04 read through the chain with the bank and without it, the
+    /// process's CPU time and the wall clock for each. Asserts nothing.
+    /// </remarks>
+    [Fact]
+    public void TheBankCost()
+    {
+        const string Piece = "w1aw-2026-10-07/piece-04";
+        var audio = WavAudio.Read(TheOwnersRecordingReadsTests.Wav(Piece));
+        var (pitch, width) = TheRecordingsScoreboardTests.RadioState(Piece);
+
+        (double Cpu, double Wall, string Text) Time(bool bank)
+        {
+            using var rule = bank ? null : CwRules.Off(CwRules.LaneBank);
+            var process = System.Diagnostics.Process.GetCurrentProcess();
+            var cpu = process.TotalProcessorTime;
+            var wall = System.Diagnostics.Stopwatch.StartNew();
+            var (_, text) = TheRecordingsScoreboardTests.ReadLive(audio.Samples, audio.SampleRate, pitch, width);
+
+            process.Refresh();
+
+            return ((process.TotalProcessorTime - cpu).TotalSeconds, wall.Elapsed.TotalSeconds, text);
+        }
+
+        Time(false);
+
+        var without = Time(false);
+        var with = Time(true);
+
+        output.WriteLine(string.Create(Inv, $"{Piece}: {audio.Samples.Length / (double)audio.SampleRate:0} s at {audio.SampleRate} Hz, filter {width:0} Hz"));
+        output.WriteLine(string.Create(Inv, $"without the bank: {without.Cpu:0.00} s CPU, {without.Wall:0.00} s wall"));
+        output.WriteLine(string.Create(Inv, $"with the bank:    {with.Cpu:0.00} s CPU, {with.Wall:0.00} s wall; the bank {with.Cpu - without.Cpu:0.00} s CPU, {(with.Cpu - without.Cpu) / without.Cpu:P0} of the chain without it"));
+        output.WriteLine($"the same text both ways: {with.Text == without.Text}");
+    }
+
     /// <remarks>The pattern gate's sequences at the pitch, every two seconds, on two 5 dB CQs. Asserts nothing.</remarks>
     [Fact]
     public void TheSequencesAtThePitch()

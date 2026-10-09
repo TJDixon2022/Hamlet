@@ -12242,6 +12242,9 @@ public partial class MainWindowViewModel : ObservableObject
             // **THE AGC AND WHOSE IT IS** (work instruction 564, HM-DEC-268): as the radio reports it, and whether Hamlet set it
             // for CW, the hand moved it, or it was the radio's own; so a sheet on SLOW and one on FAST can be told apart.
             AgcSheetLine(),
+
+            // **THE LANE BANK** (work instruction 569, HM-DEC-273): lanes held, how many stand, and the best standing lane.
+            $"bank       {_envelope?.BankLine() ?? "not running  (nothing is listening)"}",
             "",
         };
 
