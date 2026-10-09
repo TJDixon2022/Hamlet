@@ -332,6 +332,8 @@ public sealed class TheCwSurveyTests(ITestOutputHelper output)
         sb.AppendLine();
         sb.AppendLine("Run again with: `timeout 1800 dotnet test tests/Hamlet.RadioEngine.Tests/Hamlet.RadioEngine.Tests.csproj --filter \"FullyQualifiedName~TheCwSurveyTests.EveryRecordingInTheTree\"` (it writes this file).");
         sb.AppendLine();
+        sb.AppendLine("Rerun: work instruction 569, 2026-10-09, with the lane bank running beside the grid and its handover off by default (HM-DEC-273).");
+        sb.AppendLine();
         sb.AppendLine("**The yardstick.** Score is letters right less wrong less invented, as on the boards. Invented is a letter over no keying on the board's keying map of the same audio; silence is a letter printed inside a silence of two seconds or more on that map. Where a file carries no truth, its read stands beside the earlier read in its sheet or its `.json`, scored by nothing, with the stray-letter figure: lone `E T I A N M` printed as words, per ten seconds.");
         sb.AppendLine();
         sb.AppendLine("**The boards' rows are the boards' own scoring**, read by `TheRecordingsScoreboardTests.Score` and `TheW1awTableTests.Score`, so their figures are the boards' exactly: twelve-plus-three " +

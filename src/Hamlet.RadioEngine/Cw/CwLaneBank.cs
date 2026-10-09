@@ -28,10 +28,11 @@ internal sealed class CwLaneBank
     public static readonly double[] DitSeconds = [1.2 / 12, 1.2 / 20, 1.2 / 30];
 
     /// <summary>
-    /// The contrast a lane must show over its own key-up before it calls a mark: 10 dB. Noise alone in a lane spreads about 8 dB
-    /// between the 30th and 90th percentiles of its level, which is where key-up and key-down are taken from.
+    /// The contrast a lane must show over its own key-up before it calls a mark: 12 dB. Noise alone in a lane spreads about 8 dB
+    /// between the 30th and 90th percentiles of its level, which is where key-up and key-down are taken from, and at 10 dB a loud
+    /// noise run stood five marks at a shape of 0.68 (work instruction 569); a 5 dB station shows 15 to 17 dB.
     /// </summary>
-    public const double MinContrastDb = 10;
+    public const double MinContrastDb = 12;
 
     /// <summary>How many hops a lane keeps for its key-up and key-down: three seconds at 5 ms.</summary>
     public const int HistoryHops = 600;
