@@ -1,129 +1,140 @@
 ## 1. What Claude did
 
-Development computer, project gate `PROJECT: Hamlet` checked against `PROJECT_CARD.md`, the order's five checks (`SHACK_FACTS.md`, `docs\cw-scoreboard.md`, `docs\carry-forward-tests.txt` present; no `CoreHMI.sln`, no `MURC.sln`) and `Hamlet.sln`: Hamlet confirmed. Nothing here is evidence about the radio. Branch `main`. Run by hand: `SESSION.lock` taken at 21:41:57 through `tools\arbiter\lock.bat take` and released at the end, nothing written to `RUN_LEDGER.md`, nothing under `tools\arbiter\` touched, no box ticked in `PHASE_PLAN.md`. Nothing keys, transmits or writes to the radio; no recording added. **Tonight's W1AW capture (`w1aw-2026-10-08-*`) was not in the tree**, so the unit measured on what is. Version 1.13.249 to **1.13.250**. Ruling **HM-DEC-270**, the number the order gave. HM-DEC-269 is not in the record: it was held for unit 565, which this tree never ran. The decision-log test now names 269 as a known gap beside the others, with that reason. Nothing was recorded under §12.1.
+Development computer, project gate `PROJECT: Hamlet` checked against `PROJECT_CARD.md`, the order's five checks (`SHACK_FACTS.md`, `docs\cw-scoreboard.md`, `tests\fixtures\cw\captured\unadjudicated` present; no `CoreHMI.sln`, no `MURC.sln`) and `Hamlet.sln`: Hamlet confirmed. Nothing here is evidence about the radio. Branch `main`. Run by hand: `SESSION.lock` taken at 10:00:58 through `tools\arbiter\lock.bat take` and released at the end, nothing written to `RUN_LEDGER.md`, nothing under `tools\arbiter\` touched, no box ticked in `PHASE_PLAN.md`. Nothing keys, transmits or writes to the radio. No recording added, removed or promoted; the engine unchanged. Version 1.13.250 to **1.13.251**. Ruling **HM-DEC-271**; HM-DEC-269 stays held for unit 565. Nothing was recorded under §12.1.
 
-**Task 1, the measurement** (`b419bcd7`), shipped as a report. `TheDahThatComesApartTests.EachSpecimenThroughTheSendersWindow` reads each recording through the app's chain with the sender's own window traced. For each specimen it draws the window a hop a character (`.` under 0.4 of the contrast, `#` from 0.4, `+` from 0.6). It gives the printed pieces, the gaps between them, and the sender's figures over the 30 s before: inside-gap p10, centre and p90, letter-gap p10, dah centre, dit and speed.
-- **The W1AW table's 20 wrong at HEAD hold none of tonight's signature** (sorted in section 3).
-  - Three are kin: a letter's last dah is plainly whole in the sender's window, 25 to 26 hops above 0.6, and the gate never printed it. `LOW` read `LMW`, `TINY` read `TINK`, `ULTRA` read `ULTRE`.
-  - The other seventeen are dit groups splitting or losing a dit (`H` as `I`, `S` or `I E`), an inside gap read as a letter gap (`INCREASE`, `KILOMETERS`, `CALIBRATED`), and a piece's cut start.
-- **The strong scan catch's nine:**
-  - **Six are a dah with a dip in it:** two dit-length pieces, a gap of **14 to 25 ms** between them, under the sender's inside-gap p10 of 23 to 30 ms (centre 38 to 39). The two with the gap come to **140 to 156 ms** against his 166 ms dah.
-  - **Two read whole here** (53.63 s, 69.54 s).
-  - **One, at 3.54 s,** comes before the sender has settled; the window has nothing yet.
-  - **None is a dah with its front lost.**
-- **What would tell them apart:** not length, since a dit, an inside gap and a dit come to a dah's length. Only the window's depth and time below 0.4: a dip spends two to four hops there, a real inside gap six to nine.
+**The survey.** `tests\Hamlet.RadioEngine.Tests\Cw\TheCwSurveyTests.cs`, `EveryRecordingInTheTree`, writes `docs\cw-survey-2026-10-09.md`.
+- **How it reads:** each file through the board's own `ReadLive`, the app's wiring, at the radio's pitch and filter from its sheet, or the boards' 600 and 500 Hz where there is none. The pitch is found by the chain.
+- **How it scores:** with the board's own functions:
+  - right, wrong, spaces, and invented and printed in silence on the board's keying map of the same audio;
+  - files without a truth get the stray-letter figure.
+- **Speed and pitch:** speed from the sender's gap dit, pitch from the letters printed.
+- **The boards' rows are the boards' own `Score()`**, so the survey's figures are theirs exactly: **297** (318 of 353, 20 wrong, 1 invented) and **2111** (2131 of 2151, 20 wrong). The test asserts it.
+- **Kept off the lines:** it carries the `Survey` category, and both carry-forward lines in `docs\carry-forward-tests.txt` now end `&Category!=Survey`. They still run the same tests: app 278 of 278, engine 154 tests.
+- **Its own line**, named there and in the doc: `timeout 1800 dotnet test tests/Hamlet.RadioEngine.Tests/Hamlet.RadioEngine.Tests.csproj --filter "FullyQualifiedName~TheCwSurveyTests.EveryRecordingInTheTree"`. It ran in 133 s; every file read.
 
-**Task 2, the join** (`80fa4ffa`): rule 1 built, measured on both boards, **not shipped**. Rule 2 was not tried, because the table shows no front-lost kind.
-- **Rule 1**, in the gate's sender as it takes a mark: two dit-length pieces with a gap under the sender's inside-gap bottom, and the three together a dah, are joined into one dah.
-  - With the bottom at his inside-gap p10: **240** and **1776**. The first recording read `FER C DAT`, and four letters printed in silences.
-  - With the bottom at two spreads under his centre in log length: **289** and **2107**, again four in silences.
-  - Either way the twelve-plus-three falls and a hard limit breaks.
-- **The synthetic senders**, 18 WPM at 16 dB, three seeds each (`TheSyntheticBrokenDahs`, kept):
-  - every fifth dah with a 40 ms dip to 0.3 of the contrast read **46 of 46** with the rule off and on;
-  - every fifth dah losing its first 60 ms read **28 to 29 of 46** either way.
-- The engine is as at HEAD, and the rule's diff is kept outside the tree.
+**The count by folder:** 131 CW recordings; no CW `.wav` under `assets\fixtures\` (its PSK31, Olivia and FT8 files are not read).
+
+| folder | files |
+|---|---|
+| `cw` | 6 |
+| `cw\receiver` | 21 |
+| `cw\synthetic-cq` | 12 (the order guessed fifteen) |
+| `cw\captured` | 20 |
+| `cw\captured\unadjudicated` | 65 |
+| `cw\captured\scans` | 3 |
+| `cw\captured\w1aw-2026-10-07` | 4 |
+
+**Where each truth came from:**
+
+| files | truth |
+|---|---|
+| synthetic fixtures | `CwFixtures.All`'s `Sent` text, prosigns written `<BT>` |
+| receiver fixtures and synthetic CQs | the `text` line their generator wrote in each sheet; the grade (easy, working, edge, else ungraded) from the name |
+| the boards' recordings and the W1AW pieces | the boards' references |
+| August captures | no adjudicated text in their sheets; `013347` holds `VA3VRR` (HM-DEC-145) and `134712` holds `N4L` (HM-DEC-144), checked for presence only |
+| unadjudicated | none; the sheet's earlier `text` stands beside today's read |
+| scan catches | none; the `.json`'s own `text` is Hamlet's read at the time and stands beside today's |
+
+**A correction the survey carries.** A sheet's earlier `text` covers everything since its transcript was cleared (its `textCovers` line), often seven to twenty-five minutes, not the 30 s file. So the doc compares today's letters with the sheet's own count for the file, from its `inThis` line, not with that text's length.
 
 **Records:**
-- `docs\cw-scoreboard.md`: a 566 row in each table, at HEAD's figures.
-- `PHASE_OUTCOME.md`, both copies: `## UNIT 566 - STEP 12`.
-- `PHASE_STATUS.md`, both copies: names 566.
-- `Directory.Build.props`: 1.13.250.
+- `docs\cw-scoreboard.md`: a 567 row in each table, unchanged.
+- `PHASE_OUTCOME.md`, both copies: `## UNIT 567 - STEP 12`.
+- `PHASE_STATUS.md`, both copies: names 567.
+- `Directory.Build.props`: 1.13.251.
 - `CLAUDE.md` §1: a row.
-- `DECISIONS.md`: HM-DEC-270.
+- `DECISIONS.md`: HM-DEC-271.
 
-**Build** `Hamlet.sln -warnaserror`: 0 warnings, 0 errors. **Guards:** 4 of 4. **Decision-log and voice tests:** 7 of 7. **App carry-forward:** 278 of 278.
+**Build** `Hamlet.sln -warnaserror`: 0 warnings, 0 errors. **Guards:** 4 of 4. **Decision-log and voice tests:** 7 of 7. **App carry-forward:** 278 of 278. **Engine line**, run to prove the new filter: 153 of 154, the known `TheRsidDetectorTests.TheDetectorKeepsUpWithRealTime` red.
 
 ## 2. What the owner should expect
 
-**The broken dahs are not joined; nothing about reading changed.** Both scoreboards stand: **297** on your twelve plus KM3STU's three (**234** without) and **2111** on W1AW.
+**Every CW recording in the tree, 131 files, has been read once by today's Hamlet.** Nothing about how Hamlet reads has changed, and nothing was added to either scoreboard.
 
-**What the join cost:** I built the join the order described and measured it twice.
-- **First version:** your recordings fell from 297 to 240, W1AW from 2111 to 1776, and your first recording read `FER C DAT`.
-- **Stricter version:** 289 and 2107, still printing letters in silences.
+**How much of what was sent Hamlet reads right today:**
 
-The trouble is that a dit, the gap inside a letter and another dit add up to exactly a dah's length, so a rule that joins by length joins real letters too.
+| group | files | right of what was sent |
+|---|---|---|
+| the six synthetic fixtures | 6 | 46 of 67 (69%) |
+| receiver fixtures, easy | 5 | 74 of 90 (82%) |
+| receiver fixtures, working | 5 | 5 of 81 (6%) |
+| receiver fixtures, edge | 5 | 0 of 81 |
+| receiver fixtures, ungraded | 6 | 49 of 98 (50%) |
+| synthetic CQs at 15 dB | 4 | 73 of 84 (87%) |
+| synthetic CQs at 5 dB | 4 | 0 of 84 |
+| synthetic CQs at 0 dB | 4 | 0 of 84 |
+| your twelve plus KM3STU's three | 16 | 318 of 353 (90%), score **297** |
+| W1AW | 4 | 2131 of 2151 (99%), score **2111** |
+| August captures, unadjudicated captures, scan catches | 72 | no record of what was sent |
 
-**So tonight's `INFMERMATION`, `FRMEM` and `USINTI` would still read that way.** I couldn't check them directly: tonight's recording isn't in the tree.
+**Three things the survey shows that the two boards don't:**
 
-**What the recordings in the tree do show:**
-- **Different broken dahs on W1AW.** Of its 20 wrong letters, none is your signature. Three are close: a letter's last dah that Hamlet heard perfectly well and never printed. `LOW` came out `LMW`, `TINY` `TINK`, `ULTRA` `ULTRE`.
-- **Real dips on the strong scan catch.** Its broken dahs are a dah with a short dip in the middle, under a fifth of a dit, deeper than his own gaps ever are briefly. Length can't tell those from real gaps; how long the signal stays down might.
+1. **Below a strong, steady signal, Hamlet prints nothing.** It invents nothing in any of the generated recordings, but it also reads nothing of the CQs at 5 dB or 0 dB, nothing of the edge fixtures, and almost nothing of the working ones. Worst are `coverage-working` (`ITTEIIIT` for `1234567890 QRZ? DE/N0CALL`) and `fast-working` (`EOXDOTAN`). Also `two-station`, which prints nothing at all, and `prosigns-easy`, nothing. The two calls you adjudicated in August, `VA3VRR` and `N4L`, don't read either.
+2. **The easy, working and edge grades still mean something,** and sharply: 82%, then 6%, then nothing. Today's reader is a strong-signal reader. Its strength is your real recordings and W1AW, not the weak end of these fixtures.
+3. **On the unadjudicated captures, today prints fewer letters than the decoder of the day did,** in 36 of the 56 whose sheets say how many that decoder printed in the file: 1,452 against 2,359, of which 329 the old decoder marked unsure. Today prints nothing at all in 16 of the 65.
+   - **By eye, the five most different are mostly losses of signal, not junk.** `cw-2026-09-24-003901` printed 92 letters then and nothing now. `cw-2026-09-24-003919` printed 110 then and 21 now (`EAN ETNXNIK ANQNIK EAN■EK`). `cw-2026-08-25-021629` (the weak `559 559 IN MI MI` buried in noise), `cw-2026-08-31-002829` and `002759` printed 77, 74 and 68 then, with 19, 40 and 63 of them unsure, and nothing now.
+   - **Where today does print, it reads words the old session transcript never had:** `ROBIN`, `KA2GJV`, `ANTHONY`, `W1AW/8`, `COORDINATOR`.
 
-Rebuild if you like; nothing changes on screen. Pushed to `main`.
-
-**To go further,** add tonight's W1AW capture to the tree (a `w1aw-2026-10-08-*` folder beside the 2026-10-07 pieces) and lift R88 for it, so the fifteen specimens can be drawn and measured.
+Rebuild if you like; nothing on screen changes. Pushed to `main`. To run it again: the one line in `docs\cw-survey-2026-10-09.md`, about two minutes.
 
 ## 3. What you should see
 
-**The W1AW table's 20 wrong at HEAD, sorted:**
+**The summary** (from `docs\cw-survey-2026-10-09.md`):
 
-| piece | printed | meant | wrong | this signature? |
-|---|---|---|---|---|
-| 02 | `AT DOCTOBER` | AND OCTOBER | 1 | no: N lost its dit |
-| 02 | `LAY T IE` | THE | 1 | no: H's first dit broken (dit split) |
-| 03 | `S WITH` | H | 1 | no: the piece starts inside the H |
-| 03 | `ATTAC I` | ATTACH | 1 | no: H split (dit group) |
-| 03 | `MICROWAVELENGTI I` | ...GTHS | 2 | no: H and S split (dit groups) |
-| 03 | `INTNR TSE` | INCREASE | 4 | no: C's inside gap read as a letter gap, and the letters after |
-| 03 | `KILOMETEA S` | KILOMETERS | 1 | no: R's inside gap read as a letter gap |
-| 03 | `NETAT` | NEXT | 2 | no: X lost a dit |
-| 04 | `I EGHER BANDS ■` | HIGHER BANDS. | 3 | no: dit groups split, the period lost |
-| 04 | `LMW` | LOW | 1 | **kin**: O's third dah whole in the window, never printed |
-| 04 | `TINK` | TINY | 1 | **kin**: Y's last dah whole, never printed |
-| 04 | `ULTRE` | ULTRA | 1 | **kin**: A's dah whole, never printed |
-| 04 | `CALIBA ATED` | CALIBRATED | 1 | no: R's inside gap read as a letter gap |
-| | | | **20** | **0** the signature, **3** kin |
+| group | files | with a truth | letters right of sent | wrong | invented | score | worst three by score |
+|---|---|---|---|---|---|---|---|
+| synthetic fixtures | 6 | 6 | 46 of 67 (69%) | 2 | 0 | **44** | `noisy-18wpm` 0, `interference-18wpm` 2, `fading-18wpm` 8 |
+| receiver fixtures: easy | 5 | 5 | 74 of 90 (82%) | 7 | 0 | **67** | `prosigns-easy` 0, `tightfist-easy` 12, `coverage-easy` 16 |
+| receiver fixtures: working | 5 | 5 | 5 of 81 (6%) | 9 | 0 | **-4** | `coverage-working` -2, `fast-working` -2, `exchange-working` 0 |
+| receiver fixtures: edge | 5 | 5 | 0 of 81 (0%) | 0 | 0 | **0** | `coverage-edge` 0, `exchange-edge` 0, `fast-edge` 0 |
+| receiver fixtures: ungraded | 6 | 6 | 49 of 98 (50%) | 5 | 0 | **44** | `two-station` 0, `two-station-first` 0, `farnsworth-light` 3 |
+| synthetic CQs: 15 dB | 4 | 4 | 73 of 84 (87%) | 11 | 0 | **62** | `cq-12wpm-15db` 7, `cq-18wpm-15db-char5` 17, `cq-18wpm-15db` 19 |
+| synthetic CQs: 5 dB | 4 | 4 | 0 of 84 (0%) | 0 | 0 | **0** | all four 0 |
+| synthetic CQs: 0 dB | 4 | 4 | 0 of 84 (0%) | 0 | 0 | **0** | all four 0 |
+| August adjudicated | 4 | 0 | - | - | - | - | `VA3VRR` and `N4L` do not read |
+| the boards: twelve-plus-three | 16 | 16 | 318 of 353 (90%) | 20 | 1 | **297** | `cw-2026-10-03-221851` -1, `143906` 0, `143951` 0 |
+| W1AW pieces | 4 | 4 | 2131 of 2151 (99%) | 20 | 0 | **2111** | `piece-01` 242, `piece-02` 388, `piece-04` 688 |
+| unadjudicated | 65 | 0 | - | - | - | - | - |
+| scan catches | 3 | 0 | - | - | - | - | - |
 
-**The specimens through the sender's own window** (a hop a character; `.` under 0.4, `#` from 0.4, `+` from 0.6; pieces with `.` dit and `-` dah; gaps `i` inside a letter, `L` between letters; his figures over the 30 s before):
+**The worst ten files across all groups:**
+- **Ordering:** by score, then by letters sent.
+- **The board's `221851`:** its stretch is low confidence, so only its one invented letter counts.
+- **Eleven files are tied at 0 of 21** (the eight CQs at 5 and 0 dB); `cq-25wpm-5db` and `cq-18wpm-5db` are left off by order.
 
-| specimen | window | pieces printed, ms | gaps, ms | his inside gaps p10 / centre / p90 | letter gap p10 | dah centre | dit | WPM |
-|---|---|---|---|---|---|---|---|---|
-| W1AW piece-04 130.84 s, `LMW` for `LOW` | `#..#++++++++++......#+++++++++++++++++++++++++......++++++++++.......+++++++++.................###..#+++++++++++++++++++++++++#......#++++++++++++++++++++++++#.....++++++++++++++++++++++++++#.........#..##....###++++++++++#.....#+++++++++++++++++++++++++......#+++++++++++++++++++++++++........` | 46. 123- 44. 41. 116- 124- 46. 123- 123- | 37i 36i 39i 285L 35i 114L 37i 37i | 37 / 39 / 39 | 114 | 122 | 42 | 28 |
-| W1AW piece-04 253.96 s, `TINK` for `TINY` | `##.++++++++++++++++++++++++++...................##+++++++++++......++++++++++..................###.++++++++++++++++++++++++++......#+++++++++.....................#++++++++++++++++++++++++++......#+++++++++......#+++++++++++++++++++++++++......#+` | 125- 50. 43. 125- 43. 126- 43. 124- | 111L 37i 115L 38i 113L 37i 36i | 37 / 38 / 40 | 114 | 123 | 43 | 28 |
-| W1AW piece-04 256.20 s, `ULTRE` for `ULTRA` | `#...++++++++++......#+++++++++......++++++++++++++++++++++++++.................#++##++++++++++......++++++++++++++++++++++++++......#+++++++++......#+++++++++..................##..++++++++++++++++++++++++++...................###+++++++++#......+++++++++++++++++++++++++#......+++++++++#...........##......###+++++++++#......+` | 43. 43. 123- 47. 123- 43. 43. 125- 43. 120- 40. 41. | 39i 37i 113L 37i 37i 37i 115L 114L 39i 40i 119L | 37 / 38 / 39 | 113 | 123 | 43 | 28 |
-| catch-153810 3.54 s | `` (the sender's window not yet open) | 50. 85. 40. | 15i 85i | 20 / 20 / 20 | 260 | 160 | 20 | 60 |
-| catch-153810 31.62 s | `++++##...#++++++++++++++##..++++++++++###.....#+++++++++++++` | 167- 66. 49. 61. | 34i 25i 46i | 30 / 39 / 45 | 134 | 166 | 65 | 18 |
-| catch-153810 32.65 s | `.........+++++++++++++..#++++++++++++++++#...#++++++++++++++` | 62. 80. 76. | 14i 27i | 30 / 39 / 45 | 134 | 166 | 65 | 18 |
-| catch-153810 40.69 s | `.........#+++++++++++++##.#+++++++++++++##....####..........` | 61. 65. | 25i | 27 / 38 / 44 | 128 | 167 | 65 | 18 |
-| catch-153810 49.17 s | `..........#++++++++++++++#..++++++++++++#.....#+++++++++++++` | 67. 55. 69. | 20i 40i | 27 / 39 / 45 | 121 | 167 | 65 | 19 |
-| catch-153810 52.14 s | `........#++++++++++++++#..#++++++++++++++#..................` | 68. 67. | 21i | 27 / 39 / 45 | 121 | 167 | 65 | 19 |
-| catch-153810 53.63 s | `++++##....#++++++++++++++++++++++++++++#....................` | 73. 141- | 34i | 27 / 38 / 45 | 121 | 167 | 65 | 19 |
-| catch-153810 69.54 s | `+++###...#+++++++++++++++##+++++++++++++++##................` | 63. 163- | 42i | 23 / 39 / 45 | 125 | 166 | 66 | 18 |
-| catch-153810 72.11 s | `.....#+#.#++++++++++++++#..++++++++++++++#....#+++++++++++++` | 69. 67. 67. | 18i 31i | 23 / 38 / 44 | 125 | 166 | 66 | 18 |
-
-On W1AW the missing dah is the third run of `+` after the letter's printed ones (the 26-hop run before `.........#..##`), whole and never printed. On the catch the dip is the `##..` or `..#` between two runs of `+`.
-
-**The synthetic senders** (18 WPM, 16 dB, 600 Hz; `CQ CQ DE W1AW INFORMATION FROM QST USING VARIOUS MODES K`, 46 letters):
-
-| sender | seed 5661 | seed 5662 | seed 5663 | rule 1 off | rule 1 on |
-|---|---|---|---|---|---|
-| every fifth dah with a 40 ms dip to 0.3 | 46 | 46 | 46 | 46, 46, 46 | 46, 46, 46 |
-| every fifth dah missing its first 60 ms | 29 | 28 | 29 | 29, 28, 29 | 29, 28, 29 |
-
-The front-lost sender reads `CGT CGT DE W AO A AT I N F MT R M A T I O N ...`: each lost front leaves a 126 ms gap read as a letter gap.
+| # | file | group | score | right | read | truth |
+|---|---|---|---|---|---|---|
+| 1 | `coverage-working` | receiver, working | -2 | 1 of 23 | `ITTEIIIT` | `1234567890 QRZ? DE/N0CALL` |
+| 2 | `fast-working` | receiver, working | -2 | 3 of 19 | `EOXDOTAN` | `CQ CQ DE N0CALL N0CALL K` |
+| 3 | `cw-2026-10-03-221851` | the board | -1 | (low, not counted) | `SESE E IE EIEA2LCQ DE NA8SBN` | `BEST 73 <AR> W2L CQ DE NA8SB K` |
+| 4 | `two-station` | receiver, ungraded | 0 | 0 of 27 | nothing | `CQ CQ DE N0CALL K N0CALL DE W1XYZ K` |
+| 5 | `coverage-edge` | receiver, edge | 0 | 0 of 23 | nothing | `1234567890 QRZ? DE/N0CALL` |
+| 6 | `cq-12wpm-0db` | CQ, 0 dB | 0 | 0 of 21 | nothing | `CQ CQ CQ DE N0CALL N0CALL K` |
+| 7 | `cq-18wpm-0db` | CQ, 0 dB | 0 | 0 of 21 | nothing | the same |
+| 8 | `cq-18wpm-0db-char5` | CQ, 0 dB | 0 | 0 of 21 | nothing | the same |
+| 9 | `cq-25wpm-0db` | CQ, 0 dB | 0 | 0 of 21 | nothing | the same |
+| 10 | `cq-12wpm-5db` | CQ, 5 dB | 0 | 0 of 21 | nothing | the same |
 
 **Both scoreboards' rows:**
 
 | unit | right | wrong | invented | score | printed in silence | spaces |
 |---|---|---|---|---|---|---|
 | HEAD | 318 of 353 | 20 | 1 | **297** | 0 | 83 of 110, 3 added |
-| rule 1, bottom at his p10 (not shipped) | 289 of 353 | 47 | 2 | 240 | 4 | 84 of 110, 4 added |
-| rule 1, bottom at two spreads (not shipped) | 314 of 353 | 23 | 2 | 289 | 4 | 83 of 110, 4 added |
-| 566 task 2 (engine as HEAD) | 318 of 353 | 20 | 1 | **297** (234 without) | 0 | 83 of 110, 3 added |
+| 567 | 318 of 353 | 20 | 1 | **297** (234 without) | 0 | 83 of 110, 3 added |
 
 | w1aw | score | right | wrong | invented | spaces |
 |---|---|---|---|---|---|
 | HEAD | **2111** | 2131 of 2151 | 20 | 0 | 438 of 440, 11 added |
-| rule 1, bottom at his p10 | 1776 | 1960 of 2151 | 184 | 0 | 437 of 440, 10 added |
-| rule 1, bottom at two spreads | 2107 | 2129 of 2151 | 22 | 0 | 438 of 440, 11 added |
-| 566 task 2 (engine as HEAD) | **2111** | 2131 of 2151 | 20 | 0 | 438 of 440, 11 added |
+| 567 | **2111** | 2131 of 2151 | 20 | 0 | 438 of 440, 11 added |
 
 ## 4. What's blocking us
 
-- **Tonight's W1AW capture was not in the tree,** so tonight's fifteen specimens were not drawn. They need the folder placed and R88 lifted for it.
-- **W1AW's whole dahs that are never printed** (`LMW`, `TINK`, `ULTRE`) are a different fault from the dip: the window holds them whole. Where they are lost, at the detector's call or the gate, is not traced.
-- **The dip is told from a real gap only by depth and time below 0.4 on the window,** and a depth step cost the board when it was tried before.
-- **`TheRsidDetectorTests.TheDetectorKeepsUpWithRealTime`** is red when the engine line runs whole, and the two reply tests (`TAW`, `IAN`) are red at HEAD.
+- **Every file read**; none failed. Two unadjudicated WAVs have no sheet (`cw-2026-09-23-125515`, `cw-2026-09-23-173723`) and were read at 600 and 500 Hz with no earlier read beside them.
+- **Three unadjudicated sheets carry no `text` line**, and nine carry no `inThis` count, so they have nothing to compare with.
+- **The August sheets carry no adjudicated text;** only two callsigns from the decision record are checked.
+- **The scan catches have no truth.** Their pending references are in `TheStrongStationsOverTests`, unconfirmed, and not scored here.
+- **`W1AW-ARLP034-PROPOSED-TRUTH.md`** in `unadjudicated` is a proposed truth, not adjudicated, and is not scored.
+- **`TheRsidDetectorTests.TheDetectorKeepsUpWithRealTime`** is red on the engine line run whole, and the two reply tests (`TAW`, `IAN`) are red at HEAD.
 
 ### Asks still outstanding
 

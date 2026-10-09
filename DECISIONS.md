@@ -4,6 +4,59 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-271
+date: 2026-10-09
+refs: work instruction 567, R88, tests/Hamlet.RadioEngine.Tests/Cw/TheCwSurveyTests.cs, docs/cw-survey-2026-10-09.md, docs/carry-forward-tests.txt, docs/cw-scoreboard.md
+---
+
+**The survey: every CW recording read once, none promoted.** The owner, 2026-10-09: *"Let's run a unit that tests against every WAV file we have in our library. This is a one-time exception, so we can kind of measure against existing standards."* The exception is to the rule that no recording is used beyond the two boards. Every file is read and reported, and none is added to a board. The engine is unchanged, and the boards and their guards read exactly as at HEAD.
+
+**What was read.** Every CW `.wav` under `tests\fixtures\cw\`: 131 files. There is no CW `.wav` under `assets\fixtures\`.
+
+| folder | files |
+|---|---|
+| the six synthetic fixtures | 6 |
+| `receiver` | 21 |
+| `synthetic-cq` | 12 |
+| `captured` (the boards' recordings and the four August captures) | 20 |
+| `captured\unadjudicated` | 65 |
+| `captured\scans` | 3 |
+| `captured\w1aw-2026-10-07` | 4 |
+
+**Where each truth came from.** None was invented.
+
+| files | truth |
+|---|---|
+| synthetic fixtures | the text in `CwFixtures.All` |
+| receiver fixtures and synthetic CQs | the `text` line their generator wrote in each sheet; the grade from the name |
+| the boards | their own references, read by `TheRecordingsScoreboardTests.Score` and `TheW1awTableTests.Score`, so the survey's figures are the boards', 297 and 2111 |
+| August | the callsigns HM-DEC-144 and HM-DEC-145 adjudicated (N4L, VA3VRR), checked for presence |
+| unadjudicated and scan catches | none; the earlier read in the sheet or `.json` stands beside today's |
+
+The survey states that a sheet's earlier `text` covers everything since its transcript was cleared, not the 30 s file, and gives the sheet's own count for the file from its `inThis` line.
+
+**The doc and the command.** `docs\cw-survey-2026-10-09.md`, written by `TheCwSurveyTests.EveryRecordingInTheTree`.
+- The test carries the `Survey` category. Both carry-forward lines now filter it out with `Category!=Survey`, and still run the same tests.
+- It runs only by its own line: `timeout 1800 dotnet test tests/Hamlet.RadioEngine.Tests/Hamlet.RadioEngine.Tests.csproj --filter "FullyQualifiedName~TheCwSurveyTests.EveryRecordingInTheTree"`, about two minutes.
+
+**What it found.** Of what was sent, the reader at HEAD gets:
+
+| group | right |
+|---|---|
+| synthetic fixtures | 46 of 67 (69%) |
+| receiver fixtures, easy | 74 of 90 (82%) |
+| receiver fixtures, working | 5 of 81 (6%) |
+| receiver fixtures, edge | 0 of 81 |
+| synthetic CQs, 15 dB | 73 of 84 (87%) |
+| synthetic CQs, 5 dB and 0 dB | nothing, printing nothing |
+| the twelve-plus-three | 318 of 353 |
+| W1AW | 2131 of 2151 |
+
+- **Nothing invented** in any generated recording.
+- **August:** neither adjudicated callsign reads.
+- **Unadjudicated:** today's read prints fewer letters than the decoder of the day in 36 of the 56 files whose sheets count them, 1,452 against 2,359 (329 of those marked unsure), and nothing in 16 of 65.
+
+---
 id: HM-DEC-270
 date: 2026-10-08
 refs: work instruction 566, HM-DEC-268, R88, tests/Hamlet.RadioEngine.Tests/Cw/TheDahThatComesApartTests.cs, tests/Hamlet.RadioEngine.Tests/Scan/TheBrokenDahsTests.cs, docs/cw-scoreboard.md

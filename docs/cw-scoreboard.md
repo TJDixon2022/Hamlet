@@ -367,6 +367,7 @@ guard: the random carrier prints at 1 of 20 seeds (5195), recorded at unit 552
 | 563 task 1 | 2026-10-08 | 318 of 353 | 20 | 1 | **297** | 0 | 83 of 110, 3 added | the app's tests stop their timers (work instruction 563, HM-DEC-267); nothing in the engine changed and every stretch reads as at HEAD |
 | 564 task 1 | 2026-10-08 | 318 of 353 | 20 | 1 | **297** | 0 | 83 of 110, 3 added | Hamlet sets the radio's AGC to SLOW on the CW tab (work instruction 564, HM-DEC-268); a receive setting, nothing in reading changed and every stretch reads as at HEAD |
 | 566 task 2 | 2026-10-08 | 318 of 353 | 20 | 1 | **297** | 0 | 83 of 110, 3 added | the dah that comes apart (work instruction 566, HM-DEC-270): a dip inside a dah joined where the gap between two dit pieces is under the sender's inside-gap bottom and the three together are a dah, measured and **not shipped**: with the bottom at his p10, 240 (47 wrong, 4 letters in silences, the first recording `FER C DAT`); at two spreads under his centre, 289 (23 wrong, 4 in silences, `KKTURON` on KM3STU). The front-lost rule was not tried, the table showing none of that kind. The engine is as at HEAD |
+| 567 | 2026-10-09 | 318 of 353 | 20 | 1 | **297** | 0 | 83 of 110, 3 added | the survey (work instruction 567, HM-DEC-271): every CW recording in the tree read once, `docs\cw-survey-2026-10-09.md`; this board read by its own scoring inside it, 297 exactly; nothing promoted |
 
 ## Scans (work instruction 544, HM-DEC-248)
 
@@ -432,6 +433,7 @@ high and 25 medium, 2151 letters, all totalled.
 | 563 task 1 | 2026-10-08 | **2111** | 2131 of 2151 | 20 | 0 | 438 of 440, 11 added | the app's tests stop their timers; nothing that reads changed |
 | 564 task 1 | 2026-10-08 | **2111** | 2131 of 2151 | 20 | 0 | 438 of 440, 11 added | AGC SLOW in CW; nothing that reads changed |
 | 566 task 2 | 2026-10-08 | **2111** | 2131 of 2151 | 20 | 0 | 438 of 440, 11 added | the dip join measured and not shipped: 1776 with the bottom at the sender's p10, 2107 at two spreads under his centre; none of this table's 20 wrong is a dah with a dip |
+| 567 | 2026-10-09 | **2111** | 2131 of 2151 | 20 | 0 | 438 of 440, 11 added | the survey read this table by its own scoring, 2111 exactly; nothing promoted |
 
 ### W1AW stretches at unit 554 task 3
 
