@@ -2,12 +2,12 @@ PROTOCOL: 2
 PROJECT: Hamlet
 STATE: COMPLETED
 TASK: closing
-WORK_INSTRUCTION: 567 - the survey, every CW recording read once (run by hand)
+WORK_INSTRUCTION: 568 - the weak end (run by hand)
 BALL: tim
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-10-09T10:23:50-04:00
-NOTE: Unit 567 done - 131 CW recordings surveyed into docs/cw-survey-2026-10-09.md; boards 297 and 2111 exactly; none promoted
+UPDATED: 2026-10-09T10:49:25-04:00
+NOTE: Unit 568 done - weak stations die at candidacy (grid pieces of one length); own window reads them; fix not shipped; boards 297 and 2111
 
 ---
 

@@ -4,6 +4,41 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-272
+date: 2026-10-09
+refs: work instruction 568, HM-DEC-271, docs/cw-survey-2026-10-09.md, tests/Hamlet.RadioEngine.Tests/Cw/TheWeakEndTests.cs, src/Hamlet.RadioEngine/Cw/CwPatternGate.cs, src/Hamlet.RadioEngine/Cw/CwEnvelopeDetector.cs, docs/cw-scoreboard.md
+---
+
+**The weak end: traced, and no gate moved.** Ordered by the owner in work instruction 568, 2026-10-09, on the survey's finding: 0 of 84 letters on the eight synthetic CQs at 5 dB and 0 dB, 0 of 81 on the five edge receiver fixtures and 5 of 81 on the five working ones.
+
+**Where the weak stations die: before a window, at candidacy, and not at a level line.**
+- **The grid breaks the station into pieces.** Its bins are a 10 ms window about 150 Hz wide. There a 5 dB station (tone against noise in the 520 Hz passband) stands about 11 dB over noise that swings some 5.5 dB hop to hop. Every mark reaches the pattern gate as pieces of 20 to 35 ms, all one length.
+- **A sequence of pieces never earns a window.** It reaches 30 to 74 marks at one pitch, with a shape up to 0.71, but never shows the two lengths that both standing and a candidate window need.
+- **Of the eighteen:**
+
+| stage | files |
+|---|---|
+| candidacy: no window, no sender | 10 |
+| window: a late window, and no sender | 3 |
+| reader: printing junk | 3 (the working fixtures) |
+| marks | 1 |
+| under Sure | 1 |
+
+- **The sender's own window, opened by hand at the true pitch, reads them.**
+  - Its contrast is 15 to 17 dB at 5 dB and 9 to 12 dB at 0 dB.
+  - Its level rule finds every mark of the 5 dB CQs, which read 21 of 21, all four.
+  - Fifteen of the eighteen read half their letters or better. The ones that do not are the two 25 WPM files at 0 dB and `fast-working`.
+
+**What was tried, and not shipped.**
+- **The change:** a sequence of twelve or more pieces at one pitch that never splits into two lengths gets a window at a 20 WPM dit. That window judges its marks against its own key-down level, the top of its last three seconds, rather than the grid's level for the pieces.
+- **What it did:** windows opened within 3 to 10 s and senders formed, but:
+  - two of the four 5 dB CQs still printed junk (`I H E EE IOEE EES`, `AT E0CA I N`);
+  - the twelve-plus-three read 299 with invented letters rising from 1 to 2;
+  - W1AW read 2109.
+- **Why it misses the bar:** a window's marks still reach the sender mixed with the grid's pieces. The move needs more than one gate, so the owner rules.
+- **The engine is as at HEAD.** Both boards read 297 and 2111 and both guards pass. The survey reruns unchanged, and the app carry-forward line reads 278 of 278.
+
+---
 id: HM-DEC-271
 date: 2026-10-09
 refs: work instruction 567, R88, tests/Hamlet.RadioEngine.Tests/Cw/TheCwSurveyTests.cs, docs/cw-survey-2026-10-09.md, docs/carry-forward-tests.txt, docs/cw-scoreboard.md
