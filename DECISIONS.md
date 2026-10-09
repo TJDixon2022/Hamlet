@@ -4,6 +4,28 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-270
+date: 2026-10-08
+refs: work instruction 566, HM-DEC-268, R88, tests/Hamlet.RadioEngine.Tests/Cw/TheDahThatComesApartTests.cs, tests/Hamlet.RadioEngine.Tests/Scan/TheBrokenDahsTests.cs, docs/cw-scoreboard.md
+---
+
+**The dah that comes apart: measured, and no rule shipped.** Ordered by the owner in work instruction 566, 2026-10-08. With the radio's AGC on SLOW, W1AW read live almost whole, and fifteen of its twenty-five wrong were one fault: `INFMERMATION`, a dah coming apart into a dit and a letter gap. R88 holds as the order set it. Tonight's capture was not in the tree, so the unit measured on what is. The number is the order's; HM-DEC-269 is not in the record.
+
+**What the table showed.** Each specimen was drawn through the sender's own window, a hop a character.
+- **The W1AW table's 20 wrong at HEAD hold none of tonight's signature.**
+  - Three are a letter's last dah that the sender's window shows whole, 25 to 26 hops above 0.6 of the contrast, and that the gate never printed: `LOW` as `LMW`, `TINY` as `TINK`, `ULTRA` as `ULTRE`.
+  - The rest are dit groups splitting or losing a dit, inside gaps read as letter gaps, and one piece's cut start.
+- **The strong scan catch's broken dahs are a dah with a dip in it.** Six of the nine show two pieces with a gap of 14 to 25 ms between them, under the sender's inside-gap p10 (23 to 30 ms, centre 38 to 39), the two with the gap 140 to 156 ms against his 166 ms dah. Two read whole, and one comes before the sender settled.
+- **None is a dah with its front lost**, so rule 2 was not tried.
+
+**Rule 1, built and measured, not shipped.** It joins two dit-length pieces when the gap between them is under the sender's inside-gap bottom and the three together are a dah.
+- **With the bottom at his p10:** 240 against 297 and 1776 against 2111. The first recording read `FER C DAT`, and four letters printed in silences.
+- **At two spreads under his centre in log length:** 289 and 2107, still printing in silences.
+- **Why it fails:** a dit, an inside gap and a dit are a dah's length, so length cannot tell a dip from a real gap. The window can: a dip is two to four hops below 0.4, and a real inside gap six to nine. But a depth step was measured before and cost the board.
+- **The synthetic senders.** At 18 WPM, every fifth dah with a 40 ms dip read 46 of 46 with the rule off and on. Every fifth dah missing its first 60 ms read 28 to 29 of 46 either way.
+- **The engine is as at HEAD.** Both boards read 297 (234 without KM3STU's three) and 2111, both guards pass, and the app carry-forward line reads 278 of 278.
+
+---
 id: HM-DEC-268
 date: 2026-10-08
 refs: work instruction 564, HM-DEC-084, HM-DEC-174, HM-DEC-191, HM-DEC-207, data/bands/mode-receiver-conditions.json, src/Hamlet.RadioEngine/Rig/CwAgc.cs, src/Hamlet.App/ViewModels/MainWindowViewModel.CwAgc.cs, tests/Hamlet.App.Tests/ViewModels/HamletSetsAgcForCwTests.cs, docs/agc-comparison.md
