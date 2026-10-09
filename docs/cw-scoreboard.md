@@ -366,6 +366,7 @@ guard: the random carrier prints at 1 of 20 seeds (5195), recorded at unit 552
 | 562 task 2 | 2026-10-08 | 318 of 353 | 20 | 1 | **297** | 0 | 83 of 110, 3 added | `221851`'s stretch cut at its `K`, 16.5 s: offline it reads `IBESTTH3<AR>W2LCQ DE NA8SBK` against `BEST 73 <AR> W2L CQ DE NA8SB K`, a leading `I` and `TH3` for `73`, so it stays low; live it reads `SESE E IE EIEA2LCQ DE NA8SBN`. The totals stand |
 | 563 task 1 | 2026-10-08 | 318 of 353 | 20 | 1 | **297** | 0 | 83 of 110, 3 added | the app's tests stop their timers (work instruction 563, HM-DEC-267); nothing in the engine changed and every stretch reads as at HEAD |
 | 564 task 1 | 2026-10-08 | 318 of 353 | 20 | 1 | **297** | 0 | 83 of 110, 3 added | Hamlet sets the radio's AGC to SLOW on the CW tab (work instruction 564, HM-DEC-268); a receive setting, nothing in reading changed and every stretch reads as at HEAD |
+| 566 task 2 | 2026-10-08 | 318 of 353 | 20 | 1 | **297** | 0 | 83 of 110, 3 added | the dah that comes apart (work instruction 566, HM-DEC-270): a dip inside a dah joined where the gap between two dit pieces is under the sender's inside-gap bottom and the three together are a dah, measured and **not shipped**: with the bottom at his p10, 240 (47 wrong, 4 letters in silences, the first recording `FER C DAT`); at two spreads under his centre, 289 (23 wrong, 4 in silences, `KKTURON` on KM3STU). The front-lost rule was not tried, the table showing none of that kind. The engine is as at HEAD |
 
 ## Scans (work instruction 544, HM-DEC-248)
 
@@ -430,6 +431,7 @@ high and 25 medium, 2151 letters, all totalled.
 | 562 task 2 | 2026-10-08 | **2111** | 2131 of 2151 | 20 | 0 | 438 of 440, 11 added | test only; nothing that reads changed |
 | 563 task 1 | 2026-10-08 | **2111** | 2131 of 2151 | 20 | 0 | 438 of 440, 11 added | the app's tests stop their timers; nothing that reads changed |
 | 564 task 1 | 2026-10-08 | **2111** | 2131 of 2151 | 20 | 0 | 438 of 440, 11 added | AGC SLOW in CW; nothing that reads changed |
+| 566 task 2 | 2026-10-08 | **2111** | 2131 of 2151 | 20 | 0 | 438 of 440, 11 added | the dip join measured and not shipped: 1776 with the bottom at the sender's p10, 2107 at two spreads under his centre; none of this table's 20 wrong is a dah with a dip |
 
 ### W1AW stretches at unit 554 task 3
 
