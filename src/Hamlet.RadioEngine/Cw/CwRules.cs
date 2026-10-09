@@ -86,6 +86,9 @@ internal static class CwRules
     /// <summary>The lane bank stands lanes across the rig's passband (work instruction 569).</summary>
     public const string LaneBank = "the lane bank";
 
+    /// <summary>A bank lane's station is handed to the sender gate where the grid has none (work instruction 569, task 2).</summary>
+    public const string LaneHandover = "the lane handover";
+
     /// <summary>A sender is first printed only once its shape has reached the green line, 0.4 (work instruction 561).</summary>
     public const string SureFirst = "printed once sure";
 

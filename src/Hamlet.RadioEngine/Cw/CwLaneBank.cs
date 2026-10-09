@@ -232,6 +232,8 @@ internal sealed class CwLaneBank
         private double _from = double.NaN;
         private double _sum;
         private int _span;
+        private double _fellAt = double.NaN;
+        private int _below;
 
         public Lane(double hz, double dit, int sampleRate, int decimation, double inputDelay)
         {
@@ -301,14 +303,31 @@ internal sealed class CwLaneBank
             {
                 _sum += level;
                 _span++;
+                _fellAt = double.NaN;
+                _below = 0;
+                return null;
+            }
+
+            // **A MARK ENDS ONLY ONCE THE KEY HAS STAYED UP** (work instruction 569, task 2): a hop of noise under the down line
+            // broke a 200 ms dah into 45 and 140 ms with a 5 ms gap, where the sender's shortest gap is a dit. The fall must hold a
+            // quarter of the lane's dit, two hops at least, and the mark ends where the fall began.
+            if (double.IsNaN(_fellAt))
+            {
+                _fellAt = now;
+            }
+
+            if (++_below * hopSeconds < Math.Max(2 * hopSeconds, 0.25 * _dit))
+            {
                 return null;
             }
 
             var from = _from - _delay;
-            var to = now - _delay;
+            var to = _fellAt - _delay;
             var mean = _sum / _span;
 
             _from = double.NaN;
+            _fellAt = double.NaN;
+            _below = 0;
 
             return to - from >= 0.5 * _dit ? (from, to, mean, contrast) : null;
         }

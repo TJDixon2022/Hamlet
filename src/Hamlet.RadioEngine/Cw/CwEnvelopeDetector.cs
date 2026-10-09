@@ -271,6 +271,85 @@ public sealed class CwEnvelopeDetector
     internal CwLaneBank? Bank => _bank;
 
     /// <summary>
+    /// How near a pitch counts as the same station for the handover: two bins, 50 Hz, the figure the windows already take for a
+    /// station and its shadow (work instruction 569, task 2).
+    /// </summary>
+    internal const double HandoverHz = 2 * BinSpacingHz;
+
+    /// <summary>
+    /// Whether a bank lane's station is handed to the sender gate: **off by default** (work instruction 569, task 2). On, the four
+    /// 5 dB CQs read where they read nothing, but the twelve-plus-three fell from 297 to 281 with invented letters 1 to 15, and none
+    /// of the five working fixtures read half; so the bank runs and hands nothing on until the next unit.
+    /// </summary>
+    internal bool LaneHandover { get; set; }
+
+    // The bank lane that holds a station now: its dit index and pitch; null while none does.
+    private (int Dit, double PitchHz)? _bankLane;
+
+
+    /// <summary>
+    /// **THE HANDOVER** (work instruction 569, task 2, HM-DEC-273): a bank lane's station is handed to the sender gate only where the
+    /// grid has nothing standing, no candidate, and neither the station's own window nor a provisional window within
+    /// <see cref="HandoverHz"/>. Of the bank's standing sequences there, the best-shaped holds the station, and only its marks are
+    /// handed on, so the station is read once; while it holds, the grid's marks near it are not offered. When its sequence stops
+    /// standing it is let go and the bank goes back to finding.
+    /// </summary>
+    private void HandOver(double nowSeconds)
+    {
+        if (_bank is null)
+        {
+            return;
+        }
+
+        var stood = _bank.Stood;
+
+        if (!LaneHandover || !CwRules.On(CwRules.LaneHandover))
+        {
+            stood.Clear();
+            _bankLane = null;
+            return;
+        }
+
+        var standing = _bank.Standing(nowSeconds);
+
+        if (_bankLane is { } held && !standing.Any(s => s.Dit == held.Dit && Math.Abs(s.Sequence.PitchHz - held.PitchHz) <= BinSpacingHz / 2))
+        {
+            _bankLane = null;
+        }
+
+        if (_bankLane is null)
+        {
+            var grid = _pattern.Standing(nowSeconds, HoldSeconds).Select(s => s.PitchHz)
+                .Concat(_pattern.Candidates(nowSeconds, CandidateMarks, CwPatternGate.SilenceSeconds).Select(c => c.PitchHz))
+                .Concat(_windows.Select(w => w.Lane.PitchHz))
+                .Concat(_laneBin is not null ? [_lane.PitchHz] : [])
+                .ToList();
+
+            if (standing
+                .Where(s => !grid.Any(g => Math.Abs(g - s.Sequence.PitchHz) <= HandoverHz))
+                .OrderByDescending(s => s.Sequence.Shape.Score)
+                .FirstOrDefault() is { Sequence: not null } best)
+            {
+                _bankLane = (best.Dit, best.Sequence.PitchHz);
+            }
+        }
+
+        if (_bankLane is { } lane)
+        {
+            // The lane's own marks since it began to stand, and from now on: the backlog the gate stood together comes with them.
+            for (var i = 0; i < stood.Count; i++)
+            {
+                if (stood[i].Dit == lane.Dit && Math.Abs(stood[i].Mark.PitchHz - lane.PitchHz) <= BinSpacingHz / 2)
+                {
+                    _marks.Add(stood[i].Mark with { Sequence = ++_markSequence, Stood = true, Keyed = true });
+                }
+            }
+        }
+
+        stood.Clear();
+    }
+
+    /// <summary>
     /// The bank in one line for the record (work instruction 569): lanes held, sequences standing, and the best standing lane's
     /// pitch and shape; "no bank" where the passband is not the rig's.
     /// </summary>
@@ -640,6 +719,7 @@ public sealed class CwEnvelopeDetector
             _laneBin = null;
             _windows.Clear();
             _bank = fromRig && CwRules.On(CwRules.LaneBank) ? new CwLaneBank(SampleRate, HopSamples, low, high) : null;
+            _bankLane = null;
             _laneId = -1;
             _watched = _bins.Length / 2;
             _hop = 0;
@@ -957,9 +1037,9 @@ public sealed class CwEnvelopeDetector
         FollowSender(chosen, standing, hop);
         UpdateWindows(hop, nowSeconds);
 
-        // **THE LANE BANK READS ALONGSIDE** (work instruction 569, task 1): its marks form sequences in its own gates and are
-        // handed to nobody yet.
+        // **THE LANE BANK READS ALONGSIDE** (work instruction 569, task 1): its marks form sequences in its own gates.
         _bank?.Hop(nowSeconds);
+        HandOver(nowSeconds);
 
         foreach (var s in standing)
         {
@@ -2158,6 +2238,13 @@ public sealed class CwEnvelopeDetector
                 };
 
                 _candidates.Add(candidate);
+
+                // **A LANE THAT HOLDS A STATION KEEPS THE GRID'S PIECES OUT** (work instruction 569, task 2): while the bank's
+                // lane holds a station, the grid's marks near its pitch are not offered, so the station is read once.
+                if (_bankLane is { } held && Math.Abs(pitch - held.PitchHz) <= HandoverHz)
+                {
+                    continue;
+                }
 
                 // **THE PATTERN ACROSS MARKS IS THE GATE** (work instruction 507, R112, HM-DEC-210): a
                 // candidate is handed on only when it stands in a sequence with the shape of a keyed tone.

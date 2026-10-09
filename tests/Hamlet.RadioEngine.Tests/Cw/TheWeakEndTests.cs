@@ -199,7 +199,7 @@ public sealed class TheWeakEndTests(ITestOutputHelper output)
         double FirstSenderSeconds, double SenderShape, bool Qualified, bool Printed, string Text, int LettersPrinted);
 
     /// <summary>Reads a file through the app's chain as the survey does, and samples the stages at the pitch.</summary>
-    internal static ChainTrace Chain(float[] samples, int rate, double pitchHz)
+    internal static ChainTrace Chain(float[] samples, int rate, double pitchHz, bool handover = false)
     {
         using var chain = new CwChain(rate);
         var gate = chain.Decoder.Runs;
@@ -218,6 +218,7 @@ public sealed class TheWeakEndTests(ITestOutputHelper output)
         var near = (double hz) => Math.Abs(hz - pitchHz) <= 40;
 
         chain.Detector.SetPassband(600, 500);
+        chain.Detector.LaneHandover = handover;
         gate.CharacterRead += c => text.Append(c.Text);
         gate.RunRead += (_, _) => letters++;
 
@@ -295,8 +296,8 @@ public sealed class TheWeakEndTests(ITestOutputHelper output)
     [Fact]
     public void WhereEachWeakFileDies()
     {
-        output.WriteLine("| file | sent: SNR in 520 Hz, pitch, WPM, marks | wide bin: contrast median, key-up spread | chain: offered (their contrast), stood, sequence marks, shape | window opened, sender (shape, qualified, printed) | own window: contrast median / p10 | level marks found of sent, whole | their shape | dies at | chain read | window read, right of sent |");
-        output.WriteLine("|---|---|---|---|---|---|---|---|---|---|---|");
+        output.WriteLine("| file | sent: SNR in 520 Hz, pitch, WPM, marks | wide bin: contrast median, key-up spread | chain: offered (their contrast), stood, sequence marks, shape | window opened, sender (shape, qualified, printed) | own window: contrast median / p10 | level marks found of sent, whole | their shape | dies at | chain read | window read, right of sent | lane read, right of sent |");
+        output.WriteLine("|---|---|---|---|---|---|---|---|---|---|---|---|");
 
         foreach (var (name, wav, r) in Files())
         {
@@ -439,6 +440,48 @@ public sealed class TheWeakEndTests(ITestOutputHelper output)
         output.WriteLine($"the same text both ways: {with.Text == without.Text}");
     }
 
+    /// <remarks>
+    /// Work instruction 569, task 2: on `cq-18wpm-5db`, every mark the chain handed the sender gate, its pitch and length and the gap
+    /// before it, beside the marks as keyed. Asserts nothing.
+    /// </remarks>
+    [Fact]
+    public void WhatTheHandoverHandsOn()
+    {
+        var (_, wav, r) = Files().Single(f => f.Name == "cq-18wpm-5db");
+        var audio = WavAudio.Read(wav);
+        using var chain = new CwChain(audio.SampleRate);
+        var marks = new List<CwMark>();
+        var text = new StringBuilder();
+        long seq = 0;
+        var chunk = audio.SampleRate / 100;
+
+        chain.Detector.SetPassband(600, 500);
+        chain.Decoder.Runs.CharacterRead += c => text.Append(c.Text);
+        chain.Detector.LaneHandover = true;
+
+        for (var at = 0; at + chunk <= audio.Samples.Length; at += chunk)
+        {
+            chain.Process(new AudioChunk(at, audio.SampleRate, audio.Samples.AsSpan(at, chunk)));
+
+            var batch = chain.Detector.MarksSince(seq);
+
+            if (batch.Marks.Count > 0)
+            {
+                marks.AddRange(batch.Marks);
+                seq = batch.Marks.Max(m => m.Sequence);
+            }
+        }
+
+        chain.Decoder.Flush();
+
+        var sent = Sent(r);
+
+        output.WriteLine($"read `{text}`");
+        output.WriteLine("sent:   " + string.Join(" ", sent.Take(30).Select((m, i) => string.Create(Inv, $"{(i > 0 ? $"[{(m.From - sent[i - 1].To) * 1000:0}] " : string.Empty)}{(m.To - m.From) * 1000:0}"))));
+        output.WriteLine("handed: " + string.Join(" ", marks.OrderBy(m => m.FromSeconds).Take(40).Select((m, i) => string.Create(Inv, $"{m.FromSeconds:0.00}:{m.LengthMs:0}@{m.PitchHz:0}"))));
+        output.WriteLine(string.Create(Inv, $"first sent at {sent[0].From:0.00} s; {marks.Count} marks handed on"));
+    }
+
     /// <remarks>The pattern gate's sequences at the pitch, every two seconds, on two 5 dB CQs. Asserts nothing.</remarks>
     [Fact]
     public void TheSequencesAtThePitch()
@@ -485,6 +528,7 @@ public sealed class TheWeakEndTests(ITestOutputHelper output)
         var windowRight = TheRecordingsScoreboardTests.Right(windowRead, reference);
         var outOf = TheRecordingsScoreboardTests.Letters(reference).Length;
         var chain = Chain(audio.Samples, audio.SampleRate, r.ToneHz);
+        var lane = Chain(audio.Samples, audio.SampleRate, r.ToneHz, handover: true);
         var stage =
             chain.Offered < sent.Count / 10 ? "detector"
             : chain.SequenceMarks < 3 ? "detector"
@@ -496,6 +540,6 @@ public sealed class TheWeakEndTests(ITestOutputHelper output)
             : "reads";
 
         return string.Create(Inv,
-            $"| `{name}` | {r.SignalToNoiseDb:0} dB, {r.ToneHz:0} Hz, {1200 / r.DitMilliseconds:0} WPM, {sent.Count} | {wide.Down - wide.Up:0.0} dB, {wide.UpSpread:0.0} dB | {chain.Offered} ({chain.OfferedContrastDb:0.0} dB), {chain.Stood}, {chain.SequenceMarks}, {chain.SequenceShape:0.00} | {(double.IsNaN(chain.FirstWindowSeconds) ? "no window" : $"at {chain.FirstWindowSeconds:0.0} s")}, {(double.IsNaN(chain.FirstSenderSeconds) ? "no sender" : $"sender {chain.SenderShape:0.00}{(chain.Qualified ? " qualified" : string.Empty)}{(chain.Printed ? " printed" : string.Empty)}")} | {own.Down - own.Up:0.0} / {P(own.PerMark, 0.1):0.0} dB | {found.Count} of {sent.Count}, {whole} whole | {shape:0.00} | **{stage}** | `{chain.Text}` | `{windowRead}`, {windowRight} of {outOf} |");
+            $"| `{name}` | {r.SignalToNoiseDb:0} dB, {r.ToneHz:0} Hz, {1200 / r.DitMilliseconds:0} WPM, {sent.Count} | {wide.Down - wide.Up:0.0} dB, {wide.UpSpread:0.0} dB | {chain.Offered} ({chain.OfferedContrastDb:0.0} dB), {chain.Stood}, {chain.SequenceMarks}, {chain.SequenceShape:0.00} | {(double.IsNaN(chain.FirstWindowSeconds) ? "no window" : $"at {chain.FirstWindowSeconds:0.0} s")}, {(double.IsNaN(chain.FirstSenderSeconds) ? "no sender" : $"sender {chain.SenderShape:0.00}{(chain.Qualified ? " qualified" : string.Empty)}{(chain.Printed ? " printed" : string.Empty)}")} | {own.Down - own.Up:0.0} / {P(own.PerMark, 0.1):0.0} dB | {found.Count} of {sent.Count}, {whole} whole | {shape:0.00} | **{stage}** | `{chain.Text}` | `{windowRead}`, {windowRight} of {outOf} | `{lane.Text}`, {TheRecordingsScoreboardTests.Right(lane.Text, reference)} of {outOf} |");
     }
 }
