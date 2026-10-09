@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: EXECUTING
+STATE: COMPLETED
 TASK: closing
 WORK_INSTRUCTION: 569 - the lane bank (run by hand)
-BALL: code
-NEXT_PASTE: none
+BALL: tim
+NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-10-09T12:00:59-04:00
-NOTE: Three tasks committed; records and report
+UPDATED: 2026-10-09T12:05:29-04:00
+NOTE: Unit 569 done: lane bank running, handover built and off; boards 297/2111
 
 ---
 
