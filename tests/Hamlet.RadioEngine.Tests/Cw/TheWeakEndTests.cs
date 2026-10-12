@@ -483,6 +483,50 @@ public sealed class TheWeakEndTests(ITestOutputHelper output)
     }
 
     /// <remarks>
+    /// Work instruction 570, task 2: the carrier keyed at random at the scoreboard's seeds, read with the handover on: what it
+    /// prints, the marks the lane handed on, and the share of its time key-up by the scan's own measure. Asserts nothing.
+    /// </remarks>
+    [Fact]
+    public void TheCarrierAtTheLane()
+    {
+        foreach (var seed in new[] { 5195, 5209 })
+        {
+            var samples = TheShapePicksTheSenderTests.Noise(25, 5192);
+
+            TheShapePicksTheSenderTests.Key(samples, TheShapePicksTheSenderTests.RandomKeying(2.5, 23, seed), 625, 24);
+
+            using var chain = new CwChain(8000);
+            var marks = new List<CwMark>();
+            var text = new StringBuilder();
+            long seq = 0;
+
+            chain.Detector.SetPassband(600, 500);
+            chain.Detector.LaneHandover = true;
+            chain.Decoder.Runs.CharacterRead += c => text.Append(c.Text);
+
+            for (var at = 0; at + 80 <= samples.Length; at += 80)
+            {
+                chain.Process(new AudioChunk(at, 8000, samples.AsSpan(at, 80)));
+
+                var batch = chain.Detector.MarksSince(seq);
+
+                if (batch.Marks.Count > 0)
+                {
+                    marks.AddRange(batch.Marks);
+                    seq = batch.Marks.Max(m => m.Sequence);
+                }
+            }
+
+            chain.Decoder.Flush();
+
+            var share = Hamlet.RadioEngine.Scan.CwCatchEar.KeyUpShareOf(samples, 8000, 625);
+
+            output.WriteLine(string.Create(Inv, $"seed {seed}: reads `{text}`; key-up share over the whole {share:0.00}; {marks.Count} marks handed on"));
+            output.WriteLine("handed: " + string.Join(" ", marks.OrderBy(m => m.FromSeconds).Take(60).Select(m => string.Create(Inv, $"{m.FromSeconds:0.00}:{m.LengthMs:0}@{m.PitchHz:0}"))));
+        }
+    }
+
+    /// <remarks>
     /// Work instruction 569: `two-station`, which prints nothing today, read with the handover off and on. Reported, not required.
     /// Asserts nothing.
     /// </remarks>

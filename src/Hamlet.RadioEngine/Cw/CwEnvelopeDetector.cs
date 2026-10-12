@@ -313,6 +313,39 @@ public sealed class CwEnvelopeDetector
     // How long the bank's stood marks are kept for a lane that may yet be handed on: its lead and a minute of backlog.
     private const double LaneKeptSeconds = LaneLeadSeconds + 60;
 
+    // Each lane pitch's last carrier judgement, by bin: when it was made and what it found.
+    private readonly Dictionary<long, (double AtSeconds, bool Carrier)> _laneCarrier = [];
+
+    /// <summary>
+    /// **A LANE KNOWS A CARRIER** (work instruction 570, task 2, HM-DEC-274): a lane's tone that is key-up less than the scan's
+    /// own carrier line, <see cref="Scan.CwCatchScan.CarrierKeyUpShare"/>, of the last <see cref="Scan.CwCatchScan.CarrierListen"/>
+    /// heard is a carrier and hands nothing on. The rule and its figures are the scan's, read by reference through
+    /// <see cref="Scan.CwCatchEar.KeyUpShareOf"/>, over the audio the detector already keeps; judged again at most once a second.
+    /// </summary>
+    private bool LaneIsCarrier(double pitchHz, double nowSeconds)
+    {
+        var key = (long)Math.Round(pitchHz / BinSpacingHz);
+
+        if (_laneCarrier.TryGetValue(key, out var known) && nowSeconds - known.AtSeconds < 1)
+        {
+            return known.Carrier;
+        }
+
+        var held = (int)Math.Min(Math.Min(_samplesSeen, _raw.Length), (long)(Scan.CwCatchScan.CarrierListen.TotalSeconds * SampleRate));
+        var audio = new float[held];
+        var from = _samplesSeen - held;
+
+        for (var n = 0; n < held; n++)
+        {
+            audio[n] = _raw[(int)((from + n) % _raw.Length)];
+        }
+
+        var carrier = Scan.CwCatchEar.KeyUpShareOf(audio, SampleRate, pitchHz) is { } share && share < Scan.CwCatchScan.CarrierKeyUpShare;
+
+        _laneCarrier[key] = (nowSeconds, carrier);
+        return carrier;
+    }
+
     /// <summary>Whether a mark at this pitch is the held lane's station, so the grid's reading of it is not printed twice.</summary>
     private bool HeldByLane(double pitchHz) => _bankLane is { } held && Math.Abs(pitchHz - held.PitchHz) <= HandoverHz;
 
@@ -339,6 +372,7 @@ public sealed class CwEnvelopeDetector
             _laneKept.Clear();
             _laneClearSince.Clear();
             _laneHandedTo.Clear();
+            _laneCarrier.Clear();
             _bankLane = null;
             return;
         }
@@ -354,7 +388,8 @@ public sealed class CwEnvelopeDetector
 
         if (_bankLane is { } held
             && (!standing.Any(s => s.Dit == held.Dit && Math.Abs(s.Sequence.PitchHz - held.PitchHz) <= BinSpacingHz / 2)
-                || (GridTakesBack && grid.Any(g => Math.Abs(g - held.PitchHz) <= HandoverHz))))
+                || (GridTakesBack && grid.Any(g => Math.Abs(g - held.PitchHz) <= HandoverHz))
+                || LaneIsCarrier(held.PitchHz, nowSeconds)))
         {
             _bankLane = null;
         }
@@ -388,6 +423,7 @@ public sealed class CwEnvelopeDetector
         {
             if (clear
                 .Where(s => nowSeconds - _laneClearSince[(s.Dit, (long)Math.Round(s.Sequence.PitchHz / BinSpacingHz))] >= LaneLeadSeconds)
+                .Where(s => !LaneIsCarrier(s.Sequence.PitchHz, nowSeconds))
                 .OrderByDescending(s => s.Sequence.Shape.Score)
                 .FirstOrDefault() is { Sequence: not null } best)
             {
@@ -786,6 +822,7 @@ public sealed class CwEnvelopeDetector
             _laneKept.Clear();
             _laneClearSince.Clear();
             _laneHandedTo.Clear();
+            _laneCarrier.Clear();
             _laneId = -1;
             _watched = _bins.Length / 2;
             _hop = 0;
