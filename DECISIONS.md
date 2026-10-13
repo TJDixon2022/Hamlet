@@ -4,6 +4,42 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-274
+date: 2026-10-12
+refs: work instruction 570, HM-DEC-273, src/Hamlet.RadioEngine/Cw/CwEnvelopeDetector.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheWeakEndTests.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheCwSurveyTests.cs, docs/cw-survey-2026-10-09.md, CW_SPEC.md, docs/cw-scoreboard.md
+---
+
+**The handover narrowed: the grid goes first, and a lane knows a carrier. Both rules built; the handover stays off, because a carrier keyed at random still prints at a second seed.** Ordered by the owner in work instruction 570, 2026-10-12. Switched on, the lane bank's handover (HM-DEC-273) read the weak CQs, but it cost the owner's recordings and printed a carrier at seed 5209. The order took both for rules of the handover, not of reading, and changed only those.
+
+**Task 1, the grid goes first.** Measured one change at a time, with the handover on.
+- **A lane waits:** `LaneLeadSeconds`, 3 s, the bank's own history. A lane's station is offered only once its sequence has stood that long with the grid holding nothing standing, no candidate and no window within 50 Hz. It then hands on what it stood on while it waited, and never twice across its three dits' lanes at one pitch.
+- **The grid takes it back** (`GridTakesBack`): while a lane holds, the grid's marks near it still reach the grid's own gate, though they are not printed. Once the grid stands a station within 50 Hz, the lane is let go at once and the grid's marks print from then on. The sender gate takes them as one sender, since they share a pitch.
+- **What each gave back,** against the handover as it stood (290 with this tree's kept marks; 291 as measured in HM-DEC-273):
+  - `221805`'s opening went from 26 right and 6 wrong to HEAD's `E 40T U`, 28 and 1, under either rule alone.
+  - `144020`'s `NETAGIT` went from `NETAGET` back to HEAD's under the grid's takeback only.
+  - `221530`, which the plain handover read one letter better than HEAD, reads `THENI■S AGE12 I`, 26 right and 2 wrong against HEAD's 27 and 3: the same row score.
+  - `143951`, a low stretch the total does not count, went from 8 of 16 back to HEAD's 14 under the lane's wait.
+  - **The six letters the order named** (`EN` and `ET ON 40T S`) are not printed at HEAD either, so "as at HEAD" is the bar these rows meet.
+- **The board, handover on:** the wait alone 294, the takeback alone 296 with invented 1 to 2, both **297** (317 right, 19 wrong, 1 invented) against HEAD's 297 (318, 20, 1). W1AW **2111** under every variant. Leads of 2 and 4 s read the same 297 and the same four CQs as 3 s.
+
+**Task 2, a lane knows a carrier.** A lane's tone key-up less than the scan's `CwCatchScan.CarrierKeyUpShare` (0.15) of the last `CwCatchScan.CarrierListen` (8 s) hands nothing on, and a held lane that turns out a carrier is let go. The figures are the scan's, read by reference through `CwCatchEar.KeyUpShareOf` over the audio the detector already keeps.
+- **It does not silence seed 5209.** The scoreboard's carrier is keyed at random, marks of 30 to 300 ms at gaps of 30 to 400 ms, and is key-up 0.32 of its time, so no key-up line catches it.
+- **What prints** is a lane at 700 Hz, 75 Hz from the carrier at 625 and so outside the 50 Hz handover distance. It reads the carrier's keying edges, each of its marks starting within 10 to 30 ms of one of the carrier's.
+- **A shadow rule was measured and not built:** a lane mark starting within 30 ms of a grid mark more than 50 Hz away is not handed on. It silenced 5209, but the board fell to 291 and `cq-12wpm-5db` to 9 of 21, under half.
+
+**The measure, handover on, both tasks in:**
+- The four 5 dB CQs read **13, 14, 16 and 19 of 21**, each at half or better. HM-DEC-273's switched-on measure read 15, 16, 16 and 17; the ceiling is 21.
+- **The hard limits:** noise prints nothing, nothing prints in a silence, and the first recording reads whole. **But the carrier prints at 2 of 20 seeds, 5195 and 5209.** The bar is one, so the handover does not ship.
+- **The boards:** 297 (wrong 19, invented 1) and 2111, both held.
+- **The stray figure** on the 65 old captures, summed per 10 s: 21.6 to 20.9.
+- **The survey, handover on against off:**
+  - 5 dB CQs score 0 to 46 (62 of 84 right, 16 wrong); 15 dB CQs 62 to 72.
+  - Easy receiver fixtures 67 to 75; ungraded 44 to 63, `two-station` reading 20 of 27 where it read nothing.
+  - Working stays at -4; edge, 0 dB and the synthetic fixtures, the fading one among them, as before.
+
+**Shipped:** both rules and the carrier check are in the tree, and the handover is off by default (`CwEnvelopeDetector.LaneHandover`). Every reading off is as at HEAD: the twelve-plus-three **297** (234 without KM3STU's three), W1AW **2111**, both guards passing, and the survey row for row, with a new `rerun` line. No `Weak stations` setting was added, since the handover did not ship.
+
+---
 id: HM-DEC-273
 date: 2026-10-09
 refs: work instruction 569, HM-DEC-272, tag before-lane-bank, src/Hamlet.RadioEngine/Cw/CwLaneBank.cs, src/Hamlet.RadioEngine/Cw/CwEnvelopeDetector.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheWeakEndTests.cs, docs/cw-survey-2026-10-09.md, CW_SPEC.md, docs/cw-scoreboard.md

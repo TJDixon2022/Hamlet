@@ -59,8 +59,13 @@ Confirmed by Tim 2026-09-25.
   - The audio is averaged to about 4 kHz and mixed per pitch. The sender window's fourth-order Butterworth then runs at about 2 kHz, and its marks are called by the level rule against the lane's own key-up and key-down once that contrast is 12 dB.
   - Its marks form sequences in pattern gates of its own, the same class and rules as the grid's, at about 15 per cent of the chain's CPU.
 - **Why the bank:** the grid breaks a 5 dB station into pieces of one length that never stand. The bank reads the same station's true dits and dahs, shape 0.88.
-- **The handover, staged and off by default:** a bank lane's station goes to the sender gate only where the grid has nothing standing, no candidate and no window within 50 Hz. Only the best-shaped lane's marks go, and the grid's marks near it are kept out while it holds.
-- **Why it is off:** on, it read the four 5 dB CQs at 15 to 17 of 21 where nothing read. But it cost the twelve-plus-three six letters, made a second random carrier print, and read none of the working fixtures at half, so the next unit starts from here.
+- **The handover, staged and off by default:** a bank lane's station goes to the sender gate only where the grid has nothing standing, no candidate and no window within 50 Hz. Only the best-shaped lane's marks go, and the grid's marks near it are not printed while it holds.
+- **Narrowed, 2026-10-12 (work instruction 570, HM-DEC-274):**
+  - **A lane waits:** it is offered only once its sequence has stood 3 s (`LaneLeadSeconds`) clear of the grid, and it then hands on what it stood on.
+  - **The grid takes it back:** the grid's marks near a held lane still reach the grid's own gate. Once the grid stands a station within 50 Hz, the lane is let go at once.
+  - **A lane knows a carrier:** a lane tone key-up under the scan's own carrier line (0.15 of the last 8 s) hands nothing on.
+- **Why it is still off:** on, the twelve-plus-three reads 297 as at HEAD, W1AW 2111, and the four 5 dB CQs read 13 to 19 of 21 where nothing read. But the carrier keyed at random prints at two seeds of twenty, 5195 and 5209. At 5209 that is through a lane 75 Hz from the carrier, reading its keying edges.
+- **The switch** is `CwEnvelopeDetector.LaneHandover`. No setting reaches it from the app while the handover is off.
 
 ## 3. Four layers, kept apart
 

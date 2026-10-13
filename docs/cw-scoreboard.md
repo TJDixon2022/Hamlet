@@ -371,6 +371,7 @@ guard: the random carrier prints at 1 of 20 seeds (5195), recorded at unit 552
 | 568 | 2026-10-09 | 318 of 353 | 20 | 1 | **297** | 0 | 83 of 110, 3 added | the weak end (work instruction 568, HM-DEC-272): the grid breaks a 5 dB station into pieces of one length, so it never earns a window; a window for a station in pieces, judged on its own key-down, measured and **not shipped**: 299 here but invented 1 to 2, w1aw 2109, and two of the four 5 dB CQs still junk (`I H E EE IOEE EES`, `AT E0CA I N`). The engine is as at HEAD |
 | 569 task 1 | 2026-10-09 | 318 of 353 | 20 | 1 | **297** | 0 | 83 of 110, 3 added | the lane bank (work instruction 569, HM-DEC-273): a lane every 25 Hz across the rig's passband at dits of 100, 60 and 40 ms, its marks in gates of its own, handed to nobody; every stretch as at HEAD. On `cq-18wpm-5db` its lanes at 600 and 625 Hz read 55 to 65 and 185 to 205 ms marks, two lengths from 1.8 s, shape 0.88; noise none; 15 per cent of the chain's CPU |
 | 569 task 2 | 2026-10-09 | 318 of 353 | 20 | 1 | **297** | 0 | 83 of 110, 3 added | the handover, a bank lane's station to the sender gate where the grid has nothing within 50 Hz, built and kept **off by default**: on, the four 5 dB CQs read 17, 19, 19 and 20 of 21 where they read nothing, but this board fell to 281 (313 right, 17 wrong, **15 invented**), `221530` lost `EN FB WHEN I WA`, the carrier at seed 5195 printed one more letter, and none of the five working fixtures read half. Off, every stretch as at HEAD |
+| 570 | 2026-10-12 | 318 of 353 | 20 | 1 | **297** | 0 | 83 of 110, 3 added | the handover narrowed (work instruction 570, HM-DEC-274): a lane waits 3 s clear of the grid, the grid takes a station back, and a lane key-up under the scan's carrier line hands nothing on. On, it read 297 (317 right, 19 wrong, 1 invented, 86 of 110 spaces) and the four 5 dB CQs 13, 14, 16 and 19 of 21, but the carrier keyed at random printed at 5195 and 5209, so it ships off and this row is the board as at HEAD |
 
 ## Scans (work instruction 544, HM-DEC-248)
 
@@ -440,6 +441,7 @@ high and 25 medium, 2151 letters, all totalled.
 | 568 | 2026-10-09 | **2111** | 2131 of 2151 | 20 | 0 | 438 of 440, 11 added | windows for stations in pieces read 2109 here (21 wrong) and were not shipped |
 | 569 task 1 | 2026-10-09 | **2111** | 2131 of 2151 | 20 | 0 | 438 of 440, 11 added | the lane bank runs beside the grid and hands nothing on; the same text read |
 | 569 task 2 | 2026-10-09 | **2111** | 2131 of 2151 | 20 | 0 | 438 of 440, 11 added | the handover read 2111 here too, on; it ships off, as the twelve-plus-three fell |
+| 570 | 2026-10-12 | **2111** | 2131 of 2151 | 20 | 0 | 438 of 440, 11 added | the handover narrowed read 2111 here too, on; it ships off, as the carrier keyed at random printed at a second seed |
 
 ### W1AW stretches at unit 554 task 3
 
