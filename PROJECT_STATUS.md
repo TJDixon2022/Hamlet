@@ -2,12 +2,12 @@ PROTOCOL: 2
 PROJECT: Hamlet
 STATE: COMPLETED
 TASK: closing
-WORK_INSTRUCTION: 569 - the lane bank (run by hand)
+WORK_INSTRUCTION: 570 - the handover narrowed (run by hand)
 BALL: tim
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-10-09T12:05:29-04:00
-NOTE: Unit 569 done: lane bank running, handover built and off; boards 297/2111
+UPDATED: 2026-10-12T20:13:40-04:00
+NOTE: Unit 570 done: handover narrowed, boards 297/2111 on and off; off, carrier at seed 5209 still prints
 
 ---
 
