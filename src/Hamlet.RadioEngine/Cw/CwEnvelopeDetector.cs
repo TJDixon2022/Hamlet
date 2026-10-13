@@ -284,7 +284,7 @@ public sealed class CwEnvelopeDetector
     internal bool LaneHandover { get; set; }
 
     // The bank lane that holds a station now: its dit index and pitch; null while none does.
-    private (int Dit, double PitchHz)? _bankLane;
+    private (int Dit, double PitchHz, int Id)? _bankLane;
 
     /// <summary>
     /// **A LANE WAITS** (work instruction 570, task 1, HM-DEC-274): how long a lane's sequence must have stood, with the grid
@@ -346,6 +346,65 @@ public sealed class CwEnvelopeDetector
         return carrier;
     }
 
+    /// <summary>
+    /// Every lane held back as a shadow, once per pitch and stronger station while it stays one: when, its pitch, the stronger
+    /// station's pitch and the share; for the tests' traces and the record (work instruction 571).
+    /// </summary>
+    internal List<(double AtSeconds, double PitchHz, double OfPitchHz, double Share)> ShadowsHeld { get; } = [];
+
+    /// <summary>Where set, each lane the handover holds and lets go, with the time: for the tests' traces (work instruction 571).</summary>
+    internal List<string>? HandoverTrace { get; set; }
+
+    /// <summary>Where set, the largest share judged between each lane and each other station more than <see cref="HandoverHz"/> away, by their pitches in bins: for the tests' traces (work instruction 571).</summary>
+    internal Dictionary<(long LaneBin, long OfBin), double>? ShadowShares { get; set; }
+
+    // The shadows judged on the last hop, by lane bin and the stronger station's bin, so each is recorded once while it holds.
+    private HashSet<(long Lane, long Of)> _shadowsNow = [];
+
+    // When a held lane was last let go as a shadow; a lane picked within LaneLeadSeconds of it hands on no backlog.
+    private double _shadowLetGoAt = double.NegativeInfinity;
+
+    /// <summary>
+    /// **A SHADOW IS TOLD BY ITS TIMING** (work instruction 571, HM-DEC-275): whether a bank lane's standing sequence is the shadow of
+    /// a stronger station Hamlet holds anywhere in the passband, the grid's standing stations and candidates and the bank's other
+    /// lanes, more than <see cref="HandoverHz"/> away, by <see cref="CwShadow.IsShadowOf"/>.
+    /// </summary>
+    private bool LaneIsShadow(int dit, CwPatternGate.StandingSequence sequence, IReadOnlyList<(double PitchHz, IReadOnlyList<CwMark> Recent, int Dit, int Id)> others, double nowSeconds, HashSet<(long, long)> seen)
+    {
+        if (_bank is null || _bank.Gates[dit].Sender(sequence.Id) is not { } lane)
+        {
+            return false;
+        }
+
+        foreach (var (pitch, recent, otherDit, otherId) in others)
+        {
+            if (otherDit == dit && otherId == sequence.Id)
+            {
+                continue;
+            }
+
+            if (ShadowShares is { } shares && Math.Abs(lane.PitchHz - pitch) > HandoverHz)
+            {
+                var pair = ((long)Math.Round(lane.PitchHz / BinSpacingHz), (long)Math.Round(pitch / BinSpacingHz));
+                shares[pair] = Math.Max(shares.TryGetValue(pair, out var was) ? was : 0, CwShadow.ShareOf(lane.Recent, recent));
+            }
+
+            if (CwShadow.IsShadowOf(lane.Recent, lane.PitchHz, recent, pitch))
+            {
+                var key = ((long)Math.Round(lane.PitchHz / BinSpacingHz), (long)Math.Round(pitch / BinSpacingHz));
+
+                if (seen.Add(key) && !_shadowsNow.Contains(key))
+                {
+                    ShadowsHeld.Add((nowSeconds, lane.PitchHz, pitch, CwShadow.ShareOf(lane.Recent, recent)));
+                }
+
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     /// <summary>Whether a mark at this pitch is the held lane's station, so the grid's reading of it is not printed twice.</summary>
     private bool HeldByLane(double pitchHz) => _bankLane is { } held && Math.Abs(pitchHz - held.PitchHz) <= HandoverHz;
 
@@ -373,6 +432,8 @@ public sealed class CwEnvelopeDetector
             _laneClearSince.Clear();
             _laneHandedTo.Clear();
             _laneCarrier.Clear();
+            _shadowsNow.Clear();
+            _shadowLetGoAt = double.NegativeInfinity;
             _bankLane = null;
             return;
         }
@@ -386,11 +447,53 @@ public sealed class CwEnvelopeDetector
             .Concat(_laneBin is not null ? [_lane.PitchHz] : [])
             .ToList();
 
+        // Every standing lane is judged for a shadow before anything is held or picked, and a pitch is a shadow where any of its
+        // dits' lanes is one, so letting a shadow go never hands the same station on through another dit (the owner, 2026-10-13).
+        // Judged only where a lane could be held or picked, every dit's lane at that pitch, and once a hop per pitch.
+        var shadows = new HashSet<(long, long)>();
+        var shadowAt = new Dictionary<long, bool>();
+        List<(double, IReadOnlyList<CwMark>, int, int)>? others = null;
+
+        bool ShadowPitch(double pitchHz)
+        {
+            var bin = (long)Math.Round(pitchHz / BinSpacingHz);
+
+            if (shadowAt.TryGetValue(bin, out var known))
+            {
+                return known;
+            }
+
+            others ??= _pattern.Standing(nowSeconds, HoldSeconds).Select(s => _pattern.Sender(s.Id)).Where(s => s is not null).Select(s => (s!.Value.PitchHz, s.Value.Recent, -1, -1))
+                .Concat(_pattern.Candidates(nowSeconds, CandidateMarks, CwPatternGate.SilenceSeconds).Select(c => (c.PitchHz, c.Recent, -1, -1)))
+                .Concat(standing.Select(s => (s.Dit, s.Sequence.Id, Sender: _bank.Gates[s.Dit].Sender(s.Sequence.Id))).Where(s => s.Sender is not null).Select(s => (s.Sender!.Value.PitchHz, s.Sender.Value.Recent, s.Dit, s.Id)))
+                .Select(o => (o.Item1, (IReadOnlyList<CwMark>)o.Item2, o.Item3, o.Item4))
+                .ToList();
+
+            var shadow = false;
+
+            foreach (var s in standing.Where(s => Math.Abs(s.Sequence.PitchHz - pitchHz) <= BinSpacingHz / 2))
+            {
+                shadow |= LaneIsShadow(s.Dit, s.Sequence, others, nowSeconds, shadows);
+            }
+
+            shadowAt[bin] = shadow;
+            return shadow;
+        }
+
         if (_bankLane is { } held
             && (!standing.Any(s => s.Dit == held.Dit && Math.Abs(s.Sequence.PitchHz - held.PitchHz) <= BinSpacingHz / 2)
                 || (GridTakesBack && grid.Any(g => Math.Abs(g - held.PitchHz) <= HandoverHz))
-                || LaneIsCarrier(held.PitchHz, nowSeconds)))
+                || LaneIsCarrier(held.PitchHz, nowSeconds)
+                || ShadowPitch(held.PitchHz)))
         {
+            var asShadow = ShadowPitch(held.PitchHz);
+
+            if (asShadow)
+            {
+                _shadowLetGoAt = nowSeconds;
+            }
+
+            HandoverTrace?.Add(string.Create(CultureInfo.InvariantCulture, $"{nowSeconds:0.00} s let go {held.PitchHz:0} Hz{(asShadow ? " as a shadow" : string.Empty)}"));
             _bankLane = null;
         }
 
@@ -424,12 +527,26 @@ public sealed class CwEnvelopeDetector
             if (clear
                 .Where(s => nowSeconds - _laneClearSince[(s.Dit, (long)Math.Round(s.Sequence.PitchHz / BinSpacingHz))] >= LaneLeadSeconds)
                 .Where(s => !LaneIsCarrier(s.Sequence.PitchHz, nowSeconds))
+                .Where(s => !ShadowPitch(s.Sequence.PitchHz))
                 .OrderByDescending(s => s.Sequence.Shape.Score)
                 .FirstOrDefault() is { Sequence: not null } best)
             {
-                _bankLane = (best.Dit, best.Sequence.PitchHz);
+                _bankLane = (best.Dit, best.Sequence.PitchHz, best.Sequence.Id);
+
+                // A lane picked soon after a shadow was let go hands on no backlog: it starts from its next mark (the owner, 2026-10-13).
+                var fresh = nowSeconds - _shadowLetGoAt < LaneLeadSeconds;
+
+                if (fresh)
+                {
+                    var freshBin = (long)Math.Round(best.Sequence.PitchHz / BinSpacingHz);
+                    _laneHandedTo[freshBin] = Math.Max(_laneHandedTo.TryGetValue(freshBin, out var t) ? t : double.NegativeInfinity, nowSeconds);
+                }
+
+                HandoverTrace?.Add(string.Create(CultureInfo.InvariantCulture, $"{nowSeconds:0.00} s holds {best.Sequence.PitchHz:0} Hz at a {CwLaneBank.DitSeconds[best.Dit] * 1000:0} ms dit{(fresh ? ", no backlog" : string.Empty)}"));
             }
         }
+
+        _shadowsNow = shadows;
 
         if (_bankLane is { } lane)
         {
@@ -822,6 +939,7 @@ public sealed class CwEnvelopeDetector
             _laneKept.Clear();
             _laneClearSince.Clear();
             _laneHandedTo.Clear();
+            _shadowLetGoAt = double.NegativeInfinity;
             _laneCarrier.Clear();
             _laneId = -1;
             _watched = _bins.Length / 2;

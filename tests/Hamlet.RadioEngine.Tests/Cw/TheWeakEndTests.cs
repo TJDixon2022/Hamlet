@@ -523,6 +523,7 @@ public sealed class TheWeakEndTests(ITestOutputHelper output)
 
             output.WriteLine(string.Create(Inv, $"seed {seed}: reads `{text}`; key-up share over the whole {share:0.00}; {marks.Count} marks handed on"));
             output.WriteLine("handed: " + string.Join(" ", marks.OrderBy(m => m.FromSeconds).Take(60).Select(m => string.Create(Inv, $"{m.FromSeconds:0.00}:{m.LengthMs:0}@{m.PitchHz:0}"))));
+            output.WriteLine("shadows held: " + string.Join("; ", chain.Detector.ShadowsHeld.Select(h => string.Create(Inv, $"{h.AtSeconds:0.0} s lane {h.PitchHz:0} Hz of {h.OfPitchHz:0} Hz share {h.Share:0.00}"))));
         }
     }
 
@@ -603,5 +604,73 @@ public sealed class TheWeakEndTests(ITestOutputHelper output)
 
         return string.Create(Inv,
             $"| `{name}` | {r.SignalToNoiseDb:0} dB, {r.ToneHz:0} Hz, {1200 / r.DitMilliseconds:0} WPM, {sent.Count} | {wide.Down - wide.Up:0.0} dB, {wide.UpSpread:0.0} dB | {chain.Offered} ({chain.OfferedContrastDb:0.0} dB), {chain.Stood}, {chain.SequenceMarks}, {chain.SequenceShape:0.00} | {(double.IsNaN(chain.FirstWindowSeconds) ? "no window" : $"at {chain.FirstWindowSeconds:0.0} s")}, {(double.IsNaN(chain.FirstSenderSeconds) ? "no sender" : $"sender {chain.SenderShape:0.00}{(chain.Qualified ? " qualified" : string.Empty)}{(chain.Printed ? " printed" : string.Empty)}")} | {own.Down - own.Up:0.0} / {P(own.PerMark, 0.1):0.0} dB | {found.Count} of {sent.Count}, {whole} whole | {shape:0.00} | **{stage}** | `{chain.Text}` | `{windowRead}`, {windowRight} of {outOf} | `{lane.Text}`, {TheRecordingsScoreboardTests.Right(lane.Text, reference)} of {outOf} |");
+    }
+
+    /// <remarks>
+    /// Work instruction 571, task 1: with the handover on, every lane the shadow rule holds back, its pitch, the stronger station's
+    /// and the share, and each lane the handover holds and lets go; on W1AW's piece 4, two recordings of the owner's and the
+    /// carrier at the scoreboard's first seed. Asserts nothing.
+    /// </remarks>
+    [Fact]
+    public void TheShadowsHeld()
+    {
+        var jobs = new List<(string Name, Func<(float[] Samples, int Rate, double Pitch, double Width)> Audio)>
+        {
+            ("w1aw piece-04", () => Recording("w1aw-2026-10-07/piece-04")),
+            ("cw-2026-10-03-221745", () => Recording("cw-2026-10-03-221745")),
+            ("cw-2026-10-03-221530", () => Recording("cw-2026-10-03-221530")),
+            ("two-station", () =>
+            {
+                var audio = WavAudio.Read(Path.Combine(CwFixtures.Folder, "receiver", "two-station.wav"));
+                return (audio.Samples, audio.SampleRate, 600, 500);
+            }),
+        };
+
+        foreach (var seed in new[] { 5193, 5209 })
+        {
+            jobs.Add(($"carrier seed {seed}", () =>
+            {
+                var samples = TheShapePicksTheSenderTests.Noise(25, 5192);
+
+                TheShapePicksTheSenderTests.Key(samples, TheShapePicksTheSenderTests.RandomKeying(2.5, 23, seed), 625, 24);
+                return (samples, 8000, 600, 500);
+            }));
+        }
+
+        foreach (var (name, make) in jobs)
+        {
+            var (samples, rate, pitch, width) = make();
+            using var chain = new CwChain(rate);
+            var text = new StringBuilder();
+            var trace = new List<string>();
+            var shares = new Dictionary<(long LaneBin, long OfBin), double>();
+            var chunk = rate / 100;
+
+            chain.Detector.SetPassband(pitch, width);
+            chain.Detector.LaneHandover = true;
+            chain.Detector.HandoverTrace = trace;
+            chain.Detector.ShadowShares = shares;
+            chain.Decoder.Runs.CharacterRead += c => text.Append(c.Text);
+
+            for (var at = 0; at + chunk <= samples.Length; at += chunk)
+            {
+                chain.Process(new AudioChunk(at, rate, samples.AsSpan(at, chunk)));
+            }
+
+            chain.Decoder.Flush();
+
+            output.WriteLine($"{name}: reads `{text}`");
+            output.WriteLine("  handover: " + string.Join("; ", trace));
+            output.WriteLine("  shadows held: " + string.Join("; ", chain.Detector.ShadowsHeld.Select(h => string.Create(Inv, $"{h.AtSeconds:0.0} s lane {h.PitchHz:0} Hz of {h.OfPitchHz:0} Hz share {h.Share:0.00}"))));
+            output.WriteLine("  largest shares: " + string.Join("; ", shares.OrderByDescending(s => s.Value).Take(12).Select(s => string.Create(Inv, $"lane {s.Key.LaneBin * CwEnvelopeDetector.BinSpacingHz:0} Hz of {s.Key.OfBin * CwEnvelopeDetector.BinSpacingHz:0} Hz {s.Value:0.00}"))));
+        }
+
+        static (float[], int, double, double) Recording(string recording)
+        {
+            var audio = WavAudio.Read(TheOwnersRecordingReadsTests.Wav(recording));
+            var (pitch, width) = TheRecordingsScoreboardTests.RadioState(recording);
+
+            return (audio.Samples, audio.SampleRate, pitch, width);
+        }
     }
 }
