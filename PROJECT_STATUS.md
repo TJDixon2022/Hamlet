@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: COMPLETED
-TASK: closing
-WORK_INSTRUCTION: 570 - the handover narrowed (run by hand)
+TASK: done - handover not shipped
+WORK_INSTRUCTION: 571 - a shadow is told by its timing (run by hand)
 BALL: tim
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-10-12T20:13:40-04:00
-NOTE: Unit 570 done: handover narrowed, boards 297/2111 on and off; off, carrier at seed 5209 still prints
+UPDATED: 2026-10-13T20:13:18-04:00
+NOTE: Unit 571 done: shadow rule in, handover off - strays 21.9 against 21.6; ask on the strays
 
 ---
 
