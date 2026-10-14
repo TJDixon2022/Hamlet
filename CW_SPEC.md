@@ -64,8 +64,15 @@ Confirmed by Tim 2026-09-25.
   - **A lane waits:** it is offered only once its sequence has stood 3 s (`LaneLeadSeconds`) clear of the grid, and it then hands on what it stood on.
   - **The grid takes it back:** the grid's marks near a held lane still reach the grid's own gate. Once the grid stands a station within 50 Hz, the lane is let go at once.
   - **A lane knows a carrier:** a lane tone key-up under the scan's own carrier line (0.15 of the last 8 s) hands nothing on.
-- **Why it is still off:** on, the twelve-plus-three reads 297 as at HEAD, W1AW 2111, and the four 5 dB CQs read 13 to 19 of 21 where nothing read. But the carrier keyed at random prints at two seeds of twenty, 5195 and 5209. At 5209 that is through a lane 75 Hz from the carrier, reading its keying edges.
-- **The switch** is `CwEnvelopeDetector.LaneHandover`. No setting reaches it from the app while the handover is off.
+- **Why it was still off, 2026-10-12:** on, the twelve-plus-three read 297 as at HEAD, W1AW 2111, and the four 5 dB CQs 13 to 19 of 21 where nothing read. But the carrier keyed at random printed at two seeds of twenty, 5195 and 5209. At 5209 that was through a lane 75 Hz from the carrier, reading its keying edges.
+- **A shadow is told by its timing, 2026-10-13 (work instruction 571, HM-DEC-275):**
+  - **The rule** is `CwShadow.IsShadowOf`. A lane's sequence is a shadow of a stronger station, by contrast, more than 50 Hz away, where `ShadowShare` (two thirds) of its last ten marks start within `ShadowStartMs` (30 ms) of that station's own marks.
+  - **What it is judged against:** the grid's standing stations and candidates and the bank's other standing lanes.
+  - **It is judged before the pick:** a pitch is a shadow where any of its dits' lanes is one, a shadow is never a candidate, and a held lane that becomes one is let go.
+  - **No backlog after a shadow:** a lane picked within `LaneLeadSeconds` of a shadow being let go hands on no backlog and starts from its next mark.
+  - **On, it reads:** the carrier at one seed of twenty (5195), the twelve-plus-three 297, W1AW 2111, and the four 5 dB CQs 13, 14, 16 and 19 of 21.
+- **Why it is still off:** the stray-letter figure on the 65 old captures rose from 21.6 to 21.9, mostly `cw-2026-08-31-003229`, which reads nothing off and `S EA I E THS NE A` on.
+- **The switch** is `CwEnvelopeDetector.LaneHandover`. No setting reaches it from the app while the handover is off, and the `Weak stations` row waits on its shipping.
 
 ## 3. Four layers, kept apart
 

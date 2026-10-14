@@ -372,6 +372,7 @@ guard: the random carrier prints at 1 of 20 seeds (5195), recorded at unit 552
 | 569 task 1 | 2026-10-09 | 318 of 353 | 20 | 1 | **297** | 0 | 83 of 110, 3 added | the lane bank (work instruction 569, HM-DEC-273): a lane every 25 Hz across the rig's passband at dits of 100, 60 and 40 ms, its marks in gates of its own, handed to nobody; every stretch as at HEAD. On `cq-18wpm-5db` its lanes at 600 and 625 Hz read 55 to 65 and 185 to 205 ms marks, two lengths from 1.8 s, shape 0.88; noise none; 15 per cent of the chain's CPU |
 | 569 task 2 | 2026-10-09 | 318 of 353 | 20 | 1 | **297** | 0 | 83 of 110, 3 added | the handover, a bank lane's station to the sender gate where the grid has nothing within 50 Hz, built and kept **off by default**: on, the four 5 dB CQs read 17, 19, 19 and 20 of 21 where they read nothing, but this board fell to 281 (313 right, 17 wrong, **15 invented**), `221530` lost `EN FB WHEN I WA`, the carrier at seed 5195 printed one more letter, and none of the five working fixtures read half. Off, every stretch as at HEAD |
 | 570 | 2026-10-12 | 318 of 353 | 20 | 1 | **297** | 0 | 83 of 110, 3 added | the handover narrowed (work instruction 570, HM-DEC-274): a lane waits 3 s clear of the grid, the grid takes a station back, and a lane key-up under the scan's carrier line hands nothing on. On, it read 297 (317 right, 19 wrong, 1 invented, 86 of 110 spaces) and the four 5 dB CQs 13, 14, 16 and 19 of 21, but the carrier keyed at random printed at 5195 and 5209, so it ships off and this row is the board as at HEAD |
+| 571 | 2026-10-13 | 318 of 353 | 20 | 1 | **297** | 0 | 83 of 110, 3 added | a shadow is told by its timing (work instruction 571, HM-DEC-275): a pitch two thirds of whose last ten marks start within 30 ms of a stronger station's, more than 50 Hz away, is a shadow and never picked, and a lane picked soon after a shadow is let go hands on no backlog. On, it read 297 (318 right, 20 wrong, 1 invented, 86 of 110 spaces) with the carrier at 5195 only and the four 5 dB CQs 13, 14, 16 and 19 of 21; but the stray figure on the 65 old captures rose from 21.6 to 21.9, so it ships off and this row is the board as at HEAD |
 
 ## Scans (work instruction 544, HM-DEC-248)
 
@@ -442,6 +443,7 @@ high and 25 medium, 2151 letters, all totalled.
 | 569 task 1 | 2026-10-09 | **2111** | 2131 of 2151 | 20 | 0 | 438 of 440, 11 added | the lane bank runs beside the grid and hands nothing on; the same text read |
 | 569 task 2 | 2026-10-09 | **2111** | 2131 of 2151 | 20 | 0 | 438 of 440, 11 added | the handover read 2111 here too, on; it ships off, as the twelve-plus-three fell |
 | 570 | 2026-10-12 | **2111** | 2131 of 2151 | 20 | 0 | 438 of 440, 11 added | the handover narrowed read 2111 here too, on; it ships off, as the carrier keyed at random printed at a second seed |
+| 571 | 2026-10-13 | **2111** | 2131 of 2151 | 20 | 0 | 438 of 440, 11 added | the shadow rule read 2111 here too, on; it ships off, as the stray figure on the old captures rose 0.3 |
 
 ### W1AW stretches at unit 554 task 3
 

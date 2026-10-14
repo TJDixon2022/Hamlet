@@ -4,6 +4,77 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-275
+date: 2026-10-13
+refs: work instruction 571, HM-DEC-274, HM-DEC-273, src/Hamlet.RadioEngine/Cw/CwShadow.cs, src/Hamlet.RadioEngine/Cw/CwEnvelopeDetector.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheWeakEndTests.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheCwSurveyTests.cs, docs/cw-survey-2026-10-09.md, CW_SPEC.md, docs/cw-scoreboard.md
+---
+
+**A shadow is told by its timing. The rule is built and the boards hold, but the handover stays off, because the stray figure on the old captures rose 0.3.** Ordered by the owner in work instruction 571. The owner's ruling, 2026-10-13, option A: the carrier at seed 5209 prints through a lane 75 Hz from a station the grid already holds, every one of its marks starting within 10 to 30 ms of one of that station's own. *"It is a shadow: a property of timing, not of distance."* It is judged over the lane's whole sequence, the way the pattern gate judges everything else. Mid-unit the owner added: *"Yes to the per-pitch fix. Two more rules with it: 1. Judge every lane for shadow before the pick, not after: a pitch that is a shadow is never a candidate for the pick, so dropping one never triggers a fresh pick at the same station. Dropping and re-picking is what printed 5193. 2. A lane picked within LaneLeadSeconds of another lane being dropped as a shadow hands on no backlog - it starts from its next mark. The fresh backlog is what cost 221745 NITE."*
+
+**The rule, `CwShadow.IsShadowOf`.**
+- A lane's sequence is a shadow of another station when that station is more than 50 Hz away (`HandoverHz`) and stronger by its own contrast, and `ShadowShare` of the lane's last ten marks start within `ShadowStartMs` of that station's marks.
+- **`ShadowStartMs` is 30 ms**, the carrier trace's figure. **`ShadowShare` is two thirds.**
+- It is judged against every stronger station Hamlet holds: the grid's standing stations and candidates, and the bank's other standing lanes.
+- **Per pitch, before the pick:** a pitch is a shadow where any of its dits' lanes within half a bin is one. A shadow pitch is never a candidate, and a held lane at a shadow pitch is let go.
+- **No backlog after a shadow:** a lane picked within `LaneLeadSeconds`, 3 s, of a shadow being let go hands on no backlog and starts from its next mark.
+
+**Task 1, the handover on, the rule's constants and the figures beside them.**
+
+| ShadowStartMs, ShadowShare | twelve-plus-three | W1AW | the carrier prints at |
+|---|---|---|---|
+| **30 ms, two thirds** | **297** (318, 20, 1; 86 of 110 spaces) | **2111** | **5195** only |
+| 20 ms, two thirds | 297 (318, 20, 1) | 2111 | 5195 only |
+| 40 ms, two thirds | 288 (311, 19, 4) | 2111 | 5195 only |
+| 30 ms, a half | 297 (317, 19, 1) | 2111 | 5195 only |
+| 30 ms, three quarters | 297 (318, 20, 1) | 2111 | 5195 and 5209 |
+
+- **The four 5 dB CQs** read 13, 14, 16 and 19 of 21 at 30 ms and two thirds, each at half or better. None has a stronger station to be a shadow of.
+- **`two-station`** reads `FQ CG DE N■ TLL K ■CALL DE W1XYZ K`, 20 of 27, on (nothing off). No share was recorded: its two stations are never judged against each other, since no lane stands more than 50 Hz from a stronger one there.
+- **The owner's recordings:** 221745 reads `TONITE` again. 221530 reads `6 C HA MPIMTN IHES MHENI■S AGE12I LEARED CW USINGA V`.
+- **W1AW piece-04, the lanes held back as shadows:**
+
+  | Lane | Times held | Largest share |
+  |---|---|---|
+  | 350 Hz | 517 (5.6 to 277.8 s) | 1.00 |
+  | 375 Hz | 439 | 1.00 |
+  | 400 Hz | 593 | 1.00 |
+  | 425 Hz | 660 | 1.00 |
+  | 450 Hz | 803 | 1.00 |
+  | 475 Hz | 931 | 1.00 |
+  | 500 Hz | 889 | 1.00 |
+  | 525 Hz | 575 | 0.90 |
+  | 650 Hz | 6 (71.7 to 224.7 s) | 0.90 |
+  | 675 Hz | 564 | 0.90 |
+  | 700 Hz | 1003 | 1.00 |
+  | 725 Hz | 849 | 1.00 |
+  | 750 Hz | 743 | 1.00 |
+  | 775 Hz | 526 | 1.00 |
+  | 800 Hz | 498 | 1.00 |
+  | 825 Hz | 422 | 1.00 |
+  | 850 Hz | 444 | 1.00 |
+
+  No lane from 550 to 625 Hz is judged. 550 Hz is exactly 50 Hz from W1AW's 600, and the rule takes only stations more than 50 Hz away, so the live 550 Hz sender is outside its reach.
+
+**Task 2, the ship bar, the handover on at 30 ms and two thirds.**
+- **Met:**
+  - The four 5 dB CQs read at half or better.
+  - Noise prints nothing: `noisy-18wpm` and the four loud-noise runs.
+  - The carrier prints at 1 of 20 seeds.
+  - The first recording reads whole, and nothing prints in a silence.
+  - The twelve-plus-three reads **297** (wrong 20, invented 1, as at HEAD). W1AW reads **2111** (wrong 20, invented 0).
+- **Not met: the stray figure on the 65 old captures, 21.9 against 21.6 off.** Four captures moved:
+  - `cw-2026-08-31-003229`: 0.0 to 1.0. It reads nothing off and `S EA I E THS NE A` on.
+  - `cw-2026-09-24-004550`: 0.0 to 0.3.
+  - `cw-2026-08-31-003408`: 1.0 to 0.7.
+  - `cw-2026-09-23-173723`: 0.7 to 0.0.
+- **The survey, on against off:**
+  - Synthetic fixtures 44 to 44; easy receiver fixtures 67 to 75; working -4 to -4; edge 0 to 0; ungraded 44 to 63.
+  - Synthetic CQs at 15 dB 62 to 72; at 5 dB 0 to 46; at 0 dB 0 to 0.
+  - The boards 297 to 297, and 2111 to 2111.
+
+**Shipped:** the shadow rule and both of the owner's rules are in the tree. The handover stays off by default (`CwEnvelopeDetector.LaneHandover`), and every reading off is as at HEAD: the twelve-plus-three **297**, W1AW **2111**, and the survey rerun with a new `rerun` line. The `Weak stations` setting, its sheet and `cw_listen` fields, the story line and the CQ guard were written for the ship and not committed, since the handover did not ship.
+
+---
 id: HM-DEC-274
 date: 2026-10-12
 refs: work instruction 570, HM-DEC-273, src/Hamlet.RadioEngine/Cw/CwEnvelopeDetector.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheWeakEndTests.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheCwSurveyTests.cs, docs/cw-survey-2026-10-09.md, CW_SPEC.md, docs/cw-scoreboard.md
