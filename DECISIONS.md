@@ -4,6 +4,36 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-276
+date: 2026-10-14
+refs: work instruction 572, HM-DEC-275, HM-DEC-274, HM-DEC-273, src/Hamlet.RadioEngine/Cw/CwEnvelopeDetector.cs, src/Hamlet.App/ViewModels/MainWindowViewModel.WeakStations.cs, src/Hamlet.App/Views/MainWindow.axaml, src/Hamlet.App/Settings/AppSettings.cs, src/Hamlet.App/Telemetry/AppEvents.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheWeakEndTests.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheCwSurveyTests.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheRecordingsScoreboardTests.cs, docs/cw-scoreboard.md, docs/cw-survey-2026-10-09.md, CW_SPEC.md
+---
+
+**The handover ships on.** The owner's ruling, 2026-10-13: *ship the lane handover on.* It was measured in the tree with every condition met, and failed only a strays bar that this ruling restates.
+
+**What shipped.**
+- `CwEnvelopeDetector.LaneHandover` defaults on.
+- **The setting:** `Weak stations` (on, the default, or off), the last row of the scan's settings popover under `AGC in CW`, kept as `WeakStations` in `settings.json`, taking effect at once. Off puts Hamlet back exactly as it read before the ship. Nothing else on screen moves.
+- **The record:** both capture sheets and each `cw_listen` row carry `weakStations` beside the AGC line, with the bank line already there.
+- **The story line** says once, when a lane's station prints: `Weak station at <pitch> Hz`.
+- **The guard:** `TheWeakEndTests.TheWeakCqsReadAtHalfOrBetter`, the four 5 dB CQs at half their letters or better, on the engine line.
+
+**The strays bar, restated.** No capture above the owner's line of six lone one- or two-element words per 10 s. The summed figure over the 65 old captures is reported beside the board, not a condition. At ship the highest capture is `cw-2026-08-25-012748` at 3.3, and the summed figure is **21.9**, each capture as its row shows it.
+
+**The figures at ship, the handover on.**
+- The four 5 dB CQs: 13, 14, 16 and 19 of 21.
+- The carrier keyed at random prints at one seed of twenty, 5195.
+- The twelve-plus-three **297** (318 of 353, 20 wrong, 1 invented, 86 of 110 spaces with 3 added). W1AW **2111** (2131 of 2151, 20 wrong, 0 invented). Both guards hold at these, as the author's.
+- The survey's groups: receiver fixtures easy 75, ungraded 63, synthetic CQs at 15 dB 72, at 5 dB 46; the boards 297 and 2111.
+
+**Three standing rules, carried by every later unit.**
+1. **One setting per unit.** No side variants, no figures reported "beside" the chosen one.
+2. **Do not stop to ask.** When a measurement cannot be run, report it as *not measured* and continue. When the instruction leaves a choice open, take the one that keeps both boards and name it in section 4. Stop only if the ship condition itself is in doubt.
+3. **If a run is stopped for memory, run it once more alone with everything else closed; if it stops again, report it as not measured and do not retry.**
+
+**What it does not reach.** The live 550 Hz sender beside W1AW is exactly 50 Hz from it, outside the shadow rule, and this ship does not change that.
+
+---
 id: HM-DEC-275
 date: 2026-10-13
 refs: work instruction 571, HM-DEC-274, HM-DEC-273, src/Hamlet.RadioEngine/Cw/CwShadow.cs, src/Hamlet.RadioEngine/Cw/CwEnvelopeDetector.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheWeakEndTests.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheCwSurveyTests.cs, docs/cw-survey-2026-10-09.md, CW_SPEC.md, docs/cw-scoreboard.md

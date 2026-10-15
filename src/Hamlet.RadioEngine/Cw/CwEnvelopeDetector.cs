@@ -274,17 +274,27 @@ public sealed class CwEnvelopeDetector
     /// How near a pitch counts as the same station for the handover: two bins, 50 Hz, the figure the windows already take for a
     /// station and its shadow (work instruction 569, task 2).
     /// </summary>
-    internal const double HandoverHz = 2 * BinSpacingHz;
+    public const double HandoverHz = 2 * BinSpacingHz;
 
     /// <summary>
-    /// Whether a bank lane's station is handed to the sender gate: **off by default** (work instruction 569, task 2). On, the four
-    /// 5 dB CQs read where they read nothing, but the twelve-plus-three fell from 297 to 281 with invented letters 1 to 15, and none
-    /// of the five working fixtures read half; so the bank runs and hands nothing on until the next unit.
+    /// Whether a bank lane's station is handed to the sender gate: **on by default** (work instruction 571, HM-DEC-275), the
+    /// operator's `Weak stations` setting. Off since work instruction 569, when it cost the twelve-plus-three sixteen points; with
+    /// the lane's wait, the grid taking it back, the carrier check and the shadow rule it reads the four 5 dB CQs at half or
+    /// better, both boards hold, and the carrier prints at one of twenty seeds.
     /// </summary>
-    internal bool LaneHandover { get; set; }
+    public bool LaneHandover { get; set; } = true;
 
     // The bank lane that holds a station now: its dit index and pitch; null while none does.
     private (int Dit, double PitchHz, int Id)? _bankLane;
+
+    // The held lane's pitch for another thread to read whole; NaN while none holds.
+    private double _weakStationPitchHz = double.NaN;
+
+    /// <summary>
+    /// The pitch of the weak station a bank lane is handing to the sender gate now, or NaN while none is (work instruction 571):
+    /// for the story line's `Weak station at ... Hz`, read from the window's thread.
+    /// </summary>
+    public double WeakStationPitchHz => Volatile.Read(ref _weakStationPitchHz);
 
     /// <summary>
     /// **A LANE WAITS** (work instruction 570, task 1, HM-DEC-274): how long a lane's sequence must have stood, with the grid
@@ -435,6 +445,7 @@ public sealed class CwEnvelopeDetector
             _shadowsNow.Clear();
             _shadowLetGoAt = double.NegativeInfinity;
             _bankLane = null;
+            Volatile.Write(ref _weakStationPitchHz, double.NaN);
             return;
         }
 
@@ -547,6 +558,7 @@ public sealed class CwEnvelopeDetector
         }
 
         _shadowsNow = shadows;
+        Volatile.Write(ref _weakStationPitchHz, _bankLane?.PitchHz ?? double.NaN);
 
         if (_bankLane is { } lane)
         {
@@ -936,6 +948,7 @@ public sealed class CwEnvelopeDetector
             _windows.Clear();
             _bank = fromRig && CwRules.On(CwRules.LaneBank) ? new CwLaneBank(SampleRate, HopSamples, low, high) : null;
             _bankLane = null;
+            Volatile.Write(ref _weakStationPitchHz, double.NaN);
             _laneKept.Clear();
             _laneClearSince.Clear();
             _laneHandedTo.Clear();

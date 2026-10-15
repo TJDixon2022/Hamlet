@@ -574,6 +574,35 @@ public sealed class TheWeakEndTests(ITestOutputHelper output)
         }
     }
 
+    /// <remarks>
+    /// Work instruction 571, the guard (HM-DEC-275): the handover ships on, and through the chain as shipped each of the four
+    /// 5 dB CQs reads half its letters or better. At the ship they read 13, 14, 16 and 19 of 21.
+    /// </remarks>
+    [Fact]
+    public void TheWeakCqsReadAtHalfOrBetter()
+    {
+        using (var shipped = new CwChain(8000))
+        {
+            Assert.True(shipped.Detector.LaneHandover, "the handover is not on by default");
+        }
+
+        var cqs = Files().Where(f => f.Name.Contains("-5db", StringComparison.Ordinal)).ToList();
+
+        Assert.Equal(4, cqs.Count);
+
+        foreach (var (name, wav, r) in cqs)
+        {
+            var audio = WavAudio.Read(wav);
+            var reference = System.Text.RegularExpressions.Regex.Replace(r.Text, @"\^([A-Z]{2})", "<$1>");
+            var outOf = TheRecordingsScoreboardTests.Letters(reference).Length;
+            var read = Chain(audio.Samples, audio.SampleRate, r.ToneHz, handover: true);
+            var right = TheRecordingsScoreboardTests.Right(read.Text, reference);
+
+            output.WriteLine($"{name}: `{read.Text}`, {right} of {outOf}");
+            Assert.True(right * 2 >= outOf, $"{name} read `{read.Text}`, {right} of {outOf}");
+        }
+    }
+
     /// <summary>One file's row.</summary>
     internal static string Row(string name, string wav, CwFixtureRecipe r)
     {

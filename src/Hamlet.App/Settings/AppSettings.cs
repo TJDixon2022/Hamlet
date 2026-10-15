@@ -157,6 +157,12 @@ public sealed class AppSettings
     /// </summary>
     public string AgcInCw { get; set; } = "slow";
 
+    /// <summary>
+    /// Whether Hamlet reads weak stations, the lane bank's handover to the printer (work instruction 571, HM-DEC-275): `on`
+    /// unless the operator chose `off`. Stored as a word, as the AGC choice is.
+    /// </summary>
+    public string WeakStations { get; set; } = "on";
+
     /// <summary>Per-panel expand/collapse state, keyed by panel id. An absent
     /// key means expanded — a new panel arrives open (HM-DEC-021).</summary>
     public Dictionary<string, bool> PanelExpanded { get; set; } = new();

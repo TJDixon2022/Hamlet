@@ -71,8 +71,9 @@ Confirmed by Tim 2026-09-25.
   - **It is judged before the pick:** a pitch is a shadow where any of its dits' lanes is one, a shadow is never a candidate, and a held lane that becomes one is let go.
   - **No backlog after a shadow:** a lane picked within `LaneLeadSeconds` of a shadow being let go hands on no backlog and starts from its next mark.
   - **On, it reads:** the carrier at one seed of twenty (5195), the twelve-plus-three 297, W1AW 2111, and the four 5 dB CQs 13, 14, 16 and 19 of 21.
-- **Why it is still off:** the stray-letter figure on the 65 old captures rose from 21.6 to 21.9, mostly `cw-2026-08-31-003229`, which reads nothing off and `S EA I E THS NE A` on.
-- **The switch** is `CwEnvelopeDetector.LaneHandover`. No setting reaches it from the app while the handover is off, and the `Weak stations` row waits on its shipping.
+- **Why it was still off, 2026-10-13:** the stray-letter figure on the 65 old captures rose from 21.6 to 21.9, mostly `cw-2026-08-31-003229`, which reads nothing off and `S EA I E THS NE A` on.
+- **The handover is on, 2026-10-14 (work instruction 572, HM-DEC-276).** The owner: *ship the lane handover on.* The strays bar is restated: no capture above six lone one- or two-element words per 10 s, the summed figure over the 65 old captures reported beside the board and not a condition.
+- **The switch** is `CwEnvelopeDetector.LaneHandover`, on by default. The operator reaches it as `Weak stations` (on, the default, or off), the last row of the scan's settings popover under `AGC in CW`, kept as `WeakStations` in `settings.json` and taking effect at once. Off puts Hamlet back exactly as it read before the ship. The capture sheets and each `cw_listen` row carry it, and the story line says `Weak station at <pitch> Hz` once when a lane's station prints.
 
 ## 3. Four layers, kept apart
 

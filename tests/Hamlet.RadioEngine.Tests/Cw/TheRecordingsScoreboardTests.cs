@@ -23,6 +23,9 @@ namespace Hamlet.RadioEngine.Tests.Cw;
 /// it by ear. The scoreboard is a yardstick for change, not an exam: a unit is better if the total rises.</para>
 /// <para>**TWO HARD LIMITS, WHATEVER THE SCORE**: loud noise, 30 s and three minutes, prints nothing; and the first
 /// recording reads `FER C HAT&lt;BT&gt; BEST 7V 73 &lt;SK&gt; KC4ZGP DEWA`.</para>
+/// <para>**THE STRAYS BAR, RESTATED** (work instruction 572, HM-DEC-276): no capture above the owner's line of six lone one-
+/// or two-element words per 10 s; the summed figure over the 65 old captures is reported beside the board, not a condition.
+/// It is read by the survey, `TheCwSurveyTests`, over the old captures, and was 21.9 summed at the handover's ship.</para>
 /// </remarks>
 public sealed class TheRecordingsScoreboardTests
 {

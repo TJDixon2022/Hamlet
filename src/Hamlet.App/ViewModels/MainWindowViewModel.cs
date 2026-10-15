@@ -9361,6 +9361,7 @@ public partial class MainWindowViewModel : ObservableObject
         // The scan's three settings, as the operator last left them (work instruction 541).
         LoadCatchScanSettings();
         LoadAgcInCw();
+        LoadWeakStations();
         _telemetry = telemetry;
 
         // The terminal names BT and AR by the operator's setting, read as each
@@ -11509,7 +11510,7 @@ public partial class MainWindowViewModel : ObservableObject
 
         // **THE OSCILLOSCOPE RIDES ALONG TOO** (work instruction 476, HM-DEC-185). The same
         // samples the decoder gets, walked at the same hop; it drives nothing.
-        _envelope = new CwEnvelopeDetector(_audioInput.SampleRate);
+        _envelope = new CwEnvelopeDetector(_audioInput.SampleRate) { LaneHandover = WeakStationsOn };
         _passbandHold = new CwPassbandHold();
         // Fed by the live feed below, behind the queue (work instruction 548).
 
@@ -12242,6 +12243,7 @@ public partial class MainWindowViewModel : ObservableObject
             // **THE AGC AND WHOSE IT IS** (work instruction 564, HM-DEC-268): as the radio reports it, and whether Hamlet set it
             // for CW, the hand moved it, or it was the radio's own; so a sheet on SLOW and one on FAST can be told apart.
             AgcSheetLine(),
+            WeakStationsSheetLine(),
 
             // **THE LANE BANK** (work instruction 569, HM-DEC-273): lanes held, how many stand, and the best standing lane.
             $"bank       {_envelope?.BankLine() ?? "not running  (nothing is listening)"}",
@@ -12393,6 +12395,7 @@ public partial class MainWindowViewModel : ObservableObject
         var side = decoder.ShapeSide;
 
         CwHearing.Observe(new CwHearingState(side.PrintedPitchHz, side.Senders.Count, _liveFeed?.Continuity));
+        SayWeakStation(side.PrintedPitchHz);
     }
 
     /// <summary>How often the light reads the shape side: once a second.</summary>

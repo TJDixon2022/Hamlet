@@ -1841,12 +1841,13 @@ public static class AppEvents
     /// <param name="agc">The AGC in the radio's words, or null where unread (work instruction 564).</param>
     /// <param name="agcSetBy">Whose the AGC is, in words (work instruction 564).</param>
     /// <param name="bank">The lane bank in one line, or null where nothing is listening (work instruction 569).</param>
+    /// <param name="weakStations">Whether the lane bank hands a weak station to the printer, the operator's setting (work instruction 571).</param>
     /// <remarks>
     /// The audio, every sender held with its pitch, shape, marks, whether it has qualified and which is printed, the letters
     /// printed, the light, and an automatic capture under way by its folder's name alone: no path, no text, no callsign
     /// (HM-DEC-018).
     /// </remarks>
-    public static void CwListen(ITelemetry? telemetry, CwListenSample sample, string? appVersion = null, int? passbandRebuilds = null, string? agc = null, string? agcSetBy = null, string? bank = null)
+    public static void CwListen(ITelemetry? telemetry, CwListenSample sample, string? appVersion = null, int? passbandRebuilds = null, string? agc = null, string? agcSetBy = null, string? bank = null, bool? weakStations = null)
         => telemetry?.Write(
             TelemetryCategory.Cw,
             "cw_listen",
@@ -1878,6 +1879,9 @@ public static class AppEvents
                 // instruction 564, HM-DEC-268).
                 ["agc"] = agc,
                 ["agcSetBy"] = agcSetBy,
+
+                // Whether the lane bank hands a weak station to the printer, beside the AGC (work instruction 571, HM-DEC-275).
+                ["weakStations"] = weakStations,
 
                 // The lane bank in one line: lanes, how many stand, the best standing lane (work instruction 569).
                 ["bank"] = bank,

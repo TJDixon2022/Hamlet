@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: COMPLETED
-TASK: done - handover not shipped
-WORK_INSTRUCTION: 571 - a shadow is told by its timing (run by hand)
+TASK: done - the handover ships on
+WORK_INSTRUCTION: 572 - the handover ships on (run by hand)
 BALL: tim
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-10-13T20:13:18-04:00
-NOTE: Unit 571 done: shadow rule in, handover off - strays 21.9 against 21.6; ask on the strays
+UPDATED: 2026-10-14T20:03:48-04:00
+NOTE: Unit 572 done: handover on, Weak stations setting; 297, 2111, weak CQs 13-19 of 21, carrier 1 seed
 
 ---
 

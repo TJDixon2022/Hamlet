@@ -29,6 +29,9 @@ public sealed class TheCwSurveyTests(ITestOutputHelper output)
     /// <summary>The single-letter words of one or two elements, the stray-letter figure.</summary>
     private static readonly HashSet<string> Strays = new(StringComparer.Ordinal) { "E", "T", "I", "A", "N", "M" };
 
+    /// <summary>The owner's line: six lone one- or two-element words per 10 s, no capture above it (HM-DEC-276).</summary>
+    internal const double StraysLine = 6;
+
     /// <summary>One file's row.</summary>
     internal sealed record Row(
         string Group, string File, double Seconds, double Wpm, double PitchHz, int Senders, string TruthSource, string? Truth,
@@ -332,7 +335,7 @@ public sealed class TheCwSurveyTests(ITestOutputHelper output)
         sb.AppendLine();
         sb.AppendLine("Run again with: `timeout 1800 dotnet test tests/Hamlet.RadioEngine.Tests/Hamlet.RadioEngine.Tests.csproj --filter \"FullyQualifiedName~TheCwSurveyTests.EveryRecordingInTheTree\"` (it writes this file).");
         sb.AppendLine();
-        sb.AppendLine("Rerun: work instruction 571, 2026-10-13, with the lane bank running beside the grid and its handover still off by default, now with the shadow rule: a pitch two thirds of whose last ten marks start within 30 ms of a stronger station's, more than 50 Hz away, is a shadow and is never picked (HM-DEC-275).");
+        sb.AppendLine("Rerun: work instruction 572, 2026-10-14, with the lane handover on as shipped (HM-DEC-276): the lane bank running beside the grid hands a weak station the grid cannot stand to the printer, after its wait, with the grid taking it back, the carrier check and the shadow rule.");
         sb.AppendLine();
         sb.AppendLine("**The yardstick.** Score is letters right less wrong less invented, as on the boards. Invented is a letter over no keying on the board's keying map of the same audio; silence is a letter printed inside a silence of two seconds or more on that map. Where a file carries no truth, its read stands beside the earlier read in its sheet or its `.json`, scored by nothing, with the stray-letter figure: lone `E T I A N M` printed as words, per ten seconds.");
         sb.AppendLine();
@@ -368,6 +371,18 @@ public sealed class TheCwSurveyTests(ITestOutputHelper output)
 
         sb.AppendLine();
         sb.AppendLine("For the twelve-plus-three, right, wrong and spaces are over its stretches of medium confidence or better, and invented over every recording, as the board counts them; the low stretches are read and shown and not counted.");
+
+        // **THE STRAYS BAR, RESTATED** (work instruction 572, HM-DEC-276): no capture above the owner's line of six lone one- or
+        // two-element words per 10 s; the summed figure over the old captures is reported beside the board, not a condition.
+        var old = rows.Where(r => r.Group == "unadjudicated" && r.Stray is { } s && double.IsFinite(s)).ToList();
+
+        if (old.Count > 0)
+        {
+            var highest = old.OrderByDescending(r => r.Stray!.Value).First();
+
+            sb.AppendLine();
+            sb.AppendLine(string.Create(Inv, $"**The strays bar** (HM-DEC-276): no capture above six lone one- or two-element words per 10 s. Highest now `{highest.File}` at **{highest.Stray!.Value:0.0}**, {(highest.Stray!.Value <= StraysLine ? "under the line" : "over the line")}; summed over the {old.Count} old captures, each as its row shows it, **{old.Sum(r => Math.Round(r.Stray!.Value, 1, MidpointRounding.AwayFromZero)):0.0}**, reported and not a condition."));
+        }
 
         foreach (var g in order)
         {

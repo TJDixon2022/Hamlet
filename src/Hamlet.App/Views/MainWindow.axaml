@@ -1613,13 +1613,13 @@
                                 Content="⋯"
                                 FontSize="11" Padding="6,2"
                                 IsEnabled="{Binding !IsCatchScanning}"
-                                ToolTip.Tip="The scan's length, how long it watches each span, how long it stays where a shape forms and where none does, how much Record keeps, and what Hamlet sets the AGC to in CW."
+                                ToolTip.Tip="The scan's length, how long it watches each span, how long it stays where a shape forms and where none does, how much Record keeps, what Hamlet sets the AGC to in CW, and whether it reads weak stations."
                                 ToolTip.ShowDelay="300">
                             <Button.Flyout>
                                 <Flyout Placement="BottomEdgeAlignedRight">
                                     <StackPanel Spacing="6" Width="250">
                                         <TextBlock Text="{Binding CatchScanSettingsLine}" TextWrapping="Wrap" FontSize="11" />
-                                        <Grid ColumnDefinitions="*,110" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto" RowSpacing="4">
+                                        <Grid ColumnDefinitions="*,110" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto" RowSpacing="4">
                                             <TextBlock Grid.Row="0" Text="scan length, minutes" VerticalAlignment="Center" FontSize="11" />
                                             <NumericUpDown Grid.Row="0" Grid.Column="1" Minimum="1" Maximum="600" Increment="5"
                                                            FormatString="0" Value="{Binding CatchScanMinutes}" />
@@ -1645,6 +1645,14 @@
                                                       HorizontalAlignment="Stretch"
                                                       ItemsSource="{x:Static vm:MainWindowViewModel.AgcInCwChoices}"
                                                       SelectedItem="{Binding AgcInCw}" />
+                                            <!-- WEAK STATIONS (work instruction 571, HM-DEC-275): whether the lane bank hands a weak station
+                                                 the grid cannot stand to the printer. On by default, kept across restarts, at once. -->
+                                            <TextBlock Grid.Row="6" Text="Weak stations" VerticalAlignment="Center" FontSize="11"
+                                                       ToolTip.Tip="Whether Hamlet reads a station too weak to stand out on its own. It listens for steady keying at every pitch in the filter, and once a station has kept that up for three seconds with nothing louder beside it, its letters print. Turn it off and only the stronger stations print. It takes effect at once." />
+                                            <ComboBox x:Name="WeakStationsChoice" Grid.Row="6" Grid.Column="1" FontSize="11"
+                                                      HorizontalAlignment="Stretch"
+                                                      ItemsSource="{x:Static vm:MainWindowViewModel.WeakStationsChoices}"
+                                                      SelectedItem="{Binding WeakStations}" />
                                         </Grid>
                                     </StackPanel>
                                 </Flyout>
