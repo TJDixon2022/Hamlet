@@ -26,10 +26,16 @@ public sealed class TheSpacesByCauseTests(ITestOutputHelper output)
 
         /// <summary>How many word gaps the sender's word cluster held.</summary>
         public int WordCount { get; init; }
+
+        /// <summary>The lines the gate drew for the letter after the gap, as it printed (work instruction 575, for the trace).</summary>
+        public Hamlet.RadioEngine.Cw.CwGapLines? Lines { get; init; }
     }
 
     /// <summary>The places of one stretch: aligned as <see cref="SpacesOf"/> aligns, with the printed gaps either side.</summary>
-    internal static List<Place> PlacesOf(Scored s)
+    internal static List<Place> PlacesOf(Scored s) => PlacesOf(s, rights: false);
+
+    /// <summary>The places of one stretch, and where <paramref name="rights"/> the word gaps read as words too (work instruction 575).</summary>
+    internal static List<Place> PlacesOf(Scored s, bool rights)
     {
         var places = new List<Place>();
         var letters = s.Letters ?? [];
@@ -73,7 +79,9 @@ public sealed class TheSpacesByCauseTests(ITestOutputHelper output)
             var printedSpace = left is { } l && right is { } r && r > l && Enumerable.Range(l, r - l).Any(d => decodeAfter[d]);
             var added = !keyAfter[i] && printedSpace && at[i] is { } a && at[i + 1] is { } b && b == a + 1;
 
-            if (!(keyAfter[i] && !printedSpace) && !added)
+            var read = rights && keyAfter[i] && printedSpace;
+
+            if (!(keyAfter[i] && !printedSpace) && !added && !read)
             {
                 continue;
             }
@@ -94,7 +102,11 @@ public sealed class TheSpacesByCauseTests(ITestOutputHelper output)
             var wordMs = (lines?.WordClusterSeconds ?? double.NaN) * 1000;
             string cause;
 
-            if (hi - lo != 1)
+            if (read)
+            {
+                cause = hi - lo == 1 ? "a word gap read" : "a word gap read, a letter between";
+            }
+            else if (hi - lo != 1)
             {
                 cause = added ? "an extra letter between" : "a letter between not in the reference, or missing";
             }
@@ -121,6 +133,7 @@ public sealed class TheSpacesByCauseTests(ITestOutputHelper output)
                 WordBottomMs = lines?.WordGaps is { } wg ? Hamlet.RadioEngine.Cw.CwPatternGate.Percentile(wg, Hamlet.RadioEngine.Cw.CwPatternGate.WordBottomShare) * 1000 : double.NaN,
                 BetweenMs = lines?.LetterGaps is { } lg2 ? Hamlet.RadioEngine.Cw.CwPatternGate.BetweenClusters(lg2, lines.WordGaps) * 1000 : double.NaN,
                 WordCount = lines?.WordGaps?.Count ?? 0,
+                Lines = lines,
             });
         }
 

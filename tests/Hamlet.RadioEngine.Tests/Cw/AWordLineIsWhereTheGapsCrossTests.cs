@@ -148,6 +148,37 @@ public sealed class AWordLineIsWhereTheGapsCrossTests
         }
     }
 
+    /// <remarks>
+    /// Work instruction 575, task 1: the SKCC hand, the hand whose gaps touch and the slow-spacing hand, each at three seeds, as
+    /// they ship and with a letter cluster across √21 of the gap dits split there, built and left off (HM-DEC-279). Asserts
+    /// nothing.
+    /// </remarks>
+    [Fact]
+    public void TheHandsAndTheSplitAtTheWordMidpoint()
+    {
+        foreach (var straddle in new[] { false, true })
+        {
+            using var _ = straddle ? CwRules.Choose(CwRules.StraddleSplit) : null;
+
+            _output.WriteLine(straddle ? "split at the word midpoint:" : "as it ships:");
+
+            foreach (var seed in new[] { 5401, 5402, 5403 })
+            {
+                Read(15, (2, 4), (4, 6), seed);
+            }
+
+            foreach (var seed in new[] { 5381, 5382, 5383 })
+            {
+                Read(20, (3, 5.5), (6, 10), seed);
+            }
+
+            foreach (var seed in new[] { 5391, 5392, 5393 })
+            {
+                Read(18, (4, 5), (8, 12), seed);
+            }
+        }
+    }
+
     [Fact]
     public void BothHandsBeforeThisUnit()
     {

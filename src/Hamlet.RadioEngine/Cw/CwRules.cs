@@ -98,6 +98,9 @@ internal static class CwRules
     /// <summary>The word line sits between the sender's two gap clusters (work instruction 565).</summary>
     public const string BetweenClusters = "the word line between the gap clusters";
 
+    /// <summary>A letter cluster across √21 of the sender's gap dits is split there, and the word line drawn there (work instruction 575).</summary>
+    public const string StraddleSplit = "a letter cluster across the word midpoint is two kinds";
+
     /// <summary>Every rule kept, in the order the work instruction names them.</summary>
     /// <remarks>
     /// **THREE RULES EARNED THEIR PLACE; TEN LEFT THE TREE** (work instruction 541, HM-DEC-245): of the thirteen work
@@ -119,7 +122,7 @@ internal static class CwRules
     /// The rules that ship off, built and measured and not taken: off unless a test chooses one on this thread with
     /// <see cref="Choose"/> (work instruction 565).
     /// </summary>
-    public static readonly IReadOnlySet<string> OffByDefault = new HashSet<string>(StringComparer.Ordinal) { BetweenClusters };
+    public static readonly IReadOnlySet<string> OffByDefault = new HashSet<string>(StringComparer.Ordinal) { BetweenClusters, StraddleSplit };
 
     [ThreadStatic]
     private static HashSet<string>? _chosen;
@@ -156,19 +159,22 @@ internal static class CwRules
         return new Restore(() => _off = before);
     }
 
-    /// <summary>This thread's switches, to carry to another thread (work instruction 539: the scoreboard reads in parallel).</summary>
-    internal static HashSet<string>? Current => _off;
+    /// <summary>
+    /// This thread's switches, to carry to another thread (work instruction 539: the scoreboard reads in parallel): the rules
+    /// turned off and the rules that ship off chosen on, both (work instruction 575: a chosen rule was not carried before).
+    /// </summary>
+    internal static (HashSet<string>? Off, HashSet<string>? Chosen) Current => (_off, _chosen);
 
     /// <summary>Takes another thread's switches on this one until the returned handle is disposed.</summary>
     /// <param name="state">The switches, from <see cref="Current"/>.</param>
     /// <returns>The handle that puts this thread's own back.</returns>
-    internal static IDisposable Use(HashSet<string>? state)
+    internal static IDisposable Use((HashSet<string>? Off, HashSet<string>? Chosen) state)
     {
-        var before = _off;
+        var before = (_off, _chosen);
 
-        _off = state;
+        (_off, _chosen) = state;
 
-        return new Restore(() => _off = before);
+        return new Restore(() => (_off, _chosen) = before);
     }
 
     private sealed class Restore(Action undo) : IDisposable

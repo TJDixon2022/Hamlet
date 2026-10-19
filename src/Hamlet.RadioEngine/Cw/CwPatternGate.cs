@@ -125,6 +125,18 @@ internal sealed class CwPatternGate
         var gapDit = ditSeconds + smear;
         var line = gapDit * ElementLetterRatio;
         var (letter, word) = GapClusters(runGaps, line);
+        var midpoint = gapDit * UnmeasuredWordRatio;
+        var straddles = CwRules.On(CwRules.StraddleSplit) && letter is { Count: > 0 } && letter.Min() < midpoint && letter.Max() >= midpoint;
+
+        if (straddles)
+        {
+            // **A LETTER CLUSTER ACROSS MORSE'S WORD MIDPOINT IS TWO KINDS** (work instruction 575, task 1): see StraddleSplit.
+            var all = letter!.Concat(word ?? []).OrderBy(g => g).ToList();
+
+            letter = all.Where(g => g < midpoint).ToList();
+            word = all.Where(g => g >= midpoint).ToList();
+        }
+
         var inside = elementGaps.Where(g => g < line).ToList();
         var character = letter is null || inside.Count < MeasuredRunGaps
             ? line
@@ -142,12 +154,67 @@ internal sealed class CwPatternGate
         // owner's recordings measured as worth nothing gone, the scoreboard held without it, and the √21 line already keeps
         // a word line off the letter gaps in a transmission's first seconds.
         var wordLine = letterMean is not { } l ? gapDit * UnmeasuredWordRatio
+            : straddles ? midpoint
             : CwRules.On(CwRules.BetweenClusters) ? BetweenClusters(letter!, word)
             : word is { Count: >= MeasuredRunGaps } ? (CwRules.On(CwRules.GapCrossing) ? Crossing(letter!, word) : CwSenderGate.Boundary(CwSenderGate.LogStats(letter!), CwSenderGate.LogStats(word)))
             : Math.Max(CwRules.On(CwRules.ColdStartWordLine) ? (inside.Count >= MeasuredRunGaps ? Centre(inside) : gapDit) * UnmeasuredWordRatio : 0, l * LetterWordRatio);
 
-        return new CwGapLines(gapDit, character, wordLine, inside, letter, word);
+        return new CwGapLines(gapDit, character, wordLine, inside, letter, word) { Given = runGaps.Where(g => !(g < line)).OrderBy(g => g).ToList() };
     }
+
+    /// <summary>
+    /// **HOW THE SPLIT DIVIDED A SENDER'S GAPS** (work instruction 575, task 1): for the trace only, the walk's clusters, the
+    /// cluster it took as the letter gaps, the path it then took, and the boundary it drew. It repeats <see cref="Split"/> and
+    /// decides nothing.
+    /// </summary>
+    /// <param name="sorted">The gaps above the element line, sorted.</param>
+    /// <returns>The walk's cluster sizes, the letter cluster's index, the path, the largest jump between neighbours, and the boundary.</returns>
+    internal static (IReadOnlyList<int> Clusters, int At, string Path, double LargestJump, double Boundary) TraceSplit(IReadOnlyList<double> sorted)
+    {
+        if (sorted.Count < MeasuredRunGaps)
+        {
+            return ([], -1, "under three gaps", double.NaN, double.NaN);
+        }
+
+        var clusters = new List<List<double>> { new() { sorted[0] } };
+        var largest = 1.0;
+
+        for (var i = 1; i < sorted.Count; i++)
+        {
+            largest = Math.Max(largest, sorted[i] / sorted[i - 1]);
+
+            if (sorted[i] / sorted[i - 1] >= LetterWordRatio)
+            {
+                clusters.Add(new List<double>());
+            }
+
+            clusters[^1].Add(sorted[i]);
+        }
+
+        var at = Math.Max(0, clusters.FindIndex(c => c.Count >= MeasuredRunGaps));
+        var (letter, word) = LetterAndWordGaps(sorted);
+        var path = at + 1 < clusters.Count ? "jump, settled"
+            : !CwRules.On(CwRules.OverlapSplit) ? "no jump, one cluster"
+            : word is null ? "no jump, 2-means refused" : "no jump, 2-means";
+        var boundary = word is null || letter is null ? double.NaN : Math.Sqrt(letter.Max() * word.Min());
+
+        return (clusters.Select(c => c.Count).ToList(), at, path, largest, boundary);
+    }
+
+    /// <summary>
+    /// **A LETTER CLUSTER ACROSS MORSE'S WORD MIDPOINT IS TWO KINDS** (work instruction 575, task 1): where the sender's letter
+    /// cluster has gaps both under and over √21 of its gap dits, the midpoint between a letter gap of three and a word gap of
+    /// seven, its gaps from the midpoint up are word gaps, and the word line is the midpoint.
+    /// </summary>
+    /// <remarks>
+    /// Traced on the seventeen gaps the twelve-plus-three space wrongly (<c>TheSplitTraceTests</c>): the split's walk parts the
+    /// clusters where two neighbouring gaps differ by √(7/3), and W1AW's letter and word gaps differ by 2.3 there, but a hand's
+    /// gaps rise smoothly, its largest step between neighbours 1.1 to 1.7, so the walk's letter cluster ran from two gap dits to
+    /// past six and held the word gaps themselves (`221745` 213, 285 and 405 ms at a gap dit of 64). A clean sender's letter
+    /// cluster sits wholly under the midpoint, W1AW's at 2.7 to 2.9 gap dits, and a Farnsworth sender's wholly over it, so the
+    /// rule touches neither.
+    /// </remarks>
+    public static double WordMidpointGapDits => UnmeasuredWordRatio;
 
     /// <summary>The share of the sender's letter gaps under the letter cluster's top: nine in ten (work instruction 565).</summary>
     public const double LetterTopShare = 0.9;
@@ -860,6 +927,9 @@ internal sealed record CwGapLines(
     IReadOnlyList<double>? LetterGaps,
     IReadOnlyList<double>? WordGaps)
 {
+    /// <summary>The gaps the split was given, those above the element line, sorted (work instruction 575, for the trace).</summary>
+    public IReadOnlyList<double>? Given { get; init; }
+
     /// <summary>The mean letter gap, or null.</summary>
     public double? LetterSeconds => LetterGaps?.Average();
 
