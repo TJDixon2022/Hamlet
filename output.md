@@ -1,143 +1,204 @@
-# Work instruction 565 - The word line sits between the sender's two gap clusters
+# Work instruction 575 - The split between a sender's letter gaps and word gaps; and a held lane keeps reading
 
 ## 1. What Claude did
 
-- **Surface and gate:** Claude Code on the development computer. The prompt claimed `PROJECT: Hamlet`, and the tree confirmed it:
-  - `SHACK_FACTS.md`, `docs\cw-scoreboard.md` and `docs\carry-forward-tests.txt` exist.
+- **Surface and gate:** Claude Code on the development computer. The prompt claimed `PROJECT: Hamlet`, and the tree at `C:\Source\HamLet` confirmed it:
+  - `SHACK_FACTS.md`, `docs\cw-scoreboard.md` and `src\Hamlet.RadioEngine\Cw\CwLaneBank.cs` exist.
   - Neither `CoreHMI.sln` nor `MURC.sln` exists.
 
-  The order is dated 2026-10-08 and re-presented on 2026-10-19, after `output.md`. Its id, HM-DEC-269, was held for it and unused, so it is current work. Nothing in this report is evidence about the radio.
+  Nothing in this report is evidence about the radio.
 - **Branch:** `main`, three commits, pushed.
 - **Run by hand:**
   - `SESSION.lock` was taken through `tools\arbiter\lock.bat take` and released at the end.
   - Nothing was written to `RUN_LEDGER.md`, nothing under `tools\arbiter\` was touched, and no box in `PHASE_PLAN.md` was ticked.
   - Nothing keys or transmits, nothing was written to the radio, and no recording was added, removed or promoted.
-- **How the line is set today:** `CwPatternGate.GapLines`.
-  - From three word gaps, the equal-error crossing of the sender's own letter and word clusters (`Crossing`).
-  - Before that, the larger of √21 times the centre of its gaps inside letters, and √(7/3) times its letter-gap mean.
-- **Task 1, the line between the clusters** (`70a63bd0`):
-  - **The rule, `CwPatternGate.BetweenClusters`:** with three word gaps or more, the geometric mean of the letter cluster's top (90th percentile) and the word cluster's bottom (10th). With no word cluster, that top times √3.
-  - **The clusters are the ones the gate already holds,** its run gaps at the sender's speed now (section 4).
-  - **Measured first,** with the line as it was (`TheSpacesByCauseTests.TheGapsAgainstTheLines`).
-  - **Measured once on:** it failed its ship condition, so it is **off**, a rule only a test can choose (`CwRules.OffByDefault`, `CwRules.Choose`).
-  - **The SKCC hand:** `AWordLineIsWhereTheGapsCrossTests.TheSkccHandAndTheLineBetweenTheClusters`, with the touching hand beside it, both ways.
-- **Task 2, the clusters on the sheet** (`728f0cce`):
-  - Every capture sheet, Record and automatic, gains `clusters` under `speed`: `letter centre 188, top 220 (4 gaps); word centre 415, bottom 295 (3 gaps); line 254 ms`.
-  - The gate writes it at each printed letter (`CwSenderGate.ClustersLine`), and `TheClustersAreOnTheSheetTests` holds it.
+- **Task 1, the split** (`021537b8`):
+  - **The trace** (`TheSplitTraceTests`): for each of the seventeen gaps, at the moment the letter after it printed:
+    - the gaps the split had in hand;
+    - the clusters its walk found, the step it looked for and the largest step between neighbours;
+    - the path it took and the boundary it drew;
+    - the side the gap landed on.
+
+    Then the same for twenty word gaps W1AW reads. The table is in section 3, and the full rows, with every gap in hand, are in `.run-unit\reports\unit575-trace.txt`.
+  - **The rule the table names: a jump demanded that a hand never produces.**
+    - The walk parts letter gaps from word gaps where two neighbouring gaps, sorted, differ by √(7/3), which is 1.53. Every W1AW split shows that step, at about 2.3.
+    - A hand's gaps rise smoothly. Its largest step between neighbours is 1.09 to 1.66, so the walk finds no step at all (nine of the fourteen misses), or finds one only up to a pause, which then becomes the "word cluster" (five).
+    - Either way, the letter cluster runs from about two gap dits to past six and holds the word gaps themselves.
+  - **Built:** `CwRules.StraddleSplit`.
+    - A letter cluster with gaps both under and over √21 of the sender's gap dits is two kinds. √21 is Morse's own midpoint between a letter gap of three and a word gap of seven.
+    - Its gaps from the midpoint up become word gaps, and the word line is the midpoint.
+    - A clean sender's letter cluster sits wholly under the midpoint (W1AW's at 2.7 to 2.9 gap dits), and a Farnsworth sender's wholly over it, so neither is touched.
+  - **Measured once, and it failed.** It is **off**, a rule only a test can choose (`CwRules.OffByDefault`).
+- **Task 2, a held lane keeps reading** (`a171d211`):
+  - **Built:** `CwRules.HeldLaneReads` and `CwLaneBank.Held`.
+    - The detector tells the bank which lane holds the station it has handed on.
+    - That lane goes on calling marks while its contrast dips under `CwLaneBank.MinContrastDb`, 12 dB. The floor governs standing, not holding.
+    - No constant was needed.
+  - **What ends the hold:** nothing new. As before, it ends when:
+    - the lane's sequence stops standing;
+    - the grid takes the station back within 50 Hz;
+    - or the lane is judged a carrier or a shadow.
+
+    The sender gate also lets the sender go under shape 0.1.
+  - **Measured once, and it failed on W1AW.** It is **off**, a rule only a test can choose. `TheWeakEndTests.TheWeakCqsWithAHeldLaneReading` keeps the CQ figures both ways.
+- **A fault found on the way, fixed in task 1's commit:** the scoreboards read in parallel, and the rule switches they carry to their worker threads (`CwRules.Current`, `Use`) carried only the rules a test turned off.
+  - A rule that ships off and was chosen on for a test was therefore applied only on the calling thread.
+  - Both now travel. Unit 565's "on" figure for the line between the clusters may have been measured in part.
+- **The lines:**
+  - **The engine line,** run alone. `dotnet build-server shutdown` went first, and the one other dotnet process left (Avalonia's build-services collector) was ended.
+    - It stopped with "Test host process crashed" after 147 passed, **exit code 124**. That code is the shell's `timeout 480` firing, not the host: the line takes longer than 480 s.
+    - The last test before the stop could not be named, because the minimal console log names none.
+    - Run once more alone with a 1500 s limit, it passed **155 of 155 in 9 min 05 s**.
+  - **The app line** first stopped the same way: exit 124 at 480 s with 101 passed.
+    - That run built again without `--no-build`, behind eight leftover dotnet processes.
+    - With those ended and `--no-build`, it passed **278 of 278 in 2 min 14 s**.
+  - **The survey line,** once: stopped once by Claude Code for low memory, as HM-DEC-276 allows, and run once more alone: **1 of 1 in 7 min 17 s**, every group unchanged and only the `Rerun` line rewritten.
 - **Records** (the closing commit):
-  - Version 1.13.258 to 1.13.259.
-  - HM-DEC-269, placed under HM-DEC-277 and above HM-DEC-276 so the log stays newest first, and its `CLAUDE.md` §1 row in the same place.
-  - `DecisionLogOrderTests` no longer lists 269 as a known gap.
-  - A 565 row in each scoreboard table.
+  - Version 1.13.259 to 1.13.260.
+  - HM-DEC-279 at the top of `DECISIONS.md`, and its `CLAUDE.md` §1 row.
+  - A 575 row in each scoreboard table.
   - `PHASE_OUTCOME.md` and `PHASE_STATUS.md`, both copies.
-  - The survey rerun, with a new `Rerun` line.
+  - The survey's new `Rerun` line.
+  - `CW_SPEC.md` §2 is unchanged, since no rule shipped.
 - **Recorded under §12.1:** nothing.
 
 ## 2. What the owner should expect
 
-- **No more word spaces are found, and no letters were lost, because the line did not move.**
-  - The twelve-plus-three still reads 86 of 110 spaces with 3 added, and W1AW still 2111.
-  - Moving the line as ordered lost spaces: the twelve-plus-three fell to 73 of 110 (2 added), with the letters still 318 of 353, 297.
-- **The SKCC lines read as they did.** `QTHWVWVNAMEIS JOEL` would still be `QTHWVWVNAMEIS JOEL`. On a synthetic SKCC hand the moved line read one space fewer at one seed and the same at the other two.
-- **Why it doesn't work:** at the moment Hamlet judges these gaps, it has already filed the sender's word gaps in with his letter gaps. The top of his "letter" cluster sits at the very gap that should be a word. A line drawn above the letter cluster's top therefore lands higher than today's, not lower. The fault is the split between the two clusters, not where the line sits between them.
-- **What changes tonight:** every capture sheet has a `clusters` line, so an SKCC capture on SLOW shows the sender's letter and word clusters and where the line was, without a replay.
+- **Word spaces on hand senders are not found yet, and nothing changed.** The rule the trace named finds some, but costs more than it finds.
+  - As shipped, the twelve-plus-three still reads 86 of 110 spaces with 3 added.
+  - With the rule on, it read 91 of 110, but with **20 added**, every one a letter gap spaced as a word.
+  - It also cost 2 letters (318 to 316 of 353) and broke your first recording: `FER C HA T <BT> BEST 7 V 73 <SK> KC 4 Z GP DEWA`. That hand's letter gaps run 358 to 430 ms, just over the new line at 354 to 359.
+  - W1AW was untouched by it: 2111, 438 of 440.
+  - So the SKCC line still reads `QTHWVWVNAMEIS JOEL`. A hand's letter gaps and word gaps overlap in length, and Morse's own midpoint is not where these hands put the break.
+- **Weak stations would print nearly whole, but the rule printed junk on W1AW, so it is off.**
+  - With the held lane reading, the four 5 dB CQs read **71 of 84** (14, 17, 20 and 20 of 21), from 62 (13, 14, 16 and 19).
+  - Noise printed nothing, the bank stood nothing on loud noise, the carrier still printed at its one seed, and the twelve-plus-three held at 297.
+  - But on W1AW the held lane went on reading after the station paused, and printed `M T TAT TM E` in the gap after `W1AW <AS>` on piece 2. W1AW fell from 2111 to 2101, with 8 letters invented where it had none.
+  - As shipped, the CQs read 62 of 84, as before.
+- **Each rule in a sentence:**
+  - **The split at the word midpoint:** a sender's letter cluster that runs across √21 of its gap dits is cut there into letter and word gaps.
+  - **The held lane:** the lane reading a weak station keeps reading it while its contrast dips under 12 dB.
+- **The engine line is not crashing.** The "crash" of the last three units was our own 480 s timeout. The line takes nine minutes and passes 155 of 155.
 - **Suite:**
   - Build clean, 0 warnings.
-  - App line 278 of 278. Survey line 1 of 1, every group unchanged.
-  - **The engine line passed 145 and then its test host crashed.** The one retry did the same. It is reported as not measured whole; this is the crash of the last two units.
-  - The two scoreboard row checks and `DecisionLogOrderTests` passed after the records were written.
+  - App 278 of 278, engine 155 of 155, survey 1 of 1 on its second run (the first was stopped for memory).
+  - Both scoreboards as at HEAD. The scoreboard row guards passed 4 of 4 and `DecisionLogOrderTests` 2 of 2 after the records were written.
 - **Pushed to `main`.** Left uncommitted, as found: `RUN_LEDGER.md`, `PARKED.md`, `.run-unit\denials.txt`, the `.run-unit\reports` files and the `cases-*.txt` files.
-- **What will look wrong but is not:**
-  - The order quotes the synthetic touching hand at 12, 14 and 13 of 14. It reads 12, 14 and 12 as shipped, and its test (at most one added, at most two missing) passes.
+- **What will look wrong but is not:** the scoreboard test is red on the random carrier at seed 5195. That is the known baseline since unit 552.
 
 ## 3. What you should see
 
-**The gaps, with the line as it was, and where the line between the clusters would fall on the same clusters** (ms):
+**The seventeen,** with the line as it ships and with the split at the word midpoint, in ms. *Walk clusters* is the sizes of the clusters the walk found, the letter cluster first. *Then* is the side the gap lands on with the midpoint split.
 
-| recording | around | kind | gap | letter centre | letter top | word centre | word bottom (gaps) | the line was | between the clusters | then |
-|---|---|---|---|---|---|---|---|---|---|---|
-| `221530` | `6C\|HAM` | letter gap spaced | 212 | 138 | 138 | 212 | 212 (1) | 211 | 239 | letter, right |
-| `221530` | `6CHA\|MPI` | letter gap spaced | 541 | 176 | 212 | 581 | 541 (2) | 269 | 367 | word, still wrong |
-| `221530` | `SAGE\|12I` | word gap missed | 252 | 181 | 220 | 415 | 295 (3) | 254 | 255 | letter, still wrong |
-| `221548` | `EEMY\|SCO` | word gap missed | 283 | 205 | 283 | 557 | 460 (2) | 313 | 490 | letter, still wrong |
-| `221548` | `SCOU\|TMA` | letter gap spaced | 452 | 187 | 258 | 489 | 388 (4) | 313 | 317 | word, still wrong |
-| `221745` | `E\|EDA` | word gap missed | 380 | 301 | 405 | - | - | 460 | 701 | letter, still wrong |
-| `221745` | `EE\|DAN` | word gap missed | 305 | 301 | 405 | - | - | 460 | 701 | letter, still wrong |
-| `221745` | `NDON\|40M` | word gap missed | 405 | 301 | 405 | - | - | 460 | 701 | letter, still wrong |
-| `221805` | `DAYS\|.TN` | word gap missed | 356 | 261 | 400 | - | - | 399 | 693 | letter, still wrong |
-| `221805` | `XFER\|ANO` | word gap missed | 372 | 242 | 372 | 684 | 665 (3) | 508 | 498 | letter, still wrong |
-| `221805` | `THER\|FT` | word gap missed | 424 | 240 | 372 | 684 | 665 (3) | 508 | 498 | letter, still wrong |
-| `221828` | `EDES\|BES` | word gap missed | 286 | 208 | 276 | 449 | 304 (10) | 300 | 290 | letter, still wrong |
-| `121324` | `UKKQ\|4PA` | word gap missed | 248 | 212 | 232 | - | - | 324 | 401 | letter, still wrong |
-| `121324` | `Q4PA\|K` | word gap missed | 232 | 219 | 248 | - | - | 334 | 430 | letter, still wrong |
-| `121414` | `BKBK\|TUR` | word gap missed | 288 | 171 | 174 | 288 | 288 (1) | 301 | 301 | letter, still wrong |
-| `121414` | `BKTU\|RON` | word gap missed | 212 | 225 | 288 | - | - | 343 | 498 | letter, still wrong |
-| `121414` | `ES72\|KM3` | word gap missed | 312 | 211 | 288 | 553 | 435 (8) | 315 | 354 | letter, still wrong |
+| recording | around | kind | gap | walk clusters | largest step | path | letter / word gaps | the line | gap dit | gap in gap dits | the midpoint split's line | then |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| `03-221530` | `6C\|HAM` | letter gap spaced | 212 | 1+1+1 | 2.93 | jump, settled | 1 / 1 | 211 | 67 | 3.2 | 211 (unmoved) | word |
+| `03-221530` | `6CHA\|MPI` | letter gap spaced | 541 | 3+2 | 2.55 | jump, settled | 3 / 2 | 269 | 66 | 8.1 | 269 (unmoved) | word |
+| `03-221530` | `SAGE\|12I` | word gap missed | 252 | 14+1 | 1.57 | jump, settled | 12 / 3 | 254 | 63 | 4.0 | 254 (unmoved) | letter |
+| `03-221548` | `EEMY\|SCO` | word gap missed | 283 | 6+2 | 1.63 | jump, settled | 6 / 2 | 313 | 62 | 4.6 | 313 (unmoved) | letter |
+| `03-221548` | `SCOU\|TMA` | letter gap spaced | 452 | 14 | 1.42 | no jump, 2-means | 10 / 4 | 313 | 62 | 7.3 | 313 (unmoved) | word |
+| `03-221745` | `E\|EDA` | word gap missed | 380 | 3 | 1.42 | no jump, 2-means refused | 3 / - | 460 | 64 | 5.9 | 293 | word |
+| `03-221745` | `EE\|DAN` | word gap missed | 305 | 3 | 1.42 | no jump, 2-means refused | 3 / - | 460 | 64 | 4.8 | 293 | word |
+| `03-221745` | `NDON\|40M` | word gap missed | 405 | 3 | 1.42 | no jump, 2-means refused | 3 / - | 460 | 64 | 6.3 | 293 | word |
+| `03-221805` | `DAYS\|.TN` | word gap missed | 356 | 6 | 1.40 | no jump, 2-means refused | 6 / - | 399 | 66 | 5.4 | 301 | word |
+| `03-221805` | `XFER\|ANO` | word gap missed | 372 | 17+3 | 1.66 | jump, settled | 17 / 3 | 508 | 69 | 5.4 | 314 | word |
+| `03-221805` | `THER\|FT` | word gap missed | 424 | 24+3 | 1.57 | jump, settled | 24 / 3 | 508 | 72 | 5.9 | 328 | word |
+| `03-221828` | `EDES\|BES` | word gap missed | 286 | 34 | 1.15 | no jump, 2-means | 24 / 10 | 300 | 71 | 4.0 | 300 (unmoved) | letter |
+| `08-121324` | `UKKQ\|4PA` | word gap missed | 248 | 3 | 1.11 | no jump, 2-means refused | 3 / - | 324 | 75 | 3.3 | 324 (unmoved) | letter |
+| `08-121324` | `Q4PA\|K` | word gap missed | 232 | 5 | 1.09 | no jump, 2-means refused | 5 / - | 334 | 75 | 3.1 | 334 (unmoved) | letter |
+| `08-121414` | `BKBK\|TUR` | word gap missed | 288 | 2+1 | 1.66 | jump, settled | 2 / 1 | 301 | 50 | 5.8 | 301 (unmoved) | letter |
+| `08-121414` | `BKTU\|RON` | word gap missed | 212 | 3 | 1.36 | no jump, 2-means refused | 3 / - | 343 | 50 | 4.2 | 230 | letter |
+| `08-121414` | `ES72\|KM3` | word gap missed | 312 | 26 | 1.41 | no jump, 2-means | 18 / 8 | 315 | 51 | 6.1 | 233 | word |
 
-**What the table says:**
-- The order's twelve are all here: the nine missed under the line and the three spaced over it, plus five more the tree's trace now names.
-- In the only-letter cases the letter top is the missed word gap itself (405, 400), so √3 above it is far past every word gap.
-- In the both-clusters cases the word cluster's bottom stands well above the missed gap, the letter top is at or near it (372, 283, 288), and the line between them is above the gap.
-- It finds none, and stops spacing one letter gap (`6C|HAM`).
+On the seventeen, the midpoint split puts seven of the fourteen word gaps on the word side and leaves the three letter gaps where they are. The seven are `221745`'s three, `221805`'s three and `121414`'s `ES72|KM3`. On the whole board it found five more spaces and added seventeen.
 
-**The rule as stated, measured once on:**
+**Twenty of W1AW's 438 word gaps read: what a working split looks like.** Every one shows a step of about 2.3 between its letter and word clusters, and its letter cluster sits under the midpoint, so none moves.
 
-| | as shipped | the line between the clusters |
+| recording | around | gap | walk clusters | largest step | letter / word gaps | the line | gap dit | gap in gap dits |
+|---|---|---|---|---|---|---|---|---|
+| `piece-01` | `QST\|QST` | 556 | 5+2 | 2.33 | 5 / 2 | 361 | 83 | 6.7 |
+| `piece-01` | `W1AW\|SCH` | 556 | 29+10+1 | 2.30 | 29 / 10 | 361 | 86 | 6.4 |
+| `piece-01` | `0WPM\|FOL` | 553 | 25+12+3 | 2.32 | 25 / 12 | 360 | 87 | 6.4 |
+| `piece-02` | `T,\|AND` | 557 | 1+2 | 1.69 | 1 / 2 | 369 | 82 | 6.8 |
+| `piece-02` | `9PM\|PDT` | 558 | 30+10 | 2.30 | 30 / 10 | 362 | 82 | 6.8 |
+| `piece-02` | `2024\|QST` | 556 | 28+10+1+1 | 5.14 | 28 / 10 | 363 | 84 | 6.6 |
+| `piece-02` | `NDAT\|LEA` | 237 | 2+2 | 2.41 | 2 / 2 | 151 | 38 | 6.3 |
+| `piece-02` | `MPOR\|WEL` | 235 | 31+9 | 2.27 | 31 / 9 | 152 | 38 | 6.2 |
+| `piece-03` | `NGET\|GEM` | 237 | 30+9+1 | 2.26 | 30 / 9 | 152 | 36 | 6.5 |
+| `piece-03` | `TION\|GRO` | 231 | 30+10 | 2.30 | 30 / 10 | 152 | 37 | 6.2 |
+| `piece-03` | `WAVE\|TRA` | 238 | 35+5 | 2.35 | 35 / 5 | 155 | 37 | 6.4 |
+| `piece-03` | `R.AT\|SOM` | 235 | 32+7+1 | 2.30 | 32 / 7 | 153 | 37 | 6.3 |
+| `piece-03` | `.THE\|FIR` | 238 | 31+8+1 | 2.31 | 31 / 8 | 152 | 37 | 6.4 |
+| `piece-03` | `THEN\|AFE` | 235 | 30+10 | 2.28 | 30 / 10 | 144 | 37 | 6.3 |
+| `piece-03` | `OW30\|WPM` | 277 | 23+15+1 | 6.54 | 23 / 15 | 142 | 41 | 6.8 |
+| `piece-04` | `ORTH\|EAS` | 276 | 23+6+1 | 1.65 | 23 / 6 | 166 | 43 | 6.3 |
+| `piece-04` | `PARE\|MIN` | 276 | 31+8+1 | 2.28 | 31 / 8 | 178 | 43 | 6.4 |
+| `piece-04` | `THAT\|MOS` | 285 | 33+7 | 2.27 | 33 / 7 | 180 | 42 | 6.8 |
+| `piece-04` | `ETTY\|STR` | 276 | 33+7 | 2.31 | 33 / 7 | 178 | 44 | 6.3 |
+| `piece-04` | `YZER\|AND` | 274 | 33+7 | 2.24 | 33 / 7 | 178 | 43 | 6.3 |
+
+**The four 5 dB CQs:**
+
+| CQ | as shipped | held lane reading |
 |---|---|---|
-| twelve-plus-three letters | 318 of 353, 20 wrong, 1 invented, **297** | **297** |
-| twelve-plus-three spaces | **86 of 110, 3 added** | **73 of 110, 2 added** |
-| W1AW letters | 2131 of 2151, 20 wrong, 0 invented, **2111** | **2111** (2131 of 2151, 20 wrong, 0 invented) |
-| W1AW spaces | 438 of 440, 11 added | not measured |
-| four 5 dB CQs | 13, 14, 16, 19 of 21 | the same |
-| carrier, silences, first recording | 1 seed, none, whole | 1 seed, none, whole |
+| `cq-12wpm-5db` | 13 of 21 | 14 of 21 |
+| `cq-18wpm-5db` | 14 of 21 | 17 of 21 |
+| `cq-18wpm-5db-char5` | 16 of 21 | 20 of 21 |
+| `cq-25wpm-5db` | 19 of 21 | 20 of 21 |
+| total | 62 of 84 | 71 of 84 |
 
-**The synthetic hands** (word spaces of 14):
+**The synthetic hands,** word spaces of 14 with the added in brackets, as shipped and with the midpoint split:
 
-| hand | seed | as shipped | between the clusters |
+| hand | seeds | as shipped | midpoint split |
 |---|---|---|---|
-| SKCC, 15 WPM, letter gaps 2 to 4 dits, word gaps 4 to 6 | 5401 | 10, 2 added | 9, 3 added |
-| | 5402 | 12, 7 added | 12, 7 added |
-| | 5403 | 12, 3 added | 12, 3 added |
-| touching, 20 WPM, letter 3 to 5.5, word 6 to 10 | 5381 | 12, 1 added | 12, 1 added |
-| | 5382 | 14 | 13 |
-| | 5383 | 12 | 12 |
+| SKCC, 15 WPM, letter gaps 2-4 dits, word 4-6 | 5401, 5402, 5403 | 10 (2), 12 (7), 12 (3) | 10 (2), 13 (7), 12 (3) |
+| touching, 20 WPM, letter 3-5.5, word 6-10 | 5381, 5382, 5383 | 12 (1), 14 (0), 12 (0) | 12 (7), 14 (8), 14 (1) |
+| slow spacing, 18 WPM, letter 4-5, word 8-12 | 5391, 5392, 5393 | 14 (0), 14 (0), 14 (0) | 14 (6), 14 (7), 14 (2) |
 
-Letters 43 of 43 at every seed, both ways.
+**The survey's groups, before and after** (score):
 
-**The survey's groups, before and after:** every group unchanged.
+| group | before | after |
+|---|---|---|
+| synthetic fixtures (noisy-18wpm 0 both) | 44 | 44 |
+| receiver fixtures: easy | 75 | 75 |
+| receiver fixtures: working | -4 | -4 |
+| receiver fixtures: edge | 0 | 0 |
+| receiver fixtures: ungraded | 63 | 63 |
+| synthetic CQs: 15 dB | 72 | 72 |
+| synthetic CQs: 5 dB | 46 | 46 |
+| synthetic CQs: 0 dB | 0 | 0 |
+| the boards: twelve-plus-three | 297 | 297 |
+| W1AW pieces | 2111 | 2111 |
+| strays: highest old capture per 10 s | 3.3 | 3.3 |
+| strays: summed over the 65 old captures | 21.9 | 21.9 |
 
-| Group | Score |
-|---|---|
-| Synthetic fixtures | 44 |
-| Receiver fixtures, easy | 75 |
-| Receiver fixtures, working | -4 |
-| Receiver fixtures, edge | 0 |
-| Receiver fixtures, ungraded | 63 |
-| Synthetic CQs, 15 dB | 72 |
-| Synthetic CQs, 5 dB | 46 |
-| Synthetic CQs, 0 dB | 0 |
-| The boards | 297 and 2111 |
 
-The strays are 3.3 at the highest and 21.9 summed.
+**The scoreboards' 575 rows:**
 
-**The scoreboards' rows:**
-- Twelve-plus-three: `| 565 | 2026-10-19 | 318 of 353 | 20 | 1 | **297** | 0 | 86 of 110, 3 added | …`
-- W1AW: `| 565 | 2026-10-19 | **2111** | 2131 of 2151 | 20 | 0 | 438 of 440, 11 added | …`
+| unit | date | right | wrong | invented | score | in silences | spaces | what |
+|---|---|---|---|---|---|---|---|---|
+| 575 | 2026-10-19 | 318 of 353 | 20 | 1 | **297** | 0 | 86 of 110, 3 added | the split and a held lane (work instruction 575, HM-DEC-279): a letter cluster across √21 gap dits split there read 316 of 353 and 91 of 110 spaces with 20 added and broke the first recording; a held lane reading under its floor read 297 and 86 of 110 here; both ship off and this row is the board as shipped, as at HEAD |
+
+| unit | date | score | right | wrong | invented | spaces | what |
+|---|---|---|---|---|---|---|---|
+| 575 | 2026-10-19 | **2111** | 2131 of 2151 | 20 | 0 | 438 of 440, 11 added | the split at the word midpoint read 2111 here, unchanged; a held lane reading under its floor read 2101 (2129 of 2151, 20 wrong, 8 invented, 437 of 440), printing `M T TAT TM E` in the pause after `W1AW <AS>` on piece 2; both off (HM-DEC-279); as shipped |
 
 ## 4. What's blocking us
 
-- **The ship failed: the line between the clusters lost 13 spaces.** It is off. What the table names is the split itself: a sender's word gaps sorted into his letter cluster (`CwPatternGate.LetterAndWordGaps`, `Split`). That is a different rule, for a ruling.
-- **Choice taken: the clusters are the gate's own run gaps at the sender's speed now,** not ten marks' worth. Ten marks hold three or four gaps, too few to stand a cluster of three.
-- **Choice taken: HM-DEC-269 sits below HM-DEC-277 in both logs,** since its date is 2026-10-19 and the order test reads ids within a date.
-- **Choice taken: the order test's known gaps lose 269,** now recorded.
-- **The spaces by cause now** (the tree's trace; the order's table was older): 8 invisible, 7 under the line with a word cluster shown, 7 with none yet, 2 unprinted, 3 added.
-- **The eight word gaps as short as the letter gaps:**
-  - `221530`: `EN|FBW` 185, `WHEN|IWA` 209, `HENI|WAS` 160, `GE12|ILE` 226, `SING|AV` 190;
-  - `221745`: `.EUR|EEH` 137;
-  - `221828`: `T73|W` 203;
-  - `121414`: `VAES|72K` 205 ms.
-- **The two with a letter either side not printed:** `144020` `TEMP|E` and `221530` `PION|BK`.
-- **The engine line's test host crashes after its last tests,** in this unit and the two before, with no reason in the log. It was not traced.
+- **Task 1 failed: the midpoint split added 17 spaces and broke the first recording.** It is off.
+  - A hand's letter gaps and word gaps overlap in length: your first recording's letter gaps reach 430 ms, where `221745`'s word gaps start at 305.
+  - So no line drawn from the sender's own dit alone parts every hand. What else could part them is a question for a ruling.
+- **Task 2 failed on W1AW: the held lane read noise in a pause.** It is off.
+  - The hold ends only when the lane's sequence stops standing, and noise marks keep a sequence standing for a while.
+  - Ending it sooner needs a rule of its own, for a ruling.
+- **Choices taken:**
+  - **The seventeen** are the rows of `TheSpacesByCauseTests.TheGapsAgainstTheLines`, the gaps under or over the line, as the order describes them.
+  - **The twenty W1AW rows** are every twenty-second word gap W1AW reads on its medium-or-better stretches, 438 in all.
+  - **The engine line ran a second time with a 1500 s limit,** because its stop was our own timeout (exit 124), not a crash or a memory stop.
+  - **The app line ran a second time alone with `--no-build`,** after the first run timed out behind eight leftover dotnet processes.
+  - **The scoreboards' thread switches now carry the rules a test chose.** Without that, a rule a test chose on was measured only in part.
+- **The survey's first run was stopped by Claude Code for low memory** while it ran in the background beside ten leftover dotnet processes. Those were ended and it was run once more alone, under HM-DEC-276, and passed.
+- **The line scripts' 480 s limit is too short for the engine line,** which needs about nine minutes. The scripts sit under `.run-unit\` and are not committed.
 
 ### Asks still outstanding
 

@@ -378,6 +378,7 @@ guard: the random carrier prints at 1 of 20 seeds (5195), recorded at unit 552
 | 573 | 2026-10-19 | 318 of 353 | 20 | 1 | **297** | 0 | 86 of 110, 3 added | the shadow rule reaches the grid, to 25 Hz (work instruction 573, HM-DEC-277): judged, the board held at 297 with the carrier at one seed and nothing in a silence, but W1AW fell to 2079 and the lockstep fixture's station did not read whole, so it ships off behind `CwShadow.JudgesTheGrid` and this row is the board as shipped, as at HEAD |
 | 574 | 2026-10-19 | 318 of 353 | 20 | 1 | **297** | 0 | 86 of 110, 3 added | a found weak station prints dits (work instruction 574, HM-DEC-278): traced, and none of the three rules offered was the one the table names, so none was built; the board as shipped, the four 5 dB CQs 13, 14, 16 and 19 of 21 |
 | 565 | 2026-10-19 | 318 of 353 | 20 | 1 | **297** | 0 | 86 of 110, 3 added | the word line between the sender's two gap clusters (work instruction 565, HM-DEC-269): measured on, spaces fell to 73 of 110 with 2 added and letters held at 297, the missed word gaps already inside the letter cluster; it ships off and this row is the board as shipped, as at HEAD |
+| 575 | 2026-10-19 | 318 of 353 | 20 | 1 | **297** | 0 | 86 of 110, 3 added | the split and a held lane (work instruction 575, HM-DEC-279): a letter cluster across √21 gap dits split there read 316 of 353 and 91 of 110 spaces with 20 added and broke the first recording; a held lane reading under its floor read 297 and 86 of 110 here; both ship off and this row is the board as shipped, as at HEAD |
 
 ## Scans (work instruction 544, HM-DEC-248)
 
@@ -453,6 +454,7 @@ high and 25 medium, 2151 letters, all totalled.
 | 573 | 2026-10-19 | **2111** | 2131 of 2151 | 20 | 0 | 438 of 440, 11 added | the shadow rule judging the grid to 25 Hz read 2079 here (2115 of 2151, 36 wrong, 0 invented), most of it piece 1's 13 and 10 WPM stretch at 198 to 240 s; it ships off, and this row is as shipped |
 | 574 | 2026-10-19 | **2111** | 2131 of 2151 | 20 | 0 | 438 of 440, 11 added | traced, no rule shipped (HM-DEC-278); as shipped |
 | 565 | 2026-10-19 | **2111** | 2131 of 2151 | 20 | 0 | 438 of 440, 11 added | the word line between the clusters read 2111 here too, on; it ships off (HM-DEC-269); as shipped |
+| 575 | 2026-10-19 | **2111** | 2131 of 2151 | 20 | 0 | 438 of 440, 11 added | the split at the word midpoint read 2111 here, unchanged; a held lane reading under its floor read 2101 (2129 of 2151, 20 wrong, 8 invented, 437 of 440), printing `M T TAT TM E` in the pause after `W1AW <AS>` on piece 2; both off (HM-DEC-279); as shipped |
 
 **A trace recording, not scored** (work instruction 574, HM-DEC-278): `cw-2026-10-19-141708`, Ken's QSO with KB2UZK on 7.0519 MHz, placed by the owner's order of 2026-10-19 (*"put it in"*), is on neither table. Nobody wrote down what Ken sent, so it has no truth; the survey reads it with the old captures.
 
