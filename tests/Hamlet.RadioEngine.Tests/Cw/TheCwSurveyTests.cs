@@ -29,6 +29,13 @@ public sealed class TheCwSurveyTests(ITestOutputHelper output)
     /// <summary>The single-letter words of one or two elements, the stray-letter figure.</summary>
     private static readonly HashSet<string> Strays = new(StringComparer.Ordinal) { "E", "T", "I", "A", "N", "M" };
 
+    /// <summary>
+    /// Trace recordings in `captured`, placed by the owner's order and on neither board, with no truth: read in the unadjudicated
+    /// group with the old captures. `cw-2026-10-19-141708` is Ken's QSO with KB2UZK, the owner's order of 2026-10-19 (work
+    /// instruction 574).
+    /// </summary>
+    internal static readonly HashSet<string> Traces = new(StringComparer.Ordinal) { "cw-2026-10-19-141708" };
+
     /// <summary>The owner's line: six lone one- or two-element words per 10 s, no capture above it (HM-DEC-276).</summary>
     internal const double StraysLine = 6;
 
@@ -132,6 +139,11 @@ public sealed class TheCwSurveyTests(ITestOutputHelper output)
             if (august.TryGetValue(name, out var adjudicated))
             {
                 jobs.Add(() => Partial("August adjudicated", wav, name, adjudicated.Contains, adjudicated.Source));
+            }
+            else if (Traces.Contains(name))
+            {
+                // A trace recording placed by the owner's order, with no truth: read with the old captures (work instruction 574).
+                jobs.Add(() => NoTruth("unadjudicated", wav, name, OldRead(wav)));
             }
             else
             {
@@ -374,14 +386,16 @@ public sealed class TheCwSurveyTests(ITestOutputHelper output)
 
         // **THE STRAYS BAR, RESTATED** (work instruction 572, HM-DEC-276): no capture above the owner's line of six lone one- or
         // two-element words per 10 s; the summed figure over the old captures is reported beside the board, not a condition.
-        var old = rows.Where(r => r.Group == "unadjudicated" && r.Stray is { } s && double.IsFinite(s)).ToList();
+        // The trace recordings are read in the group and kept out of the bar's summed figure, which is over the old captures (work instruction 574).
+        var old = rows.Where(r => r.Group == "unadjudicated" && !Traces.Contains(r.File) && r.Stray is { } s && double.IsFinite(s)).ToList();
+        var traces = rows.Where(r => Traces.Contains(r.File) && r.Stray is { } s && double.IsFinite(s)).ToList();
 
         if (old.Count > 0)
         {
             var highest = old.OrderByDescending(r => r.Stray!.Value).First();
 
             sb.AppendLine();
-            sb.AppendLine(string.Create(Inv, $"**The strays bar** (HM-DEC-276): no capture above six lone one- or two-element words per 10 s. Highest now `{highest.File}` at **{highest.Stray!.Value:0.0}**, {(highest.Stray!.Value <= StraysLine ? "under the line" : "over the line")}; summed over the {old.Count} old captures, each as its row shows it, **{old.Sum(r => Math.Round(r.Stray!.Value, 1, MidpointRounding.AwayFromZero)):0.0}**, reported and not a condition."));
+            sb.AppendLine(string.Create(Inv, $"**The strays bar** (HM-DEC-276): no capture above six lone one- or two-element words per 10 s. Highest now `{highest.File}` at **{highest.Stray!.Value:0.0}**, {(highest.Stray!.Value <= StraysLine ? "under the line" : "over the line")}; summed over the {old.Count} old captures, each as its row shows it, **{old.Sum(r => Math.Round(r.Stray!.Value, 1, MidpointRounding.AwayFromZero)):0.0}**, reported and not a condition.{string.Concat(traces.Select(t => string.Create(Inv, $" The trace recording `{t.File}`, not among them, {t.Stray!.Value:0.0}.")))}"));
         }
 
         foreach (var g in order)
