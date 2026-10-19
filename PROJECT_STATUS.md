@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: COMPLETED
-TASK: done - the shadow rule reaches the grid, built and off
-WORK_INSTRUCTION: 573 - the shadow rule reaches the grid (run by hand)
+TASK: done - a found weak station traced; no rule shipped
+WORK_INSTRUCTION: 574 - a found weak station prints dits (run by hand)
 BALL: tim
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-10-19T10:42:43-04:00
-NOTE: Unit 573 done: grid path off (W1AW 2079 judged, fixture station not whole); 297, 2111; engine line host crash
+UPDATED: 2026-10-19T11:24:26-04:00
+NOTE: Unit 574 done: CQ lost in the lane (12 dB floor), Ken never handed on; splinters not senders; 297, 2111
 
 ---
 

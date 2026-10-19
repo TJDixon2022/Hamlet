@@ -1,126 +1,112 @@
-# Work instruction 573 - The shadow rule reaches the grid, down to one lane's spacing
+# Work instruction 574 - A found weak station prints dits: Ken at 425 Hz
 
 ## 1. What Claude did
 
 - **Surface and gate:** Claude Code on the development computer. The prompt claimed `PROJECT: Hamlet`, and the tree confirmed it:
-  - `PROJECT_CARD.md` says Hamlet, and `Hamlet.sln` is at the root.
-  - `SHACK_FACTS.md`, `docs\cw-scoreboard.md` and `src\Hamlet.RadioEngine\Cw\CwShadow.cs` exist.
+  - `PROJECT_CARD.md` says Hamlet.
+  - `SHACK_FACTS.md`, `docs\cw-scoreboard.md` and `tests\fixtures\cw\captured\cw-2026-10-19-141708.wav` exist.
   - Neither `CoreHMI.sln` nor `MURC.sln` exists.
 
   Nothing in this report is evidence about the radio.
-- **Branch:** `main`, three commits (task 1, task 2, the measure and record), pushed.
+- **Branch:** `main`, five commits, pushed.
 - **Run by hand:**
   - `SESSION.lock` was taken through `tools\arbiter\lock.bat take` and released at the end.
   - Nothing was written to `RUN_LEDGER.md`, nothing under `tools\arbiter\` was touched, and no box in `PHASE_PLAN.md` was ticked.
-  - Nothing keys or transmits, nothing was written to the radio, and no recording was added, removed or promoted. The fixture is synthetic.
-  - A stray shell call during the work invoked Python, which the rules bar. It was stopped, ran nothing, and changed nothing.
-- **Task 1, the rule reaches the grid** (`87ea48ce`):
-  - **`CwShadow.ShadowReachHz`, 25 Hz.** The handover's same-station distance, 50 Hz, is unchanged. How the two sit together in the code:
-    - The handover still asks `HandoverHz` whether the grid holds a lane's station.
-    - The shadow rule asks `ShadowReachHz` how far a stronger station must be.
-    - The lanes are judged in `LaneIsShadow` and the grid's sequences in `GridIsShadow`, so nothing is judged twice.
-  - **The grid path:** the pattern gate now reports the sequence an offered mark went to (`LastOfferedId`). Before a grid sequence's stood marks are handed to the sender gate, the sequence is judged by `CwShadow.IsShadowOf`, over its last ten marks, against every stronger station Hamlet holds:
-    - the pattern gate's other standing sequences and candidates;
-    - the bank's standing lanes.
+  - Nothing keys or transmits, and nothing was written to the radio.
+- **The recording, first** (`2842bb46`):
+  - `cw-2026-10-19-141708.wav` and its sheet were committed by the owner's order (*"put it in"*), before any code. No other recording was added, removed or promoted.
+  - `.gitattributes` holds no entry for any capture, only the `*.bat` rule, so matching the other captures meant adding nothing (section 4).
+- **Task 1, the trace** (`16a9da38`): `TheFoundWeakStationTests`, which asserts nothing. It holds:
+  - `KensOverTraced` and `TheCqTraced`: the four rows for each.
+  - `TheLanesAgainstTheMarks`: the bank's own lanes, driven by reflection, against the CQ's sent marks and Ken's by-hand marks. Each missed mark is put down to the 12 dB contrast floor, a level never over the start line, or a mark cut or merged.
+  - `WhyKenIsNotHandedOn`: every second of his over, what the bank and the grid hold near 425 Hz.
 
-    It is judged again each time a mark of it stands. A shadow's marks are not handed on, so the sequence is never picked. A held one judged a shadow is let go by the sender gate's own release, and sets the time a lane picked within `LaneLeadSeconds` hands on no backlog.
-  - **The record:** the capture sheets' `bank` line ends `; shadows 550 Hz 0.90 of 600 Hz, ...`, the shadows held in the last minute by lanes and grid alike, or `none`. Each `cw_listen` row gains `shadows`.
-  - **One choice inside the rule** (section 4): inside 50 Hz the stronger station must also be louder by level.
-- **Task 2, the fixture and the trace** (`db983cc0`): `TheShadowReachesTheGridTests`.
-  - **The fixture**, generated as the synthetic CQs are: a 600 Hz station at 18 WPM and 20 dB, and the same keying at 550, 575 or 650 Hz, 15 dB under it.
-  - **The traces:** the fixture alone and with each shadow, W1AW piece-04, and `cw-2026-08-31-003229`, each with the grid judged and not.
-- **The measure: the ship failed**, on two conditions:
-  - **W1AW** fell from 2111 to **2079**: 2115 of 2151 right, wrong 20 to 36, 0 invented.
-  - **The fixtures' 600 Hz station** did not read whole beside its shadow, before or after.
-
-  So `CwShadow.JudgesTheGrid` is **off**, and the reach is off with it. Off reads exactly as at HEAD.
-- **Records:**
-  - Version 1.13.256 to 1.13.257.
-  - HM-DEC-277 in `DECISIONS.md` and its `CLAUDE.md` §1 row.
-  - `CW_SPEC.md` §2.
-  - A 573 row in each scoreboard table.
+  The survey now has a list of trace recordings, read in the unadjudicated group and kept out of the old captures' summed strays. Its strays line names the recording's figure on its own.
+- **Task 2: not built.** The table names none of the three rules offered (section 3). The rule it does name is not on the list, and the order builds only a named candidate.
+- **Task 3, splinters are not senders** (`d80e73d7`):
+  - `CwShapeSideReading.HeldSenders` and `Splinters` split the gate's senders at its release line, 0.1, keeping any printed sender as a sender.
+  - The four-senders capture trigger counts `HeldSenders` only.
+  - The sheet's `senders` line lists splinters after the senders, as `splinters at 500 Hz, 445 marks`.
+  - `TheSplintersAreNotSendersTests` holds the capture's own four: two senders and two splinters.
+- **Records** (the closing commit):
+  - Version 1.13.257 to 1.13.258.
+  - HM-DEC-278 and its `CLAUDE.md` §1 row.
+  - A 574 row in each scoreboard table, and a line under them naming the trace recording.
   - `PHASE_OUTCOME.md` and `PHASE_STATUS.md`, both copies.
-  - The survey rewritten by its own run, with a new `Rerun` line.
-- **Recorded under §12.1:** nothing. HM-DEC-277 records the work order's own outcome.
+  - The survey rerun, with a new `Rerun` line.
+  - `CW_SPEC.md` unchanged, since no reading rule shipped.
+- **Recorded under §12.1:** nothing. HM-DEC-278 records the work order's own outcome.
 
 ## 2. What the owner should expect
 
-- **The ghost beside W1AW is not caught by this, and nothing changed on screen.** The grid path is off.
-- **Why it ships off:**
-  - With the grid judged, W1AW's bulletin lost 32 points. Most of the loss is piece 1's slow stretch, `15 13 AND 10 WPM`, which read `■E ■S T AND 1T M`.
-  - The twelve-plus-three held at 297, and the four 5 dB CQs held at 13, 14, 19 and 19 of 21.
-- **What the fixture showed:** a tone keyed in lockstep 15 dB under a station never printed at its own pitch, at 550, 575 or 650 Hz, with the rule or without it. No grid sequence there ever stood. Beside it, the station lost letters of its opening call (20, 19 and 18 of 21, against 21 of 21 alone), the same both ways. That damage is at the station's own pitch where the two tones beat, and no shadow rule reaches it.
-- **Tonight's sheet will still say something new.** The `bank` line now ends with `shadows ...`, and each `cw_listen` row has a `shadows` field: every shadow held in the last minute, with pitch, share and the station it shadows.
-  - With the grid path off, only the lanes judge, still to 50 Hz, so a sender at exactly 550 Hz beside W1AW will **not** appear there.
-  - Lanes further out will, as they did on piece-04: 350 to 525 Hz and 650 to 850 Hz.
+- **A weak station the bank finds still prints as it did. Nothing about reading changed, so it cost nothing:**
+  - Ken's over replayed prints nothing at his pitch, before and after.
+  - The four 5 dB CQs read 13, 14, 16 and 19 of 21 (62 of 84).
+  - The boards read 297 and 2111.
+- **Where the letters are lost, in two sentences.** The CQ loses whole marks in the lane, because the lane's running contrast reading dips under its 12 dB floor and the lane stops reading while the marks are plainly there. Ken never reaches the lane at all: the grid stands him first, 15 Hz off, so the lane is never handed on, and his own hand has no clean gap between dit and dah for the gate to split.
+- **The burst you saw live is not in this file.** Replayed, from 272 s only `ENWTNM` prints, at KB2UZK's 500 Hz. The burst fired another capture, which is not in the tree, so it came after this file ends.
+- **What changes tonight:** a capture sheet's `senders` line will list KB2UZK's pieces as `splinters at 500 Hz, … marks`. They no longer count toward "four or more senders held", so this capture's trigger would have counted two, not four.
 - **Suite:**
   - Build clean, 0 warnings.
-  - App line 278 of 278. Survey line 1 of 1, every group unchanged.
-  - **The engine line passed 146 of 146 and then its test host crashed.** The one retry crashed the same way after 145 passed. Per HM-DEC-276 rule 3 it is reported as **not measured whole**, with no further retry. The retry was not fully alone: idle `dotnet` build-server processes were still up.
+  - App line 278 of 278, and the new splinter tests 2 of 2. Survey line 1 of 1.
+  - **The engine line passed 146 of 146 and then its test host crashed.** The one retry, with nothing else running, crashed the same way after 145 passed. It is reported as not measured whole. This is the same crash as unit 573.
   - The two scoreboard row checks and `DecisionLogOrderTests` passed after the records were written.
 - **Pushed to `main`.** Left uncommitted, as found: `RUN_LEDGER.md`, `PARKED.md`, `.run-unit\denials.txt`, the `.run-unit\reports` files and the `cases-*.txt` files.
 - **What will look wrong but is not:**
-  - `TheShadowReachesTheGridTests.TheShadowPrintsNothing` asserts only that nothing prints at the shadow. The station-whole half is reported in its output rather than asserted, because it fails at HEAD too.
-  - The new tests are not on the carry-forward line.
+  - The survey's unadjudicated group reads 66 files. The strays bar still sums the 65 old captures (21.9), and names the trace recording apart (0.8).
 
 ## 3. What you should see
 
-- **The three fixtures, before and after** (before = HEAD, after = the grid judged to 25 Hz):
+**The trace, side by side** (as shipped):
 
-  | shadow | before | after | at the shadow |
-  |---|---|---|---|
-  | none | `CQ CQ CQ DE N0CALL N0CALL K`, 21 of 21 | the same | - |
-  | 550 Hz | `NQ CQ CQ DE N0CALL N0CALL K`, 20 of 21 | the same | nothing, both |
-  | 575 Hz | `IS EIA CQ CQ DEN0CALL N0CALL K`, 19 of 21 | the same | nothing, both |
-  | 650 Hz | `NQ CQ DE N0CALL N0CALL K`, 18 of 21 | the same | nothing, both |
+| | `cq-18wpm-5db` (truth: `CQ CQ CQ DE N0CALL N0CALL K`, 615 Hz) | Ken, `cw-2026-10-19-141708`, 272 to 300 s |
+|---|---|---|
+| 1. His lane | 625 Hz (10 Hz off), held at a 40 ms dit from 5.42 s, then 60 ms from 18.14 s; shapes 0.79 to 0.89. Handed on: 64 marks, contrast median 13.2 dB, p10 12.3 dB | **Never handed on.** The bank stands 425 Hz at 100, 60 and 40 ms dits from 286 s, shapes 0.68 to 0.72, but the grid stands him at 437 to 441 Hz from 285 s, so the lane is never clear. The only lane held in his over is 375 Hz at a 40 ms dit, 293.9 to 296.9 s, shape at most 0.24 |
+| 2. His marks | 64 of 73 found. Sorted: 55 to 65, then 150, 185 to 210 ms; jump 2.31 between 65 and 150 | The grid's: 55 220 70 81 244 215 81 113 73 103 206 113, then from 292 s pieces of 20 to 47 ms. Widest jump 1.70 (121 to 206); widest gap jump 1.69 |
+| 2. As kinded | dits 27 at 62 ms, dahs 37 at 194 ms (ratio 3.15); gaps inside 71 ms, letter 264 ms, 3.69 times, past √3. Gate: dit 61, split 109, letter line 121, word line 306 ms | Nothing kinded: the gate never qualified him. His grid sequence shows a jump of 1.82 at most (113 to 206), under the gate's two, and its shape falls from 0.68 to 0.00 to 0.19 once the pieces arrive |
+| 3. Printed | `RQKQCQ DE N0C DL N0K DL K`. `R` = dit dah dit, the C's first dah missing (lost at 1.0 s). `K` = the C with its last dit missing. `N0C DL` for the first `N0CALL`: ten marks lost from 17.0 to 18.6 s, where the lane contrast fell under 12 dB | Nothing at his pitch. From 272 s, `ENWTNM` at 500 to 501 Hz, KB2UZK's |
+| 4. By hand | 615 Hz, 100 ms dit, 16.7 dB: all 73 marks, 55 to 75 then 190 to 210 ms, jump 2.53 | 430 Hz, 100 ms dit, 19.4 dB: 48 marks, sorted 50 50 55 75 … 150 150 175 175 200 … 280; widest jump 1.36. **The tree's lane sees what the owner saw by hand: a smear, no clean gap between dits and dahs** |
 
-  The letters `IS EIA` print at 599 to 604 Hz, the station's own pitch. Built first on contrast alone, the grid rule held the station's own 600 Hz sequence as a "shadow" of its skirt at 575 or 625 Hz, and the station alone read `CQ CN ... TNALL`. That is why the level condition is there.
-- **W1AW piece-04, grid sequences held back within 25 to 50 Hz of W1AW: none.**
-  - The grid path held no sequence at all.
-  - All 706 printed letters sat at 598 to 603 Hz, both ways.
-  - No grid sequence within 25 to 50 Hz was ever picked.
-- **`cw-2026-08-31-003229`:**
-  - **As shipped**, `S EA I E THS NE A` prints from the bank's lane at **850 Hz**, held from 8.1 s to 22.1 s (100 ms dit, then 60 ms) at 13.4 to 19.8 dB contrast.
-  - **What else stood:** the only stronger thing standing anywhere was a grid sequence at **584 Hz**, of one length and shape 0.11, not a station. The rest were sequences of one or two 20 ms marks.
-  - **With the reach at 25 Hz**, the 850 Hz lane is held as a shadow of an **800 Hz lane**, 50 Hz away, at shares 0.67 to 0.70 (15.0 s and 22.0 s), and the capture prints `ZES`.
-  - **The grid path holds nothing here.** The rule as extended does hold it, through the lanes' reach.
-- **The survey's groups (score), before and after:**
+**The bank's own lanes against those marks:**
 
-  | Group | Before (572) | After (573) |
-  |---|---|---|
-  | Synthetic fixtures | 44 | 44 |
-  | Receiver fixtures, easy | 75 | 75 |
-  | Receiver fixtures, working | -4 | -4 |
-  | Receiver fixtures, edge | 0 | 0 |
-  | Receiver fixtures, ungraded | 63 | 63 |
-  | Synthetic CQs, 15 dB | 72 | 72 |
-  | Synthetic CQs, 5 dB | 46 | 46 |
-  | Synthetic CQs, 0 dB | 0 | 0 |
-  | The boards | 297 and 2111 | 297 and 2111 |
-  | Strays: highest, summed | 3.3, 21.9 | 3.3, 21.9 |
+| Lane | Against | Whole | Missed |
+|---|---|---|---|
+| CQ, 625 Hz, 100 ms | the 73 sent | 62 | 11, each where lane contrast < 12 dB (contrast under 12 for 11% of hops) |
+| CQ, 625 Hz, 60 ms | the 73 sent | 71 | 2, each where lane contrast < 12 dB |
+| CQ, 625 Hz, 40 ms | the 73 sent | 63 | 10, each where lane contrast < 12 dB |
+| Ken, 425 Hz, 100 ms | 48 by hand | 45 | 2 under 12 dB, 1 merged |
+| Ken, 425 Hz, 60 ms | 48 by hand | 45 | 3 under 12 dB |
+| Ken, 425 Hz, 40 ms | 48 by hand | 44 | 3 under 12 dB, 1 in pieces |
 
-- **The scoreboards' rows:**
-  - Twelve-plus-three: `| 573 | 2026-10-19 | 318 of 353 | 20 | 1 | **297** | 0 | 86 of 110, 3 added | …`. Judged, it also read 297, with the carrier at one seed, nothing in a silence, and the first recording whole.
-  - W1AW: `| 573 | 2026-10-19 | **2111** | 2131 of 2151 | 20 | 0 | 438 of 440, 11 added | …`. Judged: 2079.
-- **The ship conditions, judged:**
+Every missed CQ mark stood 1.9 to 17.7 dB over the lane's start line.
 
-  | Condition | Result |
-  |---|---|
-  | Both boards | **fail**: W1AW 2079 against 2111, wrong 20 to 36 (`docs\cw-scoreboard.md`, `w1aw-2026-10-07/piece-01` at 198.1 to 240.3 s) |
-  | Hard limits | carrier at 1 seed, nothing in a silence, first recording whole: hold. Strays with it on: not measured, since the survey ran once, as shipped |
-  | Weak-end guard | 13, 14, 19, 19 of 21: holds |
-  | The three fixtures | **fail**: nothing at the shadow, but the station reads 20, 19 and 18 of 21 (`TheShadowReachesTheGridTests`) |
-  | W1AW piece-04 | no grid sequence within 25 to 50 Hz picked: holds |
+**The paragraph.** The CQ fails in the lane: its marks are there and cross the level lines, but the lane's running contrast, its key-down percentile less its key-up percentile over 3 s, dips under the 12 dB floor (`CwLaneBank.MinContrastDb`). The lane then reads nothing, and the gate, which kinds the marks it gets correctly, prints letters with elements missing. Ken fails earlier and elsewhere: the bank's lane finds his marks whole, but the grid stands him first within 50 Hz, so the lane is never handed on. The grid's own reading of him never qualifies, because his hand shows no jump of two between dit and dah, and once the grid's 20 to 47 ms pieces arrive his shape collapses. They do not fail at the same place. **None of the three rules the order offered is supported:**
+- **the end hold:** no dah was cut, the hold at 0.4 already applies, and the CQ's marks are whole;
+- **the lane's own clusters:** the CQ's clusters are clean, and Ken is never handed from a lane;
+- **lines on the noise:** every missed mark crosses the lines.
+
+The rule the table supports is **that a lane already holding a station is not dropped by its own 12 dB contrast floor**. It is not built here.
+
+**Ken's over, before and after:** `ENWTNM` at 500 Hz, nothing at his pitch, 0.0 lone words per 10 s, both. The survey's whole-file figure for the recording is 0.8.
+
+**The four 5 dB CQs:** 13, 14, 16 and 19 of 21, before and after, as shipped.
+
+**The survey's groups:** every group as at unit 573. The only change is that the unadjudicated group holds 66 files.
+
+**The scoreboards' rows:**
+- Twelve-plus-three: `| 574 | 2026-10-19 | 318 of 353 | 20 | 1 | **297** | 0 | 86 of 110, 3 added | …`
+- W1AW: `| 574 | 2026-10-19 | **2111** | 2131 of 2151 | 20 | 0 | 438 of 440, 11 added | …`
+- Under them: the trace recording, not scored.
 
 ## 4. What's blocking us
 
-- **Choice taken: inside 50 Hz the stronger station must also be louder by level.** On contrast alone the grid rule took the station's own sequence for a shadow of its skirt. Past 50 Hz the rule is unchanged, and no constant (30 ms, two thirds) moved.
-- **Choice taken: the reach goes off with the switch.** Off means the lanes are judged to 50 Hz, exactly as at HEAD. The order named only the grid path, but the 25 Hz reach on the lanes alone changes what prints (on `003229` it cut 11 letters to 3). Keeping it on would have been a second setting with its boards unmeasured.
-- **Choice taken: the fixture test asserts only nothing-at-the-shadow.** The station-whole half fails at HEAD as well, and is reported, not asserted.
-- **The ghost at 550 Hz is still not reproduced.** A lockstep tone 15 dB down never stands as a grid sequence on replay. What printed live is not this.
-- **The fixtures' station losing its opening beside a lockstep tone** is a separate fault at the station's own pitch, where two tones 25 to 50 Hz apart beat.
-- **The W1AW loss with the grid judged** is in the slow stretch of piece 1. It was not traced further.
-- **The engine line's test host crashes** after its last test, twice, with no reason in the log. Unit 572 ran the same line clean.
+- **Choice taken: no rule built in task 2.** The rule the table names (a held lane is not dropped by its own contrast floor) is not one of the three offered, and the order builds only a named one. Both boards keep as shipped.
+- **Choice taken: nothing added to `.gitattributes`.** No other capture has an entry there.
+- **Choice taken: the trace recording stays out of the strays bar's summed figure.** It is not an old capture, so the 21.9 stays comparable, and its 0.8 is named beside it.
+- **Choice taken: a printed sender is never a splinter**, whatever its shape.
+- **The live burst for Ken is not in the tree.** It fell in the capture it fired, after this file ends.
+- **Ken is never handed from a lane**, because the grid stands him first. A lane rule cannot reach him while that holds.
+- **The engine line's test host crashes after its last test**, in this unit and the last, with no reason in the log. It was not traced.
 
 ### Asks still outstanding
 

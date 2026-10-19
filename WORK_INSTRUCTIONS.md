@@ -1,17 +1,31 @@
-# Work instruction 573 - The shadow rule reaches the grid, down to one lane's spacing
+# Work instruction 574 - A found weak station prints dits: Ken at 425 Hz
 
-**Hand run. Two tasks, commit per task, then the measure.** This unit extends the shadow rule
-already in the tree (`CwShadow.IsShadowOf`, judged on the bank's lanes against stations more than
-50 Hz away) to **the grid's own sequences**, and lowers the distance it reaches to **one lane's
-spacing, 25 Hz**. It changes no constant of the rule itself (30 ms, two thirds) and nothing in the
-reader.
+**Hand run. Three tasks, commit per task. Task 1 is a measurement and always ships as a report;
+task 2 ships only on the condition in §4; task 3 is small and droppable.** This zip carries one
+recording, placed by the owner's order of 2026-10-19 (*"put it in"*):
 
-**Why.** A sender 50 Hz under W1AW has printed in every live session for two weeks, never
-reproduced on replay, measured once as energy locked to W1AW's keying. The shadow rule, when it
-ran on W1AW piece-04, held **every lane from 350 to 525 Hz and 650 to 850 Hz** as W1AW's shadow at
-shares of 0.9 to 1.0 - and could not look at 550 Hz, because 550 is exactly 50 Hz from 600 and
-the rule only judges stations further than that. The ghost is a shadow the rule is not allowed to
-see, and it prints from the grid, which the rule does not judge at all.
+```
+tests\fixtures\cw\captured\cw-2026-10-19-141708.wav   300 s, 48 kHz, 7.0519 MHz, 40 m
+tests\fixtures\cw\captured\cw-2026-10-19-141708.txt   its sheet
+```
+
+It is the first live capture with the weak end on (`weak on`, 1.13.256, AGC SLOW). **It is not
+added to either scoreboard.** It is a trace recording with no truth: nobody wrote down what Ken
+sent. Add it to the survey's list as a file without a truth, like the old captures, and to
+`.gitattributes` as the other captures are.
+
+**What is in it.** A QSO on 7.0519. KB2UZK, a 13 WPM hand at 500 Hz, S7, reads on the screen like
+a log entry: `GM KEN NICE TO MEET U … RPRT UR 559 … MOBILE STN … QTH IS … CHICOPEE MA … PARKED IN
+MY MOBILE <BT> … DE KB2UZK`. **The other side, Ken, sits at about 425 Hz, 75 Hz below, and keys
+from about 272 s to the end of the file.** Measured by hand through a lane at 425 Hz with a 100 ms
+dit, he is a real station at about 24 dB of contrast. The sheet agrees: `bank … best 425 Hz shape
+0.59 at a 100 ms dit`. **What printed for him was** `EIE E EIET EI I I E SE I DE MM TT XF N IE E
+EI E E EI E E NEE ETO` **- a stray burst, which fired the other capture.** A station the bank
+stood on, handed on, and printed as dits.
+
+**This is the same thing the 5 dB CQs show on replay** (`N0 IL N0N L I K` for `N0CALL N0CALL K`:
+letters losing elements), now on a real signal with a recording. The CQs have a truth; Ken does
+not. **The CQs are the yardstick; Ken is the specimen.**
 
 **Standing rules** (HM-DEC-276): one setting per unit, no side variants; do not stop to ask -
 take the choice that keeps both boards and name it in section 4; a run stopped for memory is run
@@ -19,10 +33,10 @@ once more alone, then reported as not measured.
 
 Earlier unit numbers are not cited: each part of the tree is described by what it does.
 
-**Nothing keys or transmits. Nothing is written to the radio. No recording is added, removed or
-promoted.** A synthetic fixture is generated for the test; it is not a recording.
+**Nothing keys or transmits. Nothing is written to the radio.** The one recording above is added;
+no other is added, removed or promoted.
 
-**Numbering.** This is unit 573, ruling HM-DEC-277. If taken, use the next free and say so.
+**Numbering.** This is unit 574, ruling HM-DEC-278. If taken, use the next free and say so.
 (HM-DEC-269 stays held for unit 565.)
 
 ---
@@ -37,7 +51,7 @@ PROJECT: Hamlet
 Check the repository root:
   MUST EXIST:      SHACK_FACTS.md
   MUST EXIST:      docs\cw-scoreboard.md
-  MUST EXIST:      src\Hamlet.RadioEngine\Cw\CwShadow.cs
+  MUST EXIST:      tests\fixtures\cw\captured\cw-2026-10-19-141708.wav
   MUST NOT EXIST:  CoreHMI.sln
   MUST NOT EXIST:  MURC.sln
   root             C:\Source\HamLet
@@ -56,91 +70,104 @@ If all five hold, say "Hamlet confirmed" and continue.
   to `RUN_LEDGER.md`. Touch nothing under `tools\arbiter\`. Tick nothing in `PHASE_PLAN.md`.
 - One `dotnet test` invocation per line, filtered, with a `timeout`. The survey line gets 1800 s.
 - Apostrophes in quoted heredocs break; `;` is refused; Python cannot run here; `-m` more than
-  once for a multi-line commit. Scripts go in `.run-unit\unit573-<name>.sh`, not committed.
+  once for a multi-line commit. Scripts go in `.run-unit\unit574-<name>.sh`, not committed.
 - **The one layout holds**: nothing on screen moves.
 - `output.md` at the root, four headings exactly: `## 1. What Claude did`, `## 2. What the owner
   should expect`, `## 3. What you should see`, `## 4. What's blocking us`. Status on the tree's
   own triggers; the phase count as `PHASE_STATUS.md` holds it; the asks list carried forward.
+- The recording is committed in the first commit, with its sheet, before any code.
 
 ---
 
-## 2. Task 1 - the rule reaches the grid, and reaches 25 Hz
+## 2. Task 1 - the trace, always shipped
 
-1. **Distance.** The shadow rule judges a sequence against every stronger station **more than
-   `ShadowReachHz` away, 25 Hz** - one lane's spacing, the smallest distance at which the chain
-   tells two pitches apart. The constant has a name; the "same station" distance the handover
-   uses (50 Hz) is not changed. A station 25 to 50 Hz from a stronger one is therefore judged for
-   shadow but is still "the same station" for the handover's purposes; say in one line how the
-   two rules sit together in the code, and that nothing is judged twice.
-2. **The grid.** Before the sender gate picks or keeps a grid sequence as a station, the sequence
-   is judged by the same rule, by reference, against every stronger station Hamlet holds (grid
-   and bank) more than 25 Hz away. **A grid sequence that is a shadow is never picked, and a
-   held grid station that becomes a shadow is let go** - the gate's own release path, last letter
-   settled or dropped by its own rule. Judged over the sequence's last ten marks, as the lanes
-   are, and again as the sequence moves.
-3. **Order.** Shadow is judged before the pick, for grid and bank alike, so dropping a shadow
-   never sets off a fresh pick at the same station; a station picked within `LaneLeadSeconds`
-   of a shadow being dropped hands on no backlog. These are the handover's rules already in the
-   tree; they apply to the grid's path the same way.
-4. **The record.** The capture sheet's `bank` line gains the shadows held in the last minute
-   (pitch, share, the station it shadows); `cw_listen` gains `shadows`. **This is the line that
-   names the live 550 Hz sender in the next W1AW session's sheet.**
+**Ken's over, 272 to 300 s of the recording, through the chain as shipped**, one table and one
+paragraph:
 
-## 3. Task 2 - the fixture and the trace
+1. **His lane:** which lane stood on him (pitch, dit size), from what second, its shape, its
+   contrast median and p10 over the over, and when it was handed on.
+2. **His marks, as the lane found them**, in order, with lengths in ms, and the gaps between
+   them; then the same marks **as the pattern gate kinded them** (dit, dah, inside gap, letter
+   gap, word gap) and the two clusters it held (centres, and the √3 jump between them or not).
+3. **What the reader printed**, mark by mark against the kinds, so each `E`, `I`, `T` is traced
+   to the marks that made it.
+4. **His marks by hand**, through a lane opened at his true pitch (find it to 5 Hz) with a 100 ms
+   dit: the same mark list, at the level rule (up at 0.6 of contrast, down at 0.4, half a dit at
+   least); the lengths sorted, so the eye can see whether there are two clusters or a smear.
+   The owner's own measurement by hand found lengths from 35 to 410 ms with no clean gap between
+   dits and dahs - say whether the tree's lane sees the same.
+5. **The same four rows for `cq-18wpm-5db`**, which has a truth, so the two can be compared on
+   one page: what its lane finds, how the gate kinds it, what prints, and the by-hand marks.
 
-1. **A synthetic fixture for the test** (not a recording; generated as the synthetic CQs are):
-   a sender at 600 Hz, 18 WPM, 20 dB, and **a second tone at 550 Hz keyed in lockstep with it,
-   15 dB under it** - the shadow as measured live. Before task 1, say what the chain prints at
-   550 Hz; after, it prints nothing there, and the 600 Hz station reads whole. A second case with
-   the shadow at 575 Hz, and a third at 650. All three in `TheShadowReachesTheGridTests`.
-2. **The side trace, `cw-2026-08-31-003229`:** the one old capture whose strays rose when the
-   handover shipped (`S EA I E THS NE A`). Through the chain as shipped: which lane or grid
-   sequence printed it, its pitch, its contrast, what stronger station stood at the time and
-   where, and whether the rule as extended now holds it as a shadow. One paragraph; no rule is
-   changed for it.
+**The paragraph:** where the letters are lost - the lane (marks that are not there), the level
+rule (dahs cut into pieces by the lane's own noise), the gate (two clusters not found, so the
+kinds are wrong), or the reader - and whether Ken and the CQ fail at the same place. **Name one
+rule** that the table supports, or say none does.
 
-## 4. The measure, and the ship
+## 3. Task 2 - the one rule, if the table names it
 
-With both tasks in, measure, and **ship only if**:
+Candidates, in order; **only the one the table names is built**; the others are not tried:
 
-- **both boards hold:** **297** stands or rises, **2111** stands or rises, wrong and invented do
-  not rise on either;
+- **The lane's mark end is held through its own noise:** a lane's mark ends only when the level
+  has stayed under 0.4 for a quarter of the lane's dit (the bank already does this for 0.6 - say
+  whether the same hold applies at 0.4, and if not, apply it), and a dip shorter than that inside
+  a mark does not end it.
+- **The lane's clusters are its own, not the grid's:** a station handed on from a lane is kinded
+  on the lane's marks alone, with the gate's memory cleared of any grid pieces at that pitch, so
+  the two clusters form from his marks and not from the grid's 20 to 35 ms splinters.
+- **The level lines on a lane sit on its own noise:** up and down at a set number of spreads
+  above the lane's key-up floor rather than at 0.4 and 0.6 of contrast, where the contrast is
+  low.
+
+**Ships only if:**
+
+- the **four 5 dB CQs' total rises** (from 13 + 14 + 16 + 19 = 62 of 84) and none falls under
+  half;
+- **Ken's over** prints fewer lone one- and two-element words per 10 s than as shipped, and at
+  least one word of three or more letters that was not there before (reported, since he has no
+  truth);
+- **both boards hold:** 297 stands or rises, 2111 stands or rises, wrong and invented do not
+  rise on either;
 - **the hard limits hold:** noise prints nothing, the carrier at no more than one of twenty
   seeds, the first recording whole, nothing in silences, no old capture above six strays per
-  10 s;
-- **the weak-end guard holds:** the four 5 dB CQs at half their letters or better;
-- **the three fixtures** read as task 2 states;
-- **on W1AW piece-04, no grid sequence within 25 to 50 Hz of W1AW is ever picked** - list every
-  one the rule holds back, with pitch and share, the way the lanes were listed.
+  10 s.
 
-If it fails, say which condition, by how much, which file; leave the grid path behind a switch
-off by default (`CwShadow.JudgesTheGrid`), keep the fixture and the trace, and report.
+If it fails, say which condition, by how much, which file; leave the rule behind a switch off by
+default; keep the trace.
 
-Then rerun the survey, rewrite `docs\cw-survey-2026-10-09.md` with a new `Rerun` line, and put
-per group before and after in the report.
+## 4. Task 3 - splinters are not senders (droppable)
+
+The sheet's `senders` line for this capture reads `500 Hz shape 0.02, 445 marks; 500 Hz shape
+0.00, 276 marks` - KB2UZK's own splinters from the grid, held as senders, and they are what
+tripped the `four or more senders held` capture trigger. **A sequence of shape under 0.1 is not a
+held sender for the trigger's count or the sheet's line**; it is listed, if at all, as `splinters
+at 500 Hz, 445 marks`. Nothing about reading changes; both boards as at HEAD. Drop if time is
+short.
 
 ---
 
 ## 5. Record
 
-- `PHASE_OUTCOME.md`, both copies: `## UNIT 573 - STEP 12`, one paragraph.
-- `PHASE_STATUS.md`, both copies: names 573.
+- `PHASE_OUTCOME.md`, both copies: `## UNIT 574 - STEP 12`, one paragraph.
+- `PHASE_STATUS.md`, both copies: names 574.
 - Patch-bump `Directory.Build.props`.
 - `CLAUDE.md` §1 index row.
-- `DECISIONS.md`, newest first, **HM-DEC-277**, headline *The shadow rule reaches the grid, down
-  to one lane's spacing*, naming `ShadowReachHz`, the grid path, the fixture's figures before and
-  after, the W1AW list, and the boards.
-- `docs\cw-scoreboard.md`: a 573 row in each table.
-- `CW_SPEC.md` §2: the shadow paragraph updated: both finders are judged, to 25 Hz.
-- **Touch no checkbox in `PHASE_PLAN.md`**, and add no ruling beyond HM-DEC-277.
+- `DECISIONS.md`, newest first, **HM-DEC-278**, headline *A found weak station prints dits*,
+  quoting the owner's order to keep the recording, naming where the letters are lost, the rule
+  shipped or that none was, and the figures before and after (the CQs, Ken's strays, the boards).
+- `docs\cw-scoreboard.md`: a 574 row in each table; a line under the tables naming the recording
+  as a trace recording with no truth, not scored.
+- `docs\cw-survey-2026-10-09.md`: the recording in the unadjudicated group (rerun the survey).
+- `CW_SPEC.md` §2: one sentence if a rule shipped.
+- **Touch no checkbox in `PHASE_PLAN.md`**, and add no ruling beyond HM-DEC-278.
 
 ---
 
 ## 6. Report
 
-Section 2, for the owner, in plain words, leading with **whether the ghost beside W1AW is now
-caught and what it cost** - the fixture at 550 Hz before and after, the boards, the weak-end
-guard - then what the sheet will say tonight (`shadows` with pitch and share) and that the 550 Hz
-sender should appear there by name. Section 1: per task. **Section 3: the three fixtures before
-and after; the W1AW piece-04 list of grid sequences held back; the 003229 paragraph; the survey's
-groups before and after; both scoreboards' rows.** Section 4: anything left, a line each.
+Section 2, for the owner, in plain words, leading with **whether a weak station found by the
+bank now prints letters instead of dits and what it cost** - Ken's over before and after, the
+four CQs before and after, the boards - then where the letters were being lost, in two
+sentences. Section 1: per task. **Section 3: the trace tables for Ken and the CQ side by side;
+Ken's over as printed before and after; the four CQs; both scoreboards' rows.** Section 4:
+anything left, a line each.

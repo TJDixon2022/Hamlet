@@ -4,6 +4,41 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-278
+date: 2026-10-19
+refs: work instruction 574, HM-DEC-277, HM-DEC-276, HM-DEC-273, tests/fixtures/cw/captured/cw-2026-10-19-141708.wav, tests/Hamlet.RadioEngine.Tests/Cw/TheFoundWeakStationTests.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheCwSurveyTests.cs, src/Hamlet.RadioEngine/Cw/CwShapeSideReading.cs, src/Hamlet.App/ViewModels/MainWindowViewModel.cs, tests/Hamlet.App.Tests/Cw/TheSplintersAreNotSendersTests.cs, docs/cw-scoreboard.md, docs/cw-survey-2026-10-09.md
+---
+
+**A found weak station prints dits: traced, and no rule shipped.** The owner, 2026-10-19, of `cw-2026-10-19-141708`: *"put it in."* It is committed as a trace recording with no truth, on neither scoreboard, and read by the survey in the unadjudicated group, outside the old captures' summed strays.
+
+**What is in it:**
+- KB2UZK at 500 Hz, and Ken about 75 Hz below him, from about 272 s to the end.
+- Live, a stray burst printed for Ken. Replayed through the chain as shipped, nothing prints near his pitch in the file, and from 272 s only `ENWTNM` prints, at 500 Hz. The burst fired another capture, not in the tree, and so fell after this file ends.
+
+**Where the letters are lost: not in one place.**
+- **The 5 dB CQ at 18 WPM is lost in the lane.**
+  - The bank's lane at 625 Hz, 10 Hz off the CQ's 615, finds 64 of its 73 marks, and the gate kinds them right: dits centred at 62 ms, dahs at 194, a jump of 2.31 between 65 and 150 ms, and letter gaps 3.69 times the gaps inside letters. The letters go wrong only where marks are missing (`RQKQCQ`, `N0C DL`).
+  - Against the bank's own lanes, every missed mark falls where the lane's contrast reading dips under its 12 dB floor (`CwLaneBank.MinContrastDb`), while the mark itself stands 2 to 17 dB over the start line: 11, 2 and 10 marks missed for the 100, 60 and 40 ms lanes.
+  - A lane opened by hand at 615 Hz finds all 73, at 16.7 dB.
+- **Ken is lost before the lane.**
+  - The bank's lane at 425 Hz finds 45 of the 48 marks a lane opened by hand at 430 Hz finds (19.4 dB), and stands him at shape 0.70 from 286 s.
+  - But the grid stands him itself at about 440 Hz from 285 s, so the lane is never clear and never handed on.
+  - The sender gate never qualifies the grid's Ken: his marks run 55 to 244 ms with a widest jump of 1.82, under its two. From 292 s the grid's pieces of him are 20 to 47 ms and his shape falls to 0.00 to 0.19.
+  - By hand his lengths run 50 to 280 ms with no jump wider than 1.36, as the owner measured, a hand with no clean gap between dit and dah.
+
+**The rule.** The table supports one, and it is none of the three the order offered:
+- The level rule does not cut the dahs; the CQ's are whole, and Ken's are whole but one.
+- The lane's clusters are not the problem: the CQ's form clean, and Ken is never handed from a lane.
+- The lines are not the problem either: every missed mark crosses them.
+
+The rule the table names is that a held lane's marks are not lost to its own contrast floor. The order built only a named candidate, so nothing was built, and every figure is as shipped:
+- the four 5 dB CQs 13, 14, 16 and 19 of 21, 62 of 84;
+- Ken's over 0.0 lone words per 10 s on replay, and nothing printed at his pitch;
+- the boards 297 and 2111.
+
+**Splinters are not senders.** A sequence the gate holds under its release line, shape 0.1, and not printed no longer counts toward the four-senders capture trigger. The sheet lists it apart, as `splinters at 500 Hz, 445 marks`. On this capture the trigger would have counted two, not four. Nothing about reading changes.
+
+---
 id: HM-DEC-277
 date: 2026-10-19
 refs: work instruction 573, HM-DEC-276, HM-DEC-275, src/Hamlet.RadioEngine/Cw/CwShadow.cs, src/Hamlet.RadioEngine/Cw/CwEnvelopeDetector.cs, src/Hamlet.RadioEngine/Cw/CwPatternGate.cs, src/Hamlet.App/Telemetry/AppEvents.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheShadowReachesTheGridTests.cs, docs/cw-scoreboard.md, docs/cw-survey-2026-10-09.md, CW_SPEC.md
