@@ -73,6 +73,46 @@ refs: work instruction 573, HM-DEC-276, HM-DEC-275, src/Hamlet.RadioEngine/Cw/Cw
 **As shipped, off:** the boards 297 and 2111, as at HEAD.
 
 ---
+id: HM-DEC-269
+date: 2026-10-19
+refs: work instruction 565, HM-DEC-242, HM-DEC-235, HM-DEC-276, src/Hamlet.RadioEngine/Cw/CwPatternGate.cs, src/Hamlet.RadioEngine/Cw/CwRules.cs, src/Hamlet.RadioEngine/Cw/CwSenderGate.cs, src/Hamlet.App/ViewModels/MainWindowViewModel.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheSpacesByCauseTests.cs, tests/Hamlet.RadioEngine.Tests/Cw/AWordLineIsWhereTheGapsCrossTests.cs, docs/cw-scoreboard.md
+---
+
+**The word line sits between the sender's two gap clusters: built, measured, and left off.** The owner read a straight-key QSO on the SKCC frequency on 2026-10-08, AGC SLOW, with the letters right and the spaces missing:
+
+```
+QTHWVWVNAMEIS JOEL          QTH WV WV NAME IS JOEL
+GAESTUURRST5 995NN          GA ES TU UR RST 599 NN
+DEKE8WIC GUD CPY            DE KE8WIC GUD CPY
+```
+
+**The rule, as ordered:** `CwPatternGate.BetweenClusters` sets the word line from the sender's two gap clusters.
+- **Both clusters standing** (three word gaps or more): the geometric mean of its letter-gap cluster's top (the 90th percentile) and its word-gap cluster's bottom (the 10th).
+- **Only the letter cluster standing:** that top times √3.
+
+**How the line is set today:** in `CwPatternGate.GapLines`.
+- From three word gaps, the equal-error crossing of the sender's letter and word clusters.
+- Before that, the larger of √21 times the centre of its gaps inside letters, and √(7/3) times its letter-gap mean.
+
+**Measured first, the premise does not hold.** The twelve named gaps were measured at the moment each was judged. The sender's letter cluster already held the word gaps that went missing:
+- Its top was the missed gap itself, or at it: 283, 372, 405 and 288 ms.
+- The proposed line would have sat higher than the line it replaces: 701 ms where it was 460 on `221745`, and 693 where it was 399 on `DAYS`.
+- On the same clusters it found none of the nine missed word gaps, and still spaced both letter gaps over the line, `6CHA` and `SCOU`; it only stopped spacing `6C|HAM`.
+
+**Measured once on, as stated:**
+- **The twelve-plus-three:** spaces fell from 86 of 110 (3 added) to 73 of 110 (2 added), letters holding at 297.
+- **W1AW** held at 2111. Its spaces were not measured.
+- **The four 5 dB CQs** held at 13, 14, 16 and 19 of 21.
+- **The SKCC hand,** a straight key at 15 WPM with letter gaps of 2 to 4 dits and word gaps of 4 to 6: 10, 12 and 12 of 14 word spaces as shipped, and 9, 12 and 12 with the rule.
+- **The hand whose gaps touch:** 12, 14 and 12 of 14 as shipped, and 12, 13 and 12 with the rule.
+
+The ship condition, the twelve-plus-three's spaces rising, failed. The rule ships off, a rule a test can choose (`CwRules.OffByDefault`), and Hamlet reads exactly as at HEAD: the boards 297 and 2111, spaces 86 of 110 with 3 added.
+
+**What the measurement names instead:** a sender's word gaps sorted into its letter cluster, so the clusters themselves are wrong where the line misses. This is the split, not the line, and it is left for a ruling.
+
+**The clusters on the sheet:** every capture sheet, Record and automatic, carries a `clusters` line beside `speed`. It holds the printed sender's letter-gap centre and top, its word-gap centre and bottom where one shows, and its word line, in ms, as at its last letter. Nothing about reading changes.
+
+---
 id: HM-DEC-276
 date: 2026-10-14
 refs: work instruction 572, HM-DEC-275, HM-DEC-274, HM-DEC-273, src/Hamlet.RadioEngine/Cw/CwEnvelopeDetector.cs, src/Hamlet.App/ViewModels/MainWindowViewModel.WeakStations.cs, src/Hamlet.App/Views/MainWindow.axaml, src/Hamlet.App/Settings/AppSettings.cs, src/Hamlet.App/Telemetry/AppEvents.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheWeakEndTests.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheCwSurveyTests.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheRecordingsScoreboardTests.cs, docs/cw-scoreboard.md, docs/cw-survey-2026-10-09.md, CW_SPEC.md
