@@ -95,6 +95,9 @@ internal static class CwRules
     /// <summary>The shadow rule judges the grid's own sequences as well as the bank's lanes (work instruction 573).</summary>
     public const string ShadowGrid = "the shadow rule judges the grid";
 
+    /// <summary>The word line sits between the sender's two gap clusters (work instruction 565).</summary>
+    public const string BetweenClusters = "the word line between the gap clusters";
+
     /// <summary>Every rule kept, in the order the work instruction names them.</summary>
     /// <remarks>
     /// **THREE RULES EARNED THEIR PLACE; TEN LEFT THE TREE** (work instruction 541, HM-DEC-245): of the thirteen work
@@ -112,10 +115,33 @@ internal static class CwRules
     [ThreadStatic]
     private static HashSet<string>? _off;
 
-    /// <summary>Whether a rule is on: always, unless a test turned it off on this thread.</summary>
+    /// <summary>
+    /// The rules that ship off, built and measured and not taken: off unless a test chooses one on this thread with
+    /// <see cref="Choose"/> (work instruction 565).
+    /// </summary>
+    public static readonly IReadOnlySet<string> OffByDefault = new HashSet<string>(StringComparer.Ordinal) { BetweenClusters };
+
+    [ThreadStatic]
+    private static HashSet<string>? _chosen;
+
+    /// <summary>Turns rules that ship off on, on this thread, until the result is disposed.</summary>
+    /// <param name="rules">The rules.</param>
+    /// <returns>What puts them back.</returns>
+    public static IDisposable Choose(params string[] rules)
+    {
+        var before = _chosen;
+
+        _chosen = new HashSet<string>(before ?? [], StringComparer.Ordinal);
+        _chosen.UnionWith(rules);
+
+        return new Restore(() => _chosen = before);
+    }
+
+    /// <summary>Whether a rule is on: always, unless a test turned it off on this thread; and a rule that ships off only where a test chose it.</summary>
     /// <param name="rule">The rule.</param>
     /// <returns>Whether it applies.</returns>
-    public static bool On(string rule) => _off is null || !_off.Contains(rule);
+    public static bool On(string rule)
+        => OffByDefault.Contains(rule) ? _chosen?.Contains(rule) == true && (_off is null || !_off.Contains(rule)) : _off is null || !_off.Contains(rule);
 
     /// <summary>Turns rules off on this thread until the returned handle is disposed.</summary>
     /// <param name="rules">The rules.</param>

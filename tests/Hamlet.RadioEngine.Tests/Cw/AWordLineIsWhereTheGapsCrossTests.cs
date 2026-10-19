@@ -122,6 +122,32 @@ public sealed class AWordLineIsWhereTheGapsCrossTests
     /// <remarks>
     /// Both hands with the two word-line rules off, as they read before this unit. Asserts nothing; the readings are the result.
     /// </remarks>
+    /// <remarks>
+    /// Work instruction 565: the SKCC hand, a straight key at 15 WPM with letter gaps of 2 to 4 dits and word gaps of 4 to 6,
+    /// and the hand whose gaps touch, each at three seeds, with the word line as it ships and with the line between the
+    /// sender's two clusters, built and left off (HM-DEC-269). Asserts nothing.
+    /// </remarks>
+    [Fact]
+    public void TheSkccHandAndTheLineBetweenTheClusters()
+    {
+        foreach (var between in new[] { false, true })
+        {
+            using var _ = between ? CwRules.Choose(CwRules.BetweenClusters) : null;
+
+            _output.WriteLine(between ? "the line between the clusters:" : "the line as it ships:");
+
+            foreach (var seed in new[] { 5401, 5402, 5403 })
+            {
+                Read(15, (2, 4), (4, 6), seed);
+            }
+
+            foreach (var seed in new[] { 5381, 5382, 5383 })
+            {
+                Read(20, (3, 5.5), (6, 10), seed);
+            }
+        }
+    }
+
     [Fact]
     public void BothHandsBeforeThisUnit()
     {

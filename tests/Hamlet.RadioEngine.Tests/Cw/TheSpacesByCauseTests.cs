@@ -13,7 +13,20 @@ namespace Hamlet.RadioEngine.Tests.Cw;
 public sealed class TheSpacesByCauseTests(ITestOutputHelper output)
 {
     /// <summary>One space the board counts as missing or added.</summary>
-    internal sealed record Place(string Recording, double PitchHz, bool Missing, string Around, double GapMs, double LineMs, double LetterMs, double WordMs, string Cause);
+    internal sealed record Place(string Recording, double PitchHz, bool Missing, string Around, double GapMs, double LineMs, double LetterMs, double WordMs, string Cause)
+    {
+        /// <summary>The letter cluster's top, its 90th percentile, at the moment the gap was judged (work instruction 565).</summary>
+        public double LetterTopMs { get; init; } = double.NaN;
+
+        /// <summary>The word cluster's bottom, its 10th percentile, where one shows (work instruction 565).</summary>
+        public double WordBottomMs { get; init; } = double.NaN;
+
+        /// <summary>Where the line between the two clusters falls on the same clusters (work instruction 565).</summary>
+        public double BetweenMs { get; init; } = double.NaN;
+
+        /// <summary>How many word gaps the sender's word cluster held.</summary>
+        public int WordCount { get; init; }
+    }
 
     /// <summary>The places of one stretch: aligned as <see cref="SpacesOf"/> aligns, with the printed gaps either side.</summary>
     internal static List<Place> PlacesOf(Scored s)
@@ -102,7 +115,13 @@ public sealed class TheSpacesByCauseTests(ITestOutputHelper output)
                 cause = "a word gap under the line, the sender's word cluster shown";
             }
 
-            places.Add(new Place(s.Stretch.Recording, s.Stretch.PitchHz, !added, around, gap, line, letterMs, wordMs, cause));
+            places.Add(new Place(s.Stretch.Recording, s.Stretch.PitchHz, !added, around, gap, line, letterMs, wordMs, cause)
+            {
+                LetterTopMs = lines?.LetterGaps is { } lg ? Hamlet.RadioEngine.Cw.CwPatternGate.Percentile(lg, Hamlet.RadioEngine.Cw.CwPatternGate.LetterTopShare) * 1000 : double.NaN,
+                WordBottomMs = lines?.WordGaps is { } wg ? Hamlet.RadioEngine.Cw.CwPatternGate.Percentile(wg, Hamlet.RadioEngine.Cw.CwPatternGate.WordBottomShare) * 1000 : double.NaN,
+                BetweenMs = lines?.LetterGaps is { } lg2 ? Hamlet.RadioEngine.Cw.CwPatternGate.BetweenClusters(lg2, lines.WordGaps) * 1000 : double.NaN,
+                WordCount = lines?.WordGaps?.Count ?? 0,
+            });
         }
 
         return places;
@@ -127,5 +146,34 @@ public sealed class TheSpacesByCauseTests(ITestOutputHelper output)
         }
 
         output.WriteLine($"board: spaces {board.SpacesRight} of {board.SpacesOutOf}, {board.SpacesAdded} added; places {places.Count(p => p.Missing)} missing, {places.Count(p => !p.Missing)} added");
+    }
+
+    /// <remarks>
+    /// Work instruction 565, task 1, step 1: with the word line as it was, every space missed under the line and every space
+    /// added over it, the sender's clusters at the moment the gap was judged, the line, and where the line between the clusters
+    /// would be on the same clusters. Asserts nothing.
+    /// </remarks>
+    [Fact]
+    public void TheGapsAgainstTheLines()
+    {
+        using var before = Hamlet.RadioEngine.Cw.CwRules.Off(Hamlet.RadioEngine.Cw.CwRules.BetweenClusters);
+        var board = Score(limits: false);
+        var places = board.Stretches.Where(s => s.Stretch.Confidence >= Confidence.Medium).SelectMany(PlacesOf)
+            .Where(p => p.Cause.Contains("under the line", StringComparison.Ordinal) || p.Cause.Contains("over the line", StringComparison.Ordinal))
+            .ToList();
+        var inv = CultureInfo.InvariantCulture;
+
+        output.WriteLine("| recording | around | kind | gap | letter centre | letter top | word centre | word bottom (gaps) | the line was | between the clusters | then |");
+        output.WriteLine("|---|---|---|---|---|---|---|---|---|---|---|");
+
+        foreach (var p in places)
+        {
+            var then = p.GapMs > p.BetweenMs ? "word" : "letter";
+            var right = p.Missing ? then == "word" : then == "letter";
+
+            output.WriteLine(string.Create(inv, $"| `{p.Recording}` | `{p.Around}` | {(p.Missing ? "word gap missed" : "letter gap spaced")} | {p.GapMs:0} | {p.LetterMs:0} | {p.LetterTopMs:0} | {(double.IsNaN(p.WordMs) ? "-" : p.WordMs.ToString("0", inv))} | {(double.IsNaN(p.WordBottomMs) ? "-" : $"{p.WordBottomMs:0} ({p.WordCount})")} | {p.LineMs:0} | {p.BetweenMs:0} | {then}{(right ? ", right" : ", still wrong")} |"));
+        }
+
+        output.WriteLine(string.Create(inv, $"board, the line as it was: spaces {board.SpacesRight} of {board.SpacesOutOf}, {board.SpacesAdded} added"));
     }
 }

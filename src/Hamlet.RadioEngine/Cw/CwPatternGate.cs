@@ -142,10 +142,44 @@ internal sealed class CwPatternGate
         // owner's recordings measured as worth nothing gone, the scoreboard held without it, and the √21 line already keeps
         // a word line off the letter gaps in a transmission's first seconds.
         var wordLine = letterMean is not { } l ? gapDit * UnmeasuredWordRatio
+            : CwRules.On(CwRules.BetweenClusters) ? BetweenClusters(letter!, word)
             : word is { Count: >= MeasuredRunGaps } ? (CwRules.On(CwRules.GapCrossing) ? Crossing(letter!, word) : CwSenderGate.Boundary(CwSenderGate.LogStats(letter!), CwSenderGate.LogStats(word)))
             : Math.Max(CwRules.On(CwRules.ColdStartWordLine) ? (inside.Count >= MeasuredRunGaps ? Centre(inside) : gapDit) * UnmeasuredWordRatio : 0, l * LetterWordRatio);
 
         return new CwGapLines(gapDit, character, wordLine, inside, letter, word);
+    }
+
+    /// <summary>The share of the sender's letter gaps under the letter cluster's top: nine in ten (work instruction 565).</summary>
+    public const double LetterTopShare = 0.9;
+
+    /// <summary>The share of the sender's word gaps under the word cluster's bottom: one in ten (work instruction 565).</summary>
+    public const double WordBottomShare = 0.1;
+
+    /// <summary>
+    /// **THE WORD LINE SITS BETWEEN THE SENDER'S TWO GAP CLUSTERS** (work instruction 565, HM-DEC-269): where its word cluster
+    /// stands, <see cref="MeasuredRunGaps"/> gaps or more, the geometric mean of its letter cluster's top (the 90th percentile)
+    /// and its word cluster's bottom (the 10th); where only its letter cluster stands, that top times √3, the gap kinds' own
+    /// jump. Nothing in it is fixed to the dit or the speed: the clusters are the sender's own.
+    /// </summary>
+    /// <remarks>
+    /// The line it replaces sat at the bottom of the word cluster, not between the two: on the owner's twelve-plus-three, nine
+    /// word gaps fell under it (252 ms under 254, 372 and 424 under 508, 305, 380 and 405 under 463), each above every letter
+    /// gap its sender had kept.
+    /// </remarks>
+    /// <param name="letter">The sender's letter gaps.</param>
+    /// <param name="word">Its word gaps, or null where none shows.</param>
+    /// <returns>The line, in seconds.</returns>
+    internal static double BetweenClusters(IReadOnlyList<double> letter, IReadOnlyList<double>? word)
+        => word is { Count: >= MeasuredRunGaps }
+            ? Math.Sqrt(Percentile(letter, LetterTopShare) * Percentile(word, WordBottomShare))
+            : Percentile(letter, LetterTopShare) * ElementLetterRatio;
+
+    /// <summary>The nearest-rank percentile of some lengths: the smallest that this share of them do not exceed.</summary>
+    internal static double Percentile(IReadOnlyCollection<double> values, double share)
+    {
+        var sorted = values.OrderBy(v => v).ToList();
+
+        return sorted.Count == 0 ? double.NaN : sorted[Math.Clamp((int)Math.Ceiling(share * sorted.Count) - 1, 0, sorted.Count - 1)];
     }
 
     /// <summary>How many gaps either side a gap is judged against: three, a letter's worth (work instruction 526).</summary>
