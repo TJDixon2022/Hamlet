@@ -541,6 +541,7 @@ public sealed class CwEnvelopeDetector
             _laneCarrier.Clear();
             _shadowsNow.Clear();
             _shadowLetGoAt = double.NegativeInfinity;
+            _bank.Held = null;
             _bankLane = null;
             Volatile.Write(ref _weakStationPitchHz, double.NaN);
             return;
@@ -656,6 +657,7 @@ public sealed class CwEnvelopeDetector
 
         _shadowsNow = shadows;
         Volatile.Write(ref _weakStationPitchHz, _bankLane?.PitchHz ?? double.NaN);
+        _bank.Held = _bankLane is { } kept ? (kept.Dit, kept.PitchHz) : null;
 
         if (_bankLane is { } lane)
         {

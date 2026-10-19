@@ -101,6 +101,9 @@ internal static class CwRules
     /// <summary>A letter cluster across √21 of the sender's gap dits is split there, and the word line drawn there (work instruction 575).</summary>
     public const string StraddleSplit = "a letter cluster across the word midpoint is two kinds";
 
+    /// <summary>A lane holding a handed-on station is not dropped by its own contrast floor (work instruction 575).</summary>
+    public const string HeldLaneReads = "a held lane keeps reading";
+
     /// <summary>Every rule kept, in the order the work instruction names them.</summary>
     /// <remarks>
     /// **THREE RULES EARNED THEIR PLACE; TEN LEFT THE TREE** (work instruction 541, HM-DEC-245): of the thirteen work
@@ -122,7 +125,7 @@ internal static class CwRules
     /// The rules that ship off, built and measured and not taken: off unless a test chooses one on this thread with
     /// <see cref="Choose"/> (work instruction 565).
     /// </summary>
-    public static readonly IReadOnlySet<string> OffByDefault = new HashSet<string>(StringComparer.Ordinal) { BetweenClusters, StraddleSplit };
+    public static readonly IReadOnlySet<string> OffByDefault = new HashSet<string>(StringComparer.Ordinal) { BetweenClusters, StraddleSplit, HeldLaneReads };
 
     [ThreadStatic]
     private static HashSet<string>? _chosen;

@@ -83,6 +83,15 @@ internal sealed class CwLaneBank
     /// <summary>The bank's pattern gates, one per dit, in the order of <see cref="DitSeconds"/>.</summary>
     public IReadOnlyList<CwPatternGate> Gates => _gates;
 
+    /// <summary>
+    /// **A HELD LANE KEEPS READING** (work instruction 575, task 2): the lane whose station the detector has handed to the sender
+    /// gate, by dit index and pitch, or null. Its contrast floor, <see cref="MinContrastDb"/>, governs standing and not holding,
+    /// so it calls marks while its contrast dips under the floor; the hold ends as before, when its sequence stops standing, the
+    /// grid takes the station back, or it is judged a carrier or a shadow, and the sender gate lets the sender go under a shape
+    /// of 0.1.
+    /// </summary>
+    public (int Dit, double PitchHz)? Held { get; set; }
+
     /// <summary>Every mark that stood in the bank, in order, for the detector to hand on or keep.</summary>
     public List<(int Dit, CwMark Mark)> Stood { get; } = [];
 
@@ -116,7 +125,9 @@ internal sealed class CwLaneBank
         {
             for (var d = 0; d < p.Lanes.Length; d++)
             {
-                if (p.Lanes[d].Hop(nowSeconds, _hopSeconds) is { } span)
+                var held = Held is { } h && h.Dit == d && Math.Abs(h.PitchHz - p.Hz) <= SpacingHz / 2 && CwRules.On(CwRules.HeldLaneReads);
+
+                if (p.Lanes[d].Hop(nowSeconds, _hopSeconds, held) is { } span)
                 {
                     var mark = new CwMark(++_sequence, span.From, span.To, p.Hz, span.LevelDb, span.ContrastDb)
                     {
@@ -261,7 +272,7 @@ internal sealed class CwLaneBank
             _lastQ = _q[1].Next(_q[0].Next(q));
         }
 
-        public (double From, double To, double LevelDb, double ContrastDb)? Hop(double now, double hopSeconds)
+        public (double From, double To, double LevelDb, double ContrastDb)? Hop(double now, double hopSeconds, bool held)
         {
             var level = 10 * Math.Log10((2 * ((_lastI * _lastI) + (_lastQ * _lastQ))) + 1e-20);
 
@@ -282,7 +293,8 @@ internal sealed class CwLaneBank
 
             var contrast = _down - _up;
 
-            if (!double.IsFinite(contrast) || contrast < MinContrastDb)
+            // A held lane is not dropped by its own floor (work instruction 575): see Held.
+            if (!double.IsFinite(contrast) || contrast <= 0 || (contrast < MinContrastDb && !held))
             {
                 _from = double.NaN;
                 return null;

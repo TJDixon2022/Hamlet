@@ -603,6 +603,34 @@ public sealed class TheWeakEndTests(ITestOutputHelper output)
         }
     }
 
+    /// <remarks>
+    /// Work instruction 575, task 2: the four 5 dB CQs as the chain ships and with a held lane reading under its own contrast floor,
+    /// built and left off (HM-DEC-279): on, they read 14, 17, 20 and 20 of 21, but on W1AW's piece 2 the held lane read the pause
+    /// after `W1AW <AS>` as `M T TAT TM E`. Asserts nothing.
+    /// </remarks>
+    [Fact]
+    public void TheWeakCqsWithAHeldLaneReading()
+    {
+        foreach (var held in new[] { false, true })
+        {
+            using var _ = held ? CwRules.Choose(CwRules.HeldLaneReads) : null;
+            var total = 0;
+
+            foreach (var (name, wav, r) in Files().Where(f => f.Name.Contains("-5db", StringComparison.Ordinal)))
+            {
+                var audio = WavAudio.Read(wav);
+                var reference = System.Text.RegularExpressions.Regex.Replace(r.Text, @"\^([A-Z]{2})", "<$1>");
+                var read = Chain(audio.Samples, audio.SampleRate, r.ToneHz, handover: true);
+                var right = TheRecordingsScoreboardTests.Right(read.Text, reference);
+
+                total += right;
+                output.WriteLine($"{(held ? "held lane reads" : "as it ships")}: {name}: `{read.Text}`, {right} of {TheRecordingsScoreboardTests.Letters(reference).Length}");
+            }
+
+            output.WriteLine($"{(held ? "held lane reads" : "as it ships")}: total {total} of 84");
+        }
+    }
+
     /// <summary>One file's row.</summary>
     internal static string Row(string name, string wav, CwFixtureRecipe r)
     {
