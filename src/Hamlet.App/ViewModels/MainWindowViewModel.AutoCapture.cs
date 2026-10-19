@@ -133,7 +133,7 @@ public sealed partial class MainWindowViewModel
             IsCatchScanning,
             hz,
             state.FilterBandwidthHz,
-            _decoder?.ShapeSide.Senders.Count ?? 0,
+            _decoder?.ShapeSide.HeldSenders.Count ?? 0,
             _liveFeed?.Continuity.LostMilliseconds ?? 0));
 
         // **THE SENDERS HELD WHEN THE CAPTURE BEGAN** (work instruction 555, task 2), noted on the first tick it is under way.

@@ -12631,20 +12631,27 @@ public partial class MainWindowViewModel : ObservableObject
               + $"(in the {seconds:0.0} seconds of audio in this file)";
     }
 
-    /// <summary>Every sender the gate held at the press, and which one it printed (work instruction 537).</summary>
+    /// <summary>
+    /// Every sender the gate held at the press, and which one it printed (work instruction 537); a splinter, held under the
+    /// gate's release line and not printed, is listed after them as `splinters at 500 Hz, 445 marks` (work instruction 574).
+    /// </summary>
     /// <param name="shape">What the shape side held at the press.</param>
     /// <returns>The value of the `senders` line.</returns>
-    private static string SendersForTheRecord(CwShapeSideReading shape)
-        => shape.Senders.Count == 0
-            ? "none held"
-            : string.Join(
-                "; ",
-                shape.Senders
-                    .OrderByDescending(s => s.Printed)
-                    .ThenByDescending(s => s.ShapeScore)
-                    .Select(s => string.Create(
-                        CultureInfo.InvariantCulture,
-                        $"{s.PitchHz:0} Hz shape {s.ShapeScore:0.00}, {s.Marks} marks{(s.Printed ? ", printed" : string.Empty)}")));
+    internal static string SendersForTheRecord(CwShapeSideReading shape)
+    {
+        var held = shape.HeldSenders
+            .OrderByDescending(s => s.Printed)
+            .ThenByDescending(s => s.ShapeScore)
+            .Select(s => string.Create(
+                CultureInfo.InvariantCulture,
+                $"{s.PitchHz:0} Hz shape {s.ShapeScore:0.00}, {s.Marks} marks{(s.Printed ? ", printed" : string.Empty)}"))
+            .DefaultIfEmpty("none held");
+        var splinters = shape.Splinters
+            .OrderByDescending(s => s.Marks)
+            .Select(s => string.Create(CultureInfo.InvariantCulture, $"splinters at {s.PitchHz:0} Hz, {s.Marks} marks"));
+
+        return string.Join("; ", held.Concat(splinters));
+    }
 
     /// <summary>How much of the recording had the key down at the printed sender's pitch (work instruction 537).</summary>
     /// <param name="audio">The recording.</param>

@@ -65,4 +65,17 @@ public sealed record CwShapeSideReading(
     /// <param name="seconds">How far back.</param>
     /// <returns>The count.</returns>
     public int UnreadableInLast(double seconds) => UnreadableTimes.Count(t => t >= HeardSeconds - seconds);
+
+    /// <summary>
+    /// **SPLINTERS ARE NOT SENDERS** (work instruction 574, HM-DEC-278): a sequence the gate holds whose shape is under the gate's
+    /// own release line, 0.1, and which is not printed. On the owner's capture of 2026-10-19 KB2UZK's own pieces from the grid were
+    /// held as two senders at 500 Hz, shapes 0.02 and 0.00, and tripped the four-senders capture trigger.
+    /// </summary>
+    public const double SplinterShape = CwSenderGate.ReleaseScore;
+
+    /// <summary>The senders held that count as senders, for the capture trigger and the sheet: printed, or at <see cref="SplinterShape"/> or over.</summary>
+    public IReadOnlyList<CwSenderStanding> HeldSenders => Senders.Where(s => s.Printed || s.ShapeScore >= SplinterShape).ToList();
+
+    /// <summary>The splinters: held, not printed, and under <see cref="SplinterShape"/>; listed apart on the sheet.</summary>
+    public IReadOnlyList<CwSenderStanding> Splinters => Senders.Where(s => !s.Printed && s.ShapeScore < SplinterShape).ToList();
 }
