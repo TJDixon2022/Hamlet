@@ -1,0 +1,67 @@
+captured   automatically, trouble (work instruction 549)
+trigger    four or more senders held for ten seconds  (4 held now, since 14:16:58 UTC)
+fired      2026-10-19 14:17:08 UTC
+seconds    300.0  (the audio before the trigger, from Hamlet's own five-minute ring, whatever Record is set to; less where it had not yet heard five minutes)
+sampleRate 48000
+audioSeen  21018240 samples  (the last of them is the moment it fired)
+cooldown   this trigger waits ten minutes before it saves again
+
+frequency  7051900 Hz  (read from the radio a moment ago)
+band       40 m  (from the frequency the radio reported)
+pitch      nobody printed
+speed      nobody printed
+senders    450 Hz shape 0.64, 29 marks; 450 Hz shape 0.19, 4 marks; 500 Hz shape 0.02, 445 marks; 500 Hz shape 0.00, 276 marks
+at start   no capture under way
+version    1.13.256
+rebuilds   1  (times the detector rebuilt its passband since listening started)
+audio      lost 0 ms, longest stall 16 ms, queue peak 1  (since the decoder started listening)
+agc        SLOW  (already so when Hamlet looked; Hamlet's choice for CW is SLOW)
+weak       on  (whether the lane bank hands a weak station to the printer)
+bank       63 lanes, 7 standing, best 425 Hz shape 0.59 at a 100 ms dit  (the lane bank, work instruction 569)
+composed   2026-10-19 14:17:08 UTC  (these lines, as the app last had them)
+
+Frequency            7.051900 MHz
+Mode                 CW
+DataMode             off
+FilterSelection      FIL2
+FilterBandwidth      500 Hz
+SMeter               S6
+TransmitStatus       receiving
+Overflow             not overloading
+TwinPbtOuter         unknown
+TwinPbtInner         undocumented
+Rit                  undocumented
+Swr                  unknown
+PowerOut             unknown
+RfPower              31%
+RfGain               100%
+Squelch              0%
+SquelchStatus        open
+Agc                  SLOW
+Preamp               off
+Attenuator           off
+NoiseBlanker         off
+NoiseBlankerLevel    50%
+NoiseReduction       off
+NoiseReductionLevel  28%
+AutoNotch            off
+ManualNotch          off
+BreakIn              full
+KeyerSpeed           20 WPM
+CwPitch              600 Hz
+AccUsbOutputSelect   AF
+AccUsbAfLevel        80%
+NotchPosition        unknown
+FilterShape          unknown
+AfLevel              unknown
+RfSqlFunction        unknown
+BreakInDelay         unknown
+AntennaTuner         unknown
+Alc                  unknown
+AccUsbSquelch        open regardless of squelch
+Split                off
+ScopeOn              on
+ScopeOutput          on
+CivUsbPort           unknown
+CivTransceive        on
+Vfo                  undocumented
