@@ -104,6 +104,9 @@ public sealed class CwDecoder
     /// <summary>The gate and reader the decoder prints from, for listeners built on <see cref="CwChain"/> that need its letters, runs and senders (work instruction 542).</summary>
     internal CwSenderGate Runs => _runs;
 
+    /// <summary>The printed sender's gap clusters and word line in one line, for the capture sheets (work instruction 565).</summary>
+    public string GapClustersLine => _runs.ClustersLine;
+
     /// <summary>
     /// The pitch of the sender the gate is printing, or NaN when it prints nobody (work instruction 519): what the
     /// detector's reading follows and the scope draws at. Safe to read from any thread.

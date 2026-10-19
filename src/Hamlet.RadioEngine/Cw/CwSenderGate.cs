@@ -150,6 +150,7 @@ public sealed class CwSenderGate
             }
 
             _letterTimes.Add(run[^1].ToSeconds);
+            Volatile.Write(ref _clustersLine, ClustersOf(StationLines));
         };
     }
 
@@ -162,6 +163,31 @@ public sealed class CwSenderGate
     private long _marksStood;
     private double _heard = double.NaN;
 
+
+    // The printed sender's gap clusters in one line, written as each letter is read and read from any thread (work instruction 565).
+    private string _clustersLine = "nobody printed";
+
+    /// <summary>
+    /// **THE PRINTED SENDER'S GAP CLUSTERS, FOR THE SHEET** (work instruction 565, task 2): its letter-gap cluster's centre and
+    /// top (the 90th percentile), its word-gap cluster's centre and bottom (the 10th) where one shows, and the word line, in ms,
+    /// as they stood at the last letter it printed. Safe to read from any thread.
+    /// </summary>
+    public string ClustersLine => Volatile.Read(ref _clustersLine);
+
+    /// <summary>One sender's gap clusters and word line in one line.</summary>
+    internal static string ClustersOf(CwGapLines? lines)
+    {
+        if (lines?.LetterGaps is not { } letter)
+        {
+            return lines is null ? "nobody printed" : string.Create(System.Globalization.CultureInfo.InvariantCulture, $"no letter gaps measured yet, line {lines.WordSeconds * 1000:0} ms");
+        }
+
+        var word = lines.WordGaps is { } w
+            ? string.Create(System.Globalization.CultureInfo.InvariantCulture, $"word centre {w.Average() * 1000:0}, bottom {CwPatternGate.Percentile(w, CwPatternGate.WordBottomShare) * 1000:0} ({w.Count} gaps)")
+            : "no word cluster";
+
+        return string.Create(System.Globalization.CultureInfo.InvariantCulture, $"letter centre {letter.Average() * 1000:0}, top {CwPatternGate.Percentile(letter, CwPatternGate.LetterTopShare) * 1000:0} ({letter.Count} gaps); {word}; line {lines.WordSeconds * 1000:0} ms");
+    }
     // Written by Publish on the audio thread, read by ShapeReading on any.
     private CwShapeSideReading _shapeReading = CwShapeSideReading.Nothing;
 
