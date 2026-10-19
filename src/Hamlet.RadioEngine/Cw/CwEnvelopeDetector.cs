@@ -357,10 +357,11 @@ public sealed class CwEnvelopeDetector
     }
 
     /// <summary>
-    /// Every lane held back as a shadow, once per pitch and stronger station while it stays one: when, its pitch, the stronger
-    /// station's pitch and the share; for the tests' traces and the record (work instruction 571).
+    /// Every lane and grid sequence held back as a shadow, once per pitch and stronger station while it stays one: when, its pitch, the stronger
+    /// station's pitch, the share and which finder held it, `lane` or `grid`; for the tests' traces and the record (work
+    /// instructions 571 and 573).
     /// </summary>
-    internal List<(double AtSeconds, double PitchHz, double OfPitchHz, double Share)> ShadowsHeld { get; } = [];
+    internal List<(double AtSeconds, double PitchHz, double OfPitchHz, double Share, string Finder)> ShadowsHeld { get; } = [];
 
     /// <summary>Where set, each lane the handover holds and lets go, with the time: for the tests' traces (work instruction 571).</summary>
     internal List<string>? HandoverTrace { get; set; }
@@ -377,7 +378,7 @@ public sealed class CwEnvelopeDetector
     /// <summary>
     /// **A SHADOW IS TOLD BY ITS TIMING** (work instruction 571, HM-DEC-275): whether a bank lane's standing sequence is the shadow of
     /// a stronger station Hamlet holds anywhere in the passband, the grid's standing stations and candidates and the bank's other
-    /// lanes, more than <see cref="HandoverHz"/> away, by <see cref="CwShadow.IsShadowOf"/>.
+    /// lanes, more than <see cref="ShadowReach"/> away, by <see cref="CwShadow.IsShadowOf"/>.
     /// </summary>
     private bool LaneIsShadow(int dit, CwPatternGate.StandingSequence sequence, IReadOnlyList<(double PitchHz, IReadOnlyList<CwMark> Recent, int Dit, int Id)> others, double nowSeconds, HashSet<(long, long)> seen)
     {
@@ -393,19 +394,19 @@ public sealed class CwEnvelopeDetector
                 continue;
             }
 
-            if (ShadowShares is { } shares && Math.Abs(lane.PitchHz - pitch) > HandoverHz)
+            if (ShadowShares is { } shares && Math.Abs(lane.PitchHz - pitch) > ShadowReach)
             {
                 var pair = ((long)Math.Round(lane.PitchHz / BinSpacingHz), (long)Math.Round(pitch / BinSpacingHz));
                 shares[pair] = Math.Max(shares.TryGetValue(pair, out var was) ? was : 0, CwShadow.ShareOf(lane.Recent, recent));
             }
 
-            if (CwShadow.IsShadowOf(lane.Recent, lane.PitchHz, recent, pitch))
+            if (CwShadow.IsShadowOf(lane.Recent, lane.PitchHz, recent, pitch, reachHz: ShadowReach))
             {
                 var key = ((long)Math.Round(lane.PitchHz / BinSpacingHz), (long)Math.Round(pitch / BinSpacingHz));
 
                 if (seen.Add(key) && !_shadowsNow.Contains(key))
                 {
-                    ShadowsHeld.Add((nowSeconds, lane.PitchHz, pitch, CwShadow.ShareOf(lane.Recent, recent)));
+                    ShadowsHeld.Add((nowSeconds, lane.PitchHz, pitch, CwShadow.ShareOf(lane.Recent, recent), "lane"));
                 }
 
                 return true;
@@ -417,6 +418,102 @@ public sealed class CwEnvelopeDetector
 
     /// <summary>Whether a mark at this pitch is the held lane's station, so the grid's reading of it is not printed twice.</summary>
     private bool HeldByLane(double pitchHz) => _bankLane is { } held && Math.Abs(pitchHz - held.PitchHz) <= HandoverHz;
+
+    /// <summary>
+    /// Whether the shadow rule judges the grid's own sequences on this detector: <see cref="CwShadow.JudgesTheGrid"/> (work
+    /// instruction 573, HM-DEC-277).
+    /// </summary>
+    internal bool ShadowJudgesGrid { get; set; } = CwShadow.JudgesTheGrid;
+
+    // Whether the grid is judged now: the detector's setting and the tests' rule switch.
+    private bool JudgingGrid => ShadowJudgesGrid && CwRules.On(CwRules.ShadowGrid);
+
+    /// <summary>How far the shadow rule reaches on this detector, lanes and grid alike: <see cref="CwShadow.ReachHz"/> (work instruction 573).</summary>
+    private double ShadowReach => CwShadow.ReachHz(JudgingGrid);
+
+    // The stations a grid sequence is judged against, built once a hop when a mark first stands: the pattern gate's standing
+    // sequences and candidates, by their ids, and the bank's standing lanes.
+    private double _gridOthersAt = double.NaN;
+    private List<(int Id, double PitchHz, IReadOnlyList<CwMark> Recent)> _gridOthers = [];
+
+    // The grid sequences whose marks were handed to the sender gate, so one that becomes a shadow is known to be let go.
+    private readonly HashSet<int> _gridHandedOn = [];
+
+    // Each grid shadow and the station it shadows, by bins, with when it was last judged so; recorded again only after a silence.
+    private readonly Dictionary<(long Of, long Bin), double> _gridShadowSeen = [];
+
+    /// <summary>
+    /// **THE SHADOW RULE REACHES THE GRID** (work instruction 573, HM-DEC-277): whether the grid sequence the last stood marks
+    /// belong to is the shadow of a stronger station Hamlet holds, the pattern gate's other standing sequences and candidates and
+    /// the bank's standing lanes, more than <see cref="CwShadow.ShadowReachHz"/> away, by <see cref="CwShadow.IsShadowOf"/> over
+    /// its last ten marks. Judged each time a mark of it stands, so again as it moves; a held one judged a shadow is let go by
+    /// the sender gate's own release, its marks no longer handed on, and a lane picked within <see cref="LaneLeadSeconds"/> of
+    /// it hands on no backlog. The bank's lanes are judged in <see cref="LaneIsShadow"/>, the grid's here: nothing twice.
+    /// </summary>
+    private bool GridIsShadow(int id, double nowSeconds)
+    {
+        if (!JudgingGrid || id < 0 || _pattern.Candidate(id) is not { } seq)
+        {
+            return false;
+        }
+
+        if (_gridOthersAt != nowSeconds)
+        {
+            var bank = _bank?.Standing(nowSeconds) ?? [];
+
+            _gridOthersAt = nowSeconds;
+            _gridOthers = _pattern.Standing(nowSeconds, HoldSeconds).Select(s => (s.Id, Sender: _pattern.Sender(s.Id))).Where(s => s.Sender is not null).Select(s => (s.Id, s.Sender!.Value.PitchHz, s.Sender.Value.Recent))
+                .Concat(_pattern.Candidates(nowSeconds, CandidateMarks, CwPatternGate.SilenceSeconds).Select(c => (c.Id, c.PitchHz, c.Recent)))
+                .Concat(bank.Select(s => _bank!.Gates[s.Dit].Sender(s.Sequence.Id)).Where(s => s is not null).Select(s => (-1, s!.Value.PitchHz, s.Value.Recent)))
+                .ToList();
+        }
+
+        foreach (var (otherId, pitch, recent) in _gridOthers)
+        {
+            if (otherId == id || !CwShadow.IsShadowOf(seq.Recent, seq.PitchHz, recent, pitch, reachHz: ShadowReach))
+            {
+                continue;
+            }
+
+            var key = ((long)Math.Round(pitch / BinSpacingHz), (long)Math.Round(seq.PitchHz / BinSpacingHz));
+
+            if (!_gridShadowSeen.TryGetValue(key, out var last) || nowSeconds - last > CwPatternGate.SilenceSeconds)
+            {
+                ShadowsHeld.Add((nowSeconds, seq.PitchHz, pitch, CwShadow.ShareOf(seq.Recent, recent), "grid"));
+            }
+
+            _gridShadowSeen[key] = nowSeconds;
+
+            if (_gridHandedOn.Remove(id))
+            {
+                _shadowLetGoAt = nowSeconds;
+                HandoverTrace?.Add(string.Create(CultureInfo.InvariantCulture, $"{nowSeconds:0.00} s the grid's {seq.PitchHz:0} Hz let go as a shadow of {pitch:0} Hz"));
+            }
+
+            return true;
+        }
+
+        return false;
+    }
+
+    /// <summary>
+    /// The shadows held in the last minute, for the record (work instruction 573): each pitch, its largest share and the station
+    /// it shadows, `550 Hz 0.90 of 600 Hz`, by the lanes and the grid alike; "none" where there were none.
+    /// </summary>
+    public string ShadowsLine()
+    {
+        lock (_gate)
+        {
+            var now = _samplesSeen / (double)SampleRate;
+            var recent = ShadowsHeld.Where(h => h.AtSeconds >= now - 60)
+                .GroupBy(h => ((long)Math.Round(h.PitchHz / BinSpacingHz), (long)Math.Round(h.OfPitchHz / BinSpacingHz)))
+                .Select(g => (Pitch: g.Key.Item1 * BinSpacingHz, Of: g.Key.Item2 * BinSpacingHz, Share: g.Max(h => h.Share)))
+                .OrderBy(s => s.Pitch)
+                .ToList();
+
+            return recent.Count == 0 ? "none" : string.Join(", ", recent.Select(s => string.Create(CultureInfo.InvariantCulture, $"{s.Pitch:0} Hz {s.Share:0.00} of {s.Of:0} Hz")));
+        }
+    }
 
     /// <summary>
     /// **THE HANDOVER** (work instructions 569 and 570, HM-DEC-273, HM-DEC-274): a bank lane's station is handed to the sender
@@ -579,7 +676,8 @@ public sealed class CwEnvelopeDetector
 
     /// <summary>
     /// The bank in one line for the record (work instruction 569): lanes held, sequences standing, and the best standing lane's
-    /// pitch and shape; "no bank" where the passband is not the rig's.
+    /// pitch and shape, then the shadows held in the last minute (work instruction 573); "no bank" where the passband is not the
+    /// rig's.
     /// </summary>
     public string BankLine()
     {
@@ -593,9 +691,12 @@ public sealed class CwEnvelopeDetector
             var standing = _bank.Standing(_samplesSeen / (double)SampleRate);
             var best = standing.OrderByDescending(s => s.Sequence.Shape.Score).FirstOrDefault();
 
-            return standing.Count == 0
+            var line = standing.Count == 0
                 ? string.Create(CultureInfo.InvariantCulture, $"{_bank.Lanes} lanes, none standing")
                 : string.Create(CultureInfo.InvariantCulture, $"{_bank.Lanes} lanes, {standing.Count} standing, best {best.Sequence.PitchHz:0} Hz shape {best.Sequence.Shape.Score:0.00} at a {CwLaneBank.DitSeconds[best.Dit] * 1000:0} ms dit");
+
+            // The shadows held in the last minute, lanes and grid alike (work instruction 573): the line that names a shadow live.
+            return string.Create(CultureInfo.InvariantCulture, $"{line}; shadows {ShadowsLine()}");
         }
     }
 
@@ -2084,15 +2185,21 @@ public sealed class CwEnvelopeDetector
             window.Called++;
         }
 
-        foreach (var stood in MarksNeedPattern ? _pattern.Offer(candidate) : new[] { candidate })
+        var stoodNow = MarksNeedPattern ? _pattern.Offer(candidate) : new[] { candidate };
+
+        // A shadow is judged before its marks are handed on, so the sender gate never picks it (work instruction 573).
+        var shadow = MarksNeedPattern && stoodNow.Count > 0 && GridIsShadow(_pattern.LastOfferedId, nowSeconds);
+
+        foreach (var stood in stoodNow)
         {
             // A window near the lane that holds a station reads that station again: offered, not printed (work instruction 570).
-            if (HeldByLane(stood.PitchHz))
+            if (HeldByLane(stood.PitchHz) || shadow)
             {
                 continue;
             }
 
             _marks.Add(stood with { Sequence = ++_markSequence, Stood = true, Keyed = true });
+            _gridHandedOn.Add(_pattern.LastOfferedId);
         }
     }
 
@@ -2497,14 +2604,20 @@ public sealed class CwEnvelopeDetector
                 // filter they did not at 700 Hz, so 65 marks stood, none was keyed and nothing printed
                 // (unit 514). Noise stands a few marks and still prints nothing; the reader's own rules
                 // hold it.
-                foreach (var stood in MarksNeedPattern ? _pattern.Offer(candidate) : new[] { candidate })
+                var stoodNow = MarksNeedPattern ? _pattern.Offer(candidate) : new[] { candidate };
+
+                // **THE SHADOW RULE REACHES THE GRID** (work instruction 573, HM-DEC-277): judged before the marks are handed on.
+                var shadow = MarksNeedPattern && stoodNow.Count > 0 && GridIsShadow(_pattern.LastOfferedId, nowSeconds);
+
+                foreach (var stood in stoodNow)
                 {
-                    if (heldByLane)
+                    if (heldByLane || shadow)
                     {
                         continue;
                     }
 
                     _marks.Add(stood with { Sequence = ++_markSequence, Stood = true, Keyed = true });
+                    _gridHandedOn.Add(_pattern.LastOfferedId);
                 }
             }
 
@@ -2512,6 +2625,7 @@ public sealed class CwEnvelopeDetector
         }
 
         _pattern.Prune(nowSeconds);
+        _gridHandedOn.RemoveWhere(id => _pattern.Candidate(id) is null);
         _candidates.RemoveAll(k => k.ToSeconds < nowSeconds - CalledSeconds);
         _marks.RemoveAll(k => k.ToSeconds < nowSeconds - CalledSeconds);
     }

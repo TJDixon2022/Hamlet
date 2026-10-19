@@ -1842,12 +1842,13 @@ public static class AppEvents
     /// <param name="agcSetBy">Whose the AGC is, in words (work instruction 564).</param>
     /// <param name="bank">The lane bank in one line, or null where nothing is listening (work instruction 569).</param>
     /// <param name="weakStations">Whether the lane bank hands a weak station to the printer, the operator's setting (work instruction 571).</param>
+    /// <param name="shadows">The shadows held in the last minute, each pitch, its share and the station it shadows, or null where nothing is listening (work instruction 573).</param>
     /// <remarks>
     /// The audio, every sender held with its pitch, shape, marks, whether it has qualified and which is printed, the letters
     /// printed, the light, and an automatic capture under way by its folder's name alone: no path, no text, no callsign
     /// (HM-DEC-018).
     /// </remarks>
-    public static void CwListen(ITelemetry? telemetry, CwListenSample sample, string? appVersion = null, int? passbandRebuilds = null, string? agc = null, string? agcSetBy = null, string? bank = null, bool? weakStations = null)
+    public static void CwListen(ITelemetry? telemetry, CwListenSample sample, string? appVersion = null, int? passbandRebuilds = null, string? agc = null, string? agcSetBy = null, string? bank = null, bool? weakStations = null, string? shadows = null)
         => telemetry?.Write(
             TelemetryCategory.Cw,
             "cw_listen",
@@ -1885,6 +1886,9 @@ public static class AppEvents
 
                 // The lane bank in one line: lanes, how many stand, the best standing lane (work instruction 569).
                 ["bank"] = bank,
+
+                // The shadows held in the last minute, lanes and grid alike, by pitch and share alone (work instruction 573).
+                ["shadows"] = shadows,
             });
 
     /// <summary>

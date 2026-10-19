@@ -92,6 +92,9 @@ internal static class CwRules
     /// <summary>A sender is first printed only once its shape has reached the green line, 0.4 (work instruction 561).</summary>
     public const string SureFirst = "printed once sure";
 
+    /// <summary>The shadow rule judges the grid's own sequences as well as the bank's lanes (work instruction 573).</summary>
+    public const string ShadowGrid = "the shadow rule judges the grid";
+
     /// <summary>Every rule kept, in the order the work instruction names them.</summary>
     /// <remarks>
     /// **THREE RULES EARNED THEIR PLACE; TEN LEFT THE TREE** (work instruction 541, HM-DEC-245): of the thirteen work

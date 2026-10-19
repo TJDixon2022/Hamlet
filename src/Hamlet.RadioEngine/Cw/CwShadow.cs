@@ -10,7 +10,7 @@ namespace Hamlet.RadioEngine.Cw;
 /// <para>**THE TRACE THAT ORDERED IT** (work instruction 570): the carrier at seed 5209 printed through a lane 75 Hz from a station
 /// the grid already held, every one of its marks starting 10 to 30 ms after one of that station's own. A per-mark rule silenced it
 /// and cost the board six points and a 5 dB CQ.</para>
-/// <para>**ONE METHOD**, on the marks a pattern gate already holds, so the grid's own sequences can be judged by it later without a
+/// <para>**ONE METHOD**, on the marks a pattern gate already holds, so the grid's own sequences are judged by it (work instruction 573) without a
 /// second copy.</para>
 /// </remarks>
 internal static class CwShadow
@@ -23,6 +23,27 @@ internal static class CwShadow
 
     /// <summary>How many of the sequence's last marks are judged: ten, the pattern gate's own reach for a hand's two kinds.</summary>
     public const int JudgedMarks = 10;
+
+    /// <summary>
+    /// **HOW FAR THE RULE REACHES** (work instruction 573, HM-DEC-277): a sequence is judged against every stronger station more
+    /// than 25 Hz away, one lane's spacing and the smallest distance at which the chain tells two pitches apart. It reached only
+    /// past the handover's same-station distance, <see cref="CwEnvelopeDetector.HandoverHz"/>, 50 Hz, and the shadow live beside
+    /// W1AW sat exactly 50 Hz from it. The handover's own distance is not changed: a station 25 to 50 Hz from a stronger one is
+    /// judged for shadow here, and is still the same station when the handover asks whether the grid holds it.
+    /// </summary>
+    public const double ShadowReachHz = CwEnvelopeDetector.BinSpacingHz;
+
+    /// <summary>
+    /// **THE RULE JUDGES THE GRID** (work instruction 573, HM-DEC-277): before the sender gate is handed a grid sequence's marks,
+    /// the sequence is judged by <see cref="IsShadowOf"/> against every stronger station Hamlet holds, grid and bank; a shadow's
+    /// marks are not handed on, so it is never picked, and a held one is let go by the gate's own release. On.
+    /// </summary>
+    public const bool JudgesTheGrid = true;
+
+    /// <summary>How far the rule reaches on a detector: <see cref="ShadowReachHz"/> where it judges the grid, and the handover's 50 Hz, as before work instruction 573, where it does not.</summary>
+    /// <param name="judgesTheGrid">Whether the grid is judged.</param>
+    /// <returns>The reach in hertz.</returns>
+    public static double ReachHz(bool judgesTheGrid) => judgesTheGrid ? ShadowReachHz : CwEnvelopeDetector.HandoverHz;
 
     /// <summary>
     /// The share of a sequence's last <see cref="JudgedMarks"/> marks that start within <paramref name="startMs"/> of a mark of
@@ -51,10 +72,18 @@ internal static class CwShadow
     public static double ContrastOf(IReadOnlyList<CwMark> marks)
         => marks.TakeLast(JudgedMarks).Select(m => m.ContrastDb).DefaultIfEmpty(double.NaN).Average();
 
+    /// <summary>A sequence's level, the mean of its last marks' own (work instruction 573).</summary>
+    /// <param name="marks">The sequence's marks.</param>
+    /// <returns>Its level in dB; NaN where it holds none.</returns>
+    public static double LevelOf(IReadOnlyList<CwMark> marks)
+        => marks.TakeLast(JudgedMarks).Select(m => m.LevelDb).DefaultIfEmpty(double.NaN).Average();
+
     /// <summary>
-    /// Whether the sequence is a shadow of <paramref name="other"/>: the other is more than <see cref="CwEnvelopeDetector.HandoverHz"/>
-    /// away, stronger by its own contrast, and <paramref name="share"/> or more of the sequence's marks start within
-    /// <paramref name="startMs"/> of its marks. A sequence is never a shadow of a weaker station, nor of one at its own pitch.
+    /// Whether the sequence is a shadow of <paramref name="other"/>: the other is more than <see cref="ShadowReachHz"/>
+    /// away, stronger by its own contrast, and, within the handover's same-station distance, louder by its level too, where a
+    /// station's own skirt shows as much contrast as the station (work instruction 573); and <paramref name="share"/> or more of
+    /// the sequence's marks start within <paramref name="startMs"/> of its marks. A sequence is never a shadow of a weaker
+    /// station, nor of one at its own pitch.
     /// </summary>
     /// <param name="marks">The sequence judged.</param>
     /// <param name="pitchHz">Its pitch.</param>
@@ -62,9 +91,11 @@ internal static class CwShadow
     /// <param name="otherPitchHz">The other station's pitch.</param>
     /// <param name="startMs">The start tolerance, in milliseconds.</param>
     /// <param name="share">The share that makes a shadow.</param>
+    /// <param name="reachHz">How far away the stronger station must be: <see cref="ShadowReachHz"/>, or the handover's 50 Hz where the grid is not judged.</param>
     /// <returns>True where it is a shadow.</returns>
-    public static bool IsShadowOf(IReadOnlyList<CwMark> marks, double pitchHz, IReadOnlyList<CwMark> other, double otherPitchHz, double startMs = ShadowStartMs, double share = ShadowShare)
-        => Math.Abs(pitchHz - otherPitchHz) > CwEnvelopeDetector.HandoverHz
+    public static bool IsShadowOf(IReadOnlyList<CwMark> marks, double pitchHz, IReadOnlyList<CwMark> other, double otherPitchHz, double startMs = ShadowStartMs, double share = ShadowShare, double reachHz = ShadowReachHz)
+        => Math.Abs(pitchHz - otherPitchHz) > reachHz
             && ContrastOf(other) > ContrastOf(marks)
+            && (Math.Abs(pitchHz - otherPitchHz) > CwEnvelopeDetector.HandoverHz || LevelOf(other) > LevelOf(marks))
             && ShareOf(marks, other, startMs) >= share;
 }

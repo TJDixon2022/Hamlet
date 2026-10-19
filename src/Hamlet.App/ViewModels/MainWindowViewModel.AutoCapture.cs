@@ -154,7 +154,7 @@ public sealed partial class MainWindowViewModel
         {
             var (agc, agcSetBy) = AgcForTheRecord();
 
-            AppEvents.CwListen(_telemetry, sample, AboutViewModel.AppVersion, _envelope?.PassbandRebuilds, agc, agcSetBy, _envelope?.BankLine(), WeakStationsOn);
+            AppEvents.CwListen(_telemetry, sample, AboutViewModel.AppVersion, _envelope?.PassbandRebuilds, agc, agcSetBy, _envelope?.BankLine(), WeakStationsOn, _envelope?.ShadowsLine());
         }
     }
 

@@ -431,6 +431,9 @@ internal sealed class CwPatternGate
     /// <summary>How many candidates were offered.</summary>
     public int Offered { get; private set; }
 
+    /// <summary>The sequence the last offered candidate went to, so the marks that stood can be judged by it (work instruction 573); -1 before any.</summary>
+    public int LastOfferedId { get; private set; } = -1;
+
     /// <summary>How many stood and were handed on.</summary>
     public int Stood { get; private set; }
 
@@ -459,6 +462,8 @@ internal sealed class CwPatternGate
             home = new Sequence(++_nextId);
             _sequences.Add(home);
         }
+
+        LastOfferedId = home.Id;
 
         if (home.Crowds(candidate))
         {
