@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: COMPLETED
-TASK: done - the handover ships on
-WORK_INSTRUCTION: 572 - the handover ships on (run by hand)
+TASK: done - the shadow rule reaches the grid, built and off
+WORK_INSTRUCTION: 573 - the shadow rule reaches the grid (run by hand)
 BALL: tim
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-10-14T20:03:48-04:00
-NOTE: Unit 572 done: handover on, Weak stations setting; 297, 2111, weak CQs 13-19 of 21, carrier 1 seed
+UPDATED: 2026-10-19T10:42:43-04:00
+NOTE: Unit 573 done: grid path off (W1AW 2079 judged, fixture station not whole); 297, 2111; engine line host crash
 
 ---
 

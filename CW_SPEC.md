@@ -74,6 +74,10 @@ Confirmed by Tim 2026-09-25.
 - **Why it was still off, 2026-10-13:** the stray-letter figure on the 65 old captures rose from 21.6 to 21.9, mostly `cw-2026-08-31-003229`, which reads nothing off and `S EA I E THS NE A` on.
 - **The handover is on, 2026-10-14 (work instruction 572, HM-DEC-276).** The owner: *ship the lane handover on.* The strays bar is restated: no capture above six lone one- or two-element words per 10 s, the summed figure over the 65 old captures reported beside the board and not a condition.
 - **The switch** is `CwEnvelopeDetector.LaneHandover`, on by default. The operator reaches it as `Weak stations` (on, the default, or off), the last row of the scan's settings popover under `AGC in CW`, kept as `WeakStations` in `settings.json` and taking effect at once. Off puts Hamlet back exactly as it read before the ship. The capture sheets and each `cw_listen` row carry it, and the story line says `Weak station at <pitch> Hz` once when a lane's station prints.
+- **The shadow rule reaches the grid, built and off, 2026-10-19 (work instruction 573, HM-DEC-277):**
+  - **Both finders are judged, to 25 Hz,** where `CwShadow.JudgesTheGrid` is on. The reach is `CwShadow.ShadowReachHz`, one lane's spacing, and a grid sequence is judged by the same `IsShadowOf` before its marks reach the sender gate, against the grid's other standing sequences and candidates and the bank's standing lanes. A shadow is never picked, and a held one is let go by the gate's own release. Inside 50 Hz the stronger station must also be louder by level, since a station's own skirt shows as much contrast as the station.
+  - **Off, as shipped,** and the reach with it: the lanes are judged to 50 Hz as before. Judged, W1AW read 2079 against 2111, and beside a lockstep shadow the synthetic station lost its opening on and off alike.
+  - **The record:** the `bank` line on the capture sheets and the `shadows` field of each `cw_listen` row name every shadow held in the last minute, its pitch, share and the station it shadows, on or off.
 
 ## 3. Four layers, kept apart
 

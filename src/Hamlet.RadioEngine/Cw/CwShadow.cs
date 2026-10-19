@@ -25,7 +25,8 @@ internal static class CwShadow
     public const int JudgedMarks = 10;
 
     /// <summary>
-    /// **HOW FAR THE RULE REACHES** (work instruction 573, HM-DEC-277): a sequence is judged against every stronger station more
+    /// **HOW FAR THE RULE REACHES** (work instruction 573, HM-DEC-277): where the grid is judged (<see cref="JudgesTheGrid"/>), a
+    /// sequence is judged against every stronger station more
     /// than 25 Hz away, one lane's spacing and the smallest distance at which the chain tells two pitches apart. It reached only
     /// past the handover's same-station distance, <see cref="CwEnvelopeDetector.HandoverHz"/>, 50 Hz, and the shadow live beside
     /// W1AW sat exactly 50 Hz from it. The handover's own distance is not changed: a station 25 to 50 Hz from a stronger one is
@@ -36,9 +37,11 @@ internal static class CwShadow
     /// <summary>
     /// **THE RULE JUDGES THE GRID** (work instruction 573, HM-DEC-277): before the sender gate is handed a grid sequence's marks,
     /// the sequence is judged by <see cref="IsShadowOf"/> against every stronger station Hamlet holds, grid and bank; a shadow's
-    /// marks are not handed on, so it is never picked, and a held one is let go by the gate's own release. On.
+    /// marks are not handed on, so it is never picked, and a held one is let go by the gate's own release. **Off**, and the reach
+    /// with it, so off reads exactly as before: measured on, W1AW read 2079 against 2111, 36 wrong against 20, most of it in the
+    /// 13 and 10 WPM stretch of piece 1; and beside a lockstep shadow the synthetic station lost its opening on and off alike.
     /// </summary>
-    public const bool JudgesTheGrid = true;
+    public const bool JudgesTheGrid = false;
 
     /// <summary>How far the rule reaches on a detector: <see cref="ShadowReachHz"/> where it judges the grid, and the handover's 50 Hz, as before work instruction 573, where it does not.</summary>
     /// <param name="judgesTheGrid">Whether the grid is judged.</param>

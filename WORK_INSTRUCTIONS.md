@@ -1,26 +1,28 @@
-# Work instruction 572 - The handover ships on
+# Work instruction 573 - The shadow rule reaches the grid, down to one lane's spacing
 
-**Hand run. One task, one commit, plus the record. No new rule, no new measurement beyond the
-lines.** The owner ruled on 2026-10-13: **ship the lane handover on.** It was measured in the tree
-with every condition met - the four 5 dB CQs at 13, 14, 16 and 19 of 21; the carrier at one seed;
-297 and 2111 held with wrong and invented unchanged - and failed only a strays bar that this unit
-restates. The ship code was written and left as a patch outside the tree; this unit puts it in.
+**Hand run. Two tasks, commit per task, then the measure.** This unit extends the shadow rule
+already in the tree (`CwShadow.IsShadowOf`, judged on the bank's lanes against stations more than
+50 Hz away) to **the grid's own sequences**, and lowers the distance it reaches to **one lane's
+spacing, 25 Hz**. It changes no constant of the rule itself (30 ms, two thirds) and nothing in the
+reader.
 
-**Standing rules, from here on, in every unit:**
+**Why.** A sender 50 Hz under W1AW has printed in every live session for two weeks, never
+reproduced on replay, measured once as energy locked to W1AW's keying. The shadow rule, when it
+ran on W1AW piece-04, held **every lane from 350 to 525 Hz and 650 to 850 Hz** as W1AW's shadow at
+shares of 0.9 to 1.0 - and could not look at 550 Hz, because 550 is exactly 50 Hz from 600 and
+the rule only judges stations further than that. The ghost is a shadow the rule is not allowed to
+see, and it prints from the grid, which the rule does not judge at all.
 
-- **One setting per unit.** No side variants, no figures reported "beside" the chosen one.
-- **Do not stop to ask.** When a measurement cannot be run, report it as *not measured* and
-  continue. When the instruction leaves a choice open, take the one that keeps both boards and
-  name it in section 4. Stop only if the ship condition itself is in doubt.
-- **If a run is stopped for memory, run it once more alone with everything else closed; if it
-  stops again, report it as not measured and do not retry.**
+**Standing rules** (HM-DEC-276): one setting per unit, no side variants; do not stop to ask -
+take the choice that keeps both boards and name it in section 4; a run stopped for memory is run
+once more alone, then reported as not measured.
 
 Earlier unit numbers are not cited: each part of the tree is described by what it does.
 
 **Nothing keys or transmits. Nothing is written to the radio. No recording is added, removed or
-promoted.**
+promoted.** A synthetic fixture is generated for the test; it is not a recording.
 
-**Numbering.** This is unit 572, ruling HM-DEC-276. If taken, use the next free and say so.
+**Numbering.** This is unit 573, ruling HM-DEC-277. If taken, use the next free and say so.
 (HM-DEC-269 stays held for unit 565.)
 
 ---
@@ -54,65 +56,91 @@ If all five hold, say "Hamlet confirmed" and continue.
   to `RUN_LEDGER.md`. Touch nothing under `tools\arbiter\`. Tick nothing in `PHASE_PLAN.md`.
 - One `dotnet test` invocation per line, filtered, with a `timeout`. The survey line gets 1800 s.
 - Apostrophes in quoted heredocs break; `;` is refused; Python cannot run here; `-m` more than
-  once for a multi-line commit. Scripts go in `.run-unit\unit572-<name>.sh`, not committed.
-- **The one layout holds**, except the one settings row below.
+  once for a multi-line commit. Scripts go in `.run-unit\unit573-<name>.sh`, not committed.
+- **The one layout holds**: nothing on screen moves.
 - `output.md` at the root, four headings exactly: `## 1. What Claude did`, `## 2. What the owner
   should expect`, `## 3. What you should see`, `## 4. What's blocking us`. Status on the tree's
   own triggers; the phase count as `PHASE_STATUS.md` holds it; the asks list carried forward.
 
 ---
 
-## 2. The task - ship it
+## 2. Task 1 - the rule reaches the grid, and reaches 25 Hz
 
-**First, check whether the ship commit already landed** (a commit after the shadow rule's
-measure, `f42a2cc2`, with `LaneHandover` defaulting on). If it did, say so in one line, verify the
-rest of this list is in, and go to the record. If not:
+1. **Distance.** The shadow rule judges a sequence against every stronger station **more than
+   `ShadowReachHz` away, 25 Hz** - one lane's spacing, the smallest distance at which the chain
+   tells two pitches apart. The constant has a name; the "same station" distance the handover
+   uses (50 Hz) is not changed. A station 25 to 50 Hz from a stronger one is therefore judged for
+   shadow but is still "the same station" for the handover's purposes; say in one line how the
+   two rules sit together in the code, and that nothing is judged twice.
+2. **The grid.** Before the sender gate picks or keeps a grid sequence as a station, the sequence
+   is judged by the same rule, by reference, against every stronger station Hamlet holds (grid
+   and bank) more than 25 Hz away. **A grid sequence that is a shadow is never picked, and a
+   held grid station that becomes a shadow is let go** - the gate's own release path, last letter
+   settled or dropped by its own rule. Judged over the sequence's last ten marks, as the lanes
+   are, and again as the sequence moves.
+3. **Order.** Shadow is judged before the pick, for grid and bank alike, so dropping a shadow
+   never sets off a fresh pick at the same station; a station picked within `LaneLeadSeconds`
+   of a shadow being dropped hands on no backlog. These are the handover's rules already in the
+   tree; they apply to the grid's path the same way.
+4. **The record.** The capture sheet's `bank` line gains the shadows held in the last minute
+   (pitch, share, the station it shadows); `cw_listen` gains `shadows`. **This is the line that
+   names the live 550 Hz sender in the next W1AW session's sheet.**
 
-**Apply the ship code.** If `unit571-ship-unshipped.patch` is still in the session scratchpad,
-apply it; if it is gone, write it again from this list. Either way the tree ends with:
+## 3. Task 2 - the fixture and the trace
 
-1. **`CwEnvelopeDetector.LaneHandover` defaults on.**
-2. **The setting:** the scan's settings popover gains its last row, **`Weak stations`** (on,
-   default / off), under `AGC in CW`, kept as `WeakStations` in `settings.json`, taking effect at
-   once. Nothing else on screen moves.
-3. **The record:** both capture sheets and each `cw_listen` row carry `weakStations` (on/off)
-   beside the AGC line, and the bank line already there.
-4. **The story line** says once, when a lane's station prints: `Weak station at <pitch> Hz`.
-5. **The guard:** `TheWeakEndTests.TheWeakCqsReadAtHalfOrBetter` - the four 5 dB CQs at half
-   their letters or better.
-6. **The strays bar, restated** in the scoreboard's hard limits and in `docs\cw-scoreboard.md`:
-   *no capture above the owner's line of six lone one- or two-element words per 10 s; the summed
-   figure over the 65 old captures is reported beside the board, not a condition.* The summed
-   figure at ship is 21.9.
-7. **Both scoreboard guards** at 297 and 2111, the figures shipping on the board as the author's.
+1. **A synthetic fixture for the test** (not a recording; generated as the synthetic CQs are):
+   a sender at 600 Hz, 18 WPM, 20 dB, and **a second tone at 550 Hz keyed in lockstep with it,
+   15 dB under it** - the shadow as measured live. Before task 1, say what the chain prints at
+   550 Hz; after, it prints nothing there, and the 600 Hz station reads whole. A second case with
+   the shadow at 575 Hz, and a third at 650. All three in `TheShadowReachesTheGridTests`.
+2. **The side trace, `cw-2026-08-31-003229`:** the one old capture whose strays rose when the
+   handover shipped (`S EA I E THS NE A`). Through the chain as shipped: which lane or grid
+   sequence printed it, its pitch, its contrast, what stronger station stood at the time and
+   where, and whether the rule as extended now holds it as a shadow. One paragraph; no rule is
+   changed for it.
 
-**Lines:** the app carry-forward line, the engine line, and the survey line once (handover on,
-as shipped; `docs\cw-survey-2026-10-09.md` rewritten with a new `rerun` line and the per-group
-figures - expected: easy 75, ungraded 63, CQs at 15 dB 72, CQs at 5 dB 46, boards 297 and 2111).
+## 4. The measure, and the ship
+
+With both tasks in, measure, and **ship only if**:
+
+- **both boards hold:** **297** stands or rises, **2111** stands or rises, wrong and invented do
+  not rise on either;
+- **the hard limits hold:** noise prints nothing, the carrier at no more than one of twenty
+  seeds, the first recording whole, nothing in silences, no old capture above six strays per
+  10 s;
+- **the weak-end guard holds:** the four 5 dB CQs at half their letters or better;
+- **the three fixtures** read as task 2 states;
+- **on W1AW piece-04, no grid sequence within 25 to 50 Hz of W1AW is ever picked** - list every
+  one the rule holds back, with pitch and share, the way the lanes were listed.
+
+If it fails, say which condition, by how much, which file; leave the grid path behind a switch
+off by default (`CwShadow.JudgesTheGrid`), keep the fixture and the trace, and report.
+
+Then rerun the survey, rewrite `docs\cw-survey-2026-10-09.md` with a new `Rerun` line, and put
+per group before and after in the report.
 
 ---
 
-## 3. Record
+## 5. Record
 
-- `PHASE_OUTCOME.md`, both copies: `## UNIT 572 - STEP 12`, one paragraph.
-- `PHASE_STATUS.md`, both copies: names 572.
+- `PHASE_OUTCOME.md`, both copies: `## UNIT 573 - STEP 12`, one paragraph.
+- `PHASE_STATUS.md`, both copies: names 573.
 - Patch-bump `Directory.Build.props`.
 - `CLAUDE.md` §1 index row.
-- `DECISIONS.md`, newest first, **HM-DEC-276**, headline *The handover ships on*, quoting the
-  owner's ruling, the restated strays bar, and the figures at ship: the four CQs, the carrier at
-  one seed, 297, 2111, the survey's groups. **Also the three standing rules above**, so every
-  later unit carries them.
-- `docs\cw-scoreboard.md`: a 572 row in each table; the strays line restated.
-- `CW_SPEC.md` §2: the handover is on; the setting named.
-- **Touch no checkbox in `PHASE_PLAN.md`**, and add no ruling beyond HM-DEC-276.
+- `DECISIONS.md`, newest first, **HM-DEC-277**, headline *The shadow rule reaches the grid, down
+  to one lane's spacing*, naming `ShadowReachHz`, the grid path, the fixture's figures before and
+  after, the W1AW list, and the boards.
+- `docs\cw-scoreboard.md`: a 573 row in each table.
+- `CW_SPEC.md` §2: the shadow paragraph updated: both finders are judged, to 25 Hz.
+- **Touch no checkbox in `PHASE_PLAN.md`**, and add no ruling beyond HM-DEC-277.
 
 ---
 
-## 4. Report
+## 6. Report
 
-Section 2, for the owner, in plain words: **rebuild**; weak stations now read in the app; where
-the `Weak stations` switch is and that turning it off puts Hamlet back exactly as last week; what
-the story line will say; what to look for tonight on W1AW (a `Weak station at … Hz` line on
-anything real, and the 550 Hz sender, which this rule does not yet reach). Section 1: what was
-applied, from the patch or rewritten. **Section 3: the four 5 dB CQs; the carrier at twenty
-seeds; the survey's groups; both scoreboards' rows.** Section 4: anything left, a line each.
+Section 2, for the owner, in plain words, leading with **whether the ghost beside W1AW is now
+caught and what it cost** - the fixture at 550 Hz before and after, the boards, the weak-end
+guard - then what the sheet will say tonight (`shadows` with pitch and share) and that the 550 Hz
+sender should appear there by name. Section 1: per task. **Section 3: the three fixtures before
+and after; the W1AW piece-04 list of grid sequences held back; the 003229 paragraph; the survey's
+groups before and after; both scoreboards' rows.** Section 4: anything left, a line each.

@@ -375,6 +375,7 @@ guard: the random carrier prints at 1 of 20 seeds (5195), recorded at unit 552
 | 570 | 2026-10-12 | 318 of 353 | 20 | 1 | **297** | 0 | 83 of 110, 3 added | the handover narrowed (work instruction 570, HM-DEC-274): a lane waits 3 s clear of the grid, the grid takes a station back, and a lane key-up under the scan's carrier line hands nothing on. On, it read 297 (317 right, 19 wrong, 1 invented, 86 of 110 spaces) and the four 5 dB CQs 13, 14, 16 and 19 of 21, but the carrier keyed at random printed at 5195 and 5209, so it ships off and this row is the board as at HEAD |
 | 571 | 2026-10-13 | 318 of 353 | 20 | 1 | **297** | 0 | 83 of 110, 3 added | a shadow is told by its timing (work instruction 571, HM-DEC-275): a pitch two thirds of whose last ten marks start within 30 ms of a stronger station's, more than 50 Hz away, is a shadow and never picked, and a lane picked soon after a shadow is let go hands on no backlog. On, it read 297 (318 right, 20 wrong, 1 invented, 86 of 110 spaces) with the carrier at 5195 only and the four 5 dB CQs 13, 14, 16 and 19 of 21; but the stray figure on the 65 old captures rose from 21.6 to 21.9, so it ships off and this row is the board as at HEAD |
 | 572 | 2026-10-14 | 318 of 353 | 20 | 1 | **297** | 0 | 86 of 110, 3 added | the handover ships on (work instruction 572, HM-DEC-276), the owner: *ship the lane handover on*; the board as shipped, 318 right, 20 wrong, 1 invented, 86 of 110 spaces with 3 added; the carrier at seed 5195 only of twenty; the four 5 dB CQs 13, 14, 16 and 19 of 21; the strays bar restated: no capture above six lone one- or two-element words per 10 s, the summed figure over the 65 old captures reported beside the board and not a condition |
+| 573 | 2026-10-19 | 318 of 353 | 20 | 1 | **297** | 0 | 86 of 110, 3 added | the shadow rule reaches the grid, to 25 Hz (work instruction 573, HM-DEC-277): judged, the board held at 297 with the carrier at one seed and nothing in a silence, but W1AW fell to 2079 and the lockstep fixture's station did not read whole, so it ships off behind `CwShadow.JudgesTheGrid` and this row is the board as shipped, as at HEAD |
 
 ## Scans (work instruction 544, HM-DEC-248)
 
@@ -447,6 +448,7 @@ high and 25 medium, 2151 letters, all totalled.
 | 570 | 2026-10-12 | **2111** | 2131 of 2151 | 20 | 0 | 438 of 440, 11 added | the handover narrowed read 2111 here too, on; it ships off, as the carrier keyed at random printed at a second seed |
 | 571 | 2026-10-13 | **2111** | 2131 of 2151 | 20 | 0 | 438 of 440, 11 added | the shadow rule read 2111 here too, on; it ships off, as the stray figure on the old captures rose 0.3 |
 | 572 | 2026-10-14 | **2111** | 2131 of 2151 | 20 | 0 | 438 of 440, 11 added | the handover ships on (HM-DEC-276); the same text read, on as shipped |
+| 573 | 2026-10-19 | **2111** | 2131 of 2151 | 20 | 0 | 438 of 440, 11 added | the shadow rule judging the grid to 25 Hz read 2079 here (2115 of 2151, 36 wrong, 0 invented), most of it piece 1's 13 and 10 WPM stretch at 198 to 240 s; it ships off, and this row is as shipped |
 
 ### W1AW stretches at unit 554 task 3
 

@@ -4,6 +4,40 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-277
+date: 2026-10-19
+refs: work instruction 573, HM-DEC-276, HM-DEC-275, src/Hamlet.RadioEngine/Cw/CwShadow.cs, src/Hamlet.RadioEngine/Cw/CwEnvelopeDetector.cs, src/Hamlet.RadioEngine/Cw/CwPatternGate.cs, src/Hamlet.App/Telemetry/AppEvents.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheShadowReachesTheGridTests.cs, docs/cw-scoreboard.md, docs/cw-survey-2026-10-09.md, CW_SPEC.md
+---
+
+**The shadow rule reaches the grid, down to one lane's spacing: built, measured, and left off.** Work instruction 573 ordered it shipped only on its section 4 conditions. Two failed, so by the order's own rule the grid path stands behind `CwShadow.JudgesTheGrid`, off, and Hamlet reads exactly as at HEAD.
+
+**What was built.**
+- `CwShadow.ShadowReachHz`, 25 Hz, one lane's spacing: the rule judges a sequence against every stronger station more than that away. The handover's same-station distance, 50 Hz, is unchanged.
+- **The grid path:** before the sender gate is handed a grid sequence's marks, the sequence is judged by `CwShadow.IsShadowOf` against every stronger station Hamlet holds: the pattern gate's other standing sequences and candidates, and the bank's standing lanes. A shadow's marks are not handed on, so it is never picked. A held one judged a shadow is let go by the gate's own release, and a lane picked within `LaneLeadSeconds` of it hands on no backlog. The lanes are judged where they were, the grid in its own place; nothing is judged twice.
+- **Inside 50 Hz the stronger station must also be louder by level.** Built first on contrast alone, the rule held the synthetic station's own sequence at 600 Hz as a shadow of its skirt at 575 or 625 Hz, and the station alone lost letters. Past 50 Hz the rule is as it was.
+- **The reach follows the switch:** off, the lanes are judged to 50 Hz as before.
+- **The record:** the capture sheets' `bank` line gains the shadows held in the last minute (`550 Hz 0.90 of 600 Hz`), and each `cw_listen` row gains `shadows`. These print whether the switch is on or off, and the lanes' shadows show there either way.
+
+**The fixture**, synthetic and not a recording: a station at 600 Hz, 18 WPM, 20 dB, with a tone keyed in lockstep 15 dB under it at 550, 575 or 650 Hz.
+- Nothing printed at the shadow's pitch, before and after, on and off: no grid sequence there ever stood.
+- The station alone reads 21 of 21. Beside its shadow it reads 20, 19 and 18 of 21, on and off alike: its opening letters break at its own pitch where the two tones beat, which no shadow rule reaches.
+
+**On W1AW piece-04**, judged: no grid sequence was held back as a shadow, and nothing printed at 525 to 575 or 625 to 675 Hz, on or off.
+
+**`cw-2026-08-31-003229`:**
+- At HEAD it prints `S EA I E THS NE A` from the bank's lane at 850 Hz, held from 8.1 s to 22.1 s at 13 to 20 dB contrast. The only stronger thing standing is a grid sequence at 584 Hz of one length, shape 0.11.
+- With the reach at 25 Hz the lane at 850 is held as a shadow of an 800 Hz lane, 50 Hz away, at shares 0.67 to 0.70, and prints three letters. The grid path holds nothing there.
+
+**The measure, the grid judged:**
+- The twelve-plus-three held at 297, with the carrier at one seed of twenty and nothing in a silence.
+- The four 5 dB CQs read 13, 14, 19 and 19 of 21.
+- **W1AW fell from 2111 to 2079, wrong 20 to 36.** Most of it was piece 1's 13 and 10 WPM stretch at 198 to 240 s.
+- The fixtures' station did not read whole.
+- The strays bar with it on was not measured: the survey ran once, as shipped.
+
+**As shipped, off:** the boards 297 and 2111, as at HEAD.
+
+---
 id: HM-DEC-276
 date: 2026-10-14
 refs: work instruction 572, HM-DEC-275, HM-DEC-274, HM-DEC-273, src/Hamlet.RadioEngine/Cw/CwEnvelopeDetector.cs, src/Hamlet.App/ViewModels/MainWindowViewModel.WeakStations.cs, src/Hamlet.App/Views/MainWindow.axaml, src/Hamlet.App/Settings/AppSettings.cs, src/Hamlet.App/Telemetry/AppEvents.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheWeakEndTests.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheCwSurveyTests.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheRecordingsScoreboardTests.cs, docs/cw-scoreboard.md, docs/cw-survey-2026-10-09.md, CW_SPEC.md
