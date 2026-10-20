@@ -445,6 +445,14 @@ public sealed class CwSenderGate
     internal CwGapLines? StationLines => _station?.Lines;
 
     /// <summary>
+    /// The printed sender's pitch, dit and word gap, the mean of its word-gap cluster or its word line where it has shown none,
+    /// or null while none is printed: for the detector's end of a held lane's hold (work instruction 576). Read on the audio
+    /// thread, where the gate is fed.
+    /// </summary>
+    internal (double PitchHz, double DitSeconds, double WordGapSeconds)? StationTiming
+        => _station is { } s && s.Lines is var lines ? (s.Reference.Pitch, s.DitSeconds, lines.WordClusterSeconds ?? lines.WordSeconds) : null;
+
+    /// <summary>
     /// The printed sender's clusters as last measured on this thread, in words: for the tests' report
     /// (work instruction 513).
     /// </summary>

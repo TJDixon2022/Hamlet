@@ -576,7 +576,8 @@ public sealed class TheWeakEndTests(ITestOutputHelper output)
 
     /// <remarks>
     /// Work instruction 571, the guard (HM-DEC-275): the handover ships on, and through the chain as shipped each of the four
-    /// 5 dB CQs reads half its letters or better. At the ship they read 13, 14, 16 and 19 of 21.
+    /// 5 dB CQs reads half its letters or better. At the ship they read 13, 14, 16 and 19 of 21. Work instruction 576 (HM-DEC-280):
+    /// a held lane keeps reading and its hold ends in a pause, and the four read 71 of 84 or better, 14, 17, 20 and 20 at the ship.
     /// </remarks>
     [Fact]
     public void TheWeakCqsReadAtHalfOrBetter()
@@ -590,6 +591,8 @@ public sealed class TheWeakEndTests(ITestOutputHelper output)
 
         Assert.Equal(4, cqs.Count);
 
+        var total = 0;
+
         foreach (var (name, wav, r) in cqs)
         {
             var audio = WavAudio.Read(wav);
@@ -598,22 +601,26 @@ public sealed class TheWeakEndTests(ITestOutputHelper output)
             var read = Chain(audio.Samples, audio.SampleRate, r.ToneHz, handover: true);
             var right = TheRecordingsScoreboardTests.Right(read.Text, reference);
 
+            total += right;
             output.WriteLine($"{name}: `{read.Text}`, {right} of {outOf}");
             Assert.True(right * 2 >= outOf, $"{name} read `{read.Text}`, {right} of {outOf}");
         }
+
+        output.WriteLine($"total {total} of 84");
+        Assert.True(total >= 71, $"the four read {total} of 84");
     }
 
     /// <remarks>
-    /// Work instruction 575, task 2: the four 5 dB CQs as the chain ships and with a held lane reading under its own contrast floor,
-    /// built and left off (HM-DEC-279): on, they read 14, 17, 20 and 20 of 21, but on W1AW's piece 2 the held lane read the pause
-    /// after `W1AW <AS>` as `M T TAT TM E`. Asserts nothing.
+    /// Work instruction 575, task 2: the four 5 dB CQs with a held lane reading under its own contrast floor and without (HM-DEC-279):
+    /// on, they read 14, 17, 20 and 20 of 21. It ships on, with the end of its hold, since work instruction 576 (HM-DEC-280). Asserts
+    /// nothing.
     /// </remarks>
     [Fact]
     public void TheWeakCqsWithAHeldLaneReading()
     {
         foreach (var held in new[] { false, true })
         {
-            using var _ = held ? CwRules.Choose(CwRules.HeldLaneReads) : null;
+            using var _ = held ? null : CwRules.Off(CwRules.HeldLaneReads);
             var total = 0;
 
             foreach (var (name, wav, r) in Files().Where(f => f.Name.Contains("-5db", StringComparison.Ordinal)))
@@ -624,10 +631,54 @@ public sealed class TheWeakEndTests(ITestOutputHelper output)
                 var right = TheRecordingsScoreboardTests.Right(read.Text, reference);
 
                 total += right;
-                output.WriteLine($"{(held ? "held lane reads" : "as it ships")}: {name}: `{read.Text}`, {right} of {TheRecordingsScoreboardTests.Letters(reference).Length}");
+                output.WriteLine($"{(held ? "a held lane reads, as it ships" : "the held lane off")}: {name}: `{read.Text}`, {right} of {TheRecordingsScoreboardTests.Letters(reference).Length}");
             }
 
-            output.WriteLine($"{(held ? "held lane reads" : "as it ships")}: total {total} of 84");
+            output.WriteLine($"{(held ? "a held lane reads, as it ships" : "the held lane off")}: total {total} of 84");
+        }
+    }
+
+    /// <remarks>
+    /// Work instruction 576, the silence after a weak station (HM-DEC-280): each 5 dB CQ followed by 20 s of the same band noise,
+    /// its own shaping at its own level, read through the chain as it ships. Nothing prints in the 20 s: no letter whose last mark
+    /// ends after the CQ's last key-up.
+    /// </remarks>
+    [Fact]
+    public void NothingPrintsInTheSilenceAfterAWeakStation()
+    {
+        foreach (var (name, wav, r) in Files().Where(f => f.Name.Contains("-5db", StringComparison.Ordinal)))
+        {
+            var audio = WavAudio.Read(wav);
+            var lastKeyUp = Sent(r)[^1].To;
+            var tail = audio.Samples.AsSpan(audio.Samples.Length - audio.SampleRate).ToArray();
+            var tailRms = Math.Sqrt(tail.Average(x => (double)x * x));
+            var silence = new float[20 * audio.SampleRate];
+            var silenceRms = CwFixtureGenerator.ShapedNoise(silence, r.Seed + 1);
+
+            for (var i = 0; i < silence.Length; i++)
+            {
+                silence[i] = (float)Math.Clamp(silence[i] * tailRms / silenceRms, -1, 1);
+            }
+
+            var samples = audio.Samples.Concat(silence).ToArray();
+            using var chain = new CwChain(audio.SampleRate);
+            var letters = new List<(double At, string Text)>();
+            var chunk = audio.SampleRate / 100;
+
+            chain.Detector.SetPassband(600, 500);
+            chain.Decoder.Runs.RunRead += (c, run) => letters.Add((run[^1].ToSeconds, c.Text));
+
+            for (var at = 0; at + chunk <= samples.Length; at += chunk)
+            {
+                chain.Process(new AudioChunk(at, audio.SampleRate, samples.AsSpan(at, chunk)));
+            }
+
+            chain.Decoder.Flush();
+
+            var after = letters.Where(l => l.At > lastKeyUp + 0.05).ToList();
+
+            output.WriteLine(string.Create(Inv, $"{name}: the CQ `{string.Concat(letters.Where(l => l.At <= lastKeyUp + 0.05).Select(l => l.Text))}`, then in the 20 s: {after.Count} letters{(after.Count > 0 ? $", `{string.Join(" ", after.Select(a => $"{a.Text}@{a.At:0.0}"))}`" : string.Empty)}"));
+            Assert.Empty(after);
         }
     }
 

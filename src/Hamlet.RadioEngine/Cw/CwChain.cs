@@ -67,6 +67,9 @@ public sealed class CwChain : IDisposable
         // **AND THE LIGHT CLAIMS NO MORE THAN THE PRINTER** (work instruction 535, HM-DEC-239).
         detector.WaitingPitch = () => decoder.RunsWaitingHz;
 
+        // **THE HOLD ENDS IN A PAUSE** (work instruction 576, HM-DEC-280): a held lane is let go on its sender's own word gap.
+        detector.PrintedTiming = () => decoder.RunsPrintedTiming;
+
         // **A CHARACTER IS A RUN OF MARKS THAT AGREE** (work instruction 490, HM-DEC-195): the gate and reader read the marks.
         decoder.DetectorMarks = detector.MarksSince;
     }

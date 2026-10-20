@@ -84,13 +84,19 @@ internal sealed class CwLaneBank
     public IReadOnlyList<CwPatternGate> Gates => _gates;
 
     /// <summary>
-    /// **A HELD LANE KEEPS READING** (work instruction 575, task 2): the lane whose station the detector has handed to the sender
-    /// gate, by dit index and pitch, or null. Its contrast floor, <see cref="MinContrastDb"/>, governs standing and not holding,
-    /// so it calls marks while its contrast dips under the floor; the hold ends as before, when its sequence stops standing, the
-    /// grid takes the station back, or it is judged a carrier or a shadow, and the sender gate lets the sender go under a shape
-    /// of 0.1.
+    /// **A HELD LANE KEEPS READING, AND THE HOLD ENDS IN A PAUSE** (work instructions 575 and 576, HM-DEC-280): the lane whose
+    /// station the detector has handed to the sender gate, by dit index and pitch, or null. Its contrast floor,
+    /// <see cref="MinContrastDb"/>, governs standing and not holding, so it calls marks while its contrast dips under the floor;
+    /// the hold ends when its sequence stops standing, the grid takes the station back, it is judged a carrier or a shadow, or it
+    /// has handed on no mark the gate would kind for <see cref="CwEnvelopeDetector.HeldLanePauseGaps"/> of its sender's word gap.
     /// </summary>
     public (int Dit, double PitchHz)? Held { get; set; }
+
+    /// <summary>
+    /// Where set, every mark the held lane called and the hops it read on, with its key-up and key-down lines and its contrast at
+    /// that moment: for the tests' traces (work instruction 576). `Mark` is false on a hop with no mark ending.
+    /// </summary>
+    internal List<(double At, double PitchHz, bool Mark, double From, double To, double LevelDb, double UpDb, double DownDb, double ContrastDb)>? HeldTrace { get; set; }
 
     /// <summary>Every mark that stood in the bank, in order, for the detector to hand on or keep.</summary>
     public List<(int Dit, CwMark Mark)> Stood { get; } = [];
@@ -127,7 +133,18 @@ internal sealed class CwLaneBank
             {
                 var held = Held is { } h && h.Dit == d && Math.Abs(h.PitchHz - p.Hz) <= SpacingHz / 2 && CwRules.On(CwRules.HeldLaneReads);
 
-                if (p.Lanes[d].Hop(nowSeconds, _hopSeconds, held) is { } span)
+                var called = p.Lanes[d].Hop(nowSeconds, _hopSeconds, held);
+
+                if (held && HeldTrace is { } trace)
+                {
+                    var lane = p.Lanes[d];
+
+                    trace.Add(called is { } c
+                        ? (nowSeconds, p.Hz, true, c.From, c.To, c.LevelDb, lane.Up, lane.Down, c.ContrastDb)
+                        : (nowSeconds, p.Hz, false, double.NaN, double.NaN, lane.Level, lane.Up, lane.Down, lane.Down - lane.Up));
+                }
+
+                if (called is { } span)
                 {
                     var mark = new CwMark(++_sequence, span.From, span.To, p.Hz, span.LevelDb, span.ContrastDb)
                     {
@@ -266,6 +283,12 @@ internal sealed class CwLaneBank
             }
         }
 
+        public double Up => _up;
+
+        public double Down => _down;
+
+        public double Level { get; private set; } = double.NaN;
+
         public void Push(double i, double q)
         {
             _lastI = _i[1].Next(_i[0].Next(i));
@@ -275,6 +298,8 @@ internal sealed class CwLaneBank
         public (double From, double To, double LevelDb, double ContrastDb)? Hop(double now, double hopSeconds, bool held)
         {
             var level = 10 * Math.Log10((2 * ((_lastI * _lastI) + (_lastQ * _lastQ))) + 1e-20);
+
+            Level = level;
 
             _levels[_next] = level;
             _next = (_next + 1) % HistoryHops;

@@ -120,6 +120,12 @@ public sealed class CwDecoder
     public double RunsWaitingHz => _runs.WaitingPitchHz;
 
     /// <summary>
+    /// The printed sender's pitch, dit and word gap, or null while none is printed (work instruction 576): what ends a held
+    /// lane's hold. Read on the audio thread, where the decoder is fed.
+    /// </summary>
+    public (double PitchHz, double DitSeconds, double WordGapSeconds)? RunsPrintedTiming => _runs.StationTiming;
+
+    /// <summary>
     /// What the shape side held at the end of its last batch (work instruction 537): the printed sender, its letters and
     /// marks, and every sender the gate holds. Safe to read from any thread.
     /// </summary>

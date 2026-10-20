@@ -230,6 +230,23 @@ public sealed class CwEnvelopeDetector
     /// </summary>
     public Func<double>? WaitingPitch { get; set; }
 
+    /// <summary>
+    /// The printed sender's pitch, dit and word gap, or null while none is printed (work instruction 576): what ends a held
+    /// lane's hold, <see cref="HeldLanePauseGaps"/>. Read on the audio thread.
+    /// </summary>
+    public Func<(double PitchHz, double DitSeconds, double WordGapSeconds)?>? PrintedTiming { get; set; }
+
+    /// <summary>
+    /// **THE HOLD ENDS IN A PAUSE** (work instruction 576, HM-DEC-280): a held lane that has handed on no mark the gate would kind,
+    /// none of half its sender's dit or longer, for this many of its sender's own word gaps is let go, and is an ordinary lane
+    /// again: its floor governs, its sequence stands on its own, and it is handed on again only after the lane's wait. Three, the
+    /// smallest whole number the pause after `W1AW &lt;AS&gt;` on W1AW's piece 2 supports.
+    /// </summary>
+    internal const double HeldLanePauseGaps = 3;
+
+    // When the held lane last handed on a mark the gate would kind, on the audio clock.
+    private double _heldKindedAt = double.NaN;
+
     // The shape score of the standing sequence the reading follows (work instruction 519).
     private double _readingShape = double.NaN;
 
@@ -420,6 +437,23 @@ public sealed class CwEnvelopeDetector
     private bool HeldByLane(double pitchHz) => _bankLane is { } held && Math.Abs(pitchHz - held.PitchHz) <= HandoverHz;
 
     /// <summary>
+    /// The held lane's sender's dit and word gap (work instruction 576): the printed sender's, where it is printed within
+    /// <see cref="HandoverHz"/> of the lane and has a word gap; else the lane's own dit and Morse's seven of it.
+    /// </summary>
+    private (double DitSeconds, double WordGapSeconds) HeldTiming((int Dit, double PitchHz, int Id) held)
+        => PrintedTiming?.Invoke() is { } t && Math.Abs(t.PitchHz - held.PitchHz) <= HandoverHz && t.DitSeconds > 0 && t.WordGapSeconds > 0
+            ? (t.DitSeconds, t.WordGapSeconds)
+            : (CwLaneBank.DitSeconds[held.Dit], 7 * CwLaneBank.DitSeconds[held.Dit]);
+
+    /// <summary>
+    /// Whether a lane holding a station under its floor has handed on no mark the gate would kind for longer than
+    /// <see cref="HeldLanePauseGaps"/> of its sender's word gap (work instruction 576, HM-DEC-280).
+    /// </summary>
+    private bool HeldLanePaused((int Dit, double PitchHz, int Id) held, double nowSeconds)
+        => CwRules.On(CwRules.HeldLaneReads) && CwRules.On(CwRules.HeldLanePause) && !double.IsNaN(_heldKindedAt)
+           && nowSeconds - _heldKindedAt > HeldLanePauseGaps * HeldTiming(held).WordGapSeconds;
+
+    /// <summary>
     /// Whether the shadow rule judges the grid's own sequences on this detector: <see cref="CwShadow.JudgesTheGrid"/> (work
     /// instruction 573, HM-DEC-277).
     /// </summary>
@@ -593,17 +627,29 @@ public sealed class CwEnvelopeDetector
             && (!standing.Any(s => s.Dit == held.Dit && Math.Abs(s.Sequence.PitchHz - held.PitchHz) <= BinSpacingHz / 2)
                 || (GridTakesBack && grid.Any(g => Math.Abs(g - held.PitchHz) <= HandoverHz))
                 || LaneIsCarrier(held.PitchHz, nowSeconds)
-                || ShadowPitch(held.PitchHz)))
+                || ShadowPitch(held.PitchHz)
+                || HeldLanePaused(held, nowSeconds)))
         {
             var asShadow = ShadowPitch(held.PitchHz);
+            var paused = HeldLanePaused(held, nowSeconds);
 
             if (asShadow)
             {
                 _shadowLetGoAt = nowSeconds;
             }
 
-            HandoverTrace?.Add(string.Create(CultureInfo.InvariantCulture, $"{nowSeconds:0.00} s let go {held.PitchHz:0} Hz{(asShadow ? " as a shadow" : string.Empty)}"));
+            // Let go in a pause, the lane waits again before it is handed on, every dit's lane at the station's pitch alike.
+            if (paused)
+            {
+                foreach (var key in _laneClearSince.Keys.Where(k => Math.Abs((k.Bin * BinSpacingHz) - held.PitchHz) <= HandoverHz).ToList())
+                {
+                    _laneClearSince[key] = nowSeconds;
+                }
+            }
+
+            HandoverTrace?.Add(string.Create(CultureInfo.InvariantCulture, $"{nowSeconds:0.00} s let go {held.PitchHz:0} Hz{(asShadow ? " as a shadow" : paused ? " in a pause" : string.Empty)}"));
             _bankLane = null;
+            _heldKindedAt = double.NaN;
         }
 
         var near = grid
@@ -641,6 +687,7 @@ public sealed class CwEnvelopeDetector
                 .FirstOrDefault() is { Sequence: not null } best)
             {
                 _bankLane = (best.Dit, best.Sequence.PitchHz, best.Sequence.Id);
+                _heldKindedAt = nowSeconds;
 
                 // A lane picked soon after a shadow was let go hands on no backlog: it starts from its next mark (the owner, 2026-10-13).
                 var fresh = nowSeconds - _shadowLetGoAt < LaneLeadSeconds;
@@ -670,6 +717,11 @@ public sealed class CwEnvelopeDetector
             {
                 _marks.Add(mark with { Sequence = ++_markSequence, Stood = true, Keyed = true });
                 _laneHandedTo[bin] = Math.Max(_laneHandedTo.TryGetValue(bin, out var t) ? t : double.NegativeInfinity, mark.ToSeconds);
+
+                if (mark.ToSeconds - mark.FromSeconds >= 0.5 * HeldTiming(lane).DitSeconds)
+                {
+                    _heldKindedAt = Math.Max(double.IsNaN(_heldKindedAt) ? double.NegativeInfinity : _heldKindedAt, mark.ToSeconds);
+                }
             }
 
             _laneKept.RemoveAll(k => Math.Abs(k.Mark.PitchHz - lane.PitchHz) <= HandoverHz);
