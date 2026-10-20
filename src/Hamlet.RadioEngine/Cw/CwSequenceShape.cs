@@ -116,7 +116,7 @@ public sealed record CwSequenceShape(
         // his dit is two kinds where the gate parts them so (CwSenderGate.TwoKindsAt), and is scored on those two.
         if (dits.Count == 0 || dahs.Count == 0 || Centre(dahs) / Centre(dits) < CwSenderGate.TwoKindsRatio)
         {
-            if (widest >= CwSenderGate.TwoKindsRatio || CwSenderGate.TwoKindsAt(sorted) is not { } parted)
+            if (widest >= CwSenderGate.TwoKindsRatio || CwSenderGate.TwoKindsAt(sorted, pitchHz: marks.Count > 0 ? marks[0].PitchHz : double.NaN) is not { } parted)
             {
                 return None;
             }

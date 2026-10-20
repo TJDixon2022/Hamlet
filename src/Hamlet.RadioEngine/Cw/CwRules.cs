@@ -113,7 +113,7 @@ internal static class CwRules
     /// <summary>The held lane's clock waits for its station to print, and the lane whose dit fits the station is the one handed on (work instruction 579); built, measured and left off (HM-DEC-283).</summary>
     public const string HoldWaitsAndFits = "the hold waits for the station, and the lane that fits is handed on";
 
-    /// <summary>A sender whose dah is under twice his dit shows two kinds where two means part his marks into stable clusters (work instruction 577); built, measured and left off (HM-DEC-281).</summary>
+    /// <summary>A sender whose dah is under twice his dit shows two kinds where two means part his marks into stable clusters (work instruction 577); built, measured and left off (HM-DEC-281), its dit floored at Morse's fastest and measured on the fist bank, left off for the owner's ruling (HM-DEC-285).</summary>
     public const string ShortDah = "two kinds from stable clusters under a jump of two";
 
     /// <summary>Every rule kept, in the order the work instruction names them.</summary>

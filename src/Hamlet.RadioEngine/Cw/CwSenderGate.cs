@@ -78,11 +78,32 @@ public sealed class CwSenderGate
     /// <summary>The fewest marks two kinds under a jump of two are judged on: a sender's last ten, and three of each kind (work instruction 577).</summary>
     public const int TwoKindsMarks = KindsHeldMarks;
 
+    /// <summary>The shortest dit two kinds under a jump of two may part at: Morse's fastest, 48 WPM (work instruction 581).</summary>
+    /// <remarks>
+    /// **PIECES ARE NOT A HAND** (work instruction 581, HM-DEC-285): two of the rule's three costs were runs of noise pieces at a
+    /// station's own pitch, 20 to 40 ms in the detector's 5 ms steps, parted at a dit of 20 and 21 ms, on `cw-2026-10-08-121357`
+    /// and `cq-25wpm-5db`. Floored, both read as shipped, and every 1.6 and 2.0 hand of the fist bank is still parted, at a dit of
+    /// 34 ms or more. The third cost, a carrier keyed at random printing at seed 5207, parts at a dit of 44 ms and is not touched:
+    /// its runs overlap the hands' on every one of the five conditions. Chosen with the floor, the bank's 1.6 and 2.0 rows read
+    /// 1193 of 2880 from 135, so the rule stays off for the owner's ruling. Author's.
+    /// </remarks>
+    public const double TwoKindsLeastDitSeconds = 1.2 / CwDecoder.FastestPlausibleWpm;
+
+    /// <summary>One judgement of two kinds under a jump of two: who asked, at what pitch, the lengths, where two means parted them, and the figures (work instruction 581).</summary>
+    internal readonly record struct ShortDahJudgement(
+        string Caller, double PitchHz, IReadOnlyList<double> Sorted, int At, double DitSeconds, double DahSeconds, double DitSd, double DahSd, bool Taken);
+
+    /// <summary>A test's hook on this thread: every judgement of two kinds under a jump of two, taken or not (work instruction 581). Nothing in the app sets it.</summary>
+    [ThreadStatic]
+    internal static Action<ShortDahJudgement>? ShortDahJudged;
+
     /// <summary>
     /// Where some sorted mark lengths part into two kinds: the index of the first long one, or null where they are one kind.
     /// </summary>
     /// <param name="sorted">The lengths, shortest first.</param>
     /// <param name="firstJump">Whether a clean jump parts them at the first such jump, as the grid's sequences always have, rather than the widest.</param>
+    /// <param name="pitchHz">The pitch of the marks, for <see cref="ShortDahJudged"/> alone.</param>
+    /// <param name="caller">Who asked, for <see cref="ShortDahJudged"/> alone.</param>
     /// <returns>The index of the first dah, or null.</returns>
     /// <remarks>
     /// **A CLEAN JUMP OF TWO IS TWO KINDS, AS BEFORE**: where two neighbours differ by <see cref="TwoKindsRatio"/> the widest such
@@ -92,7 +113,7 @@ public sealed class CwSenderGate
     /// stand <see cref="TwoKindsSpreads"/> of the wider cluster's spreads apart. A smear of lengths, which a carrier keyed at random
     /// and noise make, parts at about three and a half.
     /// </remarks>
-    internal static int? TwoKindsAt(IReadOnlyList<double> sorted, bool firstJump = false)
+    internal static int? TwoKindsAt(IReadOnlyList<double> sorted, bool firstJump = false, double pitchHz = double.NaN, [System.Runtime.CompilerServices.CallerMemberName] string caller = "")
     {
         var at = -1;
         var widest = 0.0;
@@ -151,9 +172,12 @@ public sealed class CwSenderGate
 
         var dits = Sender.LogStats(sorted.Take(at).ToList());
         var dahs = Sender.LogStats(sorted.Skip(at).ToList());
+        var taken = dahs.Mu - dits.Mu >= Math.Log(MinDahDitRatio) && dahs.Mu - dits.Mu >= TwoKindsSpreads * Math.Max(dits.Sd, dahs.Sd)
+            && Math.Max(dits.Sd, dahs.Sd) <= TwoKindsWidest && Math.Exp(dits.Mu) >= TwoKindsLeastDitSeconds;
 
-        return dahs.Mu - dits.Mu >= Math.Log(MinDahDitRatio) && dahs.Mu - dits.Mu >= TwoKindsSpreads * Math.Max(dits.Sd, dahs.Sd)
-            && Math.Max(dits.Sd, dahs.Sd) <= TwoKindsWidest ? at : null;
+        ShortDahJudged?.Invoke(new ShortDahJudgement(caller, pitchHz, sorted, at, Math.Exp(dits.Mu), Math.Exp(dahs.Mu), dits.Sd, dahs.Sd, taken));
+
+        return taken ? at : null;
 
         static double Mean(IReadOnlyList<double> s, int from, int to)
         {
@@ -1593,7 +1617,7 @@ public sealed class CwSenderGate
 
             // **TWO STABLE CLUSTERS UNDER A JUMP OF TWO ARE TWO KINDS** (work instruction 577, HM-DEC-281): a straight key whose
             // dah is under twice his dit, its clusters parted by two means and standing apart (TwoKindsAt).
-            if (TwoKindsAt(lengths) is { } parted)
+            if (TwoKindsAt(lengths, pitchHz: marks.Count > 0 ? marks[0].PitchHz : double.NaN) is { } parted)
             {
                 var dits = lengths.Take(parted).ToList();
                 var dahs = lengths.Skip(parted).ToList();
