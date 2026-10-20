@@ -107,6 +107,9 @@ internal static class CwRules
     /// <summary>A held lane's hold ends after a pause of <see cref="CwEnvelopeDetector.HeldLanePauseGaps"/> of the sender's word gap with no mark kinded (work instruction 576).</summary>
     public const string HeldLanePause = "the hold ends in a pause";
 
+    /// <summary>A sender whose dah is under twice his dit shows two kinds where two means part his marks into stable clusters (work instruction 577); built, measured and left off (HM-DEC-281).</summary>
+    public const string ShortDah = "two kinds from stable clusters under a jump of two";
+
     /// <summary>Every rule kept, in the order the work instruction names them.</summary>
     /// <remarks>
     /// **THREE RULES EARNED THEIR PLACE; TEN LEFT THE TREE** (work instruction 541, HM-DEC-245): of the thirteen work
@@ -128,7 +131,7 @@ internal static class CwRules
     /// The rules that ship off, built and measured and not taken: off unless a test chooses one on this thread with
     /// <see cref="Choose"/> (work instruction 565).
     /// </summary>
-    public static readonly IReadOnlySet<string> OffByDefault = new HashSet<string>(StringComparer.Ordinal) { BetweenClusters, StraddleSplit };
+    public static readonly IReadOnlySet<string> OffByDefault = new HashSet<string>(StringComparer.Ordinal) { BetweenClusters, StraddleSplit, ShortDah };
 
     [ThreadStatic]
     private static HashSet<string>? _chosen;

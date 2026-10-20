@@ -791,15 +791,8 @@ internal sealed class CwPatternGate
         {
             var lengths = _recent.Select(r => r.ToSeconds - r.FromSeconds).OrderBy(l => l).ToList();
 
-            for (var i = 1; i < lengths.Count; i++)
-            {
-                if (lengths[i] / lengths[i - 1] >= CwSenderGate.TwoKindsRatio)
-                {
-                    return (lengths.Take(i).Average(), lengths.Skip(i).Average());
-                }
-            }
-
-            return null;
+            // Where they part, by a clean jump of two or, a short dah, by two stable clusters (work instruction 577).
+            return CwSenderGate.TwoKindsAt(lengths, firstJump: true) is { } i ? (lengths.Take(i).Average(), lengths.Skip(i).Average()) : null;
         }
 
         /// <summary>
@@ -825,15 +818,8 @@ internal sealed class CwPatternGate
         {
             var lengths = _recent.Select(r => r.ToSeconds - r.FromSeconds).Append(m.ToSeconds - m.FromSeconds).OrderBy(l => l).ToList();
 
-            for (var i = 1; i < lengths.Count; i++)
-            {
-                if (lengths[i] / lengths[i - 1] >= CwSenderGate.TwoKindsRatio)
-                {
-                    return lengths.Take(i).Average();
-                }
-            }
-
-            return lengths[0];
+            // Where they part, by a clean jump of two or, a short dah, by two stable clusters (work instruction 577).
+            return CwSenderGate.TwoKindsAt(lengths, firstJump: true) is { } i ? lengths.Take(i).Average() : lengths[0];
         }
 
         /// <summary>Take the mark; the marks that stand because of it.</summary>
@@ -883,15 +869,9 @@ internal sealed class CwPatternGate
         {
             var lengths = marks.Select(m => m.ToSeconds - m.FromSeconds).OrderBy(l => l).ToList();
 
-            for (var i = 1; i < lengths.Count; i++)
-            {
-                if (lengths[i] / lengths[i - 1] >= CwSenderGate.TwoKindsRatio)
-                {
-                    return true;
-                }
-            }
-
-            return false;
+            // **OR TWO STABLE CLUSTERS UNDER A JUMP OF TWO** (work instruction 577, HM-DEC-281): a straight key whose dah is under
+            // twice his dit stands where two means part his marks into kinds that stand apart (CwSenderGate.TwoKindsAt).
+            return CwSenderGate.TwoKindsAt(lengths) is not null;
         }
     }
 }

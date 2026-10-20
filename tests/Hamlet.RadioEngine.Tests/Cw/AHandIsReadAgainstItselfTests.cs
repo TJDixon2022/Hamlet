@@ -74,6 +74,12 @@ public sealed class AHandIsReadAgainstItselfTests
 
         keyed.Add((3.0, false));
 
+        return Synthesize(keyed, seed, db, overshootDb, pitch);
+    }
+
+    /// <summary>The key-down and key-up stretches as audio at the pitch, with noise added after (work instruction 577).</summary>
+    internal static float[] Synthesize(IReadOnlyList<(double Seconds, bool On)> keyed, int seed, double db = 24, double overshootDb = 0, double pitch = Pitch)
+    {
         var samples = new float[(int)(keyed.Sum(k => k.Seconds) * Rate) + Rate];
         var amplitude = ThePatternIsTheGateTests.Over(db);
         var edge = (int)(0.004 * Rate);

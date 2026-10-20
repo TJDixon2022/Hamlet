@@ -49,6 +49,125 @@ public sealed class CwSenderGate
     /// </remarks>
     public const double TwoKindsRatio = 2;
 
+    /// <summary>The least dah over dit two stable clusters may show and be two kinds under a jump of two (work instruction 577).</summary>
+    /// <remarks>
+    /// **A STRAIGHT KEY'S DAH IS NOT ALWAYS TWICE ITS DIT** (work instruction 577, HM-DEC-281): the far side of a QSO, Ken on
+    /// `cw-2026-10-19-141708`, keys dahs about 2.3 times his dits with his lengths running continuously from 50 to 280 ms, and a
+    /// synthetic hand at 1.7 with each kind spread ±15% showed 1.53 to 1.84 over every run of sixteen marks and read nothing. The
+    /// floor is under the hand's least; the carrier and noise are held off by <see cref="TwoKindsSpreads"/> and <see cref="TwoKindsWidest"/>. Built, measured
+    /// and left off: chosen, the 1.7 hand read 60 of 60 at three seeds from 0, but the twelve-plus-three 293 from 297, the four 5 dB
+    /// CQs 69 of 84 from 71, a carrier keyed at random printed at two seeds of twenty, and Ken read as before. Author's.
+    /// </remarks>
+    public const double MinDahDitRatio = 1.5;
+
+    /// <summary>How many of the wider cluster's spreads two kinds under a jump of two must stand apart (work instruction 577).</summary>
+    /// <remarks>
+    /// In log length, each spread floored at the gate's own floor, 0.1. The 1.7 hand stood a median 4.8
+    /// spreads apart over runs of sixteen marks; a carrier keyed at random a median 3.4. Author's.
+    /// </remarks>
+    public const double TwoKindsSpreads = 4;
+
+    /// <summary>The widest either cluster may be, in log length, to be two kinds under a jump of two (work instruction 577).</summary>
+    /// <remarks>
+    /// A hand's kind, keyed ±15%, is about 0.09 wide and the detector adds its quarter-dit steps; the two halves of a smear are about
+    /// 0.33. Over runs of ten marks, at 4 spreads and each cluster within 0.12, a carrier keyed at random passed 11 of 914 runs and
+    /// the 1.7 hand 446 of 494; over sixteen, 0 of 794 and 471 of 476. Author's.
+    /// </remarks>
+    public const double TwoKindsWidest = 0.12;
+
+    /// <summary>The fewest marks two kinds under a jump of two are judged on: a sender's last ten, and three of each kind (work instruction 577).</summary>
+    public const int TwoKindsMarks = KindsHeldMarks;
+
+    /// <summary>
+    /// Where some sorted mark lengths part into two kinds: the index of the first long one, or null where they are one kind.
+    /// </summary>
+    /// <param name="sorted">The lengths, shortest first.</param>
+    /// <param name="firstJump">Whether a clean jump parts them at the first such jump, as the grid's sequences always have, rather than the widest.</param>
+    /// <returns>The index of the first dah, or null.</returns>
+    /// <remarks>
+    /// **A CLEAN JUMP OF TWO IS TWO KINDS, AS BEFORE**: where two neighbours differ by <see cref="TwoKindsRatio"/> the widest such
+    /// jump parts them. **AND TWO STABLE CLUSTERS ARE TWO KINDS UNDER IT** (work instruction 577, HM-DEC-281,
+    /// <see cref="CwRules.ShortDah"/>): with no such jump, two means in log length from the widest jump part them, judged over <see cref="TwoKindsMarks"/> marks or more, where each kind
+    /// recurs, three marks or more, each is no wider than <see cref="TwoKindsWidest"/>, the dah centre stands at least <see cref="MinDahDitRatio"/> times the dit's, and the two centres
+    /// stand <see cref="TwoKindsSpreads"/> of the wider cluster's spreads apart. A smear of lengths, which a carrier keyed at random
+    /// and noise make, parts at about three and a half.
+    /// </remarks>
+    internal static int? TwoKindsAt(IReadOnlyList<double> sorted, bool firstJump = false)
+    {
+        var at = -1;
+        var widest = 0.0;
+
+        for (var i = 1; i < sorted.Count; i++)
+        {
+            if (firstJump && sorted[i] / sorted[i - 1] >= TwoKindsRatio)
+            {
+                return i;
+            }
+
+            if (sorted[i] / sorted[i - 1] > widest)
+            {
+                widest = sorted[i] / sorted[i - 1];
+                at = i;
+            }
+        }
+
+        if (at < 0)
+        {
+            return null;
+        }
+
+        if (widest >= TwoKindsRatio)
+        {
+            return at;
+        }
+
+        if (!CwRules.On(CwRules.ShortDah) || sorted.Count < TwoKindsMarks)
+        {
+            return null;
+        }
+
+        for (var k = 0; k < 8; k++)
+        {
+            var line = (Mean(sorted, 0, at) + Mean(sorted, at, sorted.Count)) / 2;
+            var next = 0;
+
+            while (next < sorted.Count && Math.Log(sorted[next]) < line)
+            {
+                next++;
+            }
+
+            if (next == at || next < 1 || next >= sorted.Count)
+            {
+                break;
+            }
+
+            at = next;
+        }
+
+        if (at < 3 || sorted.Count - at < 3)
+        {
+            return null;
+        }
+
+        var dits = Sender.LogStats(sorted.Take(at).ToList());
+        var dahs = Sender.LogStats(sorted.Skip(at).ToList());
+
+        return dahs.Mu - dits.Mu >= Math.Log(MinDahDitRatio) && dahs.Mu - dits.Mu >= TwoKindsSpreads * Math.Max(dits.Sd, dahs.Sd)
+            && Math.Max(dits.Sd, dahs.Sd) <= TwoKindsWidest ? at : null;
+
+        static double Mean(IReadOnlyList<double> s, int from, int to)
+        {
+            var sum = 0.0;
+
+            for (var i = from; i < to; i++)
+            {
+                sum += Math.Log(s[i]);
+            }
+
+            return sum / (to - from);
+        }
+    }
+
     /// <summary>How many runs of two marks or more a sender makes, with dits and dahs among them, before it is printed.</summary>
     /// <remarks>
     /// <para>**A SENDER REPEATS HIMSELF; NOISE THAT AGREES WITH ITSELF ONCE IS A COINCIDENCE.** One run
@@ -471,6 +590,14 @@ public sealed class CwSenderGate
     /// <summary>Every sender's pitch and shape, and whether it is the one printed: for the tests' report (work instruction 519).</summary>
     internal IReadOnlyList<(double PitchHz, CwSequenceShape Shape, bool Printed, int Marks, bool Qualified)> SenderShapes
         => _senders.Select(s => (s.Reference.Pitch, s.Shape, s == _station, s.Marks, Qualifies(s))).ToList();
+
+    /// <summary>
+    /// Every sender's qualifying tests one by one, for the tests' trace (work instruction 577): its keyed runs of two marks or more,
+    /// whether its marks split in two kinds, whether it has shown a letter gap, whether its two kinds hold over its last ten marks,
+    /// and whether its shape has reached the print line.
+    /// </summary>
+    internal IReadOnlyList<(double PitchHz, int Marks, int KeyedRuns, bool TwoKinds, bool LetterGap, bool KindsHeld, bool Sure, double Shape)> SenderTests
+        => _senders.Select(s => (s.Reference.Pitch, s.Marks, s.Ended.Count(r => r.Length >= 2 && r.Any(m => m.Keyed)), s.TwoKindsSeen, s.LetterGapSeconds is not null, s.KindsHeld, s.Sure, s.Shape.Score)).ToList();
 
     /// <summary>
     /// Whether the shape picks the sender printed (work instruction 519); on by default. Off, unit 490's rule
@@ -1462,6 +1589,17 @@ public sealed class CwSenderGate
                 var longStats = LogStats(longSide);
 
                 return (shortSide, Boundary(shortStats, longStats), shortStats.Sd > HandSpread || longStats.Sd > HandSpread);
+            }
+
+            // **TWO STABLE CLUSTERS UNDER A JUMP OF TWO ARE TWO KINDS** (work instruction 577, HM-DEC-281): a straight key whose
+            // dah is under twice his dit, its clusters parted by two means and standing apart (TwoKindsAt).
+            if (TwoKindsAt(lengths) is { } parted)
+            {
+                var dits = lengths.Take(parted).ToList();
+                var dahs = lengths.Skip(parted).ToList();
+                var (ditStats, dahStats) = (LogStats(dits), LogStats(dahs));
+
+                return (dits, Boundary(ditStats, dahStats), ditStats.Sd > HandSpread || dahStats.Sd > HandSpread);
             }
 
             // **NO CLEAN JUMP IS ONE KIND** (work instruction 534, HM-DEC-238): a hand's overlapping lengths were taken as two

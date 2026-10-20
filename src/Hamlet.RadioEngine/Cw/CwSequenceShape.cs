@@ -112,9 +112,17 @@ public sealed record CwSequenceShape(
             dahs = sorted.Skip(next.Count).ToList();
         }
 
+        // **OR TWO STABLE CLUSTERS UNDER TWO TO ONE** (work instruction 577, HM-DEC-281): a straight key whose dah is under twice
+        // his dit is two kinds where the gate parts them so (CwSenderGate.TwoKindsAt), and is scored on those two.
         if (dits.Count == 0 || dahs.Count == 0 || Centre(dahs) / Centre(dits) < CwSenderGate.TwoKindsRatio)
         {
-            return None;
+            if (widest >= CwSenderGate.TwoKindsRatio || CwSenderGate.TwoKindsAt(sorted) is not { } parted)
+            {
+                return None;
+            }
+
+            dits = sorted.Take(parted).ToList();
+            dahs = sorted.Skip(parted).ToList();
         }
 
         var dit = Centre(dits);
