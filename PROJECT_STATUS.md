@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: COMPLETED
-TASK: 2 of 2
-WORK_INSTRUCTION: 576 - a held lane keeps reading, and the hold ends in a pause (run by hand)
+TASK: 4 of 4
+WORK_INSTRUCTION: 577 - the hand whose dah is not twice his dit (run by hand)
 BALL: tim
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-10-20T08:05:39-04:00
-NOTE: Unit 576 - the hold ends in a pause, shipped on; CQs 71 of 84, boards 297 and 2111; HM-DEC-280, 1.13.261
+UPDATED: 2026-10-20T11:50:46-04:00
+NOTE: Unit 577 - short-dah rule built, measured, left off; 1.7 hand 60 of 60 chosen, boards 297 and 2111 as shipped; HM-DEC-281, 1.13.262
 
 ---
 
