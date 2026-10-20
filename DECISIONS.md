@@ -4,6 +4,24 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-284
+date: 2026-10-20
+refs: work instruction 580, HM-DEC-283, HM-DEC-282, HM-DEC-281, HM-DEC-276, HM-DEC-271, tests/Hamlet.RadioEngine.Tests/Cw/Fixtures/CwFistBank.cs, tests/Hamlet.RadioEngine.Tests/Cw/Fixtures/CwFixtureGenerator.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheCwSurveyTests.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheFistBankTests.cs, docs/cw-survey-2026-10-09.md, docs/cw-scoreboard.md
+---
+
+**The fist bank: a yardstick with a truth for every hand.**
+
+**The owner, 2026-10-20:** *"we've had no improvement for many units … step back and reanalyze."* The reanalysis, the order's: the last six units were aimed at specimens with no truth, at the seam between two finders, and at yardsticks of perfect keying in flat noise, and a fist with a dah of 2.0 dits, generated and measured for the first time, read 0 of 60 and had read nothing for the whole project. **The rule from here on: every rule ships against a truth; specimens without one are checked after, not shipped on.**
+
+**The bank** (`CwFistBank`): ninety-six hands, every dah over dit of **1.6, 2.0, 2.5 and 3.0**, at **10, 15, 20 and 25 WPM**, **5, 10 and 20 dB** in the receiver's 520 Hz passband as the generator measures it, **flat and with 12 dB of QSB at 0.7 Hz**, the working fixtures' fade. Every fist is a hand: dits and dahs each spread ±15%, gaps inside letters one dit ±20%, letter gaps 2 to 3.5 dits and word gaps 4 to 6, drawn from a seed that is the hash of its name, at 615 Hz drifting 3 Hz, all sending one ragchew exchange of 60 letters, `CQ CQ DE N0CALL N0CALL K GM KEN NICE TO MEET U RPRT UR 559 QTH IS CHICOPEE MA K`. **Generated, not stored:** each is made at test time from its recipe by the receiver fixtures' own band, drift and fade (`CwFixtureGenerator.GenerateFromEdges`), so nothing binary is added to the tree and the recipe is the truth. Each is named `fist-r{ratio}-{wpm}wpm-{db}db-{fade|flat}`.
+
+**The survey reads them** as a group of its own (`TheCwSurveyTests`), scored by the boards' yardstick, invented counted against each fist's own key-downs; the doc gains `The fist bank` with three matrices, the total and the worst ten. With the bank the survey ran in 569 s, under its 1800 s, so it was not split.
+
+**The baseline, as shipped: 1538 of 5760 letters right**, 413 wrong, 94 invented, nothing in silence, score 1031. By dah over dit, of 1440 each: 1.6 reads 56, 2.0 79, 2.5 711, 3.0 692. Flat 1239 of 2880, fading 299. By signal, of 1920 each: 5 dB 385, 10 dB 546, 20 dB 607. At 20 dB flat, the 2.5 and 3.0 hands read 60 of 60 at every speed, and the 1.6 and 2.0 hands nothing but 7 letters of one. **The worst corner** is the short dah: every 1.6 hand reads 0 to 7 letters of 60 at every speed, signal and fade, and the 2.0 hand the same but for 44 at 20 WPM and 10 dB, where the noise happened to spread its marks into a jump of two. The fade at 2.5 and 20 WPM: 53, 59 and 60 flat at 5, 10 and 20 dB against 0, 12 and 0 fading.
+
+**Nothing is asserted beyond every fist read and scored**, and that each fist is what its recipe says (`TheFistBankTests`); the bank is a yardstick, not yet a guard, and the next units name which fists must rise and which must not fall. No engine change; both boards exactly as at HEAD, 297 and 2111. **Unit 579 was not withdrawn unrun in this tree:** it was run and recorded as HM-DEC-283, its change built and left off, before this order arrived. Ordered by work instruction 580.
+
+---
 id: HM-DEC-283
 date: 2026-10-20
 refs: work instruction 579, HM-DEC-282, HM-DEC-280, HM-DEC-276, HM-DEC-274, src/Hamlet.RadioEngine/Cw/CwEnvelopeDetector.cs, src/Hamlet.RadioEngine/Cw/CwPatternGate.cs, src/Hamlet.RadioEngine/Cw/CwRules.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheHoldWaitsForTheStationTests.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheGridStepsAsideTests.cs, docs/cw-scoreboard.md, docs/cw-survey-2026-10-09.md

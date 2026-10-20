@@ -383,6 +383,7 @@ guard: the random carrier prints at 1 of 20 seeds (5195), recorded at unit 552
 | 577 | 2026-10-20 | 318 of 353 | 20 | 1 | **297** | 0 | 86 of 110, 3 added | the hand whose dah is not twice his dit (work instruction 577, HM-DEC-281): two kinds from stable clusters under a jump of two, the dah at least 1.5 times the dit; chosen it read 293, KM3STU's reply 11 of 14, so it ships off and the board is unchanged |
 | 578 | 2026-10-20 | 318 of 353 | 20 | 1 | **297** | 0 | 86 of 110, 3 added | the grid steps aside for a lane that reads a station whole (work instruction 578, HM-DEC-282): chosen it read 297 too, but the working receiver fixtures 6 of 81 with none at half and Ken nothing, so it ships off and the board is unchanged |
 | 579 | 2026-10-20 | 318 of 353 | 20 | 1 | **297** | 0 | 86 of 110, 3 added | the hold waits for the station, and the lane that fits is handed on (work instruction 579, HM-DEC-283): with the grid stepping aside it read 297 too, but W1AW fell, so it ships off and the board is unchanged |
+| 580 | 2026-10-20 | 318 of 353 | 20 | 1 | **297** | 0 | 86 of 110, 3 added | the fist bank (work instruction 580, HM-DEC-284): no engine change, the board unchanged |
 
 ## Scans (work instruction 544, HM-DEC-248)
 
@@ -463,6 +464,9 @@ high and 25 medium, 2151 letters, all totalled.
 | 577 | 2026-10-20 | **2111** | 2131 of 2151 | 20 | 0 | 438 of 440, 11 added | the hand whose dah is not twice his dit (HM-DEC-281): chosen it read 2111 too; it ships off for the twelve-plus-three, the CQs and the carrier, unchanged |
 | 578 | 2026-10-20 | **2111** | 2131 of 2151 | 20 | 0 | 438 of 440, 11 added | the grid steps aside for a lane that reads a station whole (HM-DEC-282): chosen it read 2111 too; it ships off for the working fixtures and Ken, unchanged |
 | 579 | 2026-10-20 | **2111** | 2131 of 2151 | 20 | 0 | 438 of 440, 11 added | the hold waits for the station, and the lane that fits is handed on (HM-DEC-283): chosen with the grid stepping aside it read 2103 with 8 invented in the pause after `W1AW <AS>`, so it ships off, unchanged |
+| 580 | 2026-10-20 | **2111** | 2131 of 2151 | 20 | 0 | 438 of 440, 11 added | the fist bank (HM-DEC-284): no engine change, unchanged |
+
+**The fist bank** (work instruction 580, HM-DEC-284): ninety-six hands with a truth, every dah over dit of 1.6, 2.0, 2.5 and 3.0 at 10, 15, 20 and 25 WPM, 5, 10 and 20 dB, flat and fading, generated at test time from their recipes (`tests\Hamlet.RadioEngine.Tests\Cw\Fixtures\CwFistBank.cs`) and read by the survey as a group of its own, its matrices in `docs\cw-survey-2026-10-09.md` under `The fist bank`. A yardstick, not yet a guard.
 
 **A trace recording, not scored** (work instruction 574, HM-DEC-278): `cw-2026-10-19-141708`, Ken's QSO with KB2UZK on 7.0519 MHz, placed by the owner's order of 2026-10-19 (*"put it in"*), is on neither table. Nobody wrote down what Ken sent, so it has no truth; the survey reads it with the old captures.
 

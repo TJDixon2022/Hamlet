@@ -1,37 +1,25 @@
-# Work instruction 579 - The hold's clock waits for the station to print, and the lane that fits the station is the one handed on
+# Work instruction 580 - The fist bank: a yardstick with a truth for every hand on the band
 
-**Hand run. One handover, two corrections to it, one commit, plus the record.** Both corrections
-were named by the tree's own measure (`TheGridStepsAsideTests`, unit 578):
+**Hand run. One task, one commit, plus the record. No engine change; both boards exactly as at
+HEAD.** This unit builds the yardstick the next units ship against.
 
-- **The hold ends before the station has printed.** The end of the hold counts three of the
-  sender's word gaps; where no sender is printed within 50 Hz it falls back to seven of the
-  lane's own dit. A lane handed on from the bank has no printed sender yet, and the lane picked
-  is often the 40 ms dit lane on a 12 WPM station, so the clock runs out in 0.84 s - the
-  station's first letter gap - before a letter prints. `coverage-working`: held at 11.72 s, let
-  go at 12.57 s. The fallback is wrong for exactly the case the rule exists for.
-- **The lane picked is the best-shaped, not the one that fits.** On a 12 WPM station the 40 ms
-  lane often scores highest and is handed on; its marks and gaps are then judged at the wrong
-  dit.
+**Why.** The owner, 2026-10-20: *"we've had no improvement for many units … step back and
+reanalyze."* The reanalysis: the last six units were aimed at specimens with no truth (a live
+far-side station, a live ghost, an old capture), at the seam between two finders, and at
+yardsticks of perfect keying in flat noise. The first time a fist with a dah of 2.0 dits was
+generated and measured, it read **0 of 60**, and had read 0 for the whole project. **From here
+on, every rule ships against a truth.** This unit makes the truths.
 
-The grid stepping aside (`CwRules.GridStepsAside`, built last unit, off, harmless on every
-board) is measured **on** with these two, since it is the rule they were found under.
-
-**The yardstick:** the five working receiver fixtures (5 dB, 12 dB of QSB at 0.7 Hz), **4 of
-81** as shipped, with a truth. **The specimen:** Ken, both overs, on `cw-2026-10-19-141708`.
-The fade on the fixtures is a separate limit; the trace is to show how much of the shortfall is
-the hold and the lane, and how much is the fade.
-
-**Standing rules** (HM-DEC-276): one rule; do not stop to ask - take the choice that keeps both
-boards and name it in section 4; a run stopped for memory is run once more alone, then reported
-as not measured. Engine line 1500 s, survey 1800 s, `--no-build` after one build, build servers
-shut down first.
+**Standing rules** (HM-DEC-276) apply. Engine line 1500 s, survey 1800 s or more as this unit
+finds, `--no-build` after one build, build servers shut down first.
 
 Earlier unit numbers are not cited: each part of the tree is described by what it does.
 
 **Nothing keys or transmits. Nothing is written to the radio. No recording is added, removed or
-promoted.**
+promoted; everything here is generated.**
 
-**Numbering.** This is unit 579, ruling HM-DEC-283. If taken, use the next free and say so.
+**Numbering.** This is unit 580, ruling HM-DEC-284. If taken, use the next free and say so.
+Unit 579 was issued and is withdrawn unrun; say so in the record if it was not run.
 
 ---
 
@@ -45,7 +33,7 @@ PROJECT: Hamlet
 Check the repository root:
   MUST EXIST:      SHACK_FACTS.md
   MUST EXIST:      docs\cw-scoreboard.md
-  MUST EXIST:      tests\fixtures\cw\captured\cw-2026-10-19-141708.wav
+  MUST EXIST:      docs\cw-survey-2026-10-09.md
   MUST NOT EXIST:  CoreHMI.sln
   MUST NOT EXIST:  MURC.sln
   root             C:\Source\HamLet
@@ -64,7 +52,7 @@ If all five hold, say "Hamlet confirmed" and continue.
   to `RUN_LEDGER.md`. Touch nothing under `tools\arbiter\`. Tick nothing in `PHASE_PLAN.md`.
 - One `dotnet test` invocation per line, filtered, with a `timeout`.
 - Apostrophes in quoted heredocs break; `;` is refused; Python cannot run here; `-m` more than
-  once for a multi-line commit. Scripts go in `.run-unit\unit579-<name>.sh`, not committed.
+  once for a multi-line commit. Scripts go in `.run-unit\unit580-<name>.sh`, not committed.
 - **The one layout holds**: nothing on screen moves.
 - `output.md` at the root, four headings exactly: `## 1. What Claude did`, `## 2. What the owner
   should expect`, `## 3. What you should see`, `## 4. What's blocking us`. Status on the tree's
@@ -72,76 +60,75 @@ If all five hold, say "Hamlet confirmed" and continue.
 
 ---
 
-## 2. The two corrections
+## 2. The fist bank
 
-1. **The hold's clock waits for the station.** Until the handed-on station has printed its first
-   letter, the end of the hold does not run: only the floor's own rules on standing, the grid
-   taking the station back, and the carrier and shadow checks can end the hold. Once it has
-   printed, the clock is the printed sender's word gap from the gate's clusters, three of them,
-   as before. **The fallback to seven of the lane's own dit is removed.** If a lane handed on
-   never prints within a bound, name the bound (`HeldLanePrintsWithinSeconds`, from the table -
-   the longest a 5 dB CQ or a working fixture took to print its first letter, with margin) and
-   let the hold go there, so a lane on noise does not hold forever; the trace shows the figure.
-2. **The lane that fits is handed on.** Where more than one lane at a pitch stands at shape 0.4
-   or better, the handover picks **the lane whose dit is nearest the dit the sequence's two
-   kinds give**, not the best-shaped; where the kinds are not yet two, the best-shaped as now,
-   and the pick is revisited when they become two. Say in one line how the lane's dit and the
-   sequence's dit are compared (ratio in log).
+**Generated, not stored:** the fists are made by the generator at test time from their recipe
+and a fixed seed, as the synthetic CQs and the straight-key hand are (`CwFixtureGenerator`,
+`Synthesize`), so nothing binary is added to the tree. The recipe is the truth.
 
-**The trace, first, per file** (the five working fixtures, Ken's overs): for each lane handed
-on, its dit against the station's, when it was held, when it printed its first letter, when it
-was let go and by what - as shipped and with the two corrections. One row per hold.
+**The text**, 60 letters, the same for every fist, a ragchew exchange with a call, a report, a
+name and a QTH: `CQ CQ DE N0CALL N0CALL K GM KEN NICE TO MEET U RPRT UR 559 QTH IS CHICOPEE MA K`
+(the straight-key hand's text, so its figures carry over).
 
-Build both as one named change to the handover, measure once with `GridStepsAside` chosen on.
+**The grid of fists**, one seed each (the seed is the recipe's hash, so it never changes):
 
-## 3. The measure, and the ship
+| axis | values |
+|---|---|
+| dah over dit | **1.6, 2.0, 2.5, 3.0** |
+| speed | **10, 15, 20, 25 WPM** |
+| signal, in the 520 Hz passband as the generator measures it | **5, 10, 20 dB** |
+| fade | **none; 12 dB of QSB at 0.7 Hz** (the working fixtures' fade) |
 
-**Ships on by default - the two corrections and `GridStepsAside` together - only if:**
+Ninety-six fists. **Every fist is a hand:** dits and dahs each spread ±15%, inside gaps one dit
+±20%, letter gaps 2 to 3.5 dits, word gaps 4 to 6; pitch 615 Hz with 3 Hz of drift. The 3.0
+ratio at 20 dB with no fade is the machine-like corner and should read whole today; the 1.6
+ratio at 5 dB with fade is the far corner and need not.
 
-- **the working fixtures rise from 4 of 81**, with at least two of the five at half their
-  letters or better;
-- **Ken's reply** prints at least three words of three or more letters at his pitch (reported);
-- **both boards hold:** 297 and 2111, wrong and invented not rising, spaces not worse;
-- **the weak-end guard holds:** the four 5 dB CQs at 71 of 84 or better; nothing in the 20 s of
-  noise after them;
-- **the hard limits:** noise prints nothing, the carrier at one seed, the first recording whole,
-  nothing in silences, no old capture above six strays per 10 s; the summed strays reported;
-- the easy fixtures not worse than 78 of 90; `two-station` reported.
+**Each fist is named** `fist-r{ratio}-{wpm}wpm-{db}db-{fade|flat}` and has a recipe line the
+survey prints.
 
-**If the working fixtures rise but fewer than two reach half**, and the trace shows the rest is
-the fade (the lane's 3 s key-up and key-down not following 12 dB of QSB at 0.7 Hz), ship on
-anyway with that said plainly in section 2 and 4, since the hold and the lane are then right and
-the fade is a separate unit. If a board or a hard limit fails, do not ship; say which.
+## 3. The survey reads them
 
-If it ships: the working fixtures join the weak-end guard at the figures that ship; both
-scoreboard guards at the figures that ship, on the board as the author's; the capture sheet's
-`bank` line says `stepped aside at <pitch> Hz` and the lane's dit when a lane is handed on.
+1. The survey test (`TheCwSurveyTests`) gains the fist bank as a group of its own, scored by the
+   boards' own yardstick (right, wrong, invented, spaces, printed in silence), each fist's read
+   kept in the doc for files under 60 s as the survey already does.
+2. **The summary**: a matrix per axis pair, letters right of 60 summed - ratio × speed (flat,
+   20 dB), ratio × signal (flat, 20 WPM), signal × fade (ratio 2.5, 20 WPM) - and the whole
+   bank's total of 5,760. Plus the worst ten fists by name.
+3. **The survey's run time** is measured and reported; if the bank takes it past 1800 s, split
+   the fist bank into its own survey line (`TheCwSurveyTests.TheFistBank`) with its own doc
+   section and its own timeout, and say so.
+4. The doc: `docs\cw-survey-2026-10-09.md` gains the fist bank section with a `Rerun` line, or a
+   doc of its own `docs\cw-fist-bank.md` if split, named in the scoreboard doc under the tables.
+
+**The figures as shipped are the baseline.** Nothing is asserted beyond "every fist was read
+and scored"; the fist bank is a yardstick, not yet a guard. The next units name which fists must
+rise and which must not fall.
 
 ---
 
-## 4. The lines, the survey, the record
+## 4. The lines, the record
 
-Run the app line, the engine line and the survey line once; rewrite `docs\cw-survey-2026-10-09.md`
-with a new `Rerun` line; per group before and after in the report.
+Run the app line, the engine line and the survey line(s) once.
 
-- `PHASE_OUTCOME.md`, both copies: `## UNIT 579 - STEP 12`, one paragraph.
-- `PHASE_STATUS.md`, both copies: names 579.
+- `PHASE_OUTCOME.md`, both copies: `## UNIT 580 - STEP 12`, one paragraph.
+- `PHASE_STATUS.md`, both copies: names 580.
 - Patch-bump `Directory.Build.props`.
 - `CLAUDE.md` §1 index row.
-- `DECISIONS.md`, newest first, **HM-DEC-283**, headline *The hold's clock waits for the
-  station, and the lane that fits is handed on*, naming the two corrections, the bound, whether
-  they shipped with the grid stepping aside, and the figures before and after.
-- `docs\cw-scoreboard.md`: a 579 row in each table at the figures that shipped.
-- `CW_SPEC.md` §2: the handover paragraph brought up to date if it shipped.
-- **Touch no checkbox in `PHASE_PLAN.md`**, and add no ruling beyond HM-DEC-283.
+- `DECISIONS.md`, newest first, **HM-DEC-284**, headline *The fist bank: a yardstick with a truth
+  for every hand*, quoting the owner's step-back, recording the rule *every rule ships against a
+  truth; specimens without one are checked after, not shipped on*, naming the grid of fists, the
+  baseline total, and the worst corner.
+- `docs\cw-scoreboard.md`: a 580 row in each table, unchanged; a line under the tables naming
+  the fist bank and where it lives.
+- **Touch no checkbox in `PHASE_PLAN.md`**, and add no ruling beyond HM-DEC-284.
 
 ---
 
 ## 5. Report
 
-Section 2, for the owner, in plain words, leading with **whether weak and far-side stations now
-print, and what it cost** - the working fixtures before and after as text, Ken's reply before and
-after, the boards, the CQs - then the two corrections in a sentence each, and how much of what is
-left on the working fixtures is the fade. Section 1: what was built, the bound. **Section 3: the
-holds table per file as shipped and after; the working fixtures' reads; Ken; the survey's
-groups; both scoreboards' rows.** Section 4: anything left, a line each.
+Section 2, for the owner, in plain words, leading with **the matrices** - what Hamlet reads today
+across ratio, speed, signal and fade - and the three facts they show (where reading stops as the
+dah shortens; where it stops as the signal falls; what the fade costs). Section 1: what was built.
+**Section 3: the three matrices, the bank total, the worst ten, the run time, both scoreboards'
+rows.** Section 4: anything left, a line each.
