@@ -2,12 +2,12 @@ PROTOCOL: 2
 PROJECT: Hamlet
 STATE: COMPLETED
 TASK: 3 of 3
-WORK_INSTRUCTION: 580 - the fist bank, a yardstick with a truth for every hand (run by hand)
+WORK_INSTRUCTION: 581 - the short dah, measured against the fist bank (run by hand)
 BALL: tim
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-10-20T14:41:19-04:00
-NOTE: Unit 580 - the fist bank built, baseline 1538 of 5760, no engine change, boards 297 and 2111; HM-DEC-284, 1.13.265
+UPDATED: 2026-10-20T17:05:07-04:00
+NOTE: Unit 581 done - the short dah measured on the bank, floored, left off for the owner's ruling
 
 ---
 

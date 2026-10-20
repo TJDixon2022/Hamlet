@@ -4,6 +4,58 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-285
+date: 2026-10-20
+refs: work instruction 581, HM-DEC-284, HM-DEC-281, HM-DEC-276, HM-DEC-261, src/Hamlet.RadioEngine/Cw/CwSenderGate.cs, src/Hamlet.RadioEngine/Cw/CwRules.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheShortDahCostsTests.cs, docs/cw-survey-2026-10-09.md, docs/cw-scoreboard.md
+---
+
+**The short dah, measured against the fist bank: built, tightened by one floor, left off for the owner's ruling.**
+
+**The rule** (`CwRules.ShortDah`): where no two neighbouring mark lengths differ by two, two means in log length part a sender's marks into two kinds, accepted over ten marks or more, each kind three or more, each cluster within 0.12 in log length, the centres four spreads apart, and the dah at least 1.5 times the dit. **Measured chosen, as it stood**, against the bank's baseline of 1538 of 5760 letters right, score 1031, 94 invented:
+- the bank read 2562 of 5760, score 1828, 44 invented;
+- the 1.6 and 2.0 rows read 556 and 617, 1173 of 2880 from 135;
+- the 2.5 and 3.0 rows read 723 and 666, 1389 from 1403;
+- the twelve-plus-three read 293 and W1AW 2111;
+- the four 5 dB CQs read 69 of 84 and the easy fixtures 77 of 90;
+- the carrier keyed at random printed at seeds 5195 and 5207.
+
+**The three costs, traced at the moment each was made** (`TheShortDahCostsTests`, through a test hook on each judgement, `CwSenderGate.ShortDahJudged`):
+- **`cw-2026-10-08-121357`:** at 10.85 s a run of 16 noise pieces at the station's own pitch, 20 to 40 ms in the detector's 5 ms steps, was parted at a dit of 21 ms and a dah of 33 ms, dah over dit 1.60, 4.2 spreads apart, widths 0.100 and 0.114. The station's `RR UR` before 18 s never printed, and his first `55N` read `5 HN`. No mark of his was re-kinded. His true dah over dit, from the board's keying map, is 2.70.
+- **`cq-25wpm-5db`:** at 2.9 s pieces of 20 to 40 ms at the station's pitch were parted at a dit of 20 ms, dah over dit 1.74, 5.4 spreads apart. They printed `S E E` and the station's `C` read `R`. The recipe's dah over dit is 3.00.
+- **The carrier at seed 5207:** it printed at 550 Hz, 75 Hz off its tone, through marks of 55 to 180 ms whose widest neighbour jump is 1.81, parted at a dit of 68 ms, dah over dit 2.30, 7.3 spreads apart, widths 0.115 and 0.100. Over its twenty seeds the rule's judgements on the carrier stand at:
+  - a dit of 25.7 ms or more;
+  - a dah over dit of 1.50 to 3.13;
+  - 4.0 to 10.4 spreads;
+  - a widest cluster of 0.10 to 0.12.
+
+  The bank's 1.6 and 2.0 hands stand at:
+  - a dit of 34 ms or more;
+  - a dah over dit of 1.50 to 2.63;
+  - 4.0 to 8.9 spreads;
+  - a widest cluster of 0.10 to 0.12.
+
+  No figure of the five conditions parts them. At every figure that keeps all 48 hands taken, the carrier is still taken at 19 or 20 seeds.
+
+**The one tightening the table names** (`CwSenderGate.TwoKindsLeastDitSeconds`): the two means part only at a dit of Morse's fastest, 25 ms at 48 WPM, or longer. It takes the two piece costs away and leaves the carrier. Chosen with it:
+- the bank read 2612 of 5760, score 1891, 46 invented;
+- the 1.6 and 2.0 rows read 569 and 624, 1193 of 2880;
+- the 2.5 and 3.0 rows read 726 and 693, 1419;
+- flat 2173 of 2880 and fading 439;
+- the twelve-plus-three read 297, 318 of 353 with 20 wrong, 1 invented and 86 of 110 spaces with 3 added, and W1AW 2111 with 438 of 440 spaces;
+- the four 5 dB CQs read 71 of 84, and nothing printed after them;
+- the first recording read whole and noise printed nothing;
+- the easy fixtures read 77 of 90, `coverage-easy` reading its `1` as `A M`;
+- the carrier printed at seeds 5195 and 5207;
+- the strays were highest 3.3, summed 26.8 against 22.3.
+
+**It does not ship.** By section 4 of the order:
+- the 1.6 and 2.0 rows are under 1500;
+- the carrier prints at two seeds;
+- the easy fixtures are under 78.
+
+The bar of 1500 sits above what the 2.5 and 3.0 hands read together, 1419, because the fading half of every row reads about a fifth of the flat half. Flat, the 1.6 and 2.0 hands read 477 and 535 of 720, against 603 and 558 for the 2.5 and 3.0 hands. **The rule and its floor stay in the tree, off** (`CwRules.OffByDefault`), for the owner to rule on the cost against the gain. As shipped, every reading is as at HEAD: 297 and 2111. Ordered by work instruction 581.
+
+---
 id: HM-DEC-284
 date: 2026-10-20
 refs: work instruction 580, HM-DEC-283, HM-DEC-282, HM-DEC-281, HM-DEC-276, HM-DEC-271, tests/Hamlet.RadioEngine.Tests/Cw/Fixtures/CwFistBank.cs, tests/Hamlet.RadioEngine.Tests/Cw/Fixtures/CwFixtureGenerator.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheCwSurveyTests.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheFistBankTests.cs, docs/cw-survey-2026-10-09.md, docs/cw-scoreboard.md
