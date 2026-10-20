@@ -164,6 +164,13 @@ public sealed class TheCwSurveyTests(ITestOutputHelper output)
             jobs.Add(() => NoTruth("scan catches", wav, null, CatchRead(wav)));
         }
 
+        // **THE FIST BANK** (work instruction 580, HM-DEC-284): ninety-six hands generated from their recipes, each scored against
+        // what it sent and its own keying.
+        foreach (var fist in Fixtures.CwFistBank.All)
+        {
+            jobs.Add(() => Fist(fist));
+        }
+
         Parallel.ForEach(jobs, new ParallelOptions { MaxDegreeOfParallelism = 3 }, job =>
         {
             try
@@ -184,6 +191,92 @@ public sealed class TheCwSurveyTests(ITestOutputHelper output)
 
         Assert.Equal(board.Score, rows.Where(r => r.Group.StartsWith("the boards", StringComparison.Ordinal)).Sum(r => r.Right!.Value - r.Wrong!.Value) - board.Invented);
         Assert.Equal(w1aw.Score, w1aw.Right - w1aw.Wrong - w1aw.Invented);
+    }
+
+    // A fist of the bank (work instruction 580): generated, read, and scored by the boards' yardstick against what it sent; invented is
+    // a letter whose marks lie over none of the fist's own key-downs within 50 Hz of its pitch, and silence a letter inside a stretch of
+    // two seconds or more with no key-down, both from the recipe rather than read off the audio.
+    private static Row Fist(Fixtures.CwFist fist)
+    {
+        var audio = Fixtures.CwFistBank.Audio(fist);
+        var edges = Fixtures.CwFistBank.Edges(fist);
+        var (letters, _) = TheRecordingsScoreboardTests.ReadLive(audio.Samples, audio.SampleRate, 600, 500);
+        var downs = Enumerable.Range(0, edges.Length / 2).Select(i => (From: edges[2 * i], To: edges[(2 * i) + 1])).ToList();
+
+        bool Keyed(Printed l) => Math.Abs(l.PitchHz - Fixtures.CwFistBank.ToneHz) <= Hamlet.RadioEngine.Cw.CwEnvelopeDetector.HandoverHz
+            && downs.Any(d => d.To > l.From - 0.05 && d.From < l.Seconds + 0.05);
+
+        bool InSilence(Printed l) => l.Seconds < downs[0].From - 2 || l.From > downs[^1].To + 2;
+
+        var invented = letters.Where(l => !Keyed(l)).ToList();
+        var printed = TheRecordingsScoreboardTests.Text(letters);
+        var wrong = TheRecordingsScoreboardTests.WrongAt(printed, Fixtures.CwFistBank.Text).Count(i => i < letters.Count && !invented.Contains(letters[i]));
+        var spaces = TheRecordingsScoreboardTests.SpacesOf(printed, Fixtures.CwFistBank.Text);
+
+        return new Row(
+            FistGroup, fist.Name, audio.Samples.Length / (double)audio.SampleRate, Wpm(letters), Pitch(letters), Senders(letters),
+            fist.Recipe, Fixtures.CwFistBank.Text, TheRecordingsScoreboardTests.Right(printed, Fixtures.CwFistBank.Text), TheRecordingsScoreboardTests.Letters(Fixtures.CwFistBank.Text).Length,
+            wrong, invented.Count, letters.Count(InSilence), $"{spaces.Right} of {spaces.OfReference}, {spaces.Added} added", printed);
+    }
+
+    /// <summary>The fist bank's group in the survey (work instruction 580).</summary>
+    internal const string FistGroup = "the fist bank";
+
+    // **THE FIST BANK'S MATRICES** (work instruction 580, HM-DEC-284): letters right of 60, one fist a cell, across the axis pairs
+    // the order names, the whole bank's total, and its worst ten.
+    private static void FistBank(StringBuilder sb, List<Row> fists)
+    {
+        if (fists.Count == 0)
+        {
+            return;
+        }
+
+        var bank = Fixtures.CwFistBank.All.ToDictionary(f => f.Name, f => f);
+        int? Right(double ratio, double wpm, double db, bool fades)
+            => fists.FirstOrDefault(r => r.File == new Fixtures.CwFist(ratio, wpm, db, fades).Name)?.Right;
+
+        string Cell(int? right) => right is { } r ? r.ToString(Inv) : "-";
+
+        sb.AppendLine();
+        sb.AppendLine("## The fist bank");
+        sb.AppendLine();
+        sb.AppendLine(string.Create(Inv, $"Work instruction 580, HM-DEC-284: {fists.Count} hands generated at test time from their recipes (`CwFistBank`), each sending `{Fixtures.CwFistBank.Text}`, 60 letters, its dits and dahs each spread ±15%, gaps inside letters one dit ±20%, letter gaps 2 to 3.5 dits and word gaps 4 to 6, at {Fixtures.CwFistBank.ToneHz:0} Hz drifting {Fixtures.CwFistBank.DriftHz:0} Hz, over the receiver fixtures' 520 Hz band. Each cell is one fist's letters right of 60. Invented is a letter over none of the fist's own key-downs."));
+        sb.AppendLine();
+        sb.AppendLine(string.Create(Inv, $"**The bank's total: {fists.Sum(r => r.Right ?? 0)} of {fists.Sum(r => r.OutOf ?? 0)}**, {fists.Sum(r => r.Wrong ?? 0)} wrong, {fists.Sum(r => r.Invented ?? 0)} invented, {fists.Sum(r => r.Silence ?? 0)} in silence, score **{fists.Sum(r => r.Score ?? 0)}**."));
+
+        void Matrix(string title, IReadOnlyList<double> rows, Func<double, string> rowName, IReadOnlyList<(string Name, Func<double, int?> Right)> columns)
+        {
+            sb.AppendLine();
+            sb.AppendLine(title);
+            sb.AppendLine();
+            sb.AppendLine("| | " + string.Join(" | ", columns.Select(c => c.Name)) + " | row |");
+            sb.AppendLine("|---|" + string.Concat(columns.Select(_ => "---|")) + "---|");
+
+            foreach (var row in rows)
+            {
+                var cells = columns.Select(c => c.Right(row)).ToList();
+
+                sb.AppendLine($"| {rowName(row)} | " + string.Join(" | ", cells.Select(Cell)) + $" | {cells.Sum(c => c ?? 0)} |");
+            }
+        }
+
+        var ratios = Fixtures.CwFistBank.Ratios;
+
+        Matrix("**Dah over dit by speed**, flat, 20 dB:", ratios, r => string.Create(Inv, $"dah {r:0.0}"),
+            Fixtures.CwFistBank.Speeds.Select(w => (string.Create(Inv, $"{w:0} WPM"), (Func<double, int?>)(r => Right(r, w, 20, false)))).ToList());
+        Matrix("**Dah over dit by signal**, flat, 20 WPM:", ratios, r => string.Create(Inv, $"dah {r:0.0}"),
+            Fixtures.CwFistBank.Signals.Select(d => (string.Create(Inv, $"{d:0} dB"), (Func<double, int?>)(r => Right(r, 20, d, false)))).ToList());
+        Matrix("**Signal by fade**, dah 2.5, 20 WPM:", Fixtures.CwFistBank.Signals, d => string.Create(Inv, $"{d:0} dB"),
+            [("flat", d => Right(2.5, 20, d, false)), ("12 dB of QSB at 0.7 Hz", d => Right(2.5, 20, d, true))]);
+
+        sb.AppendLine();
+        sb.AppendLine("**The worst ten**, by letters right, then by score:");
+        sb.AppendLine();
+
+        foreach (var r in fists.OrderBy(r => r.Right ?? 0).ThenBy(r => r.Score ?? 0).ThenBy(r => r.File, StringComparer.Ordinal).Take(10))
+        {
+            sb.AppendLine(string.Create(Inv, $"- `{r.File}`: {r.Right} of {r.OutOf}, {r.Wrong} wrong, {r.Invented} invented; {bank[r.File].Recipe}; read `{Cut(r.Read, r.Seconds)}`"));
+        }
     }
 
     // A file with a whole text sent: read, scored by the boards' yardstick, invented and silences on the board's keying map.
@@ -337,7 +430,7 @@ public sealed class TheCwSurveyTests(ITestOutputHelper output)
         {
             "synthetic fixtures", "receiver fixtures: easy", "receiver fixtures: working", "receiver fixtures: edge", "receiver fixtures: ungraded",
             "synthetic CQs: 15 dB", "synthetic CQs: 5 dB", "synthetic CQs: 0 dB", "August adjudicated", "the boards: twelve-plus-three",
-            "W1AW pieces", "captured, elsewhere", "unadjudicated", "scan catches",
+            "W1AW pieces", "captured, elsewhere", "unadjudicated", "scan catches", FistGroup,
         };
         var sb = new StringBuilder();
 
@@ -347,7 +440,7 @@ public sealed class TheCwSurveyTests(ITestOutputHelper output)
         sb.AppendLine();
         sb.AppendLine("Run again with: `timeout 1800 dotnet test tests/Hamlet.RadioEngine.Tests/Hamlet.RadioEngine.Tests.csproj --filter \"FullyQualifiedName~TheCwSurveyTests.EveryRecordingInTheTree\"` (it writes this file).");
         sb.AppendLine();
-        sb.AppendLine("Rerun: work instruction 579, 2026-10-20, as shipped (HM-DEC-283): the hold's clock waits for the station to print and the lane that fits is handed on, built, measured with the grid stepping aside, and left off; no reading rule changed.");
+        sb.AppendLine("Rerun: work instruction 580, 2026-10-20, as shipped (HM-DEC-284): the fist bank added as a group of its own, ninety-six hands generated from their recipes at test time; no reading rule changed, both boards as before.");
         sb.AppendLine();
         sb.AppendLine("**The yardstick.** Score is letters right less wrong less invented, as on the boards. Invented is a letter over no keying on the board's keying map of the same audio; silence is a letter printed inside a silence of two seconds or more on that map. Where a file carries no truth, its read stands beside the earlier read in its sheet or its `.json`, scored by nothing, with the stray-letter figure: lone `E T I A N M` printed as words, per ten seconds.");
         sb.AppendLine();
@@ -397,6 +490,8 @@ public sealed class TheCwSurveyTests(ITestOutputHelper output)
             sb.AppendLine();
             sb.AppendLine(string.Create(Inv, $"**The strays bar** (HM-DEC-276): no capture above six lone one- or two-element words per 10 s. Highest now `{highest.File}` at **{highest.Stray!.Value:0.0}**, {(highest.Stray!.Value <= StraysLine ? "under the line" : "over the line")}; summed over the {old.Count} old captures, each as its row shows it, **{old.Sum(r => Math.Round(r.Stray!.Value, 1, MidpointRounding.AwayFromZero)):0.0}**, reported and not a condition.{string.Concat(traces.Select(t => string.Create(Inv, $" The trace recording `{t.File}`, not among them, {t.Stray!.Value:0.0}.")))}"));
         }
+
+        FistBank(sb, rows.Where(r => r.Group == FistGroup).ToList());
 
         foreach (var g in order)
         {

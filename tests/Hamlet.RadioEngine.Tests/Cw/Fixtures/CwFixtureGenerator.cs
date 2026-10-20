@@ -362,6 +362,34 @@ public static class CwFixtureGenerator
     /// textbook asks for. Nothing in the old fixture set contains that shape, and
     /// it is the shape that breaks any decoder classifying gaps by counting dits.
     /// </remarks>
+    /// <summary>
+    /// A hand's keying rendered as <see cref="Generate"/> renders a recipe's (work instruction 580): the band first, then the tone
+    /// on top of it at the recipe's signal, pitch, drift and fade, but keyed on edges the caller built, so each element and gap can
+    /// have its own length. The recipe's element lengths are not used.
+    /// </summary>
+    /// <param name="recipe">The channel: signal, pitch, drift, fade and seed.</param>
+    /// <param name="edges">Key-down and key-up times in seconds, alternating, the first a key-down.</param>
+    /// <returns>The audio.</returns>
+    internal static MonoAudio GenerateFromEdges(CwFixtureRecipe recipe, double[] edges)
+    {
+        var count = Math.Max(1, (int)Math.Round(((edges.Length > 0 ? edges[^1] : LeadInSeconds) + TailSeconds) * SampleRate));
+        var samples = new float[count];
+        var noiseRms = ShapedNoise(samples, recipe.Seed);
+        var amplitude = Math.Sqrt(2) * noiseRms * Math.Pow(10, recipe.SignalToNoiseDb / 20);
+
+        RenderKeying(samples, edges, recipe, amplitude);
+
+        for (var i = 0; i < samples.Length; i++)
+        {
+            samples[i] = Math.Clamp(samples[i], -1f, 1f);
+        }
+
+        return new MonoAudio(SampleRate, samples);
+    }
+
+    /// <summary>Where a generated message begins, after the band alone (work instruction 580).</summary>
+    internal const double MessageStartSeconds = LeadInSeconds;
+
     internal static double[] KeyEdges(CwFixtureRecipe recipe, out double messageStart)
     {
         messageStart = LeadInSeconds + recipe.PreambleSeconds;
