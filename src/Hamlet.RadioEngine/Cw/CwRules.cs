@@ -110,6 +110,9 @@ internal static class CwRules
     /// <summary>A bank lane reading a station whole is handed on though the grid stands within 50 Hz, where the grid there scores under half the lane for 3 s (work instruction 578); built, measured and left off (HM-DEC-282).</summary>
     public const string GridStepsAside = "the grid steps aside for a lane that reads a station whole";
 
+    /// <summary>The held lane's clock waits for its station to print, and the lane whose dit fits the station is the one handed on (work instruction 579); built, measured and left off (HM-DEC-283).</summary>
+    public const string HoldWaitsAndFits = "the hold waits for the station, and the lane that fits is handed on";
+
     /// <summary>A sender whose dah is under twice his dit shows two kinds where two means part his marks into stable clusters (work instruction 577); built, measured and left off (HM-DEC-281).</summary>
     public const string ShortDah = "two kinds from stable clusters under a jump of two";
 
@@ -134,7 +137,7 @@ internal static class CwRules
     /// The rules that ship off, built and measured and not taken: off unless a test chooses one on this thread with
     /// <see cref="Choose"/> (work instruction 565).
     /// </summary>
-    public static readonly IReadOnlySet<string> OffByDefault = new HashSet<string>(StringComparer.Ordinal) { BetweenClusters, StraddleSplit, ShortDah, GridStepsAside };
+    public static readonly IReadOnlySet<string> OffByDefault = new HashSet<string>(StringComparer.Ordinal) { BetweenClusters, StraddleSplit, ShortDah, GridStepsAside, HoldWaitsAndFits };
 
     [ThreadStatic]
     private static HashSet<string>? _chosen;

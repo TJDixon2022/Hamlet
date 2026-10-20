@@ -247,6 +247,23 @@ public sealed class CwEnvelopeDetector
     // When the held lane last handed on a mark the gate would kind, on the audio clock.
     private double _heldKindedAt = double.NaN;
 
+    /// <summary>
+    /// **THE HOLD'S CLOCK WAITS FOR THE STATION** (work instruction 579, HM-DEC-283, <see cref="CwRules.HoldWaitsAndFits"/>): the
+    /// longest a lane handed on may hold before its station has printed, in seconds. Until the station prints within
+    /// <see cref="HandoverHz"/>, the end of the hold in a pause does not run, so a lane on noise is let go here. From
+    /// <c>TheHoldWaitsForTheStationTests.HowLongAStationTakesToPrint</c>: the longest a station took to print its first letter after its
+    /// lane was held was 1.4 s on the four 5 dB CQs and 2.4 s on the working fixtures, and 12 s is five times that. Built, measured and
+    /// left off: on W1AW's piece 2 a lane held into the pause after `&lt;AS&gt;` was let go by nothing and printed `M T TAT TM E`. Author's.
+    /// </summary>
+    internal const double HeldLanePrintsWithinSeconds = 12;
+
+    /// <summary>How much nearer the station's dit, as a ratio, another lane at its pitch must be before it is handed on instead (work instruction 579).</summary>
+    internal const double RefitRatio = 1.2;
+
+    // When the lane that holds now was first held, and the sender's dit and word gap once its station printed near it.
+    private double _heldAt = double.NaN;
+    private (double DitSeconds, double WordGapSeconds)? _heldPrinted;
+
     // The shape score of the standing sequence the reading follows (work instruction 519).
     private double _readingShape = double.NaN;
 
@@ -476,8 +493,29 @@ public sealed class CwEnvelopeDetector
     /// <see cref="HeldLanePauseGaps"/> of its sender's word gap (work instruction 576, HM-DEC-280).
     /// </summary>
     private bool HeldLanePaused((int Dit, double PitchHz, int Id) held, double nowSeconds)
-        => CwRules.On(CwRules.HeldLaneReads) && CwRules.On(CwRules.HeldLanePause) && !double.IsNaN(_heldKindedAt)
-           && nowSeconds - _heldKindedAt > HeldLanePauseGaps * HeldTiming(held).WordGapSeconds;
+    {
+        if (!CwRules.On(CwRules.HoldWaitsAndFits))
+        {
+            return CwRules.On(CwRules.HeldLaneReads) && CwRules.On(CwRules.HeldLanePause) && !double.IsNaN(_heldKindedAt)
+                && nowSeconds - _heldKindedAt > HeldLanePauseGaps * HeldTiming(held).WordGapSeconds;
+        }
+
+        // **THE CLOCK WAITS FOR THE STATION** (work instruction 579, HM-DEC-283): until the station has printed near the lane there
+        // is no word gap to count and no fallback to the lane's own dit; the hold ends only at HeldLanePrintsWithinSeconds. Once it
+        // has printed, the clock is three of the printed sender's word gaps, as before, kept from when it last printed there.
+        if (PrintedTiming?.Invoke() is { } t && Math.Abs(t.PitchHz - held.PitchHz) <= HandoverHz && t.DitSeconds > 0 && t.WordGapSeconds > 0)
+        {
+            _heldPrinted = (t.DitSeconds, t.WordGapSeconds);
+        }
+
+        if (_heldPrinted is not { } printed)
+        {
+            return !double.IsNaN(_heldAt) && nowSeconds - _heldAt > HeldLanePrintsWithinSeconds;
+        }
+
+        return CwRules.On(CwRules.HeldLaneReads) && CwRules.On(CwRules.HeldLanePause) && !double.IsNaN(_heldKindedAt)
+            && nowSeconds - _heldKindedAt > HeldLanePauseGaps * printed.WordGapSeconds;
+    }
 
     /// <summary>
     /// Whether the shadow rule judges the grid's own sequences on this detector: <see cref="CwShadow.JudgesTheGrid"/> (work
@@ -599,6 +637,8 @@ public sealed class CwEnvelopeDetector
             _laneClearSince.Clear();
             _gridUnderSince.Clear();
             _steppedAside = false;
+            _heldAt = double.NaN;
+            _heldPrinted = null;
             _laneHandedTo.Clear();
             _laneCarrier.Clear();
             _shadowsNow.Clear();
@@ -657,6 +697,13 @@ public sealed class CwEnvelopeDetector
         else
         {
             _gridUnderSince.Clear();
+        }
+
+        // **A LANE HANDED ON WITH THE GRID STEPPED ASIDE STAYS ASIDE WHILE IT HOLDS** (work instruction 579, HM-DEC-283): its own
+        // station printed near it is not the grid reading it, so its marks are kept and handed on until the grid takes it back.
+        if (CwRules.On(CwRules.HoldWaitsAndFits) && _steppedAside && _bankLane is { } stillHeld)
+        {
+            aside.Add((stillHeld.Dit, (long)Math.Round(stillHeld.PitchHz / BinSpacingHz)));
         }
 
         bool Aside(int dit, double pitchHz) => aside.Contains((dit, (long)Math.Round(pitchHz / BinSpacingHz)));
@@ -741,6 +788,9 @@ public sealed class CwEnvelopeDetector
             _bankLane = null;
             _heldKindedAt = double.NaN;
             _steppedAside = false;
+            _heldAt = double.NaN;
+            _heldPrinted = null;
+            aside.Remove((held.Dit, (long)Math.Round(held.PitchHz / BinSpacingHz)));
         }
 
         var near = grid
@@ -751,7 +801,8 @@ public sealed class CwEnvelopeDetector
         // What a lane stood on beside the grid's own station is that station's, and is never handed on.
         // Unless the grid there is stepping aside, or scoring under its share of the lane and on its way to (work instruction 578).
         _laneKept.RemoveAll(k => near.Any(g => Math.Abs(g - k.Mark.PitchHz) <= HandoverHz)
-            && !_gridUnderSince.Keys.Any(u => u.Dit == k.Dit && Math.Abs((u.Bin * BinSpacingHz) - k.Mark.PitchHz) <= BinSpacingHz / 2));
+            && !_gridUnderSince.Keys.Any(u => u.Dit == k.Dit && Math.Abs((u.Bin * BinSpacingHz) - k.Mark.PitchHz) <= BinSpacingHz / 2)
+            && !Aside(k.Dit, k.Mark.PitchHz));
 
         // A lane is clear while its sequence stands and nothing of the grid's is near it; its clock starts again otherwise.
         var clear = standing.Where(s => !near.Any(g => Math.Abs(g - s.Sequence.PitchHz) <= HandoverHz) || Aside(s.Dit, s.Sequence.PitchHz)).ToList();
@@ -769,19 +820,56 @@ public sealed class CwEnvelopeDetector
 
         // Only a lane that is clear now keeps what it stood on; a lane that is not starts again from nothing.
         _laneKept.RemoveAll(k => !clear.Any(s => s.Dit == k.Dit && Math.Abs(s.Sequence.PitchHz - k.Mark.PitchHz) <= BinSpacingHz / 2)
-            && !_gridUnderSince.Keys.Any(u => u.Dit == k.Dit && Math.Abs((u.Bin * BinSpacingHz) - k.Mark.PitchHz) <= BinSpacingHz / 2));
+            && !_gridUnderSince.Keys.Any(u => u.Dit == k.Dit && Math.Abs((u.Bin * BinSpacingHz) - k.Mark.PitchHz) <= BinSpacingHz / 2)
+            && !Aside(k.Dit, k.Mark.PitchHz));
+
+        // **THE LANE THAT FITS IS HANDED ON** (work instruction 579, HM-DEC-283): of the lanes at a pitch standing at 0.4 or better,
+        // the one whose dit is nearest, as a ratio in log, the dit the chosen lane's own two kinds give; the best-shaped while its
+        // marks are not yet two kinds.
+        (int Dit, CwPatternGate.StandingSequence Sequence) Fit((int Dit, CwPatternGate.StandingSequence Sequence) chosen, IEnumerable<(int Dit, CwPatternGate.StandingSequence Sequence)> lanes)
+        {
+            if (!CwRules.On(CwRules.HoldWaitsAndFits))
+            {
+                return chosen;
+            }
+
+            var here = lanes
+                .Where(l => l.Dit == chosen.Dit && l.Sequence.Id == chosen.Sequence.Id
+                    || (Math.Abs(l.Sequence.PitchHz - chosen.Sequence.PitchHz) <= BinSpacingHz / 2 && l.Sequence.Shape.Score >= StepAsideLaneShape))
+                .ToList();
+
+            // The station's dit: the median of the dits the two kinds of every lane here give, each lane measuring the same station.
+            var kinds = here.Select(l => _bank.Gates[l.Dit].KindsDitSeconds(l.Sequence.Id)).OfType<double>().Where(d => d > 0).Order().ToList();
+
+            if (kinds.Count == 0)
+            {
+                return chosen;
+            }
+
+            var dit = kinds[kinds.Count / 2];
+            double Off((int Dit, CwPatternGate.StandingSequence Sequence) l) => Math.Abs(Math.Log(CwLaneBank.DitSeconds[l.Dit] / dit));
+
+            var nearest = here.OrderBy(Off).ThenByDescending(l => l.Sequence.Shape.Score).First();
+
+            // A lane fits better only by more than RefitRatio, so two lanes about as near do not trade the station back and forth.
+            return Off(chosen) - Off(nearest) > Math.Log(RefitRatio) ? nearest : chosen;
+        }
 
         if (_bankLane is null)
         {
-            if (clear
+            var eligible = clear
                 .Where(s => nowSeconds - _laneClearSince[(s.Dit, (long)Math.Round(s.Sequence.PitchHz / BinSpacingHz))] >= LaneLeadSeconds)
                 .Where(s => !LaneIsCarrier(s.Sequence.PitchHz, nowSeconds))
                 .Where(s => !ShadowPitch(s.Sequence.PitchHz))
-                .OrderByDescending(s => s.Sequence.Shape.Score)
-                .FirstOrDefault() is { Sequence: not null } best)
+                .ToList();
+
+            if (eligible.OrderByDescending(s => s.Sequence.Shape.Score).FirstOrDefault() is { Sequence: not null } top
+                && Fit(top, eligible) is var best)
             {
                 _bankLane = (best.Dit, best.Sequence.PitchHz, best.Sequence.Id);
                 _heldKindedAt = nowSeconds;
+                _heldAt = nowSeconds;
+                _heldPrinted = null;
                 _steppedAside = near.Any(g => Math.Abs(g - best.Sequence.PitchHz) <= HandoverHz);
 
                 // A lane picked soon after a shadow was let go hands on no backlog: it starts from its next mark (the owner, 2026-10-13).
@@ -795,6 +883,18 @@ public sealed class CwEnvelopeDetector
 
                 HandoverTrace?.Add(string.Create(CultureInfo.InvariantCulture, $"{nowSeconds:0.00} s holds {best.Sequence.PitchHz:0} Hz at a {CwLaneBank.DitSeconds[best.Dit] * 1000:0} ms dit{(fresh ? ", no backlog" : string.Empty)}{(_steppedAside ? ", the grid stepped aside" : string.Empty)}"));
             }
+        }
+
+        // The pick is revisited once the held lane's marks are two kinds: a lane at its pitch whose dit fits better holds the station
+        // from then on (work instruction 579). Its marks already handed on at this pitch are not handed on again.
+        else if (CwRules.On(CwRules.HoldWaitsAndFits)
+            && _bankLane is { } holding
+            && standing.FirstOrDefault(s => s.Dit == holding.Dit && s.Sequence.Id == holding.Id) is { Sequence: not null } current
+            && Fit(current, standing.Where(s => !LaneIsCarrier(s.Sequence.PitchHz, nowSeconds) && !ShadowPitch(s.Sequence.PitchHz))) is var fitted
+            && fitted.Dit != holding.Dit)
+        {
+            _bankLane = (fitted.Dit, fitted.Sequence.PitchHz, fitted.Sequence.Id);
+            HandoverTrace?.Add(string.Create(CultureInfo.InvariantCulture, $"{nowSeconds:0.00} s refits {fitted.Sequence.PitchHz:0} Hz to a {CwLaneBank.DitSeconds[fitted.Dit] * 1000:0} ms dit"));
         }
 
         _shadowsNow = shadows;
@@ -1240,6 +1340,8 @@ public sealed class CwEnvelopeDetector
             _laneClearSince.Clear();
             _gridUnderSince.Clear();
             _steppedAside = false;
+            _heldAt = double.NaN;
+            _heldPrinted = null;
             _laneHandedTo.Clear();
             _shadowLetGoAt = double.NegativeInfinity;
             _laneCarrier.Clear();

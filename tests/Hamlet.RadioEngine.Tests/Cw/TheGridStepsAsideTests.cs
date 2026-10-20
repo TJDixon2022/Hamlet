@@ -177,15 +177,17 @@ public sealed class TheGridStepsAsideTests(ITestOutputHelper output)
     /// </remarks>
     /// <param name="aside">Whether the grid steps aside.</param>
     [Theory]
-    [InlineData(false)]
-    [InlineData(true)]
-    public void TheWorkingFixturesAndKenRead(bool aside)
+    /// <param name="corrected">Whether the hold also waits for the station and the lane that fits is handed on (work instruction 579).</param>
+    [InlineData(false, false)]
+    [InlineData(true, false)]
+    [InlineData(true, true)]
+    public void TheWorkingFixturesAndKenRead(bool aside, bool corrected)
     {
-        using var rule = aside ? CwRules.Choose(CwRules.GridStepsAside) : CwRules.Off(CwRules.GridStepsAside);
+        using var rule = corrected ? CwRules.Choose(CwRules.GridStepsAside, CwRules.HoldWaitsAndFits) : aside ? CwRules.Choose(CwRules.GridStepsAside) : CwRules.Off(CwRules.GridStepsAside);
         var total = 0;
         var of = 0;
 
-        output.WriteLine(aside ? "the grid steps aside" : "the grid does not step aside");
+        output.WriteLine(corrected ? "the grid steps aside, the hold waits and the lane that fits is handed on" : aside ? "the grid steps aside" : "the grid does not step aside");
 
         foreach (var name in Working.Concat(Easy))
         {

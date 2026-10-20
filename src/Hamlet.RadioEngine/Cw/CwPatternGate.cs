@@ -628,6 +628,12 @@ internal sealed class CwPatternGate
             .DefaultIfEmpty(0)
             .Max();
 
+    /// <summary>The mean dit a standing sequence's two kinds give, or null where its marks are not yet two kinds (work instruction 579).</summary>
+    /// <param name="id">The sequence.</param>
+    /// <returns>The dit, in seconds, or null.</returns>
+    public double? KindsDitSeconds(int id)
+        => _sequences.FirstOrDefault(s => s.Id == id && s.Standing)?.Lengths()?.DitSeconds;
+
     /// <summary>
     /// A standing sequence the gate still keeps, by id, silent within the hold or not: how many marks it has taken, its dit,
     /// its level and its recent marks, for the window that fits it (work instruction 529). Null once it is gone or never stood.
