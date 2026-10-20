@@ -1,4 +1,4 @@
-# Work instruction 575 - The split between a sender's letter gaps and word gaps; and a held lane keeps reading
+# Work instruction 576 - A held lane keeps reading, and the hold ends in a pause
 
 ## 1. What Claude did
 
@@ -7,201 +7,160 @@
   - Neither `CoreHMI.sln` nor `MURC.sln` exists.
 
   Nothing in this report is evidence about the radio.
-- **Branch:** `main`, three commits, pushed.
+- **Branch:** `main`, two commits (the rule, then the record), pushed.
 - **Run by hand:**
   - `SESSION.lock` was taken through `tools\arbiter\lock.bat take` and released at the end.
   - Nothing was written to `RUN_LEDGER.md`, nothing under `tools\arbiter\` was touched, and no box in `PHASE_PLAN.md` was ticked.
   - Nothing keys or transmits, nothing was written to the radio, and no recording was added, removed or promoted.
-- **Task 1, the split** (`021537b8`):
-  - **The trace** (`TheSplitTraceTests`): for each of the seventeen gaps, at the moment the letter after it printed:
-    - the gaps the split had in hand;
-    - the clusters its walk found, the step it looked for and the largest step between neighbours;
-    - the path it took and the boundary it drew;
-    - the side the gap landed on.
+- **The pause on piece 2, traced first** (`TheHeldLanePauseTests`, new). It covers 224 to 246 s of `w1aw-2026-10-07/piece-02`, with a held lane reading, and with and without the end of the hold. For every mark a held lane called, it lists:
+  - the lane's pitch, the mark's start and length, and its level against the lane's key-down and key-up;
+  - the lane's contrast at that moment;
+  - beside it, the printed sender's dit, letter gap, word gap and word line, and the longest gap W1AW had left in the piece before.
 
-    Then the same for twenty word gaps W1AW reads. The table is in section 3, and the full rows, with every gap in hand, are in `.run-unit\reports\unit575-trace.txt`.
-  - **The rule the table names: a jump demanded that a hand never produces.**
-    - The walk parts letter gaps from word gaps where two neighbouring gaps, sorted, differ by √(7/3), which is 1.53. Every W1AW split shows that step, at about 2.3.
-    - A hand's gaps rise smoothly. Its largest step between neighbours is 1.09 to 1.66, so the walk finds no step at all (nine of the fourteen misses), or finds one only up to a pause, which then becomes the "word cluster" (five).
-    - Either way, the letter cluster runs from about two gap dits to past six and holds the word gaps themselves.
-  - **Built:** `CwRules.StraddleSplit`.
-    - A letter cluster with gaps both under and over √21 of the sender's gap dits is two kinds. √21 is Morse's own midpoint between a letter gap of three and a word gap of seven.
-    - Its gaps from the midpoint up become word gaps, and the word line is the midpoint.
-    - A clean sender's letter cluster sits wholly under the midpoint (W1AW's at 2.7 to 2.9 gap dits), and a Farnsworth sender's wholly over it, so neither is touched.
-  - **Measured once, and it failed.** It is **off**, a rule only a test can choose (`CwRules.OffByDefault`).
-- **Task 2, a held lane keeps reading** (`a171d211`):
-  - **Built:** `CwRules.HeldLaneReads` and `CwLaneBank.Held`.
-    - The detector tells the bank which lane holds the station it has handed on.
-    - That lane goes on calling marks while its contrast dips under `CwLaneBank.MinContrastDb`, 12 dB. The floor governs standing, not holding.
-    - No constant was needed.
-  - **What ends the hold:** nothing new. As before, it ends when:
-    - the lane's sequence stops standing;
-    - the grid takes the station back within 50 Hz;
-    - or the lane is judged a carrier or a shadow.
-
-    The sender gate also lets the sender go under shape 0.1.
-  - **Measured once, and it failed on W1AW.** It is **off**, a rule only a test can choose. `TheWeakEndTests.TheWeakCqsWithAHeldLaneReading` keeps the CQ figures both ways.
-- **A fault found on the way, fixed in task 1's commit:** the scoreboards read in parallel, and the rule switches they carry to their worker threads (`CwRules.Current`, `Use`) carried only the rules a test turned off.
-  - A rule that ships off and was chosen on for a test was therefore applied only on the calling thread.
-  - Both now travel. Unit 565's "on" figure for the line between the clusters may have been measured in part.
-- **The lines:**
-  - **The engine line,** run alone. `dotnet build-server shutdown` went first, and the one other dotnet process left (Avalonia's build-services collector) was ended.
-    - It stopped with "Test host process crashed" after 147 passed, **exit code 124**. That code is the shell's `timeout 480` firing, not the host: the line takes longer than 480 s.
-    - The last test before the stop could not be named, because the minimal console log names none.
-    - Run once more alone with a 1500 s limit, it passed **155 of 155 in 9 min 05 s**.
-  - **The app line** first stopped the same way: exit 124 at 480 s with 101 passed.
-    - That run built again without `--no-build`, behind eight leftover dotnet processes.
-    - With those ended and `--no-build`, it passed **278 of 278 in 2 min 14 s**.
-  - **The survey line,** once: stopped once by Claude Code for low memory, as HM-DEC-276 allows, and run once more alone: **1 of 1 in 7 min 17 s**, every group unchanged and only the `Rerun` line rewritten.
-- **Records** (the closing commit):
-  - Version 1.13.259 to 1.13.260.
-  - HM-DEC-279 at the top of `DECISIONS.md`, and its `CLAUDE.md` §1 row.
-  - A 575 row in each scoreboard table.
+  A hook for it, `CwLaneBank.HeldTrace`, is set only by tests. What it found:
+  - W1AW's last mark before the pause ends at 232.43 s and his next starts at 237.70 s, so the pause is 5.3 s. His dit is 84 ms, his letter gap 236 ms and his word gap 556 ms.
+  - **The invented letters were not at his pitch.** A lane at 800 Hz was held from 234.15 s and printed `M T T A T T M E G`.
+  - Its contrast fell from 12.8 to 7.6 dB, and its noise marks, 30 to 290 ms long, came every 0.1 to 0.5 s.
+- **The rule, one rule** (`c02b1d59`, `CwRules.HeldLanePause`, `CwEnvelopeDetector.HeldLanePauseGaps` = 3):
+  - **When the hold ends:** a held lane is let go once it has handed on no mark of half its sender's dit or longer for more than three of its sender's word gaps.
+  - **Whose dit and word gap:** the printed sender's, where he is printed within 50 Hz of the lane (`CwDecoder.RunsPrintedTiming`, wired by `CwChain`). Otherwise the lane's own dit and seven of it.
+  - **After the hold ends:** the lane is an ordinary lane again. Its floor governs, its sequence must stand on its own, and every lane at that pitch waits its 3 s (`LaneLeadSeconds`) again before it can be handed on.
+  - **What does not count:** a piece under half a dit does not restart the clock.
+- **`HeldLaneReads` ships on**, with the end of its hold. It was built and left off in the last unit.
+- **Measured once, against section 2's ship condition.** Every condition held (section 3), so both rules are on by default:
+  - the guard `TheWeakCqsReadAtHalfOrBetter` now asserts 71 of 84 or better;
+  - a new guard, `NothingPrintsInTheSilenceAfterAWeakStation`, plays each 5 dB CQ followed by 20 s of its own noise and asserts that nothing prints in the 20 s;
+  - `TheWeakCqsWithAHeldLaneReading` now compares the rule on, as shipped, with the rule off.
+- **The lines,** after one build, with the build servers shut down and leftover dotnet processes ended:
+  - the app line passed 278 of 278 in 2 min 14 s;
+  - the engine line, at a 1500 s limit, passed 156 of 156 in 9 min (the new guard is the 156th);
+  - the survey line passed 1 of 1 in 7 min 18 s, with `--no-build`.
+- **Records:**
+  - HM-DEC-280 at the top of `DECISIONS.md`, and its `CLAUDE.md` §1 index row.
+  - A 576 row in each table of `docs\cw-scoreboard.md`.
   - `PHASE_OUTCOME.md` and `PHASE_STATUS.md`, both copies.
-  - The survey's new `Rerun` line.
-  - `CW_SPEC.md` §2 is unchanged, since no rule shipped.
-- **Recorded under §12.1:** nothing.
+  - The survey's `Rerun` line, in the test and in `docs\cw-survey-2026-10-09.md`.
+  - A `CW_SPEC.md` §2 sentence.
+  - Version 1.13.260 to **1.13.261**.
+- **Recorded under §12.1:** nothing. HM-DEC-280 was ordered by work instruction 576.
 
 ## 2. What the owner should expect
 
-- **Word spaces on hand senders are not found yet, and nothing changed.** The rule the trace named finds some, but costs more than it finds.
-  - As shipped, the twelve-plus-three still reads 86 of 110 spaces with 3 added.
-  - With the rule on, it read 91 of 110, but with **20 added**, every one a letter gap spaced as a word.
-  - It also cost 2 letters (318 to 316 of 353) and broke your first recording: `FER C HA T <BT> BEST 7 V 73 <SK> KC 4 Z GP DEWA`. That hand's letter gaps run 358 to 430 ms, just over the new line at 354 to 359.
-  - W1AW was untouched by it: 2111, 438 of 440.
-  - So the SKCC line still reads `QTHWVWVNAMEIS JOEL`. A hand's letter gaps and word gaps overlap in length, and Morse's own midpoint is not where these hands put the break.
-- **Weak stations would print nearly whole, but the rule printed junk on W1AW, so it is off.**
-  - With the held lane reading, the four 5 dB CQs read **71 of 84** (14, 17, 20 and 20 of 21), from 62 (13, 14, 16 and 19).
-  - Noise printed nothing, the bank stood nothing on loud noise, the carrier still printed at its one seed, and the twelve-plus-three held at 297.
-  - But on W1AW the held lane went on reading after the station paused, and printed `M T TAT TM E` in the gap after `W1AW <AS>` on piece 2. W1AW fell from 2111 to 2101, with 8 letters invented where it had none.
-  - As shipped, the CQs read 62 of 84, as before.
-- **Each rule in a sentence:**
-  - **The split at the word midpoint:** a sender's letter cluster that runs across √21 of its gap dits is cut there into letter and word gaps.
-  - **The held lane:** the lane reading a weak station keeps reading it while its contrast dips under 12 dB.
-- **The engine line is not crashing.** The "crash" of the last three units was our own 480 s timeout. The line takes nine minutes and passes 155 of 155.
-- **Suite:**
-  - Build clean, 0 warnings.
-  - App 278 of 278, engine 155 of 155, survey 1 of 1 on its second run (the first was stopped for memory).
-  - Both scoreboards as at HEAD. The scoreboard row guards passed 4 of 4 and `DecisionLogOrderTests` 2 of 2 after the records were written.
-- **Pushed to `main`.** Left uncommitted, as found: `RUN_LEDGER.md`, `PARKED.md`, `.run-unit\denials.txt`, the `.run-unit\reports` files and the `cases-*.txt` files.
-- **What will look wrong but is not:** the scoreboard test is red on the random carrier at seed 5195. That is the known baseline since unit 552.
+- **Weak stations now print almost whole, and it cost nothing on either board.**
+  - **The four 5 dB CQs:** **71 of 84** letters, up from 62. That is 14, 17, 20 and 20 of 21: `NQ CQ CQ DE N0CALL N0CALL K` and `RQCQCQDEN0CALLN0CALLK` read clean.
+  - **W1AW:** 2111, **0 invented**, 438 of 440 spaces with 11 added, the same as before the unit. The rule alone had printed eight junk letters in a pause.
+  - **The twelve-plus-three:** 297, unchanged.
+  - **Noise:** 20 s of plain noise after a weak CQ prints nothing.
+- **The rule in a sentence:** once Hamlet is reading a weak station through a lane, it keeps reading while the signal fades. It lets go once that lane has gone three of the sender's word gaps with no real dit or dah.
+- **What the pause on piece 2 looked like.** W1AW stopped for about five seconds after `QST DE W1AW <AS>`, before his 35 WPM practice.
+  - The junk letters came from a lane at 800 Hz, not from W1AW's 600 Hz. That lane kept reading noise through the pause.
+  - Now that lane is let go during `<AS>`, because it heard nothing real for over a second. It has to wait again, so it is not picked up for the pause, and the pause prints nothing.
+  - Hamlet now reads `<BT> NOW 35 WPM` there. With the held lane and no end to its hold, it read `O W 35 WPM` after the junk.
+- **What will look wrong but is not:**
+  - The scoreboard test is red on the random carrier at seed 5195. That is the known baseline since unit 552.
+  - The survey's summed strays rose from 21.9 to 22.3, mostly on `cw-2026-09-23-173723`, which now prints a run of `E`s. It is reported, not a condition, and the highest capture is still 3.3 per 10 s against the bar of six.
+- **Pushed:** `main`, `c02b1d59` and the record commit after it.
+- **Left uncommitted, as they were before the session:** `RUN_LEDGER.md`, `PARKED.md`, `.run-unit\denials.txt`, `.run-unit\reports\*` and `tests\fixtures\cw\captured\cases-*.txt`.
 
 ## 3. What you should see
 
-**The seventeen,** with the line as it ships and with the split at the word midpoint, in ms. *Walk clusters* is the sizes of the clusters the walk found, the letter cluster first. *Then* is the side the gap lands on with the midpoint split.
+**The pause on piece 2, the held lane reading and no end to its hold**, the 800 Hz lane that printed, in dB and ms. W1AW is printed at 600 Hz until his `<AS>` ends at 232.43 s, and nobody after that until 237 s, so the sender's column says none there. His figures at the pause are a dit of 84 ms, a letter gap of 236, a word gap of 556 and a word line of 362. The longest gap he had left in the piece before 224 s is 4502 ms. *Below key-down* is how far each mark's level sits under the lane's key-down, as a share of its contrast.
 
-| recording | around | kind | gap | walk clusters | largest step | path | letter / word gaps | the line | gap dit | gap in gap dits | the midpoint split's line | then |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| `03-221530` | `6C\|HAM` | letter gap spaced | 212 | 1+1+1 | 2.93 | jump, settled | 1 / 1 | 211 | 67 | 3.2 | 211 (unmoved) | word |
-| `03-221530` | `6CHA\|MPI` | letter gap spaced | 541 | 3+2 | 2.55 | jump, settled | 3 / 2 | 269 | 66 | 8.1 | 269 (unmoved) | word |
-| `03-221530` | `SAGE\|12I` | word gap missed | 252 | 14+1 | 1.57 | jump, settled | 12 / 3 | 254 | 63 | 4.0 | 254 (unmoved) | letter |
-| `03-221548` | `EEMY\|SCO` | word gap missed | 283 | 6+2 | 1.63 | jump, settled | 6 / 2 | 313 | 62 | 4.6 | 313 (unmoved) | letter |
-| `03-221548` | `SCOU\|TMA` | letter gap spaced | 452 | 14 | 1.42 | no jump, 2-means | 10 / 4 | 313 | 62 | 7.3 | 313 (unmoved) | word |
-| `03-221745` | `E\|EDA` | word gap missed | 380 | 3 | 1.42 | no jump, 2-means refused | 3 / - | 460 | 64 | 5.9 | 293 | word |
-| `03-221745` | `EE\|DAN` | word gap missed | 305 | 3 | 1.42 | no jump, 2-means refused | 3 / - | 460 | 64 | 4.8 | 293 | word |
-| `03-221745` | `NDON\|40M` | word gap missed | 405 | 3 | 1.42 | no jump, 2-means refused | 3 / - | 460 | 64 | 6.3 | 293 | word |
-| `03-221805` | `DAYS\|.TN` | word gap missed | 356 | 6 | 1.40 | no jump, 2-means refused | 6 / - | 399 | 66 | 5.4 | 301 | word |
-| `03-221805` | `XFER\|ANO` | word gap missed | 372 | 17+3 | 1.66 | jump, settled | 17 / 3 | 508 | 69 | 5.4 | 314 | word |
-| `03-221805` | `THER\|FT` | word gap missed | 424 | 24+3 | 1.57 | jump, settled | 24 / 3 | 508 | 72 | 5.9 | 328 | word |
-| `03-221828` | `EDES\|BES` | word gap missed | 286 | 34 | 1.15 | no jump, 2-means | 24 / 10 | 300 | 71 | 4.0 | 300 (unmoved) | letter |
-| `08-121324` | `UKKQ\|4PA` | word gap missed | 248 | 3 | 1.11 | no jump, 2-means refused | 3 / - | 324 | 75 | 3.3 | 324 (unmoved) | letter |
-| `08-121324` | `Q4PA\|K` | word gap missed | 232 | 5 | 1.09 | no jump, 2-means refused | 5 / - | 334 | 75 | 3.1 | 334 (unmoved) | letter |
-| `08-121414` | `BKBK\|TUR` | word gap missed | 288 | 2+1 | 1.66 | jump, settled | 2 / 1 | 301 | 50 | 5.8 | 301 (unmoved) | letter |
-| `08-121414` | `BKTU\|RON` | word gap missed | 212 | 3 | 1.36 | no jump, 2-means refused | 3 / - | 343 | 50 | 4.2 | 230 | letter |
-| `08-121414` | `ES72\|KM3` | word gap missed | 312 | 26 | 1.41 | no jump, 2-means | 18 / 8 | 315 | 51 | 6.1 | 233 | word |
+| lane | called at | start | length | level | key-down | key-up | below key-down | contrast | sender printed |
+|---|---|---|---|---|---|---|---|---|---|
+| 800 | 234.165 | 233.922 | 215 | -31.1 | -28.4 | -41.2 | 0.21 | 12.8 | none |
+| 800 | 234.325 | 234.162 | 135 | -31.3 | -28.4 | -41.2 | 0.23 | 12.8 | none |
+| 800 | 234.475 | 234.317 | 130 | -31.0 | -28.4 | -41.2 | 0.20 | 12.8 | none |
+| 800 | 234.580 | 234.477 | 75 | -30.6 | -28.6 | -41.4 | 0.16 | 12.8 | none |
+| 800 | 234.890 | 234.572 | 290 | -30.2 | -28.3 | -40.0 | 0.17 | 11.7 | none |
+| 800 | 235.050 | 234.952 | 70 | -29.7 | -28.2 | -37.6 | 0.16 | 9.5 | none |
+| 800 | 235.310 | 235.207 | 75 | -29.9 | -28.1 | -36.9 | 0.21 | 8.8 | none |
+| 800 | 235.385 | 235.307 | 50 | -30.5 | -28.1 | -36.9 | 0.27 | 8.8 | none |
+| 800 | 235.445 | 235.387 | 30 | -30.5 | -28.1 | -36.9 | 0.27 | 8.8 | none |
+| 800 | 235.530 | 235.432 | 70 | -29.0 | -28.0 | -35.6 | 0.13 | 7.6 | none |
+| 800 | 235.670 | 235.567 | 75 | -29.3 | -28.0 | -35.6 | 0.18 | 7.6 | none |
+| 800 | 236.215 | 236.092 | 95 | -29.4 | -28.2 | -35.9 | 0.16 | 7.7 | none |
+| 800 | 236.400 | 236.267 | 105 | -30.3 | -28.2 | -35.9 | 0.27 | 7.7 | none |
+| 800 | 236.515 | 236.407 | 80 | -29.2 | -28.2 | -35.9 | 0.12 | 7.7 | none |
+| 800 | 236.675 | 236.612 | 35 | -28.8 | -28.2 | -35.9 | 0.08 | 7.7 | none |
+| 800 | 236.880 | 236.772 | 80 | -29.7 | -28.2 | -36.1 | 0.20 | 7.9 | none |
+| 800 | 236.975 | 236.872 | 75 | -30.9 | -28.2 | -36.1 | 0.34 | 7.9 | none |
+| 800 | 237.040 | 236.977 | 35 | -31.0 | -28.2 | -36.1 | 0.36 | 7.9 | 800 Hz: dit 35, letter 80, word 125 |
+| 800 | 237.215 | 237.102 | 85 | -28.7 | -28.2 | -36.1 | 0.07 | 7.9 | 800 Hz: dit 35, letter 80, word 125 |
+| 800 | 237.290 | 237.222 | 40 | -29.0 | -28.1 | -36.1 | 0.11 | 8.0 | 800 Hz: dit 35, letter 105 |
+| 800 | 237.425 | 237.337 | 60 | -29.5 | -28.1 | -36.1 | 0.17 | 8.0 | none |
+| 800 | 237.555 | 237.437 | 90 | -28.3 | -27.9 | -36.2 | 0.04 | 8.2 | none |
+| 800 | 237.710 | 237.647 | 35 | -30.6 | -27.9 | -36.2 | 0.32 | 8.2 | none |
 
-On the seventeen, the midpoint split puts seven of the fourteen word gaps on the word side and leaves the three letter gaps where they are. The seven are `221745`'s three, `221805`'s three and `121414`'s `ES72|KM3`. On the whole board it found five more spaces and added seventeen.
-
-**Twenty of W1AW's 438 word gaps read: what a working split looks like.** Every one shows a step of about 2.3 between its letter and word clusters, and its letter cluster sits under the midpoint, so none moves.
-
-| recording | around | gap | walk clusters | largest step | letter / word gaps | the line | gap dit | gap in gap dits |
-|---|---|---|---|---|---|---|---|---|
-| `piece-01` | `QST\|QST` | 556 | 5+2 | 2.33 | 5 / 2 | 361 | 83 | 6.7 |
-| `piece-01` | `W1AW\|SCH` | 556 | 29+10+1 | 2.30 | 29 / 10 | 361 | 86 | 6.4 |
-| `piece-01` | `0WPM\|FOL` | 553 | 25+12+3 | 2.32 | 25 / 12 | 360 | 87 | 6.4 |
-| `piece-02` | `T,\|AND` | 557 | 1+2 | 1.69 | 1 / 2 | 369 | 82 | 6.8 |
-| `piece-02` | `9PM\|PDT` | 558 | 30+10 | 2.30 | 30 / 10 | 362 | 82 | 6.8 |
-| `piece-02` | `2024\|QST` | 556 | 28+10+1+1 | 5.14 | 28 / 10 | 363 | 84 | 6.6 |
-| `piece-02` | `NDAT\|LEA` | 237 | 2+2 | 2.41 | 2 / 2 | 151 | 38 | 6.3 |
-| `piece-02` | `MPOR\|WEL` | 235 | 31+9 | 2.27 | 31 / 9 | 152 | 38 | 6.2 |
-| `piece-03` | `NGET\|GEM` | 237 | 30+9+1 | 2.26 | 30 / 9 | 152 | 36 | 6.5 |
-| `piece-03` | `TION\|GRO` | 231 | 30+10 | 2.30 | 30 / 10 | 152 | 37 | 6.2 |
-| `piece-03` | `WAVE\|TRA` | 238 | 35+5 | 2.35 | 35 / 5 | 155 | 37 | 6.4 |
-| `piece-03` | `R.AT\|SOM` | 235 | 32+7+1 | 2.30 | 32 / 7 | 153 | 37 | 6.3 |
-| `piece-03` | `.THE\|FIR` | 238 | 31+8+1 | 2.31 | 31 / 8 | 152 | 37 | 6.4 |
-| `piece-03` | `THEN\|AFE` | 235 | 30+10 | 2.28 | 30 / 10 | 144 | 37 | 6.3 |
-| `piece-03` | `OW30\|WPM` | 277 | 23+15+1 | 6.54 | 23 / 15 | 142 | 41 | 6.8 |
-| `piece-04` | `ORTH\|EAS` | 276 | 23+6+1 | 1.65 | 23 / 6 | 166 | 43 | 6.3 |
-| `piece-04` | `PARE\|MIN` | 276 | 31+8+1 | 2.28 | 31 / 8 | 178 | 43 | 6.4 |
-| `piece-04` | `THAT\|MOS` | 285 | 33+7 | 2.27 | 33 / 7 | 180 | 42 | 6.8 |
-| `piece-04` | `ETTY\|STR` | 276 | 33+7 | 2.31 | 33 / 7 | 178 | 44 | 6.3 |
-| `piece-04` | `YZER\|AND` | 274 | 33+7 | 2.24 | 33 / 7 | 178 | 43 | 6.3 |
+- **Printed with no end to the hold:** `<AS>`@232.43, then from 800 Hz `M T T A T T M E G` from 234.45 to 237.01 s, then W1AW's `O W 3 5 W P M <BT> 8 F E E T` from 239.18 s.
+- **The 800 Hz lane's first mark** came 1.5 s into the pause, and each one after it within 0.1 to 0.55 s of the last, so no count of word gaps ends a hold inside the pause.
+- **The holds, with the end of the hold:**
+  - 800 Hz held at 230.15 s and **let go in a pause at 231.41 s**, 1.26 s with nothing kinded, three of seven 60 ms dits;
+  - 375 Hz held at 233.16 s and let go in a pause at 234.00 s;
+  - 725 Hz held from 234.00 s to 241.38 s. It handed on noise at 7.3 to 10.8 dB contrast, a mark every 0.1 to 0.8 s, and **the gate printed none of it**.
+- **Printed with the end of the hold:** `<AS>`@232.43, then `<BT> N O W 3 5 W P M <BT> 8 F E E T` from 238.15 s. Nothing was printed in the pause.
 
 **The four 5 dB CQs:**
 
-| CQ | as shipped | held lane reading |
+| CQ | before (held lane off) | as shipped |
 |---|---|---|
-| `cq-12wpm-5db` | 13 of 21 | 14 of 21 |
-| `cq-18wpm-5db` | 14 of 21 | 17 of 21 |
-| `cq-18wpm-5db-char5` | 16 of 21 | 20 of 21 |
-| `cq-25wpm-5db` | 19 of 21 | 20 of 21 |
-| total | 62 of 84 | 71 of 84 |
+| `cq-12wpm-5db` | 13 of 21 | 14 of 21, `FQ N QCQ DE N0/AE EL N06AL I K` |
+| `cq-18wpm-5db` | 14 of 21 | 17 of 21, `RQKQCQ DE N0C DL N0CALL K` |
+| `cq-18wpm-5db-char5` | 16 of 21 | 20 of 21, `RQCQCQDEN0CALLN0CALLK` |
+| `cq-25wpm-5db` | 19 of 21 | 20 of 21, `NQ CQ CQ DE N0CALL N0CALL K` |
+| total | 62 of 84 | **71 of 84** |
 
-**The synthetic hands,** word spaces of 14 with the added in brackets, as shipped and with the midpoint split:
+**The silence after a weak station:** each 5 dB CQ followed by 20 s of its own noise, at its own level. In the 20 s, `cq-12wpm-5db`, `cq-18wpm-5db`, `cq-18wpm-5db-char5` and `cq-25wpm-5db` each print **0 letters**.
 
-| hand | seeds | as shipped | midpoint split |
-|---|---|---|---|
-| SKCC, 15 WPM, letter gaps 2-4 dits, word 4-6 | 5401, 5402, 5403 | 10 (2), 12 (7), 12 (3) | 10 (2), 13 (7), 12 (3) |
-| touching, 20 WPM, letter 3-5.5, word 6-10 | 5381, 5382, 5383 | 12 (1), 14 (0), 12 (0) | 12 (7), 14 (8), 14 (1) |
-| slow spacing, 18 WPM, letter 4-5, word 8-12 | 5391, 5392, 5393 | 14 (0), 14 (0), 14 (0) | 14 (6), 14 (7), 14 (2) |
-
-**The survey's groups, before and after** (score):
+**The survey's groups, before and after:**
 
 | group | before | after |
 |---|---|---|
-| synthetic fixtures (noisy-18wpm 0 both) | 44 | 44 |
-| receiver fixtures: easy | 75 | 75 |
-| receiver fixtures: working | -4 | -4 |
-| receiver fixtures: edge | 0 | 0 |
-| receiver fixtures: ungraded | 63 | 63 |
-| synthetic CQs: 15 dB | 72 | 72 |
-| synthetic CQs: 5 dB | 46 | 46 |
-| synthetic CQs: 0 dB | 0 | 0 |
+| synthetic fixtures | 46 of 67, score 44 | unchanged |
+| receiver fixtures: easy | 78 of 90, 75 | unchanged |
+| receiver fixtures: working | 4 of 81, -4 | unchanged |
+| receiver fixtures: edge | 0 of 81, 0 | unchanged |
+| receiver fixtures: ungraded | 77 of 98, 14 wrong, **63** | 73 of 98, 8 wrong, **65** |
+| synthetic CQs: 15 dB | 78 of 84, 72 | unchanged |
+| synthetic CQs: 5 dB | 62 of 84, 16 wrong, **46** | 71 of 84, 12 wrong, **59** |
+| synthetic CQs: 0 dB | 0 of 84, 0 | unchanged |
 | the boards: twelve-plus-three | 297 | 297 |
 | W1AW pieces | 2111 | 2111 |
-| strays: highest old capture per 10 s | 3.3 | 3.3 |
-| strays: summed over the 65 old captures | 21.9 | 21.9 |
+| strays, highest old capture per 10 s | 3.3 | 3.3 |
+| strays, summed over the 65 old captures | 21.9 | 22.3 |
 
+**The scoreboards' new rows:**
 
-**The scoreboards' 575 rows:**
-
-| unit | date | right | wrong | invented | score | in silences | spaces | what |
-|---|---|---|---|---|---|---|---|---|
-| 575 | 2026-10-19 | 318 of 353 | 20 | 1 | **297** | 0 | 86 of 110, 3 added | the split and a held lane (work instruction 575, HM-DEC-279): a letter cluster across √21 gap dits split there read 316 of 353 and 91 of 110 spaces with 20 added and broke the first recording; a held lane reading under its floor read 297 and 86 of 110 here; both ship off and this row is the board as shipped, as at HEAD |
-
-| unit | date | score | right | wrong | invented | spaces | what |
+| unit | date | right | wrong | invented | score | in silence | spaces |
 |---|---|---|---|---|---|---|---|
-| 575 | 2026-10-19 | **2111** | 2131 of 2151 | 20 | 0 | 438 of 440, 11 added | the split at the word midpoint read 2111 here, unchanged; a held lane reading under its floor read 2101 (2129 of 2151, 20 wrong, 8 invented, 437 of 440), printing `M T TAT TM E` in the pause after `W1AW <AS>` on piece 2; both off (HM-DEC-279); as shipped |
+| 576 | 2026-10-20 | 318 of 353 | 20 | 1 | **297** | 0 | 86 of 110, 3 added |
+
+| unit | date | score | right | wrong | invented | spaces |
+|---|---|---|---|---|---|---|
+| 576 | 2026-10-20 | **2111** | 2131 of 2151 | 20 | 0 | 438 of 440, 11 added |
+
+The hard limits on the twelve-plus-three as shipped:
+- loud noise at its four seeds prints nothing;
+- nothing prints in a silence;
+- the first recording reads `FER C HAT<BT> BEST 7V 73 <SK> KC4ZGP DEWA`;
+- the random carrier prints at one seed of twenty, 5195.
 
 ## 4. What's blocking us
 
-- **Task 1 failed: the midpoint split added 17 spaces and broke the first recording.** It is off.
-  - A hand's letter gaps and word gaps overlap in length: your first recording's letter gaps reach 430 ms, where `221745`'s word gaps start at 305.
-  - So no line drawn from the sender's own dit alone parts every hand. What else could part them is a question for a ruling.
-- **Task 2 failed on W1AW: the held lane read noise in a pause.** It is off.
-  - The hold ends only when the lane's sequence stops standing, and noise marks keep a sequence standing for a while.
-  - Ending it sooner needs a rule of its own, for a ruling.
-- **Choices taken:**
-  - **The seventeen** are the rows of `TheSpacesByCauseTests.TheGapsAgainstTheLines`, the gaps under or over the line, as the order describes them.
-  - **The twenty W1AW rows** are every twenty-second word gap W1AW reads on its medium-or-better stretches, 438 in all.
-  - **The engine line ran a second time with a 1500 s limit,** because its stop was our own timeout (exit 124), not a crash or a memory stop.
-  - **The app line ran a second time alone with `--no-build`,** after the first run timed out behind eight leftover dotnet processes.
-  - **The scoreboards' thread switches now carry the rules a test chose.** Without that, a rule a test chose on was measured only in part.
-- **The survey's first run was stopped by Claude Code for low memory** while it ran in the background beside ten leftover dotnet processes. Those were ended and it was run once more alone, under HM-DEC-276, and passed.
-- **The line scripts' 480 s limit is too short for the engine line,** which needs about nine minutes. The scripts sit under `.run-unit\` and are not committed.
+- **The end of the hold did not end a hold inside the pause, and the pause is clean for another reason.**
+  - Noise marks long enough to count kept coming every 0.1 to 0.8 s, so a lane holding noise never goes three word gaps without one.
+  - What kept piece 2 clean: the 800 Hz lane was let go during `<AS>` and had to wait again. The 725 Hz lane held through the pause handed on noise that the gate happened not to print.
+  - A held lane that is reading only noise is still not let go by anything the rule measures. Telling noise marks from a station's needs a rule of its own.
+- **Choices taken, named under HM-DEC-276:**
+  - **Kinded means half the sender's dit or longer.** The order's examples of marks the gate does not kind are a splinter and a piece under half a dit. The lane already drops marks under half its own dit.
+  - **Whose word gap:** the printed sender's, where he is printed within 50 Hz of the lane. Otherwise, seven of the lane's own dit, since the lane's own sequence keeps only ten marks and has no word gaps.
+  - **Three word gaps** was the order's starting figure and the only one measured. The table supports it because it keeps W1AW. It cannot support a figure that ends a hold inside the pause, as the first item says.
+  - **After a hold ends in a pause,** every dit's lane within 50 Hz of the pitch waits its 3 s again, so the same station is not handed straight back on through another dit.
+- **`cw-2026-09-23-173723` now prints a run of `E`s** (`WEEEE E EEEEEI E EE HEEII`), 0.0 to 0.7 strays per 10 s. It is under the bar and not a condition.
 
 ### Asks still outstanding
 
+- **Unit 575, 2026-10-19:** what could part a hand's letter gaps from his word gaps, since they overlap in length and no line drawn from his dit alone parts every hand. Waiting on the owner. `CwRules.StraddleSplit` sits in the tree, off.
 - **Unit 562, 2026-10-08:** what next for the junk before a weak call, given the 0.4 start costs the start of every real call. Waiting on the owner. No change for it sits in the tree.
 - **Unit 520, 2026-10-01:** how a mark finds its own tone beside a louder one. Partly answered by unit 524 and by the shadow rule. Still open before a sender stands, and for a sender 50 Hz or nearer.
 - **Unit 440's item 1:** MET-COVERAGE counts wrong sure characters. Raised 2026-09-25 and waiting on the owner. No change for it sits in the tree.

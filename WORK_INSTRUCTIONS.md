@@ -1,19 +1,27 @@
-# Work instruction 575 - The split between a sender's letter gaps and word gaps; and a held lane keeps reading
+# Work instruction 576 - A held lane keeps reading, and the hold ends in a pause
 
-**Hand run. Two tasks, commit per task, each with its own measure and its own ship.** Both faults
-were named by the tree's own measurements; **this unit authorizes building the one rule each
-measurement names.** No candidate list is given. The trace decides, the ship bar guards.
+**Hand run. One rule, one commit, one measure, plus the record.** It finishes the rule unit 575
+built and left off: `CwRules.HeldLaneReads`, the lane that holds a handed-on station goes on
+reading while its contrast dips under `CwLaneBank.MinContrastDb`.
 
-**Standing rules** (HM-DEC-276): one rule per task, no side variants; do not stop to ask - take
-the choice that keeps both boards and name it in section 4; a run stopped for memory is run once
-more alone, then reported as not measured.
+**What that rule did, measured:** the four 5 dB CQs read **71 of 84** (14, 17, 20, 20 of 21)
+from 62; noise printed nothing; the carrier stayed at one seed; the twelve-plus-three held at
+297. **It failed on one thing:** on W1AW piece 2 the held lane went on reading through the pause
+after `W1AW <AS>` and printed `M T TAT TM E` - eight letters invented, 2111 to 2101. The hold had
+no end but the sequence ceasing to stand, and noise keeps a sequence standing for a while.
+
+**This unit gives the hold an end.** Nothing else moves.
+
+**Standing rules** (HM-DEC-276): one rule; do not stop to ask - take the choice that keeps both
+boards and name it in section 4; a run stopped for memory is run once more alone, then reported
+as not measured. **The engine line needs 1500 s**, not 480; set the line scripts so.
 
 Earlier unit numbers are not cited: each part of the tree is described by what it does.
 
 **Nothing keys or transmits. Nothing is written to the radio. No recording is added, removed or
 promoted.**
 
-**Numbering.** This is unit 575, ruling HM-DEC-279. If taken, use the next free and say so.
+**Numbering.** This is unit 576, ruling HM-DEC-280. If taken, use the next free and say so.
 
 ---
 
@@ -44,99 +52,79 @@ If all five hold, say "Hamlet confirmed" and continue.
 
 - Take `SESSION.lock` through `tools\arbiter\lock.bat take`, release it at the end. Write nothing
   to `RUN_LEDGER.md`. Touch nothing under `tools\arbiter\`. Tick nothing in `PHASE_PLAN.md`.
-- One `dotnet test` invocation per line, filtered, with a `timeout`. The survey line gets 1800 s.
+- One `dotnet test` invocation per line, filtered, with a `timeout`: app 600 s, engine 1500 s,
+  survey 1800 s. `dotnet build-server shutdown` and end leftover `dotnet` processes before the
+  lines; `--no-build` on the lines after one build.
 - Apostrophes in quoted heredocs break; `;` is refused; Python cannot run here; `-m` more than
-  once for a multi-line commit. Scripts go in `.run-unit\unit575-<name>.sh`, not committed.
+  once for a multi-line commit. Scripts go in `.run-unit\unit576-<name>.sh`, not committed.
 - **The one layout holds**: nothing on screen moves.
 - `output.md` at the root, four headings exactly: `## 1. What Claude did`, `## 2. What the owner
   should expect`, `## 3. What you should see`, `## 4. What's blocking us`. Status on the tree's
   own triggers; the phase count as `PHASE_STATUS.md` holds it; the asks list carried forward.
-- **The engine line's test host has crashed after its last tests three units running.** Before
-  the lines, run the engine line once by itself with every other `dotnet` process ended
-  (`dotnet build-server shutdown` first). If it still crashes, name the last test that ran and
-  the exit code, report the line as not measured whole, and go on.
 
 ---
 
-## 2. Task 1 - the split
+## 2. The rule
 
-**The fault, as the tree measured it** (`TheSpacesByCauseTests.TheGapsAgainstTheLines`, unit
-565): on hand senders the gate sorts a sender's word gaps into his letter cluster
-(`CwPatternGate.LetterAndWordGaps`, `Split`), so the letter cluster's top *is* the missed word
-gap (`221745` 405, `221805` 400) and no line between the clusters can find it. Seventeen gaps
-are in that table: fourteen word gaps missed, three letter gaps spaced. On the SKCC frequency the
-owner reads `QTHWVWVNAMEIS JOEL` for `QTH WV WV NAME IS JOEL`.
+**First, the pause on piece 2, traced** (one table): from the last real mark before `W1AW <AS>`
+to the first real mark after, every mark the held lane called - its start, length, level against
+the lane's lines, and the lane's contrast at that moment - beside the sender's own figures at that
+moment: his dit, his letter gap, his word gap (the gate's clusters), and the longest gap he had
+left in the piece before that. This shows how long the real pause was, how soon the first noise
+mark came, and how the invented letters were made.
 
-**The yardstick:** the twelve-plus-three's spaces, **86 of 110 with 3 added** at HEAD; the
-seventeen gaps by name; W1AW's 438 of 440 with 11 added.
+**Then the end of the hold**, as one named rule on the held lane: **the hold ends when the lane
+has called no mark that the gate kinded for longer than `HeldLanePauseGaps` of the sender's own
+word gap** - start at three word gaps, the smallest whole number the table supports, and say what
+the table supported. When the hold ends, the lane is an ordinary lane again: the floor governs,
+its sequence has to stand on its own, and it is handed on again only through the handover's rules
+(the wait, the grid first, the carrier and shadow checks). A mark the gate did not kind - a
+splinter, a piece under half a dit - does not restart the clock.
 
-1. **Trace the split on the seventeen.** For each gap, at the moment it is judged: the gaps the
-   split had in hand (sorted, in ms), where the split put its boundary and by what rule (the
-   jump it looked for, the minimum it demanded, how many gaps it needed on each side), and which
-   side the gap landed on. One row each. Then the same for twenty word gaps W1AW gets right, so
-   the report shows what a working split looks like beside a failing one.
-2. **Name the rule.** One paragraph: what in the split sorts a hand's word gaps into his letter
-   cluster - a jump demanded that a hand never produces, a boundary set from too few gaps, a
-   cluster that never re-forms once set, or something else the table shows - and **the one
-   change** that would put the fourteen on the word side without moving the three.
-3. **Build it**, as one named rule in the gate, and measure once.
-4. **Ships only if:** the twelve-plus-three's spaces rise above 86 of 110 with added not above
-   3; letters hold at 318 of 353 with wrong and invented not rising; W1AW holds at 2111 with its
-   spaces not worse than 438 of 440 and 11 added; the four 5 dB CQs at half or better; the hard
-   limits (noise prints nothing, the carrier at one seed, the first recording whole, nothing in
-   silences, no old capture above six strays per 10 s). The synthetic SKCC and touching hands
-   are reported, not required. If it fails, say which condition, by how much, which recording;
-   leave it as a rule only a test can choose; keep the trace.
+If the table shows a pause that the word-gap count cannot cover without also covering the noise
+(a sender whose word gaps are long and whose pause was short), say so, take the figure that keeps
+W1AW, and name it in section 4.
 
-## 3. Task 2 - a held lane keeps reading
+**Measure once**, with `HeldLaneReads` on and the end of the hold in, and **ship on by default
+only if:**
 
-**The fault, as the tree measured it** (`TheFoundWeakStationTests`, unit 574): on
-`cq-18wpm-5db` every missed mark was present and crossed the level lines, and was lost because
-the lane's running contrast dipped under `CwLaneBank.MinContrastDb` (12 dB) while the lane held
-a printing station, so the lane stopped reading mid-station. The 12 dB floor exists so noise
-never stands a lane; it was never meant to drop a station already standing.
+- the four 5 dB CQs read **71 of 84 or better** and none under half;
+- **W1AW 2111 with 0 invented**, 438 of 440 spaces, 11 added, not worse;
+- the twelve-plus-three **297** with wrong and invented not rising;
+- noise prints nothing (`noisy-18wpm`, the noise seeds, the silences); the carrier at one seed;
+  the first recording whole; nothing in silences; no old capture above six strays per 10 s; the
+  summed strays reported;
+- the silence after a weak station: a synthetic 5 dB CQ followed by 20 s of the same noise
+  prints nothing in the 20 s (`TheWeakEndTests`, a new case, reported with its figure).
 
-**The yardstick:** the four 5 dB CQs, **13, 14, 16, 19 of 21** at HEAD; the ceiling is 21 of 21.
-
-1. **Build the one rule the trace named:** a lane holding a station that has been handed on is
-   not dropped by its own contrast floor; the floor governs standing, not holding. Say what does
-   end such a lane's hold (the gate's own release at shape under 0.1, the grid taking the station
-   back, a shadow judgement), so nothing holds forever on silence. Name the constant if one is
-   needed; measure once.
-2. **Ships only if:** the four CQs' total rises from 62 of 84 and none falls under half; noise
-   prints nothing (`noisy-18wpm`, the noise seeds, the silences - this is the one this rule could
-   break, so say the figures); the carrier at one seed; both boards hold; no old capture above
-   six strays per 10 s; the summed strays figure reported. If it fails, say which condition and
-   leave it as a rule only a test can choose.
+If it ships: `HeldLaneReads` defaults on, with the end of the hold; the weak-end guard moves to
+the new figures; both scoreboard guards at the figures that ship, which ship on the board as the
+author's. If it fails, say which condition, by how much, which recording; leave both off.
 
 ---
 
-## 4. The lines, the survey, the record
+## 3. The lines, the survey, the record
 
-Run the app line, the engine line (per §1), and the survey line once; rewrite
-`docs\cw-survey-2026-10-09.md` with a new `Rerun` line; per group before and after in the report.
+Run the app line, the engine line and the survey line once; rewrite `docs\cw-survey-2026-10-09.md`
+with a new `Rerun` line; per group before and after in the report.
 
-- `PHASE_OUTCOME.md`, both copies: `## UNIT 575 - STEP 12`, one paragraph.
-- `PHASE_STATUS.md`, both copies: names 575.
+- `PHASE_OUTCOME.md`, both copies: `## UNIT 576 - STEP 12`, one paragraph.
+- `PHASE_STATUS.md`, both copies: names 576.
 - Patch-bump `Directory.Build.props`.
 - `CLAUDE.md` §1 index row.
-- `DECISIONS.md`, newest first, **HM-DEC-279**, headline *The split, and a held lane keeps
-  reading*, naming each rule as built, what the trace showed, whether each shipped, and the
-  figures before and after. Record the process change: *a unit names the fault and the
-  yardstick; the measurement names the rule; the unit authorizes building the one rule the
-  measurement names.*
-- `docs\cw-scoreboard.md`: a 575 row in each table at the figures that shipped.
-- `CW_SPEC.md` §2: one sentence per rule that shipped.
-- **Touch no checkbox in `PHASE_PLAN.md`**, and add no ruling beyond HM-DEC-279.
+- `DECISIONS.md`, newest first, **HM-DEC-280**, headline *A held lane keeps reading, and the hold
+  ends in a pause*, naming the rule, `HeldLanePauseGaps`, what the trace showed on piece 2,
+  whether it shipped, and the figures before and after.
+- `docs\cw-scoreboard.md`: a 576 row in each table at the figures that shipped.
+- `CW_SPEC.md` §2: one sentence if it shipped.
+- **Touch no checkbox in `PHASE_PLAN.md`**, and add no ruling beyond HM-DEC-280.
 
 ---
 
-## 5. Report
+## 4. Report
 
-Section 2, for the owner, in plain words, leading with **whether word spaces are found on hand
-senders now and whether weak stations print whole, and what each cost** - spaces before and
-after, the SKCC line as it would read now, the four CQs before and after, the boards - then each
-rule in a sentence. Section 1: per task, the trace in brief and the rule as built. **Section 3:
-the seventeen-gap table with the new boundary as a column; the W1AW working-split rows; the CQs
-before and after; the survey's groups; both scoreboards' rows.** Section 4: anything left, a
-line each, and the engine line's crash if it crashed.
+Section 2, for the owner, in plain words, leading with **whether weak stations now print whole
+in the app and what it cost** - the four CQs before and after, W1AW's invented count, the boards
+- then the rule in a sentence and what the pause on piece 2 looked like. Section 1: what was
+built. **Section 3: the piece-2 pause table; the four CQs; the silence-after case; the survey's
+groups; both scoreboards' rows.** Section 4: anything left, a line each.

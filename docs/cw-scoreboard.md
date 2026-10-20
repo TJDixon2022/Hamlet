@@ -379,6 +379,7 @@ guard: the random carrier prints at 1 of 20 seeds (5195), recorded at unit 552
 | 574 | 2026-10-19 | 318 of 353 | 20 | 1 | **297** | 0 | 86 of 110, 3 added | a found weak station prints dits (work instruction 574, HM-DEC-278): traced, and none of the three rules offered was the one the table names, so none was built; the board as shipped, the four 5 dB CQs 13, 14, 16 and 19 of 21 |
 | 565 | 2026-10-19 | 318 of 353 | 20 | 1 | **297** | 0 | 86 of 110, 3 added | the word line between the sender's two gap clusters (work instruction 565, HM-DEC-269): measured on, spaces fell to 73 of 110 with 2 added and letters held at 297, the missed word gaps already inside the letter cluster; it ships off and this row is the board as shipped, as at HEAD |
 | 575 | 2026-10-19 | 318 of 353 | 20 | 1 | **297** | 0 | 86 of 110, 3 added | the split and a held lane (work instruction 575, HM-DEC-279): a letter cluster across √21 gap dits split there read 316 of 353 and 91 of 110 spaces with 20 added and broke the first recording; a held lane reading under its floor read 297 and 86 of 110 here; both ship off and this row is the board as shipped, as at HEAD |
+| 576 | 2026-10-20 | 318 of 353 | 20 | 1 | **297** | 0 | 86 of 110, 3 added | a held lane keeps reading, and the hold ends in a pause (work instruction 576, HM-DEC-280): a lane holding a weak station reads under its 12 dB floor and is let go once it has handed on no mark of half its sender's dit or longer for three of his word gaps; ships on, the board unchanged |
 
 ## Scans (work instruction 544, HM-DEC-248)
 
@@ -455,6 +456,7 @@ high and 25 medium, 2151 letters, all totalled.
 | 574 | 2026-10-19 | **2111** | 2131 of 2151 | 20 | 0 | 438 of 440, 11 added | traced, no rule shipped (HM-DEC-278); as shipped |
 | 565 | 2026-10-19 | **2111** | 2131 of 2151 | 20 | 0 | 438 of 440, 11 added | the word line between the clusters read 2111 here too, on; it ships off (HM-DEC-269); as shipped |
 | 575 | 2026-10-19 | **2111** | 2131 of 2151 | 20 | 0 | 438 of 440, 11 added | the split at the word midpoint read 2111 here, unchanged; a held lane reading under its floor read 2101 (2129 of 2151, 20 wrong, 8 invented, 437 of 440), printing `M T TAT TM E` in the pause after `W1AW <AS>` on piece 2; both off (HM-DEC-279); as shipped |
+| 576 | 2026-10-20 | **2111** | 2131 of 2151 | 20 | 0 | 438 of 440, 11 added | a held lane keeps reading, and the hold ends in a pause (HM-DEC-280): on piece 2 the 800 Hz lane is let go during `W1AW <AS>`, before the pause, and the pause prints nothing; ships on, unchanged |
 
 **A trace recording, not scored** (work instruction 574, HM-DEC-278): `cw-2026-10-19-141708`, Ken's QSO with KB2UZK on 7.0519 MHz, placed by the owner's order of 2026-10-19 (*"put it in"*), is on neither table. Nobody wrote down what Ken sent, so it has no truth; the survey reads it with the old captures.
 

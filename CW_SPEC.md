@@ -78,6 +78,7 @@ Confirmed by Tim 2026-09-25.
   - **Both finders are judged, to 25 Hz,** where `CwShadow.JudgesTheGrid` is on. The reach is `CwShadow.ShadowReachHz`, one lane's spacing, and a grid sequence is judged by the same `IsShadowOf` before its marks reach the sender gate, against the grid's other standing sequences and candidates and the bank's standing lanes. A shadow is never picked, and a held one is let go by the gate's own release. Inside 50 Hz the stronger station must also be louder by level, since a station's own skirt shows as much contrast as the station.
   - **Off, as shipped,** and the reach with it: the lanes are judged to 50 Hz as before. Judged, W1AW read 2079 against 2111, and beside a lockstep shadow the synthetic station lost its opening on and off alike.
   - **The record:** the `bank` line on the capture sheets and the `shadows` field of each `cw_listen` row name every shadow held in the last minute, its pitch, share and the station it shadows, on or off.
+- **A held lane keeps reading, and the hold ends in a pause, 2026-10-20 (work instruction 576, HM-DEC-280):** the lane holding a handed-on station reads on under its 12 dB floor, and is let go once it has handed on no mark of half its sender's dit or longer for more than three of his word gaps (`HeldLanePauseGaps`), after which it waits its `LaneLeadSeconds` again like any lane.
 
 ## 3. Four layers, kept apart
 
