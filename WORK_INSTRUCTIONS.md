@@ -1,19 +1,25 @@
-# Work instruction 578 - The grid steps aside for a lane that reads a station whole
+# Work instruction 579 - The hold's clock waits for the station to print, and the lane that fits the station is the one handed on
 
-**Hand run. One fault, one yardstick, one rule, one commit, plus the record.**
+**Hand run. One handover, two corrections to it, one commit, plus the record.** Both corrections
+were named by the tree's own measure (`TheGridStepsAsideTests`, unit 578):
 
-**The fault, as the tree traced it** (`KensOverTraced`, unit 577): Ken, the far side of the QSO
-on `cw-2026-10-19-141708` at about 430 Hz, is read whole by the bank's 425 Hz lane at a shape of
-0.70 for his entire over - and never printed, because **the grid chops him into 20 to 30 ms
-pieces, stands a sequence on the pieces at 437 Hz, never qualifies it (shape falls to 0.00), and
-that standing sequence blocks the lane from being handed on** under the handover's rule that the
-grid goes first within 50 Hz. The trace says it in one line: *the only reason the lane is not
-handed on is the grid standing within 50 Hz.* His fist is not the problem: by two means his dah
-is 2.27 times his dit.
+- **The hold ends before the station has printed.** The end of the hold counts three of the
+  sender's word gaps; where no sender is printed within 50 Hz it falls back to seven of the
+  lane's own dit. A lane handed on from the bank has no printed sender yet, and the lane picked
+  is often the 40 ms dit lane on a 12 WPM station, so the clock runs out in 0.84 s - the
+  station's first letter gap - before a letter prints. `coverage-working`: held at 11.72 s, let
+  go at 12.57 s. The fallback is wrong for exactly the case the rule exists for.
+- **The lane picked is the best-shaped, not the one that fits.** On a 12 WPM station the 40 ms
+  lane often scores highest and is handed on; its marks and gaps are then judged at the wrong
+  dit.
 
-**The same thing on the receiver fixtures:** on at least two of the five *working* fixtures (5 dB
-with 12 dB of QSB) the grid stands and the staged handover leaves the station to it, and the
-group reads **5 of 81**. Those five have a truth. **They are the yardstick; Ken is the specimen.**
+The grid stepping aside (`CwRules.GridStepsAside`, built last unit, off, harmless on every
+board) is measured **on** with these two, since it is the rule they were found under.
+
+**The yardstick:** the five working receiver fixtures (5 dB, 12 dB of QSB at 0.7 Hz), **4 of
+81** as shipped, with a truth. **The specimen:** Ken, both overs, on `cw-2026-10-19-141708`.
+The fade on the fixtures is a separate limit; the trace is to show how much of the shortfall is
+the hold and the lane, and how much is the fade.
 
 **Standing rules** (HM-DEC-276): one rule; do not stop to ask - take the choice that keeps both
 boards and name it in section 4; a run stopped for memory is run once more alone, then reported
@@ -25,7 +31,7 @@ Earlier unit numbers are not cited: each part of the tree is described by what i
 **Nothing keys or transmits. Nothing is written to the radio. No recording is added, removed or
 promoted.**
 
-**Numbering.** This is unit 578, ruling HM-DEC-282. If taken, use the next free and say so.
+**Numbering.** This is unit 579, ruling HM-DEC-283. If taken, use the next free and say so.
 
 ---
 
@@ -58,7 +64,7 @@ If all five hold, say "Hamlet confirmed" and continue.
   to `RUN_LEDGER.md`. Touch nothing under `tools\arbiter\`. Tick nothing in `PHASE_PLAN.md`.
 - One `dotnet test` invocation per line, filtered, with a `timeout`.
 - Apostrophes in quoted heredocs break; `;` is refused; Python cannot run here; `-m` more than
-  once for a multi-line commit. Scripts go in `.run-unit\unit578-<name>.sh`, not committed.
+  once for a multi-line commit. Scripts go in `.run-unit\unit579-<name>.sh`, not committed.
 - **The one layout holds**: nothing on screen moves.
 - `output.md` at the root, four headings exactly: `## 1. What Claude did`, `## 2. What the owner
   should expect`, `## 3. What you should see`, `## 4. What's blocking us`. Status on the tree's
@@ -66,42 +72,35 @@ If all five hold, say "Hamlet confirmed" and continue.
 
 ---
 
-## 2. The trace, first
+## 2. The two corrections
 
-**The five working fixtures and Ken's reply (272 to 300 s), one row per second** where a lane
-within 50 Hz of the true pitch stands at shape 0.4 or better: the lane's pitch, dit and shape;
-what the grid holds within 50 Hz (standing sequence, candidate, window: its pitch, its marks'
-median length against the lane's dit, its shape, whether it has ever qualified and how long it
-has stood without qualifying); and whether the lane is handed on. Then, per file, the seconds in
-which a lane read the station whole and the grid blocked it, as a share of the station's keying.
+1. **The hold's clock waits for the station.** Until the handed-on station has printed its first
+   letter, the end of the hold does not run: only the floor's own rules on standing, the grid
+   taking the station back, and the carrier and shadow checks can end the hold. Once it has
+   printed, the clock is the printed sender's word gap from the gate's clusters, three of them,
+   as before. **The fallback to seven of the lane's own dit is removed.** If a lane handed on
+   never prints within a bound, name the bound (`HeldLanePrintsWithinSeconds`, from the table -
+   the longest a 5 dB CQ or a working fixture took to print its first letter, with margin) and
+   let the hold go there, so a lane on noise does not hold forever; the trace shows the figure.
+2. **The lane that fits is handed on.** Where more than one lane at a pitch stands at shape 0.4
+   or better, the handover picks **the lane whose dit is nearest the dit the sequence's two
+   kinds give**, not the best-shaped; where the kinds are not yet two, the best-shaped as now,
+   and the pick is revisited when they become two. Say in one line how the lane's dit and the
+   sequence's dit are compared (ratio in log).
 
-**The paragraph:** what a grid sequence that blocks a whole-reading lane looks like against one
-that is reading the station itself (W1AW, KB2UZK: marks the length of dits and dahs, qualified
-within seconds) - the figure that parts them, from the table.
+**The trace, first, per file** (the five working fixtures, Ken's overs): for each lane handed
+on, its dit against the station's, when it was held, when it printed its first letter, when it
+was let go and by what - as shipped and with the two corrections. One row per hold.
 
-## 3. The one rule
+Build both as one named change to the handover, measure once with `GridStepsAside` chosen on.
 
-**The grid steps aside** (`CwRules.GridStepsAside` or the tree's naming): a bank lane standing on
-a station at shape 0.4 or better is handed on **even where the grid stands within 50 Hz**, when
-the grid's sequence there **has not qualified for `GridStandsOnPiecesSeconds`** (start at the
-handover's own 3 s; the table says) **and its marks are pieces** - median length under a third
-of the lane's dit, or whatever figure the table shows parts pieces from marks. Once the lane is
-handed on, the grid's pieces at that pitch are not offered while the lane holds, as the handover
-already does. **The grid still takes the station back** the moment its own sequence qualifies
-there. Nothing else in the handover moves: the wait, the carrier check, the shadow rule, the end
-of the hold.
+## 3. The measure, and the ship
 
-Build it, measure once.
+**Ships on by default - the two corrections and `GridStepsAside` together - only if:**
 
-## 4. The measure, and the ship
-
-**Ships on by default only if:**
-
-- **the five working fixtures rise from 5 of 81**, with at least two of the five at half their
-  letters or better (`coverage-working` 23, `exchange-working` 19, `fast-working` 19,
-  `prosigns-working` 9, `tightfist-working` 11);
-- **Ken's reply** prints at least three words of three or more letters at his pitch that are not
-  there as shipped (reported; he has no truth), and his first over (80 to 100 s) is reported;
+- **the working fixtures rise from 4 of 81**, with at least two of the five at half their
+  letters or better;
+- **Ken's reply** prints at least three words of three or more letters at his pitch (reported);
 - **both boards hold:** 297 and 2111, wrong and invented not rising, spaces not worse;
 - **the weak-end guard holds:** the four 5 dB CQs at 71 of 84 or better; nothing in the 20 s of
   noise after them;
@@ -109,38 +108,40 @@ Build it, measure once.
   nothing in silences, no old capture above six strays per 10 s; the summed strays reported;
 - the easy fixtures not worse than 78 of 90; `two-station` reported.
 
-If it fails, say which condition, by how much, which file; leave it as a rule only a test can
-choose; keep the trace.
+**If the working fixtures rise but fewer than two reach half**, and the trace shows the rest is
+the fade (the lane's 3 s key-up and key-down not following 12 dB of QSB at 0.7 Hz), ship on
+anyway with that said plainly in section 2 and 4, since the hold and the lane are then right and
+the fade is a separate unit. If a board or a hard limit fails, do not ship; say which.
 
 If it ships: the working fixtures join the weak-end guard at the figures that ship; both
 scoreboard guards at the figures that ship, on the board as the author's; the capture sheet's
-`bank` line says `stepped aside at <pitch> Hz` when it happens, and `cw_listen` carries it.
+`bank` line says `stepped aside at <pitch> Hz` and the lane's dit when a lane is handed on.
 
 ---
 
-## 5. The lines, the survey, the record
+## 4. The lines, the survey, the record
 
 Run the app line, the engine line and the survey line once; rewrite `docs\cw-survey-2026-10-09.md`
 with a new `Rerun` line; per group before and after in the report.
 
-- `PHASE_OUTCOME.md`, both copies: `## UNIT 578 - STEP 12`, one paragraph.
-- `PHASE_STATUS.md`, both copies: names 578.
+- `PHASE_OUTCOME.md`, both copies: `## UNIT 579 - STEP 12`, one paragraph.
+- `PHASE_STATUS.md`, both copies: names 579.
 - Patch-bump `Directory.Build.props`.
 - `CLAUDE.md` §1 index row.
-- `DECISIONS.md`, newest first, **HM-DEC-282**, headline *The grid steps aside for a lane that
-  reads a station whole*, naming the rule, its figures, what the trace showed, whether it
-  shipped, and the figures before and after.
-- `docs\cw-scoreboard.md`: a 578 row in each table at the figures that shipped.
-- `CW_SPEC.md` §2: one sentence if it shipped.
-- **Touch no checkbox in `PHASE_PLAN.md`**, and add no ruling beyond HM-DEC-282.
+- `DECISIONS.md`, newest first, **HM-DEC-283**, headline *The hold's clock waits for the
+  station, and the lane that fits is handed on*, naming the two corrections, the bound, whether
+  they shipped with the grid stepping aside, and the figures before and after.
+- `docs\cw-scoreboard.md`: a 579 row in each table at the figures that shipped.
+- `CW_SPEC.md` §2: the handover paragraph brought up to date if it shipped.
+- **Touch no checkbox in `PHASE_PLAN.md`**, and add no ruling beyond HM-DEC-283.
 
 ---
 
-## 6. Report
+## 5. Report
 
-Section 2, for the owner, in plain words, leading with **whether the far side of a QSO reads now
-and what it cost** - Ken's reply as text before and after, the working fixtures before and after,
-the boards, the CQs - then the rule in a sentence. Section 1: what was built, the figures.
-**Section 3: the trace table in brief (per file, the share of seconds blocked); the working
-fixtures' reads before and after; Ken before and after; the survey's groups; both scoreboards'
-rows.** Section 4: anything left, a line each.
+Section 2, for the owner, in plain words, leading with **whether weak and far-side stations now
+print, and what it cost** - the working fixtures before and after as text, Ken's reply before and
+after, the boards, the CQs - then the two corrections in a sentence each, and how much of what is
+left on the working fixtures is the fade. Section 1: what was built, the bound. **Section 3: the
+holds table per file as shipped and after; the working fixtures' reads; Ken; the survey's
+groups; both scoreboards' rows.** Section 4: anything left, a line each.

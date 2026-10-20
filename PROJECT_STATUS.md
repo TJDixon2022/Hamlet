@@ -2,12 +2,12 @@ PROTOCOL: 2
 PROJECT: Hamlet
 STATE: COMPLETED
 TASK: 4 of 4
-WORK_INSTRUCTION: 578 - the grid steps aside for a lane that reads a station whole (run by hand)
+WORK_INSTRUCTION: 579 - the hold waits for the station, and the lane that fits is handed on (run by hand)
 BALL: tim
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-10-20T12:40:29-04:00
-NOTE: Unit 578 - the grid steps aside, built, measured, left off; working fixtures 6 of 81 chosen, boards 297 and 2111; HM-DEC-282, 1.13.263
+UPDATED: 2026-10-20T13:47:02-04:00
+NOTE: Unit 579 - hold waits and lane fits, built, measured with the grid stepping aside, left off (W1AW 2103); HM-DEC-283, 1.13.264
 
 ---
 
