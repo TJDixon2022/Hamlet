@@ -28,7 +28,7 @@ public sealed class TheGridStepsAsideTests(ITestOutputHelper output)
     internal static string Truth(string name)
         => System.Text.RegularExpressions.Regex.Replace(File.ReadAllLines(Path.ChangeExtension(Fixture(name), ".txt")).First(l => l.StartsWith("text", StringComparison.Ordinal))[4..].Trim(), @"\^([A-Z]{2})", "<$1>");
 
-    /// <summary>The easy receiver fixtures, which must not read worse than 78 of 90.</summary>
+    /// <summary>The easy receiver fixtures, which must not read worse than 77 of 90 (the owner's ruling on HM-DEC-285; 78 before it).</summary>
     internal static readonly string[] Easy = ["coverage-easy", "exchange-easy", "fast-easy", "prosigns-easy", "tightfist-easy"];
 
     private static string Ms(double seconds) => double.IsFinite(seconds) ? (seconds * 1000).ToString("0", Inv) : "-";

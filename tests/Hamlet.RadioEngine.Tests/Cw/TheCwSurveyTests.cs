@@ -196,7 +196,7 @@ public sealed class TheCwSurveyTests(ITestOutputHelper output)
     // A fist of the bank (work instruction 580): generated, read, and scored by the boards' yardstick against what it sent; invented is
     // a letter whose marks lie over none of the fist's own key-downs within 50 Hz of its pitch, and silence a letter inside a stretch of
     // two seconds or more with no key-down, both from the recipe rather than read off the audio.
-    private static Row Fist(Fixtures.CwFist fist)
+    internal static Row Fist(Fixtures.CwFist fist)
     {
         var audio = Fixtures.CwFistBank.Audio(fist);
         var edges = Fixtures.CwFistBank.Edges(fist);
@@ -440,7 +440,7 @@ public sealed class TheCwSurveyTests(ITestOutputHelper output)
         sb.AppendLine();
         sb.AppendLine("Run again with: `timeout 1800 dotnet test tests/Hamlet.RadioEngine.Tests/Hamlet.RadioEngine.Tests.csproj --filter \"FullyQualifiedName~TheCwSurveyTests.EveryRecordingInTheTree\"` (it writes this file).");
         sb.AppendLine();
-        sb.AppendLine("Rerun: work instruction 581, 2026-10-20, as shipped (HM-DEC-285): two kinds from stable clusters under a jump of two measured on the fist bank and its dit floored at Morse's fastest, left off for the owner's ruling; no reading rule changed as shipped, both boards as before.");
+        sb.AppendLine("Rerun: 2026-10-20, as shipped at the owner's ruling on HM-DEC-285: two kinds from stable clusters under a jump of two, its dit floored at Morse's fastest, on by default; both boards as before.");
         sb.AppendLine();
         sb.AppendLine("**The yardstick.** Score is letters right less wrong less invented, as on the boards. Invented is a letter over no keying on the board's keying map of the same audio; silence is a letter printed inside a silence of two seconds or more on that map. Where a file carries no truth, its read stands beside the earlier read in its sheet or its `.json`, scored by nothing, with the stray-letter figure: lone `E T I A N M` printed as words, per ten seconds.");
         sb.AppendLine();

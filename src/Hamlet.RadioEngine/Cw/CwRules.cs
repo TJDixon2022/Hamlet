@@ -113,7 +113,7 @@ internal static class CwRules
     /// <summary>The held lane's clock waits for its station to print, and the lane whose dit fits the station is the one handed on (work instruction 579); built, measured and left off (HM-DEC-283).</summary>
     public const string HoldWaitsAndFits = "the hold waits for the station, and the lane that fits is handed on";
 
-    /// <summary>A sender whose dah is under twice his dit shows two kinds where two means part his marks into stable clusters (work instruction 577); built, measured and left off (HM-DEC-281), its dit floored at Morse's fastest and measured on the fist bank, left off for the owner's ruling (HM-DEC-285).</summary>
+    /// <summary>A sender whose dah is under twice his dit shows two kinds where two means part his marks into stable clusters (work instruction 577); built, measured and left off (HM-DEC-281), its dit floored at Morse's fastest and measured on the fist bank (HM-DEC-285), and on since the owner's ruling of 2026-10-20.</summary>
     public const string ShortDah = "two kinds from stable clusters under a jump of two";
 
     /// <summary>Every rule kept, in the order the work instruction names them.</summary>
@@ -127,7 +127,7 @@ internal static class CwRules
     [
         LoneLetter, ColdStartWordLine, SpeedRetry, Settle, OwnWindow, Release, FirstPickWait, Backlog, SilentNotCandidate, Edges,
         MarkShape, KindsHeld, GapKinds, OverlapSplit, GapCrossing, CrowdsNarrowed, Narrowness, ThreeLone, NeighbourGaps, KeptSplit,
-        SpacingNow, SureFirst, HeldLaneReads, HeldLanePause,
+        SpacingNow, SureFirst, HeldLaneReads, HeldLanePause, ShortDah,
     ];
 
     [ThreadStatic]
@@ -137,7 +137,7 @@ internal static class CwRules
     /// The rules that ship off, built and measured and not taken: off unless a test chooses one on this thread with
     /// <see cref="Choose"/> (work instruction 565).
     /// </summary>
-    public static readonly IReadOnlySet<string> OffByDefault = new HashSet<string>(StringComparer.Ordinal) { BetweenClusters, StraddleSplit, ShortDah, GridStepsAside, HoldWaitsAndFits };
+    public static readonly IReadOnlySet<string> OffByDefault = new HashSet<string>(StringComparer.Ordinal) { BetweenClusters, StraddleSplit, GridStepsAside, HoldWaitsAndFits };
 
     [ThreadStatic]
     private static HashSet<string>? _chosen;

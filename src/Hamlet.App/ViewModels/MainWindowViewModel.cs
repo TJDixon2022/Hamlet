@@ -12206,7 +12206,7 @@ public partial class MainWindowViewModel : ObservableObject
             tonePeak,
 
             $"speed      {SpeedForTheRecord(shape)}",
-            $"clusters   {_decoder?.GapClustersLine ?? "nobody printed"}  (the printed sender's letter and word gap clusters and its word line, work instruction 565)",
+            $"clusters   {_decoder?.GapClustersLine ?? "nobody printed"}  (the printed sender's letter and word gap clusters and its word line, work instruction 565, and the dah over dit the gate measured, HM-DEC-285)",
 
             // **THE FIGURES FOR THIS RECORDING**, from the shape side's own times: what ended in the last so many
             // seconds of its clock, which runs on the same audio this file holds.

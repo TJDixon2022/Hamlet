@@ -37,7 +37,7 @@ public sealed class TheShortDahCostsTests(ITestOutputHelper output)
     /// <summary>Reads audio through the app's chain, catching every judgement and every letter.</summary>
     internal static (List<Letter> Letters, List<Judged> Judged, string Text) Read(float[] samples, int rate, double pitchHz, double widthHz, bool rule)
     {
-        using var chosen = rule ? CwRules.Choose(CwRules.ShortDah) : null;
+        using var off = rule ? null : CwRules.Off(CwRules.ShortDah);
         using var chain = new CwChain(rate);
         var gate = chain.Decoder.Runs;
         var letters = new List<Letter>();

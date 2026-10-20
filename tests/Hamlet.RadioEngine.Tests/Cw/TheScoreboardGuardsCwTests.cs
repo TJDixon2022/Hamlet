@@ -15,7 +15,7 @@ namespace Hamlet.RadioEngine.Tests.Cw;
 /// the random carrier printing at one seed and one letter in a silence, so this asserts no regression against the last row
 /// recorded in <c>docs\cw-scoreboard.md</c>: the score not below it, spaces right not below it and spaces added not above it,
 /// letters in a silence no more; the random carrier at no more seeds than the recorded figure under that file's guard heading;
-/// the first recording whole; loud noise silent.</para>
+/// the first recording whole; loud noise and a steady carrier silent (the steady carrier since the owner's ruling on HM-DEC-285).</para>
 /// <para>A unit that raises the board appends its row, and the guard holds it there from then on.</para>
 /// </remarks>
 public sealed partial class TheScoreboardGuardsCwTests(ITestOutputHelper output)
@@ -59,7 +59,7 @@ public sealed partial class TheScoreboardGuardsCwTests(ITestOutputHelper output)
         var recorded = LastRecorded(File.ReadAllText(Board()));
         var board = TheRecordingsScoreboardTests.Score();
         var carriers = board.Noise.Count(n => n.What.StartsWith("a carrier", StringComparison.Ordinal) && n.Reads.Length > 0);
-        var loud = board.Noise.Where(n => n.What.Contains("loud noise", StringComparison.Ordinal)).ToList();
+        var loud = board.Noise.Where(n => !n.What.StartsWith("a carrier", StringComparison.Ordinal)).ToList();
 
         output.WriteLine($"recorded, {recorded.Unit}: score {recorded.Score}, spaces {recorded.SpacesRight} right and {recorded.SpacesAdded} added, {recorded.SilencePrints} in a silence, the carrier at {recorded.CarrierSeeds} seeds");
         output.WriteLine($"now: score {board.Score}, spaces {board.SpacesRight} right and {board.SpacesAdded} added, {board.SilencePrints.Count} in a silence, the carrier at {carriers} seeds; the first recording reads `{board.FirstReads}`");

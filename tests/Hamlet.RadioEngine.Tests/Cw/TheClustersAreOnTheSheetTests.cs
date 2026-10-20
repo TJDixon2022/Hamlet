@@ -10,7 +10,7 @@ namespace Hamlet.RadioEngine.Tests.Cw;
 /// </summary>
 public sealed class TheClustersAreOnTheSheetTests
 {
-    /// <remarks>Both clusters, the letter cluster alone, and nobody printed.</remarks>
+    /// <remarks>Both clusters, the letter cluster alone, and nobody printed; and the dah over the dit the gate measured where it parted two kinds (the owner's ruling on HM-DEC-285).</remarks>
     [Fact]
     public void TheLineSaysEachCluster()
     {
@@ -19,6 +19,7 @@ public sealed class TheClustersAreOnTheSheetTests
 
         Assert.Equal("letter centre 188, top 220 (4 gaps); word centre 415, bottom 295 (3 gaps); line 254 ms", CwSenderGate.ClustersOf(both));
         Assert.Equal("letter centre 188, top 220 (4 gaps); no word cluster; line 460 ms", CwSenderGate.ClustersOf(letter));
+        Assert.Equal("letter centre 188, top 220 (4 gaps); word centre 415, bottom 295 (3 gaps); line 254 ms; dah over dit 2.70", CwSenderGate.ClustersOf(both, 2.7));
         Assert.Equal("nobody printed", CwSenderGate.ClustersOf(null));
         Assert.Equal("nobody printed", new CwSenderGate().ClustersLine);
     }

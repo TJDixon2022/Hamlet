@@ -172,7 +172,7 @@ public sealed partial class MainWindowViewModel
             $"band       {CapturedBand()}",
             $"pitch      {PitchForTheRecord(shape)}",
             $"speed      {SpeedForTheRecord(shape)}",
-            $"clusters   {_decoder?.GapClustersLine ?? "nobody printed"}  (the printed sender's letter and word gap clusters and its word line, work instruction 565)",
+            $"clusters   {_decoder?.GapClustersLine ?? "nobody printed"}  (the printed sender's letter and word gap clusters and its word line, work instruction 565, and the dah over dit the gate measured, HM-DEC-285)",
             $"senders    {SendersForTheRecord(shape)}",
             $"at start   {_sendersAtCaptureStart}",
             $"version    {AboutViewModel.AppVersion}",

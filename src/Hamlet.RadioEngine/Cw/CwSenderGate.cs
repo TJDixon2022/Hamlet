@@ -293,7 +293,7 @@ public sealed class CwSenderGate
             }
 
             _letterTimes.Add(run[^1].ToSeconds);
-            Volatile.Write(ref _clustersLine, ClustersOf(StationLines));
+            Volatile.Write(ref _clustersLine, ClustersOf(StationLines, _station?.DahOverDit ?? double.NaN));
         };
     }
 
@@ -317,8 +317,10 @@ public sealed class CwSenderGate
     /// </summary>
     public string ClustersLine => Volatile.Read(ref _clustersLine);
 
-    /// <summary>One sender's gap clusters and word line in one line.</summary>
-    internal static string ClustersOf(CwGapLines? lines)
+    /// <summary>One sender's gap clusters and word line in one line, and the dah over the dit the gate measured where it parted two kinds (the owner's ruling on HM-DEC-285).</summary>
+    /// <param name="lines">The sender's gap lines, or null where nobody printed.</param>
+    /// <param name="dahOverDit">The sender's dah over dit as the gate parted its marks, or NaN where it parted none.</param>
+    internal static string ClustersOf(CwGapLines? lines, double dahOverDit = double.NaN)
     {
         if (lines?.LetterGaps is not { } letter)
         {
@@ -329,7 +331,7 @@ public sealed class CwSenderGate
             ? string.Create(System.Globalization.CultureInfo.InvariantCulture, $"word centre {w.Average() * 1000:0}, bottom {CwPatternGate.Percentile(w, CwPatternGate.WordBottomShare) * 1000:0} ({w.Count} gaps)")
             : "no word cluster";
 
-        return string.Create(System.Globalization.CultureInfo.InvariantCulture, $"letter centre {letter.Average() * 1000:0}, top {CwPatternGate.Percentile(letter, CwPatternGate.LetterTopShare) * 1000:0} ({letter.Count} gaps); {word}; line {lines.WordSeconds * 1000:0} ms");
+        return string.Create(System.Globalization.CultureInfo.InvariantCulture, $"letter centre {letter.Average() * 1000:0}, top {CwPatternGate.Percentile(letter, CwPatternGate.LetterTopShare) * 1000:0} ({letter.Count} gaps); {word}; line {lines.WordSeconds * 1000:0} ms{(double.IsFinite(dahOverDit) ? $"; dah over dit {dahOverDit:0.00}" : string.Empty)}");
     }
     // Written by Publish on the audio thread, read by ShapeReading on any.
     private CwShapeSideReading _shapeReading = CwShapeSideReading.Nothing;
@@ -1329,6 +1331,26 @@ public sealed class CwSenderGate
                 var fromGaps = CwPatternGate.DitFromGaps(_elementGaps, RunGaps);
 
                 return double.IsNaN(fromGaps) ? Median(_recent.Select(m => m.ToSeconds - m.FromSeconds).ToList()) : fromGaps;
+            }
+        }
+
+        /// <summary>
+        /// The sender's dah over its dit as the gate parted its marks now, the mean of the long over the mean of the short, or NaN
+        /// where it parts no two kinds (the owner's ruling on HM-DEC-285: the capture sheet's clusters line carries it).
+        /// </summary>
+        public double DahOverDit
+        {
+            get
+            {
+                var now = MarksNow();
+                var marks = now.Select(m => m.ToSeconds - m.FromSeconds).ToList();
+
+                if (KindsOf(now).Split is not { } split || !marks.Any(l => l < split) || !marks.Any(l => l >= split))
+                {
+                    return double.NaN;
+                }
+
+                return marks.Where(l => l >= split).Average() / marks.Where(l => l < split).Average();
             }
         }
 

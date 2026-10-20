@@ -252,9 +252,9 @@ public sealed class TheStraightKeyReadsTests(ITestOutputHelper output)
             space = false;
         };
 
-        using var chosen = rule ? CwRules.Choose(CwRules.ShortDah) : null;
+        using var off = rule ? null : CwRules.Off(CwRules.ShortDah);
 
-        output.WriteLine(string.Create(Inv, $"## Ken, {from:0} to {to:0} s, {(rule ? "with two stable clusters under a jump of two" : "as it ships")}"));
+        output.WriteLine(string.Create(Inv, $"## Ken, {from:0} to {to:0} s, {(rule ? "with two stable clusters under a jump of two" : "with the rule off")}"));
 
         for (var at = 0; at + chunk <= audio.Samples.Length && at < (to + 2) * rate; at += chunk)
         {
@@ -465,6 +465,26 @@ public sealed class TheStraightKeyReadsTests(ITestOutputHelper output)
     }
 
     /// <remarks>
+    /// **EVERY STRAIGHT-KEY HAND READS 48 OF 60** (the owner's ruling on HM-DEC-285, 2026-10-20): with the short dah on by default
+    /// the 1.7, 2.0 and 2.5 hands at each of the three seeds read 60 of 60 at the ship; each is held at 48.
+    /// </remarks>
+    [Fact]
+    public void EveryHandReadsFortyEight()
+    {
+        var hands = Ratios.SelectMany(ratio => Seeds.Select(seed => (ratio, seed))).ToList();
+        var rows = new Row[hands.Count];
+
+        Parallel.For(0, hands.Count, i => rows[i] = Read(hands[i].ratio, hands[i].seed));
+
+        foreach (var r in rows)
+        {
+            output.WriteLine(string.Create(Inv, $"dah over dit {r.Ratio:0.0}, seed {r.Seed}: {r.Right} of {r.Of}, `{r.Reading.Text}`"));
+        }
+
+        Assert.All(rows, r => Assert.True(r.Right >= 48, string.Create(Inv, $"the {r.Ratio:0.0} hand at seed {r.Seed} read {r.Right} of {r.Of}")));
+    }
+
+    /// <remarks>
     /// Work instruction 577, section 2: the ratio table, letters right at each ratio and seed, as it ships and with two stable
     /// clusters under a jump of two (<see cref="CwRules.ShortDah"/>, built and left off, HM-DEC-281). As it ships the 1.7 and 2.0
     /// hands read 0 of 60 at every seed and the 2.5 hand 60; with the rule all nine read 60 of 60. Asserts nothing.
@@ -475,11 +495,11 @@ public sealed class TheStraightKeyReadsTests(ITestOutputHelper output)
     [InlineData(true)]
     public void TheRatioTable(bool rule)
     {
-        output.WriteLine(rule ? "with two stable clusters under a jump of two" : "as it ships");
+        output.WriteLine(rule ? "with two stable clusters under a jump of two, as it ships since the owner's ruling on HM-DEC-285" : "with the rule off");
         output.WriteLine("| dah/dit | seed | right of sent | candidates, stood, printed | widest jump | centres | shape | reads |");
         output.WriteLine("|---|---|---|---|---|---|---|---|");
 
-        using var chosen = rule ? CwRules.Choose(CwRules.ShortDah) : null;
+        using var off = rule ? null : CwRules.Off(CwRules.ShortDah);
         var state = CwRules.Current;
         var hands = Ratios.SelectMany(ratio => Seeds.Select(seed => (ratio, seed))).ToList();
         var rows = new Row[hands.Count];

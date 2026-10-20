@@ -505,7 +505,13 @@ public sealed class TheRecordingsScoreboardTests
     /// <summary>What the first recording reads, spaces as printed.</summary>
     internal static string TheFirst() => ReadLive("cw-2026-10-02-200157").Text;
 
-    /// <summary>Loud noise, 30 s and three minutes, at the two seeds the noise tests use; and a carrier keyed at random at five seeds.</summary>
+    /// <summary>
+    /// The seeds of twenty at which the random carrier may print (the owner's ruling on HM-DEC-285, 2026-10-20): two, 5195 and 5207
+    /// as measured with the short dah on.
+    /// </summary>
+    internal const int CarrierSeedsAllowed = 2;
+
+    /// <summary>Loud noise, 30 s and three minutes, at the two seeds the noise tests use; a carrier keyed at random at twenty seeds; and a steady carrier.</summary>
     internal static List<(string What, string Reads)> NoiseRuns()
     {
         var rules = CwRules.Current;
@@ -531,6 +537,16 @@ public sealed class TheRecordingsScoreboardTests
                 return carrier;
             }));
         }
+
+        // **A STEADY CARRIER PRINTS NOTHING** (the owner's ruling on HM-DEC-285): key-down from 2.5 to 23 s at 24 dB, at 625 Hz.
+        jobs.Add(("a steady carrier at 625 Hz", () =>
+        {
+            var carrier = TheShapePicksTheSenderTests.Noise(25, 5192);
+
+            TheShapePicksTheSenderTests.Key(carrier, [(2.5, 23.0)], 625, 24);
+
+            return carrier;
+        }));
 
         // Each run on the caller's rule switches, in parallel, kept in order (work instruction 539).
         var reads = new string[jobs.Count];
@@ -603,7 +619,15 @@ public sealed class TheRecordingsScoreboardTests
         }
 
         Assert.Equal(FirstRecording, board.FirstReads);
-        Assert.All(board.Noise, n => Assert.Equal(string.Empty, n.Reads));
+
+        // **THE CARRIER LIMIT, RESTATED** (the owner's ruling on HM-DEC-285, 2026-10-20): a carrier keyed at random from 30 to 300 ms
+        // makes dits and dahs that stand like a hand's by timing, and the short dah's five conditions leave no margin between them,
+        // so the carrier at twenty seeds prints at no more than two (5195 and 5207 as measured); loud noise and a steady carrier
+        // print nothing.
+        var carriers = board.Noise.Where(n => n.What.StartsWith("a carrier", StringComparison.Ordinal) && n.Reads.Length > 0).ToList();
+
+        Assert.True(carriers.Count <= CarrierSeedsAllowed, $"the random carrier printed at {carriers.Count} seeds: {string.Join(", ", carriers.Select(c => c.What))}");
+        Assert.All(board.Noise.Where(n => !n.What.StartsWith("a carrier", StringComparison.Ordinal)), n => Assert.Equal(string.Empty, n.Reads));
 
         // **REAL SILENCE PRINTS NOTHING** (work instruction 539, task 2): a hard limit.
         Assert.Empty(board.SilencePrints);
