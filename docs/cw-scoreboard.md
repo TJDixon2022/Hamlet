@@ -16,6 +16,7 @@ references.
 - **Two hard limits, whatever the score:**
   - loud noise, 30 s and three minutes at two seeds each, prints nothing;
   - `cw-2026-10-02-200157` reads `FER C HAT<BT> BEST 7V 73 <SK> KC4ZGP DEWA`.
+- **The carrier limit, restated** (the owner's ruling on HM-DEC-285, 2026-10-20): the carrier keyed at random at twenty seeds prints at no more than two, 5195 and 5207 as measured with the short dah on; a steady carrier prints at none. A carrier keyed at random from 30 to 300 ms makes dits and dahs that stand like a hand's by timing, and the short dah's five conditions leave no margin between them. The easy receiver fixtures' bar is 77 of 90.
 - **The strays bar, restated** (work instruction 572, HM-DEC-276): no capture above the owner's line of six lone one- or two-element words per 10 s; the summed figure over the 65 old captures is reported beside the board, not a condition. It was 21.9 summed at the handover's ship, and the survey prints it.
 - **The references are not certain.** They were read offline with thresholds set by hand per station. A unit is better if
   the total rises.
@@ -304,7 +305,7 @@ A change is taken only where no hard limit is worse than at HEAD: the first reco
 
 **The CW guard** (work instruction 552, HM-DEC-256; the owner's yes, 2026-10-07). `TheScoreboardGuardsCwTests.TheScoreboardFallsNowhere`, on the engine carry-forward line, reads the last unit row below and holds the board to it: the score not below it, spaces right not below it and spaces added not above it, no more letters in a silence; the first recording whole and loud noise silent; and the random carrier at no more seeds than this line records. A unit that raises the board appends its row, and the guard holds it there.
 
-guard: the random carrier prints at 1 of 20 seeds (5195), recorded at unit 552
+guard: the random carrier prints at 2 of 20 seeds (5195, 5207), restated by the owner's ruling on HM-DEC-285, 2026-10-20 (1 of 20, 5195, recorded at unit 552)
 
 
 | unit | date | right | wrong | invented | score | printed in silence | spaces right | what changed |
@@ -385,6 +386,7 @@ guard: the random carrier prints at 1 of 20 seeds (5195), recorded at unit 552
 | 579 | 2026-10-20 | 318 of 353 | 20 | 1 | **297** | 0 | 86 of 110, 3 added | the hold waits for the station, and the lane that fits is handed on (work instruction 579, HM-DEC-283): with the grid stepping aside it read 297 too, but W1AW fell, so it ships off and the board is unchanged |
 | 580 | 2026-10-20 | 318 of 353 | 20 | 1 | **297** | 0 | 86 of 110, 3 added | the fist bank (work instruction 580, HM-DEC-284): no engine change, the board unchanged |
 | 581 | 2026-10-20 | 318 of 353 | 20 | 1 | **297** | 0 | 86 of 110, 3 added | the short dah measured on the fist bank (work instruction 581, HM-DEC-285): left off for the owner's ruling, the board unchanged |
+| 581, ruled | 2026-10-20 | 318 of 353 | 20 | 1 | **297** | 0 | 86 of 110, 3 added | the short dah ships on with its dit floor at the owner's ruling on HM-DEC-285; the board as at 581 with the floor chosen, the random carrier within the restated limit of two (5195 and 5207 as measured at 581), a steady carrier silent |
 
 ## Scans (work instruction 544, HM-DEC-248)
 
@@ -467,6 +469,7 @@ high and 25 medium, 2151 letters, all totalled.
 | 579 | 2026-10-20 | **2111** | 2131 of 2151 | 20 | 0 | 438 of 440, 11 added | the hold waits for the station, and the lane that fits is handed on (HM-DEC-283): chosen with the grid stepping aside it read 2103 with 8 invented in the pause after `W1AW <AS>`, so it ships off, unchanged |
 | 580 | 2026-10-20 | **2111** | 2131 of 2151 | 20 | 0 | 438 of 440, 11 added | the fist bank (HM-DEC-284): no engine change, unchanged |
 | 581 | 2026-10-20 | **2111** | 2131 of 2151 | 20 | 0 | 438 of 440, 11 added | the short dah (HM-DEC-285): left off, unchanged |
+| 581, ruled | 2026-10-20 | **2111** | 2131 of 2151 | 20 | 0 | 438 of 440 | the short dah ships on (HM-DEC-285, the owner's ruling); unchanged |
 
 **The fist bank** (work instruction 580, HM-DEC-284): ninety-six hands with a truth, every dah over dit of 1.6, 2.0, 2.5 and 3.0 at 10, 15, 20 and 25 WPM, 5, 10 and 20 dB, flat and fading, generated at test time from their recipes (`tests\Hamlet.RadioEngine.Tests\Cw\Fixtures\CwFistBank.cs`) and read by the survey as a group of its own, its matrices in `docs\cw-survey-2026-10-09.md` under `The fist bank`. A yardstick, not yet a guard.
 

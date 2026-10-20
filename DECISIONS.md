@@ -55,6 +55,18 @@ refs: work instruction 581, HM-DEC-284, HM-DEC-281, HM-DEC-276, HM-DEC-261, src/
 
 The bar of 1500 sits above what the 2.5 and 3.0 hands read together, 1419, because the fading half of every row reads about a fifth of the flat half. Flat, the 1.6 and 2.0 hands read 477 and 535 of 720, against 603 and 558 for the 2.5 and 3.0 hands. **The rule and its floor stay in the tree, off** (`CwRules.OffByDefault`), for the owner to rule on the cost against the gain. As shipped, every reading is as at HEAD: 297 and 2111. Ordered by work instruction 581.
 
+**The owner's ruling, 2026-10-20: ship `CwRules.ShortDah` with its dit floor (`TwoKindsLeastDitSeconds`) on by default.** Added to this entry at the owner's direction rather than as a new one. It ships on and leaves `CwRules.OffByDefault`.
+
+**The carrier hard limit is restated.** At twenty seeds, the carrier keyed at random prints at no more than two, 5195 and 5207 as measured, and a steady carrier prints at none. The reason: a carrier keyed at random from 30 to 300 ms makes dits and dahs that stand like a hand's by timing, and the rule's five conditions leave no margin between them. The easy receiver fixtures' bar is 77 of 90.
+
+**The guards:**
+- the fist bank's 1.6 and 2.0 rows are held at the figures that shipped less 5%, 540 and 592 of 1440 (`TheFistBankGuardsTests`);
+- each straight-key hand is held at 48 of 60 (`TheStraightKeyReadsTests.EveryHandReadsFortyEight`);
+- both scoreboard guards are held at 297 and 2111, the random carrier at no more than the restated two seeds;
+- the weak-end guard is held at 71.
+
+The capture sheet's `clusters` line gains the dah over dit the gate measured.
+
 ---
 id: HM-DEC-284
 date: 2026-10-20

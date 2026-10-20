@@ -2,12 +2,12 @@ PROTOCOL: 2
 PROJECT: Hamlet
 STATE: COMPLETED
 TASK: 3 of 3
-WORK_INSTRUCTION: 581 - the short dah, measured against the fist bank (run by hand)
+WORK_INSTRUCTION: the short dah ships on, the owner ruling on HM-DEC-285 (run by hand)
 BALL: tim
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-10-20T17:05:07-04:00
-NOTE: Unit 581 done - the short dah measured on the bank, floored, left off for the owner's ruling
+UPDATED: 2026-10-20T18:50:12-04:00
+NOTE: The short dah ships on at the owner ruling (HM-DEC-285), 1.13.267; one ask added on the RSID CPU test
 
 ---
 

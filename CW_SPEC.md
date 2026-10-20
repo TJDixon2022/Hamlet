@@ -79,6 +79,7 @@ Confirmed by Tim 2026-09-25.
   - **Off, as shipped,** and the reach with it: the lanes are judged to 50 Hz as before. Judged, W1AW read 2079 against 2111, and beside a lockstep shadow the synthetic station lost its opening on and off alike.
   - **The record:** the `bank` line on the capture sheets and the `shadows` field of each `cw_listen` row name every shadow held in the last minute, its pitch, share and the station it shadows, on or off.
 - **A held lane keeps reading, and the hold ends in a pause, 2026-10-20 (work instruction 576, HM-DEC-280):** the lane holding a handed-on station reads on under its 12 dB floor, and is let go once it has handed on no mark of half its sender's dit or longer for more than three of his word gaps (`HeldLanePauseGaps`), after which it waits its `LaneLeadSeconds` again like any lane.
+- **The short dah ships on, 2026-10-20 (the owner's ruling on HM-DEC-285):** where no two neighbouring mark lengths differ by two, the gate parts a sender's marks into two kinds by two means in log length on its five conditions, at a dit of Morse's fastest, 25 ms (`CwSenderGate.TwoKindsLeastDitSeconds`), or longer, so a hand whose dah is 1.6 or 2.0 times his dit prints, at the cost of the carrier keyed at random printing at two seeds of twenty.
 
 ## 3. Four layers, kept apart
 

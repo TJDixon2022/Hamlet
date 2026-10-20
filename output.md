@@ -184,3 +184,46 @@ The hand's margin above the carrier is nought on every condition. Every spread i
   - The run path, the only path to the screen, already shows only settled text.
   - The ask stands only for the timing-only path.
   - No change for it sits in the tree.
+
+---
+
+# The owner's ruling on HM-DEC-285, 2026-10-20: the short dah ships on
+
+Gate checked against the tree: `PROJECT: Hamlet` in the prompt, `PROJECT_CARD.md` and `Hamlet.sln`. Run on the development computer, so nothing here is evidence about the radio. Branch `main`. I took `SESSION.lock` through `tools\arbiter\lock.bat take` and released it at the end. I wrote nothing to `RUN_LEDGER.md`, touched nothing under `tools\arbiter\` and ticked nothing in `PHASE_PLAN.md`.
+
+## What shipped
+
+- **`CwRules.ShortDah` is on by default with its dit floor** (`CwSenderGate.TwoKindsLeastDitSeconds`, 25 ms). It is out of `CwRules.OffByDefault` and listed in `CwRules.All`. Tests that read it "without" now turn it off, rather than choosing it on for "with".
+- **The restated carrier hard limit.** The carrier keyed at random may print at no more than two of twenty seeds (`TheRecordingsScoreboardTests.CarrierSeedsAllowed`). Loud noise and a new steady carrier, key-down at 625 Hz and 24 dB, must print nothing. The reason is written in the scoreboard's hard limits and in HM-DEC-285. The scoreboard guard's carrier line reads 2 of 20 (5195, 5207). The easy fixtures' bar is 77 of 90.
+- **New guards:**
+  - `TheFistBankGuardsTests.TheShortDahRowsHold`: the 1.6 and 2.0 rows at no less than 540 and 592 of 1440, which is 569 and 624 less 5%.
+  - `TheStraightKeyReadsTests.EveryHandReadsFortyEight`: each of the nine hands at 48 of 60.
+
+  Both scoreboard guards hold at 297 and 2111, and the weak-end guard at 71 as it already stood. The engine line now runs both new guards.
+- **The capture sheet:** the `clusters` line ends `; dah over dit 2.70` (for example) wherever the gate parts the printed sender's marks into two kinds. `TheClustersAreOnTheSheetTests` checks it.
+- **`CW_SPEC.md` §2** gains one sentence.
+- **The records:**
+  - HM-DEC-285 carries the ruling, the restated limit and its reason, the bar and the guards, added to the entry as the owner directed;
+  - its index row in `CLAUDE.md`;
+  - scoreboard rows `581, ruled`, 297 and 2111;
+  - the survey's Rerun line;
+  - version 1.13.266 to 1.13.267.
+
+## The lines (one build, the build servers shut down, each line once with `--no-build`)
+
+- **App line:** 278 of 278 in 2 min 19 s.
+- **Engine line, 1500 s timeout:** 158 of 159 in 11 min 48 s.
+  - Every CW guard passed. The fist bank guard took 4 min 17 s and the straight-key guard 3 min 47 s.
+  - **Red: `TheRsidDetectorTests.TheDetectorKeepsUpWithRealTime`,** `cpu/audio 1.302`, while its wall clock was 0.153 of real time. It counts the whole process's CPU (HM-DEC-267), and the two new guards each read three fists or hands at once beside it. Run alone afterwards, it passed in 5 s. This is a cost of the new guards on the line, not a regression in RSID.
+- **Survey line:** 1 of 1 in 10 min 5 s. As shipped it is identical, line for line apart from the Rerun line, to unit 581's measurement with the rule and its floor chosen:
+  - the bank 2612 of 5760, score 1891, 46 invented;
+  - the twelve-plus-three 297 and W1AW 2111;
+  - the easy fixtures 77 of 90.
+
+  I set the Rerun line in the survey document by hand, to the same text now in the test source. The source was changed after the one build.
+
+## Asks still outstanding
+
+- **Unit 581's ruling is answered** by this ruling, and is dropped.
+- **New, 2026-10-20: whether the RSID real-time test should leave the engine line, or measure its own thread's time rather than the process's.** It goes red when the new parallel guards run beside it. The guards sit in the tree on the line. Waiting on the owner.
+- The rest are carried as above: units 575, 562, 520, 440 items 1 and 2, and 487.
