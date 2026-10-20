@@ -2,12 +2,12 @@ PROTOCOL: 2
 PROJECT: Hamlet
 STATE: COMPLETED
 TASK: 4 of 4
-WORK_INSTRUCTION: 577 - the hand whose dah is not twice his dit (run by hand)
+WORK_INSTRUCTION: 578 - the grid steps aside for a lane that reads a station whole (run by hand)
 BALL: tim
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-10-20T11:50:46-04:00
-NOTE: Unit 577 - short-dah rule built, measured, left off; 1.7 hand 60 of 60 chosen, boards 297 and 2111 as shipped; HM-DEC-281, 1.13.262
+UPDATED: 2026-10-20T12:40:29-04:00
+NOTE: Unit 578 - the grid steps aside, built, measured, left off; working fixtures 6 of 81 chosen, boards 297 and 2111; HM-DEC-282, 1.13.263
 
 ---
 

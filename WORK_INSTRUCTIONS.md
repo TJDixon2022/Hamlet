@@ -1,27 +1,31 @@
-# Work instruction 577 - The hand whose dah is not twice his dit: Ken, and the far side of a QSO
+# Work instruction 578 - The grid steps aside for a lane that reads a station whole
 
-**Hand run. One fault, one measure, one rule, one commit, plus the record.** The fault was named
-by the tree's own trace (`TheFoundWeakStationTests`, unit 574): the far side of a live QSO, Ken
-at about 430 Hz on `cw-2026-10-19-141708`, is found whole by the bank (45 of 48 marks) and never
-read, because **his marks run 50 to 280 ms with no jump of two anywhere in them** - a straight
-key whose dah is barely twice his dit - and the gate demands two kinds with a jump of two before
-anything stands. The grid stands him at 437 Hz, never qualifies him, and blocks the lane from
-handing him on. He printed as `EIE E EIET EI I I E SE I` live.
+**Hand run. One fault, one yardstick, one rule, one commit, plus the record.**
 
-**This is the far side of most ragchews.** The near side reads like a log entry now; the far side
-is dits. Fixing it is the largest change to what the owner sees on the air that is left.
+**The fault, as the tree traced it** (`KensOverTraced`, unit 577): Ken, the far side of the QSO
+on `cw-2026-10-19-141708` at about 430 Hz, is read whole by the bank's 425 Hz lane at a shape of
+0.70 for his entire over - and never printed, because **the grid chops him into 20 to 30 ms
+pieces, stands a sequence on the pieces at 437 Hz, never qualifies it (shape falls to 0.00), and
+that standing sequence blocks the lane from being handed on** under the handover's rule that the
+grid goes first within 50 Hz. The trace says it in one line: *the only reason the lane is not
+handed on is the grid standing within 50 Hz.* His fist is not the problem: by two means his dah
+is 2.27 times his dit.
+
+**The same thing on the receiver fixtures:** on at least two of the five *working* fixtures (5 dB
+with 12 dB of QSB) the grid stands and the staged handover leaves the station to it, and the
+group reads **5 of 81**. Those five have a truth. **They are the yardstick; Ken is the specimen.**
 
 **Standing rules** (HM-DEC-276): one rule; do not stop to ask - take the choice that keeps both
 boards and name it in section 4; a run stopped for memory is run once more alone, then reported
-as not measured. The engine line at 1500 s, the survey at 1800 s, `--no-build` after one build,
-build servers shut down first.
+as not measured. Engine line 1500 s, survey 1800 s, `--no-build` after one build, build servers
+shut down first.
 
 Earlier unit numbers are not cited: each part of the tree is described by what it does.
 
 **Nothing keys or transmits. Nothing is written to the radio. No recording is added, removed or
-promoted.** The synthetic hand below is generated, not recorded.
+promoted.**
 
-**Numbering.** This is unit 577, ruling HM-DEC-281. If taken, use the next free and say so.
+**Numbering.** This is unit 578, ruling HM-DEC-282. If taken, use the next free and say so.
 
 ---
 
@@ -54,7 +58,7 @@ If all five hold, say "Hamlet confirmed" and continue.
   to `RUN_LEDGER.md`. Touch nothing under `tools\arbiter\`. Tick nothing in `PHASE_PLAN.md`.
 - One `dotnet test` invocation per line, filtered, with a `timeout`.
 - Apostrophes in quoted heredocs break; `;` is refused; Python cannot run here; `-m` more than
-  once for a multi-line commit. Scripts go in `.run-unit\unit577-<name>.sh`, not committed.
+  once for a multi-line commit. Scripts go in `.run-unit\unit578-<name>.sh`, not committed.
 - **The one layout holds**: nothing on screen moves.
 - `output.md` at the root, four headings exactly: `## 1. What Claude did`, `## 2. What the owner
   should expect`, `## 3. What you should see`, `## 4. What's blocking us`. Status on the tree's
@@ -62,71 +66,55 @@ If all five hold, say "Hamlet confirmed" and continue.
 
 ---
 
-## 2. The yardstick, with a truth
+## 2. The trace, first
 
-**A synthetic hand** (`CwFixtureGenerator`, as the SKCC and touching hands are made): 12 WPM, a
-straight key whose **dah is 1.7 times his dit** with dits and dahs each spread ±15%, inside gaps
-one dit ±20%, letter gaps 2 to 3.5 dits, word gaps 4 to 6, at 20 dB, sending
-`CQ CQ DE N0CALL N0CALL K GM KEN NICE TO MEET U RPRT UR 559 QTH IS CHICOPEE MA K`. Three seeds.
-Beside it the same hand at a dah of **2.0** and **2.5** times, so the report shows where the
-gate stops reading as the ratio falls. **This is the yardstick: it has a truth.** Ken is the
-specimen.
+**The five working fixtures and Ken's reply (272 to 300 s), one row per second** where a lane
+within 50 Hz of the true pitch stands at shape 0.4 or better: the lane's pitch, dit and shape;
+what the grid holds within 50 Hz (standing sequence, candidate, window: its pitch, its marks'
+median length against the lane's dit, its shape, whether it has ever qualified and how long it
+has stood without qualifying); and whether the lane is handed on. Then, per file, the seconds in
+which a lane read the station whole and the grid blocked it, as a share of the station's keying.
 
-**Measured first, as shipped:** letters right of sent for each ratio at each seed, and whether a
-sender ever stands (the gate's two kinds, the jump it found, shape). One table.
+**The paragraph:** what a grid sequence that blocks a whole-reading lane looks like against one
+that is reading the station itself (W1AW, KB2UZK: marks the length of dits and dahs, qualified
+within seconds) - the figure that parts them, from the table.
 
-## 3. The trace, then the one rule
+## 3. The one rule
 
-**Ken, both overs** - about 80 to 100 s (the burst the stray capture fired on, at 14:13:46 UTC,
-which is 98 s into this file) and 272 to 300 s - through the chain as shipped:
+**The grid steps aside** (`CwRules.GridStepsAside` or the tree's naming): a bank lane standing on
+a station at shape 0.4 or better is handed on **even where the grid stands within 50 Hz**, when
+the grid's sequence there **has not qualified for `GridStandsOnPiecesSeconds`** (start at the
+handover's own 3 s; the table says) **and its marks are pieces** - median length under a third
+of the lane's dit, or whatever figure the table shows parts pieces from marks. Once the lane is
+handed on, the grid's pieces at that pitch are not offered while the lane holds, as the handover
+already does. **The grid still takes the station back** the moment its own sequence qualifies
+there. Nothing else in the handover moves: the wait, the carrier check, the shadow rule, the end
+of the hold.
 
-1. **The grid's sequence at 437 to 441 Hz:** its marks in order with lengths, the two clusters
-   the gate tries to form (centres, the jump between them), its shape over time, and why it
-   never qualifies: which test fails, with the figure and the line it had to pass.
-2. **The bank's lane at 425 Hz:** its marks, its shape (0.68 to 0.72 last time), and the reason
-   it is not handed on, second by second: the grid standing within 50 Hz, and nothing else.
-3. **What a reader would make of his marks if they were kinded at the natural break** - sort
-   his marks by hand, find the largest jump in log length (1.36 last time), kind them there,
-   and run the lookup table over the result: the text, and how much of it is words. This is
-   the ceiling for his fist.
-
-**The paragraph:** where he is lost - the gate's demand for a jump of two, the grid blocking
-the lane, or both in series - and **the one change** that reads the 1.7 hand at the yardstick.
-If the table shows two faults in series (the gate will not stand a 1.7 hand, *and* the grid
-blocks the lane even when a lane could), the one change is the gate's, and the grid stepping
-aside is built only if the gate's change alone does not read the synthetic hand through the
-grid. Say which.
-
-**Build it**, as one named rule, and measure once. The likely shape, for the trace to confirm
-or correct: **the gate accepts two kinds when the two clusters are stable** (each with enough
-marks, their centres apart by more than the spread within either) **even where the jump is
-under two, down to a named floor** (`MinDahDitRatio`, the table says where - the 1.7 hand must
-pass, and the carrier and noise must not), and the letter and word lines follow from the
-clusters as they do now.
+Build it, measure once.
 
 ## 4. The measure, and the ship
 
 **Ships on by default only if:**
 
-- **the 1.7 hand reads 80% or better** of its letters at all three seeds, and the 2.0 and 2.5
-  hands do not read worse than as shipped;
-- **Ken's overs** print at least three words of three or more letters that are not there as
-  shipped, and his lone one- and two-element words per 10 s fall (reported, since he has no
-  truth);
-- **both boards hold:** 297 and 2111, wrong and invented not rising, W1AW's spaces not worse;
+- **the five working fixtures rise from 5 of 81**, with at least two of the five at half their
+  letters or better (`coverage-working` 23, `exchange-working` 19, `fast-working` 19,
+  `prosigns-working` 9, `tightfist-working` 11);
+- **Ken's reply** prints at least three words of three or more letters at his pitch that are not
+  there as shipped (reported; he has no truth), and his first over (80 to 100 s) is reported;
+- **both boards hold:** 297 and 2111, wrong and invented not rising, spaces not worse;
 - **the weak-end guard holds:** the four 5 dB CQs at 71 of 84 or better; nothing in the 20 s of
   noise after them;
-- **the hard limits:** noise prints nothing, the carrier at one seed, the first recording
-  whole, nothing in silences, no old capture above six strays per 10 s; the summed strays
-  reported;
-- `two-station` reported.
+- **the hard limits:** noise prints nothing, the carrier at one seed, the first recording whole,
+  nothing in silences, no old capture above six strays per 10 s; the summed strays reported;
+- the easy fixtures not worse than 78 of 90; `two-station` reported.
 
 If it fails, say which condition, by how much, which file; leave it as a rule only a test can
-choose; keep the yardstick and the trace.
+choose; keep the trace.
 
-If it ships: the 1.7 hand joins the guards (`TheStraightKeyReadsTests`), both scoreboard guards
-at the figures that ship, the figures on the board as the author's; the capture sheet's
-`clusters` line gains the dah/dit ratio the gate measured.
+If it ships: the working fixtures join the weak-end guard at the figures that ship; both
+scoreboard guards at the figures that ship, on the board as the author's; the capture sheet's
+`bank` line says `stepped aside at <pitch> Hz` when it happens, and `cw_listen` carries it.
 
 ---
 
@@ -135,23 +123,24 @@ at the figures that ship, the figures on the board as the author's; the capture 
 Run the app line, the engine line and the survey line once; rewrite `docs\cw-survey-2026-10-09.md`
 with a new `Rerun` line; per group before and after in the report.
 
-- `PHASE_OUTCOME.md`, both copies: `## UNIT 577 - STEP 12`, one paragraph.
-- `PHASE_STATUS.md`, both copies: names 577.
+- `PHASE_OUTCOME.md`, both copies: `## UNIT 578 - STEP 12`, one paragraph.
+- `PHASE_STATUS.md`, both copies: names 578.
 - Patch-bump `Directory.Build.props`.
 - `CLAUDE.md` §1 index row.
-- `DECISIONS.md`, newest first, **HM-DEC-281**, headline *The hand whose dah is not twice his
-  dit*, naming the rule, the floor, what the trace showed on Ken, whether it shipped, and the
-  figures before and after.
-- `docs\cw-scoreboard.md`: a 577 row in each table at the figures that shipped.
+- `DECISIONS.md`, newest first, **HM-DEC-282**, headline *The grid steps aside for a lane that
+  reads a station whole*, naming the rule, its figures, what the trace showed, whether it
+  shipped, and the figures before and after.
+- `docs\cw-scoreboard.md`: a 578 row in each table at the figures that shipped.
 - `CW_SPEC.md` §2: one sentence if it shipped.
-- **Touch no checkbox in `PHASE_PLAN.md`**, and add no ruling beyond HM-DEC-281.
+- **Touch no checkbox in `PHASE_PLAN.md`**, and add no ruling beyond HM-DEC-282.
 
 ---
 
 ## 6. Report
 
-Section 2, for the owner, in plain words, leading with **whether a straight-key hand with a short
-dah now reads, and what it cost** - the 1.7 hand before and after, Ken's overs before and after
-as text, the boards, the CQs - then the rule in a sentence. Section 1: what was built, the floor.
-**Section 3: the ratio table as shipped and after; Ken's trace; Ken's overs as printed before
-and after; the survey's groups; both scoreboards' rows.** Section 4: anything left, a line each.
+Section 2, for the owner, in plain words, leading with **whether the far side of a QSO reads now
+and what it cost** - Ken's reply as text before and after, the working fixtures before and after,
+the boards, the CQs - then the rule in a sentence. Section 1: what was built, the figures.
+**Section 3: the trace table in brief (per file, the share of seconds blocked); the working
+fixtures' reads before and after; Ken before and after; the survey's groups; both scoreboards'
+rows.** Section 4: anything left, a line each.
