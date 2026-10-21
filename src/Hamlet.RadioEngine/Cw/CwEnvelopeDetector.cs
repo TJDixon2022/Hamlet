@@ -910,7 +910,7 @@ public sealed class CwEnvelopeDetector
 
             foreach (var (_, mark) in _laneKept.Where(k => k.Dit == lane.Dit && Math.Abs(k.Mark.PitchHz - lane.PitchHz) <= BinSpacingHz / 2 && k.Mark.FromSeconds > handedTo).OrderBy(k => k.Mark.FromSeconds).ToList())
             {
-                _marks.Add(mark with { Sequence = ++_markSequence, Stood = true, Keyed = true });
+                _marks.Add(mark with { Sequence = ++_markSequence, Stood = true, Keyed = true, HeldLane = true });
                 _laneHandedTo[bin] = Math.Max(_laneHandedTo.TryGetValue(bin, out var t) ? t : double.NegativeInfinity, mark.ToSeconds);
 
                 if (mark.ToSeconds - mark.FromSeconds >= 0.5 * HeldTiming(lane).DitSeconds)

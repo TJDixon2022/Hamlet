@@ -34,6 +34,102 @@ public sealed class TheFadeTraceTests(ITestOutputHelper output)
         }
     }
 
+    /// <summary>
+    /// **THE HELD LANE'S MARKS, TRACED** (work instruction 583, HM-DEC-287): on the two fading fists, as shipped and with the held
+    /// lane's marks its station's and the grid stepping aside, per fade cycle the marks the held lane handed on, how many of them
+    /// printed as the station's, how many new senders began within 50 Hz of the note, and the letters printed.
+    /// </summary>
+    [Fact]
+    public void TheHeldLanesMarks()
+    {
+        foreach (var db in new[] { 10.0, 20.0 })
+        {
+            foreach (var rule in new[] { false, true })
+            {
+                Held(new CwFist(2.5, 20, db, true), rule);
+            }
+        }
+    }
+
+    private void Held(CwFist fist, bool rule)
+    {
+        using var off = rule ? null : CwRules.Off(CwRules.HeldLaneMarksAreItsStations, CwRules.GridStepsAside);
+        using var on = rule ? CwRules.Choose(CwRules.HeldLaneMarksAreItsStations, CwRules.GridStepsAside) : null;
+
+        var audio = CwFistBank.Audio(fist);
+        var edges = CwFistBank.Edges(fist);
+        using var chain = new CwChain(audio.SampleRate);
+        var gate = chain.Decoder.Runs;
+        var handover = new List<string>();
+        var handed = new List<CwMark>();
+        var begun = new List<(double Seconds, double PitchHz)>();
+        var printed = new List<(double At, string Text, int Held, int Marks)>();
+        long sequence = 0;
+
+        chain.Detector.SetPassband(600, 500);
+        chain.Detector.HandoverTrace = handover;
+        gate.SenderBegunTrace = begun;
+        gate.RunRead += (c, run) => printed.Add((run[^1].ToSeconds, c.Text, run.Count(m => m.HeldLane), run.Count));
+
+        var chunk = audio.SampleRate / 100;
+
+        for (var at = 0; at + chunk <= audio.Samples.Length; at += chunk)
+        {
+            chain.Process(new AudioChunk(at, audio.SampleRate, audio.Samples.AsSpan(at, chunk)));
+
+            var batch = chain.Detector.MarksSince(sequence);
+
+            if (batch.Marks.Count > 0)
+            {
+                handed.AddRange(batch.Marks);
+                sequence = batch.Marks.Max(m => m.Sequence);
+            }
+        }
+
+        chain.Decoder.Flush();
+
+        var text = string.Concat(printed.Select(p => p.Text));
+        bool Near(double hz) => Math.Abs(hz - CwFistBank.ToneHz) <= CwEnvelopeDetector.HandoverHz;
+
+        output.WriteLine($"## {fist.Name}, {(rule ? "the held lane's marks its station's, the grid stepping aside" : "as shipped")}");
+        output.WriteLine($"printed: `{text}`");
+        output.WriteLine($"handover: {string.Join("; ", handover.Take(10))}{(handover.Count > 10 ? $" … ({handover.Count})" : string.Empty)}");
+        output.WriteLine("| cycle | from (s) | keyed | held lane handed on | grid handed on | held marks printed | new senders | letters |");
+        output.WriteLine("|---|---|---|---|---|---|---|---|");
+
+        var totals = new int[6];
+
+        for (var c = 0; c * Cycle < edges[^1] + 1; c++)
+        {
+            var from = c * Cycle;
+            var to = from + Cycle;
+            var keyed = Enumerable.Range(0, edges.Length / 2).Count(i => edges[2 * i] >= from && edges[2 * i] < to);
+
+            if (keyed == 0)
+            {
+                continue;
+            }
+
+            var lane = handed.Count(m => m.HeldLane && Near(m.PitchHz) && m.FromSeconds >= from && m.FromSeconds < to);
+            var grid = handed.Count(m => !m.HeldLane && Near(m.PitchHz) && m.FromSeconds >= from && m.FromSeconds < to);
+            var letters = printed.Where(p => p.At >= from && p.At < to).ToList();
+            var kept = letters.Sum(p => p.Held);
+            var senders = begun.Count(b => Near(b.PitchHz) && b.Seconds >= from && b.Seconds < to);
+
+            totals[0] += keyed;
+            totals[1] += lane;
+            totals[2] += grid;
+            totals[3] += kept;
+            totals[4] += senders;
+            totals[5] += letters.Count;
+
+            output.WriteLine(string.Create(Inv, $"| {c} | {from:0.0} | {keyed} | {lane} | {grid} | {kept} | {senders} | `{string.Concat(letters.Select(l => l.Text))}` |"));
+        }
+
+        output.WriteLine(string.Create(Inv, $"totals: keyed {totals[0]}; the held lane handed on {totals[1]}, the grid {totals[2]}; held marks printed {totals[3]}; new senders {totals[4]}; letters {totals[5]}"));
+        output.WriteLine(string.Empty);
+    }
+
     /// <summary>The bank's flat and fading halves, the signal-by-fade matrix at every ratio, with the rule on and off.</summary>
     [Fact]
     public void TheBankByFade()

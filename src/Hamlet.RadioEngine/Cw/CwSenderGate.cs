@@ -586,7 +586,8 @@ public sealed class CwSenderGate
                 levelTolerance += FollowDb(recent, Middle(mark));
             }
 
-            var levelOff = Math.Abs(mark.LevelDb - level);
+            // A held lane's mark is its station's by construction: its level is not judged, and only its pitch places it (HM-DEC-287).
+            var levelOff = mark.HeldLane && CwRules.On(CwRules.HeldLaneMarksAreItsStations) ? 0 : Math.Abs(mark.LevelDb - level);
 
             if (pitchOff > PitchToleranceHz || levelOff > levelTolerance)
             {
@@ -606,6 +607,7 @@ public sealed class CwSenderGate
         {
             best = new Sender();
             _senders.Add(best);
+            SenderBegunTrace?.Add((mark.FromSeconds, mark.PitchHz));
         }
         else if (best.Open.Count > 0 && best.KindOfNext(mark.FromSeconds - best.Open[^1].ToSeconds) != CwGapKind.Element)
         {
@@ -688,6 +690,9 @@ public sealed class CwSenderGate
 
     /// <summary>The boundary between two clusters of lengths (unit 513): shared with the gate's gap clusters (work instruction 525).</summary>
     internal static double Boundary((double Mu, double Sd) low, (double Mu, double Sd) high) => Sender.Boundary(low, high);
+
+    /// <summary>Where set, the start and pitch of the mark each new sender began on: for the tests' traces (work instruction 583).</summary>
+    internal List<(double Seconds, double PitchHz)>? SenderBegunTrace { get; set; }
 
     /// <summary>Every sender's pitch and shape, and whether it is the one printed: for the tests' report (work instruction 519).</summary>
     internal IReadOnlyList<(double PitchHz, CwSequenceShape Shape, bool Printed, int Marks, bool Qualified)> SenderShapes

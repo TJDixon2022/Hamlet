@@ -119,6 +119,10 @@ internal static class CwRules
     /// <summary>A sender's level is followed through a fade at its own pace: the level tolerance grows by the rate its last <see cref="CwSenderGate.FollowMarks"/> marks moved (work instruction 582); built, measured and left off (HM-DEC-286).</summary>
     public const string FollowsTheFade = "a sender is followed through a fade at its own pace";
 
+    /// <summary>A mark called by a bank lane that holds a station goes to that station without the level test in either gate (work instruction 583); built, measured with the grid stepping aside and left off (HM-DEC-287).</summary>
+    public const string HeldLaneMarksAreItsStations = "the marks of a held lane are its station's";
+
+
 
     /// <summary>Every rule kept, in the order the work instruction names them.</summary>
     /// <remarks>
@@ -141,7 +145,7 @@ internal static class CwRules
     /// The rules that ship off, built and measured and not taken: off unless a test chooses one on this thread with
     /// <see cref="Choose"/> (work instruction 565).
     /// </summary>
-    public static readonly IReadOnlySet<string> OffByDefault = new HashSet<string>(StringComparer.Ordinal) { BetweenClusters, StraddleSplit, GridStepsAside, HoldWaitsAndFits, FollowsTheFade };
+    public static readonly IReadOnlySet<string> OffByDefault = new HashSet<string>(StringComparer.Ordinal) { BetweenClusters, StraddleSplit, GridStepsAside, HoldWaitsAndFits, FollowsTheFade, HeldLaneMarksAreItsStations };
 
     [ThreadStatic]
     private static HashSet<string>? _chosen;

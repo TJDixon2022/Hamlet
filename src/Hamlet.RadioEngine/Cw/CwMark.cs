@@ -34,6 +34,12 @@ public sealed record CwMark(
     public bool Keyed { get; init; }
 
     /// <summary>
+    /// Whether the mark was called by a bank lane that holds a station, and so is that station's by construction; with the rule
+    /// on neither gate judges its level (work instruction 583, HM-DEC-287, <see cref="Hamlet.RadioEngine.Cw.CwRules.HeldLaneMarksAreItsStations"/>).
+    /// </summary>
+    public bool HeldLane { get; init; }
+
+    /// <summary>
     /// The stretch this mark was read again over, where it is one of a station's marks read again through its own window when
     /// the window opened: the reader replaces that sender's unprinted marks in the stretch with these. Null for every other mark
     /// (work instruction 553, task 2).

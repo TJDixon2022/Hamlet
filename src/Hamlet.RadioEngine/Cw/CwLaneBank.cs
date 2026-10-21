@@ -165,6 +165,7 @@ internal sealed class CwLaneBank
                     {
                         Keyed = true,
                         OwnContrastDb = span.ContrastDb,
+                        HeldLane = held,
                     };
 
                     foreach (var stood in _gates[d].Offer(mark))
