@@ -462,6 +462,8 @@ public sealed class CwEnvelopeDetector
 
             if (CwShadow.IsShadowOf(lane.Recent, lane.PitchHz, recent, pitch, reachHz: ShadowReach))
             {
+                _lastShadowOfHz = pitch;
+
                 var key = ((long)Math.Round(lane.PitchHz / BinSpacingHz), (long)Math.Round(pitch / BinSpacingHz));
 
                 if (seen.Add(key) && !_shadowsNow.Contains(key))
@@ -932,6 +934,12 @@ public sealed class CwEnvelopeDetector
     // Where a held lane was let go in a pause, by bin: a lane there is held again only once it has stood on a new mark of its own.
     private readonly Dictionary<long, double> _pausedAt = [];
 
+    // The pitch of the stronger station the last lane judged a shadow shadows.
+    private double _lastShadowOfHz = double.NaN;
+
+    // Each held lane let go as a shadow with the bank as the finder: when, and the pitch of the station it shadowed.
+    private readonly List<(double AtSeconds, double OfHz)> _shadowsLetGo = [];
+
     /// <summary>The lanes that hold a station with the bank as the finder, by dit index and pitch: for the tests' traces (work instruction 584).</summary>
     internal IReadOnlyList<(int Dit, double PitchHz)> HeldStations => _held.Select(h => (h.Dit, h.PitchHz)).ToList();
 
@@ -968,6 +976,7 @@ public sealed class CwEnvelopeDetector
         var standing = bank.Standing(nowSeconds);
         var shadows = new HashSet<(long, long)>();
         var shadowAt = new Dictionary<long, bool>();
+        var shadowOf = new Dictionary<long, double>();
         List<(double, IReadOnlyList<CwMark>, int, int)>? others = null;
         static long BinOf(double hz) => (long)Math.Round(hz / BinSpacingHz);
 
@@ -987,7 +996,11 @@ public sealed class CwEnvelopeDetector
 
             foreach (var s in standing.Where(s => Math.Abs(s.Sequence.PitchHz - pitchHz) <= BinSpacingHz / 2))
             {
-                shadow |= LaneIsShadow(s.Dit, s.Sequence, others, nowSeconds, shadows);
+                if (LaneIsShadow(s.Dit, s.Sequence, others, nowSeconds, shadows))
+                {
+                    shadow = true;
+                    shadowOf[BinOf(pitchHz)] = _lastShadowOfHz;
+                }
             }
 
             shadowAt[BinOf(pitchHz)] = shadow;
@@ -1034,6 +1047,7 @@ public sealed class CwEnvelopeDetector
             if (shadow)
             {
                 _shadowLetGoAt = nowSeconds;
+                _shadowsLetGo.Add((nowSeconds, shadowOf.TryGetValue(BinOf(h.PitchHz), out var of) ? of : double.NaN));
             }
 
             if (paused)
@@ -1089,7 +1103,11 @@ public sealed class CwEnvelopeDetector
             }
 
             // A lane found soon after a shadow was let go hands on no backlog: it starts from its next mark (the owner, 2026-10-13).
-            var fresh = nowSeconds - _shadowLetGoAt < LaneLeadSeconds;
+            // **UNLESS IT IS THE STATION THE SHADOW SHADOWED** (work instruction 584, round two): with one finder a station's own
+            // shadows stand beside it and are let go as it stands, and its backlog is its opening.
+            _shadowsLetGo.RemoveAll(g => nowSeconds - g.AtSeconds >= LaneLeadSeconds);
+
+            var fresh = _shadowsLetGo.Any(g => !(Math.Abs(g.OfHz - best.Sequence.PitchHz) <= HandoverHz));
 
             if (fresh)
             {
@@ -1545,6 +1563,7 @@ public sealed class CwEnvelopeDetector
             _bankLane = null;
             _held.Clear();
             _pausedAt.Clear();
+            _shadowsLetGo.Clear();
             Volatile.Write(ref _weakStationPitchHz, double.NaN);
             _laneKept.Clear();
             _laneClearSince.Clear();

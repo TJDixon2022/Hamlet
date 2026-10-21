@@ -57,6 +57,7 @@ public sealed class TheOneFinderTests(ITestOutputHelper output)
     /// standing within 50 Hz of each held pitch with their shapes.
     /// </remarks>
     [Theory]
+    [InlineData("w1aw-2026-10-07/piece-02")]
     [InlineData("cw-2026-10-02-200157")]
     [InlineData("cw-2026-10-03-221530")]
     [InlineData("cw-2026-10-03-221502")]
@@ -85,14 +86,14 @@ public sealed class TheOneFinderTests(ITestOutputHelper output)
                 chain.Process(new AudioChunk(at, audio.SampleRate, audio.Samples.AsSpan(at, chunk)));
                 now = (at + chunk) / (double)audio.SampleRate;
 
-                if (one && (int)now != lastSecond && chain.Detector.Bank is { } bank)
+                if (one && (int)(now * 4) != lastSecond && chain.Detector.Bank is { } bank)
                 {
-                    lastSecond = (int)now;
+                    lastSecond = (int)(now * 4);
 
                     var standing = bank.Standing(now);
                     var held = chain.Detector.HeldStations;
 
-                    lanes.Add(string.Create(Inv, $"{lastSecond,3} s held [{string.Join(", ", held.Select(h => $"{h.PitchHz:0}/{CwLaneBank.DitSeconds[h.Dit] * 1000:0}"))}] standing [{string.Join(", ", standing.OrderBy(s => s.Sequence.PitchHz).Select(s => $"{s.Sequence.PitchHz:0}/{CwLaneBank.DitSeconds[s.Dit] * 1000:0} {s.Sequence.Shape.Score:0.00}"))}]"));
+                    lanes.Add(string.Create(Inv, $"{lastSecond / 4.0,5:0.00} s held [{string.Join(", ", held.Select(h => $"{h.PitchHz:0}/{CwLaneBank.DitSeconds[h.Dit] * 1000:0}"))}] standing [{string.Join(", ", standing.Where(s => s.Sequence.Shape.Score >= 0.1).OrderBy(s => s.Sequence.PitchHz).Select(s => $"{s.Sequence.PitchHz:0}/{CwLaneBank.DitSeconds[s.Dit] * 1000:0} {s.Sequence.Shape.Score:0.00}"))}]"));
                 }
             }
 
@@ -102,6 +103,7 @@ public sealed class TheOneFinderTests(ITestOutputHelper output)
             output.WriteLine("  text: " + string.Concat(letters.Select(l => l.Split(' ')[1].Split('@')[0])));
             output.WriteLine("  letters: " + string.Join("  ", letters));
             output.WriteLine("  holds: " + string.Join("; ", trace));
+            output.WriteLine("  lane shadows held: " + string.Join("; ", chain.Detector.ShadowsHeld.Where(h => h.Finder == "lane" && h.AtSeconds < 40).Select(h => string.Create(Inv, $"{h.AtSeconds:0.00} s {h.PitchHz:0} of {h.OfPitchHz:0} share {h.Share:0.00}"))));
 
             foreach (var line in lanes)
             {
