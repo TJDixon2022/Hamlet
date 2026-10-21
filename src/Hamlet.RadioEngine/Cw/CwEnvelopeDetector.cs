@@ -2030,6 +2030,12 @@ public sealed class CwEnvelopeDetector
         UpdateWindows(hop, nowSeconds);
 
         // **THE LANE BANK READS ALONGSIDE** (work instruction 569, task 1): its marks form sequences in its own gates.
+        // **A LANE HEARS THE OPENING** (work instruction 586): only with the bank as the finder.
+        if (_bank is not null)
+        {
+            _bank.HearsTheOpening = BankFinding && CwRules.On(CwRules.LaneHearsTheOpening);
+        }
+
         _bank?.Hop(nowSeconds);
 
         if (BankFinding)

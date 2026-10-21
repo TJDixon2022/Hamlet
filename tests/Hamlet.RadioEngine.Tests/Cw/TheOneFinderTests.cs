@@ -61,6 +61,8 @@ public sealed class TheOneFinderTests(ITestOutputHelper output)
     [InlineData("w1aw-2026-10-07/piece-02")]
     [InlineData("cw-2026-10-02-200157")]
     [InlineData("cw-2026-10-03-221530")]
+    [InlineData("cw-2026-10-03-221745")]
+    [InlineData("cw-2026-10-03-144020")]
     [InlineData("cw-2026-10-03-221502")]
     public void TheLargestLossTraced(string recording)
     {
@@ -308,7 +310,7 @@ public sealed class TheOneFinderTests(ITestOutputHelper output)
     }
 
     // Reads audio through the app's chain at a passband, as the scoreboard does, with the detector set up first and looked at each 0.25 s.
-    private static string Read(float[] samples, int rate, double pitch, double width, Action<CwEnvelopeDetector> setUp, Action<CwEnvelopeDetector, double>? each = null, Action<CwCharacter, IReadOnlyList<CwMark>>? run = null)
+    internal static string Read(float[] samples, int rate, double pitch, double width, Action<CwEnvelopeDetector> setUp, Action<CwEnvelopeDetector, double>? each = null, Action<CwCharacter, IReadOnlyList<CwMark>>? run = null)
     {
         using var chain = new CwChain(rate);
 

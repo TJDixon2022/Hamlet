@@ -151,6 +151,15 @@ internal static class CwRules
     /// </summary>
     public const string TwoLanes = "with one finder, a station is heard in two lanes";
 
+    /// <summary>
+    /// **A LANE HEARS THE OPENING** (work instruction 586, HM-DEC-290): with <see cref="BankFinds"/>, a bank lane takes its key-up and
+    /// key-down once it holds a dah of hops rather than a second; while it holds nothing its key-down is the greater of its 90th
+    /// percentile and the top of its last dah; and a mark begins where its level rose. Traced: at the start of audio a lane had no
+    /// lines for its first second, and after quiet its key-down reached the station's level about a second after its first mark.
+    /// Takes effect only under <see cref="BankFinds"/>.
+    /// </summary>
+    public const string LaneHearsTheOpening = "with one finder, a lane hears a station from its first mark";
+
 
 
 

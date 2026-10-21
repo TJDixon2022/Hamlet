@@ -116,6 +116,17 @@ internal sealed class CwLaneBank
     /// </summary>
     public Func<int, CwMark, bool>? Admits { get; set; }
 
+    /// <summary>
+    /// **A LANE HEARS THE OPENING** (work instruction 586, <see cref="CwRules.LaneHearsTheOpening"/>): set by the detector each hop. Where
+    /// true, a lane takes its lines once it holds <see cref="OpeningDits"/> of its dit in hops rather than a second; while it holds nothing
+    /// its key-down is the greater of its 90th percentile and the top of its last <see cref="OpeningDits"/> dits, the median of their
+    /// loudest quarter; and a mark begins where its level rose, as a grid mark does.
+    /// </summary>
+    public bool HearsTheOpening { get; set; }
+
+    /// <summary>How many of a lane's own dits the opening's ceiling is read over: three, a dah.</summary>
+    public const int OpeningDits = 3;
+
     /// <summary>Every mark that stood in the bank, in order, for the detector to hand on or keep.</summary>
     public List<(int Dit, CwMark Mark)> Stood { get; } = [];
 
@@ -151,7 +162,7 @@ internal sealed class CwLaneBank
             {
                 var held = ((Held is { } h && h.Dit == d && Math.Abs(h.PitchHz - p.Hz) <= SpacingHz / 2) || IsHeld(d, p.Hz)) && CwRules.On(CwRules.HeldLaneReads);
 
-                var called = p.Lanes[d].Hop(nowSeconds, _hopSeconds, held);
+                var called = p.Lanes[d].Hop(nowSeconds, _hopSeconds, held, HearsTheOpening);
 
                 if (held && HeldTrace is { } trace)
                 {
@@ -334,7 +345,10 @@ internal sealed class CwLaneBank
 
         public double Up => _up;
 
-        public double Down => _down;
+        public double Down => double.IsNaN(_ceiling) ? _down : _ceiling;
+
+        // The key-down the last hop read against: _down, or with the opening heard the greater of it and the top of the last dah.
+        private double _ceiling = double.NaN;
 
         public double Level { get; private set; } = double.NaN;
 
@@ -344,7 +358,7 @@ internal sealed class CwLaneBank
             _lastQ = _q[1].Next(_q[0].Next(q));
         }
 
-        public (double From, double To, double LevelDb, double ContrastDb)? Hop(double now, double hopSeconds, bool held)
+        public (double From, double To, double LevelDb, double ContrastDb)? Hop(double now, double hopSeconds, bool held, bool opening = false)
         {
             var level = 10 * Math.Log10((2 * ((_lastI * _lastI) + (_lastQ * _lastQ))) + 1e-20);
 
@@ -354,7 +368,11 @@ internal sealed class CwLaneBank
             _next = (_next + 1) % HistoryHops;
             _count = Math.Min(_count + 1, HistoryHops);
 
-            if (++_sinceRefresh >= RefreshHops && _count >= HistoryHops / 3)
+            var openingHops = Math.Max(4, (int)Math.Round(OpeningDits * _dit / hopSeconds));
+
+            // **THE LINES FROM THE FIRST DAH** (work instruction 586): with the opening heard, a lane short of a second of history
+            // takes its lines every hop once it holds a dah of hops, so the start of the audio is read as the grid reads it.
+            if ((++_sinceRefresh >= RefreshHops && _count >= HistoryHops / 3) || (opening && _count >= openingHops && _count < HistoryHops / 3))
             {
                 _sinceRefresh = 0;
 
@@ -365,7 +383,29 @@ internal sealed class CwLaneBank
                 _down = _sorted[(int)(0.9 * _count)];
             }
 
-            var contrast = _down - _up;
+            // **THE CEILING FROM THE LAST DAH** (work instruction 586): while the lane holds nothing, its key-down is the greater of
+            // its 90th percentile and the median of the loudest quarter of its last dah of hops, so a station's first dah lifts it.
+            var down = _down;
+
+            if (opening && !held && _count >= openingHops && double.IsFinite(_down))
+            {
+                var last = new double[openingHops];
+
+                for (var k = 0; k < openingHops; k++)
+                {
+                    last[k] = _levels[(_next - 1 - k + HistoryHops) % HistoryHops];
+                }
+
+                Array.Sort(last);
+
+                var quarter = Math.Max(1, openingHops / 4);
+
+                down = Math.Max(_down, last[openingHops - 1 - (quarter / 2)]);
+            }
+
+            _ceiling = down;
+
+            var contrast = down - _up;
 
             // A held lane is not dropped by its own floor (work instruction 575): see Held.
             if (!double.IsFinite(contrast) || contrast <= 0 || (contrast < MinContrastDb && !held))
@@ -376,17 +416,33 @@ internal sealed class CwLaneBank
 
             if (double.IsNaN(_from))
             {
-                if (level >= _down - (0.4 * contrast))
+                if (level >= down - (0.4 * contrast))
                 {
                     _from = now;
                     _sum = level;
                     _span = 1;
+
+                    // **AND IT BEGINS WHERE IT ROSE** (work instruction 586): the ceiling reaches a station a quarter of a dah into
+                    // its first mark, so the mark reaches back over the hops before it that stood over the same line.
+                    for (var k = 1; opening && !held && k < Math.Min(openingHops, _count); k++)
+                    {
+                        var before = _levels[(_next - 1 - k + HistoryHops) % HistoryHops];
+
+                        if (before < down - (0.4 * contrast))
+                        {
+                            break;
+                        }
+
+                        _from = now - (k * hopSeconds);
+                        _sum += before;
+                        _span++;
+                    }
                 }
 
                 return null;
             }
 
-            if (level >= _down - (0.6 * contrast))
+            if (level >= down - (0.6 * contrast))
             {
                 _sum += level;
                 _span++;
