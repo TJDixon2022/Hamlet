@@ -788,8 +788,16 @@ internal sealed class CwPatternGate
             var heights = _recent.Select(r => r.OwnContrastDb).Where(double.IsFinite).OrderBy(c => c).ToList();
             var height = heights.Count > 0 ? heights[heights.Count / 2] : double.NaN;
 
+            var tolerance = CwSenderGate.LevelToleranceDb(height);
+
+            // Through a fade the tolerance grows by the sequence's own pace since the marks its level is read from (HM-DEC-286).
+            if (CwRules.On(CwRules.FollowsTheFade) && _recent.Count >= 3)
+            {
+                tolerance += CwSenderGate.FollowDb(_recent, (m.FromSeconds + m.ToSeconds) / 2);
+            }
+
             return Math.Abs(m.PitchHz - pitch) <= AgreeHz
-                && Math.Abs(m.LevelDb - level) <= CwSenderGate.LevelToleranceDb(height);
+                && Math.Abs(m.LevelDb - level) <= tolerance;
         }
 
         /// <summary>The mean dit and dah of the recent marks where they split in two, or null (work instruction 516).</summary>

@@ -116,6 +116,10 @@ internal static class CwRules
     /// <summary>A sender whose dah is under twice his dit shows two kinds where two means part his marks into stable clusters (work instruction 577); built, measured and left off (HM-DEC-281), its dit floored at Morse's fastest and measured on the fist bank (HM-DEC-285), and on since the owner's ruling of 2026-10-20.</summary>
     public const string ShortDah = "two kinds from stable clusters under a jump of two";
 
+    /// <summary>A sender's level is followed through a fade at its own pace: the level tolerance grows by the rate its last <see cref="CwSenderGate.FollowMarks"/> marks moved (work instruction 582); built, measured and left off (HM-DEC-286).</summary>
+    public const string FollowsTheFade = "a sender is followed through a fade at its own pace";
+
+
     /// <summary>Every rule kept, in the order the work instruction names them.</summary>
     /// <remarks>
     /// **THREE RULES EARNED THEIR PLACE; TEN LEFT THE TREE** (work instruction 541, HM-DEC-245): of the thirteen work
@@ -137,7 +141,7 @@ internal static class CwRules
     /// The rules that ship off, built and measured and not taken: off unless a test chooses one on this thread with
     /// <see cref="Choose"/> (work instruction 565).
     /// </summary>
-    public static readonly IReadOnlySet<string> OffByDefault = new HashSet<string>(StringComparer.Ordinal) { BetweenClusters, StraddleSplit, GridStepsAside, HoldWaitsAndFits };
+    public static readonly IReadOnlySet<string> OffByDefault = new HashSet<string>(StringComparer.Ordinal) { BetweenClusters, StraddleSplit, GridStepsAside, HoldWaitsAndFits, FollowsTheFade };
 
     [ThreadStatic]
     private static HashSet<string>? _chosen;

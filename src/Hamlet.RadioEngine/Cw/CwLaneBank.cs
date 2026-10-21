@@ -98,6 +98,12 @@ internal sealed class CwLaneBank
     /// </summary>
     internal List<(double At, double PitchHz, bool Mark, double From, double To, double LevelDb, double UpDb, double DownDb, double ContrastDb)>? HeldTrace { get; set; }
 
+    /// <summary>A lane to trace whether or not it is held, by dit index and pitch, for the tests (work instruction 582).</summary>
+    internal (int Dit, double PitchHz)? Probe { get; set; }
+
+    /// <summary>Where set, every hop of the <see cref="Probe"/> lane, as <see cref="HeldTrace"/> keeps the held lane's.</summary>
+    internal List<(double At, double PitchHz, bool Mark, double From, double To, double LevelDb, double UpDb, double DownDb, double ContrastDb)>? ProbeTrace { get; set; }
+
     /// <summary>Every mark that stood in the bank, in order, for the detector to hand on or keep.</summary>
     public List<(int Dit, CwMark Mark)> Stood { get; } = [];
 
@@ -140,6 +146,15 @@ internal sealed class CwLaneBank
                     var lane = p.Lanes[d];
 
                     trace.Add(called is { } c
+                        ? (nowSeconds, p.Hz, true, c.From, c.To, c.LevelDb, lane.Up, lane.Down, c.ContrastDb)
+                        : (nowSeconds, p.Hz, false, double.NaN, double.NaN, lane.Level, lane.Up, lane.Down, lane.Down - lane.Up));
+                }
+
+                if (Probe is { } pr && pr.Dit == d && Math.Abs(pr.PitchHz - p.Hz) <= SpacingHz / 2 && ProbeTrace is { } probe)
+                {
+                    var lane = p.Lanes[d];
+
+                    probe.Add(called is { } c
                         ? (nowSeconds, p.Hz, true, c.From, c.To, c.LevelDb, lane.Up, lane.Down, c.ContrastDb)
                         : (nowSeconds, p.Hz, false, double.NaN, double.NaN, lane.Level, lane.Up, lane.Down, lane.Down - lane.Up));
                 }

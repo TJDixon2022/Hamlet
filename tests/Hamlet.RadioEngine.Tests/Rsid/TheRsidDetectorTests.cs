@@ -113,8 +113,11 @@ public sealed class TheRsidDetectorTests
 
     /// <summary>**1.7, nice-to-pass: the detector keeps up with real time on a busy passband.**</summary>
     /// <remarks>
-    /// <para>**THE RATIO IS CPU OVER AUDIO**, from the process's own processor time, so it is
-    /// honest only when this runs filtered and alone; the wall clock is printed beside it. The
+    /// <para>**THE RATIO IS CPU OVER AUDIO**, from this test thread's own processor time, by the
+    /// owner's ruling of 2026-10-21 (HM-DEC-286): the process's time counted every test running
+    /// beside it, and the engine line's parallel guards made it red while the detector itself ran
+    /// at a sixth of real time. The detector runs on the calling thread alone, so the thread's time
+    /// is all of its work; the wall clock is printed beside it. The
     /// PSK31 recording is `assets/fixtures/psk31-four-signals.wav`, the 8000 Hz one of the pair,
     /// four carriers and no burst; the Olivia recording is the two-signal fixture.</para>
     /// <para>**THE FOUR-SIGNAL FILE IS NOT IN THE OLIVIA MANIFEST**, so it is not hashed here;
@@ -132,7 +135,7 @@ public sealed class TheRsidDetectorTests
         foreach (var path in files)
         {
             var audio = WavAudio.Read(path);
-            var cpu = Process.GetCurrentProcess().TotalProcessorTime;
+            var cpu = ThreadCpu();
             var clock = Stopwatch.StartNew();
 
             var heard = RsidDetector.Detect(
@@ -140,20 +143,46 @@ public sealed class TheRsidDetectorTests
 
             clock.Stop();
 
-            var ratio = (Process.GetCurrentProcess().TotalProcessorTime - cpu).TotalSeconds / audio.Duration.TotalSeconds;
+            var ratio = (ThreadCpu() - cpu).TotalSeconds / audio.Duration.TotalSeconds;
 
             _output.WriteLine(
                 $"{System.IO.Path.GetFileName(path)}: {audio.SampleRate} Hz, {audio.Duration.TotalSeconds:0.00} s of audio, "
                 + $"wall {clock.Elapsed.TotalSeconds:0.000} s ({clock.Elapsed.TotalSeconds / audio.Duration.TotalSeconds:0.000} of real time), "
-                + $"cpu/audio {ratio:0.000}, bursts heard {heard.Count}"
+                + $"thread cpu/audio {ratio:0.000}, bursts heard {heard.Count}"
                 + string.Concat(heard.Select(h => $"; {h.Name} at {h.CenterHz:0.00} Hz")));
 
-            Assert.True(ratio < 1.0, $"{System.IO.Path.GetFileName(path)}: cpu/audio {ratio:0.000}");
+            Assert.True(ratio < 1.0, $"{System.IO.Path.GetFileName(path)}: thread cpu/audio {ratio:0.000}");
         }
     }
 
+    /// <summary>
+    /// The processor time the calling thread has used, kernel and user, from Windows'
+    /// <c>GetThreadTimes</c>; elsewhere the process's, which is what the test read before.
+    /// </summary>
+    private static TimeSpan ThreadCpu()
+    {
+        if (!OperatingSystem.IsWindows())
+        {
+            return Process.GetCurrentProcess().TotalProcessorTime;
+        }
+
+        if (!GetThreadTimes(GetCurrentThread(), out _, out _, out var kernel, out var user))
+        {
+            throw new InvalidOperationException("GetThreadTimes failed");
+        }
+
+        return TimeSpan.FromTicks(kernel + user);
+    }
+
+    [System.Runtime.InteropServices.DllImport("kernel32.dll", SetLastError = true)]
+    private static extern bool GetThreadTimes(
+        IntPtr thread, out long creation, out long exit, out long kernel, out long user);
+
+    [System.Runtime.InteropServices.DllImport("kernel32.dll")]
+    private static extern IntPtr GetCurrentThread();
+
     private static RsidCodes Codes
-        => OliviaData.Current.Rsid ?? throw new InvalidOperationException(OliviaData.Current.Problem);
+        =>OliviaData.Current.Rsid ?? throw new InvalidOperationException(OliviaData.Current.Problem);
 
     /// <summary>The fldigi name a manifest variant is announced under.</summary>
     private static string NameFor(string variant)

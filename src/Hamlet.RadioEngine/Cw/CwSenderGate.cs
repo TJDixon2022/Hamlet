@@ -397,6 +397,75 @@ public sealed class CwSenderGate
     /// </remarks>
     public static double LevelToleranceDb(double contrastDb) => 2 * CwEnvelopeDetector.ToleranceDb(contrastDb);
 
+    /// <summary>How many of a sender's last marks its pace through a fade is read over: eight (work instruction 582).</summary>
+    internal const int FollowMarks = 8;
+
+    /// <summary>How much of a sender's own pace the level tolerance grows by, per second since its last mark: one and a half.</summary>
+    internal const double FollowPace = 1.5;
+
+    /// <summary>
+    /// **THE FADE: A SENDER IS FOLLOWED AT ITS OWN PACE** (work instruction 582, HM-DEC-286, <see cref="CwRules.FollowsTheFade"/>):
+    /// how far past the level tolerance a mark at <paramref name="atSeconds"/> may sit from the mean of the sender's last three marks and still be his.
+    /// </summary>
+    /// <param name="recent">The sender's recent marks, oldest first.</param>
+    /// <param name="atSeconds">The middle of the mark being judged.</param>
+    /// <returns>The extra decibels: none for fewer than three marks.</returns>
+    /// <remarks>
+    /// <para>**THE TRACE THAT NAMED IT.** On the fist bank's 12 dB of QSB at 0.7 Hz every mark's level follows the fade to within
+    /// a decibel, and a station moves up to 7 dB between one mark and the next, where the sender gate and the pattern gate held a
+    /// mark to twice a flat top's wobble, 3 dB, of the mean of the sender's last three: 101 of 139 marks of the 10 dB fist fell
+    /// outside it and the station was dealt among new senders, one letter printing a fade cycle.</para>
+    /// <para>**THE PACE IS THE SENDER'S OWN**: the median rate its level moved between its last <see cref="FollowMarks"/> marks,
+    /// times <see cref="FollowPace"/>, times the time since the marks its level is read from, and never more than the swing those
+    /// marks span, so a steady station is held about as tightly as before and a word gap does not open the tolerance past what the
+    /// station has shown it does.</para>
+    /// <para>**MEASURED AND LEFT OFF** (HM-DEC-286): the bank's fading half read 960 of 2880 from 439, but its flat half 2105 from
+    /// 2173, its invented 202 from 46, W1AW 2038 from 2111, and the 25 WPM 5 dB CQ printed 32 letters in the silence after it. It
+    /// is in both gates or neither: in either alone the fading fists read as without it.</para>
+    /// </remarks>
+    internal static double FollowDb(IReadOnlyList<CwMark> recent, double atSeconds)
+    {
+        if (!CwRules.On(CwRules.FollowsTheFade) || recent.Count < 3)
+        {
+            return 0;
+        }
+
+        var from = Math.Max(0, recent.Count - FollowMarks);
+        var rates = new List<double>();
+        var low = double.PositiveInfinity;
+        var high = double.NegativeInfinity;
+
+        for (var k = from; k < recent.Count; k++)
+        {
+            low = Math.Min(low, recent[k].LevelDb);
+            high = Math.Max(high, recent[k].LevelDb);
+
+            if (k > from)
+            {
+                rates.Add(Math.Abs(recent[k].LevelDb - recent[k - 1].LevelDb) / Math.Max(0.01, Middle(recent[k]) - Middle(recent[k - 1])));
+            }
+        }
+
+        rates.Sort();
+
+        // From the middle of the marks the reference is the mean of (CwPatternGate.LevelMarks), to the middle of this one.
+        var since = 0.0;
+
+        for (var k = recent.Count - CwPatternGate.LevelMarks; k < recent.Count; k++)
+        {
+            since += Middle(recent[k]) / CwPatternGate.LevelMarks;
+        }
+
+        var extra = FollowPace * rates[rates.Count / 2] * (atSeconds - since);
+
+        return double.IsFinite(extra) ? Math.Clamp(extra, 0, high - low) : 0;
+    }
+
+
+
+    private static double Middle(CwMark m) => (m.FromSeconds + m.ToSeconds) / 2;
+
+
     /// <summary>Take the marks called since the last batch, and end every run whose gap has passed.</summary>
     /// <param name="batch">The marks and the detector's clock.</param>
     public void Read(CwMarkBatch batch)
@@ -509,8 +578,15 @@ public sealed class CwSenderGate
         {
             var (pitch, level, contrast) = sender.Reference;
             var pitchOff = Math.Abs(mark.PitchHz - pitch);
-            var levelOff = Math.Abs(mark.LevelDb - level);
             var levelTolerance = LevelToleranceDb(contrast);
+
+            // Through a fade the tolerance grows by the sender's own pace since the marks its level is read from (HM-DEC-286).
+            if (CwRules.On(CwRules.FollowsTheFade) && sender.Latest is { Count: >= 3 } recent)
+            {
+                levelTolerance += FollowDb(recent, Middle(mark));
+            }
+
+            var levelOff = Math.Abs(mark.LevelDb - level);
 
             if (pitchOff > PitchToleranceHz || levelOff > levelTolerance)
             {
@@ -1049,6 +1125,9 @@ public sealed class CwSenderGate
     private sealed class Sender
     {
         private readonly List<CwMark> _recent = new();
+
+        /// <summary>The sender's recent marks, oldest first, for following it through a fade (work instruction 582).</summary>
+        public IReadOnlyList<CwMark> Latest => _recent;
         private readonly List<double> _elementGaps = new();
 
         // Each gap between runs with the time it ended, the start of the mark after it (work instruction 524).
