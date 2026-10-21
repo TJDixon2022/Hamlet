@@ -4,6 +4,57 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-288
+date: 2026-10-21
+refs: work instruction 584, HM-DEC-287, HM-DEC-284, HM-DEC-280, HM-DEC-276, HM-DEC-275, HM-DEC-274, src/Hamlet.RadioEngine/Cw/CwRules.cs, src/Hamlet.RadioEngine/Cw/CwEnvelopeDetector.cs, src/Hamlet.RadioEngine/Cw/CwLaneBank.cs, src/Hamlet.RadioEngine/Cw/CwShadow.cs, src/Hamlet.RadioEngine/Cw/CwPatternGate.cs, src/Hamlet.RadioEngine/Cw/CwSenderGate.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheOneFinderTests.cs
+---
+
+**One finder: the bank finds every station. Built behind `CwRules.BankFinds` in three rounds, measured, left off.**
+
+**The design.** With `BankFinds` on:
+- the grid's marks reach neither the pattern gate nor the sender gate. The grid stays for the scope, and the verdict, the light and the scope read the bank's standing lanes;
+- a lane stands by the rules it has. One standing at shape 0.4 or better, not a carrier and not a shadow, is held at once, with no wait, and hands on what it stood on and every mark after. Its marks are its station's, with no level test in either gate;
+- one station per pitch: of the lanes within 50 Hz at 0.4, the one whose dit is nearest the dit their two kinds give, or the best-shaped while they are not two. The others there feed nothing while it holds, and a held lane moves to a lane that fits better by more than 1.2;
+- the hold ends when its sequence stops standing, when it is judged a carrier or a shadow, or in a pause of three of its sender's word gaps. After a pause, a lane there is held again only once it has stood on a new mark of its own. There is no clock;
+- neither the station's own window nor a provisional window opens; the held lane is the window.
+
+The bank exists only across the rig's passband, so without one the grid finds as before.
+
+**The rounds.**
+- **Round one, the design as above.** The largest loss was W1AW, 2111 to 2006, and `piece-02` the most (388 to 326).
+- **Round two.** Traced on `piece-02` and the first recording: the station was held with no backlog, because the rule that a lane found within 3 s of a shadow let go hands on no backlog was struck by the station's own shadows, held and let go as it stood. Fix: that rule spares the lane within 50 Hz of the station the shadow shadowed. W1AW 2026; the twelve-plus-three unchanged, since there the shadows were judged against one another before the station stood.
+- **Round three.** Traced on `piece-01`: the station's own held lane was judged the shadow of its leakage and let go, re-held with no backlog, and the `1` of `W1AW` lost a dah. The shadow test takes the stronger by contrast, and each lane's contrast is over its own key-up, which says nothing about which lane carries the station. Fix: with one finder, lane is judged against lane by level, `CwShadow.IsLaneShadowOf`.
+
+**Measured, round three against as shipped:**
+- the fist bank: 3772 of 5760 from 2612, score 2853 from 1891, invented 7 from 46;
+- the fading half: 1111 of 2880 from 439; the flat half 2661 from 2173;
+- the four 5 dB CQs: 80 of 84 from 71; the 0 dB CQs 32 of 84 from 0;
+- the working receiver fixtures: 20 of 81 from 4; `two-station` 24 of 27 from 18;
+- the twelve-plus-three: 239 from 297, 279 right, 33 wrong, 7 invented, spaces 82 of 110 with 14 added; the first recording `ER C H AT<BT> BEST 7V 73 <SK> KC4ZGP DEWA`;
+- W1AW: 2111, 2124 of 2151, 10 wrong, 3 invented;
+- the easy fixtures: 71 of 90 from 77, `tightfist-easy` 0 of 14 from 13;
+- the random carrier: four seeds, 5195, 5201, 5207 and 5208; the steady carrier and noise nothing;
+- strays: the highest old capture 2.3 per 10 s; summed, 23.7 from 26.8;
+- in round one, nothing in the noise after the weak CQs, and the short-dah rows and the nine hands held their guards.
+
+**CPU**, W1AW `piece-04`: 191.0 s with one finder against 181.9 s with two, 5% more.
+
+**It does not ship.** By section 4 of the order it fails on:
+- the twelve-plus-three, 239 against 297 (outside the owner's-ruling band of 294);
+- W1AW's invented letters, 3 from 0;
+- the fading half, 1111 against 1,200;
+- the easy fixtures, 71 against 77;
+- the random carrier, four seeds against two.
+
+`BankFinds` is in `CwRules.OffByDefault`, chosen only by a test. As shipped, every reading is as at HEAD: 297 and 2111.
+
+**The seam's rules, with `BankFinds` on:**
+- `LaneLeadSeconds` gates nothing; it is still the window for the shadow-backlog rule;
+- the grid-first rule, the take-back, `GridStepsAside`, `HoldWaitsAndFits` and `HeldLanePrintsWithinSeconds` live only in the handover, which does not run.
+
+All are left for the off path. The tag `before-one-finder` holds the tree before this unit. Ordered by work instruction 584.
+
+---
 id: HM-DEC-287
 date: 2026-10-21
 refs: work instruction 583, HM-DEC-286, HM-DEC-284, HM-DEC-282, HM-DEC-276, src/Hamlet.RadioEngine/Cw/CwMark.cs, src/Hamlet.RadioEngine/Cw/CwLaneBank.cs, src/Hamlet.RadioEngine/Cw/CwEnvelopeDetector.cs, src/Hamlet.RadioEngine/Cw/CwPatternGate.cs, src/Hamlet.RadioEngine/Cw/CwSenderGate.cs, src/Hamlet.RadioEngine/Cw/CwRules.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheFadeTraceTests.cs

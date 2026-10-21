@@ -1,32 +1,39 @@
-# Work instruction 583 - A held lane's marks are its station's: no level test on them
+# Work instruction 584 - One finder: the bank finds every station, and the grid retires
 
-**Hand run. One fault, one yardstick with a truth, one rule, one commit, plus the record.**
+**Hand run. A rebuild of the finding path, behind a switch, measured in up to three rounds, one
+commit per round plus the record.** Tag **`before-one-finder`** before the first change.
 
-**The fault, as the tree traced it** (`TheFadeTraceTests`, unit 582). On a hand under 12 dB of
-QSB at 0.7 Hz, **the bank's lane reads the station almost whole** - 172 of 173 marks at 20 dB,
-143 of 173 at 10 dB. **What breaks it is the gates:** the sender gate and the pattern gate hold a
-mark to a sender only if its level is within 3 dB of the mean of his last three marks, and the
-fade moves a station up to 7 dB between one mark and the next. So one station is dealt out
-among new senders and **one letter prints per fade cycle**. At 20 dB a second blocker: the grid's
-flat-top test (1.5 dB) rejects a dah that tilts on a slope, the grid hands on 99 of 173, and the
-grid's standing sequence keeps the lane from being handed on, so 20 dB fading reads worse than
-10 dB. The rule that let the tolerance grow with the sender's pace read the fading half 439 to
-960 but admitted noise everywhere else (invented 46 to 202, W1AW 2111 to 2038) and ships off.
+**Why, in the tree's own figures.** On a fading hand the bank's lane reads the station almost
+whole - 172 of 173 marks at 20 dB - and where the lane holds it, every mark it hands on prints
+(20 of 20, `KEN NICE TO`). It fails because the lane is seldom allowed to hold: the grid stands
+the station first, in pieces, and blocks the lane (10 dB), or takes the station back within six
+seconds and the lane's kept marks are dropped (20 dB). Over seven units the seam between the two
+finders has gathered seven rules - the wait, the grid first, the carrier check, the shadow rule,
+the step-aside, the hold, the hold's end - and the last four units were each a patch to the one
+before. **The seam is the fault. This unit removes it.**
 
-**The rule this unit builds is the one the architecture implies.** A lane is the station's own
-matched filter at the station's own pitch; a mark a *held* lane calls is that station's mark by
-construction. The level test exists to sort the grid's unowned marks into senders. **It has no
-business re-judging a held lane's marks.**
+**The design.** The lane bank (25 Hz lanes, three dit sizes, the sender window's own filter) is
+the finder for every station, strong and weak. A station is found, stood, judged Sure, held,
+read and released on its lane. The grid's marks no longer reach the pattern gate or the sender
+gate; the grid stays for the scope display and for nothing else. There is no handover, so the
+wait (`LaneLeadSeconds`), the grid-first rule, the take-back, the step-aside (`GridStepsAside`),
+the lane-fits-the-station pick (`HoldWaitsAndFits`) and the hold's fallback clock go. What
+stays, now as the only path: the carrier check and the shadow rule (lane against lane), the
+floor governing standing and not holding (`HeldLaneReads`), the hold ending in a pause on the
+printed sender's own word gaps (`HeldLanePause`), and a lane's marks being its station's with no
+level test (`HeldLaneMarksAreItsStations`). The short dah stays as it ships.
 
-**Standing rules** (HM-DEC-276) apply; and from HM-DEC-284, *every rule ships against a truth*.
-Engine line 1500 s, survey 1800 s, `--no-build` after one build, build servers shut down first.
+**Standing rules** (HM-DEC-276) apply, with one change for a rebuild: **up to three rounds** of
+measure, trace the largest loss, fix, measure again, each round one commit. From HM-DEC-284,
+every round ships against the same truths. Engine line 1500 s, survey 1800 s, `--no-build`
+after one build per round, build servers shut down first.
 
 Earlier unit numbers are not cited: each part of the tree is described by what it does.
 
 **Nothing keys or transmits. Nothing is written to the radio. No recording is added, removed or
 promoted.**
 
-**Numbering.** This is unit 583, ruling HM-DEC-287. If taken, use the next free and say so.
+**Numbering.** This is unit 584, ruling HM-DEC-288. If taken, use the next free and say so.
 
 ---
 
@@ -59,93 +66,107 @@ If all five hold, say "Hamlet confirmed" and continue.
   to `RUN_LEDGER.md`. Touch nothing under `tools\arbiter\`. Tick nothing in `PHASE_PLAN.md`.
 - One `dotnet test` invocation per line, filtered, with a `timeout`.
 - Apostrophes in quoted heredocs break; `;` is refused; Python cannot run here; `-m` more than
-  once for a multi-line commit. Scripts go in `.run-unit\unit583-<name>.sh`, not committed.
-- **The one layout holds**: nothing on screen moves.
+  once for a multi-line commit. Scripts go in `.run-unit\unit584-<name>.sh`, not committed.
+- **The one layout holds**: nothing on screen moves. The scope keeps the grid.
 - `output.md` at the root, four headings exactly: `## 1. What Claude did`, `## 2. What the owner
   should expect`, `## 3. What you should see`, `## 4. What's blocking us`. Status on the tree's
   own triggers; the phase count as `PHASE_STATUS.md` holds it; the asks list carried forward.
 
 ---
 
-## 2. The one rule
+## 2. Round one - the bank as the finder, behind `CwRules.BankFinds`
 
-**`CwRules.HeldLaneMarksAreItsStations`** (or the tree's naming): a mark handed on from a lane
-that holds a station goes to that station's sender **without the level test** in either gate -
-no 3 dB-of-the-last-three, no flat-top test - and its kind is judged by length against the
-station's own clusters as now. Everything else about the mark is as now: it still counts toward
-the hold's clock, the shape score, the carrier and shadow checks, the end of the hold; the
-station is still let go by the gate's own release under shape 0.1, and the hold still ends in a
-pause. **The grid's marks are untouched:** the level test and the flat-top test apply to them
-exactly as now, so every steady sender read through the grid keeps every guard it has. Where a
-held lane's station is also fed grid marks at its pitch (the handover already keeps the grid's
-pieces out while a lane holds - confirm), nothing changes there.
+1. **The gates take only lane marks.** With `BankFinds` on, the grid's marks are not offered
+   to the pattern gate or the sender gate. Every sequence, candidate, standing station, Sure
+   judgement and held station is on a lane. The scan's catch ear, the capture triggers and the
+   sheet's `senders` line read from the lanes.
+2. **One station per pitch.** Where more than one lane within 50 Hz stands at shape 0.4 or
+   better, the station is the one whose lane's dit is nearest the dit its two kinds give (the
+   tree already does this pick; keep it), and the other lanes at that pitch feed nothing while
+   it holds. Where the kinds are not yet two, the best-shaped lane.
+3. **Standing and holding.** A lane stands by the rules it has (shape, two kinds, the carrier
+   and shadow checks, the 12 dB floor). A standing lane whose station is Sure is held and read
+   at once - there is no wait and nothing to wait for. The floor governs standing only. A held
+   lane's marks are its station's, with no level test. The hold ends in a pause on the printed
+   sender's own word gaps, or when the lane's sequence stops standing, or by the carrier or
+   shadow checks; it has no fallback clock.
+4. **The station's window.** Today a handed-on station opens its own window sized to the dit the
+   gate measures. With the bank as the finder the held lane is that window: once the kinds are
+   two, the lane of the nearest dit at that pitch is the one read (step 2), and no second
+   window opens.
+5. **The seam's rules** - `LaneLeadSeconds`, the grid-first rule, the take-back, `GridStepsAside`,
+   `HoldWaitsAndFits`, `HeldLanePrintsWithinSeconds` - do nothing with `BankFinds` on. Say in
+   one line each what becomes of them in the code (left for the off path this unit; removed
+   next unit if the rebuild ships).
+6. **CPU:** measure the chain on W1AW piece-04 with `BankFinds` on against off; the grid's marks
+   are no longer gated, so it may fall. Say the figure.
 
-**Measured with `CwRules.GridStepsAside` chosen on** (built, off, harmless on every board:
-297, 2111, CQs 71, easy +2), because at 20 dB fading the grid stands and blocks the lane, and
-the rule can only act once the lane holds the station. **If the pair ships, both ship.**
+**Measure once** - the survey (the bank, the boards, every fixture group, the strays), the hard
+limits with the carrier at twenty seeds and the steady carrier, the weak-end, short-dah and
+straight-key guards.
 
-**The trace, first, on the same two fists** as the last unit (`fist-r2.5-20wpm-10db-fade`,
-`-20db-fade`): per fade cycle, the marks the held lane handed on, how many the gates kept for
-the station as shipped and with the rule, how many senders the station was dealt among, and
-the letters printed. One table per fist, cycle rows, as before.
+## 3. Rounds two and three - trace the largest loss, fix, measure
 
-Build it, measure once.
+If round one fails the bar, **trace the single largest loss** against HEAD (the board or group
+that fell most, to its stretch or fist, to the second, to what the lane did there against what
+the grid had done), fix the one thing the trace names, commit, measure again. Twice at most.
+Each round's figures go in the report's table.
 
-## 3. The measure, and the ship
+## 4. The bar, and the ship
 
-**Ships on by default (with `GridStepsAside`) only if:**
+**`BankFinds` ships on by default only if, at the end of the last round:**
 
-- **the bank's fading half rises from 439 of 2,880 to 1,200 or better**, and the flat half does
-  not fall below 2,173 less 2% (2,129);
-- **the bank's score rises from 1,891, invented not above 50**;
-- **the working receiver fixtures rise from 4 of 81**, each read reported;
-- **both boards hold:** 297 and 2111, wrong and invented not rising, spaces not worse;
-- **the weak-end guard holds:** the four 5 dB CQs at 71 of 84 or better; **nothing in the 20 s of
-  noise after them** (the last rule printed 32 letters there - this one must not); the
-  short-dah rows and the nine hands hold their guards;
+- **both boards hold:** the twelve-plus-three **297** or better, W1AW **2111** or better, wrong
+  and invented not rising, spaces not worse;
+- **the fist bank's total score rises from 1,891**, invented not above 50; **the fading half
+  rises from 439 to 1,200 or better**; the flat half not below 2,129;
+- **the weak-end guard holds:** the four 5 dB CQs at 71 of 84 or better; nothing in the 20 s of
+  noise after them; the short-dah rows and the nine hands hold their guards;
 - **the hard limits:** noise prints nothing, the random carrier at no more than two seeds, the
   steady carrier at none, the first recording whole, nothing in silences, no old capture above
   six strays per 10 s; the summed strays reported;
-- the easy fixtures not worse than 77 of 90.
+- the easy fixtures not worse than 77 of 90; the working fixtures reported; `two-station`
+  reported.
 
-If it fails, say which condition, by how much, which fist; leave it as a rule only a test can
-choose; keep the trace. If everything holds but the fading half lands between 900 and 1,200,
-put the figures under *For the owner's ruling*.
+**For the owner's ruling, not a fail:** if everything holds but one board is under by **no more
+than 1%** (the twelve-plus-three 294 or better, W1AW 2090 or better) while the fist bank's score
+rises by 20% or more, do not ship; put the full figures under *For the owner's ruling* with the
+stretch that fell and why.
 
-**If it fails on the fading half with the lane reading the station whole and the gates keeping
-its marks, say so in one paragraph:** that is the evidence that the grid must retire as a finder,
-and the next unit is that rebuild.
+If it fails otherwise: say which conditions, by how much, which recording or fist; leave
+`BankFinds` off; keep the trace and the rounds' figures; the tag stands.
 
-If it ships: the fading half joins `TheFistBankGuardsTests` as a floor at the figure that
-shipped less 5%; the working fixtures at theirs; both scoreboard guards at the figures that
-ship, on the board as the author's; the capture sheet's `bank` line says `held, marks its own`
-for a held lane.
+If it ships: both scoreboard guards at the figures that ship, on the board as the author's; the
+fading half joins `TheFistBankGuardsTests` as a floor at the figure that shipped less 5%; the
+capture sheet's `senders` line says each station's lane and dit; `CW_SPEC.md` §2 is rewritten
+for one finder; the seam's rules are listed for removal in the next unit.
 
 ---
 
-## 4. The lines, the survey, the record
+## 5. The lines, the survey, the record
 
-Run the app line, the engine line and the survey line once; rewrite `docs\cw-survey-2026-10-09.md`
-with a new `Rerun` line; the fist bank's matrices before and after in the report.
+Run the app line, the engine line and the survey line once at the end; rewrite
+`docs\cw-survey-2026-10-09.md` with a new `Rerun` line; the fist bank's matrices and every
+group before and after in the report.
 
-- `PHASE_OUTCOME.md`, both copies: `## UNIT 583 - STEP 12`, one paragraph.
-- `PHASE_STATUS.md`, both copies: names 583.
+- `PHASE_OUTCOME.md`, both copies: `## UNIT 584 - STEP 12`, one paragraph.
+- `PHASE_STATUS.md`, both copies: names 584.
 - Patch-bump `Directory.Build.props`.
 - `CLAUDE.md` §1 index row.
-- `DECISIONS.md`, newest first, **HM-DEC-287**, headline *A held lane's marks are its station's*,
-  naming the rule, what the trace showed, whether it shipped with the grid stepping aside, and
-  the figures before and after.
-- `docs\cw-scoreboard.md`: a 583 row in each table at the figures that shipped.
-- `CW_SPEC.md` §2: one sentence if it shipped.
-- **Touch no checkbox in `PHASE_PLAN.md`**, and add no ruling beyond HM-DEC-287.
+- `DECISIONS.md`, newest first, **HM-DEC-288**, headline *One finder: the bank finds every
+  station*, naming the design, the rounds and what each fixed, whether it shipped or waits on a
+  ruling, the figures before and after, and the CPU figure.
+- `docs\cw-scoreboard.md`: a 584 row in each table at the figures that shipped.
+- **Touch no checkbox in `PHASE_PLAN.md`**, and add no ruling beyond HM-DEC-288.
 
 ---
 
-## 5. Report
+## 6. Report
 
-Section 2, for the owner, in plain words, leading with **whether fading stations now read and
-what it cost** - the signal-by-fade matrix before and after, the fading half's total, the
-working fixtures, the boards, the noise after a weak CQ - then the rule in a sentence. Section 1:
-the trace in brief, what was built. **Section 3: the two fists' cycle tables; the three matrices
-before and after; the working fixtures; both scoreboards' rows.** Section 4: anything left, a
-line each, and the one-paragraph verdict on the grid if it applies.
+Section 2, for the owner, in plain words, leading with **whether Hamlet reads more with one
+finder than with two, and what it cost** - the boards, the bank's total and fading half, the
+CQs, the carrier - then the design in three sentences, and the *For the owner's ruling* heading
+if it applies. Section 1: per round, what was built, what the trace named, what was fixed.
+**Section 3: the rounds' table (every condition, each round, HEAD); the three matrices before
+and after; the working and easy fixtures; the CPU figure; both scoreboards' rows.** Section 4:
+anything left, a line each, and the seam's rules listed for removal if it shipped.
