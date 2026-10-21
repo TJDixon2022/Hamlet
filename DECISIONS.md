@@ -4,6 +4,63 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-289
+date: 2026-10-21
+refs: work instruction 585, HM-DEC-288, HM-DEC-285, HM-DEC-284, HM-DEC-276, HM-DEC-275, src/Hamlet.RadioEngine/Cw/CwRules.cs, src/Hamlet.RadioEngine/Cw/CwEnvelopeDetector.cs, src/Hamlet.RadioEngine/Cw/CwLaneBank.cs, src/Hamlet.RadioEngine/Cw/CwPatternGate.cs, src/Hamlet.RadioEngine/Cw/CwMark.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheOneFinderTests.cs
+---
+
+**One finder, loudest first. Built behind `CwRules.BankFinds` in three rounds, measured, left off; the one-finder line ends for now.**
+
+**The rules.** Each takes effect only under `BankFinds`, so off reads exactly as before:
+- **`CwRules.LoudestFirst`.** Before a lane is held, it is judged for shadow against every lane standing or forming at `CwEnvelopeDetector.LoudestFirstShape`, 0.3, anywhere in the passband, held or not, by `CwShadow.IsLaneShadowOf`. The stations newly found are held loudest first, by level.
+- **`CwRules.LaneMeetsTheGrid`.** A lane's mark is judged by the tests a grid mark meets before it is offered, by reference to the same methods: its rise and fall (`HasEdges` at half its own height), its narrowness (`IsNarrow`) and its mark shape at `ShapeThreshold`. They are read on the grid bin at its pitch (`GridTestsOf`). The tone on its own samples (`IsToneHere`), which the sender's window applies and the grid does not, is reported and gates nothing. From round two, a lane is held only where `LaneGridShare`, two thirds, of its last ten marks met them.
+- **`CwRules.TwoLanes`** (round three). A lane is held only where another lane within 50 Hz forms at 0.3.
+
+**The rounds.**
+- **Round one.** It built loudest first and the grid's tests as a filter on lane marks.
+  - With one finder, the random carrier printed at five seeds of twenty with the tests off (5195, 5196, 5204, 5208 and 5210) and at none with them on.
+  - Shape alone stopped every seed. Edges alone left 5195 and 5211 printing, and narrowness alone 5193, 5195, 5196 and 5208.
+  - Of the two seeds the order named, 5201 printed only with the tone test alone, and 5208 was stopped by edges and by shape.
+  - Loudest first changed nothing on the three largest losses: there was nothing louder yet to judge against.
+  - The largest loss, `cw-2026-10-03-221530`, 31 to 19, was a noise lane at 800 Hz on the 40 ms dit, at 12 to 13 dB of contrast against the lane's 12 dB floor. With the failing marks dropped, the rest of its sequence stood at 0.61 from 8.75 s and was held. It printed `TENTESIS` while the station at 598 Hz called nothing: that station's lanes first cleared 12 dB at 10.2 s.
+  - On `221548`, a noise lane at 450 Hz was held from 11.6 s and refitted onto the station at 500 Hz, taking its opening.
+- **Round two.** No mark is dropped. Each carries its verdict (`CwMark.MeetsGrid`), and the share is judged on the sequence. The twelve-plus-three rose from 240 to 254, but `221530` stayed the largest loss at 15.
+- **Round three.** A station is heard in two lanes. `221530` was unchanged at 15 and the boards moved by one letter.
+
+**Measured with `BankFinds` on.** Each row gives as shipped, then rounds one, two and three:
+- the twelve-plus-three: 297; 240, 254, 253. Invented 1; 20, 7, 8. In silences 0; 1, 3, 3;
+- W1AW: 2111; 2100, 2098, 2098. Invented 0; 8, 8, 8;
+- the fist bank's score: 1891; 2884, 2935, 2915. Invented 46; 2, 20, 20;
+- the fading half, letters right: 439; 1226, 1173, 1166. The flat half: 2173; 2628, 2683, 2678;
+- the four 5 dB CQs: 71; 76, 80, 80 of 84. Nothing printed after them in rounds two and three; in round one, 3 letters after the 18 WPM CQ;
+- the 0 dB CQs: 0; 19, 0, 0 of 84;
+- the easy fixtures: 77; 81, 71, 71 of 90. `tightfist-easy` 9, 0 and 0 of 14 right in the three rounds, against 13;
+- the working fixtures: 4; 11, 17, 17 of 81;
+- the random carrier: two seeds; none in every round. The steady carrier and loud noise printed nothing;
+- strays, summed over the 65 old captures: 26.8; 15.2, 14.5, 12.8. The highest single capture was 1.7;
+- the short-dah rows and the nine hands held their guards in every round.
+
+The first recording read `ER C H AT<BT> BEST 7V 73 <SK> KC4ZGP DEWA` in every round, losing the `F`.
+
+With rounds two and three on, the survey ran 21 minutes against round one's 8.
+
+**It does not ship.** It fails section 4 of the order on:
+- the twelve-plus-three, 253, outside the owner's-ruling band of 294;
+- W1AW, 2098, with invented letters up from 0 to 8;
+- the easy fixtures, 71 of 90;
+- the letters in silences;
+- the first recording.
+
+By the same section, this is the last unit on one finder for now. `BankFinds` stays in `CwRules.OffByDefault`, and the three rules with it.
+
+**What the twelve-plus-three still loses with one finder** (round three against as shipped, 44 points). It is several causes, and one of them dominates:
+- **the station's opening**, which the grid read with no history. A lane calls nothing until its own contrast over three seconds of history clears 12 dB, so a station starting after quiet loses its first letters: `FER` to `ER`, `N TEMP` to `E MP`, `RR` to `EENR`, `221828`'s `FER` to `IER`, and `221530`'s second station, 31 to 15;
+- **junk from noise lanes at that floor**, which hold before the station;
+- **broken letters** inside a few calls: `KM3STU` to `KMSTSTU`.
+
+As shipped, every reading is as at HEAD: 297 and 2111. The tag `before-one-finder` holds the tree before unit 584. Ordered by work instruction 585.
+
+---
 id: HM-DEC-288
 date: 2026-10-21
 refs: work instruction 584, HM-DEC-287, HM-DEC-284, HM-DEC-280, HM-DEC-276, HM-DEC-275, HM-DEC-274, src/Hamlet.RadioEngine/Cw/CwRules.cs, src/Hamlet.RadioEngine/Cw/CwEnvelopeDetector.cs, src/Hamlet.RadioEngine/Cw/CwLaneBank.cs, src/Hamlet.RadioEngine/Cw/CwShadow.cs, src/Hamlet.RadioEngine/Cw/CwPatternGate.cs, src/Hamlet.RadioEngine/Cw/CwSenderGate.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheOneFinderTests.cs
