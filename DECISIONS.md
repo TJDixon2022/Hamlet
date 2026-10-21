@@ -4,6 +4,55 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-287
+date: 2026-10-21
+refs: work instruction 583, HM-DEC-286, HM-DEC-284, HM-DEC-282, HM-DEC-276, src/Hamlet.RadioEngine/Cw/CwMark.cs, src/Hamlet.RadioEngine/Cw/CwLaneBank.cs, src/Hamlet.RadioEngine/Cw/CwEnvelopeDetector.cs, src/Hamlet.RadioEngine/Cw/CwPatternGate.cs, src/Hamlet.RadioEngine/Cw/CwSenderGate.cs, src/Hamlet.RadioEngine/Cw/CwRules.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheFadeTraceTests.cs
+---
+
+**A held lane's marks are its station's: built, measured with the grid stepping aside, left off with it.**
+
+**The rule** (`CwRules.HeldLaneMarksAreItsStations`): a mark that a bank lane calls while it holds a station, or hands on as that station's, carries `CwMark.HeldLane`. Neither the lane's pattern gate nor the sender gate judges its level. Its pitch still places it, and its kind is judged by length as before. The grid's marks keep the level test and the flat-top test. The grid's marks within 50 Hz of a held lane are already kept from printing (`HeldByLane`), as the order supposed.
+
+**The trace** (`TheFadeTraceTests.TheHeldLanesMarks`, the fading 2.5 hand at 20 WPM):
+- **At 10 dB, as shipped and with the rule and the grid stepping aside alike:**
+  - no lane at the note is ever held: the grid stands the station and hands on 147 of 173 marks;
+  - the only hold was 675 Hz at a 40 ms dit, let go as a shadow;
+  - one letter printed per fade cycle, 28 in all, `SNAKKBAKSATEROEARRRHNBITSION`;
+  - only five new senders began near the note in 37 s, so the station's marks are dropped rather than dealt among many senders.
+- **At 20 dB with both rules:**
+  - the 625 Hz lane at a 60 ms dit held the station from 15.4 s with the grid stepping aside;
+  - it handed on 20 marks, and all 20 printed as the station's: `TKENNICETO`, its `KEN NICE TO` right;
+  - at 20.85 s it was let go in a pause. Once the grid stands near the lane again, the lane's kept marks are dropped unless `HoldWaitsAndFits` holds it aside, so the lane hands on nothing;
+  - the fist printed 42 letters against 27 as shipped.
+
+**Measured once, both rules on, against as shipped:**
+- the bank: 2779 of 5760 from 2612, score 2077 from 1891, 34 invented from 46;
+- the fading half: 529 of 2880 from 439;
+- the flat half: 2250 from 2173;
+- the 2.5 hand at 20 WPM fading: 13, 14 and 15 at 5, 10 and 20 dB, from 0, 14 and 13;
+- the working receiver fixtures: 6 of 81 from 4;
+- the easy fixtures: 79 of 90 from 77;
+- the twelve-plus-three: 297, 20 wrong, 1 invented, 86 of 110 spaces with 3 added;
+- W1AW: 2111;
+- nothing in the 20 s of noise after the weak CQs;
+- the short-dah rows and the nine hands held;
+- noise printed nothing, the steady carrier nothing, the first recording whole;
+- the highest old capture 3.3 strays per 10 s; summed, 37.1 from 26.8.
+
+**It does not ship, and `GridStepsAside` stays off with it.** By section 4 of the order:
+- **the fading half:** 529, under 1,200 by 671;
+- **the four 5 dB CQs:** 68 of 84, under 71 (`cq-12wpm-5db` 11 of 21);
+- **the random carrier:** prints at three seeds, 5195, 5204 and 5207, over the limit of two.
+
+**What it shows about the grid.** On the fading half the lane reads the station almost whole, 172 of 173 marks at 20 dB. Where it holds, the gates keep every mark it hands on. The rule fails because the lane is seldom allowed to hold:
+- at 10 dB the grid stands the fading station in pieces and a lane is never held;
+- at 20 dB the grid's return ends the hold within six seconds.
+
+That is the evidence that the grid must retire as the finder.
+
+Both rules are in `CwRules.OffByDefault`, chosen only by a test. As shipped, every reading is as at HEAD: 297 and 2111. Ordered by work instruction 583.
+
+---
 id: HM-DEC-286
 date: 2026-10-21
 refs: work instruction 582, HM-DEC-285, HM-DEC-284, HM-DEC-276, HM-DEC-267, HM-DEC-229, src/Hamlet.RadioEngine/Cw/CwSenderGate.cs, src/Hamlet.RadioEngine/Cw/CwPatternGate.cs, src/Hamlet.RadioEngine/Cw/CwRules.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheFadeTraceTests.cs, tests/Hamlet.RadioEngine.Tests/Rsid/TheRsidDetectorTests.cs

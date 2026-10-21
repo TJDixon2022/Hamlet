@@ -388,6 +388,7 @@ guard: the random carrier prints at 2 of 20 seeds (5195, 5207), restated by the 
 | 581 | 2026-10-20 | 318 of 353 | 20 | 1 | **297** | 0 | 86 of 110, 3 added | the short dah measured on the fist bank (work instruction 581, HM-DEC-285): left off for the owner's ruling, the board unchanged |
 | 581, ruled | 2026-10-20 | 318 of 353 | 20 | 1 | **297** | 0 | 86 of 110, 3 added | the short dah ships on with its dit floor at the owner's ruling on HM-DEC-285; the board as at 581 with the floor chosen, the random carrier within the restated limit of two (5195 and 5207 as measured at 581), a steady carrier silent |
 | 582 | 2026-10-21 | 318 of 353 | 20 | 1 | **297** | 0 | 86 of 110, 3 added | the fade traced (work instruction 582, HM-DEC-286): a sender followed through a fade at its own pace, left off; the board unchanged |
+| 583 | 2026-10-21 | 318 of 353 | 20 | 1 | **297** | 0 | 86 of 110, 3 added | the marks of a held lane its station's (work instruction 583, HM-DEC-287): measured with the grid stepping aside, both left off; the board unchanged |
 
 ## Scans (work instruction 544, HM-DEC-248)
 
@@ -472,6 +473,7 @@ high and 25 medium, 2151 letters, all totalled.
 | 581 | 2026-10-20 | **2111** | 2131 of 2151 | 20 | 0 | 438 of 440, 11 added | the short dah (HM-DEC-285): left off, unchanged |
 | 581, ruled | 2026-10-20 | **2111** | 2131 of 2151 | 20 | 0 | 438 of 440 | the short dah ships on (HM-DEC-285, the owner's ruling); unchanged |
 | 582 | 2026-10-21 | **2111** | 2131 of 2151 | 20 | 0 | 438 of 440 | the fade (HM-DEC-286): left off, unchanged |
+| 583 | 2026-10-21 | **2111** | 2131 of 2151 | 20 | 0 | 438 of 440 | the marks of a held lane (HM-DEC-287): left off, unchanged |
 
 **The fist bank** (work instruction 580, HM-DEC-284): ninety-six hands with a truth, every dah over dit of 1.6, 2.0, 2.5 and 3.0 at 10, 15, 20 and 25 WPM, 5, 10 and 20 dB, flat and fading, generated at test time from their recipes (`tests\Hamlet.RadioEngine.Tests\Cw\Fixtures\CwFistBank.cs`) and read by the survey as a group of its own, its matrices in `docs\cw-survey-2026-10-09.md` under `The fist bank`. A yardstick, not yet a guard.
 
