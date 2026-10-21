@@ -1,180 +1,245 @@
-# Work instruction 581 - The short dah, measured against the fist bank
-
 ## 1. What Claude did
 
-- **Surface and gate:** Claude Code on the development computer. The prompt claimed `PROJECT: Hamlet`, and the tree at `C:\Source\HamLet` confirmed it:
-  - `SHACK_FACTS.md`, `docs\cw-scoreboard.md` and `docs\cw-survey-2026-10-09.md` exist.
-  - Neither `CoreHMI.sln` nor `MURC.sln` exists.
+Surface: Claude Code on the development machine. The prompt opened `PROJECT: Hamlet`, and the tree confirmed it: `SHACK_FACTS.md`, `docs\cw-scoreboard.md` and `src\Hamlet.RadioEngine\Cw\CwLaneBank.cs` exist, and neither `CoreHMI.sln` nor `MURC.sln` does. Nothing in this report is evidence about the radio. Branch `main`.
 
-  Hamlet confirmed. Nothing in this report is evidence about the radio.
-- **Branch:** `main`, two commits (the change, then the record), pushed.
-- **Run by hand:**
-  - `SESSION.lock` was taken through `tools\arbiter\lock.bat take` and released at the end.
-  - Nothing was written to `RUN_LEDGER.md`, nothing under `tools\arbiter\` was touched, and no box in `PHASE_PLAN.md` was ticked.
-  - Nothing keys or transmits, nothing was written to the radio, and no recording was added, removed or promoted.
-- **Measured (section 2):** `CwRules.ShortDah` chosen on as it stood. It ran through one survey (the bank, both boards, every fixture group and the strays), the scoreboard's hard limits with the carrier at twenty seeds, and the weak-end guard.
-- **Traced (section 3):**
-  - **The new test:** `TheShortDahCostsTests`, which asserts nothing. It reads each cost with the rule off and chosen.
-  - **The hook:** each judgement the rule makes is caught at the moment it is made, through a test-only hook, `CwSenderGate.ShortDahJudged`. Nothing in the app sets it. Every caller now passes the pitch of the marks it judges.
-  - **The table:** `WhereTheCarrierAndTheHandsStand` sets every judgement on the carrier at its twenty seeds against those on the bank's 48 fists of dah 1.6 and 2.0, condition by condition.
-- **The tightening the table names, built:** `CwSenderGate.TwoKindsLeastDitSeconds`. The two means part only at a dit of Morse's fastest, 25 ms at 48 WPM, or longer. Two of the three costs were noise pieces parted at a dit of 20 and 21 ms. It was measured once more on the bank, the boards and every limit.
-- **Not shipped:** the rule and its floor stay off by default (`CwRules.OffByDefault`). As shipped nothing reads differently, and both boards are 297 and 2111.
-- **The lines,** after one build, with the build servers shut down:
-  - the app line passed 278 of 278 in 2 min 15 s;
-  - the engine line, at a 1500 s limit, passed 156 of 156 in 9 min 41 s;
-  - the survey line passed 1 of 1 in 10 min 4 s, with `--no-build`.
-- **Records:**
-  - HM-DEC-285 at the top of `DECISIONS.md`, and its `CLAUDE.md` §1 index row.
-  - A 581 row in each table of `docs\cw-scoreboard.md`, unchanged.
-  - `PHASE_OUTCOME.md` and `PHASE_STATUS.md`, both copies.
-  - The survey's `Rerun` line.
-  - Version 1.13.265 to **1.13.266**.
-  - `CW_SPEC.md` is untouched, since nothing shipped.
-- **Recorded under §12.1:** nothing. HM-DEC-285 was ordered by work instruction 581.
+This was a hand run:
+- `SESSION.lock` was taken through `tools\arbiter\lock.bat take` and released at the end.
+- Nothing was written to `RUN_LEDGER.md` or under `tools\arbiter\`, and nothing in `PHASE_PLAN.md` was ticked.
+- Nothing keyed and nothing was written to the radio. No recording was added, removed or promoted.
+
+**The RSID test, in the first commit.** `TheRsidDetectorTests.TheDetectorKeepsUpWithRealTime` now times its own thread through Windows' `GetThreadTimes`. Off Windows it falls back to the process's time, as before. Run alone it read 0.078 and 0.079 of real time. It passed on the engine line beside the parallel guards.
+
+**The trace** (`TheFadeTraceTests.TheFadingFists`, the 2.5 hand at 20 WPM, fading and flat, at 5, 10 and 20 dB). Rows every 250 ms are in `.run-unit\reports\unit582-trace-*.tsv`, and the cycle tables are in section 3. It does not confirm the order's likely shape:
+- **The lane's lines lag, but they are not what breaks the station.**
+  - The bank lane at 625 Hz and a 60 ms dit read the 20 dB fading fist 172 of 173 marks, and the 10 dB fading fist 143 called, 10 short and 20 missed.
+  - Its key-down line (the 90th percentile of three seconds) swings only 3.3 to 5.3 dB against the fade's 12. So it sits at the peaks.
+  - At 10 dB the lane missed 29 of the 85 marks keyed in a trough. At 20 dB it missed none.
+  - It called no noise mark at a peak, because the generator's noise does not fade.
+  - So a word gap's history, or lines set on the marks' own tops, would win back part of the 10 dB troughs, and nothing at 20 dB.
+- **The fault is the level tolerance.**
+  - Each mark's level follows the fade to within about a decibel: at 10 dB, -18 dB at a peak and -30 dB in a trough. From one mark to the next it moves by up to 7 dB.
+  - The sender gate and the pattern gate hold a mark to 3 dB of the mean of the sender's last three marks. That is twice a flat top's wobble.
+  - Outside that tolerance fell 101 of 139 marks on the 10 dB fist and 53 of 96 on the 20 dB fist, against none on either flat twin.
+  - So one station was dealt among new senders, and **one letter printed per fade cycle**, every 1.4 s: `S N A K K B A K …` at 1.61, 3.05, 4.28, 5.98, 7.47 s.
+- **At 20 dB the grid also loses the fade's slopes.** A mark's top must be flat to 1.5 dB, and a dah on the slope tilts 4 dB. The grid handed on 99 of 173 marks, losing 42 of 54 on a slope and 30 of 59 in a trough. The lane that read them is not handed on while the grid stands within 50 Hz.
+- **The one change named:** the gates' level tolerance follows the sender through the fade.
+
+**Built:** `CwRules.FollowsTheFade`, in both gates. A sender's level tolerance grows by its own pace:
+- the median rate its level moved between its last `FollowMarks` marks (eight);
+- times `FollowPace` (1.5);
+- times the time since the marks its level is read from;
+- never more than the swing those marks span.
+
+Before settling on it I tried three other forms on the trace and on sixteen fists:
+- the last mark as the reference. It cost the weak flat fists, as HM-DEC-229 had found.
+- the net rate across five marks;
+- the signed median rate.
+
+In either gate alone the rule reads the fading fists as without it.
+
+**Measured once, the rule on.** It **fails section 4** and ships off: `CwRules.OffByDefault`, chosen only by a test.
+
+| condition | needed | on | result |
+|---|---|---|---|
+| the fading half | 1,200 or better, from 439 | **960** | short by 240 |
+| the flat half | 2,129 or better (2,173 less 2%) | **2105** | short by 24; the 5 dB flat column 41 and 31 at 2.5 and 3.0, from 53 and 16 |
+| the bank's score; invented | rises; invented 50 or fewer | 2270 from 1891; **202** | invented over by 152, 184 of them on fading fists, the worst `fist-r2.0-10wpm-20db-fade` at -79 |
+| the working fixtures | rise from 4 of 81 | 6 of 81 | holds |
+| the twelve-plus-three | 297, wrong and invented not rising, spaces not worse | 298, wrong 19, **invented 4 from 1**, spaces 86 of 110 | fails on invented |
+| W1AW | 2111 | **2038**, 25 wrong; piece 3 read 737 of 815 from 804 | fails by 73 |
+| the four 5 dB CQs | 71 of 84 or better | 71 | holds |
+| the 20 s of noise after them | nothing | **32 letters** after `cq-25wpm-5db` | fails |
+| the short-dah rows; the nine hands | their guards | held | holds |
+| the hard limits | noise nothing; carrier ≤ 2 seeds; steady none; first recording whole; no capture over 6 strays per 10 s | held: carrier at 5195 and 5207, steady none, first recording whole, highest 3.0 | holds; summed strays 34.3 from 26.8 |
+| the easy fixtures | 77 of 90 or better | 77 | holds |
+
+Conditions beyond the fading half failed too, so nothing goes under *For the owner's ruling*. As shipped, every reading is as at HEAD: 297 and 2111.
+
+**Recorded:** HM-DEC-286, in `DECISIONS.md` and the `CLAUDE.md` §1 index. Also:
+- `PHASE_OUTCOME.md`, both copies: `## UNIT 582 - STEP 12`.
+- `PHASE_STATUS.md`, both copies: names 582.
+- The 582 rows on both scoreboard tables.
+- The survey's Rerun line.
+- The version, 1.13.267 to 1.13.268.
+
+`CW_SPEC.md` is untouched because nothing shipped. No ruling was added beyond HM-DEC-286, and nothing was recorded under §12.1.
 
 ## 2. What the owner should expect
 
-- **Short-dah fists now read, with the rule chosen, but it doesn't ship.**
-  - **The rows:** the bank's 1.6 and 2.0 rows rise from **135 to 1,193 of 2,880** with the rule and its floor.
-  - **The bank:** it reads 2,612 of 5,760 from 1,538, scoring 1,891 from 1,031, with 46 invented from 94.
-  - **The boards** hold at 297 and 2111.
-  - **The cost:** a carrier keyed at random prints at a second seed, 5207 (`■HAE ■NII`), and the easy fixtures read 77 of 90 from 78. `coverage-easy` reads its `1` as `A M`.
-  - **Left off.** In the app nothing changes.
-- **The rule in a sentence:** where a sender's lengths show no jump of two, Hamlet splits them into a dit kind and a dah kind and accepts the split only if both kinds are tight, well apart and repeated, and now only if the dit is at least Morse's fastest, 25 ms.
-- **The suite:** the app line 278 of 278, the engine line 156 of 156, the survey 1 of 1, every group as before.
-- **What will look wrong but is not:**
-  - `TheRecordingsScoreboard` is red on the random carrier at seed 5195 alone, the known baseline red since unit 552.
-  - The order's twelve-plus-three cost was `RR UR 55N 55N` read `5 HN 55N`. In the trace no mark of that station was re-kinded. The station stopped printing for eight seconds while a noise run at his pitch stood as a sender.
-  - The lock tool reports its own lock as `STALE` while held, because the `cmd` that took it has exited.
-- **Pushed:** two commits on `main`. The pre-existing uncommitted files are left out: `RUN_LEDGER.md`, `PARKED.md`, `.run-unit\denials.txt`, `.run-unit\reports\*`, and the three `cases-*.txt` files.
+**Fading stations still do not read: nothing changed as shipped.** The fault is now found. A 12 dB fade at 0.7 Hz moves a station up to 7 dB between marks, and Hamlet decided a mark 3 dB off was someone else. So it printed one letter per fade cycle.
 
-### For the owner's ruling
+The rule that follows a station through the fade would read about twice as much of a fading hand: the fading half from 439 to 960 of 2,880. Its cost was too high to ship:
+- quiet, steady hands lost letters;
+- invented letters went from 46 to 202;
+- W1AW fell from 2111 to 2038;
+- 32 letters printed in the noise after a weak CQ.
 
-**Ship `CwRules.ShortDah` with its dit floor on by default, at the cost below, or keep it off.**
+So it waits in the tree, off.
 
-| | as shipped | the rule as it stood | the rule with the floor | section 4 bar |
-|---|---|---|---|---|
-| the bank's 1.6 and 2.0 rows | 135 of 2,880 (56, 79) | 1,173 (556, 617) | **1,193** (569, 624) | 1,500 or better: **missed** |
-| the bank's 2.5 and 3.0 rows | 1,403 (711, 692) | 1,389 (723, 666) | **1,419** (726, 693) | not falling: held |
-| the bank's total | 1,538 of 5,760, score 1,031, 94 invented | 2,562, score 1,828, 44 invented | **2,612, score 1,891, 46 invented** | rising, invented 94 or under: held |
-| the twelve-plus-three | 297 (318 of 353, 20 wrong, 1 invented, 86 of 110 spaces) | 293 (315, 21 wrong, 1 invented) | **297** (318, 20, 1, 86 of 110, 3 added) | held |
-| W1AW | 2111 (20 wrong, 0 invented, 438 of 440 spaces) | 2111 | **2111** (20, 0, 438 of 440, 11 added) | held |
-| the four 5 dB CQs | 71 of 84 | 69 | **71**, nothing in the noise after | held |
-| the carrier at twenty seeds | 5195 | 5195, 5207 | **5195, 5207** | one seed: **missed** |
-| the easy fixtures | 78 of 90 | 77 | **77** | 78 or better: **missed** |
-| noise, the first recording, silences | nothing, whole, nothing | the same | the same | held |
-| the strays, highest and summed | 3.3, 22.3 | 3.3, 27.1 | **3.3, 26.8** | none above 6: held |
+| the 2.5 hand at 20 WPM | flat, as shipped | fading, as shipped | fading, rule on |
+|---|---|---|---|
+| 5 dB | 53 | 0 | 12 |
+| 10 dB | 59 | 14 | 48 |
+| 20 dB | 60 | 13 | 22 |
 
-**The cost if it ships:**
-- **A random carrier prints at a second seed,** at 550 Hz, through marks whose dits and dahs stand like a hand's.
-- **One easy fixture loses a figure.**
-- **The strays rise,** from 22.3 to 26.8 summed, all under the line.
+- **The bank, as shipped:** 2612 of 5760, score 1891, fading half 439, flat half 2173.
+- **The working fixtures:** 4 of 81 as shipped, 6 with the rule on.
+- **The boards:** 297 and 2111, unchanged.
+- **What will look wrong but is not:** `TheFadeTraceTests` is in the tree and on no line. It asserts nothing, and its `TheBankByFade` takes about six minutes.
 
-**The gain if it ships:** short-dah fists flat at 20 dB read 59 or 60 of 60 at every speed, but the 2.0 hand at 25 WPM, which reads 22. As shipped, the same fists read 7 letters between them.
+The rule in a sentence: a sender's level tolerance grows by how fast its own last eight marks have been moving, up to the swing they span.
 
-**The tightening tried:** a dit floor at Morse's fastest. It took the twelve-plus-three back to 297 and the CQs back to 71. It could not touch the carrier, which parts at a dit of 68 ms.
+**The lines** (one build, the build servers shut down, each line once with `--no-build`): the app line 278 of 278 in 2 min 26 s; the engine line at 1500 s, 159 of 159 in 12 min 28 s, the RSID real-time test green on its own thread's time; the survey line at 1800 s, 1 of 1 in 11 min, identical line for line to the shipped reading apart from its Rerun line (the bank 2612 of 5760, score 1891, 46 invented; the boards 297 and 2111; the easy fixtures 77 of 90; the working 4 of 81).
 
-**Why the carrier can't be separated by the rule's own figures:** its runs overlap the hands' on all five conditions. At every figure that keeps all 48 hands, the carrier is still taken at 19 or 20 seeds (section 3).
-
-**The 1,500 bar can't be met by any tightening:** it sits above the 2.5 and 3.0 hands' own 1,419. In every row the fading half reads about a fifth of the flat half. Flat, the 1.6 and 2.0 hands read 477 and 535 of 720, against 603 and 558 for the 2.5 and 3.0 hands.
-
-**Rejected:**
-- **Shipping on the bank's gain alone:** section 4 sets the carrier at one seed.
-- **A tighter figure on one of the five conditions:** none parts the carrier from the hands (section 3).
+Two commits are pushed to `main`, the code and the record. The tree is clean apart from `RUN_LEDGER.md`, `PARKED.md`, `.run-unit/denials.txt`, `.run-unit/reports/*` and the `cases-*.txt` files, which stay uncommitted as ruled.
 
 ## 3. What you should see
 
-**Dah over dit by speed,** flat, 20 dB, letters right of 60. The two rule columns are the same here:
+**The two fists' cycle tables**, one row per 1.4 s fade cycle, as shipped. The lane is the bank's 625 Hz lane at a 60 ms dit. The gate column is the marks the detector handed to the sender gate within 50 Hz.
 
-| | as shipped | the rule as it stood, and with the floor |
-|---|---|---|
-| dah 1.6 | 7, 0, 0, 0 | 60, 60, 60, 60 |
-| dah 2.0 | 0, 0, 0, 0 | 59, 60, 60, 22 |
-| dah 2.5 | 60, 60, 60, 60 | 59, 59, 60, 60 |
-| dah 3.0 | 60, 60, 60, 60 | 60, 60, 60, 60 |
+`fist-r2.5-20wpm-10db-fade` (14 of 60 in the survey):
 
-(10, 15, 20 and 25 WPM, in order.)
+| cycle | from (s) | lane key-down (dB) | lane contrast (dB) | keyed | lane called / short / missed | gate called / short / missed |
+|---|---|---|---|---|---|---|
+| 0 | 0.0 | -40.1 to -24.2 | 7.9 to 22.4 | 3 | 2 / 0 / 1 | 1 / 1 / 1 |
+| 1 | 1.4 | -24.2 to -20.3 | 22.4 to 25.6 | 6 | 6 / 0 / 0 | 2 / 2 / 2 |
+| 2 | 2.9 | -22.8 to -18.8 | 21.4 to 25.3 | 7 | 6 / 1 / 0 | 3 / 0 / 4 |
+| 3 | 4.3 | -19.8 to -18.8 | 21.3 to 22.2 | 6 | 4 / 0 / 2 | 2 / 0 / 4 |
+| 4 | 5.7 | -20.3 to -19.1 | 20.5 to 22.1 | 6 | 4 / 2 / 0 | 6 / 0 / 0 |
+| 5 | 7.1 | -20.3 to -19.9 | 20.3 to 21.9 | 8 | 7 / 0 / 1 | 8 / 0 / 0 |
+| 6 | 8.6 | -20.2 to -19.9 | 20.8 to 22.5 | 7 | 5 / 0 / 2 | 7 / 0 / 0 |
+| 7 | 10.0 | -20.4 to -20.0 | 20.4 to 22.5 | 7 | 7 / 0 / 0 | 7 / 0 / 0 |
+| 8 | 11.4 | -20.3 to -19.4 | 19.8 to 21.2 | 8 | 6 / 2 / 0 | 7 / 1 / 0 |
+| 9 | 12.9 | -19.8 to -19.3 | 19.5 to 21.9 | 7 | 5 / 0 / 2 | 7 / 0 / 0 |
+| 10 | 14.3 | -21.1 to -19.7 | 21.0 to 22.1 | 5 | 4 / 0 / 1 | 4 / 0 / 1 |
+| 11 | 15.7 | -21.0 to -19.5 | 20.8 to 22.5 | 6 | 6 / 0 / 0 | 4 / 0 / 2 |
+| 12 | 17.1 | -21.0 to -19.9 | 20.9 to 22.2 | 7 | 7 / 0 / 0 | 5 / 0 / 2 |
+| 13 | 18.6 | -20.7 to -20.6 | 22.0 to 23.3 | 5 | 5 / 0 / 0 | 4 / 1 / 0 |
+| 14 | 20.0 | -20.6 to -19.2 | 23.0 to 23.9 | 5 | 3 / 1 / 1 | 4 / 1 / 0 |
+| 15 | 21.4 | -20.2 to -18.8 | 21.4 to 23.7 | 6 | 5 / 0 / 1 | 6 / 0 / 0 |
+| 16 | 22.9 | -21.1 to -19.3 | 20.8 to 22.5 | 7 | 6 / 1 / 0 | 6 / 1 / 0 |
+| 17 | 24.3 | -19.4 to -19.1 | 22.4 to 23.2 | 6 | 5 / 0 / 1 | 5 / 0 / 1 |
+| 18 | 25.7 | -19.2 to -19.0 | 22.8 to 23.7 | 8 | 5 / 1 / 2 | 6 / 0 / 2 |
+| 19 | 27.1 | -20.2 to -19.0 | 21.7 to 23.9 | 9 | 7 / 2 / 0 | 8 / 1 / 0 |
+| 20 | 28.6 | -21.0 to -19.8 | 19.3 to 21.9 | 6 | 5 / 0 / 1 | 5 / 0 / 1 |
+| 21 | 30.0 | -21.1 to -20.3 | 18.9 to 21.3 | 8 | 6 / 0 / 2 | 5 / 0 / 3 |
+| 22 | 31.4 | -22.1 to -21.1 | 20.9 to 21.5 | 8 | 8 / 0 / 0 | 7 / 0 / 1 |
+| 23 | 32.9 | -22.1 to -21.0 | 19.8 to 21.5 | 8 | 7 / 0 / 1 | 6 / 0 / 2 |
+| 24 | 34.3 | -21.0 to -19.9 | 20.6 to 21.4 | 6 | 5 / 0 / 1 | 5 / 0 / 1 |
+| 25 | 35.7 | -20.5 to -19.9 | 20.8 to 21.6 | 6 | 5 / 0 / 1 | 5 / 0 / 1 |
+| 26 | 37.1 | -23.0 to -20.5 | 19.2 to 21.6 | 2 | 2 / 0 / 0 | 2 / 0 / 0 |
 
-**Dah over dit by signal,** flat, 20 WPM, at 5, 10 and 20 dB:
+Totals: the lane called 143, short 10, missed 20 of 173; the gate 137, 8, 28. Printed `SNAKKBAKSATEROEARRRHNBITSION`.
 
-| | as shipped | the rule as it stood | with the floor |
-|---|---|---|---|
-| dah 1.6 | 0, 2, 0 | 39, 36, 60 | 45, 36, 60 |
-| dah 2.0 | 0, 44, 0 | 43, 59, 60 | 43, 59, 60 |
-| dah 2.5 | 53, 59, 60 | 53, 59, 60 | 53, 59, 60 |
-| dah 3.0 | 16, 59, 60 | 16, 59, 60 | 16, 59, 60 |
+`fist-r2.5-20wpm-20db-fade` (13 of 60):
 
-**Signal by fade,** dah 2.5, 20 WPM, flat then 12 dB of QSB at 0.7 Hz:
+| cycle | from (s) | lane key-down (dB) | lane contrast (dB) | keyed | lane called / short / missed | gate called / short / missed |
+|---|---|---|---|---|---|---|
+| 0 | 0.0 | -39.2 to -15.1 | 7.9 to 30.9 | 3 | 2 / 0 / 1 | 2 / 1 / 0 |
+| 1 | 1.4 | -15.1 to -9.9 | 30.4 to 35.3 | 6 | 6 / 0 / 0 | 4 / 0 / 2 |
+| 2 | 2.9 | -13.1 to -8.9 | 27.3 to 33.7 | 7 | 7 / 0 / 0 | 5 / 0 / 2 |
+| 3 | 4.3 | -10.7 to -8.9 | 28.4 to 31.1 | 5 | 5 / 0 / 0 | 4 / 0 / 1 |
+| 4 | 5.7 | -10.7 to -8.9 | 29.5 to 32.1 | 7 | 7 / 0 / 0 | 5 / 0 / 2 |
+| 5 | 7.1 | -10.7 to -9.1 | 28.3 to 31.0 | 7 | 7 / 0 / 0 | 3 / 3 / 1 |
+| 6 | 8.6 | -9.8 to -9.1 | 26.0 to 28.9 | 8 | 8 / 0 / 0 | 6 / 1 / 1 |
+| 7 | 10.0 | -9.8 to -9.2 | 28.2 to 29.9 | 6 | 6 / 0 / 0 | 2 / 0 / 4 |
+| 8 | 11.4 | -9.6 to -9.1 | 27.5 to 29.3 | 9 | 9 / 0 / 0 | 4 / 0 / 5 |
+| 9 | 12.9 | -10.0 to -9.5 | 27.2 to 29.8 | 7 | 7 / 0 / 0 | 3 / 0 / 4 |
+| 10 | 14.3 | -10.4 to -9.6 | 29.2 to 30.2 | 5 | 5 / 0 / 0 | 2 / 0 / 3 |
+| 11 | 15.7 | -10.4 to -8.7 | 29.7 to 31.5 | 5 | 5 / 0 / 0 | 1 / 0 / 4 |
+| 12 | 17.1 | -9.4 to -8.8 | 30.9 to 31.8 | 8 | 8 / 0 / 0 | 3 / 0 / 5 |
+| 13 | 18.6 | -9.5 to -9.4 | 30.7 to 31.7 | 6 | 6 / 0 / 0 | 3 / 0 / 3 |
+| 14 | 20.0 | -9.7 to -9.3 | 29.6 to 30.9 | 5 | 5 / 0 / 0 | 1 / 0 / 4 |
+| 15 | 21.4 | -10.0 to -9.2 | 30.4 to 31.7 | 6 | 6 / 0 / 0 | 2 / 0 / 4 |
+| 16 | 22.9 | -11.3 to -9.9 | 30.4 to 31.7 | 7 | 7 / 0 / 0 | 2 / 0 / 5 |
+| 17 | 24.3 | -10.8 to -10.8 | 29.3 to 30.5 | 7 | 7 / 0 / 0 | 3 / 0 / 4 |
+| 18 | 25.7 | -10.8 to -10.0 | 29.3 to 30.4 | 9 | 9 / 0 / 0 | 3 / 0 / 6 |
+| 19 | 27.1 | -10.8 to -9.8 | 28.5 to 30.9 | 7 | 7 / 0 / 0 | 5 / 0 / 2 |
+| 20 | 28.6 | -12.0 to -10.8 | 26.9 to 29.1 | 7 | 7 / 0 / 0 | 6 / 0 / 1 |
+| 21 | 30.0 | -10.8 to -9.9 | 26.9 to 31.0 | 7 | 7 / 0 / 0 | 5 / 0 / 2 |
+| 22 | 31.4 | -10.7 to -8.8 | 31.0 to 32.6 | 9 | 9 / 0 / 0 | 7 / 0 / 2 |
+| 23 | 32.9 | -10.1 to -9.4 | 28.8 to 32.3 | 7 | 7 / 0 / 0 | 6 / 0 / 1 |
+| 24 | 34.3 | -10.4 to -9.4 | 27.9 to 28.8 | 6 | 6 / 0 / 0 | 5 / 0 / 1 |
+| 25 | 35.7 | -10.9 to -10.4 | 28.6 to 30.5 | 5 | 5 / 0 / 0 | 5 / 0 / 0 |
+| 26 | 37.1 | -10.8 to -10.0 | 29.7 to 33.9 | 2 | 2 / 0 / 0 | 2 / 0 / 0 |
 
-| | as shipped | the rule, as it stood and with the floor |
-|---|---|---|
-| 5 dB | 53, 0 | 53, 0 |
-| 10 dB | 59, 12 | 59, 14 |
-| 20 dB | 60, 0 | 60, 13 |
+Totals: the lane called 172, short 0, missed 1 of 173; the gate 99, 5, 69. Printed `FNANNLKKSAMNRMTDANHMHEUGETK`.
 
-**By fade across the bank,** of 2,880 each: as shipped, flat 1,239 and fading 299. As the rule stood, 2,123 and 439. With the floor, 2,173 and 439.
+**The three matrices**, letters right of 60, as shipped (before) and with the rule on (after).
 
-**The three costs' rows,** each at the moment of the loss:
+Dah over dit by speed, flat, 20 dB:
 
-| cost | where | the run the rule took | the truth | what printed |
-|---|---|---|---|---|
-| `cw-2026-10-08-121357` | 10.85 s, 799 Hz | 16 marks of 20 to 40 ms; 6 dits centre 21 ms, 10 dahs centre 33 ms; dah over dit 1.60, 4.2 spreads apart, widths 0.100 and 0.114 | the keying map's station at 798 Hz: 67 dits centre 77 ms, 16 dahs centre 207 ms, dah over dit **2.70** | off, `RR UR 55N 55N`; on, nothing for 10.7 to 18.4 s, then `5 HN 55N`. None of his marks was re-kinded; the noise run at his pitch stood while he sent `RR UR` |
-| `cq-25wpm-5db` | 2.9 s, 619 to 625 Hz | 10 marks of 20 to 40 ms; 6 dits centre 20 ms, 4 dahs centre 35 ms; dah over dit 1.74, 5.4 spreads apart, widths 0.100 and 0.102 | the recipe: dit 48 ms, dah 144 ms, dah over dit **3.00** | off, `NQ CQ CQ DE N0CALL N0CALL K`; on, `S E E` from the pieces, then `R` for his `C`, so `S E ERQ CQ DE...`, 18 of 21 |
-| the carrier, seed 5207 | 7.5 s, 550 Hz, 75 Hz off its tone | 12 marks of 55 to 180 ms, widest neighbour jump 1.81; 9 dits centre 68 ms, 3 dahs centre 158 ms; dah over dit 2.30, 7.3 spreads apart, widths 0.115 and 0.100 | random keying, marks 30 to 300 ms | `■HAE ■NII` |
+| | 10 WPM | 15 WPM | 20 WPM | 25 WPM | row, before | row, after |
+|---|---|---|---|---|---|---|
+| dah 1.6 | 60 / 60 | 60 / 60 | 60 / 60 | 60 / 60 | 240 | 240 |
+| dah 2.0 | 59 / 59 | 60 / 60 | 60 / 60 | 22 / 14 | 201 | 193 |
+| dah 2.5 | 59 / 59 | 59 / 59 | 60 / 60 | 60 / 60 | 238 | 238 |
+| dah 3.0 | 60 / 60 | 60 / 60 | 60 / 60 | 60 / 60 | 240 | 240 |
 
-**With the floor:** `121357` reads `RR UR 55N 55N VA VA BK BKT` and `cq-25wpm-5db` `NQ CQ CQ DE N0CALL N0CALL K`, both as shipped. The carrier at 5207 still reads `■HAE ■NII`.
+Dah over dit by signal, flat, 20 WPM:
 
-**Where the carrier and the hands stand,** over every judgement the rule took with its floor (least, median, most):
-
-| | dit centre | marks | widest cluster | dah over dit | spreads apart |
+| | 5 dB | 10 dB | 20 dB | row, before | row, after |
 |---|---|---|---|---|---|
-| the carrier, twenty seeds | 25.7, 66.6, 190.7 ms | 10, 16, 64 | 0.10, 0.11, 0.12 | 1.50, 1.75, 3.13 | 4.0, 5.1, 10.4 |
-| the bank's 1.6 fists | 34.3, 81.6, 164.4 ms | 10, 16, 152 | 0.10, 0.10, 0.12 | 1.50, 1.64, 2.04 | 4.0, 4.8, 7.1 |
-| the bank's 2.0 fists | 36.8, 82.0, 177.4 ms | 10, 16, 159 | 0.10, 0.10, 0.12 | 1.50, 2.00, 2.63 | 4.0, 6.8, 8.9 |
+| dah 1.6 | 45 / 45 | 36 / 39 | 60 / 60 | 141 | 144 |
+| dah 2.0 | 43 / 43 | 59 / 59 | 60 / 60 | 162 | 162 |
+| dah 2.5 | 53 / 41 | 59 / 59 | 60 / 60 | 172 | 160 |
+| dah 3.0 | 16 / 31 | 59 / 59 | 60 / 60 | 135 | 150 |
 
-**Each condition tightened alone,** on top of the floor (the carrier's seeds still taken, and the 48 hands still taken):
+Signal by fade, dah 2.5, 20 WPM:
 
-| tightened to | carrier seeds | hands |
+| | flat, before / after | 12 dB of QSB at 0.7 Hz, before / after | row, before | row, after |
+|---|---|---|---|---|
+| 5 dB | 53 / 41 | 0 / 12 | 53 | 53 |
+| 10 dB | 59 / 59 | 14 / 48 | 73 | 107 |
+| 20 dB | 60 / 60 | 13 / 22 | 73 | 82 |
+
+**The bank's halves, across every ratio and speed**, from `TheBankByFade`:
+
+| | 5 dB flat / fade | 10 dB flat / fade | 20 dB flat / fade |
+|---|---|---|---|
+| dah 1.6, as shipped | 91 / 0 | 146 / 38 | 240 / 54 |
+| dah 2.0, as shipped | 124 / 21 | 210 / 27 | 201 / 41 |
+| dah 2.5, as shipped | 154 / 22 | 211 / 50 | 238 / 51 |
+| dah 3.0, as shipped | 140 / 32 | 178 / 54 | 240 / 49 |
+
+With the rule on, the survey's totals are flat 2105 and fading 960.
+
+**The working receiver fixtures**, letters right, as shipped / with the rule on:
+
+| fixture | as shipped | rule on |
 |---|---|---|
-| marks 16 | 20 | 48 |
-| marks 20 | 8 | 40 |
-| each kind 4 | 20 | 48 |
-| each kind 5 | 20 | 48 |
-| widest 0.10 | 19 | 48 |
-| widest 0.08 | 0 | 0 |
-| dah over dit 1.55 | 20 | 48 |
-| spreads 4.5 | 20 | 48 |
-| spreads 5 | 20 | 48 |
-| dah over dit under 2 | 20 | 48 |
+| `coverage-working` | 1 of 23, `ITTEIIITTTTED` | 2 of 23, 9 wrong, `IT EIIITT ETA EN MTE` |
+| `exchange-working` | 0 of 19 | 0 of 19 |
+| `fast-working` | 3 of 19, `EOXDOTAN` | 3 of 19, `O NA DOAAEN` |
+| `prosigns-working` | 0 of 9 | 1 of 9, `A A E EN` |
+| `tightfist-working` | 0 of 11 | 0 of 11 |
+| total | 4 of 81 | 6 of 81 |
 
-The hand's margin above the carrier is nought on every condition. Every spread is floored at 0.10, so a widest cluster of 0.08 takes everything.
-
-**The carrier at twenty seeds,** seeds 5193 to 5212:
-- **As shipped:** prints at 5195 alone.
-- **The rule as it stood, and with the floor:** prints at 5195 (`IDSEEIIEEEIIESEIEEES E ETU T EEI N`) and 5207 (`■HAE ■NII`), and nothing at the other eighteen.
-
-**The scoreboard rows, as shipped:**
+**Both scoreboards' rows, as shipped:**
 
 | unit | right | wrong | invented | score | spaces |
 |---|---|---|---|---|---|
-| 581, the twelve-plus-three | 318 of 353 | 20 | 1 | **297** | 86 of 110, 3 added |
-| 581, W1AW | 2131 of 2151 | 20 | 0 | **2111** | 438 of 440, 11 added |
+| 582, the twelve-plus-three | 318 of 353 | 20 | 1 | **297** | 86 of 110, 3 added |
+| 582, W1AW | 2131 of 2151 | 20 | 0 | **2111** | 438 of 440 |
 
-**The straight-key hands** (1.7, 2.0 and 2.5 at 12 WPM, three seeds each) read 60 of 60 at all nine with the rule and its floor.
+With the rule on: the twelve-plus-three 321 of 353, 19 wrong, 4 invented, 298; W1AW 2066 of 2151, 25 wrong, 2038.
 
 ## 4. What's blocking us
 
-- **The ruling above:** ship the short dah with its floor on at the cost of a second carrier seed and one easy figure, or keep it off.
-- **The 1,500 bar** for the short-dah rows sits above what the long-dah rows read, 1,419. A bar on the flat half, or one beside the long-dah rows, would be a bar the rule can meet.
-- **The carrier at 5207** is read 75 Hz off its tone, through marks a hand could make. A carrier keyed at random from 30 to 300 ms makes dits and dahs that stand like a hand's within one pitch. What parts it from a hand is not in the five figures, and may be its key-down share or its gaps.
-- **The fade** remains the largest hole: every row's fading half reads about a fifth of its flat half.
+- **The fade, still the largest hole.** Three things are needed together, and the rule was the first:
+  - the gates follow a sender's level through the fade;
+  - the follow does not admit noise into weak steady senders, where the 202 invented and the 5 dB flat losses came from;
+  - at 20 dB, the grid's flat-top test lets a dah tilt with the fade, or the lane that reads it whole is handed on.
+- **Where the 202 invented come from** is not yet traced. 184 of them are on fading fists, and `fist-r2.0-10wpm-20db-fade` alone scored -79.
+- **The trace hook:** `CwLaneBank.Probe` traces one lane whether or not it is held. It does nothing while no test sets it.
 - **Choices taken, named under HM-DEC-276:**
-  - **The floor is Morse's fastest dit,** `CwDecoder.FastestPlausibleWpm`. It is the tree's own ceiling and not a fitted figure.
-  - **The trace hook** passes each caller's pitch through an optional parameter, and does nothing while no test sets it.
+  - of the forms tried, the one that read the fading fists best is the one left in the tree;
+  - `FollowMarks` 8 and `FollowPace` 1.5 are the author's figures, from the trace;
+  - the measurement of the other variants is in `.run-unit\unit582-bank*.txt`, `unit582-exp*.txt` and `unit582-trace-on.txt`.
 
 ### Asks still outstanding
 
-- **Unit 581, 2026-10-20:** ship `CwRules.ShortDah` with its dit floor on, at a second carrier seed and 77 of 90 easy, or keep it off. Waiting on the owner. The rule and its floor sit in the tree, off.
+- **The RSID real-time test, 2026-10-20:** answered by the owner's ruling of 2026-10-21. Done in this unit and dropped.
 - **Unit 575, 2026-10-19:** what could part a hand's letter gaps from his word gaps, since they overlap in length and no line drawn from his dit alone parts every hand. Waiting on the owner. `CwRules.StraddleSplit` sits in the tree, off.
 - **Unit 562, 2026-10-08:** what next for the junk before a weak call, given the 0.4 start costs the start of every real call. Waiting on the owner. No change for it sits in the tree.
 - **Unit 520, 2026-10-01:** how a mark finds its own tone beside a louder one. Partly answered by unit 524 and by the shadow rule. Still open before a sender stands, and for a sender 50 Hz or nearer.
@@ -184,46 +249,3 @@ The hand's margin above the carrier is nought on every condition. Every spread i
   - The run path, the only path to the screen, already shows only settled text.
   - The ask stands only for the timing-only path.
   - No change for it sits in the tree.
-
----
-
-# The owner's ruling on HM-DEC-285, 2026-10-20: the short dah ships on
-
-Gate checked against the tree: `PROJECT: Hamlet` in the prompt, `PROJECT_CARD.md` and `Hamlet.sln`. Run on the development computer, so nothing here is evidence about the radio. Branch `main`. I took `SESSION.lock` through `tools\arbiter\lock.bat take` and released it at the end. I wrote nothing to `RUN_LEDGER.md`, touched nothing under `tools\arbiter\` and ticked nothing in `PHASE_PLAN.md`.
-
-## What shipped
-
-- **`CwRules.ShortDah` is on by default with its dit floor** (`CwSenderGate.TwoKindsLeastDitSeconds`, 25 ms). It is out of `CwRules.OffByDefault` and listed in `CwRules.All`. Tests that read it "without" now turn it off, rather than choosing it on for "with".
-- **The restated carrier hard limit.** The carrier keyed at random may print at no more than two of twenty seeds (`TheRecordingsScoreboardTests.CarrierSeedsAllowed`). Loud noise and a new steady carrier, key-down at 625 Hz and 24 dB, must print nothing. The reason is written in the scoreboard's hard limits and in HM-DEC-285. The scoreboard guard's carrier line reads 2 of 20 (5195, 5207). The easy fixtures' bar is 77 of 90.
-- **New guards:**
-  - `TheFistBankGuardsTests.TheShortDahRowsHold`: the 1.6 and 2.0 rows at no less than 540 and 592 of 1440, which is 569 and 624 less 5%.
-  - `TheStraightKeyReadsTests.EveryHandReadsFortyEight`: each of the nine hands at 48 of 60.
-
-  Both scoreboard guards hold at 297 and 2111, and the weak-end guard at 71 as it already stood. The engine line now runs both new guards.
-- **The capture sheet:** the `clusters` line ends `; dah over dit 2.70` (for example) wherever the gate parts the printed sender's marks into two kinds. `TheClustersAreOnTheSheetTests` checks it.
-- **`CW_SPEC.md` §2** gains one sentence.
-- **The records:**
-  - HM-DEC-285 carries the ruling, the restated limit and its reason, the bar and the guards, added to the entry as the owner directed;
-  - its index row in `CLAUDE.md`;
-  - scoreboard rows `581, ruled`, 297 and 2111;
-  - the survey's Rerun line;
-  - version 1.13.266 to 1.13.267.
-
-## The lines (one build, the build servers shut down, each line once with `--no-build`)
-
-- **App line:** 278 of 278 in 2 min 19 s.
-- **Engine line, 1500 s timeout:** 158 of 159 in 11 min 48 s.
-  - Every CW guard passed. The fist bank guard took 4 min 17 s and the straight-key guard 3 min 47 s.
-  - **Red: `TheRsidDetectorTests.TheDetectorKeepsUpWithRealTime`,** `cpu/audio 1.302`, while its wall clock was 0.153 of real time. It counts the whole process's CPU (HM-DEC-267), and the two new guards each read three fists or hands at once beside it. Run alone afterwards, it passed in 5 s. This is a cost of the new guards on the line, not a regression in RSID.
-- **Survey line:** 1 of 1 in 10 min 5 s. As shipped it is identical, line for line apart from the Rerun line, to unit 581's measurement with the rule and its floor chosen:
-  - the bank 2612 of 5760, score 1891, 46 invented;
-  - the twelve-plus-three 297 and W1AW 2111;
-  - the easy fixtures 77 of 90.
-
-  I set the Rerun line in the survey document by hand, to the same text now in the test source. The source was changed after the one build.
-
-## Asks still outstanding
-
-- **Unit 581's ruling is answered** by this ruling, and is dropped.
-- **New, 2026-10-20: whether the RSID real-time test should leave the engine line, or measure its own thread's time rather than the process's.** It goes red when the new parallel guards run beside it. The guards sit in the tree on the line. Waiting on the owner.
-- The rest are carried as above: units 575, 562, 520, 440 items 1 and 2, and 487.

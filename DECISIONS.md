@@ -4,6 +4,51 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-286
+date: 2026-10-21
+refs: work instruction 582, HM-DEC-285, HM-DEC-284, HM-DEC-276, HM-DEC-267, HM-DEC-229, src/Hamlet.RadioEngine/Cw/CwSenderGate.cs, src/Hamlet.RadioEngine/Cw/CwPatternGate.cs, src/Hamlet.RadioEngine/Cw/CwRules.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheFadeTraceTests.cs, tests/Hamlet.RadioEngine.Tests/Rsid/TheRsidDetectorTests.cs
+---
+
+**The fade: a lane follows the signal it is reading. Traced, the fault is not the lane's lines but the gates' level tolerance; the rule the trace named was built, measured and left off.**
+
+**The RSID real-time test** (`TheRsidDetectorTests.TheDetectorKeepsUpWithRealTime`) measures its own thread's processor time, not the process's, by the owner's ruling of 2026-10-21. The detector runs on the calling thread alone. Alone it read 0.078 and 0.079 of real time, and it passed on the engine line beside the parallel guards, where the process's time had read 1.302. It supersedes HM-DEC-267's note on that test.
+
+**The trace** (`TheFadeTraceTests`, on the 2.5 hand at 20 WPM, fading and flat, at 5, 10 and 20 dB):
+- **The lane holds through the fade.** The bank lane at 625 Hz and a 60 ms dit called 143 of 173 key-downs whole on the 10 dB fist, and 172 of 173 on the 20 dB fist. It called no mark over a key-up at a peak, because the noise does not fade. Its key-down line, the 90th percentile of three seconds, swings only 3 to 5 dB against the fade's 12, so it sits at the peaks. In the troughs at 10 dB it missed 29 of 85 marks. A shorter history, or lines set on the marks' own tops, would recover those, but they are not what breaks the station.
+- **What breaks the station is the level tolerance.** Every mark's level follows the fade to within a decibel: at 10 dB it is -18 dB at a peak and -30 dB in a trough. Between one mark and the next it moves by up to 7 dB. The sender gate and the pattern gate held a mark to twice a flat top's wobble, 3 dB, of the mean of the sender's last three marks. That threw out 101 of 139 marks on the 10 dB fist and 53 of 96 on the 20 dB fist, against none on either flat twin. So one station was dealt among new senders, and one letter printed per fade cycle, every 1.4 s.
+- **At 20 dB the grid also loses the slopes.** A mark's top must be flat to 1.5 dB, and a dah on a fade's slope tilts 4 dB. The grid lost 42 of 54 marks keyed on a slope and 30 of 59 in a trough. The lane read them, but it is not handed on while the grid stands within 50 Hz.
+
+**The rule** (`CwRules.FollowsTheFade`, in both gates): a sender's level tolerance grows by its own pace. The pace is the median rate its level moved between its last `FollowMarks` marks (eight). It is multiplied by `FollowPace` (1.5) and by the time since the marks its level is read from. It is never more than the swing those marks span. Several forms were tried on the trace and on a subset of sixteen fists:
+- the last mark as the reference;
+- the net rate across five marks;
+- the signed median rate.
+
+This form read the fading fists best. In either gate alone it read as without it.
+
+**Measured on, against as shipped:**
+- the bank: 3065 of 5760 from 2612, score 2270 from 1891, but 202 invented from 46;
+- the fading half: 960 of 2880 from 439;
+- the flat half: 2105 from 2173;
+- the 2.5 hand at 20 WPM: 12, 48 and 22 of 60 fading at 5, 10 and 20 dB, from 0, 14 and 13; flat 41, 59 and 60, from 53, 59 and 60;
+- the working receiver fixtures: 6 of 81 from 4;
+- the easy fixtures: 77 of 90;
+- the twelve-plus-three: 298, wrong 19 from 20 but invented 4 from 1;
+- W1AW: 2038 from 2111, wrong 25 from 20, piece 3 reading 737 of 815;
+- the four 5 dB CQs: 71 of 84, but the 25 WPM CQ printed 32 letters in the 20 s of noise after it;
+- the random carrier at seeds 5195 and 5207, the steady carrier at none, the first recording whole;
+- the highest old capture 3.0 strays per 10 s; summed, 34.3 from 26.8;
+- the short-dah rows and the nine hands held their guards.
+
+**It does not ship.** By section 4 of the order it fails on:
+- **the fading half:** 960, under 1,200;
+- **the flat half:** 2105, under 2,129;
+- **invented:** 202, over 50;
+- **the boards:** W1AW at 2038, and the twelve-plus-three's invented up by three;
+- **the weak-end silence.**
+
+`FollowsTheFade` is in `CwRules.OffByDefault`, chosen only by a test. As shipped, every reading is as at HEAD: 297 and 2111. The trace stays in the tree. Ordered by work instruction 582.
+
+---
 id: HM-DEC-285
 date: 2026-10-20
 refs: work instruction 581, HM-DEC-284, HM-DEC-281, HM-DEC-276, HM-DEC-261, src/Hamlet.RadioEngine/Cw/CwSenderGate.cs, src/Hamlet.RadioEngine/Cw/CwRules.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheShortDahCostsTests.cs, docs/cw-survey-2026-10-09.md, docs/cw-scoreboard.md
