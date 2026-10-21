@@ -933,6 +933,13 @@ public sealed class CwEnvelopeDetector
     public const double LoudestFirstShape = 0.3;
 
     /// <summary>
+    /// **THE GRID'S TESTS ON A LANE'S SEQUENCE** (work instruction 585, round two, <see cref="CwRules.LaneMeetsTheGrid"/>): the share of a
+    /// lane's last <see cref="CwShadow.JudgedMarks"/> marks that must meet the grid's tests for it to be held, two thirds, the shadow
+    /// rule's own share over the same marks. Round one dropped every mark that failed, and a noise lane at its floor, thinned so, stood.
+    /// </summary>
+    public const double LaneGridShare = CwShadow.ShadowShare;
+
+    /// <summary>
     /// **THE GRID'S TESTS ON A LANE'S MARK** (work instruction 585, HM-DEC-289, <see cref="CwRules.LaneMeetsTheGrid"/>): the tests a
     /// grid mark meets in <see cref="CallMarks"/> before it is offered to the pattern gate, read on the grid's bin nearest the lane's
     /// pitch over the mark's own hops, by the same methods and figures: its rise and fall (<see cref="HasEdges"/> at
@@ -1086,6 +1093,20 @@ public sealed class CwEnvelopeDetector
             return shadow;
         }
 
+        // **THE GRID'S TESTS ON THE SEQUENCE** (work instruction 585, round two): a lane is held only where LaneGridShare of its last
+        // CwShadow.JudgedMarks marks met the grid's tests.
+        bool MeetsTheGrid((int Dit, CwPatternGate.StandingSequence Sequence) s)
+        {
+            if (!CwRules.On(CwRules.LaneMeetsTheGrid) || bank.Gates[s.Dit].Sender(s.Sequence.Id) is not { } sender)
+            {
+                return true;
+            }
+
+            var last = sender.Recent.TakeLast(CwShadow.JudgedMarks).ToList();
+
+            return last.Count == 0 || last.Count(m => m.MeetsGrid) >= LaneGridShare * last.Count;
+        }
+
         // Of the lanes within HandoverHz of a pitch at the green line, the one whose dit is nearest the dit their two kinds give.
         (int Dit, CwPatternGate.StandingSequence Sequence) Fit((int Dit, CwPatternGate.StandingSequence Sequence) chosen)
         {
@@ -1170,7 +1191,7 @@ public sealed class CwEnvelopeDetector
                 continue;
             }
 
-            if (LaneIsCarrier(s.Sequence.PitchHz, nowSeconds) || ShadowPitch(s.Sequence.PitchHz))
+            if (LaneIsCarrier(s.Sequence.PitchHz, nowSeconds) || ShadowPitch(s.Sequence.PitchHz) || !MeetsTheGrid(s))
             {
                 continue;
             }
@@ -1178,7 +1199,7 @@ public sealed class CwEnvelopeDetector
             var best = Fit(s);
 
             if (_held.Any(h => Math.Abs(h.PitchHz - best.Sequence.PitchHz) <= HandoverHz)
-                || LaneIsCarrier(best.Sequence.PitchHz, nowSeconds) || ShadowPitch(best.Sequence.PitchHz))
+                || LaneIsCarrier(best.Sequence.PitchHz, nowSeconds) || ShadowPitch(best.Sequence.PitchHz) || !MeetsTheGrid(best))
             {
                 best = s;
             }

@@ -137,9 +137,9 @@ internal static class CwRules
 
     /// <summary>
     /// **THE GRID'S TESTS ON LANES** (work instruction 585, HM-DEC-289): with <see cref="BankFinds"/>, a mark a lane calls while it
-    /// holds no station is offered to the lane's gate only where it meets the tests a grid mark meets before it is offered: its rise
-    /// and fall, its narrowness, its tone on its own samples, and its mark shape, read on the grid's bin at its pitch. Takes effect
-    /// only under <see cref="BankFinds"/>.
+    /// holds no station is judged by the tests a grid mark meets before it is offered: its rise and fall, its narrowness and its mark
+    /// shape, read on the grid's bin at its pitch; and a lane is held only where two thirds of its last ten marks met them (round two;
+    /// round one dropped each mark that failed). Takes effect only under <see cref="BankFinds"/>.
     /// </summary>
     public const string LaneMeetsTheGrid = "with one finder, a lane's mark meets the grid's tests";
 

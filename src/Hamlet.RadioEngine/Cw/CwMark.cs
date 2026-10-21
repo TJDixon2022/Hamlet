@@ -40,6 +40,12 @@ public sealed record CwMark(
     public bool HeldLane { get; init; }
 
     /// <summary>
+    /// Whether a bank lane's mark met the grid's edge, narrowness and mark-shape tests on the grid bin at its pitch (work instruction 585,
+    /// round two, <see cref="CwRules.LaneMeetsTheGrid"/>); true for every other mark.
+    /// </summary>
+    public bool MeetsGrid { get; init; } = true;
+
+    /// <summary>
     /// The stretch this mark was read again over, where it is one of a station's marks read again through its own window when
     /// the window opened: the reader replaces that sender's unprinted marks in the stretch with these. Null for every other mark
     /// (work instruction 553, task 2).

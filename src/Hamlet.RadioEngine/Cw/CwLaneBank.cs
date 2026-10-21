@@ -112,7 +112,7 @@ internal sealed class CwLaneBank
 
     /// <summary>
     /// **THE GRID'S TESTS ON LANES** (work instruction 585, <see cref="CwRules.LaneMeetsTheGrid"/>): where set, whether a mark a lane
-    /// calls while it holds no station is offered to its gate; by dit index and the mark. Null offers every mark, as before.
+    /// calls while it holds no station met the grid's tests; one that did not is offered marked (<see cref="CwMark.MeetsGrid"/>). By dit index and the mark; null judges none, as before.
     /// </summary>
     public Func<int, CwMark, bool>? Admits { get; set; }
 
@@ -180,9 +180,11 @@ internal sealed class CwLaneBank
                         HeldLane = held,
                     };
 
+                    // **JUDGED ON THE SEQUENCE, NOT FILTERED** (work instruction 585, round two): a mark that fails is still offered,
+                    // marked, so the tests never thin a noise lane into a sequence that stands.
                     if (!held && Admits is { } admits && !admits(d, mark))
                     {
-                        continue;
+                        mark = mark with { MeetsGrid = false };
                     }
 
                     foreach (var stood in _gates[d].Offer(mark))
