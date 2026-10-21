@@ -57,6 +57,7 @@ public sealed class TheOneFinderTests(ITestOutputHelper output)
     /// standing within 50 Hz of each held pitch with their shapes.
     /// </remarks>
     [Theory]
+    [InlineData("w1aw-2026-10-07/piece-01")]
     [InlineData("w1aw-2026-10-07/piece-02")]
     [InlineData("cw-2026-10-02-200157")]
     [InlineData("cw-2026-10-03-221530")]

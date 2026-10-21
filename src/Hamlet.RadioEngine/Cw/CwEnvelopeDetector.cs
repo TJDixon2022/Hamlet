@@ -460,7 +460,7 @@ public sealed class CwEnvelopeDetector
                 shares[pair] = Math.Max(shares.TryGetValue(pair, out var was) ? was : 0, CwShadow.ShareOf(lane.Recent, recent));
             }
 
-            if (CwShadow.IsShadowOf(lane.Recent, lane.PitchHz, recent, pitch, reachHz: ShadowReach))
+            if (BankFinding ? CwShadow.IsLaneShadowOf(lane.Recent, lane.PitchHz, recent, pitch, ShadowReach) : CwShadow.IsShadowOf(lane.Recent, lane.PitchHz, recent, pitch, reachHz: ShadowReach))
             {
                 _lastShadowOfHz = pitch;
 

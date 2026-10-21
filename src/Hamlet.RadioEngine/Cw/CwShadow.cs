@@ -82,6 +82,23 @@ internal static class CwShadow
         => marks.TakeLast(JudgedMarks).Select(m => m.LevelDb).DefaultIfEmpty(double.NaN).Average();
 
     /// <summary>
+    /// **WITH ONE FINDER, LANE AGAINST LANE BY LEVEL** (work instruction 584, round three, <see cref="CwRules.BankFinds"/>): whether
+    /// a bank lane's sequence is a shadow of another lane's, as <see cref="IsShadowOf"/>, with the stronger the louder by its level at
+    /// any distance. Every lane has its own key-up, so contrast says how a lane sits over its own noise and not which carries the
+    /// station; a station's leakage into the lanes beside it is always quieter than the station on its own pitch.
+    /// </summary>
+    /// <param name="marks">The sequence judged.</param>
+    /// <param name="pitchHz">Its pitch.</param>
+    /// <param name="other">The other lane's marks.</param>
+    /// <param name="otherPitchHz">The other lane's pitch.</param>
+    /// <param name="reachHz">How far away the louder lane must be.</param>
+    /// <returns>True where it is a shadow.</returns>
+    public static bool IsLaneShadowOf(IReadOnlyList<CwMark> marks, double pitchHz, IReadOnlyList<CwMark> other, double otherPitchHz, double reachHz)
+        => Math.Abs(pitchHz - otherPitchHz) > reachHz
+            && LevelOf(other) > LevelOf(marks)
+            && ShareOf(marks, other, ShadowStartMs) >= ShadowShare;
+
+    /// <summary>
     /// Whether the sequence is a shadow of <paramref name="other"/>: the other is more than <see cref="ShadowReachHz"/>
     /// away, stronger by its own contrast, and, within the handover's same-station distance, louder by its level too, where a
     /// station's own skirt shows as much contrast as the station (work instruction 573); and <paramref name="share"/> or more of
