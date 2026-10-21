@@ -93,6 +93,12 @@ internal sealed class CwLaneBank
     public (int Dit, double PitchHz)? Held { get; set; }
 
     /// <summary>
+    /// **ONE FINDER** (work instruction 584, <see cref="CwRules.BankFinds"/>): with the bank as the finder, every lane that holds a
+    /// station, one per pitch, by dit index and pitch; each reads as <see cref="Held"/> does.
+    /// </summary>
+    public List<(int Dit, double PitchHz)> HeldAll { get; } = [];
+
+    /// <summary>
     /// Where set, every mark the held lane called and the hops it read on, with its key-up and key-down lines and its contrast at
     /// that moment: for the tests' traces (work instruction 576). `Mark` is false on a hop with no mark ending.
     /// </summary>
@@ -137,7 +143,7 @@ internal sealed class CwLaneBank
         {
             for (var d = 0; d < p.Lanes.Length; d++)
             {
-                var held = Held is { } h && h.Dit == d && Math.Abs(h.PitchHz - p.Hz) <= SpacingHz / 2 && CwRules.On(CwRules.HeldLaneReads);
+                var held = ((Held is { } h && h.Dit == d && Math.Abs(h.PitchHz - p.Hz) <= SpacingHz / 2) || IsHeld(d, p.Hz)) && CwRules.On(CwRules.HeldLaneReads);
 
                 var called = p.Lanes[d].Hop(nowSeconds, _hopSeconds, held);
 
@@ -181,6 +187,20 @@ internal sealed class CwLaneBank
         {
             Stood.RemoveRange(0, Stood.Count - 2000);
         }
+    }
+
+    // Whether a lane is among HeldAll.
+    private bool IsHeld(int dit, double hz)
+    {
+        foreach (var (d, pitch) in HeldAll)
+        {
+            if (d == dit && Math.Abs(pitch - hz) <= SpacingHz / 2)
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /// <summary>The bank's standing sequences, across its gates: pitch, shape and the dit index.</summary>

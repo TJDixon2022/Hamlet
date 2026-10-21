@@ -923,6 +923,214 @@ public sealed class CwEnvelopeDetector
         }
     }
 
+    /// <summary>Whether the bank is the finder now: <see cref="CwRules.BankFinds"/> chosen, and a bank across the rig's passband.</summary>
+    private bool BankFinding => _bank is not null && CwRules.On(CwRules.BankFinds);
+
+    // The lanes that hold a station with the bank as the finder, one per pitch (work instruction 584).
+    private readonly List<HeldStation> _held = [];
+
+    // Where a held lane was let go in a pause, by bin: a lane there is held again only once it has stood on a new mark of its own.
+    private readonly Dictionary<long, double> _pausedAt = [];
+
+    /// <summary>The lanes that hold a station with the bank as the finder, by dit index and pitch: for the tests' traces (work instruction 584).</summary>
+    internal IReadOnlyList<(int Dit, double PitchHz)> HeldStations => _held.Select(h => (h.Dit, h.PitchHz)).ToList();
+
+    // One held lane: its dit index, pitch and sequence, and when it last handed on a mark the gate would kind.
+    private sealed class HeldStation(int dit, double pitchHz, int id, double kindedAt)
+    {
+        public int Dit { get; set; } = dit;
+
+        public double PitchHz { get; set; } = pitchHz;
+
+        public int Id { get; set; } = id;
+
+        public double KindedAt { get; set; } = kindedAt;
+
+        public (int Dit, double PitchHz, int Id) Key => (Dit, PitchHz, Id);
+    }
+
+    /// <summary>
+    /// **ONE FINDER: THE BANK FINDS EVERY STATION** (work instruction 584, HM-DEC-288, <see cref="CwRules.BankFinds"/>). A lane stands
+    /// by the rules it has; one standing at <see cref="StepAsideLaneShape"/> or better, not a carrier and not a shadow, is held and read
+    /// at once, with no wait, and hands on what it stood on and every mark after, its marks its station's. One station per pitch: of the
+    /// lanes within <see cref="HandoverHz"/> at that shape, the one whose dit is nearest the dit their two kinds give, the best-shaped
+    /// while they are not two, and the others there feed nothing while it holds. The hold ends when its sequence stops standing, when it
+    /// is judged a carrier or a shadow, or in a pause of <see cref="HeldLanePauseGaps"/> of its sender's word gaps; there is no clock.
+    /// </summary>
+    private void BankFind(double nowSeconds)
+    {
+        var bank = _bank!;
+
+        _laneKept.AddRange(bank.Stood);
+        bank.Stood.Clear();
+        _laneKept.RemoveAll(k => k.Mark.ToSeconds < nowSeconds - LaneKeptSeconds);
+
+        var standing = bank.Standing(nowSeconds);
+        var shadows = new HashSet<(long, long)>();
+        var shadowAt = new Dictionary<long, bool>();
+        List<(double, IReadOnlyList<CwMark>, int, int)>? others = null;
+        static long BinOf(double hz) => (long)Math.Round(hz / BinSpacingHz);
+
+        // A pitch is a shadow where any of its dits' lanes is the shadow of another lane, judged once a hop per pitch.
+        bool ShadowPitch(double pitchHz)
+        {
+            if (shadowAt.TryGetValue(BinOf(pitchHz), out var known))
+            {
+                return known;
+            }
+
+            others ??= standing.Select(s => (s.Dit, s.Sequence.Id, Sender: bank.Gates[s.Dit].Sender(s.Sequence.Id))).Where(s => s.Sender is not null)
+                .Select(s => (s.Sender!.Value.PitchHz, (IReadOnlyList<CwMark>)s.Sender.Value.Recent, s.Dit, s.Id))
+                .ToList();
+
+            var shadow = false;
+
+            foreach (var s in standing.Where(s => Math.Abs(s.Sequence.PitchHz - pitchHz) <= BinSpacingHz / 2))
+            {
+                shadow |= LaneIsShadow(s.Dit, s.Sequence, others, nowSeconds, shadows);
+            }
+
+            shadowAt[BinOf(pitchHz)] = shadow;
+            return shadow;
+        }
+
+        // Of the lanes within HandoverHz of a pitch at the green line, the one whose dit is nearest the dit their two kinds give.
+        (int Dit, CwPatternGate.StandingSequence Sequence) Fit((int Dit, CwPatternGate.StandingSequence Sequence) chosen)
+        {
+            var here = standing
+                .Where(l => (l.Dit == chosen.Dit && l.Sequence.Id == chosen.Sequence.Id)
+                    || (Math.Abs(l.Sequence.PitchHz - chosen.Sequence.PitchHz) <= HandoverHz && l.Sequence.Shape.Score >= StepAsideLaneShape))
+                .ToList();
+            var kinds = here.Select(l => bank.Gates[l.Dit].KindsDitSeconds(l.Sequence.Id)).OfType<double>().Where(d => d > 0).Order().ToList();
+
+            if (kinds.Count == 0)
+            {
+                return chosen;
+            }
+
+            var dit = kinds[kinds.Count / 2];
+            double Off((int Dit, CwPatternGate.StandingSequence Sequence) l) => Math.Abs(Math.Log(CwLaneBank.DitSeconds[l.Dit] / dit));
+
+            var nearest = here.OrderBy(Off).ThenByDescending(l => l.Sequence.Shape.Score).First();
+
+            // Nearer only by more than RefitRatio, so two lanes about as near do not trade the station back and forth.
+            return Off(chosen) - Off(nearest) > Math.Log(RefitRatio) ? nearest : chosen;
+        }
+
+        // The holds that end.
+        foreach (var h in _held.ToList())
+        {
+            var stands = standing.Any(s => s.Dit == h.Dit && Math.Abs(s.Sequence.PitchHz - h.PitchHz) <= BinSpacingHz / 2);
+            var carrier = stands && LaneIsCarrier(h.PitchHz, nowSeconds);
+            var shadow = stands && !carrier && ShadowPitch(h.PitchHz);
+            var paused = stands && !carrier && !shadow && CwRules.On(CwRules.HeldLaneReads) && CwRules.On(CwRules.HeldLanePause)
+                && nowSeconds - h.KindedAt > HeldLanePauseGaps * HeldTiming(h.Key).WordGapSeconds;
+
+            if (stands && !carrier && !shadow && !paused)
+            {
+                continue;
+            }
+
+            if (shadow)
+            {
+                _shadowLetGoAt = nowSeconds;
+            }
+
+            if (paused)
+            {
+                _pausedAt[BinOf(h.PitchHz)] = nowSeconds;
+            }
+
+            _held.Remove(h);
+            HandoverTrace?.Add(string.Create(CultureInfo.InvariantCulture, $"{nowSeconds:0.00} s let go {h.PitchHz:0} Hz{(carrier ? " as a carrier" : shadow ? " as a shadow" : paused ? " in a pause" : string.Empty)}"));
+        }
+
+        // A held lane moves to the lane at its pitch whose dit fits its station better; what was handed on there is not handed on again.
+        foreach (var h in _held)
+        {
+            if (standing.FirstOrDefault(s => s.Dit == h.Dit && Math.Abs(s.Sequence.PitchHz - h.PitchHz) <= BinSpacingHz / 2) is { Sequence: not null } current
+                && Fit(current) is var fitted
+                && (fitted.Dit != h.Dit || BinOf(fitted.Sequence.PitchHz) != BinOf(h.PitchHz))
+                && !_held.Any(o => o != h && Math.Abs(o.PitchHz - fitted.Sequence.PitchHz) <= HandoverHz)
+                && !LaneIsCarrier(fitted.Sequence.PitchHz, nowSeconds) && !ShadowPitch(fitted.Sequence.PitchHz))
+            {
+                HandoverTrace?.Add(string.Create(CultureInfo.InvariantCulture, $"{nowSeconds:0.00} s refits {h.PitchHz:0} Hz to {fitted.Sequence.PitchHz:0} Hz at a {CwLaneBank.DitSeconds[fitted.Dit] * 1000:0} ms dit"));
+                (h.Dit, h.PitchHz, h.Id) = (fitted.Dit, fitted.Sequence.PitchHz, fitted.Sequence.Id);
+            }
+        }
+
+        // The stations newly found: the best-shaped first, each pitch once.
+        foreach (var s in standing.Where(s => s.Sequence.Shape.Score >= StepAsideLaneShape).OrderByDescending(s => s.Sequence.Shape.Score).ToList())
+        {
+            if (_held.Any(h => Math.Abs(h.PitchHz - s.Sequence.PitchHz) <= HandoverHz))
+            {
+                continue;
+            }
+
+            // Let go in a pause, a lane there is held again only once it has stood on a mark of its own since.
+            if (_pausedAt.Where(p => Math.Abs((p.Key * BinSpacingHz) - s.Sequence.PitchHz) <= HandoverHz).Select(p => p.Value).DefaultIfEmpty(double.NegativeInfinity).Max() is var pausedAt
+                && double.IsFinite(pausedAt)
+                && !_laneKept.Any(k => Math.Abs(k.Mark.PitchHz - s.Sequence.PitchHz) <= BinSpacingHz / 2 && k.Mark.FromSeconds > pausedAt))
+            {
+                continue;
+            }
+
+            if (LaneIsCarrier(s.Sequence.PitchHz, nowSeconds) || ShadowPitch(s.Sequence.PitchHz))
+            {
+                continue;
+            }
+
+            var best = Fit(s);
+
+            if (_held.Any(h => Math.Abs(h.PitchHz - best.Sequence.PitchHz) <= HandoverHz)
+                || LaneIsCarrier(best.Sequence.PitchHz, nowSeconds) || ShadowPitch(best.Sequence.PitchHz))
+            {
+                best = s;
+            }
+
+            // A lane found soon after a shadow was let go hands on no backlog: it starts from its next mark (the owner, 2026-10-13).
+            var fresh = nowSeconds - _shadowLetGoAt < LaneLeadSeconds;
+
+            if (fresh)
+            {
+                _laneHandedTo[BinOf(best.Sequence.PitchHz)] = Math.Max(_laneHandedTo.TryGetValue(BinOf(best.Sequence.PitchHz), out var t) ? t : double.NegativeInfinity, nowSeconds);
+            }
+
+            _held.Add(new HeldStation(best.Dit, best.Sequence.PitchHz, best.Sequence.Id, nowSeconds));
+            HandoverTrace?.Add(string.Create(CultureInfo.InvariantCulture, $"{nowSeconds:0.00} s holds {best.Sequence.PitchHz:0} Hz at a {CwLaneBank.DitSeconds[best.Dit] * 1000:0} ms dit{(fresh ? ", no backlog" : string.Empty)}"));
+        }
+
+        _shadowsNow = shadows;
+        bank.Held = null;
+        bank.HeldAll.Clear();
+        bank.HeldAll.AddRange(_held.Select(h => (h.Dit, h.PitchHz)));
+
+        // The story's `Weak station` names a lane handed on beside the grid; with one finder every station is on a lane.
+        Volatile.Write(ref _weakStationPitchHz, double.NaN);
+
+        // Each held lane's marks, those it stood on first and every one after, in the order keyed; none a lane at its pitch handed on.
+        foreach (var h in _held)
+        {
+            var bin = BinOf(h.PitchHz);
+            var handedTo = Enumerable.Range(-2, 5).Select(k => _laneHandedTo.TryGetValue(bin + k, out var t) ? t : double.NegativeInfinity).Max();
+            var timing = HeldTiming(h.Key);
+
+            foreach (var (_, mark) in _laneKept.Where(k => k.Dit == h.Dit && Math.Abs(k.Mark.PitchHz - h.PitchHz) <= BinSpacingHz / 2 && k.Mark.FromSeconds > handedTo).OrderBy(k => k.Mark.FromSeconds).ToList())
+            {
+                _marks.Add(mark with { Sequence = ++_markSequence, Stood = true, Keyed = true, HeldLane = true });
+                _laneHandedTo[bin] = Math.Max(_laneHandedTo.TryGetValue(bin, out var t) ? t : double.NegativeInfinity, mark.ToSeconds);
+
+                if (mark.ToSeconds - mark.FromSeconds >= 0.5 * timing.DitSeconds)
+                {
+                    h.KindedAt = Math.Max(h.KindedAt, mark.ToSeconds);
+                }
+            }
+
+            _laneKept.RemoveAll(k => Math.Abs(k.Mark.PitchHz - h.PitchHz) <= HandoverHz);
+        }
+
+    }
+
     /// <summary>
     /// The bank in one line for the record (work instruction 569): lanes held, sequences standing, and the best standing lane's
     /// pitch and shape, then the shadows held in the last minute (work instruction 573); "no bank" where the passband is not the
@@ -1335,6 +1543,8 @@ public sealed class CwEnvelopeDetector
             _windows.Clear();
             _bank = fromRig && CwRules.On(CwRules.LaneBank) ? new CwLaneBank(SampleRate, HopSamples, low, high) : null;
             _bankLane = null;
+            _held.Clear();
+            _pausedAt.Clear();
             Volatile.Write(ref _weakStationPitchHz, double.NaN);
             _laneKept.Clear();
             _laneClearSince.Clear();
@@ -1648,7 +1858,10 @@ public sealed class CwEnvelopeDetector
         // sound most like code, at every hop. Unit 515 took the loudest. The terminal holds its sender through
         // the sending, and the reading follows what it prints (<see cref="PrintedPitch"/>) while that stands,
         // and the best shape otherwise.
-        var standing = _pattern.Standing(nowSeconds, HoldSeconds);
+        // **ONE FINDER** (work instruction 584): with the bank as the finder the verdict, the light and the scope read its lanes.
+        var standing = BankFinding
+            ? _bank!.Standing(nowSeconds).Select(s => s.Sequence).ToList()
+            : _pattern.Standing(nowSeconds, HoldSeconds);
 
         _standingNow = standing;
         var keying = standing.Count > 0;
@@ -1664,7 +1877,15 @@ public sealed class CwEnvelopeDetector
 
         // **THE LANE BANK READS ALONGSIDE** (work instruction 569, task 1): its marks form sequences in its own gates.
         _bank?.Hop(nowSeconds);
-        HandOver(nowSeconds);
+
+        if (BankFinding)
+        {
+            BankFind(nowSeconds);
+        }
+        else
+        {
+            HandOver(nowSeconds);
+        }
 
         foreach (var s in standing)
         {
@@ -1677,7 +1898,9 @@ public sealed class CwEnvelopeDetector
 
         // **THE HOLD-STILL LIGHT** (work instruction 521, HM-DEC-225): green while a sender is printed and keying,
         // green while a sequence stands, amber while one is forming with marks in the last two seconds, dark else.
-        var forming = _pattern.Forming(nowSeconds, CwShapeLights.FormingSeconds);
+        var forming = BankFinding
+            ? _bank!.Gates.Max(g => g.Forming(nowSeconds, CwShapeLights.FormingSeconds))
+            : _pattern.Forming(nowSeconds, CwShapeLights.FormingSeconds);
 
         // **THE LIGHT CLAIMS NO MORE THAN THE PRINTER** (work instruction 535, HM-DEC-239; the owner's answer, option A): green
         // only while the gate would print the sender - `reading` while it prints one, `shape found` while one has qualified
@@ -1792,7 +2015,8 @@ public sealed class CwEnvelopeDetector
     /// </remarks>
     private void FollowSender(CwPatternGate.StandingSequence? chosen, IReadOnlyList<CwPatternGate.StandingSequence> standing, long hop)
     {
-        if (!OwnWindow)
+        // With the bank as the finder the held lane is the station's window, and no second one opens (work instruction 584).
+        if (!OwnWindow || BankFinding)
         {
             _laneBin = null;
             _laneId = -1;
@@ -1845,7 +2069,7 @@ public sealed class CwEnvelopeDetector
     /// </summary>
     private void UpdateWindows(long hop, double nowSeconds)
     {
-        if (!OwnWindow || !CandidateWindows)
+        if (!OwnWindow || !CandidateWindows || BankFinding)
         {
             _windows.Clear();
             return;
@@ -2875,6 +3099,13 @@ public sealed class CwEnvelopeDetector
                 };
 
                 _candidates.Add(candidate);
+
+                // **ONE FINDER** (work instruction 584, HM-DEC-288): with the bank as the finder the grid's marks reach neither
+                // gate; the grid is the scope's.
+                if (BankFinding)
+                {
+                    continue;
+                }
 
                 // **A LANE THAT HOLDS A STATION KEEPS THE GRID'S PIECES OFF THE PAGE** (work instructions 569 and 570): while the
                 // bank's lane holds a station, the grid's marks near its pitch are not printed, so the station is read once; they

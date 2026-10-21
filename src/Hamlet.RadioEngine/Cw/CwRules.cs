@@ -121,6 +121,13 @@ internal static class CwRules
 
     /// <summary>A mark called by a bank lane that holds a station goes to that station without the level test in either gate (work instruction 583); built, measured with the grid stepping aside and left off (HM-DEC-287).</summary>
     public const string HeldLaneMarksAreItsStations = "the marks of a held lane are its station's";
+    /// <summary>
+    /// **ONE FINDER: THE BANK FINDS EVERY STATION** (work instruction 584, HM-DEC-288): the grid's marks reach neither gate and the
+    /// grid stays for the scope; every station is found, stood, held and read on a bank lane, one lane per pitch, with no handover.
+    /// A held lane's marks are its station's under it, as under <see cref="HeldLaneMarksAreItsStations"/>.
+    /// </summary>
+    public const string BankFinds = "the bank finds every station";
+
 
 
 
@@ -145,7 +152,7 @@ internal static class CwRules
     /// The rules that ship off, built and measured and not taken: off unless a test chooses one on this thread with
     /// <see cref="Choose"/> (work instruction 565).
     /// </summary>
-    public static readonly IReadOnlySet<string> OffByDefault = new HashSet<string>(StringComparer.Ordinal) { BetweenClusters, StraddleSplit, GridStepsAside, HoldWaitsAndFits, FollowsTheFade, HeldLaneMarksAreItsStations };
+    public static readonly IReadOnlySet<string> OffByDefault = new HashSet<string>(StringComparer.Ordinal) { BetweenClusters, StraddleSplit, GridStepsAside, HoldWaitsAndFits, FollowsTheFade, HeldLaneMarksAreItsStations, BankFinds };
 
     [ThreadStatic]
     private static HashSet<string>? _chosen;
