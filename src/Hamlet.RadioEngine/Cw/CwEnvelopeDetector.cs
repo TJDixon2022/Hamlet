@@ -1093,6 +1093,23 @@ public sealed class CwEnvelopeDetector
             return shadow;
         }
 
+        // **A STATION IS HEARD IN TWO LANES** (work instruction 585, round three): another lane within HandoverHz forms at
+        // LoudestFirstShape, at the lane's pitch on another dit or beside it.
+        List<(int Dit, double PitchHz)>? formed = null;
+
+        bool InTwoLanes((int Dit, CwPatternGate.StandingSequence Sequence) s)
+        {
+            if (!CwRules.On(CwRules.TwoLanes))
+            {
+                return true;
+            }
+
+            formed ??= bank.Gates.SelectMany((g, d) => g.Formed(nowSeconds, HoldSeconds, LoudestFirstShape).Select(f => (d, f.PitchHz))).ToList();
+
+            return formed.Any(f => Math.Abs(f.PitchHz - s.Sequence.PitchHz) <= HandoverHz
+                && !(f.Dit == s.Dit && Math.Abs(f.PitchHz - s.Sequence.PitchHz) <= BinSpacingHz / 2));
+        }
+
         // **THE GRID'S TESTS ON THE SEQUENCE** (work instruction 585, round two): a lane is held only where LaneGridShare of its last
         // CwShadow.JudgedMarks marks met the grid's tests.
         bool MeetsTheGrid((int Dit, CwPatternGate.StandingSequence Sequence) s)
@@ -1191,7 +1208,7 @@ public sealed class CwEnvelopeDetector
                 continue;
             }
 
-            if (LaneIsCarrier(s.Sequence.PitchHz, nowSeconds) || ShadowPitch(s.Sequence.PitchHz) || !MeetsTheGrid(s))
+            if (LaneIsCarrier(s.Sequence.PitchHz, nowSeconds) || ShadowPitch(s.Sequence.PitchHz) || !MeetsTheGrid(s) || !InTwoLanes(s))
             {
                 continue;
             }

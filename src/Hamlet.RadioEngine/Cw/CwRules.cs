@@ -143,6 +143,14 @@ internal static class CwRules
     /// </summary>
     public const string LaneMeetsTheGrid = "with one finder, a lane's mark meets the grid's tests";
 
+    /// <summary>
+    /// **A STATION IS HEARD IN TWO LANES** (work instruction 585, round three, HM-DEC-289): with <see cref="BankFinds"/>, a lane is held
+    /// only where another lane within <see cref="CwEnvelopeDetector.HandoverHz"/>, at its pitch on another dit or at a pitch beside it,
+    /// forms at <see cref="CwEnvelopeDetector.LoudestFirstShape"/> too. A keyed tone reaches the lanes beside its pitch and every dit
+    /// lane at it; a noise lane at its floor stands alone. Takes effect only under <see cref="BankFinds"/>.
+    /// </summary>
+    public const string TwoLanes = "with one finder, a station is heard in two lanes";
+
 
 
 
