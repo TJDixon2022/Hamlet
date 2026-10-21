@@ -128,6 +128,21 @@ internal static class CwRules
     /// </summary>
     public const string BankFinds = "the bank finds every station";
 
+    /// <summary>
+    /// **ONE FINDER, LOUDEST FIRST** (work instruction 585, HM-DEC-289): with <see cref="BankFinds"/>, a lane is judged for shadow
+    /// against every louder lane standing or forming at <see cref="CwEnvelopeDetector.LoudestFirstShape"/> anywhere in the passband,
+    /// held or not, and the stations newly found are held loudest first. Takes effect only under <see cref="BankFinds"/>.
+    /// </summary>
+    public const string LoudestFirst = "with one finder, the loudest lane is held first";
+
+    /// <summary>
+    /// **THE GRID'S TESTS ON LANES** (work instruction 585, HM-DEC-289): with <see cref="BankFinds"/>, a mark a lane calls while it
+    /// holds no station is offered to the lane's gate only where it meets the tests a grid mark meets before it is offered: its rise
+    /// and fall, its narrowness, its tone on its own samples, and its mark shape, read on the grid's bin at its pitch. Takes effect
+    /// only under <see cref="BankFinds"/>.
+    /// </summary>
+    public const string LaneMeetsTheGrid = "with one finder, a lane's mark meets the grid's tests";
+
 
 
 

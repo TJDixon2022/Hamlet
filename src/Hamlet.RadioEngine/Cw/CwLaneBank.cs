@@ -110,6 +110,12 @@ internal sealed class CwLaneBank
     /// <summary>Where set, every hop of the <see cref="Probe"/> lane, as <see cref="HeldTrace"/> keeps the held lane's.</summary>
     internal List<(double At, double PitchHz, bool Mark, double From, double To, double LevelDb, double UpDb, double DownDb, double ContrastDb)>? ProbeTrace { get; set; }
 
+    /// <summary>
+    /// **THE GRID'S TESTS ON LANES** (work instruction 585, <see cref="CwRules.LaneMeetsTheGrid"/>): where set, whether a mark a lane
+    /// calls while it holds no station is offered to its gate; by dit index and the mark. Null offers every mark, as before.
+    /// </summary>
+    public Func<int, CwMark, bool>? Admits { get; set; }
+
     /// <summary>Every mark that stood in the bank, in order, for the detector to hand on or keep.</summary>
     public List<(int Dit, CwMark Mark)> Stood { get; } = [];
 
@@ -173,6 +179,11 @@ internal sealed class CwLaneBank
                         OwnContrastDb = span.ContrastDb,
                         HeldLane = held,
                     };
+
+                    if (!held && Admits is { } admits && !admits(d, mark))
+                    {
+                        continue;
+                    }
 
                     foreach (var stood in _gates[d].Offer(mark))
                     {

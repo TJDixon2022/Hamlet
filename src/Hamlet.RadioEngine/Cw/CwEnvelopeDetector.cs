@@ -925,6 +925,69 @@ public sealed class CwEnvelopeDetector
         }
     }
 
+    /// <summary>
+    /// **LOUDEST FIRST** (work instruction 585, HM-DEC-289, <see cref="CwRules.LoudestFirst"/>): the least shape at which a lane not
+    /// yet standing is a louder lane a candidate is judged a shadow of, 0.3, under the green line a lane is held at, so a station
+    /// still forming already holds its shadows back.
+    /// </summary>
+    public const double LoudestFirstShape = 0.3;
+
+    /// <summary>
+    /// **THE GRID'S TESTS ON A LANE'S MARK** (work instruction 585, HM-DEC-289, <see cref="CwRules.LaneMeetsTheGrid"/>): the tests a
+    /// grid mark meets in <see cref="CallMarks"/> before it is offered to the pattern gate, read on the grid's bin nearest the lane's
+    /// pitch over the mark's own hops, by the same methods and figures: its rise and fall (<see cref="HasEdges"/> at
+    /// <see cref="EdgeShare"/> of its own height, read only where the hops exist), its narrowness (<see cref="IsNarrow"/>) and its mark shape at <see cref="ShapeThreshold"/>. Its tone on its own
+    /// samples (<see cref="IsToneHere"/>), which the sender's window applies and the grid does not, is reported and gates nothing.
+    /// A test whose hops are not held is not taken.
+    /// </summary>
+    /// <param name="mark">The lane's mark.</param>
+    /// <returns>Each test's verdict and whether it meets all four.</returns>
+    internal (bool Edges, bool Narrow, bool Tone, bool Shape, bool Passes) GridTestsOf(CwMark mark)
+    {
+        var hop = _hop - 1;
+        var nowSeconds = _samplesSeen / (double)SampleRate;
+        var start = hop + 1 - (long)Math.Round((nowSeconds - mark.FromSeconds) * 1000 / HopMs);
+        var end = hop - (long)Math.Round((nowSeconds - mark.ToSeconds) * 1000 / HopMs);
+
+        if (_bins.Length == 0 || end < start || start - (2 * EdgeHops) < Math.Max(0, hop - HistoryHops + 1) || end > hop)
+        {
+            return (true, true, true, true, true);
+        }
+
+        var bin = Math.Clamp((int)Math.Round((mark.PitchHz - _bins[0].Hz) / BinSpacingHz), 0, _bins.Length - 1);
+        var peak = _bins[bin];
+        var level = MeanLevel(peak, start, end);
+        var own = OwnContrast(peak, start, end, level, hop);
+        var depth = EdgeDepth(own.ContrastDb);
+        var rose = false;
+        var fell = false;
+        var fallRead = false;
+
+        for (var k = 1; k <= EdgeHops; k++)
+        {
+            rose |= start - k >= 0 && peak.Level(start - k) <= level - depth;
+
+            if (end + k <= hop)
+            {
+                fallRead = true;
+                fell |= peak.Level(end + k) <= level - depth;
+            }
+        }
+
+        var edges = !MarksNeedEdges || (rose && (fell || !fallRead));
+        var narrow = !(MarksNeedNarrowness && CwRules.On(CwRules.Narrowness)) || IsNarrow(bin, start, end, level, own.ContrastDb, hop);
+        var tone = IsToneHere(mark.FromSeconds, mark.ToSeconds, mark.PitchHz);
+        var shape = !MarksNeedShape || Shape(bin, start, end, level, own, hop).Score >= ShapeThreshold;
+
+        return (edges, narrow, tone, shape, (edges || !LaneTests.Contains("edges")) && (narrow || !LaneTests.Contains("narrow")) && (shape || !LaneTests.Contains("shape")) && (tone || !LaneTests.Contains("tone")));
+    }
+
+    /// <summary>Which of the grid's tests a lane's mark must meet under <see cref="CwRules.LaneMeetsTheGrid"/>: `edges`, `narrow` and `shape`, as the grid's own; a test may name one alone, or add `tone` (work instruction 585).</summary>
+    internal HashSet<string> LaneTests { get; set; } = ["edges", "narrow", "shape"];
+
+    /// <summary>Where set, every lane mark judged by <see cref="GridTestsOf"/> with one finder, its verdicts: for the tests' traces (work instruction 585).</summary>
+    internal List<(bool Edges, bool Narrow, bool Tone, bool Shape, bool Passes)>? LaneTestsSeen { get; set; }
+
     /// <summary>Whether the bank is the finder now: <see cref="CwRules.BankFinds"/> chosen, and a bank across the rig's passband.</summary>
     private bool BankFinding => _bank is not null && CwRules.On(CwRules.BankFinds);
 
@@ -991,6 +1054,22 @@ public sealed class CwEnvelopeDetector
             others ??= standing.Select(s => (s.Dit, s.Sequence.Id, Sender: bank.Gates[s.Dit].Sender(s.Sequence.Id))).Where(s => s.Sender is not null)
                 .Select(s => (s.Sender!.Value.PitchHz, (IReadOnlyList<CwMark>)s.Sender.Value.Recent, s.Dit, s.Id))
                 .ToList();
+
+            // **LOUDEST FIRST** (work instruction 585): every lane forming at LoudestFirstShape too, held or not, so a station still
+            // forming holds back the shadows that stand before it.
+            if (CwRules.On(CwRules.LoudestFirst))
+            {
+                for (var d = 0; d < bank.Gates.Count; d++)
+                {
+                    foreach (var (id, hz, recent) in bank.Gates[d].Formed(nowSeconds, HoldSeconds, LoudestFirstShape))
+                    {
+                        if (!others.Any(o => o.Item3 == d && o.Item4 == id))
+                        {
+                            others.Add((hz, recent, d, id));
+                        }
+                    }
+                }
+            }
 
             var shadow = false;
 
@@ -1073,8 +1152,10 @@ public sealed class CwEnvelopeDetector
             }
         }
 
-        // The stations newly found: the best-shaped first, each pitch once.
-        foreach (var s in standing.Where(s => s.Sequence.Shape.Score >= StepAsideLaneShape).OrderByDescending(s => s.Sequence.Shape.Score).ToList())
+        // The stations newly found: the best-shaped first, each pitch once; **loudest first** (work instruction 585), by level.
+        var found = standing.Where(s => s.Sequence.Shape.Score >= StepAsideLaneShape);
+
+        foreach (var s in (CwRules.On(CwRules.LoudestFirst) ? found.OrderByDescending(s => s.Sequence.LevelDb) : found.OrderByDescending(s => s.Sequence.Shape.Score)).ToList())
         {
             if (_held.Any(h => Math.Abs(h.PitchHz - s.Sequence.PitchHz) <= HandoverHz))
             {
@@ -1560,6 +1641,22 @@ public sealed class CwEnvelopeDetector
             _laneBin = null;
             _windows.Clear();
             _bank = fromRig && CwRules.On(CwRules.LaneBank) ? new CwLaneBank(SampleRate, HopSamples, low, high) : null;
+
+            if (_bank is not null)
+            {
+                _bank.Admits = (_, mark) =>
+                {
+                    if (!BankFinding || (!CwRules.On(CwRules.LaneMeetsTheGrid) && LaneTestsSeen is null))
+                    {
+                        return true;
+                    }
+
+                    var tests = GridTestsOf(mark);
+
+                    LaneTestsSeen?.Add(tests);
+                    return !CwRules.On(CwRules.LaneMeetsTheGrid) || tests.Passes;
+                };
+            }
             _bankLane = null;
             _held.Clear();
             _pausedAt.Clear();

@@ -674,6 +674,21 @@ internal sealed class CwPatternGate
                 System.Globalization.CultureInfo.InvariantCulture,
                 $"{s.PitchHz:0} Hz {s.Count} marks{(s.Standing ? " STANDING" : string.Empty)} [{string.Join(' ', s.RecentList.Select(m => $"{(m.ToSeconds - m.FromSeconds) * 1000:0}"))}]{(s.Lengths() is null ? " one length" : string.Empty)} shape {s.Shape.Score:0.00}")));
 
+    /// <summary>
+    /// **STANDING OR ABOUT TO STAND** (work instruction 585): every sequence, standing or not, whose last mark is within
+    /// <paramref name="windowSeconds"/> and whose shape is <paramref name="minShape"/> or better: its id, pitch and recent marks.
+    /// Reads only.
+    /// </summary>
+    /// <param name="nowSeconds">The detector's audio clock.</param>
+    /// <param name="windowSeconds">How recent its last mark must be.</param>
+    /// <param name="minShape">The least shape.</param>
+    /// <returns>One entry per sequence, in no order.</returns>
+    public IReadOnlyList<(int Id, double PitchHz, IReadOnlyList<CwMark> Recent)> Formed(double nowSeconds, double windowSeconds, double minShape)
+        => _sequences
+            .Where(s => nowSeconds - s.LastToSeconds <= windowSeconds && s.Count >= 3 && s.Shape.Score >= minShape)
+            .Select(s => (s.Id, s.PitchHz, (IReadOnlyList<CwMark>)s.RecentList))
+            .ToList();
+
     /// <summary>A sequence the gate still keeps, standing or not, as <see cref="Sender"/> reports a standing one (work instruction 558).</summary>
     /// <param name="id">The sequence.</param>
     /// <returns>Its count, dit, pitch, level and recent marks; or null once it is gone.</returns>
