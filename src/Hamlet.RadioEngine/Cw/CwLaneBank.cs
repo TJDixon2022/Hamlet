@@ -120,7 +120,8 @@ internal sealed class CwLaneBank
     /// **A LANE HEARS THE OPENING** (work instruction 586, <see cref="CwRules.LaneHearsTheOpening"/>): set by the detector each hop. Where
     /// true, a lane takes its lines once it holds <see cref="OpeningDits"/> of its dit in hops rather than a second; while it holds nothing
     /// its key-down is the greater of its 90th percentile and the top of its last <see cref="OpeningDits"/> dits, the median of their
-    /// loudest quarter; and a mark begins where its level rose, as a grid mark does.
+    /// loudest quarter, where that top stands <see cref="OpeningOverDb"/> over the 90th percentile (round two); a mark begins where its
+    /// level rose, as a grid mark does; and a mark whose mean level falls under the line it rose at is not called (round three).
     /// </summary>
     public bool HearsTheOpening { get; set; }
 
@@ -482,6 +483,13 @@ internal sealed class CwLaneBank
             _from = double.NaN;
             _fellAt = double.NaN;
             _below = 0;
+
+            // **A MARK STANDS AT THE LINE IT ROSE AT** (work instruction 586, round three): on W1AW a held 40 ms lane called a 25 ms bump
+            // 8 dB under the station in its word gap, under the line a mark rises at, and with the lane held it printed as an E.
+            if (opening && mean < down - (0.4 * contrast))
+            {
+                return null;
+            }
 
             return to - from >= 0.5 * _dit ? (from, to, mean, contrast) : null;
         }

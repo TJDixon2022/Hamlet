@@ -62,6 +62,7 @@ public sealed class TheOneFinderTests(ITestOutputHelper output)
     [InlineData("cw-2026-10-02-200157")]
     [InlineData("cw-2026-10-03-221530")]
     [InlineData("cw-2026-10-03-221745")]
+    [InlineData("w1aw-2026-10-07/piece-04")]
     [InlineData("cw-2026-10-03-144020")]
     [InlineData("cw-2026-10-03-221502")]
     public void TheLargestLossTraced(string recording)
@@ -273,6 +274,7 @@ public sealed class TheOneFinderTests(ITestOutputHelper output)
     [Theory]
     [InlineData("cw-2026-10-03-221530", 1, 600, 2, 800, 8, 11.5)]
     [InlineData("cw-2026-10-03-221548", 2, 450, 1, 500, 11, 20)]
+    [InlineData("w1aw-2026-10-07/piece-04", 2, 600, 1, 600, 178.5, 179.6)]
     public void TheLanesProbed(string recording, int dit, double pitchHz, int otherDit, double otherHz, double from, double to)
     {
         var audio = WavAudio.Read(TheOwnersRecordingReadsTests.Wav(recording));
