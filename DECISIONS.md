@@ -4,6 +4,53 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-290
+date: 2026-10-21
+refs: work instruction 586, HM-DEC-289, HM-DEC-288, HM-DEC-284, HM-DEC-276, src/Hamlet.RadioEngine/Cw/CwLaneBank.cs, src/Hamlet.RadioEngine/Cw/CwRules.cs, src/Hamlet.RadioEngine/Cw/CwEnvelopeDetector.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheOpeningTests.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheOneFinderTests.cs
+---
+
+**One finder, the opening. Built behind `CwRules.BankFinds` in three rounds, measured, left off by the hard stop; the one-finder line ends.**
+
+**The owner's ruling, 2026-10-21:** *one more unit on one finder, on the opening alone, with a hard stop.*
+
+**The hard stop, as the order put it:** *if the twelve-plus-three is under 294 at the end of the last round, say so in one line at the top of section 2, leave `BankFinds` off, keep the tag and every one-finder rule in the tree behind it, and end the one-finder line. No further one-finder unit will be issued without a new ruling; the next units go to what the owner sees on the air with two finders.*
+
+**The trace** (`TheOpeningTests`), with `BankFinds` on as it stood. There were two kinds of opening:
+- **At the start of audio** (the first recording's `FER`, `144045`'s `N TEMP`, `221828`'s `FER`), a bank lane had no key-up or key-down for its first second. It takes them from a third of its three-second history. The grid called the first mark at once.
+- **After quiet** (`221530`'s second station), the lane's key-up held steady near −40 dB. But its key-down was −32 dB when the station keyed at 9.17 s, and its contrast first cleared 12 dB at 10.2 s, the station's first called mark. The ceiling was the delay, not the floor.
+- `144020`'s second station and W1AW's `QST` after its pause already read their openings.
+
+**The rule, `CwRules.LaneHearsTheOpening`.** It takes effect only under `BankFinds`, so off reads exactly as before.
+- **Round one:**
+  - a lane takes its lines once it holds a dah of hops, `OpeningDits` of its dit, rather than a second;
+  - while it holds nothing, its key-down is the greater of its 90th percentile and the top of its last dah (the median of that dah's loudest quarter);
+  - a mark begins where its level rose, as a grid mark does.
+- **Round two.** The largest loss was the invented letters, 22 against 1. The trace (`144020`, `IED■` at 575 Hz in a silence) showed noise called in the quiet before a station and handed on as that station's backlog. Now the top lifts the key-down only where it stands `OpeningOverDb`, 6 dB (half amplitude, `EdgeDepthDb`), over the 90th percentile.
+- **Round three.** The largest loss was W1AW `piece-04`, 688 to 674. Its held 40 ms lane called a 25 ms bump at −25.2 dB, 8 dB under the station, in its word gaps, and printed it as `E`. Now a mark whose mean level falls under the line it rose at is not called.
+
+**Measured with `BankFinds` on.** Each row gives two finders as shipped, then rounds one, two and three:
+- the twelve-plus-three: 297; 267, 275, 275. Invented 1; 22, 12, 12. In silences 0; 9, 7, 7. Spaces 86 right with 3 added; 80 and 5, 84 and 5, 86 and 5;
+- W1AW: 2111; 2087, 2077, 2124. Invented 0; 8, 14, 1;
+- the fist bank's score: 1891; 3034, 3007, 2885. Invented 46; 8, 8, 8;
+- the fading half, letters right: 439; 1209, 1205, 1195. The flat half: 2173; 2703, 2714, 2721;
+- the four 5 dB CQs: 71; 84, 83, 83 of 84, with nothing after them. The 0 dB CQs: 0; 41, 0, 0;
+- the random carrier: two seeds; one (5195) in every round. The steady carrier and loud noise printed nothing;
+- the first recording: whole in every round;
+- strays summed: 26.8; 13.4, 12.4, 13.6. The highest single capture was 1.7, 1.7 and 1.3;
+- the easy fixtures: 77; 87, 85, 85 of 90. The working fixtures: 4; 12, 15, 14 of 81. `two-station`: 18; 27 of 27 in every round;
+- the short-dah rows and the nine hands held their guards in every round.
+
+One finder took 117% more CPU than two on W1AW `piece-04`: 396 s against 182 s for 300 s of audio. The survey ran 20.5 to 23.7 minutes with it on.
+
+**It does not ship.** At the end of round three the twelve-plus-three is 275, under 294, so the hard stop applies. `BankFinds` and every one-finder rule stay in the tree, off, behind the tag `before-one-finder`, and the one-finder line ends.
+
+What still fell on the board:
+- `221745`, 14 to 3: its station's lanes never stand at 0.4 for its first 13 s;
+- noise lanes printing in the noise recording `143906`: 7 invented, 6 of them in silences.
+
+As shipped, every reading is as at HEAD: 297 and 2111. Ordered by work instruction 586.
+
+---
 id: HM-DEC-289
 date: 2026-10-21
 refs: work instruction 585, HM-DEC-288, HM-DEC-285, HM-DEC-284, HM-DEC-276, HM-DEC-275, src/Hamlet.RadioEngine/Cw/CwRules.cs, src/Hamlet.RadioEngine/Cw/CwEnvelopeDetector.cs, src/Hamlet.RadioEngine/Cw/CwLaneBank.cs, src/Hamlet.RadioEngine/Cw/CwPatternGate.cs, src/Hamlet.RadioEngine/Cw/CwMark.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheOneFinderTests.cs
