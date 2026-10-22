@@ -127,6 +127,9 @@ internal sealed class CwLaneBank
     /// <summary>How many of a lane's own dits the opening's ceiling is read over: three, a dah.</summary>
     public const int OpeningDits = 3;
 
+    /// <summary>How far over the lane's 90th percentile the top of its last dah must stand to lift its key-down: 6 dB, half amplitude, the edge depth a grid mark's rise is judged at (<see cref="CwEnvelopeDetector.EdgeDepthDb"/>; work instruction 586, round two).</summary>
+    public const double OpeningOverDb = CwEnvelopeDetector.EdgeDepthDb;
+
     /// <summary>Every mark that stood in the bank, in order, for the detector to hand on or keep.</summary>
     public List<(int Dit, CwMark Mark)> Stood { get; } = [];
 
@@ -400,7 +403,15 @@ internal sealed class CwLaneBank
 
                 var quarter = Math.Max(1, openingHops / 4);
 
-                down = Math.Max(_down, last[openingHops - 1 - (quarter / 2)]);
+                var top = last[openingHops - 1 - (quarter / 2)];
+
+                // **ONLY OVER THE LANE'S OWN LOUDEST TENTH** (work instruction 586, round two): noise lifts the top of a dah a few dB over
+                // the 90th percentile and called marks in the quiet before a station, which its hold then handed on; a station's first
+                // dah stands well over it. The ceiling is lifted only where the top stands OpeningOverDb over the 90th percentile.
+                if (top - _down >= OpeningOverDb)
+                {
+                    down = top;
+                }
             }
 
             _ceiling = down;
