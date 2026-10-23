@@ -813,7 +813,9 @@ internal sealed class CwPatternGate
 
             // A held lane's mark is its station's by construction, and its level is not judged (HM-DEC-287).
             return Math.Abs(m.PitchHz - pitch) <= AgreeHz
-                && ((m.HeldLane && (CwRules.On(CwRules.HeldLaneMarksAreItsStations) || CwRules.On(CwRules.BankFinds))) || Math.Abs(m.LevelDb - level) <= tolerance);
+                && ((m.HeldLane && (CwRules.On(CwRules.HeldLaneMarksAreItsStations) || CwRules.On(CwRules.BankFinds)))
+                    || (m.Column && CwRules.On(CwRules.Columns))
+                    || Math.Abs(m.LevelDb - level) <= tolerance);
         }
 
         /// <summary>The mean dit and dah of the recent marks where they split in two, or null (work instruction 516).</summary>

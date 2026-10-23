@@ -587,7 +587,9 @@ public sealed class CwSenderGate
             }
 
             // A held lane's mark is its station's by construction: its level is not judged, and only its pitch places it (HM-DEC-287).
-            var levelOff = mark.HeldLane && (CwRules.On(CwRules.HeldLaneMarksAreItsStations) || CwRules.On(CwRules.BankFinds)) ? 0 : Math.Abs(mark.LevelDb - level);
+            // **A COLUMN HAS PROVED ITS SHAPE** (work instruction 587): its level is not judged either.
+            var levelOff = (mark.HeldLane && (CwRules.On(CwRules.HeldLaneMarksAreItsStations) || CwRules.On(CwRules.BankFinds)))
+                || (mark.Column && CwRules.On(CwRules.Columns)) ? 0 : Math.Abs(mark.LevelDb - level);
 
             if (pitchOff > PitchToleranceHz || levelOff > levelTolerance)
             {

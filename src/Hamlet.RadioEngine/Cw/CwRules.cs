@@ -160,6 +160,14 @@ internal static class CwRules
     /// </summary>
     public const string LaneHearsTheOpening = "with one finder, a lane hears a station from its first mark";
 
+    /// <summary>
+    /// **A MARK IS A COLUMN** (work instruction 587, HM-DEC-291): the column finder (<see cref="CwColumnFinder"/>) is the only mark
+    /// source for both gates; a mark is a rise shaped like the radio's keying edge, a flat top and a drop shaped like the edge, and
+    /// nothing else is a mark. The grid's marks and the bank's lanes feed nothing, and the grid stays for the scope. A column has
+    /// proved its shape, so neither gate judges its level, and the shadow rule does not judge it.
+    /// </summary>
+    public const string Columns = "a mark is a column";
+
 
 
 
@@ -184,7 +192,7 @@ internal static class CwRules
     /// The rules that ship off, built and measured and not taken: off unless a test chooses one on this thread with
     /// <see cref="Choose"/> (work instruction 565).
     /// </summary>
-    public static readonly IReadOnlySet<string> OffByDefault = new HashSet<string>(StringComparer.Ordinal) { BetweenClusters, StraddleSplit, GridStepsAside, HoldWaitsAndFits, FollowsTheFade, HeldLaneMarksAreItsStations, BankFinds };
+    public static readonly IReadOnlySet<string> OffByDefault = new HashSet<string>(StringComparer.Ordinal) { BetweenClusters, StraddleSplit, GridStepsAside, HoldWaitsAndFits, FollowsTheFade, HeldLaneMarksAreItsStations, BankFinds, Columns };
 
     [ThreadStatic]
     private static HashSet<string>? _chosen;

@@ -46,6 +46,12 @@ public sealed record CwMark(
     public bool MeetsGrid { get; init; } = true;
 
     /// <summary>
+    /// Whether the mark is a column the column finder stood by shape alone, a rise, a flat and a drop (work instruction 587,
+    /// <see cref="CwRules.Columns"/>): with the rule on, neither gate judges its level and the shadow rule does not judge it.
+    /// </summary>
+    public bool Column { get; init; }
+
+    /// <summary>
     /// The stretch this mark was read again over, where it is one of a station's marks read again through its own window when
     /// the window opened: the reader replaces that sender's unprinted marks in the stretch with these. Null for every other mark
     /// (work instruction 553, task 2).

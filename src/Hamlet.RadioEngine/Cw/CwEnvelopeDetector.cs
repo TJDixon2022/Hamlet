@@ -304,6 +304,16 @@ public sealed class CwEnvelopeDetector
     /// <summary>The lane bank, for the tests' traces and the record; null where the passband is not the rig's (work instruction 569).</summary>
     internal CwLaneBank? Bank => _bank;
 
+    // **A MARK IS A COLUMN** (work instruction 587, HM-DEC-291): the column finder, across the passband; it runs only with
+    // CwRules.Columns on, and then it is the only mark source for both gates.
+    private CwColumnFinder? _columns;
+
+    /// <summary>The column finder, for the tests' traces (work instruction 587).</summary>
+    internal CwColumnFinder? Columns => _columns;
+
+    /// <summary>Whether the column finder is the finder: with <see cref="CwRules.Columns"/> on (work instruction 587).</summary>
+    private bool ColumnsFinding => _columns is not null && CwRules.On(CwRules.Columns);
+
     /// <summary>
     /// How near a pitch counts as the same station for the handover: two bins, 50 Hz, the figure the windows already take for a
     /// station and its shadow (work instruction 569, task 2).
@@ -1695,6 +1705,7 @@ public sealed class CwEnvelopeDetector
                     return !CwRules.On(CwRules.LaneMeetsTheGrid) || tests.Passes;
                 };
             }
+            _columns = new CwColumnFinder(SampleRate, low, high);
             _bankLane = null;
             _held.Clear();
             _pausedAt.Clear();
@@ -1810,6 +1821,10 @@ public sealed class CwEnvelopeDetector
     {
         lock (_gate)
         {
+            // **A MARK IS A COLUMN** (work instruction 587): with the column finder as the finder it hears every sample and the bank
+            // hears none, since the bank's lanes feed nothing.
+            var columns = ColumnsFinding;
+
             foreach (var s in samples)
             {
                 _ring[_ringWrite] = s;
@@ -1828,7 +1843,14 @@ public sealed class CwEnvelopeDetector
                     w.Lane.Push(s);
                 }
 
-                _bank?.Push(s);
+                if (columns)
+                {
+                    _columns!.Push(s);
+                }
+                else
+                {
+                    _bank?.Push(s);
+                }
 
                 if (++_hopFill == HopSamples)
                 {
@@ -2036,15 +2058,20 @@ public sealed class CwEnvelopeDetector
             _bank.HearsTheOpening = BankFinding && CwRules.On(CwRules.LaneHearsTheOpening);
         }
 
-        _bank?.Hop(nowSeconds);
+        // **A MARK IS A COLUMN** (work instruction 587): with the column finder as the finder the bank's lanes feed nothing and are
+        // not run; the columns were offered to the pattern gate in CallMarks.
+        if (!ColumnsFinding)
+        {
+            _bank?.Hop(nowSeconds);
 
-        if (BankFinding)
-        {
-            BankFind(nowSeconds);
-        }
-        else
-        {
-            HandOver(nowSeconds);
+            if (BankFinding)
+            {
+                BankFind(nowSeconds);
+            }
+            else
+            {
+                HandOver(nowSeconds);
+            }
         }
 
         foreach (var s in standing)
@@ -2176,7 +2203,8 @@ public sealed class CwEnvelopeDetector
     private void FollowSender(CwPatternGate.StandingSequence? chosen, IReadOnlyList<CwPatternGate.StandingSequence> standing, long hop)
     {
         // With the bank as the finder the held lane is the station's window, and no second one opens (work instruction 584).
-        if (!OwnWindow || BankFinding)
+        // With the column finder as the finder nothing else calls a mark, so no window opens (work instruction 587).
+        if (!OwnWindow || BankFinding || ColumnsFinding)
         {
             _laneBin = null;
             _laneId = -1;
@@ -2229,7 +2257,7 @@ public sealed class CwEnvelopeDetector
     /// </summary>
     private void UpdateWindows(long hop, double nowSeconds)
     {
-        if (!OwnWindow || !CandidateWindows || BankFinding)
+        if (!OwnWindow || !CandidateWindows || BankFinding || ColumnsFinding)
         {
             _windows.Clear();
             return;
@@ -3261,8 +3289,8 @@ public sealed class CwEnvelopeDetector
                 _candidates.Add(candidate);
 
                 // **ONE FINDER** (work instruction 584, HM-DEC-288): with the bank as the finder the grid's marks reach neither
-                // gate; the grid is the scope's.
-                if (BankFinding)
+                // gate; the grid is the scope's. **A MARK IS A COLUMN** (work instruction 587): likewise with the column finder.
+                if (BankFinding || ColumnsFinding)
                 {
                     continue;
                 }
@@ -3303,6 +3331,27 @@ public sealed class CwEnvelopeDetector
             }
 
             bin.Recorded.RemoveWhere(s => s < hop - HistoryHops - _keyingHops);
+        }
+
+        // **A MARK IS A COLUMN** (work instruction 587, HM-DEC-291): the column finder's columns are the marks, offered to the
+        // pattern gate as the grid's were and handed on where they stand; no shadow rule and no level test judges them.
+        if (ColumnsFinding)
+        {
+            foreach (var column in _columns!.Found)
+            {
+                var candidate = column with { Sequence = ++_candidateSequence };
+
+                _candidates.Add(candidate);
+
+                var stoodNow = MarksNeedPattern ? _pattern.Offer(candidate) : new[] { candidate };
+
+                foreach (var stood in stoodNow)
+                {
+                    _marks.Add(stood with { Sequence = ++_markSequence, Stood = true, Keyed = true });
+                }
+            }
+
+            _columns.Found.Clear();
         }
 
         _pattern.Prune(nowSeconds);
