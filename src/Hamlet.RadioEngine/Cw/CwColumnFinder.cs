@@ -23,10 +23,18 @@ namespace Hamlet.RadioEngine.Cw;
 /// <see cref="EdgeSlowest"/> times the template's own transition. A drop is the same template upside down, judged against the
 /// envelope just after it.</para>
 /// <para>**THE COLUMN.** A rise paired with the next drop with no rise between them; the top is the stretch between the end of
-/// the rise and the start of the drop. It stands where the top is at least one edge-length long, its deviation about a straight
-/// line (a fade's tilt is allowed) is no more than <see cref="TopFlatness"/> of the deviation of the chaos before the rise, both
-/// edges stood, and the drop's height is within <see cref="EdgePairDb"/> of the rise's. What is not a column is chaos: there is
-/// no piece and no splinter.</para>
+/// the rise and the start of the drop. It stands where the top is at least <see cref="TopLeastEdges"/> edge-lengths long, its
+/// deviation about a straight line (a fade's tilt is allowed) is no more than <see cref="TopFlatness"/> of the deviation of the
+/// chaos before the rise, both edges stood, each over its own chaos, and the drop is at least the rise less <see cref="EdgePairDb"/>.
+/// What is not a column is chaos: there is no piece and no splinter.</para>
+/// <para>**THE DROP IS AT LEAST THE RISE, AND MAY BE MORE** (work instruction 587, round two). Round one asked that the drop come down
+/// the height the rise went up, within 6 dB either way. Traced on W1AW and the owner's first recording, 35 of 54 closings in the
+/// station's lane failed it, with rises of 6 to 9 dB and drops of 21 to 24 dB: the receiver's AGC releases over a gap, so the floor
+/// before a rise sits well above the floor after a drop. While a key is down the AGC can only pull the gain down, so the floor
+/// under a column can fall and cannot rise: a drop deeper than the rise is the radio, a drop shallower than the rise by more than
+/// the tolerance is a dip inside something that is not a column, which is how a loud noise burst stood columns on its own dips.
+/// And the drop's chaos is read from three edge-lengths after it, past the lane's own decay tail, which at two edge-lengths still
+/// sat about 24 dB under a strong top and capped every strong drop there.</para>
 /// <para>**TWO LANES HOLDING ONE COLUMN** are resolved by height alone: columns that begin and end within an edge-length of each
 /// other are one keying, and the tallest lane's is the one delivered. Its pitch is measured from that lane's own mixed signal,
 /// the slope of its phase over the top, so a tone between two lanes is placed to the hertz rather than at either.</para>
@@ -66,7 +74,11 @@ internal sealed class CwColumnFinder
     /// <summary>The most a top's deviation about its line may be, as a share of the chaos's deviation before the rise.</summary>
     public const double TopFlatness = 0.45;
 
-    /// <summary>How far the drop's height may differ from the rise's, in dB, the top's tilt allowed for.</summary>
+    /// <summary>
+    /// How much shallower than its rise a column's drop may be, in dB: the floor under a column can fall while the key is down
+    /// (the AGC attacks) and cannot rise, so a drop deeper than the rise is allowed any depth, and one shallower by more than this
+    /// is a dip inside something else.
+    /// </summary>
     public const double EdgePairDb = 6;
 
     /// <summary>How many edge-lengths of chaos are read beside a column, at most: before its rise and after its drop.</summary>
@@ -191,6 +203,9 @@ internal sealed class CwColumnFinder
     /// <summary>Lanes to trace, by pitch; null traces every lane.</summary>
     internal Func<double, bool>? TraceLane { get; set; }
 
+    /// <summary>Where set, one lane's envelope step by step, for the tests: the lane's pitch, and the step, the level in dB and the match at it.</summary>
+    internal (double PitchHz, List<(double At, double Db, double Rho)> Steps)? Probe { get; set; }
+
     private long _sequence;
 
     /// <summary>Take one sample of audio.</summary>
@@ -242,8 +257,13 @@ internal sealed class CwColumnFinder
 
             lane.Correlate(k, _rise, _riseMean, _riseNorm, _template);
 
-            // A peak is confirmed with half an edge either side of it, and judged once the envelope four edges past it is in: an edge back.
-            var k0 = k - _edge;
+            if (Probe is { } probe && Math.Abs(probe.PitchHz - lane.Hz) < LaneSpacingHz / 2)
+            {
+                probe.Steps.Add(((k + _edge) * _stepSeconds, lane.MeanDb(k + _edge, k + _edge + 1), lane.Rho(k)));
+            }
+
+            // A peak is confirmed with half an edge either side of it, and judged once the envelope five edges past it is in: two edges back.
+            var k0 = k - (2 * _edge);
 
             if (k0 < _edge / 2)
             {
@@ -308,10 +328,12 @@ internal sealed class CwColumnFinder
 
         // The drop on its own first: the envelope just before it over the envelope just after, and its steepness. A match with no
         // height is the top's own ripple, or the chaos's: not an edge, and it leaves what was open as it was.
-        var afterTo = t + (4 * _edge);
-        var after = lane.MeanDb(t + (2 * _edge), afterTo);
+        // The chaos after the drop is read from three edge-lengths past it: the lane's own decay tail still sits about 24 dB under a
+        // strong top at two, and read there it capped every strong drop at that height.
+        var afterTo = t + (5 * _edge);
+        var after = lane.MeanDb(t + (3 * _edge), afterTo);
         var dropAlone = lane.MeanDb(t - (2 * _edge), t) - after;
-        var transition = Transition(lane, t, lane.MeanAmplitude(t - (2 * _edge), t), lane.MeanAmplitude(t + (2 * _edge), afterTo));
+        var transition = Transition(lane, t, lane.MeanAmplitude(t - (2 * _edge), t), lane.MeanAmplitude(t + (3 * _edge), afterTo));
         var steep = transition <= _figures.EdgeSlowest * _templateTransition;
 
         if (dropAlone < _figures.HeightDb || !steep)
@@ -347,14 +369,14 @@ internal sealed class CwColumnFinder
         var riseDb = topLine.At(topFrom) - rise.BeforeDb;
         var dropDb = topLine.At(topTo) - after;
         var tall = riseDb >= _figures.HeightDb && dropDb >= _figures.HeightDb;
-        var paired = Math.Abs(riseDb - dropDb) <= _figures.EdgePairDb;
+        var paired = dropDb >= riseDb - _figures.EdgePairDb;
 
         if (rise.At - rise.ChaosFrom >= 2 * _edge)
         {
             lane.LastChaosDeviation = chaosLine.Deviation;
         }
 
-        var verdict = !topLong ? "no top" : !steep ? "drop too slow" : !tall ? "an edge too short over the chaos" : !flat ? "top not flat" : !paired ? "edges of two heights" : "a column";
+        var verdict = !topLong ? "no top" : !steep ? "drop too slow" : !tall ? "an edge too short over the chaos" : !flat ? "top not flat" : !paired ? "the drop a dip" : "a column";
 
         if (Trace is { } trace && (TraceLane is null || TraceLane(lane.Hz)))
         {
@@ -387,7 +409,7 @@ internal sealed class CwColumnFinder
         {
             var c = _pending[i];
 
-            if (step < c.To + (6 * _edge))
+            if (step < c.To + (7 * _edge))
             {
                 continue;
             }
@@ -768,7 +790,7 @@ internal sealed class CwColumnFinder
 /// <param name="EdgeMatch">The normalized correlation an edge must reach against the keying-edge template.</param>
 /// <param name="EdgeSlowest">The most a step may take, as a multiple of the template transition.</param>
 /// <param name="TopFlatness">The most a top may deviate, as a share of the chaos deviation.</param>
-/// <param name="EdgePairDb">How far the drop height may differ from the rise height, in dB.</param>
+/// <param name="EdgePairDb">How much shallower than its rise a drop may be, in dB.</param>
 /// <param name="TopLeastEdges">The least top, in edge-lengths.</param>
 /// <param name="LaneBandwidthHz">The lanes' low-pass cutoff, in Hz.</param>
 internal sealed record ColumnFigures(
@@ -785,5 +807,5 @@ internal sealed record ColumnFigures(
 
     /// <inheritdoc />
     public override string ToString()
-        => string.Create(CultureInfo.InvariantCulture, $"height {HeightDb:0} dB, match {EdgeMatch:0.00}, slowest {EdgeSlowest:0.0}x, flatness {TopFlatness:0.00}, pair {EdgePairDb:0} dB, top {TopLeastEdges} edges, lane {LaneBandwidthHz:0} Hz");
+        => string.Create(CultureInfo.InvariantCulture, $"height {HeightDb:0} dB, match {EdgeMatch:0.00}, slowest {EdgeSlowest:0.0}x, flatness {TopFlatness:0.00}, dip {EdgePairDb:0} dB, top {TopLeastEdges} edges, lane {LaneBandwidthHz:0} Hz");
 }

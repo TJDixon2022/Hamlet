@@ -43,7 +43,7 @@ public sealed class TheColumnTests(ITestOutputHelper output)
     {
         var finder = new CwColumnFinder(Rate, CwFixtureGenerator.PassbandLowHz, CwFixtureGenerator.PassbandHighHz);
 
-        output.WriteLine(string.Create(Inv, $"finder: {finder.Lanes} lanes every {CwColumnFinder.LaneSpacingHz:0} Hz, low-pass {CwColumnFinder.LaneBandwidthHz:0} Hz, step {finder.StepSeconds * 1000:0.0} ms, edge {CwColumnFinder.KeyingEdgeMs:0} ms = {finder.EdgeSteps} steps, template transition {finder.TemplateTransition:0.0} steps; figures: height {CwColumnFinder.ColumnHeightDb:0} dB, match {CwColumnFinder.EdgeMatch:0.00}, slowest {CwColumnFinder.EdgeSlowest:0.0}x, flatness {CwColumnFinder.TopFlatness:0.00}, pair {CwColumnFinder.EdgePairDb:0} dB"));
+        output.WriteLine(string.Create(Inv, $"finder: {finder.Lanes} lanes every {CwColumnFinder.LaneSpacingHz:0} Hz, low-pass {CwColumnFinder.LaneBandwidthHz:0} Hz, step {finder.StepSeconds * 1000:0.0} ms, edge {CwColumnFinder.KeyingEdgeMs:0} ms = {finder.EdgeSteps} steps, template transition {finder.TemplateTransition:0.0} steps; figures: height {CwColumnFinder.ColumnHeightDb:0} dB, match {CwColumnFinder.EdgeMatch:0.00}, slowest {CwColumnFinder.EdgeSlowest:0.0}x, flatness {CwColumnFinder.TopFlatness:0.00}, top {CwColumnFinder.TopLeastEdges} edges"));
         output.WriteLine(string.Create(Inv, $"template: {string.Join(" ", finder.Template.Select(v => v.ToString("0.00", Inv)))}"));
         output.WriteLine(string.Empty);
         output.WriteLine("| dB | element | columns found of 20 | other columns stood | slow-edged bursts stood of 20 | keyed-edge bursts stood of 20 |");
@@ -255,6 +255,43 @@ public sealed class TheColumnTests(ITestOutputHelper output)
         }
 
         return finder.Found;
+    }
+
+    /// <remarks>The bursts that stood at a level, each with every edge and column the finder judged over it. Asserts nothing.</remarks>
+    [Theory]
+    [InlineData(20.0)]
+    [InlineData(10.0)]
+    public void TheBurstsThatStood(double db)
+    {
+        foreach (var (name, length) in new[] { ("dit", Dit), ("dah", Dah) })
+        {
+            foreach (var edge in new[] { 5 * CwColumnFinder.KeyingEdgeMs / 1000, CwColumnFinder.KeyingEdgeMs / 1000 })
+            {
+                for (var seed = 1; seed <= 20; seed++)
+                {
+                    var finder = new CwColumnFinder(Rate, CwFixtureGenerator.PassbandLowHz, CwFixtureGenerator.PassbandHighHz) { Trace = [], TraceLane = _ => true };
+
+                    foreach (var s in Burst(db, length, seed, edge))
+                    {
+                        finder.Push(s);
+                    }
+
+                    var stood = finder.Found.Where(c => Overlaps(c, At, At + length)).ToList();
+
+                    if (stood.Count == 0)
+                    {
+                        continue;
+                    }
+
+                    output.WriteLine(string.Create(Inv, $"## {name}-length burst, edges {edge * 1000:0} ms, {db:0} dB, seed {seed}, burst {At:0.000}-{At + length:0.000} s: stood {string.Join(", ", stood.Select(c => string.Create(Inv, $"{c.FromSeconds:0.000}-{c.ToSeconds:0.000} s at {c.PitchHz:0} Hz level {c.LevelDb:0.0}")))}"));
+
+                    foreach (var line in finder.Trace!.Where(l => double.TryParse(l.Split(' ')[0], NumberStyles.Float, Inv, out var at) && at >= At - 0.03 && at <= At + length + 0.05 && !l.Contains("with no rise open", StringComparison.Ordinal) && !l.Contains("too short over the chaos", StringComparison.Ordinal)))
+                    {
+                        output.WriteLine(line);
+                    }
+                }
+            }
+        }
     }
 
     /// <remarks>
