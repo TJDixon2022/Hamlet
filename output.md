@@ -1,223 +1,186 @@
 ## 1. What Claude did
 
-**Gate.** The work was done on the development computer under the prompt's `PROJECT: Hamlet`. The tree confirmed it: `PROJECT_CARD.md` says `PROJECT: Hamlet`, `Hamlet.sln` is at the root, `SHACK_FACTS.md`, `docs\cw-scoreboard.md` and `src\Hamlet.RadioEngine\Cw\CwLaneBank.cs` exist, and neither `CoreHMI.sln` nor `MURC.sln` does. Nothing in this report is evidence about the radio.
+Surface: Claude Code on the development computer, branch `main`. The gate: the prompt said `PROJECT: Hamlet`; the tree has `SHACK_FACTS.md`, `docs\cw-scoreboard.md` and `src\Hamlet.RadioEngine\Cw\CwLaneBank.cs`, and neither `CoreHMI.sln` nor `MURC.sln`; the root is `C:\Source\HamLet`. Nothing in this report is evidence about the radio. Hand run: `SESSION.lock` taken through `tools\arbiter\lock.bat take` and released at the end; nothing written to `RUN_LEDGER.md`; nothing under `tools\arbiter\` touched; no box ticked in `PHASE_PLAN.md`. Nothing keyed or transmitted, nothing written to the radio, no recording added, removed or promoted. The tag `before-columns` was set before the first change and pushed. Version 1.13.272 to 1.13.273. HM-DEC-291 recorded.
 
-**The hand run.**
-- I took `SESSION.lock` through `tools\arbiter\lock.bat take` and released it at the end.
-- Nothing was written to `RUN_LEDGER.md`, nothing under `tools\arbiter\` was touched, and nothing was ticked in `PHASE_PLAN.md`.
-- Nothing keyed or transmitted, and nothing was written to the radio.
-- No recording was added, removed or promoted.
-- Everything is on branch `main`. The tag `before-one-finder` stands.
+**The generator's edges, checked first.** The fixtures (the CQs, the fist bank, the receiver fixtures) are keyed by `CwFixtureGenerator.Gate`, a raised cosine of 5 ms (`EdgeSeconds`); the carrier tests and the hands key a raised cosine of 4 ms. The radio's shape, a quarter longer than the manual's default. The fixtures were **not regenerated**: 36 committed receiver fixtures carry reference scores bound to their bytes (HM-DEC-101, `CwFixtureCommitTests`) that only `tools/score-fixtures`, a Python tool, can renew, and Python does not run here. So no re-baseline was taken; the baseline is the shipped survey, and the first proof shows the 4 ms template finding 5 ms edges at 20 and 10 dB.
 
-**Measuring.** Each round's rule was measured by taking `BankFinds` out of `CwRules.OffByDefault` for that round's build and putting it back before the commit. One test run at a time: the survey, then the guards with the board, then traces.
+**`KeyingEdgeMs` is 4 ms**: the IC-7300's CW-KEY SET rise time offers 2, 4, 6 and 8 ms (`A7292-4EX-6` p. 4-21, cited in `CLAUDE.md` §4). Four is the manual's default as the author recalls it; the page was not re-read in this session, and the owner's own setting is on no sheet in the tree. Marked as such in the code and carried as an ask in section 4.
 
-**The trace, first** (`TheOpeningTests.TheOpeningTraced`, with `BankFinds` on as it stood; the tables are in section 3).
-- **At the start of audio** (the first recording's `FER`, `144045`'s `N TEMP`, `221828`'s `FER`), a bank lane had no key-up or key-down at all for about its first second. It takes them only from a third of its three-second history. The grid's first candidate was at the station's first mark.
-- **After quiet** (`221530`'s second station, keying from 9.17 s):
-  - the lane's key-up held near −40 dB;
-  - its key-down was −32.3 dB at 9.17 s and still −31.1 at 9.93 s, against the station's −18 to −20;
-  - its contrast first cleared 12 dB at 10.2 s, where the lane called its first mark, 1.03 s after the station's first;
-  - the floor was right; **the ceiling was the delay**, and with it, at the start of audio, the wait for any lines at all.
-- `144020`'s second station and W1AW `piece-02`'s `QST` after its pause already read their openings: contrast 14 to 20 dB on the first mark.
-- **The one change named:** a lane takes its lines once it holds a dah of hops, and lifts its key-down to the top of its last dah while it holds nothing.
+**The finder, `CwColumnFinder`**, behind `CwRules.Columns`, off by default:
+- a lane every 50 Hz across the passband, the audio mixed to the pitch and low-passed on both quadratures by a fourth-order Butterworth at 150 Hz, the amplitude read every millisecond;
+- the template is the radio's raised-cosine edge put through the lane's own low-pass, so the filter's delay is inside it; a rise is where the normalized correlation over four edge-lengths peaks at `EdgeMatch` 0.90 or better, stands `ColumnHeightDb` 6 dB over the chaos just before it (at most six edge-lengths, never past the last edge judged), and whose 20 to 80 per cent transition, read outward from the edge's centre, is no slower than `EdgeSlowest` 2.5 times the template's own; a drop is the template upside down, judged against the chaos three to five edge-lengths after it;
+- a column is a rise paired with the next drop with no rise between, its top (from two edge-lengths after the rise to the drop) at least `TopLeastEdges` three edge-lengths and deviating about a straight line no more than `TopFlatness` 0.45 of the chaos's deviation before the rise;
+- two lanes holding one column are resolved by height alone; the pitch is the slope of the tallest lane's phase over the top.
+- With the rule on, the columns are the only marks both gates see (`CwEnvelopeDetector`): the grid's marks reach neither gate and the bank's lanes are not run; neither gate judges a column's level (`CwMark.Column`, `CwPatternGate.Agrees`, `CwSenderGate.TakeMark`); the shadow rule does not judge it. Off, nothing changes.
+- No level crossing, percentile floor or contrast line decides whether a column exists. Every figure is about the shape and is named: `KeyingEdgeMs`, `LaneBandwidthHz`, `LaneSpacingHz`, `StepMs`, `ColumnHeightDb`, `EdgeMatch`, `EdgeSlowest`, `TopFlatness`, `TopLeastEdges`, `EdgePairDb`, `RiseLeastDb`, `ChaosEdges`.
 
-**Round one: `CwRules.LaneHearsTheOpening`** (`74ad1d74`), under `BankFinds` only, in `CwLaneBank`:
-- a lane takes its key-up and key-down once it holds `OpeningDits`, three of its dits in hops, rather than a second;
-- while it holds nothing, its key-down is the greater of the 90th percentile and the median of the loudest quarter of its last dah of hops;
-- a mark begins where its level rose, as a grid mark does.
+**The first proof** (`TheColumnTests.TheFirstProof`), run before the finder went near the survey, its figures chosen from a sweep (`TheFiguresSwept`) rather than guessed: at the end of round one, dits and dahs found 20, 19 and 6 and 20, 19 and 2 of 20 at 20, 10 and 5 dB; bursts stood 0 of 20 at every level, both the slow-edged burst (edges five keying-edges long, no keyed edge) and the keyed-edge burst (a noise top between two keyed edges); the band alone 2, 3 and 0 columns a minute. Section 3 has the tables.
 
-Measured: the first recording read whole, the twelve-plus-three 267 with 22 invented, W1AW 2087.
+**Round one** (`128a672c`): the finder as above, with the drop held to within 6 dB of the rise either way. With `Columns` on: the twelve-plus-three 22 against 297, W1AW -52 against 2111, the fist bank 2406 from 1891, the easy fixtures 90 of 90, the 15 dB CQs 83 of 84, the 5 dB CQs 4 of 84, the carrier at 3 seeds, CPU 28 s against 181 s on `piece-04`.
 
-Traced: the largest loss was the invented letters, 22 against 1. On `144020`, `IED■` at 575 Hz in a silence was noise the 575 Hz lane called against its lifted ceiling in the quiet before the second station. It joined the sequence that stood when the station began, and the hold handed it on as backlog. (By recording, `221745` fell most, 14 to 6, but that is not an opening: its station's lanes stand under 0.4 for its first 13 s.)
+**Round two** (`f3a2b3bc`): the trace (`TheColumnsTraced`) on W1AW `piece-04` and the first recording named 35 of 54 closings in the station's lane failing as *edges of two heights*, rises 6 to 9 dB and drops 21 to 24 dB. The receiver's AGC releases over a gap, so the floor before a rise sits far above the floor after a drop; while the key is down it can only pull the gain down. The pair test became one-sided (a drop at least the rise less 6 dB, any deeper allowed; a shallower drop is a dip inside something else, which is how a loud noise burst had stood on its own dips), and the drop's chaos moved past the lane's decay tail, which at two edge-lengths capped every strong drop near 24 dB. The boards 91 and 1468.
 
-**Round two** (`827e38f8`). The ceiling is lifted only where the top of the last dah stands `OpeningOverDb`, 6 dB (half amplitude, `EdgeDepthDb`), over the 90th percentile.
-- **Measured:** the twelve-plus-three 275 with 12 invented, W1AW 2077 with 14 invented.
-- **Traced:** the largest loss was W1AW `piece-04`, 688 to 674. A probe of its held lane (600 Hz, 40 ms, held from 2.1 s) found a 25 ms mark at 178.97 s at −25.2 dB, 8 dB under the station's −17. It sat in the word gap after `REASONABLE`, under the line a mark rises at (−24.4). The 60 ms lane beside it called nothing there, and the held lane printed it as `E`.
+**Round three** (`c713900d`): the elements still missed were the first after a letter or word gap. The lane probe (`TheLaneProbed`) at 99.35 to 99.80 s of `piece-04` shows the floor at -21 to -24 dB before a dit whose top is -17 dB, and -35 to -55 dB after it. The column's height is now proved by its drop, and the rise is held to `RiseLeastDb` 3 dB, matched and steep like any edge. `DEDICATED` read whole and the first recording's `F` and `<BT>` came back. The boards 153 and 1758; but the lower rise let short noise tops stand: at 20 dB one slow-edged and three keyed-edge bursts of 20, at 10 dB one.
 
-**Round three** (`447a45e3`). A mark whose mean level falls under the line it rose at is not called.
-- **Measured:** W1AW 2124 with 1 invented, the twelve-plus-three 275.
+**Builds and runs.** The finder was built up over several builds and proof runs before round one's survey, and each round was then built once for its measure with `Columns` taken out of `OffByDefault` for that build and put back before its commit. The record build, the solution whole with `Columns` off, was built once at the end and the build servers shut down; the app line, the engine line and the survey line ran once each with `--no-build`, one at a time.
 
-**The hard stop.** The twelve-plus-three is 275 at the end of the last round, under 294. `BankFinds` is back in `CwRules.OffByDefault`, every one-finder rule stays in the tree behind it, the tag stands, and the one-finder line ends. As shipped, every reading is as at HEAD: 297 and 2111.
-
-**CPU** (`TheOneFinderCost`, W1AW `piece-04`, 300 s of audio): two finders 182 s, one finder 396 s, 117% more. The survey ran 20.5 to 23.7 minutes with one finder on, against 10.9 minutes with two (unit 585's survey line).
-
-**The record**, in one commit after the rounds:
-- `DECISIONS.md`: HM-DEC-290, *One finder, the opening*, with the owner's ruling and the hard stop quoted, and the `CLAUDE.md` §1 index row;
-- `docs\cw-scoreboard.md`: a 586 row in each table, 297 and 2111;
-- `PHASE_OUTCOME.md`, both copies: `## UNIT 586 - STEP 12`;
-- `PHASE_STATUS.md`, both copies: names 586;
-- `Directory.Build.props`: 1.13.271 to 1.13.272;
-- the survey's `Rerun` line, and `docs\cw-survey-2026-10-09.md` regenerated.
-
-Nothing was recorded under §12.1.
-
-**The lines** each ran once after one build, with the build servers shut down, using `--no-build`:
-- the app line: 278 of 278;
-- the engine line: 159 of 159 in 12.4 minutes;
-- the survey line: 1 of 1 in 10.8 minutes. `docs\cw-survey-2026-10-09.md` is identical to the shipped reading apart from its `Rerun` line.
+**Recorded** under HM-DEC-276 and HM-DEC-284, not a ruling: HM-DEC-291 in `DECISIONS.md` and the `CLAUDE.md` §1 row; `docs\cw-scoreboard.md` 587 rows; `PHASE_OUTCOME.md`, both copies, `## UNIT 587 - STEP 12`; `PHASE_STATUS.md`, both copies, naming 587; `Directory.Build.props`; the survey's `Rerun` line. Nothing was recorded under §12.1.
 
 ## 2. What the owner should expect
 
-**The hard stop: the twelve-plus-three reads 275 with one finder, under 294, so `BankFinds` stays off and the one-finder line ends.**
+**The first proof, by shape alone:** at 20 and 10 dB the finder stands the dit and the dah 20 and 18 of 20 times and stands no burst at 10 dB; at 20 dB, after round three, four short noise tops of 120 stood as columns (one in round two, none in round one); at 5 dB it stands 9 dits and 4 dahs of 20 and no burst. Under 12 dB of fade: 20 and 20, 13 and 13, 8 and 7. The band alone stands 0 to 3 columns a minute. **So a 150 Hz lane sees the shape cleanly down to 10 dB and only half the time at 5 dB**, where the tone is 7 dB over the lane's own noise.
 
-**One finder against two, row by row** (round three, with it on, against two finders as shipped):
-- **W1AW:** 2124 against 2111. One finder now reads W1AW better than two, with 1 invented letter against none.
-- **The hand-sent recordings** (the twelve-plus-three): 275 against 297. The openings are mostly back, but junk prints in a noise recording, and one QSO's slow station reads worse.
-- **A short-dah fist:** the dah-1.6 rows 823 of 1440 against 569, dah 2.0 982 against 624.
-- **A weak CQ:** the four 5 dB CQs read 83 of 84 against 71, with nothing after them. The 0 dB CQs read nothing, as with two.
-- **A fading station:** the fist bank's fading half reads 1195 letters right against 439.
-- **The far side** (the working fixtures): 14 of 81 against 4, though 27 wrong. `two-station` reads 27 of 27 against 18.
-- **The carrier** prints at one seed of twenty against two. The steady carrier prints nothing.
-- **The cost:** one finder takes a little over twice the CPU of two.
+**Columns against two finders, row by row, at the end of round three with `Columns` on:**
 
-**What you run is unchanged:** 297, 2111, and the same `Weak stations` row. Version 1.13.272. By the hard stop, the next units go to what you see on the air with two finders.
+| | two finders (shipped) | columns |
+|---|---|---|
+| W1AW | 2111 (2131 right, 20 wrong) | 1758 (1927 right, 169 wrong, 0 invented) |
+| the hand-sent recordings | 297 (318 right, 20 wrong, 1 invented) | 153 (226 right, 73 wrong, 0 invented) |
+| the first recording | whole | `FET C IEAT<BT> BES IU TEI SA KCVZGM DEWA` |
+| short-dah rows, dah 1.6 / 2.0 | 569 / 624 of 1440 | 798 / 792 |
+| the fist bank | 1891 (2612 right, 46 invented) | 2428 (3180 right, 0 invented) |
+| a fading station: the fading half, letters right | 439 of 2880 | 1447 |
+| the flat half | 2173 of 2880 | 1733 |
+| a weak CQ: the four 5 dB CQs | 71 of 84 | 0 of 84, nothing after them |
+| the 15 dB CQs | 78 of 84 | 83 of 84 |
+| the far side: `two-station` | 18 of 27 | 8 of 27 |
+| the working fixtures | 4 of 81 | 9 of 81 |
+| the easy fixtures | 77 of 90 | 90 of 90 |
+| the random carrier | 2 seeds of 20 | 3 seeds (5195, 5203, 5204) |
+| letters in silences, letters invented | 0, 1 | 0, 0 |
+| strays summed over the 65 old captures | 26.8, highest 3.3 | 24.8, highest 4.0 |
+| CPU on `piece-04`, 283 s of audio | 181 to 185 s | 28 to 31 s |
 
-**The rule, in a sentence:** with one finder, a lane takes its noise floor from its first dah rather than its first second. Its ceiling rises to a station's first dah where that dah stands well over the lane's loudest tenth, and a mark is a mark only where it stands at the line it rose at.
+**It does not ship.** `Columns` stays off. The twelve-plus-three is 153 against 297 and W1AW 1758 against 2111, far outside the 1 per cent band for a ruling; the flat half of the fist bank is 1733 against 2173; the 5 dB CQs read nothing against 71 of 84; the random carrier prints at three seeds against two; the first recording is not whole; and the proof's burst condition broke at 20 and 10 dB in round three.
 
-**What the openings read now** (round three):
-- the first recording: `FER C HAT<BT>…`, whole, against `ER C H AT` in unit 585;
-- `221828`: `FER ANOTHER…`, against `IER`;
-- `144020`'s second station: `WX IN NETAGIT…`;
-- `221530`'s second station: 35 of 45, against 15 in unit 585 and 34 with two finders;
-- `144045`: `TEMP…`, the `N` still lost;
-- `121357`: `EENR` for `RR` still.
+**The rule in a sentence:** a mark is a rise shaped like the radio's keying edge, a flat top of at least three edge-lengths, and a drop shaped like the edge, each edge proved against the chaos on its own side, the drop at least as deep as the rise; nothing else reaches the gate.
 
-**What looks wrong but is not:** the new test classes `TheOpeningTests` and the traces in `TheOneFinderTests` assert nothing.
+**What reads now with it on.** Every clean fixture reads whole: the synthetic fixtures 67 of 67 from 46, the easy fixtures 90 of 90 from 77, every 15 dB CQ but one letter, the fading hands 1447 letters from 439, the short-dah hands 798 and 792 from 569 and 624, the nine straight-key hands 60 of 60, with nothing invented anywhere and a sixth of the CPU. The owner's own recordings and W1AW read worse: on W1AW the columns delivered are the right lengths (42 ms dits and 122 ms dahs at 30 WPM) but first elements after a gap are still lost where the AGC had lifted the floor to within 3 dB of the top, the floor's own climb sometimes stands as a rise, and the station's leakage 50 to 70 Hz off is delivered as columns of its own. Those recordings were made with AGC FAST, before HM-DEC-268 set SLOW.
+
+**Finder or gate.** Columns stood in the chaos where marks did not, on every clean fixture and every fading hand. The losses are the finder's at the weak end and at the edges: at 5 dB in the passband a 150 Hz lane holds the tone 7 dB over its own noise and the finder stands half the elements, so the 5 dB CQs and the bank's 5 dB column read nothing (an edge or a flat misjudged against chaos of the column's own size); and on the AGC-shaped recordings the rise before a first element is misjudged against a lifted floor. The carrier at three seeds is the gate's: a carrier keyed at random with 4 ms edges makes true columns, delivered right, and the two-kinds test alone did not stop it where the level rules the columns bypass had. The next unit, if there is one, is aimed at the finder's lane (its bandwidth against the 5 dB signal) and at the AGC's floor, not at the gate.
 
 ## 3. What you should see
 
-**The openings, as traced before the rule** (one row per keyed mark, from the board's keying map; each lane gives level, key-up, key-down, contrast and whether it called the mark; the full 50 ms rows are in `.run-unit\reports\unit586-openings-r0.txt`):
+**The first proof, round one** (`TheFirstProof`, figures height 6 dB, match 0.90, slowest 2.5x, flatness 0.45, top 3 edges, pair 6 dB; the template through the lane `0.00 0.00 0.00 0.00 0.00 0.00 0.03 0.13 0.35 0.64 0.89 1.04 1.07 1.04 1.00 0.98`, transition 3 steps):
 
-*First recording, station 663 Hz, lanes at 650 Hz. First keyed mark 0.156 s, first letter `E` at 1.19 s; the grid's first candidate 0.165 s.*
-
-| keyed mark | ms | lane 100 ms | lane 60 ms | lane 40 ms | grid: from, floor, contrast |
+| dB | element | columns found of 20 | other columns stood | slow-edged bursts stood of 20 | keyed-edge bursts stood of 20 |
 |---|---|---|---|---|---|
-| 0.156 | 102 | −20.0, no lines, no | −17.6, no lines, no | −17.8, no lines, no | 0.165 |
-| 0.311 | 89 | −19.7, no lines, no | −17.9, no lines, no | −18.0, no lines, no | 0.315, −27.2, 9.7 |
-| 0.460 | 225 | −19.0, no lines, no | −17.7, no lines, no | −17.8, no lines, no | 0.465, −28.0, 10.2 |
-| 0.744 | 90 | −20.3, no lines, no | −18.2, no lines, no | −18.0, no lines, no | 0.750, −27.9, 10.1 |
-| 1.108 | 89 | −20.8 −33.5 −18.9 14.7 yes | −17.6 −33.6 −17.7 15.9 yes | −17.5 −32.0 −17.7 14.3 yes | 1.110, −29.3, 11.7 |
+| 20 | dit | 20 | 2 | 0 | 0 |
+| 20 | dah | 20 | 2 | 0 | 0 |
+| 10 | dit | 19 | 2 | 0 | 0 |
+| 10 | dah | 19 | 2 | 0 | 0 |
+| 5 | dit | 6 | 2 | 0 | 0 |
+| 5 | dah | 2 | 3 | 0 | 0 |
 
-*`144045`, station 598 Hz. First keyed mark 0.085 s, first letter `E` at 2.16 s; the grid's first candidate 0.095 s.* Every lane had no lines until the mark at 1.369 s (contrast 20.7, 18.8 and 16.7 dB, all called).
+Under 12 dB of fade at 0.7 Hz, the element placed at twenty points of the cycle: 20 dB 20 and 20, 10 dB 14 and 13, 5 dB 8 and 8. The band alone, sixty seconds, three seeds: 2, 3 and 0 columns a minute.
 
-*`221828`, station 606 Hz. First keyed mark 0.000 s, first letter `I` at 1.17 s; the grid's first candidate 0.570 s.* No lines until 1.07 s; the mark at 1.073 s was called at 15.3, 13.4 and 12.1 dB.
+**The first proof, rounds two and three:**
 
-*`221530`'s second station, 597 Hz, lanes at 600 Hz. First keyed mark 9.167 s, first letter `I` at 11.39 s; the grid's first candidate 9.815 s.*
+| dB | element | round two found | r2 slow / keyed bursts | round three found | r3 slow / keyed bursts |
+|---|---|---|---|---|---|
+| 20 | dit | 20 | 1 / 0 | 20 | 1 / 3 |
+| 20 | dah | 20 | 0 / 0 | 20 | 0 / 0 |
+| 10 | dit | 18 | 0 / 0 | 18 | 0 / 0 |
+| 10 | dah | 18 | 0 / 0 | 18 | 1 / 0 |
+| 5 | dit | 6 | 0 / 0 | 9 | 0 / 0 |
+| 5 | dah | 2 | 0 / 0 | 4 | 0 / 0 |
 
-| keyed mark | ms | lane 100 ms | lane 60 ms | lane 40 ms |
+Fade, round three: 20 and 20, 13 and 13, 8 and 7. The band alone: round two 1, 1 and 0; round three 0, 1 and 3 a minute.
+
+**The sweep that chose the figures** (lane 150 Hz, top 3 edges, height 6 dB; dits and dahs found of 20 at 20/10/5 dB; bursts stood of 20 at 20, 10 and 5 dB as slow, keyed; the band alone per 30 s):
+
+| match | flatness | dits | dahs | 20 dB bursts | 10 dB bursts | 5 dB bursts | band alone |
+|---|---|---|---|---|---|---|---|
+| 0.85 | 0.50 | 20/20/8 | 20/20/8 | 4, 1 | 5, 0 | 0, 0 | 3 |
+| 0.875 | 0.50 | 20/20/6 | 20/20/6 | 3, 1 | 1, 0 | 0, 0 | 3 |
+| 0.90 | 0.50 | 20/19/6 | 20/19/5 | 1, 0 | 0, 0 | 0, 0 | 2 |
+| 0.875 | 0.45 | 20/20/6 | 20/20/3 | 2, 0 | 1, 0 | 0, 0 | 3 |
+| **0.90** | **0.45** | 20/19/6 | 20/19/2 | 0, 0 | 0, 0 | 0, 0 | 2 |
+| 0.90 | 0.40 | 20/19/3 | 20/18/0 | 0, 0 | 0, 0 | 0, 0 | 2 |
+
+A 100 Hz lane found more at 5 dB (11 to 14 dits) and stood four times the noise columns (9 to 17 per 30 s) and more bursts; a top of one edge-length stood four times the noise columns of three.
+
+**The rounds' table**, every condition, two finders as shipped then rounds one, two and three with `Columns` on:
+
+| condition | two finders | round one | round two | round three |
 |---|---|---|---|---|
-| 9.167 | 25 | −41.8 −43.2 −32.3 11.0 no | −37.2 −41.3 −30.4 10.9 no | −27.8 −40.1 −28.5 11.6 no |
-| 9.441 | 59 | −21.6 −42.4 −32.1 10.4 no | −18.5 −40.8 −30.3 10.5 no | −19.4 −39.5 −28.4 11.1 no |
-| 9.704 | 179 | −18.8 −40.6 −31.1 9.5 no | −19.0 −38.9 −29.2 9.7 no | −18.8 −38.0 −27.4 10.6 no |
-| 9.928 | 68 | −20.3 −40.6 −31.1 9.5 no | −17.6 −38.9 −29.2 9.7 no | −18.7 −38.0 −27.4 10.6 no |
-| 10.202 | 60 | −23.3 −40.6 −24.9 15.7 yes | −17.6 −38.8 −24.2 14.6 yes | −19.0 −38.2 −23.9 14.2 yes |
-| 10.435 | 162 | −20.2 −40.6 −19.6 21.0 yes | −22.5 −38.7 −19.3 19.4 yes | −25.2 −37.8 −19.1 18.7 yes |
+| twelve-plus-three: score (right, wrong, invented) | 297 (318, 20, 1) | 22 (85, 63, 0) | 91 (186, 95, 0) | 153 (226, 73, 0) |
+| spaces right of 110, added | 86, 3 | 27, 17 | 75, 20 | 76, 19 |
+| letters in silences | 0 | 0 | 0 | 0 |
+| W1AW: score (right, wrong, invented) | 2111 (2131, 20, 0) | -52 (512, 564, 0) | 1468 (1757, 289, 0) | 1758 (1927, 169, 0) |
+| the first recording | whole | `U NE` | `RET C IETT V BS IU STKAUTETM IEWA` | `FET C IEAT<BT> BES IU TEI SA KCVZGM DEWA` |
+| fist bank: score (right, wrong, invented) | 1891 (2612, 675, 46) | 2406 (3214, 808, 0) | 2459 (3252, 793, 0) | 2428 (3180, 752, 0) |
+| flat half: right, score | 2173, 1896 | 1737, 1563 | 1780, 1638 | 1733, 1568 |
+| fading half: right, score | 439, -5 | 1477, 843 | 1472, 821 | 1447, 860 |
+| short-dah rows 1.6 / 2.0 (floors 540 / 592) | 569 / 624 | 805 / 809 | 827 / 821 | 798 / 792 |
+| the nine hands at 60 | 9 of 9 | 9 of 9 | 9 of 9 | 9 of 9 |
+| 5 dB CQs of 84; after them | 71; nothing | 0 (survey 4); nothing | 0; nothing | 0; nothing |
+| 15 dB CQs of 84 | 78 | 83 | 83 | 83 |
+| 0 dB CQs of 84 | 0 | 0 | 0 | 0 |
+| random carrier, seeds of 20 | 2 | 3 | 3 | 3 |
+| steady carrier; noise alone (`143906`) | none; nothing | none; nothing | none; nothing | none; nothing |
+| strays summed; highest capture | 26.8; 3.3 | 34.6; 3.3 | 31.9; 3.3 | 24.8; 4.0 |
+| easy fixtures of 90 | 77 | 90 | 90 | 90 |
+| working fixtures of 81 | 4 | 6 | 10 | 9 |
+| ungraded of 98; `two-station` of 27 | 73; 18 | 47; 7 | 53; 10 | 48; 8 |
+| synthetic fixtures of 67 | 46 | 67 | 67 | 67 |
+| CPU on `piece-04` (two finders in the same run) | 181 s | 28 s (181) | not rerun | 31 s (185) |
+| the survey's wall clock | 10.8 min | 4.3 min | 4.3 min | 4.1 min |
 
-*`121357`, station 698 Hz.* From 12.77 s, contrast 8.5 to 11.9 dB for its first five marks, none called, the key-down −30 to −25 against the station's −20 to −22. First called at 13.42 s; the grid's first candidate 13.52 s.
+**The three matrices, round three** (letters right of 60; two finders as shipped in brackets):
 
-*`144020`'s second station, 598 Hz, from 13.57 s, and W1AW `piece-02` after its pause, from 219.38 s:* every mark was called from the first, at 12 to 20 dB of contrast.
-
-**The rounds, every condition:**
-
-| condition | the bar | two finders | 585, round three | round one | round two | round three |
-|---|---|---|---|---|---|---|
-| twelve-plus-three score | 297 (294 for a ruling) | 297 | 253 | 267 | 275 | 275 |
-| right, wrong, invented | not rising | 318, 20, 1 | 293, 32, 8 | 306, 17, 22 | 306, 19, 12 | 306, 19, 12 |
-| spaces | not worse | 86 of 110, 3 added | 85, 14 added | 80, 5 added | 84, 5 added | 86, 5 added |
-| W1AW score | 2111 | 2111 | 2098 | 2087 | 2077 | 2124 |
-| W1AW wrong, invented | not rising | 20, 0 | 16, 8 | 25, 8 | 25, 14 | 11, 1 |
-| fist bank score | 2,500 | 1891 | 2915 | 3034 | 3007 | 2885 |
-| fist bank invented | 50 or fewer | 46 | 20 | 8 | 8 | 8 |
-| fading half, right | 1,000 | 439 | 1166 | 1209 | 1205 | 1195 |
-| flat half, right | 2,129 | 2173 | 2678 | 2703 | 2714 | 2721 |
-| the four 5 dB CQs | 71 of 84 | 71 | 80 | 84 | 83 | 83 |
-| letters after them | none | none | none | none | none | none |
-| short-dah rows 1.6, 2.0 | over the floors | 569, 624 | 832, 886 | 828, 939 | 838, 914 | 823, 982 |
-| straight-key hands | 48 of 60 each | held | held | held | held | held |
-| loud noise | nothing | nothing | nothing | nothing | nothing | nothing |
-| random carrier | two seeds | 2 | 0 | 1 (5195) | 1 (5195) | 1 (5195) |
-| steady carrier | none | none | none | none | none | none |
-| first recording | whole | whole | `ER C H AT…` | whole | whole | whole |
-| letters in silences | none | 0 | 3 | 9 | 7 | 7 |
-| strays, highest capture | 6 per 10 s | 3.3 | 1.7 | 1.7 | 1.7 | 1.3 |
-| strays, summed | reported | 26.8 | 12.8 | 13.4 | 12.4 | 13.6 |
-| easy fixtures | 77 of 90 | 77 | 71 | 87 | 85 | 85 |
-| working fixtures | reported | 4 | 17 | 12 | 15 | 14 |
-| `two-station` | reported | 18 of 27 | 24 | 27 | 27 | 27 |
-| 0 dB CQs | reported | 0 | 0 | 41 | 0 | 0 |
-| survey time | reported | 10.9 min | 20.8 min | 23.7 min | 21.6 min | 20.5 min |
-
-**The fist bank's three matrices**, two finders / one finder at round three.
-
-*Dah over dit by speed, flat, 20 dB:*
+Dah over dit by speed, flat, 20 dB:
 
 | | 10 WPM | 15 WPM | 20 WPM | 25 WPM | row |
 |---|---|---|---|---|---|
-| dah 1.6 | 60 / 46 | 60 / 46 | 60 / 48 | 60 / 49 | 240 / 189 |
-| dah 2.0 | 59 / 60 | 60 / 58 | 60 / 60 | 22 / 59 | 201 / 237 |
-| dah 2.5 | 59 / 59 | 59 / 59 | 60 / 60 | 60 / 60 | 238 / 238 |
-| dah 3.0 | 60 / 60 | 60 / 60 | 60 / 60 | 60 / 60 | 240 / 240 |
+| dah 1.6 | 60 (60) | 60 (60) | 60 (60) | 60 (60) | 240 (240) |
+| dah 2.0 | 60 (59) | 60 (60) | 60 (60) | 59 (22) | 239 (201) |
+| dah 2.5 | 59 (59) | 59 (59) | 60 (60) | 60 (60) | 238 (238) |
+| dah 3.0 | 59 (60) | 60 (60) | 60 (60) | 60 (60) | 239 (240) |
 
-*Dah over dit by signal, flat, 20 WPM:*
+Dah over dit by signal, flat, 20 WPM:
 
 | | 5 dB | 10 dB | 20 dB | row |
 |---|---|---|---|---|
-| dah 1.6 | 45 / 52 | 36 / 57 | 60 / 48 | 141 / 157 |
-| dah 2.0 | 43 / 58 | 59 / 60 | 60 / 60 | 162 / 178 |
-| dah 2.5 | 53 / 60 | 59 / 60 | 60 / 60 | 172 / 180 |
-| dah 3.0 | 16 / 59 | 59 / 60 | 60 / 60 | 135 / 179 |
+| dah 1.6 | 0 (45) | 55 (36) | 60 (60) | 115 (141) |
+| dah 2.0 | 0 (43) | 49 (59) | 60 (60) | 109 (162) |
+| dah 2.5 | 0 (53) | 51 (59) | 60 (60) | 111 (172) |
+| dah 3.0 | 0 (16) | 47 (59) | 60 (60) | 107 (135) |
 
-*Signal by fade, dah 2.5, 20 WPM:*
+Signal by fade, dah 2.5, 20 WPM:
 
 | | flat | 12 dB of QSB at 0.7 Hz | row |
 |---|---|---|---|
-| 5 dB | 53 / 60 | 0 / 24 | 53 / 84 |
-| 10 dB | 59 / 60 | 14 / 22 | 73 / 82 |
-| 20 dB | 60 / 60 | 13 / 57 | 73 / 117 |
+| 5 dB | 0 | 15 | 15 |
+| 10 dB | 51 | 20 | 71 |
+| 20 dB | 60 | 58 | 118 |
 
-**The bank's totals:**
-- two finders: 2612 of 5760, score 1891;
-- round one: 3912, score 3034;
-- round two: 3919, score 3007;
-- round three: 3916, score 2885, with 1023 wrong and 8 invented.
+**The fixtures, round three** (two finders in brackets): easy `coverage` 26 of 26 (26), `exchange` 22 of 22, `fast` 19 of 19 (17), `prosigns` 9 of 9 (0), `tightfist` 14 of 14 (12); working `coverage` 2 of 23, `exchange` 3 of 19, `fast` 3 of 19, `prosigns` 1 of 9, `tightfist` 0 of 11; ungraded `farnsworth-heavy` 11 of 11 (10), `farnsworth-light` 1 of 11 (6), `qsk-preamble` 22 of 22 (22), `two-station` 8 of 27 (18), `two-station-first` 0 of 13 (6), `two-station-second` 6 of 14 (11).
 
-**The easy and working fixtures**, right of sent:
+**The boards' rows, round three** (right of sent, wrong; two finders in brackets): `200157` 15 of 27, 12 (27, 0); `144020` 24 of 28, 2 (26, 1); `144045` 18 of 23, 2 (23, 0); `221530` 19 of 45, 9 (34, 3); `221548` 11 of 18, 5 (14, 3); `221745` 15 of 29, 11 (21, 7); `221805` 24 of 33, 4 (28, 1); `221828` 22 of 41, 9 (39, 2); `212015` 32 of 44, 7 (42, 2); `121324` 11 of 19, 6 (18, 1); `121357` 12 of 14, 0 (14, 0); `121414` 23 of 32, 6 (32, 0); the four low or empty stretches 0. W1AW `piece-01` 205 of 242, 26 wrong (242, 0); `piece-02` 335 of 392, 41 (388 right); `piece-03` 749 of 815, 53; `piece-04` 638 of 702, 49 (688 right).
 
-| fixture | two finders | round one | round two | round three |
-|---|---|---|---|---|
-| `coverage-easy` | 24 of 26 | 25 | 25 | 25 |
-| `exchange-easy` | 22 of 22 | 22 | 22 | 22 |
-| `fast-easy` | 18 of 19 | 19 | 19 | 19 |
-| `prosigns-easy` | 0 of 9 | 9 | 9 | 9 |
-| `tightfist-easy` | 13 of 14 | 12 | 10 | 10 |
-| `coverage-working` | 1 of 23 | 4 | 4 | 3 |
-| `exchange-working` | 0 of 19 | 3 | 3 | 4 |
-| `fast-working` | 3 of 19 | 5 | 5 | 5 |
-| `prosigns-working` | 0 of 9 | 0 | 1 | 0 |
-| `tightfist-working` | 0 of 11 | 0 | 2 | 2 |
+**The round-two trace** on `piece-04` 97 to 105 s, 600 Hz lane, verdicts at the closings: round one's finder 11 a column, 35 edges of two heights, 5 top not flat, 3 an edge too short; round two's 42 a column, 5 top not flat, 3 an edge too short. The lane probe, 99.35 to 99.80 s: -34 to -21 dB before the dit at 99.400, -17 dB on its top, -27 to -55 dB after its drop at 99.440.
 
-**Both scoreboards' rows:**
-- the twelve-plus-three: `| 586 | 2026-10-21 | 318 of 353 | 20 | 1 | **297** | 0 | 86 of 110, 3 added | one finder, the opening (work instruction 586, HM-DEC-290): three rounds, 275 with it on, under 294, so the hard stop: left off and the one-finder line ended; the board unchanged |`
-- W1AW: `| 586 | 2026-10-21 | **2111** | 2131 of 2151 | 20 | 0 | 438 of 440 | one finder, the opening (HM-DEC-290): 2124 with 1 invented on, left off by the hard stop; unchanged |`
+**Both scoreboards' rows, as shipped:** the twelve-plus-three 297, 318 of 353 right, 20 wrong, 1 invented, 0 in silences, spaces 86 of 110 with 3 added; W1AW 2111, 2131 of 2151 right, 20 wrong, 0 invented, 438 of 440 spaces. Both unchanged by this unit.
+
+**The lines**, once each at the end, `--no-build`, after one build of the solution with `Columns` off: the app line 278 of 278 in 2.5 minutes; the engine line 159 of 159 in 12.5 minutes; the survey line 1 of 1 in 11.2 minutes, the survey document identical to the shipped one apart from its `Rerun` line.
+
+**Commits on `main`:** `128a672c` round one, `f3a2b3bc` round two, `c713900d` round three, and the record. Tag `before-columns` at `b275bc85`.
 
 ## 4. What's blocking us
 
 **Left, one line each:**
-- **The one-finder line is ended by the hard stop.** A further one-finder unit needs a new ruling. `BankFinds` and the four rules under it (`LoudestFirst`, `LaneMeetsTheGrid`, `TwoLanes` and `LaneHearsTheOpening`) sit in the tree, off.
-- **What one finder still lost at the end:**
-  - `221745`, 14 to 3: its station's lanes stand under 0.4 for its first 13 s;
-  - `143906`, a noise-only recording: 7 invented, 6 in silences, from a 500 Hz lane;
-  - `121357`'s `RR`: in the trace before the rule its first marks sat 8.5 to 11.9 dB over the lane's floor, under the 12 dB a lane calls at.
-- **CPU:** one finder costs a little over twice the chain. In the test build it reads 300 s of W1AW in 396 s of CPU, slower than real time.
-- **Choices taken, named under HM-DEC-276:**
-  - "a dah of hops" is three of the lane's own dits, at least four hops;
-  - "the top" is the median of the loudest quarter of those hops;
-  - 6 dB is the grid's edge depth, half amplitude;
-  - the stand-at-the-line test compares the mark's mean with the rise line at its end;
-  - all three apply only while the lane holds nothing, except the stand-at-the-line test, which applies to every lane under the rule.
+- **The finder is not the gate's problem.** `Columns` sits in the tree, off. If the line continues, the next unit goes to the lane: a 150 Hz lane holds a 5 dB signal 7 dB over its own noise, and the finder stands half its elements there; a narrower lane found more at 5 dB in the sweep and stood four times the noise columns, so the shape tests, not the figures, would have to carry it.
+- **The AGC.** The owner's recordings and W1AW were made with AGC FAST, before HM-DEC-268 set SLOW. On them the floor before a first element sits within 3 to 6 dB of its top and 15 to 30 dB above the floor after its drop. The boards remain the yardstick, so a shape finder has to read FAST-AGC audio; whether a recording made with SLOW reads differently is not known.
+- **Shadows.** The station's leakage 50 to 70 Hz off its pitch is delivered as weak columns of its own (-33 dB against -17 on `piece-04`), at a pitch the gates treat as another sender. The resolution by height merges only columns at one pitch; across pitches it was not built.
+- **The carrier.** A carrier keyed at random with 4 ms edges makes true columns; with the level rules bypassed the two-kinds test alone let three seeds print. That is the gate's.
+- **The first proof's burst condition** broke in round three (four bursts of 120 at 20 dB, one at 10 dB): short noise tops of 12 to 22 ms pass flatness by chance under a 3 dB rise. Round two's finder stood one burst of 120 at 20 dB, round one's none.
+- **The generator keys a 5 ms edge** where the radio's default is 4; not regenerated, for the reason in section 1.
+- **CPU:** columns cost a sixth of two finders; the survey ran in 4.1 to 4.3 minutes against 10.8.
 
 ### Asks still outstanding
 
+- **Unit 587, 2026-10-22:** the IC-7300's CW rise time, the owner's setting and the manual's default. `KeyingEdgeMs` is 4 ms, the default as the author recalls it from `A7292-4EX-6` p. 4-21, not re-read; the owner's setting is on no sheet. Waiting on the owner. The constant sits in `CwColumnFinder`, marked.
 - **Unit 575, 2026-10-19:** what could part a hand's letter gaps from his word gaps, since they overlap in length and no line drawn from his dit alone parts every hand. Waiting on the owner. `CwRules.StraddleSplit` sits in the tree, off.
 - **Unit 562, 2026-10-08:** what next for the junk before a weak call, given the 0.4 start costs the start of every real call. Waiting on the owner. No change for it sits in the tree.
 - **Unit 520, 2026-10-01:** how a mark finds its own tone beside a louder one. Partly answered by unit 524 and by the shadow rule. Still open before a sender stands, and for a sender 50 Hz or nearer.

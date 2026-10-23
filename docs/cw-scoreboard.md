@@ -392,6 +392,7 @@ guard: the random carrier prints at 2 of 20 seeds (5195, 5207), restated by the 
 | 584 | 2026-10-21 | 318 of 353 | 20 | 1 | **297** | 0 | 86 of 110, 3 added | one finder, the bank finds every station (work instruction 584, HM-DEC-288): three rounds, 239 with it on, left off; the board unchanged |
 | 585 | 2026-10-21 | 318 of 353 | 20 | 1 | **297** | 0 | 86 of 110, 3 added | one finder, loudest first (work instruction 585, HM-DEC-289): three rounds, 253 with it on, left off and the one-finder line ended for now; the board unchanged |
 | 586 | 2026-10-21 | 318 of 353 | 20 | 1 | **297** | 0 | 86 of 110, 3 added | one finder, the opening (work instruction 586, HM-DEC-290): three rounds, 275 with it on, under 294, so the hard stop: left off and the one-finder line ended; the board unchanged |
+| 587 | 2026-10-22 | 318 of 353 | 20 | 1 | **297** | 0 | 86 of 110, 3 added | a mark is a column (work instruction 587, HM-DEC-291): three rounds, 153 with Columns on (22, 91, 153), left off; the board unchanged |
 
 ## Scans (work instruction 544, HM-DEC-248)
 
@@ -480,6 +481,7 @@ high and 25 medium, 2151 letters, all totalled.
 | 584 | 2026-10-21 | **2111** | 2131 of 2151 | 20 | 0 | 438 of 440 | one finder (HM-DEC-288): 2111 with 3 invented on, left off; unchanged |
 | 585 | 2026-10-21 | **2111** | 2131 of 2151 | 20 | 0 | 438 of 440 | one finder, loudest first (HM-DEC-289): 2098 with 8 invented on, left off; unchanged |
 | 586 | 2026-10-21 | **2111** | 2131 of 2151 | 20 | 0 | 438 of 440 | one finder, the opening (HM-DEC-290): 2124 with 1 invented on, left off by the hard stop; unchanged |
+| 587 | 2026-10-22 | **2111** | 2131 of 2151 | 20 | 0 | 438 of 440 | a mark is a column (HM-DEC-291): 1758 with Columns on (-52, 1468, 1758), left off; unchanged |
 
 **The fist bank** (work instruction 580, HM-DEC-284): ninety-six hands with a truth, every dah over dit of 1.6, 2.0, 2.5 and 3.0 at 10, 15, 20 and 25 WPM, 5, 10 and 20 dB, flat and fading, generated at test time from their recipes (`tests\Hamlet.RadioEngine.Tests\Cw\Fixtures\CwFistBank.cs`) and read by the survey as a group of its own, its matrices in `docs\cw-survey-2026-10-09.md` under `The fist bank`. A yardstick, not yet a guard.
 
