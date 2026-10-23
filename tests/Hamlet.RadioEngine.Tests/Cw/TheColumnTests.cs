@@ -411,6 +411,30 @@ public sealed class TheColumnTests(ITestOutputHelper output)
         }
     }
 
+    /// <remarks>The station's lane envelope itself, step by step, with the match at each step, over a stretch: for the trace. Asserts nothing.</remarks>
+    [Theory]
+    [InlineData("w1aw-2026-10-07/piece-04", 99.35, 99.80, 600)]
+    public void TheLaneProbed(string recording, double from, double to, double pitchHz)
+    {
+        var audio = WavAudio.Read(TheOwnersRecordingReadsTests.Wav(recording));
+        var (pitch, width) = TheRecordingsScoreboardTests.RadioState(recording);
+        var start = Math.Max(0, from - 1);
+        var cut = audio.Samples[(int)(start * audio.SampleRate)..Math.Min(audio.Samples.Length, (int)((to + 1) * audio.SampleRate))];
+        var steps = new List<(double At, double Db, double Rho)>();
+
+        using (CwRules.Choose(CwRules.Columns))
+        {
+            TheOneFinderTests.Read(cut, audio.SampleRate, pitch, width, det => det.Columns!.Probe = (Math.Round(pitchHz / CwColumnFinder.LaneSpacingHz) * CwColumnFinder.LaneSpacingHz, steps));
+        }
+
+        output.WriteLine(string.Create(Inv, $"## {recording} {from}-{to} s, lane {Math.Round(pitchHz / CwColumnFinder.LaneSpacingHz) * CwColumnFinder.LaneSpacingHz:0} Hz: at, dB, match"));
+
+        foreach (var s in steps.Where(s => s.At + start >= from && s.At + start <= to))
+        {
+            output.WriteLine(string.Create(Inv, $"{s.At + start:0.000} {s.Db:0.0} {s.Rho:+0.00;-0.00}"));
+        }
+    }
+
     private static bool IsTheElement(CwMark c, double from, double to)
         => Math.Abs(c.FromSeconds - from) <= Near && Math.Abs(c.ToSeconds - to) <= Near && Math.Abs(c.PitchHz - ToneHz) <= 50;
 

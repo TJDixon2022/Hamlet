@@ -35,6 +35,12 @@ namespace Hamlet.RadioEngine.Cw;
 /// the tolerance is a dip inside something that is not a column, which is how a loud noise burst stood columns on its own dips.
 /// And the drop's chaos is read from three edge-lengths after it, past the lane's own decay tail, which at two edge-lengths still
 /// sat about 24 dB under a strong top and capped every strong drop there.</para>
+/// <para>**THE COLUMN IS TALL; THE RISE NEED ONLY BE AN EDGE** (work instruction 587, round three). Traced on W1AW with round two's
+/// finder, the elements still missed were the first after a letter or word gap: over the gap the AGC had lifted the floor to within
+/// 3 to 6 dB of the top, so the rise stood under 6 dB over the chaos before it while its drop stood over 30. A column's height is
+/// therefore read on its taller edge, the drop where the floor rose before it, and the rise is held only to <see cref="RiseLeastDb"/>,
+/// the least step that is an edge rather than a top's ripple, matched and steep like any edge. The drop keeps the full height:
+/// the floor after a key-up is the AGC at its lowest, and a shallower drop is a dip.</para>
 /// <para>**TWO LANES HOLDING ONE COLUMN** are resolved by height alone: columns that begin and end within an edge-length of each
 /// other are one keying, and the tallest lane's is the one delivered. Its pitch is measured from that lane's own mixed signal,
 /// the slope of its phase over the top, so a tone between two lanes is placed to the hertz rather than at either.</para>
@@ -80,6 +86,13 @@ internal sealed class CwColumnFinder
     /// is a dip inside something else.
     /// </summary>
     public const double EdgePairDb = 6;
+
+    /// <summary>
+    /// The least a rise must stand over the chaos before it, in dB: half the column's height, a doubling of power, the least step
+    /// that is an edge and not a top's ripple. The floor before a rise is wherever the AGC left it over the gap, so the column's
+    /// height is proved by its drop (<see cref="ColumnHeightDb"/>) and the rise by its shape.
+    /// </summary>
+    public const double RiseLeastDb = 3;
 
     /// <summary>How many edge-lengths of chaos are read beside a column, at most: before its rise and after its drop.</summary>
     public const int ChaosEdges = 6;
@@ -302,7 +315,7 @@ internal sealed class CwColumnFinder
         var height = after - before;
         var transition = Transition(lane, t, lane.MeanAmplitude(chaosFrom, t), lane.MeanAmplitude(t + (2 * _edge), t + (4 * _edge)));
         var steep = transition <= _figures.EdgeSlowest * _templateTransition;
-        var tall = height >= _figures.HeightDb;
+        var tall = height >= _figures.RiseLeastDb;
 
         if (Trace is { } trace && (TraceLane is null || TraceLane(lane.Hz)))
         {
@@ -368,7 +381,7 @@ internal sealed class CwColumnFinder
         var flat = topLong && double.IsFinite(chaosDeviation) && topLine.Deviation <= _figures.TopFlatness * chaosDeviation;
         var riseDb = topLine.At(topFrom) - rise.BeforeDb;
         var dropDb = topLine.At(topTo) - after;
-        var tall = riseDb >= _figures.HeightDb && dropDb >= _figures.HeightDb;
+        var tall = riseDb >= _figures.RiseLeastDb && dropDb >= _figures.HeightDb;
         var paired = dropDb >= riseDb - _figures.EdgePairDb;
 
         if (rise.At - rise.ChaosFrom >= 2 * _edge)
@@ -791,6 +804,7 @@ internal sealed class CwColumnFinder
 /// <param name="EdgeSlowest">The most a step may take, as a multiple of the template transition.</param>
 /// <param name="TopFlatness">The most a top may deviate, as a share of the chaos deviation.</param>
 /// <param name="EdgePairDb">How much shallower than its rise a drop may be, in dB.</param>
+/// <param name="RiseLeastDb">The least a rise must stand over the chaos before it, in dB.</param>
 /// <param name="TopLeastEdges">The least top, in edge-lengths.</param>
 /// <param name="LaneBandwidthHz">The lanes' low-pass cutoff, in Hz.</param>
 internal sealed record ColumnFigures(
@@ -799,6 +813,7 @@ internal sealed record ColumnFigures(
     double EdgeSlowest = CwColumnFinder.EdgeSlowest,
     double TopFlatness = CwColumnFinder.TopFlatness,
     double EdgePairDb = CwColumnFinder.EdgePairDb,
+    double RiseLeastDb = CwColumnFinder.RiseLeastDb,
     int TopLeastEdges = CwColumnFinder.TopLeastEdges,
     double LaneBandwidthHz = CwColumnFinder.LaneBandwidthHz)
 {
@@ -807,5 +822,5 @@ internal sealed record ColumnFigures(
 
     /// <inheritdoc />
     public override string ToString()
-        => string.Create(CultureInfo.InvariantCulture, $"height {HeightDb:0} dB, match {EdgeMatch:0.00}, slowest {EdgeSlowest:0.0}x, flatness {TopFlatness:0.00}, dip {EdgePairDb:0} dB, top {TopLeastEdges} edges, lane {LaneBandwidthHz:0} Hz");
+        => string.Create(CultureInfo.InvariantCulture, $"height {HeightDb:0} dB, match {EdgeMatch:0.00}, slowest {EdgeSlowest:0.0}x, flatness {TopFlatness:0.00}, dip {EdgePairDb:0} dB, rise {RiseLeastDb:0} dB, top {TopLeastEdges} edges, lane {LaneBandwidthHz:0} Hz");
 }
