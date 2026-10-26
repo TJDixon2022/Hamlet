@@ -101,6 +101,13 @@ public sealed class CwDecoder
     /// </remarks>
     public Func<long, CwMarkBatch>? DetectorMarks { get; set; }
 
+    /// <summary>
+    /// The symbols the detector's sequence reader committed since the last call, the argument true where the audio is over; null
+    /// where no detector is wired (work instruction 588). With <see cref="CwRules.SequenceReader"/> on it is the only path to the
+    /// printer.
+    /// </summary>
+    public Func<bool, IReadOnlyList<CwSymbol>>? SequenceSymbols { get; set; }
+
     /// <summary>The gate and reader the decoder prints from, for listeners built on <see cref="CwChain"/> that need its letters, runs and senders (work instruction 542).</summary>
     internal CwSenderGate Runs => _runs;
 
@@ -310,6 +317,19 @@ public sealed class CwDecoder
     /// </summary>
     public void Flush()
     {
+        // **THE SEQUENCE READER** (work instruction 588): the audio is over, so everything it holds is committed.
+        if (CwRules.On(CwRules.SequenceReader) && SequenceSymbols is { } sequence)
+        {
+            var symbols = sequence(true);
+
+            if (!(DecodingSuspended || DigitalMode) && symbols.Count > 0)
+            {
+                _runs.PrintSequence(symbols);
+            }
+
+            return;
+        }
+
         PullRuns(drop: DecodingSuspended || DigitalMode);
         _runs.Flush();
     }
@@ -350,6 +370,20 @@ public sealed class CwDecoder
     /// <summary>Take the marks the detector called since last time; drop them while nothing may be decoded.</summary>
     private void PullRuns(bool drop)
     {
+        // **THE SEQUENCE READER IS THE ONLY PATH TO THE PRINTER** (work instruction 588, HM-DEC-292): with it on, the grid's marks
+        // feed nothing; what it committed is taken, and dropped while nothing may be decoded.
+        if (CwRules.On(CwRules.SequenceReader) && SequenceSymbols is { } sequence)
+        {
+            var symbols = sequence(false);
+
+            if (!drop && symbols.Count > 0)
+            {
+                _runs.PrintSequence(symbols);
+            }
+
+            return;
+        }
+
         if (DetectorMarks is not { } marks)
         {
             return;

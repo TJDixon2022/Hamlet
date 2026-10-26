@@ -72,6 +72,9 @@ public sealed class CwChain : IDisposable
 
         // **A CHARACTER IS A RUN OF MARKS THAT AGREE** (work instruction 490, HM-DEC-195): the gate and reader read the marks.
         decoder.DetectorMarks = detector.MarksSince;
+
+        // **THE SEQUENCE READER** (work instruction 588, HM-DEC-292): with it on, its letters are the only ones printed.
+        decoder.SequenceSymbols = detector.SequenceSymbols;
     }
     /// <summary>
     /// **THE PASSBAND IS THE RADIO'S, READ, OR THE WHOLE BAND** (work instruction 476): in CW or CW-R the radio's own CW

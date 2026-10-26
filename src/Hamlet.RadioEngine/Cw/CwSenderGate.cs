@@ -466,6 +466,13 @@ public sealed class CwSenderGate
     private static double Middle(CwMark m) => (m.FromSeconds + m.ToSeconds) / 2;
 
 
+    /// <summary>
+    /// **THE SEQUENCE READER PRINTS THROUGH THE LOOKUP TABLE** (work instruction 588, HM-DEC-292): its dots, dashes, letter ends and
+    /// word ends go to the table as the gate's do, and nothing of the gate judges them.
+    /// </summary>
+    /// <param name="symbols">The symbols the sequence reader committed.</param>
+    internal void PrintSequence(IReadOnlyList<CwSymbol> symbols) => _table.Take(symbols);
+
     /// <summary>Take the marks called since the last batch, and end every run whose gap has passed.</summary>
     /// <param name="batch">The marks and the detector's clock.</param>
     public void Read(CwMarkBatch batch)

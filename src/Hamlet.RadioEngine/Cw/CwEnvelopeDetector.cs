@@ -314,6 +314,30 @@ public sealed class CwEnvelopeDetector
     /// <summary>Whether the column finder is the finder: with <see cref="CwRules.Columns"/> on (work instruction 587).</summary>
     private bool ColumnsFinding => _columns is not null && CwRules.On(CwRules.Columns);
 
+    // **THE SEQUENCE READER** (work instruction 588, HM-DEC-292): lanes across the rig's passband, each decoded as a whole keying
+    // sequence; it runs only with CwRules.SequenceReader on, and then it is the only path to the printer.
+    private CwSequenceReader? _sequence;
+
+    /// <summary>The sequence reader, for the tests' traces (work instruction 588).</summary>
+    internal CwSequenceReader? Sequence => _sequence;
+
+    /// <summary>Whether the sequence reader reads: with <see cref="CwRules.SequenceReader"/> on (work instruction 588).</summary>
+    private bool SequenceReading => _sequence is not null && CwRules.On(CwRules.SequenceReader);
+
+    /// <summary>
+    /// The symbols the sequence reader committed since the last call, for the decoder's lookup table (work instruction 588); none
+    /// where it does not read.
+    /// </summary>
+    /// <param name="final">True where the audio is over and everything is committed.</param>
+    /// <returns>The symbols.</returns>
+    public IReadOnlyList<CwSymbol> SequenceSymbols(bool final)
+    {
+        lock (_gate)
+        {
+            return SequenceReading ? _sequence!.Take(final) : [];
+        }
+    }
+
     /// <summary>
     /// How near a pitch counts as the same station for the handover: two bins, 50 Hz, the figure the windows already take for a
     /// station and its shadow (work instruction 569, task 2).
@@ -1706,6 +1730,7 @@ public sealed class CwEnvelopeDetector
                 };
             }
             _columns = new CwColumnFinder(SampleRate, low, high);
+            _sequence = fromRig ? new CwSequenceReader(SampleRate, low, high) : null;
             _bankLane = null;
             _held.Clear();
             _pausedAt.Clear();
@@ -1824,6 +1849,7 @@ public sealed class CwEnvelopeDetector
             // **A MARK IS A COLUMN** (work instruction 587): with the column finder as the finder it hears every sample and the bank
             // hears none, since the bank's lanes feed nothing.
             var columns = ColumnsFinding;
+            var sequence = SequenceReading;
 
             foreach (var s in samples)
             {
@@ -1846,6 +1872,11 @@ public sealed class CwEnvelopeDetector
                 if (columns)
                 {
                     _columns!.Push(s);
+                }
+                else if (sequence)
+                {
+                    // **THE SEQUENCE READER** (work instruction 588): it hears every sample and the bank, which feeds nothing, none.
+                    _sequence!.Push(s);
                 }
                 else
                 {
@@ -2060,7 +2091,7 @@ public sealed class CwEnvelopeDetector
 
         // **A MARK IS A COLUMN** (work instruction 587): with the column finder as the finder the bank's lanes feed nothing and are
         // not run; the columns were offered to the pattern gate in CallMarks.
-        if (!ColumnsFinding)
+        if (!ColumnsFinding && !SequenceReading)
         {
             _bank?.Hop(nowSeconds);
 

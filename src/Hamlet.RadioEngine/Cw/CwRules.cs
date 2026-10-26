@@ -168,6 +168,14 @@ internal static class CwRules
     /// </summary>
     public const string Columns = "a mark is a column";
 
+    /// <summary>
+    /// **THE SEQUENCE READER** (work instruction 588, HM-DEC-292): the sequence reader (<see cref="CwSequenceReader"/>) is the only path
+    /// to the printer: of every legal sequence of dits, dahs and gaps at the sender's own rhythm, the one that best explains a lane's
+    /// whole envelope, printed where its pattern is Morse. The grid's marks, the bank's handover and the column finder feed nothing,
+    /// and the grid stays for the scope.
+    /// </summary>
+    public const string SequenceReader = "the sequence reader";
+
 
 
 
@@ -192,7 +200,7 @@ internal static class CwRules
     /// The rules that ship off, built and measured and not taken: off unless a test chooses one on this thread with
     /// <see cref="Choose"/> (work instruction 565).
     /// </summary>
-    public static readonly IReadOnlySet<string> OffByDefault = new HashSet<string>(StringComparer.Ordinal) { BetweenClusters, StraddleSplit, GridStepsAside, HoldWaitsAndFits, FollowsTheFade, HeldLaneMarksAreItsStations, BankFinds, Columns };
+    public static readonly IReadOnlySet<string> OffByDefault = new HashSet<string>(StringComparer.Ordinal) { BetweenClusters, StraddleSplit, GridStepsAside, HoldWaitsAndFits, FollowsTheFade, HeldLaneMarksAreItsStations, BankFinds, Columns, SequenceReader };
 
     [ThreadStatic]
     private static HashSet<string>? _chosen;
