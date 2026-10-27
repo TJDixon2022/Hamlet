@@ -369,6 +369,7 @@ public sealed class TheSequenceReaderTests(ITestOutputHelper output)
     /// <remarks>The live reader on a synthetic CQ and on recordings, with its trace. Asserts nothing.</remarks>
     [Theory]
     [InlineData("synthetic-cq/cq-18wpm-5db", 600.0, 500.0)]
+    [InlineData("synthetic-cq/cq-12wpm-15db", 600.0, 500.0)]
     [InlineData("captured/cw-2026-10-19-141708", 0.0, 0.0)]
     [InlineData("captured/cw-2026-10-02-200157", 0.0, 0.0)]
     [InlineData("captured/w1aw-2026-10-07/piece-04", 0.0, 0.0)]
@@ -450,6 +451,7 @@ public sealed class TheSequenceReaderTests(ITestOutputHelper output)
     [InlineData("cw-2026-10-03-221548")]
     [InlineData("cw-2026-10-02-200157")]
     [InlineData("cw-2026-10-03-144020")]
+    [InlineData("w1aw-2026-10-07/piece-02")]
     [InlineData("w1aw-2026-10-07/piece-03")]
     public void TheReaderAgainstTheTruth(string recording)
     {
@@ -540,10 +542,12 @@ public sealed class TheSequenceReaderTests(ITestOutputHelper output)
     [Theory]
     [InlineData("cw-2026-10-02-200157", 675.0, 6)]
     [InlineData("cw-2026-10-02-200157", 675.0, 12)]
+    [InlineData("synthetic-cq/cq-12wpm-15db", 575.0, 6)]
+    [InlineData("synthetic-cq/cq-12wpm-15db", 600.0, 6)]
     [InlineData("cw-2026-10-08-121414", 800.0, 8)]
     public void TheColdStartsScored(string recording, double pitch, double end)
     {
-        var audio = WavAudio.Read(TheOwnersRecordingReadsTests.Wav(recording));
+        var audio = WavAudio.Read(recording.Contains('/', StringComparison.Ordinal) ? Path.Combine(CwFixtures.Folder, recording + ".wav") : TheOwnersRecordingReadsTests.Wav(recording));
         var hops = (int)(end * 1000 / CwSequenceReader.HopMs);
         var from = Math.Max(0, hops - (int)(CwSequenceReader.WindowSeconds * 1000 / CwSequenceReader.HopMs));
         var envelopes = CwSequenceReader.LaneWidthsHz.Select(w => CwSequenceReader.Envelope(audio.Samples, audio.SampleRate, pitch, w)[from..hops]).ToArray();

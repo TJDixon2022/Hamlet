@@ -84,6 +84,14 @@ public sealed class CwSequenceReader
     /// <summary>The least share of dahs among the marks, for the decode to be Morse: real text 0.34 to 0.42, nothing 0.09.</summary>
     public const double DahShareLeast = 0.2;
 
+    /// <summary>
+    /// The most share of dahs among the marks, for the decode to be Morse (work instruction 589, round two): real text 0.34 to 0.42,
+    /// the fist bank's ragchew 0.47. Traced on the 12 WPM CQ and W1AW's 14 WPM opening: a lane 25 Hz off the station learned a
+    /// rhythm from noise in the narrow width, read the station at 40 Hz with it, split every element into dahs, and held the terminal
+    /// at a dah share of 1.00.
+    /// </summary>
+    public const double DahShareMost = 0.65;
+
     /// <summary>The most the dahs may spread, their median absolute deviation over their median: real 0.07 to 0.09, nothing 0.12 to 0.19.</summary>
     public const double DahTightnessMost = 0.12;
 
@@ -164,7 +172,7 @@ public sealed class CwSequenceReader
     public readonly record struct PatternStats(int Marks, double DahShare, double DahTightness, double Separation)
     {
         /// <summary>Whether the decode's pattern is Morse.</summary>
-        public bool IsMorse => Marks >= PatternLeastMarks && DahShare >= DahShareLeast && DahTightness <= DahTightnessMost && Separation >= SeparationLeast;
+        public bool IsMorse => Marks >= PatternLeastMarks && DahShare >= DahShareLeast && DahShare <= DahShareMost && DahTightness <= DahTightnessMost && Separation >= SeparationLeast;
 
         /// <inheritdoc />
         public override string ToString()
