@@ -529,7 +529,7 @@ public sealed class TheSequenceReaderTests(ITestOutputHelper output)
         output.WriteLine(string.Empty);
         output.WriteLine("The reader's own lines, holds and lets go:");
 
-        foreach (var l in trace.Where(l => l.Contains("holds", StringComparison.Ordinal) || l.Contains("let go", StringComparison.Ordinal) || l.Contains(" warm: ", StringComparison.Ordinal)))
+        foreach (var l in trace.Where(l => l.Contains("holds", StringComparison.Ordinal) || l.Contains("let go", StringComparison.Ordinal) || l.Contains(" warm: ", StringComparison.Ordinal) || l.Contains("someone else", StringComparison.Ordinal)))
         {
             output.WriteLine("  " + l);
         }

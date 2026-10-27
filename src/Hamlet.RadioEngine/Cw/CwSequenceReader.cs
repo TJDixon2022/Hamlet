@@ -157,6 +157,12 @@ public sealed class CwSequenceReader
     /// </summary>
     public const double SeparationMargin = 0.25;
 
+    /// <summary>
+    /// How far a warm lane's learned key-down may fall under the level it last read Morse at before what it hears is someone else
+    /// (work instruction 590, round three): the fist bank's fade is 12 dB peak to peak, and a window's median key-down moves less.
+    /// </summary>
+    public const double LevelDropDb = 10;
+
     /// <summary>How near two marks' starts must sit to be the same mark, for the shadow test.</summary>
     public const double SameMarkSeconds = 0.03;
 
@@ -1240,6 +1246,18 @@ public sealed class CwSequenceReader
 
             var shift = newest - count;
 
+            // **A WARM LANE WHOSE KEY-DOWN FALLS FAR UNDER ITS SENDER'S IS HEARING SOMEONE ELSE** (work instruction 590, round
+            // three): it commits nothing from that window and keeps its sender's rhythm. Traced on 144020: from 12.5 s the 500 Hz
+            // lane's sender had stopped, it relearned its levels on the second station's leakage at -33.6 dB against the -20.2 it
+            // kept, and printed him there in pieces while his own lane at 600 Hz had not yet read Morse.
+            if (warm && reading.Passes.Count > 0 && Kept.Marks > 0 && reading.Levels.Top < KeptTop - LevelDropDb)
+            {
+                trace?.Add(string.Create(Inv, $"{newest * HopMs / 1000:0.00} s {PitchHz:0} Hz hears someone else: key-down {reading.Levels.Top:0.0} dB against its sender's {KeptTop:0.0}"));
+                Segments = null;
+                Pattern = default;
+                return;
+            }
+
             Segments = reading.Segments.ToList();
             DecodedFrom = shift;
 
@@ -1274,8 +1292,12 @@ public sealed class CwSequenceReader
             if (reading.Pattern.IsMorse)
             {
                 Kept = reading.Pattern;
+                KeptTop = reading.Levels.Top;
             }
         }
+
+        // The key-down level the lane last read Morse at, in dB (round three).
+        public double KeptTop { get; private set; }
 
         // The window pattern the lane last read Morse with, what a warm decode's figures are held to (change 3).
         public PatternStats Kept { get; private set; }
