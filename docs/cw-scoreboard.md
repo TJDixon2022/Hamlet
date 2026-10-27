@@ -396,6 +396,7 @@ guard: the random carrier prints at 2 of 20 seeds (5195, 5207), restated by the 
 | 588 | 2026-10-26 | 318 of 353 | 20 | 1 | **297** | 0 | 86 of 110, 3 added | the sequence reader (work instruction 588, HM-DEC-292): three rounds, 187 with SequenceReader on (177, 231, 187), left off; the board unchanged |
 | 589 | 2026-10-27 | 318 of 353 | 20 | 1 | **297** | 0 | 86 of 110, 3 added | the sequence reader, finished (work instruction 589, HM-DEC-293): three rounds, 275 with SequenceReader on (210, 275, 275), left off; the board unchanged |
 | 590 | 2026-10-27 | 318 of 353 | 20 | 1 | **297** | 0 | 86 of 110, 3 added | the sequence reader, the cold read by pattern, silence as noise, a second station (work instruction 590, HM-DEC-294): three rounds, 293 with SequenceReader on (275, 285, 293), left off; the board unchanged |
+| 591 | 2026-10-27 | 318 of 353 | 20 | 1 | **297** | 0 | 86 of 110, 3 added | the sequence reader, the opening and the silences (work instruction 591, HM-DEC-295): two rounds, 308 with SequenceReader on (300, 308), left off; the board unchanged |
 
 ## Scans (work instruction 544, HM-DEC-248)
 
@@ -488,6 +489,7 @@ high and 25 medium, 2151 letters, all totalled.
 | 588 | 2026-10-26 | **2111** | 2131 of 2151 | 20 | 0 | 438 of 440 | the sequence reader (HM-DEC-292): 1764 with SequenceReader on (2024, 1526, 1764), left off; unchanged |
 | 589 | 2026-10-27 | **2111** | 2131 of 2151 | 20 | 0 | 438 of 440 | the sequence reader, finished (HM-DEC-293): 2070 with SequenceReader on (1882, 1910, 2070), left off; unchanged |
 | 590 | 2026-10-27 | **2111** | 2131 of 2151 | 20 | 0 | 438 of 440 | the cold read by pattern, silence as noise, a second station (HM-DEC-294): 2104 with SequenceReader on (2104, 2104, 2104), left off; unchanged |
+| 591 | 2026-10-27 | **2111** | 2131 of 2151 | 20 | 0 | 438 of 440 | the opening and the silences (HM-DEC-295): 2101 with SequenceReader on (2101, 2101), left off; unchanged |
 
 **The fist bank** (work instruction 580, HM-DEC-284): ninety-six hands with a truth, every dah over dit of 1.6, 2.0, 2.5 and 3.0 at 10, 15, 20 and 25 WPM, 5, 10 and 20 dB, flat and fading, generated at test time from their recipes (`tests\Hamlet.RadioEngine.Tests\Cw\Fixtures\CwFistBank.cs`) and read by the survey as a group of its own, its matrices in `docs\cw-survey-2026-10-09.md` under `The fist bank`. A yardstick, not yet a guard.
 

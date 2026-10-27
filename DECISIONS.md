@@ -4,6 +4,43 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-295
+date: 2026-10-27
+refs: work instruction 591, HM-DEC-294, HM-DEC-284, HM-DEC-276, src/Hamlet.RadioEngine/Cw/CwSequenceReader.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheSequenceReaderTests.cs
+---
+
+**The sequence reader: the opening and the silences. Both traced, the rules they named built in two rounds behind `CwRules.SequenceReader`, measured, left off.**
+
+The owner, 2026-10-27: *concur*, one more unit on the opening and the letters in silences before shipping.
+
+**The opening, traced** (`TheOpeningTraced`: the station's keyed marks from the keying map, every decode of his lane with its window, where the commit lag stood, how it read, its levels, rhythm and path, every letter committed, and his lane's level every 50 ms). None of the four shapes the order offered; the window's left edge in another form. A decode may open only on a mark, a word gap or nobody keying, and the last two need a word gap or more, so a station who keys within a word gap of the window's start cannot have his first mark laid. The first recording's first dit is 0.16 s in and `FER` printed `R`; W1AW piece-02's first `T` is 0.09 s in and was lost; piece-04's `W` starts at 0.00 s inside the filter's start and read `M`. `121414`'s opening read right (`R 55N 55N`), and `144020`'s second station's opening was the 625 Hz lane printing first, lane choice and not the window. **Built: the quiet a window opens on is nobody keying of any length**, since the window's edge cuts it.
+
+**The silences, traced** (`TheSilencesTraced`: each letter printed in a silence, the lane and its rhythm, levels and window pattern, every keyed mark near it). Three of the four were real letters: `<BT>` on the first recording and both `E`s on `143906` line up with real keying, and their last mark ended 20 to 30 ms after the silence began, the lane's filter having drawn it late; the fourth, on `221502`, is a letter with two marks laid 340 ms into a pause. **Built: a mark is timed where it was keyed**, a committed mark's seconds less the lane's delay, a fourth-order Butterworth's 2.6131 over 2π times its width (28 ms at 15 Hz, 17 at 24, 10 at 40). Three of the four went.
+
+**The rounds**, each measured with the rule on:
+- **Round one.** The two rules above.
+- **Round two.** Traced on `121414`, the largest loss on the board: from 11.8 s the sender went from a 220 ms dah to about 155 ms, and the lane read on in its kept rhythm, where 140 ms parts a dit from a dah, printing `BK TU RON` as `HS T U RSI`. At 16 and 18 s the cold read had learned dah 145 ms and saw a dah share of 0.37 and 0.43 where the warm read saw 0.22 and 0.27; the warm figures had not fallen, so the fall rule never looked. **A warm lane reads every window cold as well, and takes the cold read where both are Morse, they disagree on the dah share by more than `DahShareDisagree` 0.1, and the cold read lays no more patterns that are no letter.** The tie-break is W1AW piece-03 at 256 s, where he slows for `<BT> QST DE W1AW` and the cold read, on a crossed rhythm, was the wrong one (0.28 against 0.46): without it piece-03's 252.5 to 258 s read 1 of 11.
+- **No round three.** The largest loss left against shipped is W1AW piece-04 (680 against 688): scattered single marks at 30 WPM in the 40 Hz lane (`H` read `I`, `A` read `E`, `O` read `M`, `G` read `N`, `Y` read `K`), no one cause the trace names. The first recording's `ER` is merged into `F` by warm and cold reads alike: `E` and `R` sit 151 ms apart where the hand's learned letter gap is 290 to 340 ms and its inside gap 70, and the merged pattern is a letter. `144020`'s added spaces fall between letters of a hand whose letter gaps run 400 to 800 ms against a learned word gap near 500. None is the opening or a silence; a third round on any would have been a guess.
+
+**The figures, as shipped, then where the last unit left the reader, then rounds one and two:**
+- the twelve-plus-three: 297 (318 right, 20 wrong, 1 invented); 293 (316, 20, 3); 300 (321, 17, 4), 308 (325, 13, 4). Spaces 86 of 110 with 3 added as shipped; 89 right with 9 added; 92 right with 13 added in both rounds;
+- W1AW: 2111 (2131 right, 20 wrong, 0 invented); 2104 (2126, 22, 0); 2101 (2125, 24, 0) in both rounds. Pieces 01 to 04: 242, 387, 792, 680;
+- the fist bank: 1891 (2612 right, 675 wrong, 46 invented); 3925 (4475, 532, 18); 3944 (4481, 519, 18), 3898 (4461, 545, 18). The flat half, letters right: 2173; 2712; 2714, 2690. The fading half: 439; 1763; 1767, 1771. The short-dah rows: 1193; 2180; 2192, 2172;
+- the 5 dB CQs 84 of 84, the 15 dB 84, the 0 dB 5, in both rounds; nothing in the noise after a weak CQ; the short-dah rows' guard and the nine hands hold;
+- the easy fixtures 90 of 90; the working fixtures 36 of 81; the edge fixtures 45 of 81; `two-station` 27 of 27; the synthetic fixtures 51 of 67 with 3 invented;
+- letters in silences: 0; 4; 1, 1. The first recording: whole; `RF C HA T`; `FF C HAT<BT> BEST 7V 73 <SK> KC4ZGP ■` in both rounds;
+- strong flat hands at 20 dB, dah 2.5 and 3.0, round two: 59, 60, 58, 60 and 60, 58, 58, 60, within three letters of shipped at every speed;
+- loud noise and the steady carrier print nothing; the random carrier prints at 20 seeds of 20, against 2, reported for the owner's ruling; strays summed over the 65 old captures 26.8; 46.5 in both rounds, the highest single capture 4.3, under the six;
+- the first proof holds at the prototype's reads at every seed; the band alone decodes 288 to 299 marks, refused by the pattern test;
+- CPU on W1AW piece-04, 283 s: 101 and 106 s with the reader against 185 and 183 s with two finders.
+
+**It does not ship.** The twelve-plus-three is 308 against 297 with wrong down from 20 to 13, but invented rises from 1 to 4 and spaces added from 3 to 13; the first recording reads `FF` for `FER`, two letters, not one; one letter prints in a silence; W1AW is 2101, inside the 1 per cent band, but its wrong letters rise from 20 to 24. The *For the owner's ruling* case needs everything else to hold, so it does not apply. The bank's score, invented, both halves, the strong flat hands, the first proof, the weak end, the hard limits, the easy fixtures and CPU all hold.
+
+**What the boards still lose.** Not the opening and not the silences, which the two rules took: the first recording's `ER` and `144020`'s spaces are where a hand's letter gap falls (one short, one long) against the line the reader learns between its gap kinds; W1AW's piece-04 is single marks lost at 30 WPM; the four invented letters (`143906` at 2.0 s, `221502` at 25.7 s, `121324` at 11.6 and 14.5 s) and `221502`'s marks in a pause are untraced. A fifth thing: the gap lines on a hand whose letter gaps are not where its medians put them.
+
+As shipped, every reading is as at HEAD: 297 and 2111. Ordered by work instruction 591.
+
+---
 id: HM-DEC-294
 date: 2026-10-27
 refs: work instruction 590, HM-DEC-293, HM-DEC-284, HM-DEC-276, src/Hamlet.RadioEngine/Cw/CwSequenceReader.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheSequenceReaderTests.cs

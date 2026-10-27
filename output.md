@@ -6,228 +6,206 @@ Hand run:
 - `SESSION.lock` was taken through `tools\arbiter\lock.bat take` and released at the end.
 - Nothing was written to `RUN_LEDGER.md`, nothing under `tools\arbiter\` was touched, and no box was ticked in `PHASE_PLAN.md`.
 - Nothing keyed or transmitted, nothing was written to the radio, and no recording was added, removed or promoted.
-- The tag `before-sequence-reader` stands. Version 1.13.275 to 1.13.276. HM-DEC-294 was free and is recorded. Nothing was recorded under §12.1.
-- Round three's survey was stopped once by Claude Code's low-memory reaper, with about 1.7 GB of 16 GB free. As the order says, its leftover test processes were stopped and it was run once more, alone.
+- The tag `before-sequence-reader` stands. Version 1.13.276 to 1.13.277. HM-DEC-295 was free and is recorded. Nothing was recorded under §12.1.
 
-**The trace, first.** Two probes were added to `TheSequenceReaderTests`:
-- **`TheColdStartsByPattern`.** Each start's pattern, gaps and likelihood on W1AW piece-02's first 36 s, the first recording's opening and `121414`.
-- **`SilenceAgainstThePath`.** On the band alone and on three weak CQs, what one nobody-keying stretch scores against the decoded path, under several noise emissions.
+**The traces, first.**
+- **A watch on one lane.** The reader gained a watch (`WatchHz`). For one lane, each decode logs its window, where the 2 s commit lag stood, whether it read cold or warm, its levels and rhythm, and the letters its path laid with the second each starts. With a watch set, only that lane's own lines are traced.
+- **`TheOpeningTraced`.** It sets that beside the station's keyed marks from the keying map, every letter committed, and the lane's level at each width every 50 ms. It ran on the first recording, `121414`, `144020`'s second station, and W1AW pieces 02 and 04.
+- **`TheSilencesTraced`.** For each letter printed in a silence, it gives the lane and its rhythm, levels and window pattern, and every keyed mark near it.
 
-They found:
-- **The cold read's start was not the fault.** Likelihood and pattern take the same start in 26 of 27 windows. At 600 Hz piece-02's opening reads `A, AND OCTOBER` and `WBER 8 AT 10 PM`.
-- **An off lane held the terminal.** Piece-02's loss was a lane 25 Hz off W1AW, at 575 Hz, holding the terminal on `dit 50 dah 185 ig 5 lg 80 ms`. That 5 ms inside gap passed a pattern test that looks only at marks.
-- **The bank's invented letters were not noise.** They were not the band alone after the text ends. 60 of 101 were one hand, `fist-r1.6-20wpm-20db-flat`, printed from a lane at 675 Hz, 60 Hz off the station.
-- **`144020` was lane choice, not change 3.** No lane held two stations; the second station was lost to which lane printed.
+**Round one** (`046d5c2b`):
+- **The opening.** It is the window's left edge. A decode may open only on a mark, a word gap or nobody keying, and the last two need a word gap or more. So a station keying within a word gap of the window's start cannot have his first mark laid. Built: the quiet a window opens on is nobody keying of any length.
+- **The silences.** Three of four were real letters the lane's filter drew 20 to 30 ms late. Built: a committed mark is timed less the lane's delay, 2.6131/(2π × width).
+- Measured: 300, 2101, the bank 3944.
 
-**Round one** (`16357053`):
-- **Change 1: a decode is Morse only where its learned gaps are in order.** The inside gap must be at least `InsideGapLeast` 0.4 of the dit, and each gap after it at least `GapStep` 1.4 over the last. This is `PatternStats.GapsInOrder`. The cold read keeps the likeliest start whose pattern is Morse, and a lane's 10 s pattern is judged with the rhythm it learned.
-- **Change 3: a warm lane whose figures fall reads cold as well.** The trigger is separation down by `PatternDrop` 0.25 of the kept figure, or dah share moving 0.25. The cold read is taken where it is Morse and better.
-- **Change 2 was built and taken out before the commit.** The nobody-keying state was emitted as the lane's own noise. As the order's Gaussian, it cannot make the band alone silence: the marks explain the band alone 0.08 to 0.13 nats a hop better. As narrowband noise's exact log-Rayleigh density, it came within 0.01 to 0.03 of the marks on the band alone. But it took the fade's troughs: the first proof's 10 dB fading case read 19 to 42 of 60 and the 5 dB fading case 19 to 31, and the band alone still decoded 28 to 37 marks.
-- Measured: 275, 2104, the bank 3842.
+**Round two** (`6b47b1ac`):
+- **The trace.** `121414` was the largest loss. From 11.8 s the sender's dah shortened from about 220 ms to 155 ms. The kept rhythm read on and printed `BK TU RON` as `HS T U RSI`, while the cold read saw dahs the warm read called dits (dah share 0.37 and 0.43 against 0.22 and 0.27).
+- **The rule.** A warm lane reads every window cold as well. It takes the cold read where both are Morse, they disagree on the dah share by more than `DahShareDisagree` 0.1, and the cold read lays no more unreadable letters.
+- **The tie-break.** It came from W1AW piece-03 at 256 s, where he slows for `<BT> QST DE W1AW` and the cold read was the wrong one. Without it that stretch read 1 of 11.
+- Measured: 308, 2101, the bank 3898.
 
-**Round two** (`16b7267e`):
-- **The trace.** On `144020` at 20 s the terminal went to 625 Hz, 25 Hz off the second station, at separation 1.64. From 22 s the 600 Hz lane read him at 2.25. It was dropped as the printed lane's shadow, because the printed lane was listed first.
-- **The fix.** Of one station's lanes the best separated prints. The printed lane leads only while no lane reading its sequence stands `SeparationMargin` 0.25 better.
-- Measured: 285, 2104, the bank 3922 with invented 64 to 18, and the nine hands whole.
-
-**Round three** (`2f1a2ddf`):
-- **The trace.** On `144020` from 12.5 s the printed 500 Hz lane's sender had stopped. Reading warm, it relearned its levels on the second station's leakage at −33.6 dB, against the −20.2 it kept.
-- **The fix.** A warm lane whose learned key-down falls more than `LevelDropDb` 10 dB under its sender's commits nothing from that window, and keeps its sender's rhythm.
-- Measured: 293, 2104, the bank 3925.
+**No round three.** The largest loss left against shipped is W1AW piece-04, at −8. It is scattered single marks lost at 30 WPM in the 40 Hz lane, with no one cause. The rest are the first recording's `ER` merge and `144020`'s spaces, each where a hand's letter gap sits against the line the reader learns, and `221502`'s marks in a pause. None is a rule the trace names, so a third round would have been a guess. The order allows two rounds after the first at most.
 
 **Builds and runs.**
 - Each round was built once with `SequenceReader` out of `OffByDefault`. That change was never committed and was restored with `git checkout`.
-- The build servers were shut down after each build. Then, one at a time: the survey, the guard line, CPU on piece-04, and in round three the board's noise lines and the first proof.
+- The build servers were shut down after each build. Then, one at a time: the survey, the guard line, CPU on piece-04, and in round two the board's noise lines and the first proof.
 - The record build was the solution whole with the rule off. The app line, the engine line (1500 s) and the survey line then ran once each with `--no-build`.
 
-**Recorded**, not a ruling: HM-DEC-294 in `DECISIONS.md` and its `CLAUDE.md` §1 row; `docs\cw-scoreboard.md` 590 rows; `PHASE_OUTCOME.md`, both copies, `## UNIT 590 - STEP 12`; `PHASE_STATUS.md`, both copies, naming 590; `Directory.Build.props`; the survey's `Rerun` line in `TheCwSurveyTests` and the doc.
+**Recorded**, not a ruling: HM-DEC-295 in `DECISIONS.md`, quoting the owner's *concur*, and its `CLAUDE.md` §1 row; `docs\cw-scoreboard.md` 591 rows; `PHASE_OUTCOME.md`, both copies, `## UNIT 591 - STEP 12`; `PHASE_STATUS.md`, both copies, naming 591; `Directory.Build.props`; the survey's `Rerun` line in `TheCwSurveyTests` and the doc.
 
 ## 2. What the owner should expect
 
-**The whole picture: the sequence reader against two finders, at the end of round three with it on.**
+**The whole picture: the sequence reader against two finders, at the end of round two with it on.**
 
 | | two finders (shipped) | sequence reader |
 |---|---|---|
-| W1AW | 2111 (2131 right, 20 wrong) | 2104 (2126 right, 22 wrong, 0 invented) |
-| the hand-sent recordings, the twelve-plus-three | 297 (318 right, 20 wrong, 1 invented) | 293 (316 right, 20 wrong, 3 invented) |
-| the first recording | whole | `RF C HA T <BT> BEST 7V 73 <SK> KC4ZGP ■` |
-| a short-dah fist: the bank's 1.6 and 2.0 rows | 1193 of 2880 | 2180 |
-| the fist bank | 1891 (2612 right, 46 invented) | 3925 (4475 right, 18 invented) |
+| W1AW | 2111 (2131 right, 20 wrong) | 2101 (2125 right, 24 wrong, 0 invented) |
+| the hand-sent recordings, the twelve-plus-three | 297 (318 right, 20 wrong, 1 invented) | **308** (325 right, 13 wrong, 4 invented) |
+| spaces on the twelve-plus-three | 86 of 110, 3 added | 92 of 110, 13 added |
+| the first recording | whole | `FF C HAT<BT> BEST 7V 73 <SK> KC4ZGP ■` |
+| a short-dah fist: the bank's 1.6 and 2.0 rows | 1193 of 2880 | 2172 |
+| the fist bank | 1891 (2612 right, 46 invented) | 3898 (4461 right, 18 invented) |
 | a weak CQ at 5 dB: the four 5 dB CQs | 71 of 84 | 84 of 84 |
 | a weak CQ at 0 dB | 0 of 84 | 5 of 84 |
-| a fading station: the fading half, letters right | 439 of 2880 | 1763 |
-| the flat half, letters right | 2173 | 2712 |
+| a fading station: the fading half, letters right | 439 of 2880 | 1771 |
+| the flat half, letters right | 2173 | 2690 |
 | the far side: `two-station` | 18 of 27 | 27 of 27 |
 | the nine straight-key hands at 48 of 60 | 9 | 9 |
-| the easy / working fixtures | 77 of 90 / 4 of 81 | 90 / 35 |
-| letters in silences | 0 | 4 |
-| the band alone | not Morse | 284 to 298 marks, not Morse, not silence |
+| the easy / working / edge fixtures | 77 / 4 / 0 | 90 / 36 / 45 |
+| letters in silences | 0 | 1 |
 | loud noise, the steady carrier | nothing | nothing |
 | the random carrier | 2 seeds of 20 | 20 seeds of 20 |
-| strays summed over the 65 old captures, highest | 26.8, 3.3 | 48.8, 5.3 |
-| CPU on W1AW `piece-04`, 283 s of audio | 185 s | 100 s |
+| strays summed over the 65 old captures, highest | 26.8, 3.3 | 46.5, 4.3 |
+| CPU on W1AW `piece-04`, 283 s of audio | 183 s | 106 s |
 
-**It does not ship.** `SequenceReader` stays off. Where it misses the bar:
-- **The twelve-plus-three** is 293 against 297, one letter under the 294 that would be inside the 1 per cent band.
-- **W1AW** is inside the band at 2104, but its wrong letters rise from 20 to 22.
-- **The bank** invents 18 against a bar of 10.
-- **The band alone** is not silence.
-- **The hard limits:** 4 letters print in silences, and the first recording is not whole.
-- **Strong flat hands at 20 dB** read a little under shipped at 10, 15 and 20 WPM (dah 3.0 at 20 WPM: 56 against 60).
+**It does not ship.** `SequenceReader` stays off. For the first time the reader beats two finders on the owner's hand-sent recordings, 308 against 297, with fewer wrong letters. What fails the bar:
+- **Invented letters** rise from 1 to 4.
+- **Spaces added** rise from 3 to 13.
+- **The first recording** reads `FF` for `FER`, two letters, so the one-letter ruling case doesn't cover it.
+- **W1AW** is at 2101, inside the 1 per cent band, but its wrong letters rise from 20 to 24.
 
-Everything else holds: the fist bank's score, both halves, the CQs, the noise after a weak CQ, the short-dah rows, the nine hands, the easy fixtures, noise, the steady carrier, the strays line and CPU.
+The one letter in silences would sit inside the ruling case on its own. But that case needs everything else to hold, and here several things fail together, so there is no *For the owner's ruling* heading.
 
-The *For the owner's ruling* case does not apply. It covers one board just under, or the bank's invented letters between 10 and 30, but only with everything else holding, and here the board, the invented letters and the hard limits all miss together.
+What holds:
+- the bank's score (3898) and invented letters (18, under 20);
+- both halves, and strong flat hands within three letters of shipped;
+- the first proof, the weak end, the nine hands and the easy fixtures;
+- noise, the steady carrier and the strays line;
+- CPU.
 
-**The three changes, a sentence each:**
-- **The cold read by pattern.** A reading counts as Morse only when its gaps step up in order, which stopped a lane 25 Hz off W1AW holding the terminal on a 5 ms inside gap; his opening reads 37 of 39 from 13.
-- **Silence as noise.** It could not be made to work. Noise and a faded station sit too close in level for the model to call one silence without losing the other, so it was measured and taken out.
-- **A second station.** The cold read on a fall never fired. What lost the far side was lane choice, fixed in rounds two and three.
+**The opening** was the window's left edge. A station who starts keying within a word gap of the window's start lost his first mark: the first recording's `F` read `R`, and W1AW's first `T` was lost. It is fixed.
 
-**What the boards still lose:**
-- **The twelve-plus-three:**
-  - 8 on `121414`.
-  - 6 on the first recording's opening.
-  - 5 on `144020`.
-  - The letters in silences on `200157`, `143906` and `221502`.
-- **W1AW:** 7, spread over pieces 02 to 04.
-- **Not change 1's.** The openings read the same under either cold-read rule: the reader's opening, a fourth thing. The letters in silences are not traced.
+**The silences** were mostly real letters drawn 20 to 30 ms late by the lane's filter. Three of the four are fixed. The fourth is two marks laid in a pause on `221502`.
 
-As shipped, nothing changes: 297 and 2111. The app line 278 of 278. The engine line 159 of 159 in 11.1 minutes, run once more alone after Claude Code stopped it for low memory. The survey line 1 of 1 in 10.4 minutes, every group as before (297, 2111, the bank 1891), only its `Rerun` line changed. Pushed to `main`: rounds one to three and the record.
+**What the boards still lose** is neither the opening nor the silences. It is where a hand's letter gaps sit against the line the reader draws between its gap kinds:
+- the first recording's `E` and `R` are 151 ms apart and merge into `F`;
+- `144020`'s second hand spaces his letters 400 to 800 ms apart and gets spaces inside words.
+
+Beyond that, single marks are lost on W1AW's 30 WPM piece, and four invented letters are untraced. A fifth thing.
+
+As shipped, nothing changes: 297 and 2111. The app line 278 of 278. The engine line 159 of 159 in 11.1 minutes. The survey line 1 of 1 in 10.3 minutes, every group as before (297, 2111, the bank 1891), only its `Rerun` line changed. Pushed to `main`: rounds one and two and the record.
 
 ## 3. What you should see
 
-**The cold-read trace** (`TheColdStartsByPattern`; one pass per start in the 15 Hz width under the shared levels; score is likelihood less prior per hop; full rows in `.run-unit\reports\unit590-coldstarts.txt`):
+**The opening trace** (`TheOpeningTraced`; `.run-unit\reports\unit591-opening.txt`, before round one):
 
-| window | start | score | pattern | gaps | read |
-|---|---|---|---|---|---|
-| piece-02 to 12 s | 90 ms | -2.545 | 37 marks, dah share 0.57, separation 2.53, Morse | climb | `A, AND OCTOBER G` |
-| | 40 ms | -2.765 | 56 marks, dah share 0.64, separation 2.34 | crossed (lg 195, wg 230) | `T ■ TA ME J ■ ■ A . 1 T Y <AR>` |
-| | **70 ms**, taken by both | -2.524 | 37 marks, dah share 0.57, separation 2.54, Morse | climb | `A, AND OCTOBER G` |
-| | 120 ms | -2.597 | the same as 70 ms | climb | `A,ANDOCTOBERG` |
-| first recording to 8 s | 25 ms | -2.633 | 36 marks, dah share 0.89 | ig 10 against dit 28 | `TTMT T TMT E MTMT E TTTT` |
-| | 40 ms | -2.671 | dah share 0.67 | climb | `■ TY E ■ E■ K A E■ E` |
-| | **70 ms**, taken by both | -2.607 | 25 marks, dah share 0.32, separation 2.35, Morse | climb | `RER E C EHA T <BT>` |
-| | 120 ms | -2.809 | Morse | climb | `■F CHAT<BT>` |
-| `121414` to 10 s | 85 ms, likelihood's pick | -2.697 | dah share 0.20, not Morse | climb | `TR 55N 55N VA VA E` |
-| | 40 ms | -2.819 | dah share 0.84 | climb | `AQ 00W 00W ■K ■G T` |
-| | **70 ms**, the pattern's pick | -2.700 | dah share 0.22, Morse | climb | `TR 55N 55N VA VA T` |
-| | 120 ms | -2.770 | not Morse | crossed (lg 475, wg 595) | `ER■■<SK><SK>E` |
+| opening | the station keys first | what the window and path did | printed | cause |
+|---|---|---|---|---|
+| the first recording, 663 Hz (lane 675) | 0.16 s | first decode at 6 s, cold, window 0 to 6 s; path `.-.@0.38 ..-.@1.14`: the first dit at 0.16 never laid, then `E` and `R` merged | `R F C HA T` | the window's left edge: 0.16 s of quiet before him, under a word gap, so no state could open on it; then a short letter gap |
+| W1AW piece-02, 600 Hz | 0.09 s (a dah) | path `--..--@0.61 .-@2.69`: the `T` at 0.09 never laid | `, A T D O` for `T, AND O` | the window's left edge, 0.09 s in |
+| W1AW piece-04, 600 Hz | 0.00 s | 24 Hz cold read; path `--@0.23`: the `W`'s dit at 0.00, inside the filter's start, never laid | `M O A` for `W O A` | the window's left edge, at the file's start |
+| `121414`, 800 Hz | 0.00 s | cold read 15 Hz, dit 70 dah 210; path `.-.@0.42 .....@1.40 .....@2.25 -.@3.10` | `R 5 5 N` | none: the opening reads right; its loss is a speed change at 11.8 s (round two) |
+| `144020`'s second station, 600 Hz | 13.57 s | the 600 Hz lane not yet Morse; the 625 Hz lane printed `W@13.58 X@14.52` | `WX` | lane choice, not the window |
 
-Over the 27 windows, likelihood and pattern differ once (`121414` to 10 s). The live loss on piece-02 was the 575 Hz lane on a 5 ms inside gap; with the gaps in the pattern test, that stretch reads 37 of 39 from 13.
+After round two the same traces read:
+- the first recording `F@0.17 F@1.11 C@2.80 H@4.18 A@5.00 T@5.76`;
+- W1AW piece-02's stretch 38 of 39.
 
-**The band alone** (`SilenceAgainstThePath`, nats a hop, every normaliser counted):
+**The silences trace** (`TheSilencesTraced`, before round one):
 
-| window | the decoded path | one silence, key-up Gaussian | gaps' Gaussian | window's Gaussian | log-Rayleigh at the window's power |
-|---|---|---|---|---|---|
-| band alone, seed 31 | -2.133 | -2.353 | -2.255 | -2.239 | -2.142 |
-| band alone, seed 32 | -2.080 | -2.330 | -2.231 | -2.211 | -2.105 |
-| band alone, seed 33 | -2.123 | -2.415 | -2.269 | -2.231 | -2.144 |
-| `cq-18wpm-0db` | -2.206 | -2.791 | -2.499 | -2.421 | -2.248 |
-| `cq-18wpm-5db` | -2.085 | -3.174 | -2.902 | -2.631 | -2.571 |
-| `cq-12wpm-5db` | -1.993 | -3.289 | -3.083 | -2.592 | -2.640 |
+| letter | lane | the truth near it | cause | after round one |
+|---|---|---|---|---|
+| `<BT>` at 6.43 to 7.38 s, first recording, silence from 7.35 s | 675 Hz, 15 Hz lane, separation 2.16, Morse | his last dah 7.13 to 7.35 s | a real letter, its last mark ended 30 ms late (the 15 Hz lane's 28 ms delay) | gone |
+| `E` at 7.91 to 7.96 s, `143906`, silence from 7.94 s | 525 Hz, 24 Hz lane | his dit 7.89 to 7.94 s | real, 20 ms late (17 ms at 24 Hz) | gone |
+| `E` at 24.50 to 24.56 s, `143906`, silence from 24.54 s | 525 Hz, 40 Hz lane | his dit 24.49 to 24.54 s | real, 20 ms late | gone |
+| `■` (`..-....`) at 20.96 to 21.79 s, `221502`, silence from 21.45 s | 500 Hz, 24 Hz lane, separation 1.67, Morse | his last mark 21.40 to 21.45 s | two marks laid 340 ms into the pause | stays |
 
-With log-Rayleigh silence in the Viterbi, the first proof read:
-- 10 dB fading: 30, 19 and 42 of 60.
-- 5 dB fading: 20, 19 and 31.
-- The band alone: 36, 28 and 37 marks.
+**`121414`, round two's trace** (the warm and cold figures for the 800 Hz lane):
 
-Taken out. At the end the band alone decodes 284 to 298 marks (separation 1.06 to 1.10), refused by the pattern test, and prints nothing.
+| decode | warm read | cold read | before round two | after |
+|---|---|---|---|---|
+| 14 s | dah share 0.22, dah 210 ms | 0.22, dah 210 ms | keeps its rhythm | keeps |
+| 16 s | 0.22 | **0.37, dah 145 ms** | keeps its rhythm | takes the cold read |
+| 18 s | 0.27 | **0.43, dah 145 ms** | keeps its rhythm | takes the cold read |
+| 20 s | 0.40 | 0.40, dah 145 ms | keeps | keeps |
 
-**`144020`'s second station at 600 Hz from 9.5 s** (`.run-unit\reports\unit590-trace-r0.txt`, `-r2-`, `-r3-`):
-- **Round one: 10 of 19.**
-  - At 18 to 20 s the 500 Hz lane's warm figures fell (separation 1.88 then 1.79 against a kept 1.97). Its cold read was no better (1.66; then crossed gaps), so it kept its rhythm.
-  - At 20 s it let go for 625 Hz. 625 Hz read him at separation 1.64 to 1.85 and printed `INTE SSEA GIT IHIE5`, while 600 Hz read 2.25 and stood as its shadow.
-- **Round two: 12 of 19.** At 24 s it let go of 625 for 600 Hz.
-- **Round three: 14 of 19 on the trace, the row 20 against shipped 25.** From 12.5 s the 500 Hz lane hears someone else (key-down −33.6 against −20.2) and commits nothing.
+The stretch read `BK HSTURSI` and now reads 32 of 32.
 
 **The rounds, with the rule on:**
 
-| | shipped | 589's end | round 1 | round 2 | round 3 |
-|---|---|---|---|---|---|
-| twelve-plus-three (right, wrong, invented) | 297 (318, 20, 1) | 275 (312, 23, 14) | 275 (312, 23, 14) | 285 (314, 21, 8) | 293 (316, 20, 3) |
-| spaces right, added | 86, 3 | 86, 12 | 87, 11 | 88, 10 | 89, 9 |
-| W1AW (right, wrong, invented) | 2111 (2131, 20, 0) | 2070 (2099, 29, 0) | 2104 (2126, 22, 0) | 2104 | 2104 |
-| W1AW pieces 01 / 02 / 03 / 04 | 242 / 388 / 793 / 688 | 242 / 358 / 790 / 680 | 242 / 386 / 790 / 686 | the same | the same |
-| fist bank (right, wrong, invented) | 1891 (2612, 675, 46) | 3498 (4260, 661, 101) | 3842 (4451, 545, 64) | 3922 (4478, 538, 18) | 3925 (4475, 532, 18) |
-| flat half, right / score | 2173 / 1896 | 2621 / 2396 | 2697 / 2514 | 2716 / 2575 | 2712 / 2574 |
-| fading half, right / score | 439 / -5 | 1639 / 1102 | 1754 / 1328 | 1762 / 1347 | 1763 / 1351 |
-| short-dah rows | 1193 | 2044 | 2148 | 2186 | 2180 |
-| 15 / 5 / 0 dB CQs of 84 | 78 / 71 / 0 | 84 / 84 / 5 | 84 / 84 / 5 | 84 / 84 / 5 | 84 / 84 / 5 |
-| nothing after the weak CQs | holds | holds | holds | holds | holds |
-| easy / working fixtures | 77 / 4 | 90 / 17 | 90 / 35 | 90 / 35 | 90 / 35 |
-| synthetic fixtures (invented) | 46 of 67 (0) | 38 (7) | 37 (20) | 50 (10) | 51 (3) |
-| `two-station` | 18 of 27 | 27 | 27 | 27 | 27 |
-| letters in silences | 0 | 4 | 4 | 4 | 4 |
-| first recording | whole | not whole | not whole | not whole | not whole |
-| random carrier, seeds of 20 | 2 | 20 | 20 | 20 | 20 |
-| loud noise, steady carrier | nothing | nothing | - | - | nothing |
-| strays summed, highest | 26.8, 3.3 | 51.3, 5.3 | 50.3, 5.7 | 48.6, 5.7 | 48.8, 5.3 |
-| nine hands at 48 | 9 | 6 | 7 | 9 | 9 |
-| short-dah rows' guard | holds | holds | holds | holds | holds |
-| first proof | - | holds | - | - | holds |
-| band alone | not Morse | marks | - | - | 284 to 298 marks |
-| CPU, reader / two finders | - | 100 / 184 s | 100 / 183 s | 100 / 185 s | 100 / 185 s |
+| | shipped | 590's end | round 1 | round 2 |
+|---|---|---|---|---|
+| twelve-plus-three (right, wrong, invented) | 297 (318, 20, 1) | 293 (316, 20, 3) | 300 (321, 17, 4) | 308 (325, 13, 4) |
+| spaces right, added | 86, 3 | 89, 9 | 92, 13 | 92, 13 |
+| W1AW (right, wrong, invented) | 2111 (2131, 20, 0) | 2104 (2126, 22, 0) | 2101 (2125, 24, 0) | 2101 (2125, 24, 0) |
+| W1AW pieces 01 / 02 / 03 / 04 | 242 / 388 / 793 / 688 | 242 / 386 / 790 / 686 | 242 / 387 / 792 / 680 | 242 / 387 / 792 / 680 |
+| fist bank (right, wrong, invented) | 1891 (2612, 675, 46) | 3925 (4475, 532, 18) | 3944 (4481, 519, 18) | 3898 (4461, 545, 18) |
+| flat half, right / score | 2173 / 1896 | 2712 / 2574 | 2714 / 2576 | 2690 / 2525 |
+| fading half, right / score | 439 / -5 | 1763 / 1351 | 1767 / 1368 | 1771 / 1373 |
+| short-dah rows | 1193 | 2180 | 2192 | 2172 |
+| 15 / 5 / 0 dB CQs of 84 | 78 / 71 / 0 | 84 / 84 / 5 | 84 / 84 / 5 | 84 / 84 / 5 |
+| nothing after the weak CQs | holds | holds | holds | holds |
+| easy / working / edge fixtures | 77 / 4 / 0 | 90 / 35 / 42 | 90 / 36 / 45 | 90 / 36 / 45 |
+| synthetic fixtures (invented) | 46 of 67 (0) | 51 (3) | 51 (3) | 51 (3) |
+| `two-station` | 18 of 27 | 27 | 27 | 27 |
+| letters in silences | 0 | 4 | 1 | 1 |
+| first recording | whole | `RF C HA T` | `FF C HAT` | `FF C HAT` |
+| random carrier, seeds of 20 | 2 | 20 | - | 20 |
+| loud noise, steady carrier | nothing | nothing | - | nothing |
+| strays summed, highest | 26.8, 3.3 | 48.8, 5.3 | 46.5, 4.3 | 46.5, 4.3 |
+| nine hands at 48 | 9 | 9 | 9 | 9 |
+| short-dah rows' guard | holds | holds | holds | holds |
+| first proof | - | holds | - | holds |
+| CPU, reader / two finders | - | 100 / 185 s | 101 / 185 s | 106 / 183 s |
 
-**The three matrices, round three with the rule on** (shipped in brackets):
+**The three matrices, round two with the rule on** (shipped in brackets):
 
 Dah over dit by speed, flat, 20 dB:
 
 | | 10 WPM | 15 WPM | 20 WPM | 25 WPM | row |
 |---|---|---|---|---|---|
-| dah 1.6 | 59 (60) | 55 (60) | 52 (60) | 50 (60) | 216 (240) |
+| dah 1.6 | 53 (60) | 50 (60) | 50 (60) | 54 (60) | 207 (240) |
 | dah 2.0 | 52 (59) | 60 (60) | 57 (60) | 60 (22) | 229 (201) |
-| dah 2.5 | 57 (59) | 60 (59) | 58 (60) | 60 (60) | 235 (238) |
-| dah 3.0 | 60 (60) | 58 (60) | 56 (60) | 60 (60) | 234 (240) |
+| dah 2.5 | 59 (59) | 60 (59) | 58 (60) | 60 (60) | 237 (238) |
+| dah 3.0 | 60 (60) | 58 (60) | 58 (60) | 60 (60) | 236 (240) |
 
 Dah over dit by signal, flat, 20 WPM:
 
 | | 5 dB | 10 dB | 20 dB | row |
 |---|---|---|---|---|
-| dah 1.6 | 51 (45) | 47 (36) | 52 (60) | 150 (141) |
-| dah 2.0 | 57 (43) | 58 (59) | 57 (60) | 172 (162) |
+| dah 1.6 | 51 (45) | 49 (36) | 50 (60) | 150 (141) |
+| dah 2.0 | 55 (43) | 58 (59) | 57 (60) | 170 (162) |
 | dah 2.5 | 59 (53) | 60 (59) | 58 (60) | 177 (172) |
-| dah 3.0 | 60 (16) | 54 (59) | 56 (60) | 170 (135) |
+| dah 3.0 | 60 (16) | 54 (59) | 58 (60) | 172 (135) |
 
 Signal by fade, dah 2.5, 20 WPM:
 
 | | flat | 12 dB of QSB at 0.7 Hz | row |
 |---|---|---|---|
-| 5 dB | 59 (53) | 20 (0) | 79 (53) |
+| 5 dB | 59 (53) | 19 (0) | 78 (53) |
 | 10 dB | 60 (59) | 49 (14) | 109 (73) |
 | 20 dB | 58 (60) | 31 (13) | 89 (73) |
 
-**The fixtures, round three with the rule on:**
+**The fixtures, round two with the rule on:**
 
 | group | read | wrong | invented | score |
 |---|---|---|---|---|
 | synthetic fixtures | 51 of 67 | 6 | 3 | 42 |
 | receiver: easy | 90 of 90 | 0 | 0 | 90 |
-| receiver: working | 35 of 81 | 18 | 0 | 17 |
-| receiver: edge | 42 of 81 | 10 | 1 | 31 |
-| receiver: ungraded | 73 of 98 | 3 | 20 | 50 |
+| receiver: working | 36 of 81 | 17 | 0 | 19 |
+| receiver: edge | 45 of 81 | 9 | 1 | 35 |
+| receiver: ungraded | 72 of 98 | 3 | 24 | 45 |
 | CQs 15 / 5 / 0 dB | 84 / 84 / 5 of 84 | 0 / 0 / 3 | 0 | 84 / 84 / 2 |
 
-**The first proof, round three:**
+**The first proof, round two:**
 - the 18 WPM ragchew at 10, 5 and 0 dB flat: 60 of 60 at every seed;
 - 10 dB fading: 60 at every seed;
 - 5 dB fading: 60, 59 and 59;
-- the 12 WPM fist with a dah of 1.7: 60, 60 and 59.
+- the 12 WPM fist with a dah of 1.7: 60, 60 and 59;
+- the band alone: 288 to 299 marks, not Morse, nothing printed.
 
 **Both scoreboards' rows**, as shipped:
-- twelve-plus-three: `| 590 | 2026-10-27 | 318 of 353 | 20 | 1 | **297** | 0 | 86 of 110, 3 added | ... three rounds, 293 with SequenceReader on (275, 285, 293), left off; the board unchanged |`
-- W1AW: `| 590 | 2026-10-27 | **2111** | 2131 of 2151 | 20 | 0 | 438 of 440 | ... 2104 with SequenceReader on (2104, 2104, 2104), left off; unchanged |`
+- twelve-plus-three: `| 591 | 2026-10-27 | 318 of 353 | 20 | 1 | **297** | 0 | 86 of 110, 3 added | ... two rounds, 308 with SequenceReader on (300, 308), left off; the board unchanged |`
+- W1AW: `| 591 | 2026-10-27 | **2111** | 2131 of 2151 | 20 | 0 | 438 of 440 | ... 2101 with SequenceReader on (2101, 2101), left off; unchanged |`
 
 ## 4. What's blocking us
 
 **Left, one line each:**
-- **The reader's opening.** A lane's first window loses `FE` of the first recording, 8 letters on `121414` and 5 on `144020`; it reads the same under either cold-read rule, a fourth thing.
-- **Letters in silences, 4,** on `200157`, `143906` and `221502`: not traced to a cause in this unit.
-- **The band alone is not silence.** Narrowband noise in dB and a faded station's trough are within 0.01 to 0.04 nats a hop of each other, so no emission tried separates them. Only the pattern test does, and it does: nothing prints.
-- **Invented on the bank, 18:** 14 on `fist-r1.6-20wpm-20db-flat`, now printed from 625 Hz, the lane nearest its 615 Hz station rather than one 60 Hz off; why they fall over none of its key-downs is not traced.
-- **Strong flat hands at 20 dB** read 1 to 4 letters under shipped at 10, 15 and 20 WPM.
-- **W1AW's wrong letters,** 22 against 20, spread over pieces 02 to 04.
-- **The random carrier** prints at every seed. Only content would part it from a hand, and whether that limit stands is the owner's to rule.
+- **A hand's letter gaps against the reader's gap lines.** The first recording's `E` and `R` sit 151 ms apart against a learned letter gap of 290 to 340 ms and merge into `F`. `144020`'s second hand spaces his letters 400 to 800 ms apart against a word gap near 500 and gets 7 spaces inside words.
+- **Invented letters, 4:** `143906` at 2.0 s, `221502` at 25.7 s, and `121324` at 11.6 and 14.5 s. Not traced.
+- **One letter in a silence:** `221502`, two marks laid 340 ms into a pause. Not traced.
+- **W1AW piece-04** loses single marks at 30 WPM in the 40 Hz lane, 4 more wrong than shipped, with no one cause.
+- **The random carrier** prints at every seed. Whether that limit stands is for the owner's ruling.
 
 ### Asks still outstanding
 

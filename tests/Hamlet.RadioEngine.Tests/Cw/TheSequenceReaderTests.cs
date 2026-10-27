@@ -452,6 +452,7 @@ public sealed class TheSequenceReaderTests(ITestOutputHelper output)
     [InlineData("cw-2026-10-02-200157")]
     [InlineData("cw-2026-10-03-144020")]
     [InlineData("w1aw-2026-10-07/piece-02")]
+    [InlineData("w1aw-2026-10-07/piece-04")]
     [InlineData("w1aw-2026-10-07/piece-03")]
     public void TheReaderAgainstTheTruth(string recording)
     {
