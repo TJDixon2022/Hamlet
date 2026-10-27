@@ -4,6 +4,44 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-294
+date: 2026-10-27
+refs: work instruction 590, HM-DEC-293, HM-DEC-284, HM-DEC-276, src/Hamlet.RadioEngine/Cw/CwSequenceReader.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheSequenceReaderTests.cs
+---
+
+**The sequence reader: the cold read by pattern, silence as noise, a second station. Two of the three changes built, silence as noise measured and not kept, three rounds behind `CwRules.SequenceReader`, left off.**
+
+**Change 1, the cold read chosen by pattern.** A decode is Morse only where its learned gaps are in order: the inside gap at least `InsideGapLeast` 0.4 of the dit, the letter gap at least `GapStep` 1.4 over the inside gap, the word gap at least 1.4 over the letter gap, from the decode's own medians (`PatternStats.GapsInOrder`). The cold read keeps the likeliest start among those whose pattern is Morse, and the likeliest of all only where none is. A lane's 10 s pattern is judged with the rhythm it learned. Traced (`TheColdStartsByPattern`) on W1AW piece-02's first 36 s, the first recording's opening and `121414`: likelihood and pattern take the same start in 26 of 27 windows, the 70 ms start, which reads `WBER 8 AT 10 PM` at 600 Hz; only the 40 ms start crosses its gaps, and it is never the likeliest. The loss there was a lane 25 Hz off W1AW, at 575 Hz in its 40 Hz width, holding the terminal on `dit 50 dah 185 ig 5 lg 80 ms`, a 5 ms inside gap that the marks-only pattern test passed; with the gaps in the test that stretch reads 37 of 39 from 13.
+
+**Change 2, silence as noise, measured and not kept.** The order asked for the nobody-keying state to emit a Gaussian at the floor with the noise spread. Measured first (`SilenceAgainstThePath`, every Gaussian normaliser counted): on the band alone the decoded marks explain a window better than one nobody-keying stretch by 0.08 to 0.13 nats a hop under the key-up spread, the gaps' spread or the window's spread, so that emission cannot make the band alone silence. Narrowband noise in dB is a log-exponential (its envelope is Rayleigh), and at the window's noise power that density comes within 0.01 to 0.03 nats a hop of the marks on the band alone, where a 0 dB station's marks stand 0.04 ahead and a 5 dB station's 0.5 to 0.65. Built in the Viterbi that way it took the fade's troughs: the first proof's 10 dB fading case read 19 to 42 of 60 from 60, the 5 dB fading case 19 to 31 from 59, and the band alone still decoded 28 to 37 marks. It was taken out; the probe stays. The band alone decodes 284 to 298 marks, refused by the pattern test (separation 1.06 to 1.10), and prints nothing. **The bank's invented letters were not the band alone after the text:** 60 of the 101 were one hand, `fist-r1.6-20wpm-20db-flat`, printed from a lane at 675 Hz, 60 Hz off the station, and 38 a second strong 1.6 hand; that is which lane prints, a fourth thing.
+
+**Change 3, a second station in one lane.** A warm decode whose pattern falls from the one the lane kept (separation by `PatternDrop` 0.25 of the kept, or dah share by 0.25) is read cold as well, and the cold read is taken where it is Morse and stands better (wider separation, its dahs no looser). Traced on `144020` from 9.5 s: no lane held two stations; the cold read was computed on every fall and never stood better, so it never fired there. The second station was lost to lane choice (round two) and to the first station's lane reading his leakage (round three).
+
+**The rounds**, each measured with the rule on:
+- **Round one.** Changes 1 and 3.
+- **Round two.** Traced on `144020`: at 20 s the terminal went to 625 Hz, 25 Hz off the second station, at separation 1.64; from 22 s the 600 Hz lane read him at 2.25 and was dropped as the printed lane's shadow, since the printed lane was listed first. Of one station's lanes the best separated prints: the printed lane leads among the lanes reading its sequence only while none stands `SeparationMargin` 0.25 better. The bank's 675 Hz hand went with it (invented 64 to 18).
+- **Round three.** Traced on `144020` from 12.5 s: the printed 500 Hz lane's sender had stopped, and reading warm it relearned its levels on the second station's leakage at -33.6 dB against the -20.2 it kept and printed him in pieces. A warm lane whose learned key-down falls more than `LevelDropDb` 10 dB under the level it last read Morse at commits nothing from that window and keeps its sender's rhythm.
+
+**The figures, as shipped, then where the last unit left the reader, then rounds one, two and three:**
+- the twelve-plus-three: 297 (318 right, 20 wrong, 1 invented); 275; 275 (312, 23, 14), 285 (314, 21, 8), 293 (316, 20, 3). Spaces 86 of 110 with 3 added as shipped; 87, 88 and 89 right with 11, 10 and 9 added;
+- W1AW: 2111 (2131 right, 20 wrong, 0 invented); 2070; 2104 (2126, 22, 0) in every round. Pieces 01 to 04: 242, 386, 790, 686;
+- the fist bank: 1891 (2612 right, 675 wrong, 46 invented); 3498 with 101 invented; 3842 (4451, 545, 64), 3922 (4478, 538, 18), 3925 (4475, 532, 18). The flat half, letters right: 2173; 2621; 2697, 2716, 2712. The fading half: 439; 1639; 1754, 1762, 1763. The short-dah rows: 1193; 2044; 2148, 2186, 2180;
+- the 5 dB CQs: 71 of 84; 84 in every round; the 15 dB 84, the 0 dB 5; nothing in the noise after a weak CQ;
+- the easy fixtures: 77 of 90; 90 in every round. The working fixtures: 4; 17; 35 of 81 in every round. `two-station`: 27 of 27. The synthetic fixtures: 46 of 67; 37, 50, 51 with 20, 10 and 3 invented;
+- letters in silences: 0; 4 in every round. The first recording: whole; `RF C HA T <BT> BEST 7V 73 <SK> KC4ZGP ■` in every round;
+- the nine straight-key hands at 48 of 60: 9; 6; 7, 9, 9. The short-dah rows' guard holds;
+- strong flat hands at 20 dB, dah 2.5 and 3.0, by speed 10 to 25 WPM: as shipped 59, 59, 60, 60 and 60, 60, 60, 60; round three 57, 60, 58, 60 and 60, 58, 56, 60;
+- loud noise and the steady carrier print nothing; the random carrier prints at 20 seeds of 20, against 2, reported and not a condition; strays summed over the 65 old captures 26.8; 50.3, 48.6, 48.8, the highest single capture 5.7, 5.7, 5.3, under the six;
+- the first proof holds at the prototype's reads at every seed (the 5 dB fading case 60, 59, 59; the fist 60, 60, 59); the band alone is not silence;
+- CPU on W1AW piece-04, 283 s: 100 s with the reader against 183 to 185 s with two finders, in every round.
+
+**It does not ship.** The twelve-plus-three is 293 against 297, one letter under the 1 per cent band; W1AW 2104 is inside it but its wrong rises from 20 to 22; the bank invents 18 against 10; the band alone is not silence; 4 letters print in silences and the first recording is not whole; strong flat hands read under shipped at 10, 15 and 20 WPM. Everything else holds. The *For the owner's ruling* case needs everything else to hold, so it does not apply.
+
+**What the boards still lose.** On the twelve-plus-three: 8 on `121414` (24 against 32), 6 on the first recording's opening (`RF C HA T` for `FER C HAT`), 5 on `144020` (20 against 25), and the letters in silences on `200157`, `143906` and `221502`; on W1AW, 7 spread over pieces 02 to 04. The first recording's opening and `121414` read the same under the old and new cold read, so they are not change 1's: the reader's opening, a fourth thing. The letters in silences were not traced.
+
+As shipped, every reading is as at HEAD: 297 and 2111. Ordered by work instruction 590.
+
+---
 id: HM-DEC-293
 date: 2026-10-27
 refs: work instruction 589, HM-DEC-292, HM-DEC-284, HM-DEC-276, src/Hamlet.RadioEngine/Cw/CwSequenceReader.cs, src/Hamlet.RadioEngine/Cw/CwRules.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheSequenceReaderTests.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheStraightKeyReadsTests.cs
