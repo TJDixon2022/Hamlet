@@ -40,6 +40,15 @@ The owner, 2026-10-27: *concur*, one more unit on the opening and the letters in
 
 As shipped, every reading is as at HEAD: 297 and 2111. Ordered by work instruction 591.
 
+**The owner, 2026-10-27: ship `CwRules.SequenceReader` on by default.** With it on, the sequence reader is the only path to the printer; the grid's marks, the bank's handover and the column finder feed nothing, and the grid stays for the scope. The boards' guards move to the figures the reader reads: the twelve-plus-three **308** (325 right, 13 wrong, 4 invented, 92 of 110 spaces with 13 added), W1AW **2101** (2125 right, 24 wrong, 0 invented), each held with wrong and invented not above them, on rows labelled `591 ruled`. **The hard limits, restated with their reasons:**
+- the first recording reads `FF C HAT<BT> BEST 7V 73 <SK> KC4ZGP ■` and is guarded so, the `ER` of `FER` merged across the hand's 151 ms letter gap a known loss, `DEWA` one unreadable letter;
+- letters in silences at no more than one, the one on `221502`, two marks laid 340 ms into a pause;
+- loud noise prints nothing, the steady carrier nothing;
+- no old capture above six strays per 10 s, the summed figure reported;
+- the random-keyed carrier reported and not a condition, because by its rhythm it is a hand and only what it sends would part them.
+
+**New guards:** the first proof (`TheSequenceReaderTests.TheFirstProof`) on the engine line; the fist bank's four rows at the figures that shipped less 5% (990, 1182, 1143 and 1146 of 1440, floors 940, 1122, 1085 and 1088) and the fading half at 1771 less 5% (1682) in `TheFistBankGuardsTests`; the four 5 dB CQs at 83 of 84; `two-station` at 27 of 27 and the easy fixtures at 90 of 90 (`TheSequenceReaderShipsTests`); the nine hands at 48. The capture sheet's `senders` line names the station the reader prints with its lane width, dit and separation; the `Weak stations` row keeps its place and says it no longer changes what prints. `CW_SPEC.md` §2 is rewritten: the reader finds the sequence. The mark finders, the bank's handover, the column finder and the seam's rules are listed for removal in a later unit.
+
 ---
 id: HM-DEC-294
 date: 2026-10-27

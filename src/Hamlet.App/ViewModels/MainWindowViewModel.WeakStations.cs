@@ -64,7 +64,7 @@ public sealed partial class MainWindowViewModel
 
     /// <summary>The capture sheet's line, beside the AGC's.</summary>
     private string WeakStationsSheetLine()
-        => $"weak       {(WeakStationsOn ? "on" : "off")}  (whether the lane bank hands a weak station to the printer)";
+        => $"weak       {(WeakStationsOn ? "on" : "off")}  ({(_envelope is { SequenceReads: true } ? "no longer steers what prints: the sequence reader reads every station, the owner's ruling on HM-DEC-295" : "whether the lane bank hands a weak station to the printer")})";
 
     /// <summary>The capture sheet's weak-stations line, for a test.</summary>
     internal string WeakStationsSheetLineForTests() => WeakStationsSheetLine();

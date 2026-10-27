@@ -871,6 +871,13 @@ public sealed class CwSequenceReader
     /// <summary>The pitch of the lane printing now, or NaN.</summary>
     public double PrintedPitchHz => _printed?.PitchHz ?? double.NaN;
 
+    /// <summary>A station the reader prints, as the capture sheet says it: its lane's pitch and width, its learned dit and its separation.</summary>
+    public sealed record Station(double PitchHz, double LaneWidthHz, double DitMs, double Separation);
+
+    /// <summary>The station printing now, or null (the owner's ruling on HM-DEC-295: the sheet's `senders` line says it).</summary>
+    public Station? PrintedStation
+        => _printed is { Learned: { } learned } lane ? new Station(lane.PitchHz, LaneWidthsHz[lane.Width], learned.Dit * HopMs, lane.Pattern.Separation) : null;
+
     /// <summary>Where set, a line per decode tick and per commit, for the tests' traces.</summary>
     internal List<string>? Trace { get; set; }
 

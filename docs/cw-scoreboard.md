@@ -303,9 +303,9 @@ A change is taken only where no hard limit is worse than at HEAD: the first reco
 
 **Neither set meets the bar, so none shipped:** set A (step 3) raises the score to 191 but invented does not fall (2, as at HEAD) and one letter still prints in a silence; set B reaches 193 with nothing invented and nothing printed in a silence, but the carrier prints at seed 5206 as well as 5195. No single change from B brings the carrier back to 1 of 20. Taking out the handover backlog or the gap crossing leaves the score the same at every step; neither was taken out, since nothing shipped. The search's first pass counted the carrier over five seeds and walked to B; the twenty seeds caught it.
 
-**The CW guard** (work instruction 552, HM-DEC-256; the owner's yes, 2026-10-07). `TheScoreboardGuardsCwTests.TheScoreboardFallsNowhere`, on the engine carry-forward line, reads the last unit row below and holds the board to it: the score not below it, spaces right not below it and spaces added not above it, no more letters in a silence; the first recording whole and loud noise silent; and the random carrier at no more seeds than this line records. A unit that raises the board appends its row, and the guard holds it there.
+**The CW guard** (work instruction 552, HM-DEC-256; the owner's yes, 2026-10-07). `TheScoreboardGuardsCwTests.TheScoreboardFallsNowhere`, on the engine carry-forward line, reads the last unit row below and holds the board to it: the score not below it, spaces right not below it and spaces added not above it, no more letters in a silence; the first recording whole and loud noise silent; and the random carrier at no more seeds than this line records. A unit that raises the board appends its row, and the guard holds it there. **Restated by the owner's ruling on HM-DEC-295, 2026-10-27**, when the sequence reader shipped on: wrong and invented held not above the row too; the first recording held as the reader reads it, `FF C HAT<BT> BEST 7V 73 <SK> KC4ZGP ■`, the `ER` of `FER` merged across the hand's 151 ms letter gap a known loss; at most one letter in a silence, the one on `221502`; loud noise and the steady carrier silent; the random carrier reported and not a condition, since by its rhythm it is a hand and only what it sends would part them. A row the owner ruled is labelled `ruled`.
 
-guard: the random carrier prints at 2 of 20 seeds (5195, 5207), restated by the owner's ruling on HM-DEC-285, 2026-10-20 (1 of 20, 5195, recorded at unit 552)
+guard: the random carrier prints at 20 of 20 seeds, reported and not a condition by the owner's ruling on HM-DEC-295, 2026-10-27 (2 of 20, 5195 and 5207, under the ruling on HM-DEC-285; 1 of 20, 5195, recorded at unit 552)
 
 
 | unit | date | right | wrong | invented | score | printed in silence | spaces right | what changed |
@@ -397,6 +397,7 @@ guard: the random carrier prints at 2 of 20 seeds (5195, 5207), restated by the 
 | 589 | 2026-10-27 | 318 of 353 | 20 | 1 | **297** | 0 | 86 of 110, 3 added | the sequence reader, finished (work instruction 589, HM-DEC-293): three rounds, 275 with SequenceReader on (210, 275, 275), left off; the board unchanged |
 | 590 | 2026-10-27 | 318 of 353 | 20 | 1 | **297** | 0 | 86 of 110, 3 added | the sequence reader, the cold read by pattern, silence as noise, a second station (work instruction 590, HM-DEC-294): three rounds, 293 with SequenceReader on (275, 285, 293), left off; the board unchanged |
 | 591 | 2026-10-27 | 318 of 353 | 20 | 1 | **297** | 0 | 86 of 110, 3 added | the sequence reader, the opening and the silences (work instruction 591, HM-DEC-295): two rounds, 308 with SequenceReader on (300, 308), left off; the board unchanged |
+| 591 ruled | 2026-10-27 | 325 of 353 | 13 | 4 | **308** | 1, on `221502` | 92 of 110, 13 added | the owner's ruling on HM-DEC-295: the sequence reader ships on, the board held at the figures it reads; the first recording reads `FF C HAT<BT> BEST 7V 73 <SK> KC4ZGP ■`, the random carrier reported |
 
 ## Scans (work instruction 544, HM-DEC-248)
 
@@ -490,6 +491,7 @@ high and 25 medium, 2151 letters, all totalled.
 | 589 | 2026-10-27 | **2111** | 2131 of 2151 | 20 | 0 | 438 of 440 | the sequence reader, finished (HM-DEC-293): 2070 with SequenceReader on (1882, 1910, 2070), left off; unchanged |
 | 590 | 2026-10-27 | **2111** | 2131 of 2151 | 20 | 0 | 438 of 440 | the cold read by pattern, silence as noise, a second station (HM-DEC-294): 2104 with SequenceReader on (2104, 2104, 2104), left off; unchanged |
 | 591 | 2026-10-27 | **2111** | 2131 of 2151 | 20 | 0 | 438 of 440 | the opening and the silences (HM-DEC-295): 2101 with SequenceReader on (2101, 2101), left off; unchanged |
+| 591 ruled | 2026-10-27 | **2101** | 2125 of 2151 | 24 | 0 | 440 of 440, 8 added | the owner's ruling on HM-DEC-295: the sequence reader ships on, the table held at the figures it reads |
 
 **The fist bank** (work instruction 580, HM-DEC-284): ninety-six hands with a truth, every dah over dit of 1.6, 2.0, 2.5 and 3.0 at 10, 15, 20 and 25 WPM, 5, 10 and 20 dB, flat and fading, generated at test time from their recipes (`tests\Hamlet.RadioEngine.Tests\Cw\Fixtures\CwFistBank.cs`) and read by the survey as a group of its own, its matrices in `docs\cw-survey-2026-10-09.md` under `The fist bank`. A yardstick, not yet a guard.
 

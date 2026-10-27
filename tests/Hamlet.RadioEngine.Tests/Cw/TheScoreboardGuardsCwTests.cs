@@ -13,15 +13,16 @@ namespace Hamlet.RadioEngine.Tests.Cw;
 /// <remarks>
 /// <para>**A GUARD THAT IS RED SAYS NOTHING.** The scoreboard's own test is red on two hard limits known since before this unit,
 /// the random carrier printing at one seed and one letter in a silence, so this asserts no regression against the last row
-/// recorded in <c>docs\cw-scoreboard.md</c>: the score not below it, spaces right not below it and spaces added not above it,
-/// letters in a silence no more; the random carrier at no more seeds than the recorded figure under that file's guard heading;
-/// the first recording whole; loud noise and a steady carrier silent (the steady carrier since the owner's ruling on HM-DEC-285).</para>
+/// recorded in <c>docs\cw-scoreboard.md</c>: the score not below it, wrong and invented not above it, spaces right not below it and
+/// spaces added not above it, letters in a silence no more; the first recording as the sequence reader reads it; loud noise and a
+/// steady carrier silent. The random carrier is reported and is not a condition (the owner's ruling on HM-DEC-295, 2026-10-27: by
+/// its rhythm it is a hand, and only what it sends would part them).</para>
 /// <para>A unit that raises the board appends its row, and the guard holds it there from then on.</para>
 /// </remarks>
 public sealed partial class TheScoreboardGuardsCwTests(ITestOutputHelper output)
 {
     /// <summary>The last row recorded, as the guard reads it.</summary>
-    internal sealed record Recorded(string Unit, int Score, int SilencePrints, int SpacesRight, int SpacesAdded, int CarrierSeeds);
+    internal sealed record Recorded(string Unit, int Score, int SilencePrints, int SpacesRight, int SpacesAdded, int CarrierSeeds, int Wrong, int Invented);
 
     /// <summary>The scoreboard's file.</summary>
     internal static string Board()
@@ -50,7 +51,9 @@ public sealed partial class TheScoreboardGuardsCwTests(ITestOutputHelper output)
             First(cells[7]),
             int.Parse(spaces[0].Value, CultureInfo.InvariantCulture),
             int.Parse(spaces[2].Value, CultureInfo.InvariantCulture),
-            int.Parse(CarrierLine().Match(text).Groups[1].Value, CultureInfo.InvariantCulture));
+            int.Parse(CarrierLine().Match(text).Groups[1].Value, CultureInfo.InvariantCulture),
+            First(cells[4]),
+            First(cells[5]));
     }
 
     [Fact]
@@ -61,15 +64,16 @@ public sealed partial class TheScoreboardGuardsCwTests(ITestOutputHelper output)
         var carriers = board.Noise.Count(n => n.What.StartsWith("a carrier", StringComparison.Ordinal) && n.Reads.Length > 0);
         var loud = board.Noise.Where(n => !n.What.StartsWith("a carrier", StringComparison.Ordinal)).ToList();
 
-        output.WriteLine($"recorded, {recorded.Unit}: score {recorded.Score}, spaces {recorded.SpacesRight} right and {recorded.SpacesAdded} added, {recorded.SilencePrints} in a silence, the carrier at {recorded.CarrierSeeds} seeds");
-        output.WriteLine($"now: score {board.Score}, spaces {board.SpacesRight} right and {board.SpacesAdded} added, {board.SilencePrints.Count} in a silence, the carrier at {carriers} seeds; the first recording reads `{board.FirstReads}`");
+        output.WriteLine($"recorded, {recorded.Unit}: score {recorded.Score}, {recorded.Wrong} wrong, {recorded.Invented} invented, spaces {recorded.SpacesRight} right and {recorded.SpacesAdded} added, {recorded.SilencePrints} in a silence, the carrier at {recorded.CarrierSeeds} seeds");
+        output.WriteLine($"now: score {board.Score}, {board.Wrong} wrong, {board.Invented} invented, spaces {board.SpacesRight} right and {board.SpacesAdded} added, {board.SilencePrints.Count} in a silence, the carrier at {carriers} seeds, reported; the first recording reads `{board.FirstReads}`");
 
         Assert.True(board.Score >= recorded.Score, $"the score fell from {recorded.Score} to {board.Score}");
+        Assert.True(board.Wrong <= recorded.Wrong, $"wrong rose from {recorded.Wrong} to {board.Wrong}");
+        Assert.True(board.Invented <= recorded.Invented, $"invented rose from {recorded.Invented} to {board.Invented}");
         Assert.True(board.SpacesRight >= recorded.SpacesRight, $"spaces right fell from {recorded.SpacesRight} to {board.SpacesRight}");
         Assert.True(board.SpacesAdded <= recorded.SpacesAdded, $"spaces added rose from {recorded.SpacesAdded} to {board.SpacesAdded}");
         Assert.True(board.SilencePrints.Count <= recorded.SilencePrints, $"letters in a silence rose from {recorded.SilencePrints} to {board.SilencePrints.Count}");
-        Assert.True(carriers <= recorded.CarrierSeeds, $"the random carrier printed at {carriers} seeds, recorded {recorded.CarrierSeeds}");
-        Assert.Equal(TheRecordingsScoreboardTests.FirstRecording, board.FirstReads);
+        Assert.Equal(TheRecordingsScoreboardTests.FirstRecordingReads, board.FirstReads);
         Assert.NotEmpty(loud);
         Assert.All(loud, n => Assert.Equal(string.Empty, n.Reads));
     }
@@ -94,7 +98,7 @@ public sealed partial class TheScoreboardGuardsCwTests(ITestOutputHelper output)
             | 544 task 1 | `catch-153810-7033367` | 860 | `X` | 1 | 0 | `X` |
             """;
 
-        Assert.Equal(new Recorded("900 task 2", 230, 0, 66, 1, 2), LastRecorded(text));
+        Assert.Equal(new Recorded("900 task 2", 230, 0, 66, 1, 2, 18, 2), LastRecorded(text));
     }
 
     /// <summary>The last row of the `w1aw` table, its unit and its score (work instruction 554, task 3).</summary>
@@ -118,6 +122,21 @@ public sealed partial class TheScoreboardGuardsCwTests(ITestOutputHelper output)
         output.WriteLine($"recorded, {recorded.Unit}: w1aw score {recorded.Score}; now {board.Score}, {board.Right} of {board.OutOf} right, {board.Wrong} wrong, {board.Invented} invented");
 
         Assert.True(board.Score >= recorded.Score, $"the w1aw score fell from {recorded.Score} to {board.Score}");
+
+        // Wrong and invented held too, since the owner's ruling on HM-DEC-295 set the table at the reader's own figures.
+        var (wrong, invented) = LastW1awCounts(File.ReadAllText(Board()));
+
+        Assert.True(board.Wrong <= wrong, $"the w1aw wrong rose from {wrong} to {board.Wrong}");
+        Assert.True(board.Invented <= invented, $"the w1aw invented rose from {invented} to {board.Invented}");
+    }
+
+    /// <summary>The last row of the `w1aw` table, its wrong and invented cells.</summary>
+    internal static (int Wrong, int Invented) LastW1awCounts(string text)
+    {
+        var row = text.Split('\n').Select(l => l.Trim()).Last(l => W1awRow().IsMatch(l));
+        var cells = row.Split('|').Select(c => c.Trim()).ToArray();
+
+        return (int.Parse(Number().Match(cells[5]).Value, CultureInfo.InvariantCulture), int.Parse(Number().Match(cells[6]).Value, CultureInfo.InvariantCulture));
     }
 
     /// <remarks>The w1aw guard reads the w1aw table's last row; the units guard never reads a w1aw row.</remarks>
@@ -141,12 +160,12 @@ public sealed partial class TheScoreboardGuardsCwTests(ITestOutputHelper output)
         Assert.Equal(230, LastRecorded(text).Score);
     }
 
-    // A row of the w1aw table: its unit, its date, then its score in bold.
-    [GeneratedRegex(@"^\|\s*(\d{3} (?:task \d+|baseline))\s*\|[^|]*\|\s*\*\*(\d+)\*\*")]
+    // A row of the w1aw table: its unit, its date, then its score in bold. A row the owner ruled is labelled so (HM-DEC-295).
+    [GeneratedRegex(@"^\|\s*(\d{3} (?:task \d+|baseline|ruled))\s*\|[^|]*\|\s*\*\*(\d+)\*\*")]
     private static partial Regex W1awRow();
 
     // A unit row of the units table: its unit, then its date, then right as "N of N"; the scan table's rows carry a catch there.
-    [GeneratedRegex(@"^\|\s*\d{3} task \d+\s*\|[^|]*\|\s*\d+ of \d+")]
+    [GeneratedRegex(@"^\|\s*\d{3} (?:task \d+|ruled)\s*\|[^|]*\|\s*\d+ of \d+")]
     private static partial Regex UnitRow();
 
     [GeneratedRegex(@"\d+")]

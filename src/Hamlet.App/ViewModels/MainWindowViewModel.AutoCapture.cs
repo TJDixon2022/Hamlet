@@ -173,7 +173,7 @@ public sealed partial class MainWindowViewModel
             $"pitch      {PitchForTheRecord(shape)}",
             $"speed      {SpeedForTheRecord(shape)}",
             $"clusters   {_decoder?.GapClustersLine ?? "nobody printed"}  (the printed sender's letter and word gap clusters and its word line, work instruction 565, and the dah over dit the gate measured, HM-DEC-285)",
-            $"senders    {SendersForTheRecord(shape)}",
+            $"senders    {SendersForTheRecord(shape, _envelope)}",
             $"at start   {_sendersAtCaptureStart}",
             $"version    {AboutViewModel.AppVersion}",
             $"rebuilds   {(_envelope is { } env ? string.Create(CultureInfo.InvariantCulture, $"{env.PassbandRebuilds}  (times the detector rebuilt its passband since listening started)") : "not counted  (nothing is listening)")}",

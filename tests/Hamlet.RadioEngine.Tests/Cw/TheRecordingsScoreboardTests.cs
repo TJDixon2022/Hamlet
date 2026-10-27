@@ -128,8 +128,8 @@ public sealed class TheRecordingsScoreboardTests
     /// <summary>The whole board: each stretch, the total over the stretches of medium confidence or better, and the hard limits.</summary>
     internal sealed record Board(IReadOnlyList<Scored> Stretches, IReadOnlyDictionary<string, string> Unassigned, int Total, int OutOf, string FirstReads, IReadOnlyList<(string What, string Reads)> Noise)
     {
-        /// <summary>Whether the first recording reads as it must and every noise run printed nothing.</summary>
-        public bool LimitsHold => FirstReads == FirstRecording && Noise.All(n => n.Reads.Length == 0) && SilencePrints.Count == 0;
+        /// <summary>Whether the hard limits as the owner restated them on HM-DEC-295 hold: the first recording as the reader reads it, noise and the steady carrier silent, at most one letter in a silence.</summary>
+        public bool LimitsHold => FirstReads == FirstRecordingReads && Noise.Where(n => !n.What.StartsWith("a carrier", StringComparison.Ordinal)).All(n => n.Reads.Length == 0) && SilencePrints.Count <= SilencePrintsAllowed;
 
         /// <summary>Spaces right over the stretches of medium confidence or better (work instruction 538).</summary>
         public int SpacesRight => Stretches.Where(s => s.Stretch.Confidence >= Confidence.Medium).Sum(s => s.Spaces.Right);
@@ -506,10 +506,17 @@ public sealed class TheRecordingsScoreboardTests
     internal static string TheFirst() => ReadLive("cw-2026-10-02-200157").Text;
 
     /// <summary>
-    /// The seeds of twenty at which the random carrier may print (the owner's ruling on HM-DEC-285, 2026-10-20): two, 5195 and 5207
-    /// as measured with the short dah on.
+    /// **THE HARD LIMITS, RESTATED** (the owner's ruling on HM-DEC-295, 2026-10-27): the sequence reader ships on, and the first
+    /// recording reads as it reads it, `E` and `R` of `FER` merged into `F` across the hand's 151 ms letter gap, a known loss, and
+    /// `DEWA` as one unreadable letter.
     /// </summary>
-    internal const int CarrierSeedsAllowed = 2;
+    internal const string FirstRecordingReads = "FF C HAT<BT> BEST 7V 73 <SK> KC4ZGP ■";
+
+    /// <summary>
+    /// Letters printed in a silence of two seconds or more, at most (the owner's ruling on HM-DEC-295): the one on 221502, a letter
+    /// whose last two marks the reader laid 340 ms into a pause.
+    /// </summary>
+    internal const int SilencePrintsAllowed = 1;
 
     /// <summary>Loud noise, 30 s and three minutes, at the two seeds the noise tests use; a carrier keyed at random at twenty seeds; and a steady carrier.</summary>
     internal static List<(string What, string Reads)> NoiseRuns()
@@ -618,19 +625,18 @@ public sealed class TheRecordingsScoreboardTests
             _output.WriteLine($"{what} reads `{reads}`");
         }
 
-        Assert.Equal(FirstRecording, board.FirstReads);
+        Assert.Equal(FirstRecordingReads, board.FirstReads);
 
-        // **THE CARRIER LIMIT, RESTATED** (the owner's ruling on HM-DEC-285, 2026-10-20): a carrier keyed at random from 30 to 300 ms
-        // makes dits and dahs that stand like a hand's by timing, and the short dah's five conditions leave no margin between them,
-        // so the carrier at twenty seeds prints at no more than two (5195 and 5207 as measured); loud noise and a steady carrier
-        // print nothing.
+        // **THE CARRIER IS REPORTED, NOT A CONDITION** (the owner's ruling on HM-DEC-295, 2026-10-27): a carrier keyed at random with
+        // two mark lengths is a hand by its rhythm, and only what it sends would part them; loud noise and a steady carrier print
+        // nothing.
         var carriers = board.Noise.Where(n => n.What.StartsWith("a carrier", StringComparison.Ordinal) && n.Reads.Length > 0).ToList();
 
-        Assert.True(carriers.Count <= CarrierSeedsAllowed, $"the random carrier printed at {carriers.Count} seeds: {string.Join(", ", carriers.Select(c => c.What))}");
+        _output.WriteLine($"the random carrier printed at {carriers.Count} seeds of 20, reported");
         Assert.All(board.Noise.Where(n => !n.What.StartsWith("a carrier", StringComparison.Ordinal)), n => Assert.Equal(string.Empty, n.Reads));
 
-        // **REAL SILENCE PRINTS NOTHING** (work instruction 539, task 2): a hard limit.
-        Assert.Empty(board.SilencePrints);
+        // **REAL SILENCE PRINTS NOTHING** (work instruction 539, task 2), restated by the owner's ruling on HM-DEC-295: at most one.
+        Assert.True(board.SilencePrints.Count <= SilencePrintsAllowed, $"{board.SilencePrints.Count} letters printed in a silence");
     }
 
     /// <summary>A stretch's word line beside its letter and word clusters, as the gate held them when its last letter printed.</summary>

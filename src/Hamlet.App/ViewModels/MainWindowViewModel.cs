@@ -12228,7 +12228,7 @@ public partial class MainWindowViewModel : ObservableObject
 
             // **EVERY SENDER THE GATE HELD AT THE PRESS**, and which one it printed: where the operator heard a station
             // and the gate held it under the shape it needs, or held something else, this is where that shows.
-            $"senders    {SendersForTheRecord(shape)}",
+            $"senders    {SendersForTheRecord(shape, _envelope)}",
 
             // **THE KEYING SWEEP CAME OUT WITH THE OLD DECODER** (work instruction 545); the line stays, saying so.
             "keying     retired  (the independent keying sweep came out with the old decoder, work instruction 545; the senders line above says what the gate held)",
@@ -12631,6 +12631,22 @@ public partial class MainWindowViewModel : ObservableObject
             : $"{shape.LettersInLast(seconds)} letters printed, {shape.MarksInLast(seconds)} marks stood  "
               + $"(in the {seconds:0.0} seconds of audio in this file)";
     }
+
+    /// <summary>
+    /// The `senders` line where the sequence reader is the path to the printer (the owner's ruling on HM-DEC-295, 2026-10-27): the
+    /// station it prints, its lane's pitch and width, its learned dit and its separation; the gate's senders where it is not.
+    /// </summary>
+    /// <param name="shape">What the shape side held at the press.</param>
+    /// <param name="detector">The detector listening, or null.</param>
+    /// <returns>The value of the `senders` line.</returns>
+    internal static string SendersForTheRecord(CwShapeSideReading shape, CwEnvelopeDetector? detector)
+        => detector is { SequenceReads: true } ? SequenceSendersForTheRecord(detector.SequenceStation) : SendersForTheRecord(shape);
+
+    /// <summary>The sequence reader's printed station as the `senders` line says it.</summary>
+    internal static string SequenceSendersForTheRecord(CwSequenceReader.Station? station)
+        => station is null
+            ? "none printed  (the sequence reader prints no station now)"
+            : string.Create(CultureInfo.InvariantCulture, $"{station.PitchHz:0} Hz, a {station.LaneWidthHz:0} Hz lane, dit {station.DitMs:0} ms, separation {station.Separation:0.00}, printed  (the sequence reader)");
 
     /// <summary>
     /// Every sender the gate held at the press, and which one it printed (work instruction 537); a splinter, held under the

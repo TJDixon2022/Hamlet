@@ -32,6 +32,27 @@ Hand run:
 - The record build was the solution whole with the rule off. The app line, the engine line (1500 s) and the survey line then ran once each with `--no-build`.
 
 **Recorded**, not a ruling: HM-DEC-295 in `DECISIONS.md`, quoting the owner's *concur*, and its `CLAUDE.md` §1 row; `docs\cw-scoreboard.md` 591 rows; `PHASE_OUTCOME.md`, both copies, `## UNIT 591 - STEP 12`; `PHASE_STATUS.md`, both copies, naming 591; `Directory.Build.props`; the survey's `Rerun` line in `TheCwSurveyTests` and the doc.
+**The owner's ruling on HM-DEC-295, 2026-10-27: ship `CwRules.SequenceReader` on by default** (hand run, one commit, version 1.13.277 to 1.13.278). The prompt carried `PROJECT: Hamlet`; the tree is unit 591's. `SESSION.lock` was taken through `tools\arbiter\lock.bat take` and released. Nothing was written to `RUN_LEDGER.md`, nothing under `tools\arbiter\` touched, no box ticked, nothing keyed or written to the radio, and no recording added, removed or promoted.
+- **The rule:** `SequenceReader` comes out of `CwRules.OffByDefault`. With it on the reader is the only path to the printer; the grid's marks, the bank's handover and the column finder feed nothing, and the grid stays for the scope, as built.
+- **The boards' guards** read rows labelled `591 ruled`: the twelve-plus-three at 308 (325 right, 13 wrong, 4 invented, 92 of 110 spaces, 13 added) and W1AW at 2101 (2125 right, 24 wrong, 0 invented), wrong and invented now held not above the row as well as the score.
+- **The hard limits, restated** in `TheRecordingsScoreboardTests`, the board guard and the scoreboard's guard paragraph:
+  - the first recording is guarded as it reads, `FF C HAT<BT> BEST 7V 73 <SK> KC4ZGP ■`, with the `ER` merge at 151 ms a known loss and `DEWA` one unreadable letter;
+  - at most one letter in a silence, the one on `221502`;
+  - loud noise and the steady carrier print nothing;
+  - the random carrier is reported, not a condition.
+- **New guards:**
+  - the first proof on the engine line;
+  - `TheFistBankGuardsTests.TheBankHolds`, every dah row at 990, 1182, 1143 and 1146 less 5% and the fading half at 1771 less 5%, replacing the 1.6 and 2.0 rows' guard;
+  - the 5 dB CQs at 83 of 84;
+  - `TheSequenceReaderShipsTests`, the reader on by default, `two-station` 27 of 27, the easy fixtures 90 of 90;
+  - the nine hands at 48, as before.
+  - `docs\carry-forward-tests.txt`'s engine line now names them all, at 1500 s.
+- **The sheet and the screen:**
+  - the capture sheet's `senders` line, where the reader reads, says the station it prints: `675 Hz, a 15 Hz lane, dit 80 ms, separation 2.16, printed  (the sequence reader)`, or `none printed`; `TheSendersLineNamesTheLaneTests` holds the wording;
+  - the `Weak stations` row keeps its place, and its hover and the sheet's `weak` line say it no longer changes what prints.
+- **The records:** HM-DEC-295 carries the ruling, the restated limits and the reason, and its `CLAUDE.md` row says so. `CW_SPEC.md` §2's finder history is replaced by one paragraph, the reader finds the sequence. The survey was rerun with a new `Rerun` line.
+- One build after a doc-comment fix, the build servers shut down, then the lines one at a time with `--no-build`.
+
 
 ## 2. What the owner should expect
 
@@ -84,6 +105,23 @@ What holds:
 Beyond that, single marks are lost on W1AW's 30 WPM piece, and four invented letters are untraced. A fifth thing.
 
 As shipped, nothing changes: 297 and 2111. The app line 278 of 278. The engine line 159 of 159 in 11.1 minutes. The survey line 1 of 1 in 10.3 minutes, every group as before (297, 2111, the bank 1891), only its `Rerun` line changed. Pushed to `main`: rounds one and two and the record.
+
+**Shipped on, 2026-10-27, the owner's ruling on HM-DEC-295.** Hamlet now reads CW with the sequence reader by default. What the lines read as shipped:
+- **The app line:** 278 of 278.
+- **The engine line:** 163 of 163 in 13.2 minutes. Every new guard passed: the reader on by default, the first proof, the bank's rows and fading half, the 5 dB CQs at 83 or better, `two-station` 27 of 27, the easy fixtures 90 of 90, the nine hands, and both boards at 308 and 2101.
+- **The survey line:** 1 of 1 in 15.7 minutes, every group as round two read it:
+  - the twelve-plus-three 308 (325 right, 13 wrong, 4 invented);
+  - W1AW 2101 (2125 right, 24 wrong, 0 invented);
+  - the fist bank 3898 (4461 right, 18 invented), the flat half 2690 right, the fading half 1771;
+  - the 15 and 5 dB CQs 84 of 84, the 0 dB 5;
+  - the easy fixtures 90 of 90, the working 36 of 81, the edge 45 of 81;
+  - strays 46.5 summed, the highest 4.3.
+
+What you will see on the radio:
+- **Weak, fading and short-dah stations read where they did not.**
+- **The first recording reads `FF C HAT`** where it read `FER C HAT`.
+- **A carrier keyed at random can print**, at every seed of the test.
+- **The `Weak stations` choice no longer does anything.**
 
 ## 3. What you should see
 
@@ -206,6 +244,13 @@ Signal by fade, dah 2.5, 20 WPM:
 - **One letter in a silence:** `221502`, two marks laid 340 ms into a pause. Not traced.
 - **W1AW piece-04** loses single marks at 30 WPM in the 40 Hz lane, 4 more wrong than shipped, with no one cause.
 - **The random carrier** prints at every seed. Whether that limit stands is for the owner's ruling.
+- **Listed for removal in a later unit, now that the reader is the only path to the printer** (the owner's ruling on HM-DEC-295):
+  - **The mark finders:** the grid's mark path into the gates, kept for the scope only (`CwEnvelopeDetector`'s grid marks), and the lane bank's level-rule marks (`CwLaneBank`, `CwSenderLane`).
+  - **The bank's handover** (`CwRules.LaneHandover`, `CwEnvelopeDetector.LaneHandover`, `HandoverHz`, `WeakStationPitchHz`, the `Weak stations` row and its `WeakStations` setting with a migration, the `Weak station at` story line).
+  - **The column finder** (`CwColumnFinder`, `CwRules.Columns`).
+  - **The seam's rules:** the shadow rule (`CwShadow`, `ShadowGrid`), the pattern and sender gates' level and shape rules (`CwPatternGate`, `CwSenderGate`, `CwRunReader` where only the old path calls it), and the rules in `CwRules.OffByDefault` and those on by default that only the old path reads: `LaneBank`, `HeldLaneReads`, `HeldLanePause`, `SureFirst`, `BankFinds`, `LoudestFirst`, `LaneMeetsTheGrid`, `TwoLanes`, `LaneHearsTheOpening`, `GridStepsAside`, `HoldWaitsAndFits`, `FollowsTheFade`, `HeldLaneMarksAreItsStations`, `ShortDah`, `BetweenClusters`, `StraddleSplit` and the gates' earlier rules.
+  - Each to go with the tests that read only it, and the boards held through each removal.
+- **`VoiceTests.NoOperatorFacingStringUsesABritishSpelling` is red,** on `centre` in two strings in `CwSenderGate.cs` (lines 331 and 334), last changed by unit 588. It is not on the app line, was not touched here, and goes with `CwSenderGate`'s removal or a one-word fix.
 
 ### Asks still outstanding
 

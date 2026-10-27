@@ -1646,9 +1646,11 @@
                                                       ItemsSource="{x:Static vm:MainWindowViewModel.AgcInCwChoices}"
                                                       SelectedItem="{Binding AgcInCw}" />
                                             <!-- WEAK STATIONS (work instruction 571, HM-DEC-275): whether the lane bank hands a weak station
-                                                 the grid cannot stand to the printer. On by default, kept across restarts, at once. -->
+                                                 the grid cannot stand to the printer. Since the owner's ruling on HM-DEC-295 the sequence
+                                                 reader is the only path to the printer, so the row stays where it is and says it no longer
+                                                 changes what prints; it goes with the bank's handover. On by default, kept across restarts. -->
                                             <TextBlock Grid.Row="6" Text="Weak stations" VerticalAlignment="Center" FontSize="11"
-                                                       ToolTip.Tip="Whether Hamlet reads a station too weak to stand out on its own. It listens for steady keying at every pitch in the filter, and once a station has kept that up for three seconds with nothing louder beside it, its letters print. Turn it off and only the stronger stations print. It takes effect at once." />
+                                                       ToolTip.Tip="Hamlet now reads every station in the filter from its whole keying, however weak, so this choice no longer changes what prints. It stays here until the older readers it used to steer are taken out." />
                                             <ComboBox x:Name="WeakStationsChoice" Grid.Row="6" Grid.Column="1" FontSize="11"
                                                       HorizontalAlignment="Stretch"
                                                       ItemsSource="{x:Static vm:MainWindowViewModel.WeakStationsChoices}"

@@ -578,6 +578,7 @@ public sealed class TheWeakEndTests(ITestOutputHelper output)
     /// Work instruction 571, the guard (HM-DEC-275): the handover ships on, and through the chain as shipped each of the four
     /// 5 dB CQs reads half its letters or better. At the ship they read 13, 14, 16 and 19 of 21. Work instruction 576 (HM-DEC-280):
     /// a held lane keeps reading and its hold ends in a pause, and the four read 71 of 84 or better, 14, 17, 20 and 20 at the ship.
+    /// The owner's ruling on HM-DEC-295, 2026-10-27: the sequence reader ships on and reads the four 84 of 84; they hold at 84 less one.
     /// </remarks>
     [Fact]
     public void TheWeakCqsReadAtHalfOrBetter()
@@ -607,7 +608,7 @@ public sealed class TheWeakEndTests(ITestOutputHelper output)
         }
 
         output.WriteLine($"total {total} of 84");
-        Assert.True(total >= 71, $"the four read {total} of 84");
+        Assert.True(total >= 83, $"the four read {total} of 84");
     }
 
     /// <remarks>

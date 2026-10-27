@@ -324,6 +324,12 @@ public sealed class CwEnvelopeDetector
     /// <summary>Whether the sequence reader reads: with <see cref="CwRules.SequenceReader"/> on (work instruction 588).</summary>
     private bool SequenceReading => _sequence is not null && CwRules.On(CwRules.SequenceReader);
 
+    /// <summary>Whether the sequence reader is the path to the printer now (the owner's ruling on HM-DEC-295).</summary>
+    public bool SequenceReads => SequenceReading;
+
+    /// <summary>The station the sequence reader prints now, or null where it prints none or does not read.</summary>
+    public CwSequenceReader.Station? SequenceStation => SequenceReading ? _sequence!.PrintedStation : null;
+
     /// <summary>
     /// The symbols the sequence reader committed since the last call, for the decoder's lookup table (work instruction 588); none
     /// where it does not read.

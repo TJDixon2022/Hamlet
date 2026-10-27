@@ -280,7 +280,7 @@ public sealed class TheCwSurveyTests(ITestOutputHelper output)
     }
 
     // A file with a whole text sent: read, scored by the boards' yardstick, invented and silences on the board's keying map.
-    private static Row Truthful(string group, string wav, string truth, string source, double pitch, double width)
+    internal static Row Truthful(string group, string wav, string truth, string source, double pitch, double width)
     {
         var audio = WavAudio.Read(wav);
         var (letters, _) = TheRecordingsScoreboardTests.ReadLive(audio.Samples, audio.SampleRate, pitch, width);
@@ -340,7 +340,7 @@ public sealed class TheCwSurveyTests(ITestOutputHelper output)
         }
     }
 
-    private static string SheetText(string wav)
+    internal static string SheetText(string wav)
         => File.ReadLines(Path.ChangeExtension(wav, ".txt")).First(l => l.StartsWith("text ", StringComparison.Ordinal))[5..].Trim();
 
     // The old decoder's read in the sheet beside it, or null where there is no sheet or no read in it.
@@ -440,7 +440,7 @@ public sealed class TheCwSurveyTests(ITestOutputHelper output)
         sb.AppendLine();
         sb.AppendLine("Run again with: `timeout 1800 dotnet test tests/Hamlet.RadioEngine.Tests/Hamlet.RadioEngine.Tests.csproj --filter \"FullyQualifiedName~TheCwSurveyTests.EveryRecordingInTheTree\"` (it writes this file).");
         sb.AppendLine();
-        sb.AppendLine("Rerun: 2026-10-27, as shipped at work instruction 591 (HM-DEC-295): the sequence reader, the opening and the silences, two rounds behind SequenceReader, measured, left off; both boards as before.");
+        sb.AppendLine("Rerun: 2026-10-27, as shipped by the owner's ruling on HM-DEC-295: the sequence reader on by default, the only path to the printer; the boards at the figures it reads, 308 and 2101.");
         sb.AppendLine();
         sb.AppendLine("**The yardstick.** Score is letters right less wrong less invented, as on the boards. Invented is a letter over no keying on the board's keying map of the same audio; silence is a letter printed inside a silence of two seconds or more on that map. Where a file carries no truth, its read stands beside the earlier read in its sheet or its `.json`, scored by nothing, with the stray-letter figure: lone `E T I A N M` printed as words, per ten seconds.");
         sb.AppendLine();
