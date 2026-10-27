@@ -344,6 +344,16 @@ public sealed class CwSequenceReader
                     backStart[Silence][j] = silenceStart;
                 }
             }
+            else if (silent)
+            {
+                // **THE QUIET A WINDOW OPENS ON IS NOBODY KEYING OF ANY LENGTH** (work instruction 591, the opening): the window's
+                // left edge cuts it, so its length is not known. Traced on the first recording: his first dit came 0.16 s after the
+                // window opened, under a word gap, so no state could lay the quiet before it and `FER` printed `R`; W1AW's piece-02
+                // lost its first `T` the same way, 0.09 s in.
+                best[Silence][j] = cOff[j] - prior[Silence];
+                backState[Silence][j] = -1;
+                backStart[Silence][j] = 0;
+            }
 
             for (var s = 0; s <= WordGap; s++)
             {
@@ -910,7 +920,14 @@ public sealed class CwSequenceReader
 
         foreach (var lane in _lanes)
         {
-            lane.Decode(newest, _windowHops, Trace);
+            var watched = Math.Abs(lane.PitchHz - WatchHz) < LaneSpacingHz / 2;
+
+            lane.Decode(newest, _windowHops, double.IsNaN(WatchHz) || watched ? Trace : null);
+
+            if (watched && Trace is not null)
+            {
+                Trace.Add(string.Create(Inv, $"{Seconds(newest):0.00} s watch {lane.PitchHz:0} Hz: window {Seconds(lane.DecodedFrom):0.00}-{Seconds(newest):0.00} s, commits to {Seconds(newest - _lagHops):0.00} s, read {lane.ReadHow}, {LaneWidthsHz[lane.Width]:0} Hz lane, {lane.Levels}, {lane.Learned}, {lane.Pattern}; path {PathLetters(lane)}"));
+            }
         }
 
         // Shadows: a lane reading the same sequence as a better-separated lane within reach is not a station; the printed lane is
@@ -962,6 +979,67 @@ public sealed class CwSequenceReader
             Commit(_printed, limit, newest);
         }
     }
+
+    // **A MARK IS TIMED WHERE IT WAS KEYED** (work instruction 591, the silences): a hop's second less the lane's delay. Traced: three
+    // of the four letters printed in silences were real letters whose last mark the lane's filter had drawn 20 to 30 ms late, past
+    // the silence's start: `<BT>` on the first recording from the 15 Hz lane, both `E`s on 143906 from the 24 and 40 Hz lanes.
+    private double Keyed(long hop, Lane lane) => Seconds(hop) - LaneDelaySeconds(LaneWidthsHz[lane.Width]);
+
+    /// <summary>
+    /// A lane's delay at a width: a fourth-order Butterworth low-pass delays a slow envelope by the sum of its two sections'
+    /// 1/(Q·ω), 2.6131 over 2π times the cutoff: 28 ms at 15 Hz, 17 ms at 24 and 10 ms at 40.
+    /// </summary>
+    public static double LaneDelaySeconds(double widthHz) => 2.6131 / (2 * Math.PI * widthHz);
+
+    // A lane's last decode as its letters, each with the second it starts at, for the watch.
+    private string PathLetters(Lane lane)
+    {
+        if (lane.Segments is not { } segs)
+        {
+            return "none";
+        }
+
+        var sb = new System.Text.StringBuilder();
+        var letter = new System.Text.StringBuilder();
+        var from = 0L;
+
+        void Close()
+        {
+            if (letter.Length > 0)
+            {
+                sb.Append(string.Create(Inv, $"{letter}@{Seconds(from):0.00} "));
+                letter.Clear();
+            }
+        }
+
+        foreach (var g in segs)
+        {
+            if (g.IsMark)
+            {
+                if (letter.Length == 0)
+                {
+                    from = lane.DecodedFrom + g.From;
+                }
+
+                letter.Append(g.State == Dah ? '-' : '.');
+            }
+            else if (g.State != InsideGap)
+            {
+                Close();
+
+                if (g.State == Silence)
+                {
+                    sb.Append(string.Create(Inv, $"[silence {Seconds(lane.DecodedFrom + g.From):0.00}-{Seconds(lane.DecodedFrom + g.To):0.00}] "));
+                }
+            }
+        }
+
+        Close();
+        return sb.ToString().Trim();
+    }
+
+    /// <summary>Where set, the pitch of a lane whose every decode the trace follows, and the only lane whose own lines it carries.</summary>
+    internal double WatchHz { get; set; } = double.NaN;
 
     // A lane taking the terminal prints nothing from before the last letter printed.
     private void Hand(Lane? lane)
@@ -1059,7 +1137,7 @@ public sealed class CwSequenceReader
             {
                 _out.Add(new CwSymbol(CwSymbolKind.WordEnd)
                 {
-                    Reading = new CwCharacter(MorseAlphabet.WordGap, CwConfidence.High, 1, string.Empty, double.NaN, wpm, TimeSpan.FromSeconds(Seconds(letterFrom)))
+                    Reading = new CwCharacter(MorseAlphabet.WordGap, CwConfidence.High, 1, string.Empty, double.NaN, wpm, TimeSpan.FromSeconds(Keyed(letterFrom, lane)))
                     {
                         Stage = CwReadingStage.Settled,
                     },
@@ -1071,7 +1149,7 @@ public sealed class CwSequenceReader
             foreach (var m in marks)
             {
                 _out.Add(new CwSymbol(m.State == Dah ? CwSymbolKind.Dash : CwSymbolKind.Dot));
-                cwMarks.Add(new CwMark(0, Seconds(m.From), Seconds(m.To), lane.PitchHz, m.Mean, m.Mean - levels.Floor) { Keyed = true, Stood = true });
+                cwMarks.Add(new CwMark(0, Keyed(m.From, lane), Keyed(m.To, lane), lane.PitchHz, m.Mean, m.Mean - levels.Floor) { Keyed = true, Stood = true });
             }
 
             // How sure: the most doubtful mark's mean between the midpoint (nought) and the key-down (one).
@@ -1080,7 +1158,7 @@ public sealed class CwSequenceReader
 
             _out.Add(new CwSymbol(CwSymbolKind.LetterEnd)
             {
-                Reading = new CwCharacter(MorseAlphabet.Unreadable, score >= 0.5 ? CwConfidence.High : CwConfidence.Low, score, pattern, levels.Top - levels.Floor, wpm, TimeSpan.FromSeconds(Seconds(letterTo)))
+                Reading = new CwCharacter(MorseAlphabet.Unreadable, score >= 0.5 ? CwConfidence.High : CwConfidence.Low, score, pattern, levels.Top - levels.Floor, wpm, TimeSpan.FromSeconds(Keyed(letterTo, lane)))
                 {
                     Stage = CwReadingStage.Settled,
                     SpanHops = (int)(letterTo - letterFrom),
@@ -1088,7 +1166,7 @@ public sealed class CwSequenceReader
                 Marks = cwMarks,
             });
 
-            Trace?.Add(string.Create(Inv, $"{Seconds(newest):0.00} s commits {pattern} at {Seconds(letterFrom):0.00}-{Seconds(letterTo):0.00} s from {lane.PitchHz:0} Hz{(space ? ", a space before" : string.Empty)}; {learned}, {LaneWidthsHz[lane.Width]:0} Hz lane"));
+            Trace?.Add(string.Create(Inv, $"{Seconds(newest):0.00} s commits {pattern} at {Keyed(letterFrom, lane):0.00}-{Keyed(letterTo, lane):0.00} s from {lane.PitchHz:0} Hz{(space ? ", a space before" : string.Empty)}; {learned}, {LaneWidthsHz[lane.Width]:0} Hz lane; {lane.Pattern}"));
 
             lane.Committed = letterTo;
             lane.LastCommitted = newest;
@@ -1125,6 +1203,9 @@ public sealed class CwSequenceReader
         public Levels Levels { get; private set; }
 
         public PatternStats Pattern { get; private set; }
+
+        // How the last decode read, for the watch: not yet, cold, warm, or warm then cold.
+        public string ReadHow { get; private set; } = "not yet";
 
         // The width, an index into LaneWidthsHz, the last decode read in.
         public int Width { get; private set; } = LaneWidthsHz.Length / 2;
@@ -1213,6 +1294,7 @@ public sealed class CwSequenceReader
                 var db = Cut(width);
 
                 reading = Read(db, Learned.Ranges, width == Width ? Levels : LevelsFromPercentiles(db));
+                ReadHow = "warm";
                 Width = width;
 
                 // **A KEPT RHYTHM THAT NO LONGER READS THE WINDOW GIVES WAY TO A COLD READ THAT DOES** (round three). Traced on
@@ -1233,6 +1315,7 @@ public sealed class CwSequenceReader
                     if (take)
                     {
                         reading = cold;
+                        ReadHow = "warm, then cold";
                         Width = coldWidth;
                     }
                 }
@@ -1240,6 +1323,7 @@ public sealed class CwSequenceReader
             else
             {
                 (reading, var width) = ReadCold(Cut);
+                ReadHow = "cold";
 
                 Width = width;
             }

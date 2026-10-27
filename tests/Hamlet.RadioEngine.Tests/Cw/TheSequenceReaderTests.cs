@@ -688,6 +688,120 @@ public sealed class TheSequenceReaderTests(ITestOutputHelper output)
         }
     }
 
+    /// <remarks>
+    /// Work instruction 591, section 2, the opening: the live reader on a station's opening with its lane watched. The station's
+    /// keyed marks from the keying map, the letters printed and the truth; every decode of the watched lane (its window, where the
+    /// commit lag stood, how it read, its levels and rhythm, and the letters its path laid with the second each starts); every
+    /// letter committed from any lane; and every 50 ms from a second before his first mark, the lane's level at each width beside
+    /// whether he was keyed. Asserts nothing.
+    /// </remarks>
+    [Theory]
+    [InlineData("cw-2026-10-02-200157", 675.0, 0, 5)]
+    [InlineData("cw-2026-10-08-121414", 800.0, 0, 8)]
+    [InlineData("cw-2026-10-03-144020", 600.0, 9, 15)]
+    [InlineData("w1aw-2026-10-07/piece-02", 600.0, 0, 6)]
+    [InlineData("w1aw-2026-10-07/piece-04", 600.0, 0, 6)]
+    public void TheOpeningTraced(string recording, double watchHz, double from, double to)
+    {
+        var audio = WavAudio.Read(TheOwnersRecordingReadsTests.Wav(recording));
+        var (pitch, width) = TheRecordingsScoreboardTests.RadioState(recording);
+        var trace = new List<string>();
+        IReadOnlyList<TheRecordingsScoreboardTests.Printed> letters;
+
+        using (CwRules.Choose(CwRules.SequenceReader))
+        {
+            letters = ReadLiveTraced(audio.Samples, audio.SampleRate, pitch, width, trace, watchHz);
+        }
+
+        var map = TheKeyingMapTests.Of(recording);
+        var station = map.Stations.MinBy(s => Math.Abs(s.PitchHz - watchHz))!;
+        var keyed = station.Marks.Where(m => m.To >= from - 1 && m.From <= to).ToList();
+        var first = keyed.Count > 0 ? keyed[0].From : from;
+        double At(string line) => double.Parse(line[..line.IndexOf(' ', StringComparison.Ordinal)], Inv);
+
+        output.WriteLine(string.Create(Inv, $"## {recording}: the lane at {watchHz:0} Hz, {from:0.#} to {to:0.#} s; the station at {station.PitchHz:0} Hz keys first at {first:0.00} s"));
+        output.WriteLine("truth, the keying map: " + string.Join(' ', keyed.Select(m => string.Create(Inv, $"{(m.To - m.From) * 1000:0}@{m.From:0.00}"))));
+
+        foreach (var s in TheRecordingsScoreboardTests.Stretches.Where(s => s.Recording == recording && s.From < to && s.To > from))
+        {
+            output.WriteLine(string.Create(Inv, $"sent {s.From:0.#}-{s.To:0.#} s at {s.PitchHz:0} Hz: `{s.Reference}`"));
+        }
+
+        output.WriteLine("printed: " + string.Join(' ', letters.Where(l => l.From >= from - 1 && l.From <= to + 2).Select(l => string.Create(Inv, $"{l.Text}@{l.From:0.00}({l.PitchHz:0})"))));
+        output.WriteLine(string.Empty);
+
+        foreach (var l in trace.Where(l => (l.Contains(" watch ", StringComparison.Ordinal) && At(l) <= to + 8) || ((l.Contains(" commits ", StringComparison.Ordinal) || l.Contains("holds", StringComparison.Ordinal) || l.Contains("let go", StringComparison.Ordinal)) && At(l) <= to + 6)))
+        {
+            output.WriteLine("  " + l);
+        }
+
+        output.WriteLine(string.Empty);
+        output.WriteLine("| s | 15 Hz | 24 Hz | 40 Hz | keyed |");
+        output.WriteLine("|---|---|---|---|---|");
+
+        var envelopes = CwSequenceReader.LaneWidthsHz.Select(w => CwSequenceReader.Envelope(audio.Samples, audio.SampleRate, watchHz, w)).ToArray();
+
+        for (var t = Math.Max(0, first - 1); t <= Math.Min(to, first + 4); t += 0.05)
+        {
+            var k = (int)(t * 1000 / CwSequenceReader.HopMs);
+            var on = station.Marks.Any(m => m.From <= t && m.To > t);
+
+            output.WriteLine(string.Create(Inv, $"| {t:0.00} | {envelopes[0][k]:0.0} | {envelopes[1][k]:0.0} | {envelopes[2][k]:0.0} | {(on ? "key" : string.Empty)} |"));
+        }
+    }
+
+    /// <remarks>
+    /// Work instruction 591, section 2, the silences: each letter the live reader printed inside a silence of two seconds or more
+    /// on the keying map, the lane that committed it with its rhythm, levels and window pattern, the lane's holds and lets go, and
+    /// every station's keyed mark within a second of it. Asserts nothing.
+    /// </remarks>
+    [Theory]
+    [InlineData("cw-2026-10-02-200157")]
+    [InlineData("cw-2026-10-03-143906")]
+    [InlineData("cw-2026-10-03-221502")]
+    public void TheSilencesTraced(string recording)
+    {
+        var audio = WavAudio.Read(TheOwnersRecordingReadsTests.Wav(recording));
+        var (pitch, width) = TheRecordingsScoreboardTests.RadioState(recording);
+        var trace = new List<string>();
+        IReadOnlyList<TheRecordingsScoreboardTests.Printed> letters;
+
+        using (CwRules.Choose(CwRules.SequenceReader))
+        {
+            letters = ReadLiveTraced(audio.Samples, audio.SampleRate, pitch, width, trace);
+        }
+
+        var map = TheKeyingMapTests.Of(recording);
+
+        output.WriteLine(string.Create(Inv, $"## {recording}: printed `{string.Concat(letters.Select(l => (l.SpaceBefore ? " " : string.Empty) + l.Text))}`; silences {string.Join(", ", map.Silences.Select(s => string.Create(Inv, $"{s.From:0.00}-{s.To:0.00}")))}"));
+        output.WriteLine("stations: " + string.Join("; ", map.Stations.Select(s => string.Create(Inv, $"{s.PitchHz:0} Hz, {s.Marks.Count} marks, {s.Marks[0].From:0.00}-{s.Marks[^1].To:0.00} s"))));
+
+        foreach (var l in letters.Where(l => map.SilenceAround(l.From, l.Seconds) is not null))
+        {
+            var quiet = map.SilenceAround(l.From, l.Seconds)!.Value;
+
+            output.WriteLine(string.Empty);
+            output.WriteLine(string.Create(Inv, $"### `{l.Text}` at {l.From:0.00}-{l.Seconds:0.00} s from {l.PitchHz:0} Hz, inside the silence {quiet.From:0.00}-{quiet.To:0.00} s"));
+
+            foreach (var c in trace.Where(c => c.Contains(" commits ", StringComparison.Ordinal) && c.Contains(string.Create(Inv, $"at {l.From:0.00}-"), StringComparison.Ordinal)))
+            {
+                output.WriteLine("  committed: " + c);
+            }
+
+            foreach (var m in map.Marks.Where(m => m.To >= l.From - 1 && m.From <= l.Seconds + 1))
+            {
+                output.WriteLine(string.Create(Inv, $"  keyed nearby: {m.PitchHz:0} Hz {m.From:0.00}-{m.To:0.00} s, {m.OverDb:0.0} dB over"));
+            }
+        }
+
+        output.WriteLine(string.Empty);
+
+        foreach (var c in trace.Where(c => c.Contains("holds", StringComparison.Ordinal) || c.Contains("let go", StringComparison.Ordinal) || c.Contains("someone else", StringComparison.Ordinal)))
+        {
+            output.WriteLine("  " + c);
+        }
+    }
+
     private const double CommitLagSeconds = CwSequenceReader.CommitLagSeconds;
 
     private const double DecodeEvery = CwSequenceReader.DecodeEverySeconds;
@@ -697,7 +811,7 @@ public sealed class TheSequenceReaderTests(ITestOutputHelper output)
         => MorseAlphabet.All.FirstOrDefault(kv => kv.Value == c.ToString()).Key ?? "prosign";
 
     /// <summary><see cref="TheRecordingsScoreboardTests.ReadLive(float[], int, double, double)"/>, the reader's trace kept.</summary>
-    internal static IReadOnlyList<TheRecordingsScoreboardTests.Printed> ReadLiveTraced(float[] samples, int rate, double pitch, double width, List<string> trace)
+    internal static IReadOnlyList<TheRecordingsScoreboardTests.Printed> ReadLiveTraced(float[] samples, int rate, double pitch, double width, List<string> trace, double watchHz = double.NaN)
     {
         using var chain = new CwChain(rate);
         var gate = chain.Decoder.Runs;
@@ -710,6 +824,7 @@ public sealed class TheSequenceReaderTests(ITestOutputHelper output)
         if (chain.Detector.Sequence is { } reader)
         {
             reader.Trace = trace;
+            reader.WatchHz = watchHz;
         }
 
         gate.CharacterRead += c => space |= c.Text == MorseAlphabet.WordGap;
