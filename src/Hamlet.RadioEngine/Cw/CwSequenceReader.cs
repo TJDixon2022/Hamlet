@@ -151,6 +151,12 @@ public sealed class CwSequenceReader
     /// <summary>The span either side of a lane within which another lane reading the same sequence is its shadow.</summary>
     public const double ShadowReachHz = 100;
 
+    /// <summary>
+    /// How much better separated another lane reading the printed lane's sequence must stand to take the terminal from it (work
+    /// instruction 590, round two): the station's own lane against one 25 Hz off stood 2.25 against 1.64 on 144020.
+    /// </summary>
+    public const double SeparationMargin = 0.25;
+
     /// <summary>How near two marks' starts must sit to be the same mark, for the shadow test.</summary>
     public const double SameMarkSeconds = 0.03;
 
@@ -906,7 +912,12 @@ public sealed class CwSequenceReader
         // **A STATION'S LANE KEEPS ITS SENDER THROUGH A PAUSE** (work instruction 589, change 3): the printed lane stays a station
         // while it read Morse within the last KeepRhythmSeconds; in his pause it decodes nobody keying and prints nothing.
         var keep = Hops(KeepRhythmSeconds);
-        var reading = _lanes.Where(l => l.Pattern.IsMorse || (l == _printed && newest - l.LastMorse <= keep)).OrderBy(l => l == _printed ? 0 : 1).ThenByDescending(l => l.Pattern.Separation).ToList();
+        // **ONE STATION'S LANES: THE BEST-SEPARATED PRINTS** (work instruction 590, round two): the printed lane comes first among
+        // the lanes reading its sequence only while none stands SeparationMargin better. Traced on 144020: at 20 s the terminal
+        // went to 625 Hz, 25 Hz off the second station, at separation 1.64; from 22 s the 600 Hz lane read him at 2.25 and was
+        // dropped as the printed lane's shadow, and 625 Hz printed him in a crossed rhythm.
+        var printedSeparation = _printed?.Pattern.Separation ?? 0;
+        var reading = _lanes.Where(l => l.Pattern.IsMorse || (l == _printed && newest - l.LastMorse <= keep)).OrderByDescending(l => l == _printed ? printedSeparation + SeparationMargin : l.Pattern.Separation).ToList();
         var stations = new List<Lane>();
 
         foreach (var lane in reading)
