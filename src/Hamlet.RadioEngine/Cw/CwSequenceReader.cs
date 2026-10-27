@@ -119,6 +119,12 @@ public sealed class CwSequenceReader
     /// </summary>
     public const double PatternDrop = 0.25;
 
+    /// <summary>
+    /// How far a warm read and a cold read of one window may disagree on the dah share before the warm read's kept rhythm is stale
+    /// (work instruction 591, round two): 0.15 and 0.16 at 121414's speed change, 0.02 or less on the windows traced around it.
+    /// </summary>
+    public const double DahShareDisagree = 0.1;
+
     /// <summary>Whether a warm decode's pattern has fallen from the lane's kept one by <see cref="PatternDrop"/>.</summary>
     public static bool Falls(PatternStats warm, PatternStats kept)
         => kept.Marks > 0 && (warm.Separation < (1 - PatternDrop) * kept.Separation || Math.Abs(warm.DahShare - kept.DahShare) > PatternDrop);
@@ -991,6 +997,9 @@ public sealed class CwSequenceReader
     /// </summary>
     public static double LaneDelaySeconds(double widthHz) => 2.6131 / (2 * Math.PI * widthHz);
 
+    // How many of a decode's letters are patterns that are no letter.
+    private static int Unreadable(string text) => text.Count(c => c.ToString() == MorseAlphabet.Unreadable);
+
     // A lane's last decode as its letters, each with the second it starts at, for the watch.
     private string PathLetters(Lane lane)
     {
@@ -1305,10 +1314,17 @@ public sealed class CwSequenceReader
                 // its pattern is Morse and stands better.
                 var fell = !reading.Pattern.IsMorse || Falls(reading.Pattern, Kept);
 
-                if (fell || trace is not null)
+                // **AND EVERY WINDOW, WHERE THE TWO DISAGREE ON WHAT IS A DAH, THE KEPT RHYTHM IS STALE** (work instruction 591, round
+                // two): traced on 121414, the sender went from a 220 ms dah to 155 ms at 11.8 s; at 16 and 18 s the cold read saw a dah
+                // share of 0.37 and 0.43 at dah 145 ms where the warm read, at its kept 210 ms, saw 0.22 and 0.27 and printed BK as HS.
                 {
                     var (cold, coldWidth) = ReadCold(Cut);
-                    var take = fell && cold.Pattern.IsMorse && (!reading.Pattern.IsMorse || Better(cold.Pattern, reading.Pattern));
+                    // Which of the two is stale the dah share cannot say: on W1AW piece-03 at 256 s he slowed for `<BT> QST DE W1AW`, and the
+                    // cold read, on a crossed rhythm, saw 0.28 where the warm read was right at 0.46. The cold read is taken only where it
+                    // lays no more patterns that are no letter than the warm one.
+                    var stale = reading.Pattern.IsMorse && Math.Abs(cold.Pattern.DahShare - reading.Pattern.DahShare) > DahShareDisagree
+                        && Unreadable(cold.Text) <= Unreadable(reading.Text);
+                    var take = cold.Pattern.IsMorse && ((fell && (!reading.Pattern.IsMorse || Better(cold.Pattern, reading.Pattern))) || stale);
 
                     trace?.Add(string.Create(Inv, $"{newest * HopMs / 1000:0.00} s {PitchHz:0} Hz warm: {reading.Pattern}; kept: {Kept}; cold: {cold.Pattern}, {(cold.Passes.Count > 0 ? cold.Passes[^1] : null)}; {(take ? "takes the cold read" : fell ? "keeps its rhythm, the cold read no better" : "keeps its rhythm")}"));
 

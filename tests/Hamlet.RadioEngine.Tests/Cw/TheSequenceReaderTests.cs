@@ -701,6 +701,7 @@ public sealed class TheSequenceReaderTests(ITestOutputHelper output)
     [InlineData("cw-2026-10-03-144020", 600.0, 9, 15)]
     [InlineData("w1aw-2026-10-07/piece-02", 600.0, 0, 6)]
     [InlineData("w1aw-2026-10-07/piece-04", 600.0, 0, 6)]
+    [InlineData("cw-2026-10-08-121414", 800.0, 10, 20)]
     public void TheOpeningTraced(string recording, double watchHz, double from, double to)
     {
         var audio = WavAudio.Read(TheOwnersRecordingReadsTests.Wav(recording));
@@ -730,7 +731,7 @@ public sealed class TheSequenceReaderTests(ITestOutputHelper output)
         output.WriteLine("printed: " + string.Join(' ', letters.Where(l => l.From >= from - 1 && l.From <= to + 2).Select(l => string.Create(Inv, $"{l.Text}@{l.From:0.00}({l.PitchHz:0})"))));
         output.WriteLine(string.Empty);
 
-        foreach (var l in trace.Where(l => (l.Contains(" watch ", StringComparison.Ordinal) && At(l) <= to + 8) || ((l.Contains(" commits ", StringComparison.Ordinal) || l.Contains("holds", StringComparison.Ordinal) || l.Contains("let go", StringComparison.Ordinal)) && At(l) <= to + 6)))
+        foreach (var l in trace.Where(l => ((l.Contains(" watch ", StringComparison.Ordinal) || l.Contains(" warm: ", StringComparison.Ordinal)) && At(l) <= to + 8) || ((l.Contains(" commits ", StringComparison.Ordinal) || l.Contains("holds", StringComparison.Ordinal) || l.Contains("let go", StringComparison.Ordinal)) && At(l) <= to + 6)))
         {
             output.WriteLine("  " + l);
         }
