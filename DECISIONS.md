@@ -4,6 +4,45 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-292
+date: 2026-10-26
+refs: work instruction 588, HM-DEC-291, HM-DEC-284, HM-DEC-276, tools/prototype/sequence-reader, src/Hamlet.RadioEngine/Cw/CwSequenceReader.cs, src/Hamlet.RadioEngine/Cw/CwRules.cs, src/Hamlet.RadioEngine/Cw/CwEnvelopeDetector.cs, src/Hamlet.RadioEngine/Cw/CwDecoder.cs, src/Hamlet.RadioEngine/Cw/CwChain.cs, src/Hamlet.RadioEngine/Cw/CwSenderGate.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheSequenceReaderTests.cs
+---
+
+**The sequence reader: the whole keying explains the envelope. Ported from the prototype, proved on its own cases, built behind `CwRules.SequenceReader` in three rounds, measured, left off.**
+
+**The method.** Of every legal sequence of dits, dahs, inside gaps, letter gaps and word gaps at the sender's own rhythm, the one that best explains a narrow lane's whole envelope: an explicit-duration (semi-Markov) Viterbi decoder. It never decides a mark; it finds the path, and the sender's dit, dah and gap lengths and his key-down and key-up levels are learned from its own decode, three passes. The prototype is `tools\prototype\sequence-reader\` (`cwhmm.py`, `cwhmm2.py`, `synth.py`, README), committed unchanged before the port; Python does not run on the development computer, so it was read and ported, not run.
+
+**The port, `CwSequenceReader`.** Its static half is the prototype line for line: `Envelope` (mixed to the pitch, a fourth-order Butterworth on both quadratures, dB every 5 ms), `Decode` (cumulative emission sums, a segment scored in O(1), a flat prior of -log(range), dits and dahs after any gap or the start, gaps after a dit or dah), `RangesFromDit`, `Learn`, `Read` (three passes), `Text`. Departures, one line each in the code: the Butterworth as two RBJ biquads; the predecessor maximum taken once per hop with the prototype's tie order; the first dit, where none is given, by two-means on the run lengths above the midpoint with hysteresis (the prototype's `cwhmm2.py` takes it as an argument); live, a lane that printed carries its rhythm into its next window; live, a mark whose mean lies under the midpoint of the two learned levels is silence. Live, a lane every 25 Hz across the rig's passband at 16 Hz (a tone halfway between two lanes loses 0.45 dB), decoded over its last 12 s every 2 s from 6 s on, letters committed 2 s behind the newest audio (`CommitLagSeconds`) and printed through the lookup table. A lane prints only where its decode is Morse by pattern: dah share at least 0.2, dah tightness (median absolute deviation over the median) at most 0.12, learned key-down over key-up at least 1.5 of the sum of the two spreads, on 16 marks or more; no floor, contrast line, carrier or shadow rule stands in front of it. Two lanes reading the same sequence within 100 Hz are one station, the better separation kept. With the rule on, the reader is the only path to the printer: the grid's marks, the bank and the column finder feed nothing, and the grid stays for the scope.
+
+**The first proof** (`TheSequenceReaderTests.TheFirstProof`), the audio built exactly as `synth.py` builds it (12 kHz, Hann-gated 5 ms edges, Gaussian noise band-passed 350 to 870 Hz by fourth-order Butterworths, the SNR in that band, 12 dB of QSB at 0.7 Hz), read at the prototype's pitch, lane and dit, three seeds each: the 18 WPM ragchew at 10 and 5 dB flat 60 of 60, at 0 dB 60 of 60, at 10 dB fading 60 of 60, at 5 dB fading 60, 59, 59; the 12 WPM fist with a dah of 1.7 dits and 15% jitter at 20 dB, lane 30 Hz, 60 of 60. The band alone: dah share 0.11 to 0.15, separation 1.06 to 1.10, not Morse. The port matches the prototype's reads. Through the tree's own generator the 0 dB case reads 51 to 58: its noise is three cascaded band-passes, which put about 2.3 dB more noise at 615 Hz than a flat band of the same total.
+
+**The capture** (`TheCaptureReads`), `cw-2026-10-19-141708` at 500 Hz, lane 10 Hz, dit 100 ms: 120 to 300 s as one stretch reads `GM KEN NICE TO MEETE … TNXFER RPRT UR … 57 9 … IAM IN MOBILE STN … NAME BRYAN BRYAN ES QTH IS I CHICOP E , MA CHICOP EE … PARKED IN MY MOBILE <BT> … KEN N3AFS DE KB■ZY/ M`; 0 to 60 s reads `… 58 N XTH I I NEW D ENS ENBTON,<AS>…`. It does not read `589`, `NEW KENSINGTON` or `KB2UZK/M` whole as the prototype's table has them, at any window start tried; the input is the same 48 kHz mono file, so the difference is unexplained without running the prototype.
+
+**The rounds**, each measured with the rule on:
+- **Round one.** The port as above.
+- **Round two.** Traced (`TheLaneWindowsTraced`): from a dit guess at its 25 ms floor the passes settled on dit 40 and dah 80 ms with one-hop inside gaps and read every dit as a dah (KM3STU's `55N` as `TTTTT`, the first recording's `FER C` as `TTAT TTAT`). A cold lane (`ReadCold`) now takes one pass from the guess and from 40, 70 and 120 ms and keeps the start whose decode has the highest Gaussian log-likelihood under the levels it learned; the same windows read `NER C HAT <BT> BEST 7V 73 <SK> KC4ZGP` and `RR UR 55N 55N VA VA BK`. A floor at the lane's rise time was tried first, changed nothing, and was taken out.
+- **Round three.** Traced on W1AW piece-03: under the AGC the printed lane's separation sat at 1.52 to 1.67, one window under 1.5 let it go, and every hold after began cold on a crossed gap rhythm (letter gap 240, word gap 210 ms) that merged letters into placeholders. The printed lane now stays a station, carrying its rhythm, while it read Morse within the last `YieldSeconds`, 4 s.
+
+**The figures, as shipped, then rounds one, two and three:**
+- the twelve-plus-three: 297 (318 right, 20 wrong, 1 invented); 177 (252, 43, 32), 231 (284, 29, 24), 187 (265, 31, 47);
+- W1AW: 2111 (2131 right, 20 wrong); 2024 (2055, 31), 1526 (1605, 79), 1764 (1833, 69); invented 0 throughout;
+- the fist bank: 1891 (2612 right, 675 wrong, 46 invented); 2817 (3399, 579, 3), 3166 (3762, 595, 1), 3104 (3788, 683, 1). The flat half, letters right: 2173; 2190, 2455, 2428. The fading half: 439; 1209, 1307, 1360. The 5 dB column at 20 WPM, flat: 157; 188, 214, 185;
+- the four 5 dB CQs: 71 of 84; 79, 77, 74. The 15 dB CQs: 78; 70, 84, 84. The 0 dB CQs: 0; 1, 4, 6;
+- letters in silences over the truthful rows: 0; 19, 15, 16;
+- the easy fixtures: 77 of 90 in every round. The working fixtures: 4; 24, 13, 17 of 81. `two-station`: 18; 27 of 27 in every round. The synthetic fixtures: 46; 64, 64, 60 of 67, with 11, 11 and 27 invented (`clean-12wpm`, a noiseless fixture, prints in its digital silence);
+- strays summed over the 65 old captures: 26.8; 65.6, 58.3, 60.8. The highest single capture: 3.3; 4.0, 4.3, 5.3;
+- the first recording: whole; `TTAT TTAT E NTAT … BEST7V 73 <SK> KC4ZGP■`, then `RER C HAT<BT> BEST 7V 73 <SK> KC4ZGP■` in rounds two and three;
+- the guards, measured in round three only: the random carrier at 20 seeds of 20 against 2; one `E` in the 20 s after a weak CQ; the nine straight-key hands 0 of 60, read with no rig passband, where the reader is not built; loud noise and the steady carrier not reached, the guard stopping at the score;
+- CPU on W1AW piece-04, 283 s: 76 s with the reader against 181 s with two finders.
+
+**It does not ship.** The twelve-plus-three is 187 against 297 and W1AW 1764 against 2111, far outside the 1 per cent band; the random carrier prints at every seed, 16 letters print in silences, and the first recording is not whole. The bar's other conditions hold: the fist bank's score, the fading and flat halves, the 5 dB column and CQs, the easy fixtures and CPU.
+
+**Whether the port matches the prototype.** On the prototype's own cases, generated as it generates them, it does, letter for letter, and the band alone gives the prototype's own figures for nothing. On the capture it reads the same message with three tokens different. So the next unit is the reader on the real recordings, not the port: its live layer (cold starts, holds and shadows, a carrier passing the pattern test, marks laid in silence) is where the losses are.
+
+As shipped, every reading is as at HEAD: 297 and 2111. Ordered by work instruction 588.
+
+---
 id: HM-DEC-291
 date: 2026-10-22
 refs: work instruction 587, HM-DEC-290, HM-DEC-284, HM-DEC-276, HM-DEC-268, src/Hamlet.RadioEngine/Cw/CwColumnFinder.cs, src/Hamlet.RadioEngine/Cw/CwRules.cs, src/Hamlet.RadioEngine/Cw/CwEnvelopeDetector.cs, src/Hamlet.RadioEngine/Cw/CwMark.cs, src/Hamlet.RadioEngine/Cw/CwPatternGate.cs, src/Hamlet.RadioEngine/Cw/CwSenderGate.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheColumnTests.cs
