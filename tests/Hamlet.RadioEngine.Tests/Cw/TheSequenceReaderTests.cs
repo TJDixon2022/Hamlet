@@ -320,7 +320,7 @@ public sealed class TheSequenceReaderTests(ITestOutputHelper output)
     {
         var audio = WavAudio.Read(Path.Combine(CwFixtures.Folder, file + ".wav"));
 
-        foreach (var lane in new[] { CwSequenceReader.LaneBandwidthHz, 10 })
+        foreach (var lane in CwSequenceReader.LaneWidthsHz.Append(10))
         {
             var db = CwSequenceReader.Envelope(audio.Samples, audio.SampleRate, pitch, lane);
             var hops = (int)(CwSequenceReader.WindowSeconds * 1000 / CwSequenceReader.HopMs);
@@ -436,6 +436,179 @@ public sealed class TheSequenceReaderTests(ITestOutputHelper output)
         output.WriteLine(string.Create(Inv, $"sequence reader: {sequence.Cpu:0.00} s CPU, {sequence.Wall:0.00} s wall"));
         output.WriteLine("two:      " + two.Text);
         output.WriteLine("sequence: " + sequence.Text);
+    }
+
+    /// <remarks>
+    /// **THE TRACE, FIRST** (work instruction 589, section 2): the reader's path against the truth on the twelve-plus-three's worst
+    /// stretches under the reader and W1AW's piece-03, one row per letter that differs: the edit, what was sent and what the path laid,
+    /// when, the learned rhythm the letter was committed under, and the reader's own lines between that letter and the one before it
+    /// (holds, lets go, letters cut by a window's start, marks silenced under the midpoint). Asserts nothing.
+    /// </remarks>
+    [Theory]
+    [InlineData("cw-2026-10-08-121414")]
+    [InlineData("cw-2026-10-08-121324")]
+    [InlineData("cw-2026-10-03-221548")]
+    [InlineData("cw-2026-10-02-200157")]
+    [InlineData("cw-2026-10-03-144020")]
+    [InlineData("w1aw-2026-10-07/piece-03")]
+    public void TheReaderAgainstTheTruth(string recording)
+    {
+        var audio = WavAudio.Read(TheOwnersRecordingReadsTests.Wav(recording));
+        var (pitch, width) = TheRecordingsScoreboardTests.RadioState(recording);
+        var trace = new List<string>();
+        IReadOnlyList<TheRecordingsScoreboardTests.Printed> letters;
+
+        using (CwRules.Choose(CwRules.SequenceReader))
+        {
+            letters = ReadLiveTraced(audio.Samples, audio.SampleRate, pitch, width, trace);
+        }
+
+        var w1aw = recording.StartsWith("w1aw", StringComparison.Ordinal);
+        var stretches = (w1aw ? TheW1awTableTests.Stretches : TheRecordingsScoreboardTests.Stretches).Where(s => s.Recording == recording).ToList();
+        var lines = trace.Select(l => (At: double.Parse(l[..l.IndexOf(' ', StringComparison.Ordinal)], Inv), Line: l)).ToList();
+
+        output.WriteLine(string.Create(Inv, $"## {recording} at {pitch:0} Hz, {width:0} Hz wide"));
+
+        foreach (var s in stretches)
+        {
+            var mine = letters.Where(l => w1aw
+                ? l.Seconds >= s.From && l.Seconds < s.To
+                : Math.Abs(s.PitchHz - l.PitchHz) <= 60 && l.Seconds >= s.From - 1 && l.Seconds <= s.To + 1).OrderBy(l => l.Seconds).ToList();
+            var printed = TheRecordingsScoreboardTests.Text(mine);
+
+            output.WriteLine(string.Empty);
+            output.WriteLine(string.Create(Inv, $"### {s.From:0.#}-{s.To:0.#} s at {s.PitchHz:0} Hz ({s.Confidence}): {TheRecordingsScoreboardTests.Right(printed, s.Reference)} of {TheRecordingsScoreboardTests.Letters(s.Reference).Length}"));
+            output.WriteLine("sent:    `" + s.Reference + "`");
+            output.WriteLine("printed: `" + printed + "`");
+            output.WriteLine(string.Empty);
+            output.WriteLine("| edit | sent | laid | at | committed under | the reader between |");
+            output.WriteLine("|---|---|---|---|---|---|");
+
+            var decode = TheRecordingsScoreboardTests.Letters(printed);
+            var key = TheRecordingsScoreboardTests.Letters(s.Reference);
+
+            if (decode.Length == 0)
+            {
+                output.WriteLine("| nothing printed | | | | | |");
+                continue;
+            }
+
+            var score = CwScorer.Within(decode, key, CwKeyKind.Exact);
+            var di = score.Start;
+            var lastAt = di > 0 && di - 1 < mine.Count ? mine[di - 1].Seconds : s.From;
+
+            foreach (var step in score.Steps)
+            {
+                TheRecordingsScoreboardTests.Printed? at = step.Edit == CwEdit.Missing || di >= mine.Count ? null : mine[di];
+
+                if (step.Edit != CwEdit.Same)
+                {
+                    var until = at?.Seconds ?? (di < mine.Count ? mine[di].Seconds : s.To);
+                    var commit = at is null ? null : lines.Select(l => l.Line).FirstOrDefault(l => l.Contains(string.Create(Inv, $" at {at.Value.From:0.00}-"), StringComparison.Ordinal) && l.Contains("commits", StringComparison.Ordinal));
+                    var between = lines.Where(l => l.At > lastAt && l.At <= until + CommitLagSeconds + DecodeEvery && !l.Line.Contains("commits", StringComparison.Ordinal)).Select(l => l.Line[(l.Line.IndexOf(" s ", StringComparison.Ordinal) + 3)..]).ToList();
+                    var sent = step.Key is { } k ? $"{k} `{Pattern(k)}`" : "-";
+                    var laid = at is { } a ? $"{a.Text} `{(commit is null ? "?" : commit.Split(' ')[3])}`" : "-";
+
+                    output.WriteLine(string.Create(Inv, $"| {step.Edit} | {sent} | {laid} | {(at is { } p ? string.Create(Inv, $"{p.From:0.00}-{p.Seconds:0.00}") : string.Create(Inv, $"after {lastAt:0.00}"))} | {(commit is null ? "-" : commit[(commit.IndexOf(';', StringComparison.Ordinal) + 2)..])} | {string.Join("; ", between.Take(4))}{(between.Count > 4 ? string.Create(Inv, $"; and {between.Count - 4} more") : string.Empty)} |"));
+                }
+
+                if (step.Edit != CwEdit.Missing)
+                {
+                    if (di < mine.Count)
+                    {
+                        lastAt = mine[di].Seconds;
+                    }
+
+                    di++;
+                }
+            }
+        }
+
+        output.WriteLine(string.Empty);
+        output.WriteLine("The reader's own lines, holds and lets go:");
+
+        foreach (var l in trace.Where(l => l.Contains("holds", StringComparison.Ordinal) || l.Contains("let go", StringComparison.Ordinal)))
+        {
+            output.WriteLine("  " + l);
+        }
+    }
+
+    /// <remarks>
+    /// A cold lane's starts on a recording's window, each in the width its dit asks for: the width, what one pass learned, the
+    /// likelihood under the levels every first pass decodes with and the prior, each per hop, and the text. Asserts nothing.
+    /// </remarks>
+    [Theory]
+    [InlineData("cw-2026-10-02-200157", 675.0, 6)]
+    [InlineData("cw-2026-10-02-200157", 675.0, 12)]
+    [InlineData("cw-2026-10-08-121414", 800.0, 8)]
+    public void TheColdStartsScored(string recording, double pitch, double end)
+    {
+        var audio = WavAudio.Read(TheOwnersRecordingReadsTests.Wav(recording));
+        var hops = (int)(end * 1000 / CwSequenceReader.HopMs);
+        var from = Math.Max(0, hops - (int)(CwSequenceReader.WindowSeconds * 1000 / CwSequenceReader.HopMs));
+        var envelopes = CwSequenceReader.LaneWidthsHz.Select(w => CwSequenceReader.Envelope(audio.Samples, audio.SampleRate, pitch, w)[from..hops]).ToArray();
+        var middle = CwSequenceReader.LaneWidthsHz.Length / 2;
+
+        foreach (var dit in new[] { CwSequenceReader.GuessDitHops(envelopes[middle]) }.Concat(CwSequenceReader.ColdStartDits).Distinct())
+        {
+            foreach (var w in Enumerable.Range(0, envelopes.Length))
+            {
+                var db = envelopes[w];
+                var ranges = CwSequenceReader.RangesFromDit(dit);
+                var segs = CwSequenceReader.Decode(db, ranges, CwSequenceReader.LevelsFromPercentiles(db));
+                var learnedOne = CwSequenceReader.Learn(segs, db);
+                var lv = learnedOne?.Levels ?? CwSequenceReader.LevelsFromPercentiles(db);
+                var r = new CwSequenceReader.Reading(segs, CwSequenceReader.Text(segs), learnedOne is null ? [] : [learnedOne], lv, CwSequenceReader.Pattern(segs, lv));
+                var ll = CwSequenceReader.LogLikelihood(r.Segments, db, CwSequenceReader.LevelsFromPercentiles(db)) / db.Length;
+                var prior = CwSequenceReader.PriorCost(r.Segments, ranges) / db.Length;
+
+                output.WriteLine(string.Create(Inv, $"{recording} to {end:0} s, start {dit * 5} ms, {CwSequenceReader.LaneWidthsHz[w]:0} Hz{(w == CwSequenceReader.WidthFor(dit) ? " (its width)" : string.Empty)}: ll {ll:0.000} prior {prior:0.000} score {ll - prior:0.000}; {(r.Passes.Count > 0 ? r.Passes[^1] : null)}; `{Cut(r.Text)}`"));
+            }
+        }
+
+        var (cold, width) = CwSequenceReader.ReadCold(w => envelopes[w]);
+
+        output.WriteLine(string.Create(Inv, $"chosen: {CwSequenceReader.LaneWidthsHz[width]:0} Hz, {(cold.Passes.Count > 0 ? cold.Passes[^1] : null)}; `{Cut(cold.Text)}`"));
+    }
+
+    private const double CommitLagSeconds = CwSequenceReader.CommitLagSeconds;
+
+    private const double DecodeEvery = CwSequenceReader.DecodeEverySeconds;
+
+    // The true pattern of a letter the scorer names: a prosign is shown as itself.
+    private static string Pattern(char c)
+        => MorseAlphabet.All.FirstOrDefault(kv => kv.Value == c.ToString()).Key ?? "prosign";
+
+    /// <summary><see cref="TheRecordingsScoreboardTests.ReadLive(float[], int, double, double)"/>, the reader's trace kept.</summary>
+    internal static IReadOnlyList<TheRecordingsScoreboardTests.Printed> ReadLiveTraced(float[] samples, int rate, double pitch, double width, List<string> trace)
+    {
+        using var chain = new CwChain(rate);
+        var gate = chain.Decoder.Runs;
+        var letters = new List<TheRecordingsScoreboardTests.Printed>();
+        var space = false;
+        var chunk = rate / 100;
+
+        chain.Detector.SetPassband(pitch, width);
+
+        if (chain.Detector.Sequence is { } reader)
+        {
+            reader.Trace = trace;
+        }
+
+        gate.CharacterRead += c => space |= c.Text == MorseAlphabet.WordGap;
+        gate.RunRead += (c, run) =>
+        {
+            letters.Add(new TheRecordingsScoreboardTests.Printed(run[^1].ToSeconds, run.Average(m => m.PitchHz), c.Text, space, null, run[0].FromSeconds));
+            space = false;
+        };
+
+        for (var at = 0; at + chunk <= samples.Length; at += chunk)
+        {
+            chain.Process(new AudioChunk(at, rate, samples.AsSpan(at, chunk)));
+        }
+
+        chain.Decoder.Flush();
+        return letters;
     }
 
     /// <summary>Audio through the app's chain, the sequence reader's trace kept.</summary>

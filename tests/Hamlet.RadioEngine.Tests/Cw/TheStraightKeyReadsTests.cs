@@ -80,10 +80,13 @@ public sealed class TheStraightKeyReadsTests(ITestOutputHelper output)
     /// <summary>One reading of one hand: letters right of sent, and what the gate made of its marks.</summary>
     internal sealed record Row(double Ratio, int Seed, int Right, int Of, ThePatternIsTheGateTests.Reading Reading, double WidestJump, double CentreRatio, double Shape);
 
-    /// <summary>Reads one hand through the app's chain.</summary>
+    /// <summary>
+    /// Reads one hand through the app's chain, the rig's passband set as the fist bank's hands are read (work instruction 589,
+    /// section 4): the sequence reader lays its lanes across the rig's passband, and with none set it is not built at all.
+    /// </summary>
     internal static Row Read(double ratio, int seed)
     {
-        var r = ThePatternIsTheGateTests.Read(Audio(ratio, seed), Pitch);
+        var r = ThePatternIsTheGateTests.Read(Audio(ratio, seed), Pitch, d => d.SetPassband(600, 500));
         var of = Text.Count(c => c != ' ');
         var right = TheRecordingsScoreboardTests.Right(r.Text, Text);
 

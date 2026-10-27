@@ -25,10 +25,14 @@ namespace Hamlet.RadioEngine.Cw;
 /// prototype's own maximum with its own tie order, computed once rather than per state;</item>
 /// <item>the first pass's dit, where nobody gives one, is two-means on the run lengths above the lane's midpoint
 /// (<see cref="GuessDitHops"/>), as the work instruction names: the prototype's <c>cwhmm2.py</c> takes it as an argument;</item>
-/// <item>live, a lane that printed carries its learned rhythm and levels into its next window's first pass, so a sender's rhythm is
-/// his across windows; a lane that did not starts from the dit guess, as the prototype does;</item>
-/// <item>live, a mark whose mean level lies under the midpoint of the learned key-down and key-up is silence: the longest word gap
-/// is two and a half of the sender's, so in a long pause the path must lay a mark somewhere, and that mark is not keying;</item>
+/// <item>**a sixth state, nobody keying** (work instruction 589, change 1): key-up level, from one word gap up with no upper bound,
+/// entered from a dit, a dah or the start and left to a dit or a dah, so a long pause is explained as silence instead of a mark laid
+/// in it; it ends a letter and a word as a word gap does, and nothing prints from it;</item>
+/// <item>live, a lane is filtered at three widths and decodes at the one its sender's dit asks for (<see cref="LaneHzPerDit"/>,
+/// change 2); the prototype's lane is a width given by hand;</item>
+/// <item>live, a lane that read Morse keeps its learned rhythm and levels for <see cref="KeepRhythmSeconds"/> (change 3), so a
+/// sender's rhythm is his across windows and pauses; a lane that did not starts cold, from several dits;</item>
+/// <item>live, the pattern is judged over the lane's last <see cref="PatternSeconds"/> of keying, not over one window (change 3);</item>
 /// <item>live, the lane's audio is not trimmed to a stretch: the window slides over everything the lane has heard.</item>
 /// </list>
 /// </remarks>
@@ -46,10 +50,27 @@ public sealed class CwSequenceReader
     public const double LaneSpacingHz = 25;
 
     /// <summary>
-    /// The lanes' low-pass cutoff: narrow, so the station beside drops out, and no narrower than a station halfway between two lanes
-    /// loses under half a decibel at (a fourth-order Butterworth at 12.5 Hz off a 16 Hz cutoff gives 0.45 dB).
+    /// **THE LANE IS SIZED TO THE SPEED** (work instruction 589, change 2): a lane's low-pass cutoff is this over the sender's dit in
+    /// seconds, so its rise is about a third of his dit. Traced at a single 16 Hz: W1AW at 32 WPM (a 37 ms dit) and KM3STU at 23 WPM
+    /// (52 ms) had their inside gaps filled by the lane's own rise, the key-up spread to 9 and 10 dB, and the separation sat at the
+    /// bar.
     /// </summary>
-    public const double LaneBandwidthHz = 16;
+    public const double LaneHzPerDit = 1.5;
+
+    /// <summary>
+    /// The widths every lane is filtered at, each the cutoff <see cref="LaneHzPerDit"/> gives a dit of 100, 62 and 37.5 ms (12, 19 and
+    /// 32 WPM); a lane decodes at the one nearest its sender's dit. A tone halfway between two lanes, 12.5 Hz off, loses 0.91 dB at 15
+    /// Hz, 0.02 dB at 24 and nothing at 40.
+    /// </summary>
+    public static readonly double[] LaneWidthsHz = [15, 24, 40];
+
+    /// <summary>The width, as an index into <see cref="LaneWidthsHz"/>, nearest in ratio to <see cref="LaneHzPerDit"/> over a dit in hops.</summary>
+    public static int WidthFor(double ditHops)
+    {
+        var want = LaneHzPerDit / (ditHops * HopMs / 1000);
+
+        return Enumerable.Range(0, LaneWidthsHz.Length).MinBy(k => Math.Abs(Math.Log(LaneWidthsHz[k] / want)));
+    }
 
     /// <summary>The window each lane is decoded over, live.</summary>
     public const double WindowSeconds = 12;
@@ -78,6 +99,15 @@ public sealed class CwSequenceReader
     /// <summary>How long a printed lane may commit nothing before another lane that reads may take the terminal.</summary>
     public const double YieldSeconds = 4;
 
+    /// <summary>
+    /// How long a lane keeps its sender's rhythm and levels after its pattern last read Morse (work instruction 589, change 3): in
+    /// his pause it decodes nobody keying, and when he comes back it reads him warm.
+    /// </summary>
+    public const double KeepRhythmSeconds = 20;
+
+    /// <summary>The keying, gaps capped at the sender's word gap, the pattern tests are judged over (work instruction 589, change 3).</summary>
+    public const double PatternSeconds = 10;
+
     /// <summary>The span either side of a lane within which another lane reading the same sequence is its shadow.</summary>
     public const double ShadowReachHz = 100;
 
@@ -86,14 +116,17 @@ public sealed class CwSequenceReader
 
     private const double Neg = -1e18;
 
-    // The states: dit, dah, inside gap, letter gap, word gap.
+    // The states: dit, dah, inside gap, letter gap, word gap, and nobody keying.
     internal const int Dit = 0;
     internal const int Dah = 1;
     internal const int InsideGap = 2;
     internal const int LetterGap = 3;
     internal const int WordGap = 4;
+    internal const int Silence = 5;
 
-    private static readonly bool[] OnState = [true, true, false, false, false];
+    private const int States = 6;
+
+    private static readonly bool[] OnState = [true, true, false, false, false, false];
 
     // ---------------------------------------------------------------------------------------------------------------------------
     // The port: the prototype's functions.
@@ -165,9 +198,12 @@ public sealed class CwSequenceReader
         return db;
     }
 
-    /// <summary><c>ranges_from_dit</c>: each state's range in hops from a dit.</summary>
+    /// <summary><c>ranges_from_dit</c>: each state's range in hops from a dit; nobody keying from a word gap of seven dits up, unbounded.</summary>
     public static Range[] RangesFromDit(double d)
-        => Rounded([(0.5 * d, 1.6 * d), (2.0 * d, 4.5 * d), (0.4 * d, 1.7 * d), (1.8 * d, 5.0 * d), (5.0 * d, 14 * d)]);
+        => [.. Rounded([(0.5 * d, 1.6 * d), (2.0 * d, 4.5 * d), (0.4 * d, 1.7 * d), (1.8 * d, 5.0 * d), (5.0 * d, 14 * d)]), SilenceFrom(7 * d)];
+
+    // Nobody keying: from one word gap up, with no upper bound.
+    private static Range SilenceFrom(double wordGap) => new(Math.Max(2, (int)Math.Round(wordGap)), int.MaxValue);
 
     /// <summary>The first pass's levels where nobody learned any: the 90th and 20th percentiles, spread 4 dB, as the prototype's.</summary>
     public static Levels LevelsFromPercentiles(ReadOnlySpan<double> db)
@@ -192,11 +228,11 @@ public sealed class CwSequenceReader
             cOff[k + 1] = cOff[k] - (0.5 * off * off);
         }
 
-        var best = new double[5][];
-        var backState = new sbyte[5][];
-        var backStart = new int[5][];
+        var best = new double[States][];
+        var backState = new sbyte[States][];
+        var backStart = new int[States][];
 
-        for (var s = 0; s < 5; s++)
+        for (var s = 0; s < States; s++)
         {
             best[s] = new double[n + 1];
             backState[s] = new sbyte[n + 1];
@@ -204,19 +240,31 @@ public sealed class CwSequenceReader
             Array.Fill(best[s], Neg);
         }
 
-        // The predecessors' best at each start hop, taken once: a mark follows any gap or the start (2, 3, 4, -1, first wins a
-        // tie, as the prototype's strict comparison in list order); an inside or letter gap follows a dit or a dah (0, 1); a word
-        // gap follows a dit, a dah or the start (0, 1, -1).
+        // The predecessors' best at each start hop, taken once: a mark follows any gap, nobody keying or the start (2, 3, 4, 5,
+        // -1, first wins a tie, as the prototype's strict comparison in list order); an inside or letter gap follows a dit or a dah
+        // (0, 1); a word gap and nobody keying follow a dit, a dah or the start (0, 1, -1).
         var afterGap = new double[n + 1];
         var afterGapState = new sbyte[n + 1];
         var afterMark = new double[n + 1];
         var afterMarkState = new sbyte[n + 1];
-        var prior = new double[5];
+        var prior = new double[States];
 
-        for (var s = 0; s < 5; s++)
+        for (var s = 0; s <= WordGap; s++)
         {
             prior[s] = Math.Log(rng[s].Hi - rng[s].Lo + 1);
         }
+
+        // **NOBODY KEYING COSTS NOTHING BUT ITS EMISSIONS** (work instruction 589, change 1): no upper bound, so its only price
+        // is the word gap's own, and where the two explain a pause alike the word gap, first in list order, keeps it.
+        var silent = rng.Count > Silence;
+        var silenceLo = silent ? rng[Silence].Lo : int.MaxValue;
+
+        prior[Silence] = prior[WordGap];
+
+        // The best start for nobody keying ending at j: the running maximum over every start at least its least duration back.
+        var silenceBest = Neg;
+        var silenceStart = -1;
+        sbyte silencePrev = -1;
 
         afterGap[0] = 0;
         afterGapState[0] = -1;
@@ -225,7 +273,27 @@ public sealed class CwSequenceReader
 
         for (var j = 1; j <= n; j++)
         {
-            for (var s = 0; s < 5; s++)
+            if (silent && j - silenceLo >= 0)
+            {
+                var i = j - silenceLo;
+                var (prev, ps) = i == 0 ? (Math.Max(0.0, afterMark[0]), (sbyte)-1) : (afterMark[i], afterMarkState[i]);
+
+                if (prev > Neg / 2 && prev - cOff[i] > silenceBest)
+                {
+                    silenceBest = prev - cOff[i];
+                    silenceStart = i;
+                    silencePrev = ps;
+                }
+
+                if (silenceStart >= 0)
+                {
+                    best[Silence][j] = silenceBest + cOff[j] - prior[Silence];
+                    backState[Silence][j] = silencePrev;
+                    backStart[Silence][j] = silenceStart;
+                }
+            }
+
+            for (var s = 0; s <= WordGap; s++)
             {
                 var (lo, hi) = (rng[s].Lo, rng[s].Hi);
 
@@ -291,7 +359,7 @@ public sealed class CwSequenceReader
             var g = Neg;
             sbyte gs = -1;
 
-            foreach (var p in new[] { InsideGap, LetterGap, WordGap })
+            foreach (var p in new[] { InsideGap, LetterGap, WordGap, Silence })
             {
                 if (best[p][j] > g)
                 {
@@ -322,7 +390,7 @@ public sealed class CwSequenceReader
         // The end: the best state at the last hop, then back.
         var state = 0;
 
-        for (var s = 1; s < 5; s++)
+        for (var s = 1; s < States; s++)
         {
             if (best[s][n] > best[state][n])
             {
@@ -377,7 +445,7 @@ public sealed class CwSequenceReader
         var lg = Med(LetterGap, 3 * d)!.Value;
         var wg = Med(WordGap, 7 * d)!.Value;
 
-        var r = Rounded([(0.55 * d, (d + dah) / 2), ((d + dah) / 2, 1.8 * dah), (0.4 * ig, (ig + lg) / 2), ((ig + lg) / 2, (lg + wg) / 2), ((lg + wg) / 2, 2.5 * wg)]);
+        Range[] r = [.. Rounded([(0.55 * d, (d + dah) / 2), ((d + dah) / 2, 1.8 * dah), (0.4 * ig, (ig + lg) / 2), ((ig + lg) / 2, (lg + wg) / 2), ((lg + wg) / 2, 2.5 * wg)]), SilenceFrom(wg)];
 
         var on = new List<double>();
         var off = new List<double>();
@@ -442,13 +510,32 @@ public sealed class CwSequenceReader
     /// </summary>
     public static Reading ReadCold(ReadOnlySpan<double> db, int passes = Passes)
     {
+        var one = db.ToArray();
+
+        return ReadCold(_ => one, passes).Reading;
+    }
+
+    /// <summary>
+    /// <see cref="ReadCold(ReadOnlySpan{double}, int)"/> where the lane is filtered at every width of <see cref="LaneWidthsHz"/>
+    /// (work instruction 589, change 2): every start is read in the narrowest width, as the cold read was built, and scored under the
+    /// levels every start's first pass decodes with, so the scores compare paths and not each start's own learned spreads; the best
+    /// start takes the remaining passes in the width the dit it learned asks for. Traced (<c>TheColdStartsScored</c>): scored under
+    /// its own learned levels, a start that splits each mark into pieces one hop apart won on KM3STU and the first recording, since
+    /// a key-down spread of 2 dB makes every edge hop of a whole mark dear; and a score in one width does not compare with a score
+    /// in another.
+    /// </summary>
+    public static (Reading Reading, int Width) ReadCold(Func<int, double[]> envelope, int passes = Passes)
+    {
+        const int cold = 0;
+        var db = envelope(cold);
         var levels = LevelsFromPercentiles(db);
         Reading? best = null;
         var bestScore = double.NegativeInfinity;
 
         foreach (var dit in new[] { GuessDitHops(db) }.Concat(ColdStartDits).Distinct())
         {
-            var first = Read(db, RangesFromDit(dit), levels, passes: 1);
+            var ranges = RangesFromDit(dit);
+            var first = Read(db, ranges, levels, passes: 1);
 
             if (first.Passes.Count == 0)
             {
@@ -456,7 +543,7 @@ public sealed class CwSequenceReader
                 continue;
             }
 
-            var score = LogLikelihood(first.Segments, db, first.Levels);
+            var score = LogLikelihood(first.Segments, db, levels) - PriorCost(first.Segments, ranges);
 
             if (score > bestScore)
             {
@@ -467,13 +554,21 @@ public sealed class CwSequenceReader
 
         if (best is null || best.Passes.Count == 0 || passes <= 1)
         {
-            return best!;
+            return (best!, cold);
         }
 
-        var rest = Read(db, best.Passes[^1].Ranges, best.Levels, passes - 1);
+        // The rest of the passes in the width the learned dit asks for: where it is another width, the levels are learned again.
+        var learned = best.Passes[^1];
+        var next = WidthFor(learned.Dit);
+        var envelopeNext = envelope(next);
+        var rest = Read(envelopeNext, learned.Ranges, next == cold ? best.Levels : LevelsFromPercentiles(envelopeNext), passes - 1);
 
-        return rest with { Passes = best.Passes.Concat(rest.Passes).ToList() };
+        return (rest with { Passes = best.Passes.Concat(rest.Passes).ToList() }, next);
     }
+
+    /// <summary>What a decode's segments pay for their durations under the ranges, as <see cref="Decode"/> charges them.</summary>
+    public static double PriorCost(IReadOnlyList<Segment> segs, IReadOnlyList<Range> rng)
+        => segs.Sum(g => Math.Log(rng[Math.Min(g.State, WordGap)].Hi - rng[Math.Min(g.State, WordGap)].Lo + 1));
 
     /// <summary>How well a decode explains the envelope: the Gaussian log-likelihood of every hop under its state's level and spread.</summary>
     public static double LogLikelihood(IReadOnlyList<Segment> segs, ReadOnlySpan<double> db, Levels levels)
@@ -533,6 +628,7 @@ public sealed class CwSequenceReader
                     Letter();
                     break;
                 case WordGap:
+                case Silence:
                     Letter();
                     sb.Append(' ');
                     break;
@@ -671,7 +767,7 @@ public sealed class CwSequenceReader
     private long _lastPrintedEnd = long.MinValue / 2;
     private bool _printedAny;
 
-    /// <summary>Lanes every <see cref="LaneSpacingHz"/> across a passband.</summary>
+    /// <summary>Lanes every <see cref="LaneSpacingHz"/> across a passband, each filtered at every width of <see cref="LaneWidthsHz"/>.</summary>
     /// <param name="sampleRate">The audio's rate.</param>
     /// <param name="lowHz">The passband's low edge.</param>
     /// <param name="highHz">The passband's high edge.</param>
@@ -679,15 +775,15 @@ public sealed class CwSequenceReader
     {
         _rate = sampleRate;
         _hopSamples = Math.Max(1, (int)(sampleRate * HopMs / 1000));
-        _windowHops = (int)(WindowSeconds * 1000 / HopMs);
-        _everyHops = (int)(DecodeEverySeconds * 1000 / HopMs);
-        _lagHops = (int)(CommitLagSeconds * 1000 / HopMs);
+        _windowHops = Hops(WindowSeconds);
+        _everyHops = Hops(DecodeEverySeconds);
+        _lagHops = Hops(CommitLagSeconds);
 
         var first = (int)Math.Ceiling(lowHz / LaneSpacingHz);
         var last = (int)Math.Floor(highHz / LaneSpacingHz);
 
         _lanes = Enumerable.Range(first, Math.Max(0, last - first + 1))
-            .Select(k => new Lane(k * LaneSpacingHz, sampleRate, LaneBandwidthHz, _windowHops + _everyHops))
+            .Select(k => new Lane(k * LaneSpacingHz, sampleRate, _windowHops + _everyHops))
             .ToArray();
     }
 
@@ -704,6 +800,8 @@ public sealed class CwSequenceReader
     internal IEnumerable<(double PitchHz, PatternStats Pattern, Learned? Learned, string Text)> LaneReadings
         => _lanes.Select(l => (l.PitchHz, l.Pattern, l.Learned, l.Segments is null ? string.Empty : Text(l.Segments)));
 
+    private static int Hops(double seconds) => (int)Math.Round(seconds * 1000 / HopMs);
+
     /// <summary>Hear one sample.</summary>
     public void Push(float sample)
     {
@@ -711,12 +809,7 @@ public sealed class CwSequenceReader
 
         foreach (var lane in _lanes)
         {
-            var amplitude = lane.Filter.Push(sample);
-
-            if (take)
-            {
-                lane.Add(20 * Math.Log10(amplitude + 1e-9));
-            }
+            lane.Push(sample, take);
         }
 
         if (take)
@@ -760,11 +853,10 @@ public sealed class CwSequenceReader
 
         // Shadows: a lane reading the same sequence as a better-separated lane within reach is not a station; the printed lane is
         // judged first, so a station between two lanes is not handed back and forth between them.
-        // **A STATION'S LANE HOLDS THROUGH A WINDOW THAT DIPS** (round three): the printed lane stays a station while it read Morse
-        // within the last YieldSeconds. Traced on W1AW's piece-03: under the AGC its separation sat at 1.52 to 1.67, one window under
-        // the bar let it go, and every hold after began cold.
-        var yield = (long)(YieldSeconds * 1000 / HopMs);
-        var reading = _lanes.Where(l => l.Pattern.IsMorse || (l == _printed && newest - l.LastMorse <= yield)).OrderBy(l => l == _printed ? 0 : 1).ThenByDescending(l => l.Pattern.Separation).ToList();
+        // **A STATION'S LANE KEEPS ITS SENDER THROUGH A PAUSE** (work instruction 589, change 3): the printed lane stays a station
+        // while it read Morse within the last KeepRhythmSeconds; in his pause it decodes nobody keying and prints nothing.
+        var keep = Hops(KeepRhythmSeconds);
+        var reading = _lanes.Where(l => l.Pattern.IsMorse || (l == _printed && newest - l.LastMorse <= keep)).OrderBy(l => l == _printed ? 0 : 1).ThenByDescending(l => l.Pattern.Separation).ToList();
         var stations = new List<Lane>();
 
         foreach (var lane in reading)
@@ -779,7 +871,7 @@ public sealed class CwSequenceReader
 
         // The printed lane keeps the terminal while it reads and has committed something lately; else the best-separated station
         // with marks lately takes it, printing from after the last letter printed.
-        if (_printed is not null && (!stations.Contains(_printed) || newest - _printed.LastCommitted > YieldSeconds * 1000 / HopMs))
+        if (_printed is not null && (!stations.Contains(_printed) || newest - _printed.LastCommitted > Hops(YieldSeconds)))
         {
             var other = stations.Where(s => s != _printed && s.HasMarksAfter(Math.Max(_lastPrintedEnd, newest - _windowHops))).FirstOrDefault();
 
@@ -793,7 +885,7 @@ public sealed class CwSequenceReader
 
         if (_printed is null && stations.FirstOrDefault(s => s.HasMarksAfter(Math.Max(_lastPrintedEnd, newest - _windowHops))) is { } chosen)
         {
-            Trace?.Add(string.Create(Inv, $"{Seconds(newest):0.00} s holds {chosen.PitchHz:0} Hz, {chosen.Pattern}, {chosen.Learned}"));
+            Trace?.Add(string.Create(Inv, $"{Seconds(newest):0.00} s holds {chosen.PitchHz:0} Hz in its {LaneWidthsHz[chosen.Width]:0} Hz lane, {chosen.Pattern}, {chosen.Learned}"));
             _printed = chosen;
             Hand(chosen);
         }
@@ -846,28 +938,15 @@ public sealed class CwSequenceReader
         var mid = (levels.Top + levels.Floor) / 2;
         var origin = lane.DecodedFrom;
 
-        // Marks under the midpoint of the two levels are silence; consecutive gaps merge, and a merged gap is a word gap.
+        // Nobody keying ends a letter and a word as a word gap does; nothing prints from it.
         var items = new List<(int State, long From, long To, double Mean)>();
 
         foreach (var g in segs)
         {
             var from = origin + g.From;
             var to = origin + g.To;
-            var mean = g.IsMark ? lane.Mean(from, to) : double.NaN;
-            var state = g.IsMark && mean < mid ? WordGap : g.State;
 
-            if (!g.IsMark || state == WordGap)
-            {
-                if (items.Count > 0 && items[^1].State >= InsideGap)
-                {
-                    var prev = items[^1];
-
-                    items[^1] = (prev.State == state ? state : WordGap, prev.From, to, double.NaN);
-                    continue;
-                }
-            }
-
-            items.Add((state, from, to, mean));
+            items.Add((g.State == Silence ? WordGap : g.State, from, to, g.IsMark ? lane.Mean(from, to) : double.NaN));
         }
 
         // Letters: marks between letter or word gaps.
@@ -894,8 +973,8 @@ public sealed class CwSequenceReader
             var letterFrom = marks[0].From;
             var letterTo = marks[^1].To;
 
-            // A letter already committed, or one the window's start cut into, is not printed again.
-            if (letterFrom < lane.Committed - 1 || (start == 0 && origin > 0))
+            // A letter already committed is not printed again.
+            if (letterFrom < lane.Committed - 1)
             {
                 continue;
             }
@@ -942,7 +1021,7 @@ public sealed class CwSequenceReader
                 Marks = cwMarks,
             });
 
-            Trace?.Add(string.Create(Inv, $"{Seconds(newest):0.00} s commits {pattern} at {Seconds(letterFrom):0.00}-{Seconds(letterTo):0.00} s from {lane.PitchHz:0} Hz{(space ? ", a space before" : string.Empty)}"));
+            Trace?.Add(string.Create(Inv, $"{Seconds(newest):0.00} s commits {pattern} at {Seconds(letterFrom):0.00}-{Seconds(letterTo):0.00} s from {lane.PitchHz:0} Hz{(space ? ", a space before" : string.Empty)}; {learned}, {LaneWidthsHz[lane.Width]:0} Hz lane"));
 
             lane.Committed = letterTo;
             lane.LastCommitted = newest;
@@ -951,16 +1030,25 @@ public sealed class CwSequenceReader
         }
     }
 
-    // One lane: its filter, its envelope history, and its last decode.
-    private sealed class Lane(double pitchHz, int rate, double bandwidthHz, int keep)
+    // One lane: its filters at every width, its envelope history at each, its last decode, and the marks it decoded lately.
+    private sealed class Lane
     {
-        private readonly List<double> _db = [];
+        private readonly int _keep;
+        private readonly LaneFilter[] _filters;
+        private readonly List<double>[] _db;
+        private readonly List<(long From, long To, bool Dah)> _marks = [];
 
-        public double PitchHz { get; } = pitchHz;
+        public Lane(double pitchHz, int rate, int keep)
+        {
+            PitchHz = pitchHz;
+            _keep = keep;
+            _filters = LaneWidthsHz.Select(w => new LaneFilter(pitchHz, rate, w)).ToArray();
+            _db = LaneWidthsHz.Select(_ => new List<double>()).ToArray();
+        }
 
-        public LaneFilter Filter { get; } = new(pitchHz, rate, bandwidthHz);
+        public double PitchHz { get; }
 
-        // The absolute hop of _db[0].
+        // The absolute hop of every history's first entry.
         public long Origin { get; private set; }
 
         public List<Segment>? Segments { get; private set; }
@@ -971,7 +1059,10 @@ public sealed class CwSequenceReader
 
         public PatternStats Pattern { get; private set; }
 
-        // The hop at which this lane's decode last read Morse.
+        // The width, an index into LaneWidthsHz, the last decode read in.
+        public int Width { get; private set; } = LaneWidthsHz.Length / 2;
+
+        // The hop at which this lane's pattern last read Morse.
         public long LastMorse { get; private set; } = long.MinValue / 2;
 
         // The end of the last letter committed from this lane, in absolute hops.
@@ -981,27 +1072,38 @@ public sealed class CwSequenceReader
         public long LastCommitted { get; set; }
 
         // The absolute hop the last decode's segments start at.
-        private long _decodedFrom;
+        public long DecodedFrom { get; private set; }
 
-        public long DecodedFrom => _decodedFrom;
-
-        public void Add(double db)
+        public void Push(float sample, bool take)
         {
-            _db.Add(db);
-
-            if (_db.Count > keep)
+            for (var w = 0; w < _filters.Length; w++)
             {
-                var drop = _db.Count - keep;
+                var amplitude = _filters[w].Push(sample);
 
-                _db.RemoveRange(0, drop);
+                if (take)
+                {
+                    _db[w].Add(20 * Math.Log10(amplitude + 1e-9));
+                }
+            }
+
+            if (take && _db[0].Count > _keep)
+            {
+                var drop = _db[0].Count - _keep;
+
+                foreach (var h in _db)
+                {
+                    h.RemoveRange(0, drop);
+                }
+
                 Origin += drop;
             }
         }
 
         public double Mean(long from, long to)
         {
+            var db = _db[Width];
             var a = (int)Math.Max(0, from - Origin);
-            var b = (int)Math.Min(_db.Count, to - Origin);
+            var b = (int)Math.Min(db.Count, to - Origin);
 
             if (b <= a)
             {
@@ -1012,7 +1114,7 @@ public sealed class CwSequenceReader
 
             for (var k = a; k < b; k++)
             {
-                sum += _db[k];
+                sum += db[k];
             }
 
             return sum / (b - a);
@@ -1020,28 +1122,65 @@ public sealed class CwSequenceReader
 
         public void Decode(long newest, int window)
         {
-            var count = (int)Math.Min(window, _db.Count);
+            var count = Math.Min(window, _db[0].Count);
 
-            if (count < LeastWindowSeconds * 1000 / HopMs)
+            if (count < Hops(LeastWindowSeconds))
             {
                 Segments = null;
                 Pattern = default;
                 return;
             }
 
-            var span = System.Runtime.InteropServices.CollectionsMarshal.AsSpan(_db)[^count..];
-            // A lane that read a sender carries his rhythm; a cold lane tries its starts (round two).
-            // ... and it carries the sender's rhythm through it (round three).
-            var warm = Pattern.IsMorse || newest - LastMorse <= (long)(YieldSeconds * 1000 / HopMs);
-            var reading = Learned is { } l && warm ? Read(span, l.Ranges, l.Levels) : ReadCold(span);
+            var cut = new double[LaneWidthsHz.Length][];
+
+            double[] Cut(int w) => cut[w] ??= _db[w].GetRange(_db[w].Count - count, count).ToArray();
+
+            // **A LANE KEEPS ITS SENDER'S RHYTHM AND LEVELS FOR KeepRhythmSeconds** (change 3): it is not let go and does not start
+            // cold when he comes back; a cold lane tries its starts in the widths they ask for (change 2).
+            var warm = Learned is not null && newest - LastMorse <= Hops(KeepRhythmSeconds);
+            Reading reading;
+
+            if (warm)
+            {
+                var width = WidthFor(Learned!.Dit);
+                var db = Cut(width);
+
+                reading = Read(db, Learned.Ranges, width == Width ? Levels : LevelsFromPercentiles(db));
+                Width = width;
+            }
+            else
+            {
+                (reading, var width) = ReadCold(Cut);
+
+                Width = width;
+            }
+
             var shift = newest - count;
 
-            // Segments are kept relative to the window; Origin for Commit is the window's first hop.
-            Segments = reading.Segments.Select(g => g).ToList();
-            _decodedFrom = shift;
-            Learned = reading.Passes.Count > 0 ? reading.Passes[^1] : null;
-            Levels = reading.Levels;
-            Pattern = reading.Pattern;
+            Segments = reading.Segments.ToList();
+            DecodedFrom = shift;
+
+            // A window of nobody keying teaches nothing: a warm lane keeps what it knew of its sender.
+            if (reading.Passes.Count > 0)
+            {
+                Learned = reading.Passes[^1];
+                Levels = reading.Levels;
+            }
+            else if (!warm)
+            {
+                Learned = null;
+                Levels = reading.Levels;
+            }
+
+            // The marks decoded lately: this window's replace what an earlier decode laid over the same hops.
+            _marks.RemoveAll(m => m.To > shift || m.From < newest - Hops(KeepRhythmSeconds + WindowSeconds));
+
+            foreach (var g in Segments.Where(g => g.IsMark))
+            {
+                _marks.Add((shift + g.From, shift + g.To, g.State == Dah));
+            }
+
+            Pattern = LatePattern();
 
             if (Pattern.IsMorse)
             {
@@ -1049,11 +1188,42 @@ public sealed class CwSequenceReader
             }
         }
 
+        // **SOMEONE IS THERE, OVER THE LANE'S LAST PatternSeconds OF KEYING** (change 3): its marks from the newest back, each gap
+        // counted no longer than the sender's word gap, so a pause does not empty the pattern and a short exchange after one is
+        // judged with what came before it.
+        private PatternStats LatePattern()
+        {
+            var cap = Learned?.WordGap ?? Hops(0.5);
+            var keyed = 0.0;
+            var taken = new List<Segment>();
+
+            for (var k = _marks.Count - 1; k >= 0; k--)
+            {
+                var m = _marks[k];
+
+                keyed += m.To - m.From;
+
+                if (k < _marks.Count - 1)
+                {
+                    keyed += Math.Min(_marks[k + 1].From - m.To, cap);
+                }
+
+                if (keyed > Hops(PatternSeconds))
+                {
+                    break;
+                }
+
+                taken.Add(new Segment(m.Dah ? Dah : Dit, 0, (int)(m.To - m.From)));
+            }
+
+            return CwSequenceReader.Pattern(taken, Levels);
+        }
+
         public List<long> MarkStarts()
-            => Segments is null ? [] : Segments.Where(g => g.IsMark).Select(g => _decodedFrom + g.From).ToList();
+            => Segments is null ? [] : Segments.Where(g => g.IsMark).Select(g => DecodedFrom + g.From).ToList();
 
         public bool HasMarksAfter(long hop)
-            => Segments is not null && Segments.Any(g => g.IsMark && _decodedFrom + g.From >= hop && Mean(_decodedFrom + g.From, _decodedFrom + g.To) >= (Levels.Top + Levels.Floor) / 2);
+            => Segments is not null && Segments.Any(g => g.IsMark && DecodedFrom + g.From >= hop);
     }
 
     /// <summary>A mixer and a fourth-order Butterworth low-pass on both quadratures; the amplitude.</summary>
