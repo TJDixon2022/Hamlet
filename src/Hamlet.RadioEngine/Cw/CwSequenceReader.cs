@@ -1155,6 +1155,20 @@ public sealed class CwSequenceReader
 
                 reading = Read(db, Learned.Ranges, width == Width ? Levels : LevelsFromPercentiles(db));
                 Width = width;
+
+                // **A KEPT RHYTHM THAT NO LONGER READS THE WINDOW GIVES WAY TO A COLD READ THAT DOES** (round three). Traced on
+                // W1AW's piece-02 at 237 s: he went from 14 to 35 WPM, the lane read on at its kept 80 ms dit in the 15 Hz width,
+                // which smears a 35 ms dit, so the decode never showed the new rhythm to learn from and 60 s printed placeholders.
+                if (!reading.Pattern.IsMorse)
+                {
+                    var (cold, coldWidth) = ReadCold(Cut);
+
+                    if (cold.Pattern.IsMorse)
+                    {
+                        reading = cold;
+                        Width = coldWidth;
+                    }
+                }
             }
             else
             {
