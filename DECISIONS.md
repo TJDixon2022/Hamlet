@@ -4,6 +4,47 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-293
+date: 2026-10-27
+refs: work instruction 589, HM-DEC-292, HM-DEC-284, HM-DEC-276, src/Hamlet.RadioEngine/Cw/CwSequenceReader.cs, src/Hamlet.RadioEngine/Cw/CwRules.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheSequenceReaderTests.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheStraightKeyReadsTests.cs
+---
+
+**The sequence reader, finished: nobody keying is a state, the lane is sized to the speed, a lane keeps its sender's rhythm. Built in three rounds behind `CwRules.SequenceReader`, measured, left off.**
+
+**The trace, first** (`TheReaderAgainstTheTruth`, one row per differing letter, on the five worst stretches of the twelve-plus-three under the reader and on W1AW piece-03). Three causes: the 16 Hz lane smeared 23 to 32 WPM gaps (key-up spread 9 to 10 dB, separation near 1.5), the lane let go and started cold on a crossed rhythm (letter gap over word gap, or a 5 ms inside gap); the printed lane never yielded to a second station (`221548` at 498 Hz); and a few marks were silenced by the live midpoint filter (`121324`).
+
+**The three changes:**
+- **Silence is a state.** A sixth state, nobody keying: key-up level, from one word gap up with no upper bound, entered from a mark or the start, left to a mark. It is computed in O(1) per hop as a running maximum over the starts at least a word gap back; its prior equals the word gap's, so a tie goes to the word gap. Nothing prints from it; `Text` treats it as a word gap. The live midpoint filter and cut-letter filter are removed. A NobodyKeying override (one level against two) was tried, silenced nothing on the band alone, lost KM3STU's correct read, and was taken out.
+- **The lane is sized to the speed.** Lanes every 25 Hz, each filtered at 15, 24 and 40 Hz (`LaneWidthsHz`); `WidthFor(dit)` takes the width nearest `LaneHzPerDit` 1.5 over the dit, in log ratio. Loss halfway between lanes: 0.91 dB at 15 Hz, 0.02 dB at 24, none at 40. A cold read tries every start dit (the guess, 40, 70, 120 ms) in the 15 Hz width, scored by log-likelihood under the shared percentile levels less the prior cost (scored in each start's own width or own levels, the split decodes won), and takes its remaining passes at the learned dit's width. The single 16 Hz lane is gone.
+- **The live layer.** A lane keeps its sender's rhythm and levels for `KeepRhythmSeconds`, 20 s, after it last read Morse, reading warm in its width and keeping what it learned through a window that teaches nothing; a cold lane keeps `ReadCold`. Hold-and-yield is replaced. The pattern test is judged over the lane's marks from its last `PatternSeconds`, 10 s, of keying, gaps capped at the word gap.
+
+**The rounds**, each measured with the rule on:
+- **Round one.** The three changes as above.
+- **Round two.** Traced on W1AW piece-02 and `cq-12wpm-15db`: a lane 25 Hz off the station took a junk rhythm in its 15 Hz cold width, read the station at 40 Hz with every element a dah (dah share 1.00) and held the terminal. The pattern test gains a ceiling, `DahShareMost` 0.65.
+- **Round three.** Traced on W1AW piece-02 at 237 s, 14 to 35 WPM: the lane read on at its kept 80 ms dit in the 15 Hz width, which smears a 35 ms dit, so the new rhythm never showed and 60 s printed placeholders. A warm lane whose window is not Morse reads it cold, and takes the cold read where that is Morse. Piece-02 after 237 s read 165 of 168 there, from 3 and nothing.
+
+**The figures, as shipped, then rounds one, two and three:**
+- the twelve-plus-three: 297 (318 right, 20 wrong, 1 invented); 210 (271, 43, 18), 275 (312, 23, 14), 275 (312, 23, 14). Spaces 86 of 110 with 3 added; at round three 86 right with 12 added;
+- W1AW: 2111 (2131 right, 20 wrong, 0 invented); 1882 (1932, 47, 3), 1910 (1951, 41, 0), 2070 (2099, 29, 0). Piece-02 388; 172, 200, 358;
+- the fist bank: 1891 (2612 right, 675 wrong, 46 invented); 2680 (3738, 994, 64), 3376 (4172, 695, 101), 3498 (4260, 661, 101). The flat half, letters right: 2173; 2332, 2619, 2621. The fading half: 439; 1406, 1553, 1639;
+- the four 5 dB CQs: 71 of 84; 71, 84, 84. The 15 dB CQs: 78; 63, 84, 84. The 0 dB CQs: 0; 5, 5, 5. Nothing in the 20 s of noise after a weak CQ in rounds one to three;
+- letters in silences: 0; 4, 3, 4;
+- the easy fixtures: 77 of 90; 24, 90, 90. The working fixtures: 4; 17, 17, 17 of 81. `two-station`: 27 of 27 in every round. The synthetic fixtures: 46 of 67; 22, 32, 38;
+- strays summed over the 65 old captures: 26.8; 51.6, 50.3, 51.3. The highest single capture: 3.3; 5.7, 5.7, 5.3, under the six;
+- the first recording: whole; `RF C HA T <BT> BEST 7V 73 <SK> KC4ZGP ■` in every round;
+- the random carrier: 2 seeds of 20; 20 in every round. Loud noise and the steady carrier print nothing (round three);
+- the nine straight-key hands, read now with the rig's passband set: 8, 6 and 6 of 9 at 48 of 60 or better (round three: the 1.7 hand at seeds 5771 and 5772 30 and 35, the 2.0 hand at 5772 36); the short-dah rows hold their guard;
+- the first proof: every prototype case at the prototype's reads; the band alone decodes 284 to 298 marks, not silence, refused by the pattern test (dah share 0.11 to 0.15, separation 1.06 to 1.10);
+- strong flat hands at 20 dB, dah 2.5 and 3.0, by speed: as shipped 59, 59, 60, 60 and 60, 60, 60, 60; round three 57, 60, 56, 59 and 60, 58, 48, 55;
+- CPU on W1AW piece-04, 283 s: 98 s (round one) and 100 s (round three) with the reader against 184 s with two finders.
+
+**It does not ship.** The twelve-plus-three is 275 against 297 and W1AW 2070 against 2111 with wrong up from 20 to 29, outside the 1 per cent band (294, 2090); the fist bank invents 101 against a bar of 10; strong flat hands read worse than shipped; the band alone does not decode to silence; three of the nine hands are under 48; four letters print in silences; the first recording is not whole. The fist bank's score, both halves, the CQs, the easy fixtures, noise, the steady carrier, the strays and CPU hold. The random carrier prints at 20 seeds, reported and not a condition.
+
+**What the boards still lose.** The twelve-plus-three loses 17 on `144020`, where the second station at 600 Hz reads 10 of 19 (which lane prints when two stations share the window), 8 on `121414` and 6 on the first recording's opening, and invents 7 on `221502`'s low stretch; W1AW loses 30 on piece-02's first 36 s, where a lane starts cold on a crossed rhythm (dit 40, dah 60 ms) in the 40 Hz width. The opening falls under change 3 (a cold read before the rhythm is known); the choice between two stations is a fourth thing, not one of the three.
+
+As shipped, every reading is as at HEAD: 297 and 2111. Ordered by work instruction 589.
+
+---
 id: HM-DEC-292
 date: 2026-10-26
 refs: work instruction 588, HM-DEC-291, HM-DEC-284, HM-DEC-276, tools/prototype/sequence-reader, src/Hamlet.RadioEngine/Cw/CwSequenceReader.cs, src/Hamlet.RadioEngine/Cw/CwRules.cs, src/Hamlet.RadioEngine/Cw/CwEnvelopeDetector.cs, src/Hamlet.RadioEngine/Cw/CwDecoder.cs, src/Hamlet.RadioEngine/Cw/CwChain.cs, src/Hamlet.RadioEngine/Cw/CwSenderGate.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheSequenceReaderTests.cs
