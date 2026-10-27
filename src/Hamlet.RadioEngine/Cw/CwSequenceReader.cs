@@ -98,6 +98,38 @@ public sealed class CwSequenceReader
     /// <summary>The least the learned key-down may stand over the key-up, in the sum of the two spreads: real 1.7 to 2.2, nothing 1.1.</summary>
     public const double SeparationLeast = 1.5;
 
+    /// <summary>
+    /// How much each learned gap must stand over the one under it, inside gap to letter gap to word gap (work instruction 590,
+    /// change 1): Morse's own steps are three and seven thirds, and a hand's letter gaps run down toward twice his inside gap.
+    /// </summary>
+    public const double GapStep = 1.4;
+
+    /// <summary>
+    /// The least a learned inside gap may be, in the learned dit: a hand's runs from about two thirds of his dit to past it, and an
+    /// inside gap of one hop under a 50 ms dit is a mark in pieces, not keying (traced on W1AW's piece-02, a lane 25 Hz off him).
+    /// </summary>
+    public const double InsideGapLeast = 0.4;
+
+    /// <summary>Whether a decode's learned gaps climb, inside gap under letter gap under word gap, each by <see cref="GapStep"/>.</summary>
+    public static bool GapsClimb(Learned learned) => RhythmHolds(learned.Dit, learned.InsideGap, learned.LetterGap, learned.WordGap);
+
+    /// <summary>
+    /// How far a warm decode's pattern may fall from the one its lane kept before the lane reads the window cold as well (work
+    /// instruction 590, change 3): its separation by this share of the kept, or its dah share by this much.
+    /// </summary>
+    public const double PatternDrop = 0.25;
+
+    /// <summary>Whether a warm decode's pattern has fallen from the lane's kept one by <see cref="PatternDrop"/>.</summary>
+    public static bool Falls(PatternStats warm, PatternStats kept)
+        => kept.Marks > 0 && (warm.Separation < (1 - PatternDrop) * kept.Separation || Math.Abs(warm.DahShare - kept.DahShare) > PatternDrop);
+
+    /// <summary>Whether one pattern stands better than another: wider separation, its dahs no looser.</summary>
+    public static bool Better(PatternStats a, PatternStats b) => a.Separation > b.Separation && a.DahTightness <= b.DahTightness + 0.02;
+
+    /// <summary>The rhythm test: the inside gap at least <see cref="InsideGapLeast"/> of the dit, each gap after it by <see cref="GapStep"/>.</summary>
+    public static bool RhythmHolds(double dit, double insideGap, double letterGap, double wordGap)
+        => insideGap >= InsideGapLeast * dit && letterGap >= GapStep * insideGap && wordGap >= GapStep * letterGap;
+
     /// <summary>The least marks a window's decode must hold before its pattern is judged.</summary>
     public const int PatternLeastMarks = 16;
 
@@ -169,14 +201,14 @@ public sealed class CwSequenceReader
     }
 
     /// <summary>The pattern tests on a decode: whether someone is there.</summary>
-    public readonly record struct PatternStats(int Marks, double DahShare, double DahTightness, double Separation)
+    public readonly record struct PatternStats(int Marks, double DahShare, double DahTightness, double Separation, bool GapsInOrder = true)
     {
         /// <summary>Whether the decode's pattern is Morse.</summary>
-        public bool IsMorse => Marks >= PatternLeastMarks && DahShare >= DahShareLeast && DahShare <= DahShareMost && DahTightness <= DahTightnessMost && Separation >= SeparationLeast;
+        public bool IsMorse => Marks >= PatternLeastMarks && DahShare >= DahShareLeast && DahShare <= DahShareMost && DahTightness <= DahTightnessMost && Separation >= SeparationLeast && GapsInOrder;
 
         /// <inheritdoc />
         public override string ToString()
-            => string.Create(Inv, $"{Marks} marks, dah share {DahShare:0.00}, dah tightness {DahTightness:0.00}, separation {Separation:0.00}{(IsMorse ? ", Morse" : string.Empty)}");
+            => string.Create(Inv, $"{Marks} marks, dah share {DahShare:0.00}, dah tightness {DahTightness:0.00}, separation {Separation:0.00}{(GapsInOrder ? string.Empty : ", gaps crossed")}{(IsMorse ? ", Morse" : string.Empty)}");
     }
 
     /// <summary>A whole reading: the last pass's sequence, its text, each pass's learning, and the pattern.</summary>
@@ -539,6 +571,7 @@ public sealed class CwSequenceReader
         var levels = LevelsFromPercentiles(db);
         Reading? best = null;
         var bestScore = double.NegativeInfinity;
+        var bestMorse = false;
 
         foreach (var dit in new[] { GuessDitHops(db) }.Concat(ColdStartDits).Distinct())
         {
@@ -553,9 +586,14 @@ public sealed class CwSequenceReader
 
             var score = LogLikelihood(first.Segments, db, levels) - PriorCost(first.Segments, ranges);
 
-            if (score > bestScore)
+            // **THE COLD READ IS CHOSEN BY PATTERN** (work instruction 590, change 1): a start whose decode is Morse, its gaps in
+            // order, is kept before any that is not; among them, and failing them among all, the likeliest.
+            var morse = first.Pattern.IsMorse;
+
+            if ((morse && !bestMorse) || (morse == bestMorse && score > bestScore))
             {
                 bestScore = score;
+                bestMorse = morse;
                 best = first;
             }
         }
@@ -668,7 +706,11 @@ public sealed class CwSequenceReader
 
         var separation = (levels.Top - levels.Floor) / (levels.SpreadOn + levels.SpreadOff);
 
-        return new PatternStats(marks, share, tight, separation);
+        // The gaps in order (work instruction 590, change 1): the decode's own medians, each where it laid three or more.
+        double? Med(int s) => segs.Count(g => g.State == s) >= 3 ? Median(segs.Where(g => g.State == s).Select(g => (double)g.Length).ToList()) : null;
+        var inOrder = Med(Dit) is not { } d || RhythmHolds(d, Med(InsideGap) ?? d, Med(LetterGap) ?? 3 * d, Med(WordGap) ?? 7 * d);
+
+        return new PatternStats(marks, share, tight, separation, inOrder);
     }
 
     /// <summary>
@@ -856,7 +898,7 @@ public sealed class CwSequenceReader
 
         foreach (var lane in _lanes)
         {
-            lane.Decode(newest, _windowHops);
+            lane.Decode(newest, _windowHops, Trace);
         }
 
         // Shadows: a lane reading the same sequence as a better-separated lane within reach is not a station; the printed lane is
@@ -1128,7 +1170,7 @@ public sealed class CwSequenceReader
             return sum / (b - a);
         }
 
-        public void Decode(long newest, int window)
+        public void Decode(long newest, int window, List<string>? trace = null)
         {
             var count = Math.Min(window, _db[0].Count);
 
@@ -1159,11 +1201,19 @@ public sealed class CwSequenceReader
                 // **A KEPT RHYTHM THAT NO LONGER READS THE WINDOW GIVES WAY TO A COLD READ THAT DOES** (round three). Traced on
                 // W1AW's piece-02 at 237 s: he went from 14 to 35 WPM, the lane read on at its kept 80 ms dit in the 15 Hz width,
                 // which smears a 35 ms dit, so the decode never showed the new rhythm to learn from and 60 s printed placeholders.
-                if (!reading.Pattern.IsMorse)
+                // **AND WHERE ITS FIGURES FALL, A SECOND STATION IN THE LANE** (work instruction 590, change 3): a warm decode whose
+                // pattern falls from the one the lane kept by PatternDrop is read cold as well, and the cold read is taken where
+                // its pattern is Morse and stands better.
+                var fell = !reading.Pattern.IsMorse || Falls(reading.Pattern, Kept);
+
+                if (fell || trace is not null)
                 {
                     var (cold, coldWidth) = ReadCold(Cut);
+                    var take = fell && cold.Pattern.IsMorse && (!reading.Pattern.IsMorse || Better(cold.Pattern, reading.Pattern));
 
-                    if (cold.Pattern.IsMorse)
+                    trace?.Add(string.Create(Inv, $"{newest * HopMs / 1000:0.00} s {PitchHz:0} Hz warm: {reading.Pattern}; kept: {Kept}; cold: {cold.Pattern}, {(cold.Passes.Count > 0 ? cold.Passes[^1] : null)}; {(take ? "takes the cold read" : fell ? "keeps its rhythm, the cold read no better" : "keeps its rhythm")}"));
+
+                    if (take)
                     {
                         reading = cold;
                         Width = coldWidth;
@@ -1202,13 +1252,22 @@ public sealed class CwSequenceReader
                 _marks.Add((shift + g.From, shift + g.To, g.State == Dah));
             }
 
-            Pattern = LatePattern();
+            // The marks of the last PatternSeconds, judged with the rhythm the lane learned: its gaps in order (change 1).
+            Pattern = LatePattern() with { GapsInOrder = Learned is null || GapsClimb(Learned) };
 
             if (Pattern.IsMorse)
             {
                 LastMorse = newest;
             }
+
+            if (reading.Pattern.IsMorse)
+            {
+                Kept = reading.Pattern;
+            }
         }
+
+        // The window pattern the lane last read Morse with, what a warm decode's figures are held to (change 3).
+        public PatternStats Kept { get; private set; }
 
         // **SOMEONE IS THERE, OVER THE LANE'S LAST PatternSeconds OF KEYING** (change 3): its marks from the newest back, each gap
         // counted no longer than the sender's word gap, so a pause does not empty the pattern and a short exchange after one is

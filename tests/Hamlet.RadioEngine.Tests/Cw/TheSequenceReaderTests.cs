@@ -529,7 +529,7 @@ public sealed class TheSequenceReaderTests(ITestOutputHelper output)
         output.WriteLine(string.Empty);
         output.WriteLine("The reader's own lines, holds and lets go:");
 
-        foreach (var l in trace.Where(l => l.Contains("holds", StringComparison.Ordinal) || l.Contains("let go", StringComparison.Ordinal)))
+        foreach (var l in trace.Where(l => l.Contains("holds", StringComparison.Ordinal) || l.Contains("let go", StringComparison.Ordinal) || l.Contains(" warm: ", StringComparison.Ordinal)))
         {
             output.WriteLine("  " + l);
         }
@@ -573,6 +573,119 @@ public sealed class TheSequenceReaderTests(ITestOutputHelper output)
         var (cold, width) = CwSequenceReader.ReadCold(w => envelopes[w]);
 
         output.WriteLine(string.Create(Inv, $"chosen: {CwSequenceReader.LaneWidthsHz[width]:0} Hz, {(cold.Passes.Count > 0 ? cold.Passes[^1] : null)}; `{Cut(cold.Text)}`"));
+    }
+
+    /// <remarks>
+    /// Work instruction 590, change 1, the trace: a cold lane's starts on the windows of a recording's opening, as the live reader
+    /// would read them, in the narrowest width under the shared levels: each start's one-pass pattern, its learned gaps and whether
+    /// they climb by <see cref="CwSequenceReader.GapStep"/>, its likelihood less prior per hop, and which start the likelihood alone
+    /// takes against which the pattern takes. Asserts nothing.
+    /// </remarks>
+    [Theory]
+    [InlineData("w1aw-2026-10-07/piece-02", 600.0, 6, 36)]
+    [InlineData("cw-2026-10-02-200157", 675.0, 6, 14)]
+    [InlineData("cw-2026-10-08-121414", 800.0, 6, 16)]
+    public void TheColdStartsByPattern(string recording, double pitch, int from, int to)
+    {
+        var audio = WavAudio.Read(recording.StartsWith("w1aw", StringComparison.Ordinal) ? Path.Combine(CwFixtures.Folder, "captured", recording + ".wav") : TheOwnersRecordingReadsTests.Wav(recording));
+        var whole = CwSequenceReader.Envelope(audio.Samples, audio.SampleRate, pitch, CwSequenceReader.LaneWidthsHz[0]);
+        var window = (int)(CwSequenceReader.WindowSeconds * 1000 / CwSequenceReader.HopMs);
+
+        for (var end = from; end <= to; end += 2)
+        {
+            var hops = Math.Min(whole.Length, (int)(end * 1000 / CwSequenceReader.HopMs));
+            var db = whole[Math.Max(0, hops - window)..hops];
+            var levels = CwSequenceReader.LevelsFromPercentiles(db);
+            var rows = new List<(int Dit, double Score, bool Climbs, CwSequenceReader.PatternStats Pattern, string Text)>();
+
+            foreach (var dit in new[] { CwSequenceReader.GuessDitHops(db) }.Concat(CwSequenceReader.ColdStartDits).Distinct())
+            {
+                var ranges = CwSequenceReader.RangesFromDit(dit);
+                var first = CwSequenceReader.Read(db, ranges, levels, passes: 1);
+                var score = (CwSequenceReader.LogLikelihood(first.Segments, db, levels) - CwSequenceReader.PriorCost(first.Segments, ranges)) / db.Length;
+                var learned = first.Passes.Count > 0 ? first.Passes[^1] : null;
+                var climbs = learned is not null && CwSequenceReader.GapsClimb(learned);
+
+                rows.Add((dit, score, climbs, first.Pattern, first.Text));
+                output.WriteLine(string.Create(Inv, $"{recording} to {end} s, start {dit * CwSequenceReader.HopMs:0} ms: score {score:0.000}; {first.Pattern}; gaps {(climbs ? "climb" : "crossed")}; {learned}; `{Cut(first.Text)}`"));
+            }
+
+            var byLikelihood = rows.MaxBy(r => r.Score);
+            var morse = rows.Where(r => r.Pattern.IsMorse && r.Climbs).ToList();
+            var byPattern = morse.Count > 0 ? morse.MaxBy(r => r.Score) : byLikelihood;
+
+            output.WriteLine(string.Create(Inv, $"  to {end} s: likelihood takes {byLikelihood.Dit * CwSequenceReader.HopMs:0} ms, the pattern takes {(morse.Count > 0 ? $"{byPattern.Dit * CwSequenceReader.HopMs:0} ms" : "none Morse, the likeliest")}"));
+        }
+    }
+
+    /// <remarks>
+    /// Work instruction 590, change 2, the trace: three passes on a window, then what one stretch of nobody keying would score over
+    /// the whole window under three noise emissions, beside the path's own score, every hop's Gaussian normaliser counted on both
+    /// sides. Asserts nothing.
+    /// </remarks>
+    [Fact]
+    public void SilenceAgainstThePath()
+    {
+        var windows = new List<(string Name, double[] Db, double Dit)>();
+
+        for (var seed = 31; seed <= 33; seed++)
+        {
+            var band = Synth(Cases[0] with { Db = -300 }, seed);
+            var all = CwSequenceReader.Envelope(band, SynthRate, ToneHz, CwSequenceReader.LaneWidthsHz[0]);
+
+            windows.Add(($"the band alone, seed {seed}", all[200..2600], 1200.0 / 18 / CwSequenceReader.HopMs));
+        }
+
+        foreach (var (file, pitch, at) in new[] { ("synthetic-cq/cq-18wpm-5db", 600.0, 12), ("synthetic-cq/cq-12wpm-5db", 600.0, 14), ("synthetic-cq/cq-18wpm-0db", 600.0, 12) })
+        {
+            var audio = WavAudio.Read(Path.Combine(CwFixtures.Folder, file + ".wav"));
+            var all = CwSequenceReader.Envelope(audio.Samples, audio.SampleRate, pitch, CwSequenceReader.LaneWidthsHz[0]);
+            var hops = (int)(at * 1000 / CwSequenceReader.HopMs);
+
+            windows.Add((file, all[Math.Max(0, hops - 2400)..Math.Min(all.Length, hops)], CwSequenceReader.GuessDitHops(all[Math.Max(0, hops - 2400)..hops])));
+        }
+
+        foreach (var (name, db, dit) in windows)
+        {
+            var reading = CwSequenceReader.Read(db, CwSequenceReader.RangesFromDit(dit), CwSequenceReader.LevelsFromPercentiles(db));
+            var lv = reading.Levels;
+            var ranges = reading.Passes.Count > 0 ? reading.Passes[^1].Ranges : CwSequenceReader.RangesFromDit(dit);
+            var path = 0.0;
+
+            foreach (var g in reading.Segments)
+            {
+                var (mu, s) = g.IsMark ? (lv.Top, lv.SpreadOn) : (lv.Floor, lv.SpreadOff);
+
+                for (var k = g.From; k < g.To; k++)
+                {
+                    var z = (db[k] - mu) / s;
+
+                    path -= (0.5 * z * z) + Math.Log(s);
+                }
+            }
+
+            path -= CwSequenceReader.PriorCost(reading.Segments, ranges);
+
+            var gaps = reading.Segments.Where(g => !g.IsMark).SelectMany(g => Enumerable.Range(g.From, g.Length)).Select(k => db[k]).ToList();
+            var mean = db.Average();
+            var sdWhole = Math.Sqrt(db.Average(v => (v - mean) * (v - mean)));
+            var gapMean = gaps.Count > 0 ? gaps.Average() : mean;
+            var sdGaps = gaps.Count > 1 ? Math.Sqrt(gaps.Average(v => (v - gapMean) * (v - gapMean))) : sdWhole;
+
+            double One(double mu, double s) => db.Sum(v => -((0.5 * ((v - mu) / s) * ((v - mu) / s)) + Math.Log(s)));
+
+            output.WriteLine(string.Create(Inv, $"{name}: {reading.Pattern}; {lv}; path {path / db.Length:0.000} per hop"));
+            output.WriteLine(string.Create(Inv, $"  one silence: floor and key-up spread {One(lv.Floor, lv.SpreadOff) / db.Length:0.000}; floor and the gaps' spread {sdGaps:0.0} dB {One(lv.Floor, sdGaps) / db.Length:0.000}; the window's mean and spread {mean:0.0}±{sdWhole:0.0} dB {One(mean, sdWhole) / db.Length:0.000}"));
+
+            // Narrowband noise's envelope is Rayleigh, so its level in dB is a log-exponential at the noise power, with the 0.919 of
+            // the Gaussian's normaliser taken off to compare with the lines above.
+            double Rayleigh(IEnumerable<double> over) => 10 * Math.Log10(over.Average(v => Math.Pow(10, v / 10)));
+            double LogRayleigh(double power) => db.Sum(v => { var y = (v - power) * Math.Log(10) / 10; return y - Math.Exp(y) + Math.Log(Math.Log(10) / 10) + (0.5 * Math.Log(2 * Math.PI)); });
+            var pWhole = Rayleigh(db);
+            var pGaps = gaps.Count > 0 ? Rayleigh(gaps) : pWhole;
+
+            output.WriteLine(string.Create(Inv, $"  one silence, log-Rayleigh: at the window's power {pWhole:0.0} dB {LogRayleigh(pWhole) / db.Length:0.000}; at the gaps' power {pGaps:0.0} dB {LogRayleigh(pGaps) / db.Length:0.000}"));
+        }
     }
 
     private const double CommitLagSeconds = CwSequenceReader.CommitLagSeconds;
