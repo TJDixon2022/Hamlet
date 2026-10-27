@@ -372,6 +372,7 @@ public sealed class TheSequenceReaderTests(ITestOutputHelper output)
     [InlineData("captured/cw-2026-10-19-141708", 0.0, 0.0)]
     [InlineData("captured/cw-2026-10-02-200157", 0.0, 0.0)]
     [InlineData("captured/w1aw-2026-10-07/piece-04", 0.0, 0.0)]
+    [InlineData("captured/w1aw-2026-10-07/piece-03", 0.0, 0.0)]
     public void TheLiveReaderReadsAFile(string file, double pitch, double width)
     {
         var path = Path.Combine(CwFixtures.Folder, file + ".wav");

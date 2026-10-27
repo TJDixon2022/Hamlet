@@ -760,7 +760,11 @@ public sealed class CwSequenceReader
 
         // Shadows: a lane reading the same sequence as a better-separated lane within reach is not a station; the printed lane is
         // judged first, so a station between two lanes is not handed back and forth between them.
-        var reading = _lanes.Where(l => l.Pattern.IsMorse).OrderBy(l => l == _printed ? 0 : 1).ThenByDescending(l => l.Pattern.Separation).ToList();
+        // **A STATION'S LANE HOLDS THROUGH A WINDOW THAT DIPS** (round three): the printed lane stays a station while it read Morse
+        // within the last YieldSeconds. Traced on W1AW's piece-03: under the AGC its separation sat at 1.52 to 1.67, one window under
+        // the bar let it go, and every hold after began cold.
+        var yield = (long)(YieldSeconds * 1000 / HopMs);
+        var reading = _lanes.Where(l => l.Pattern.IsMorse || (l == _printed && newest - l.LastMorse <= yield)).OrderBy(l => l == _printed ? 0 : 1).ThenByDescending(l => l.Pattern.Separation).ToList();
         var stations = new List<Lane>();
 
         foreach (var lane in reading)
@@ -967,6 +971,9 @@ public sealed class CwSequenceReader
 
         public PatternStats Pattern { get; private set; }
 
+        // The hop at which this lane's decode last read Morse.
+        public long LastMorse { get; private set; } = long.MinValue / 2;
+
         // The end of the last letter committed from this lane, in absolute hops.
         public long Committed { get; set; } = long.MinValue / 2;
 
@@ -1024,7 +1031,9 @@ public sealed class CwSequenceReader
 
             var span = System.Runtime.InteropServices.CollectionsMarshal.AsSpan(_db)[^count..];
             // A lane that read a sender carries his rhythm; a cold lane tries its starts (round two).
-            var reading = Learned is { } l && Pattern.IsMorse ? Read(span, l.Ranges, l.Levels) : ReadCold(span);
+            // ... and it carries the sender's rhythm through it (round three).
+            var warm = Pattern.IsMorse || newest - LastMorse <= (long)(YieldSeconds * 1000 / HopMs);
+            var reading = Learned is { } l && warm ? Read(span, l.Ranges, l.Levels) : ReadCold(span);
             var shift = newest - count;
 
             // Segments are kept relative to the window; Origin for Commit is the window's first hop.
@@ -1033,6 +1042,11 @@ public sealed class CwSequenceReader
             Learned = reading.Passes.Count > 0 ? reading.Passes[^1] : null;
             Levels = reading.Levels;
             Pattern = reading.Pattern;
+
+            if (Pattern.IsMorse)
+            {
+                LastMorse = newest;
+            }
         }
 
         public List<long> MarkStarts()
