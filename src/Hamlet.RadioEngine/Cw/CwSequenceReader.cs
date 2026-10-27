@@ -430,6 +430,71 @@ public sealed class CwSequenceReader
         return new Reading(segs, Text(segs), learned, levels, Pattern(segs, levels));
     }
 
+    /// <summary>The dits, in hops, a cold lane's passes start from beside its own guess: 40, 70 and 120 ms, across Morse's range.</summary>
+    public static readonly int[] ColdStartDits = [8, 14, 24];
+
+    /// <summary>
+    /// **WHERE NOBODY KNOWS THE SENDER YET, THE START THAT EXPLAINS THE ENVELOPE BEST** (round two): the passes begin from the dit
+    /// guess and from each of <see cref="ColdStartDits"/>, one pass each; the start whose decode best explains the envelope under the
+    /// levels it learned (<see cref="LogLikelihood"/>) takes the remaining passes. Traced on the owner's recordings: from a guess at its
+    /// 25 ms floor the passes settled on dit 40 and dah 80 ms with one-hop inside gaps and read every dit as a dah, where the same
+    /// window from a 95 ms start read <c>NF C HAT</c>.
+    /// </summary>
+    public static Reading ReadCold(ReadOnlySpan<double> db, int passes = Passes)
+    {
+        var levels = LevelsFromPercentiles(db);
+        Reading? best = null;
+        var bestScore = double.NegativeInfinity;
+
+        foreach (var dit in new[] { GuessDitHops(db) }.Concat(ColdStartDits).Distinct())
+        {
+            var first = Read(db, RangesFromDit(dit), levels, passes: 1);
+
+            if (first.Passes.Count == 0)
+            {
+                best ??= first;
+                continue;
+            }
+
+            var score = LogLikelihood(first.Segments, db, first.Levels);
+
+            if (score > bestScore)
+            {
+                bestScore = score;
+                best = first;
+            }
+        }
+
+        if (best is null || best.Passes.Count == 0 || passes <= 1)
+        {
+            return best!;
+        }
+
+        var rest = Read(db, best.Passes[^1].Ranges, best.Levels, passes - 1);
+
+        return rest with { Passes = best.Passes.Concat(rest.Passes).ToList() };
+    }
+
+    /// <summary>How well a decode explains the envelope: the Gaussian log-likelihood of every hop under its state's level and spread.</summary>
+    public static double LogLikelihood(IReadOnlyList<Segment> segs, ReadOnlySpan<double> db, Levels levels)
+    {
+        var sum = 0.0;
+
+        foreach (var g in segs)
+        {
+            var (mu, s) = g.IsMark ? (levels.Top, levels.SpreadOn) : (levels.Floor, levels.SpreadOff);
+
+            for (var k = g.From; k < g.To; k++)
+            {
+                var z = (db[k] - mu) / s;
+
+                sum -= (0.5 * z * z) + Math.Log(s);
+            }
+        }
+
+        return sum;
+    }
+
     /// <summary><c>cwhmm2.run</c> on audio: the envelope at a pitch and bandwidth, the first ranges from a dit guess in milliseconds.</summary>
     public static Reading Read(ReadOnlySpan<float> samples, int rate, double pitchHz, double bandwidthHz, double ditMs, int passes = Passes)
     {
@@ -958,21 +1023,8 @@ public sealed class CwSequenceReader
             }
 
             var span = System.Runtime.InteropServices.CollectionsMarshal.AsSpan(_db)[^count..];
-            Range[] ranges;
-            Levels levels;
-
-            if (Learned is { } l && Pattern.IsMorse)
-            {
-                ranges = l.Ranges;
-                levels = l.Levels;
-            }
-            else
-            {
-                ranges = RangesFromDit(GuessDitHops(span));
-                levels = LevelsFromPercentiles(span);
-            }
-
-            var reading = Read(span, ranges, levels);
+            // A lane that read a sender carries his rhythm; a cold lane tries its starts (round two).
+            var reading = Learned is { } l && Pattern.IsMorse ? Read(span, l.Ranges, l.Levels) : ReadCold(span);
             var shift = newest - count;
 
             // Segments are kept relative to the window; Origin for Commit is the window's first hop.

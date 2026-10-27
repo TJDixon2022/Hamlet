@@ -315,6 +315,7 @@ public sealed class TheSequenceReaderTests(ITestOutputHelper output)
     [Theory]
     [InlineData("captured/cw-2026-10-19-141708", 500.0, 0, 120)]
     [InlineData("captured/cw-2026-10-02-200157", 675.0, 0, 30)]
+    [InlineData("captured/cw-2026-10-08-121357", 800.0, 0, 30)]
     public void TheLaneWindowsTraced(string file, double pitch, int from, int to)
     {
         var audio = WavAudio.Read(Path.Combine(CwFixtures.Folder, file + ".wav"));
@@ -330,7 +331,7 @@ public sealed class TheSequenceReaderTests(ITestOutputHelper output)
                 var a = Math.Max(0, b - hops);
                 var span = db.AsSpan(a, b - a);
                 var guess = CwSequenceReader.GuessDitHops(span);
-                var reading = CwSequenceReader.Read(span, CwSequenceReader.RangesFromDit(guess), CwSequenceReader.LevelsFromPercentiles(span));
+                var reading = CwSequenceReader.ReadCold(span);
 
                 output.WriteLine(string.Create(Inv, $"lane {lane:0} Hz, {a * 0.005:0}-{b * 0.005:0} s: guess {guess * 5} ms; {reading.Pattern}; {(reading.Passes.Count > 0 ? reading.Passes[^1] : null)}; `{reading.Text.Trim()}`"));
             }
