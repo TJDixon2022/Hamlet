@@ -236,6 +236,64 @@ public sealed class TheGapLearningTests(ITestOutputHelper output)
         return (right, decode.Length, added);
     }
 
+    /// <remarks>The rule ships off (HM-DEC-297), and with it off the reader's ranges are as they were.</remarks>
+    [Fact]
+    public void TheRuleShipsOff()
+    {
+        Assert.Contains(CwRules.GapLearning, CwRules.OffByDefault);
+        Assert.False(CwRules.On(CwRules.GapLearning));
+
+        using var on = CwRules.Choose(CwRules.GapLearning);
+
+        Assert.True(CwRules.On(CwRules.GapLearning));
+    }
+
+    /// <remarks>Section 3.4: the fit finds a hand's three classes from a poor start, and each class's members.</remarks>
+    [Fact]
+    public void TheFitFindsAHandsClasses()
+    {
+        double[] gaps = [20, 21, 22, 23, 24, 25, 60, 62, 64, 66, 68, 150, 160, 170];
+        var (centres, counts) = CwSequenceReader.OrderedFit(gaps, [20, 30, 100]);
+
+        Assert.Equal(new[] { 6, 5, 3 }, counts);
+        Assert.InRange(centres[0], 21, 24);
+        Assert.InRange(centres[1], 62, 66);
+        Assert.InRange(centres[2], 155, 165);
+    }
+
+    /// <remarks>
+    /// Round two: a window nearly all inside gaps does not part them into two classes. The letter centre would stand under twice the inside
+    /// centre, so the fit is refused and the boundaries given stand.
+    /// </remarks>
+    [Fact]
+    public void AWindowOfInsideGapsKeepsTheClasses()
+    {
+        var segs = new List<CwSequenceReader.Segment>();
+        var at = 0;
+
+        void Add(int state, int length)
+        {
+            segs.Add(new CwSequenceReader.Segment(state, at, at + length));
+            at += length;
+        }
+
+        foreach (var inside in new[] { 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34 })
+        {
+            Add(CwSequenceReader.Dit, 14);
+            Add(CwSequenceReader.InsideGap, inside);
+            Add(CwSequenceReader.Dah, 42);
+            Add(CwSequenceReader.LetterGap, inside + 14);
+        }
+
+        var db = new double[at];
+        CwSequenceReader.Range[] previous = [new(8, 26), new(26, 76), new(10, 45), new(45, 90), new(90, 300), new(100, int.MaxValue)];
+
+        var learned = CwSequenceReader.LearnByFit(segs, db, previous);
+
+        Assert.NotNull(learned);
+        Assert.Equal(45, learned.Ranges[CwSequenceReader.InsideGap].Hi);
+    }
+
     /// <remarks>
     /// Section 5: W1AW's piece-04 through the chain with the rule and without, the process's CPU time, the first read thrown away to warm
     /// the process. Asserts nothing; the bar is the report's.
@@ -250,7 +308,7 @@ public sealed class TheGapLearningTests(ITestOutputHelper output)
 
         (double Cpu, double Wall, string Text) Time(bool on)
         {
-            using var off = on ? null : CwRules.Off(CwRules.GapLearning);
+            using var chosen = on ? CwRules.Choose(CwRules.GapLearning) : null;
             var process = System.Diagnostics.Process.GetCurrentProcess();
             var cpu = process.TotalProcessorTime;
             var wall = System.Diagnostics.Stopwatch.StartNew();
@@ -286,6 +344,7 @@ public sealed class TheGapLearningTests(ITestOutputHelper output)
         var hand = new CwWildHand(CwWildBank.Recipes.Single(r => r.Name == recipe), own, db, qso);
         var audio = hand.Audio();
         var trace = new List<string>();
+        using var on = CwRules.Choose(CwRules.GapLearning);
         var letters = TheSequenceReaderTests.ReadLiveTraced(audio.Samples, audio.SampleRate, 600, 500, trace, watchHz);
 
         output.WriteLine(hand.Text);
@@ -306,8 +365,15 @@ public sealed class TheGapLearningTests(ITestOutputHelper output)
     public void TheQuickMeasure()
     {
         var rows = new System.Collections.Concurrent.ConcurrentBag<(CwWildHand Hand, TheCwSurveyTests.Row Row)>();
+        using var on = CwRules.Choose(CwRules.GapLearning);
+        var rules = CwRules.Current;
 
-        Parallel.ForEach(CwWildBank.All, new ParallelOptions { MaxDegreeOfParallelism = 4 }, hand => rows.Add((hand, TheCwSurveyTests.Wild(hand))));
+        Parallel.ForEach(CwWildBank.All, new ParallelOptions { MaxDegreeOfParallelism = 4 }, hand =>
+        {
+            using var here = CwRules.Use(rules);
+
+            rows.Add((hand, TheCwSurveyTests.Wild(hand)));
+        });
 
         foreach (var recipe in CwWildBank.Recipes)
         {
@@ -321,7 +387,14 @@ public sealed class TheGapLearningTests(ITestOutputHelper output)
         var board = TheRecordingsScoreboardTests.Score();
         var w1aw = TheW1awTableTests.Score();
 
-        output.WriteLine(string.Create(Inv, $"the twelve-plus-three {board.Score}, limits {(board.LimitsHold ? "hold" : "do not hold")}; W1AW {w1aw.Score}"));
+        output.WriteLine(string.Create(Inv, $"the twelve-plus-three {board.Score}, limits as guarded {(board.LimitsHold ? "hold" : "do not hold")}; W1AW {w1aw.Score}"));
+        output.WriteLine("the first recording: " + board.FirstReads);
+        output.WriteLine(string.Create(Inv, $"letters in silences: {board.SilencePrints.Count}"));
+
+        foreach (var n in board.Noise)
+        {
+            output.WriteLine($"{n.What}: `{n.Reads}`");
+        }
     }
 
     private sealed record Row(

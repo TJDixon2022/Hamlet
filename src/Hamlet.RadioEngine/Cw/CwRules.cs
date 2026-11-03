@@ -176,7 +176,11 @@ internal static class CwRules
     /// </summary>
     public const string SequenceReader = "the sequence reader";
 
-    /// <summary>The sequence reader finds and learns a hand's gaps: cold ranges that fit a hand, a start chosen by validity, classes by an ordered fit (work instruction 593).</summary>
+    /// <summary>
+    /// **THE READER LEARNS A HAND'S GAPS** (work instruction 593, HM-DEC-297): cold ranges that fit a hand, a start chosen by validity as well as likelihood,
+    /// the classes by an ordered fit, a warm lane that goes invalid read cold. Built in three rounds, measured and left off: the wild bank 2944 against a bar of 3150,
+    /// `bug` 254 against 345 as shipped.
+    /// </summary>
     public const string GapLearning = "the reader learns a hand's gaps";
 
 
@@ -203,7 +207,7 @@ internal static class CwRules
     /// The rules that ship off, built and measured and not taken: off unless a test chooses one on this thread with
     /// <see cref="Choose"/> (work instruction 565).
     /// </summary>
-    public static readonly IReadOnlySet<string> OffByDefault = new HashSet<string>(StringComparer.Ordinal) { BetweenClusters, StraddleSplit, GridStepsAside, HoldWaitsAndFits, FollowsTheFade, HeldLaneMarksAreItsStations, BankFinds, Columns };
+    public static readonly IReadOnlySet<string> OffByDefault = new HashSet<string>(StringComparer.Ordinal) { BetweenClusters, StraddleSplit, GridStepsAside, HoldWaitsAndFits, FollowsTheFade, HeldLaneMarksAreItsStations, BankFinds, Columns, GapLearning };
 
     [ThreadStatic]
     private static HashSet<string>? _chosen;

@@ -696,6 +696,9 @@ public sealed class CwSequenceReader
     /// </summary>
     public const double FitLetterStep = 2.0;
 
+    /// <summary>The longest a stretch of nobody keying may be, in dits, and still be fitted as a word gap (round three): the cold word gap's own longest.</summary>
+    public const double FitWordGapMost = 30;
+
     /// <summary>The fewest members a fitted cluster may hold and still move the boundary beside it (section 3.4).</summary>
     public const int LeastInCluster = 3;
 
@@ -704,7 +707,7 @@ public sealed class CwSequenceReader
     /// letter gap 1.8 to 6.5 and the word gap 5 to 30. Given a boundary in dits, the inside gap ends and the letter gap begins there.
     /// </summary>
     public static Range[] ColdRanges(double d, double? gapLine = null)
-        => [.. Rounded([(0.5 * d, 1.6 * d), (2.0 * d, 4.5 * d), (0.5 * d, (gapLine ?? 2.5) * d), ((gapLine ?? 1.8) * d, 6.5 * d), (5.0 * d, 30 * d)]), SilenceFrom(7 * d)];
+        => [.. Rounded([(0.5 * d, 1.6 * d), (2.0 * d, 4.5 * d), (0.5 * d, (gapLine ?? 2.5) * d), ((gapLine ?? 1.8) * d, 6.5 * d), (5.0 * d, FitWordGapMost * d)]), SilenceFrom(7 * d)];
 
     /// <summary>
     /// An ordered fit in log length (section 3.4): k-means from the given centres, kept in order, at most <see cref="FitRounds"/> rounds.
@@ -769,7 +772,13 @@ public sealed class CwSequenceReader
         }
 
         var marks = segs.Where(g => g.IsMark).Select(g => (double)g.Length).ToList();
-        var gaps = segs.Where(g => g.State is InsideGap or LetterGap or WordGap).Select(g => (double)g.Length).ToList();
+        var longest = FitWordGapMost * medians.Dit;
+        var count = db.Length;
+
+        // **A WORD GAP LAID AS NOBODY KEYING IS STILL HIS WORD GAP** (round three). Traced on `farnsworth`, who sent letter gaps of 397 ms and word gaps of
+        // 1575: the word gaps were laid as nobody keying, so a fit without them learned 190 and 369 and took his letter gaps for word gaps, 138 spaces
+        // added. Up to the cold word gap's longest it counts; past that, or cut by the window's edge, it says nothing of his gaps.
+        var gaps = segs.Where(g => g.State is InsideGap or LetterGap or WordGap || (g.State == Silence && g.From > 0 && g.To < count && g.Length <= longest)).Select(g => (double)g.Length).ToList();
         var (m, mc) = OrderedFit(marks, [medians.Dit, medians.Dah]);
         var dit = mc[0] >= LeastInCluster ? m[0] : medians.Dit;
         var dah = mc[1] >= LeastInCluster ? m[1] : medians.Dah;
