@@ -271,6 +271,59 @@ public sealed class TheGapLearningTests(ITestOutputHelper output)
         output.WriteLine(string.Create(Inv, $"the change: {after.Cpu:0.0} s CPU, {after.Wall:0.0} s wall, {(after.Cpu - before.Cpu) / before.Cpu:+0%;-0%}"));
     }
 
+    /// <remarks>
+    /// The rounds' trace (work instruction 593, section 4): one hand of the wild bank read through the chain, what it printed and when, and the
+    /// lane's every decode: how it read, what it learned, its pattern and path. Asserts nothing; never on a line.
+    /// </remarks>
+    [Theory]
+    [Trait("Category", "Survey")]
+    [InlineData("bug", true, 20.0, true, 625.0)]
+    [InlineData("bug", false, 20.0, false, 625.0)]
+    [InlineData("mobile", true, 20.0, true, 625.0)]
+    [InlineData("farnsworth", true, 20.0, true, 625.0)]
+    public void TheHandTraced(string recipe, bool own, double db, bool qso, double watchHz)
+    {
+        var hand = new CwWildHand(CwWildBank.Recipes.Single(r => r.Name == recipe), own, db, qso);
+        var audio = hand.Audio();
+        var trace = new List<string>();
+        var letters = TheSequenceReaderTests.ReadLiveTraced(audio.Samples, audio.SampleRate, 600, 500, trace, watchHz);
+
+        output.WriteLine(hand.Text);
+        output.WriteLine(TheRecordingsScoreboardTests.Text(letters));
+
+        foreach (var line in trace.Where(l => !l.Contains(" s commits ", StringComparison.Ordinal)))
+        {
+            output.WriteLine(line);
+        }
+    }
+
+    /// <remarks>
+    /// The rounds' quick measure: the wild bank by recipe, read in parallel as the survey reads it. The survey's figures are the record's; these
+    /// say whether a round is worth one. Asserts nothing; never on a line.
+    /// </remarks>
+    [Fact]
+    [Trait("Category", "Survey")]
+    public void TheQuickMeasure()
+    {
+        var rows = new System.Collections.Concurrent.ConcurrentBag<(CwWildHand Hand, TheCwSurveyTests.Row Row)>();
+
+        Parallel.ForEach(CwWildBank.All, new ParallelOptions { MaxDegreeOfParallelism = 4 }, hand => rows.Add((hand, TheCwSurveyTests.Wild(hand))));
+
+        foreach (var recipe in CwWildBank.Recipes)
+        {
+            var mine = rows.Where(r => r.Hand.Recipe == recipe).ToList();
+
+            output.WriteLine(string.Create(Inv, $"{recipe.Name}: {mine.Sum(r => r.Row.Right ?? 0)} right, {mine.Sum(r => r.Row.Wrong ?? 0)} wrong, {mine.Sum(r => r.Row.Invented ?? 0)} invented, score {mine.Sum(r => r.Row.Score ?? 0)}; {string.Join(", ", mine.OrderBy(r => r.Hand.Name, StringComparer.Ordinal).Select(r => r.Row.Score ?? 0))}"));
+        }
+
+        output.WriteLine(string.Create(Inv, $"total: {rows.Sum(r => r.Row.Right ?? 0)} right, {rows.Sum(r => r.Row.Wrong ?? 0)} wrong, {rows.Sum(r => r.Row.Invented ?? 0)} invented, score {rows.Sum(r => r.Row.Score ?? 0)}"));
+
+        var board = TheRecordingsScoreboardTests.Score();
+        var w1aw = TheW1awTableTests.Score();
+
+        output.WriteLine(string.Create(Inv, $"the twelve-plus-three {board.Score}, limits {(board.LimitsHold ? "hold" : "do not hold")}; W1AW {w1aw.Score}"));
+    }
+
     private sealed record Row(
         int Dit, string Kind, double Score, bool Morse, double Letters, double Near, double Validity, string Medians, string Fit,
         string Median3, string TextMedian, string Fit3, int RightFit, string TextFit);

@@ -689,6 +689,13 @@ public sealed class CwSequenceReader
     /// <summary>The rounds an ordered fit runs at most (section 3.4).</summary>
     public const int FitRounds = 10;
 
+    /// <summary>
+    /// **THE LEAST A HAND'S LETTER GAP STANDS OVER HIS INSIDE GAP, IN A FIT** (work instruction 593, round two): the measured hands run 2.5 to 5.9.
+    /// Traced on `bug` at 40 to 44 s, `5 7 9 5 7 9`, a window nearly all inside gaps: the fit parted his inside gaps in two and took his letter gaps
+    /// for word gaps, the letter centre going 331, 256, 231, 168 ms at <see cref="GapStep"/>'s 1.4, and a warm lane read on from there in runs of `E` and `T`.
+    /// </summary>
+    public const double FitLetterStep = 2.0;
+
     /// <summary>The fewest members a fitted cluster may hold and still move the boundary beside it (section 3.4).</summary>
     public const int LeastInCluster = 3;
 
@@ -776,7 +783,7 @@ public sealed class CwSequenceReader
         {
             var (g, gc) = OrderedFit(gaps, [ig, lg, wg]);
 
-            if (g[1] >= GapStep * g[0] && g[2] >= GapStep * g[1])
+            if (g[1] >= FitLetterStep * g[0] && g[2] >= GapStep * g[1])
             {
                 (ig, lg, wg) = (gc[0] >= LeastInCluster ? g[0] : ig, gc[1] >= LeastInCluster ? g[1] : lg, gc[2] >= LeastInCluster ? g[2] : wg);
                 insideLine = gc[0] >= LeastInCluster && gc[1] >= LeastInCluster ? Math.Sqrt(g[0] * g[1]) : insideLine;
