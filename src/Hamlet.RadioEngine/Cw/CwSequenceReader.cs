@@ -548,12 +548,13 @@ public sealed class CwSequenceReader
     {
         var learned = new List<Learned>();
         List<Segment> segs = [];
+        var byFit = CwRules.On(CwRules.GapLearning);
 
         for (var it = 0; it < passes; it++)
         {
             segs = Decode(db, ranges, levels);
 
-            if (Learn(segs, db) is not { } l)
+            if ((byFit ? LearnByFit(segs, db, ranges) : Learn(segs, db)) is not { } l)
             {
                 break;
             }
@@ -600,10 +601,12 @@ public sealed class CwSequenceReader
         Reading? best = null;
         var bestScore = double.NegativeInfinity;
         var bestMorse = false;
+        var gapLearning = CwRules.On(CwRules.GapLearning);
+        var bestValidity = double.PositiveInfinity;
 
         foreach (var dit in new[] { GuessDitHops(db) }.Concat(ColdStartDits).Distinct())
         {
-            var ranges = RangesFromDit(dit);
+            var ranges = gapLearning ? ColdRanges(dit) : RangesFromDit(dit);
             var first = Read(db, ranges, levels, passes: 1);
 
             if (first.Passes.Count == 0)
@@ -618,10 +621,19 @@ public sealed class CwSequenceReader
             // order, is kept before any that is not; among them, and failing them among all, the likeliest.
             var morse = first.Pattern.IsMorse;
 
-            if ((morse && !bestMorse) || (morse == bestMorse && score > bestScore))
+            // **AND BY VALIDITY AS WELL AS LIKELIHOOD** (work instruction 593, section 3.3): among them, a start whose decode is valid is
+            // kept before any that is not; among the valid the likeliest, and where none is, the most valid. Traced on Ken at 34 to 46 s:
+            // the likeliest Morse start laid 79% `E`, `T` and the placeholder.
+            var validity = gapLearning ? Validity(first).Figure : 0;
+            var valid = validity <= ValidityShare;
+            var wasValid = bestValidity <= ValidityShare;
+            var better = valid ? !wasValid || score > bestScore : !wasValid && validity < bestValidity;
+
+            if (gapLearning ? (morse && !bestMorse) || (morse == bestMorse && better) : (morse && !bestMorse) || (morse == bestMorse && score > bestScore))
             {
                 bestScore = score;
                 bestMorse = morse;
+                bestValidity = validity;
                 best = first;
             }
         }
@@ -662,6 +674,143 @@ public sealed class CwSequenceReader
         }
 
         return sum;
+    }
+
+    // ---------------------------------------------------------------------------------------------------------------------------
+    // The gaps a hand sends (work instruction 593).
+    // ---------------------------------------------------------------------------------------------------------------------------
+
+    /// <summary>The most a decode's validity figure may be for it to be trusted (section 3.3); the share of `E`, `T` and the placeholder runs to about 0.25 in plain text.</summary>
+    public const double ValidityShare = 0.35;
+
+    /// <summary>How near a class boundary, either way, a gap counts as sitting on it, as a share of the boundary (section 3.3).</summary>
+    public const double BoundaryNear = 0.2;
+
+    /// <summary>The rounds an ordered fit runs at most (section 3.4).</summary>
+    public const int FitRounds = 10;
+
+    /// <summary>The fewest members a fitted cluster may hold and still move the boundary beside it (section 3.4).</summary>
+    public const int LeastInCluster = 3;
+
+    /// <summary>
+    /// The cold ranges that fit a hand (section 3.1): the marks as <see cref="RangesFromDit"/> has them, the inside gap 0.5 to 2.5 dits, the
+    /// letter gap 1.8 to 6.5 and the word gap 5 to 30. Given a boundary in dits, the inside gap ends and the letter gap begins there.
+    /// </summary>
+    public static Range[] ColdRanges(double d, double? gapLine = null)
+        => [.. Rounded([(0.5 * d, 1.6 * d), (2.0 * d, 4.5 * d), (0.5 * d, (gapLine ?? 2.5) * d), ((gapLine ?? 1.8) * d, 6.5 * d), (5.0 * d, 30 * d)]), SilenceFrom(7 * d)];
+
+    /// <summary>
+    /// An ordered fit in log length (section 3.4): k-means from the given centres, kept in order, at most <see cref="FitRounds"/> rounds.
+    /// Returns the centres, in the lengths' own unit, and each cluster's members. A cluster left empty keeps its centre.
+    /// </summary>
+    public static (double[] Centres, int[] Counts) OrderedFit(IReadOnlyList<double> lengths, IReadOnlyList<double> start)
+    {
+        var k = start.Count;
+        var logs = lengths.Select(v => Math.Log(v)).Order().ToArray();
+        var centres = start.Select(v => Math.Log(v)).ToArray();
+        var counts = new int[k];
+
+        for (var round = 0; round < FitRounds; round++)
+        {
+            var sums = new double[k];
+            var members = new int[k];
+
+            foreach (var v in logs)
+            {
+                var c = 0;
+
+                while (c + 1 < k && Math.Abs(v - centres[c + 1]) < Math.Abs(v - centres[c]))
+                {
+                    c++;
+                }
+
+                sums[c] += v;
+                members[c]++;
+            }
+
+            var moved = false;
+
+            for (var c = 0; c < k; c++)
+            {
+                var next = members[c] > 0 ? sums[c] / members[c] : centres[c];
+
+                moved |= Math.Abs(next - centres[c]) > 1e-9;
+                centres[c] = next;
+                counts[c] = members[c];
+            }
+
+            if (!moved)
+            {
+                break;
+            }
+        }
+
+        return (centres.Select(v => Math.Exp(v)).ToArray(), counts);
+    }
+
+    /// <summary>
+    /// <see cref="Learn"/> by an ordered fit (section 3.4): every gap of the decode fitted by three ordered clusters and every mark by two,
+    /// from the decode's own medians; the class boundaries the geometric midpoints of the centres. A cluster under
+    /// <see cref="LeastInCluster"/> keeps the given ranges' boundary on that side, and a fit whose gap centres stand closer than
+    /// <see cref="GapStep"/> is refused, the pass keeping the given ranges' gap classes. Nobody keying is no gap of the hand's.
+    /// </summary>
+    public static Learned? LearnByFit(IReadOnlyList<Segment> segs, ReadOnlySpan<double> db, IReadOnlyList<Range> previous)
+    {
+        if (Learn(segs, db) is not { } medians)
+        {
+            return null;
+        }
+
+        var marks = segs.Where(g => g.IsMark).Select(g => (double)g.Length).ToList();
+        var gaps = segs.Where(g => g.State is InsideGap or LetterGap or WordGap).Select(g => (double)g.Length).ToList();
+        var (m, mc) = OrderedFit(marks, [medians.Dit, medians.Dah]);
+        var dit = mc[0] >= LeastInCluster ? m[0] : medians.Dit;
+        var dah = mc[1] >= LeastInCluster ? m[1] : medians.Dah;
+        var markLine = mc[0] >= LeastInCluster && mc[1] >= LeastInCluster ? Math.Sqrt(dit * dah) : previous[Dit].Hi;
+
+        var (ig, lg, wg) = (medians.InsideGap, medians.LetterGap, medians.WordGap);
+        var insideLine = (double)previous[InsideGap].Hi;
+        var wordLine = (double)previous[LetterGap].Hi;
+
+        if (gaps.Count > 0)
+        {
+            var (g, gc) = OrderedFit(gaps, [ig, lg, wg]);
+
+            if (g[1] >= GapStep * g[0] && g[2] >= GapStep * g[1])
+            {
+                (ig, lg, wg) = (gc[0] >= LeastInCluster ? g[0] : ig, gc[1] >= LeastInCluster ? g[1] : lg, gc[2] >= LeastInCluster ? g[2] : wg);
+                insideLine = gc[0] >= LeastInCluster && gc[1] >= LeastInCluster ? Math.Sqrt(g[0] * g[1]) : insideLine;
+                wordLine = gc[1] >= LeastInCluster && gc[2] >= LeastInCluster ? Math.Sqrt(g[1] * g[2]) : wordLine;
+            }
+        }
+
+        Range[] r = [.. Rounded([(0.55 * dit, markLine), (markLine, 1.8 * dah), (0.4 * ig, insideLine), (insideLine, wordLine), (wordLine, 2.5 * wg)]), SilenceFrom(wg)];
+
+        return medians with { Dit = dit, Dah = dah, InsideGap = ig, LetterGap = lg, WordGap = wg, Ranges = r };
+    }
+
+    /// <summary>
+    /// **HOW MUCH A DECODE SPLITS A HAND** (section 3.3): the share of its letters that are `E`, `T` or the placeholder, and the share of
+    /// its gaps within <see cref="BoundaryNear"/> of the class boundaries it learned. The figure is the greater; under
+    /// <see cref="ValidityShare"/> the decode is valid.
+    /// </summary>
+    public static (double Letters, double Gaps, double Figure) Validity(Reading reading)
+    {
+        var letters = reading.Text.Where(c => c != ' ').ToList();
+        var share = letters.Count == 0 ? 1 : letters.Count(c => c is 'E' or 'T' || c.ToString() == MorseAlphabet.Unreadable) / (double)letters.Count;
+        var gaps = reading.Segments.Where(g => g.State is InsideGap or LetterGap or WordGap).Select(g => (double)g.Length).ToList();
+        var near = 1.0;
+
+        if (reading.Passes.Count > 0 && gaps.Count > 0)
+        {
+            var r = reading.Passes[^1].Ranges;
+
+            bool Near(double gap, double line) => Math.Abs(gap - line) <= BoundaryNear * line;
+
+            near = gaps.Count(g => Near(g, r[InsideGap].Hi) || Near(g, r[LetterGap].Hi)) / (double)gaps.Count;
+        }
+
+        return (share, near, Math.Max(share, near));
     }
 
     /// <summary><c>cwhmm2.run</c> on audio: the envelope at a pitch and bandwidth, the first ranges from a dit guess in milliseconds.</summary>
@@ -1319,7 +1468,8 @@ public sealed class CwSequenceReader
                 // **AND WHERE ITS FIGURES FALL, A SECOND STATION IN THE LANE** (work instruction 590, change 3): a warm decode whose
                 // pattern falls from the one the lane kept by PatternDrop is read cold as well, and the cold read is taken where
                 // its pattern is Morse and stands better.
-                var fell = !reading.Pattern.IsMorse || Falls(reading.Pattern, Kept);
+                // **AND WHERE ITS DECODE IS NOT VALID** (work instruction 593, section 3.5).
+                var fell = !reading.Pattern.IsMorse || Falls(reading.Pattern, Kept) || (CwRules.On(CwRules.GapLearning) && Validity(reading).Figure > ValidityShare);
 
                 // **AND EVERY WINDOW, WHERE THE TWO DISAGREE ON WHAT IS A DAH, THE KEPT RHYTHM IS STALE** (work instruction 591, round
                 // two): traced on 121414, the sender went from a 220 ms dah to 155 ms at 11.8 s; at 16 and 18 s the cold read saw a dah

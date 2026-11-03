@@ -176,6 +176,9 @@ internal static class CwRules
     /// </summary>
     public const string SequenceReader = "the sequence reader";
 
+    /// <summary>The sequence reader finds and learns a hand's gaps: cold ranges that fit a hand, a start chosen by validity, classes by an ordered fit (work instruction 593).</summary>
+    public const string GapLearning = "the reader learns a hand's gaps";
+
 
 
 
