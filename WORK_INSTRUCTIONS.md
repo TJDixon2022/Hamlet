@@ -1,42 +1,46 @@
-# Work instruction 586 - One finder, the opening: a lane hears a station from its first mark
+# Work instruction 592 - The wild yardstick: hands as they are sent
 
-**Hand run. One finder (`CwRules.BankFinds`, off), one cause, up to three rounds, one commit per
-round plus the record. The owner's ruling, 2026-10-21: one more unit on one finder, on the
-opening alone, with a hard stop.** The tag `before-one-finder` stands.
+**Hand run. No change to the reader. A new measure, two truths, a baseline, and the record.** One
+commit for the work plus one for the record.
 
-**Where one finder stands** (unit 585, round three, against two finders as shipped): the
-hand-sent recordings **253 against 297**; W1AW 2098 with 8 invented against 2111 with none; and
-everything else better - the short-dah rows 832 and 886 against 569 and 624, the 5 dB CQs 80 of
-84 against 71, the fading half 1,166 against 439, the working fixtures 17 against 4, the random
-carrier at no seed against two, the strays 12.8 against 26.8.
+**Where it stands** (1.13.278, the sequence reader on by default): the twelve-plus-three 308,
+W1AW 2101, the fist bank 3,898, the 5 dB CQs 84 of 84 - and on the air, hands the owner copies
+by ear print as E's and T's. The owner stepped back on 2026-11-03 and the analysis (project
+file `ANALYSIS-2026-11-03-wild-cw.md`, summarised here) found:
 
-**The one cause, in the unit's own words:** *a bank lane calls nothing until its own contrast,
-taken over three seconds of its own history, clears 12 dB. A station that starts after quiet
-therefore loses its first letters, where the grid read them at once.* The `F` of `FER`, the `N
-T` of `N TEMP`, `RR` as `EENR`, the second station's first words on `221530` (31 to 15). On
-`221530` the station began near 9 s and its own lane called no mark until 10.2 s. **Second**
-come noise lanes held at that same floor while nothing louder keys (`TENTESIS`, 8 invented, 3
-in silences). Loudest first moved none of it, since at an opening there is nothing louder yet.
+- **Marks are solved.** On every wild capture in hand (the Ken/Bryan capture, `144020`, `121414`,
+  `200157`), 0.0% of dits sit above the dit/dah midpoint and 0.0% of dahs below it; contrast
+  13.5 to 17.8 dB. The wild captures are not noisier than W1AW in any way that matters.
+- **W1AW reads because it is a machine**: gaps 35 / 100 / 240 ms = 1 : 2.9 : 6.9 dits with a
+  10-90% spread of 5 ms. One gap in 889 lies near any class boundary.
+- **Wild hands lose on gaps.** Measured inside : letter : word ratios - Bryan KB2UZK/M
+  1.6 : 4.4 : 13.1; Ken N3AFS 1.7 : 4.3 : 7.6; `144020` 0.9 : 5.3 : 21.3; `121414` 1.0 : 3.7 : 8.6;
+  `200157` 1.1 : 4.0 : 11.8. No two hands alike, none 1 : 3 : 7. Three mechanisms: (a) the
+  reader's cold inside-gap range (0.4-1.7 dits) is wrong for a 1.6-dit hand and the learning
+  locks the first wrong pass in - Ken reads `A UE IE DE AAI D 5T AT ET` as learned and
+  `I NEW BENSING TON ,P T PA NR PITTS` with the one inside/letter boundary moved from 140 to
+  200 ms; (b) true ambiguity - Bryan spaces `579` like words and `I AM` like a letter, and no
+  boundary from 110 to 240 ms reads both; ~13% of his gaps are in no-man's-land; (c) swing in
+  marks, a minority (Ken's dit log-spread 0.37 against W1AW's 0.09).
+- **The yardstick measured the wrong thing.** The fist bank's keyer sends 1 : 3 : 7 with
+  symmetric jitter and varies only mark properties. It holds no 1.6-dit hand, no digits spaced
+  like words, no letter gaps spread 2.5 to 5 dits. A reader scores 3,898 on it and reads Ken as
+  `ETETTE TTTTTE`.
 
-**Why the grid reads an opening.** Its bins run all the time, so the noise floor under a pitch
-is known before the station keys, and a mark is a mark the moment it rises over it. A lane runs
-all the time too, so its key-up (the 30th percentile of three seconds) is known just as well.
-What a lane lacks at an opening is a key-down: the 90th percentile of three seconds of mostly
-noise does not move until a third of a second of key-down has gone into it, and the contrast
-does not clear 12 dB until well after. **The lane's floor is right; its ceiling is late.**
+**The owner's rulings, 2026-11-03:** *Hamlet may know words* ("sure"); the yardstick is changed
+before the reader is; no further units on marks, lanes, seams, handover or the opening as a mark
+problem. This unit is the yardstick. The reader is not touched.
 
-**Standing rules** (HM-DEC-276, HM-DEC-284) apply, with up to three rounds. Engine line 1500 s,
-survey 1800 s or more as this unit finds (one finder slowed the survey to 21 minutes last unit;
-if round one's measure shows the cost is the failing marks fed to the gates, say so and take
-the cheaper of the two forms that read the same), `--no-build` after one build per round,
-build servers shut down first. One test run at a time.
+**Standing rules** (HM-DEC-276, HM-DEC-284) apply. Engine line 1500 s, survey 1800 s,
+`--no-build` after one build, build servers shut down first, one test run at a time; a run
+stopped for memory is run once more alone without asking.
 
 Earlier unit numbers are not cited: each part of the tree is described by what it does.
 
 **Nothing keys or transmits. Nothing is written to the radio. No recording is added, removed or
-promoted.**
+promoted.** The Ken/Bryan capture `cw-2026-10-19-141708` is already in the tree.
 
-**Numbering.** This is unit 586, ruling HM-DEC-290. If taken, use the next free and say so.
+**Numbering.** This is unit 592, ruling HM-DEC-296. If taken, use the next free and say so.
 
 ---
 
@@ -50,7 +54,7 @@ PROJECT: Hamlet
 Check the repository root:
   MUST EXIST:      SHACK_FACTS.md
   MUST EXIST:      docs\cw-scoreboard.md
-  MUST EXIST:      src\Hamlet.RadioEngine\Cw\CwLaneBank.cs
+  MUST EXIST:      src\Hamlet.RadioEngine\Cw\CwSequenceReader.cs
   MUST NOT EXIST:  CoreHMI.sln
   MUST NOT EXIST:  MURC.sln
   root             C:\Source\HamLet
@@ -69,110 +73,133 @@ If all five hold, say "Hamlet confirmed" and continue.
   to `RUN_LEDGER.md`. Touch nothing under `tools\arbiter\`. Tick nothing in `PHASE_PLAN.md`.
 - One `dotnet test` invocation per line, filtered, with a `timeout`.
 - Apostrophes in quoted heredocs break; `;` is refused; Python cannot run here; `-m` more than
-  once for a multi-line commit. Scripts go in `.run-unit\unit586-<name>.sh`, not committed.
+  once for a multi-line commit. Scripts go in `.run-unit\unit592-<name>.sh`, not committed.
 - **The one layout holds**: nothing on screen moves.
+- **No file under `src\Hamlet.RadioEngine\Cw\` changes.** If a measurement needs a hook the
+  reader does not have, report it under section 4 and measure without it.
 - `output.md` at the root, four headings exactly: `## 1. What Claude did`, `## 2. What the owner
   should expect`, `## 3. What you should see`, `## 4. What's blocking us`. Status on the tree's
   own triggers; the phase count as `PHASE_STATUS.md` holds it; the asks list carried forward.
 
 ---
 
-## 2. The trace, first
+## 2. The wild bank - hands with gaps as they are sent
 
-**The openings**, with `BankFinds` on as it stands, on the first recording (`FER`), `144020`
-(`N TEMP`), `221828` (`RR`, `FER`), `221530`'s second station, and W1AW `piece-02`'s `QST`
-after its pause: for the station's own lane, every 50 ms from one second before the station's
-first keyed mark to its first printed letter - the lane's level, its key-up line, its key-down
-line, its contrast, and whether the mark then keyed (from the board's keying map) was called.
-Beside it the grid's bin at that pitch: its floor and when it called the first mark. One table
-per opening, condensed to one row per keyed mark, with the full rows in `.run-unit\reports\`.
+The keyer that makes the fist bank's hands (the generator the survey's bank group uses) gains a
+**gap recipe**: inside, letter and word gaps each drawn per gap from a log-normal around the
+recipe's median with the recipe's spread (the spread is the standard deviation of the log), and
+two **habits**: *digits spaced like words* (a gap between two digits is drawn from the word
+class) and *short words run together* (a word gap after a one- or two-letter word is drawn from
+the letter class). Marks also take a per-hand spread: dits and dahs log-normal around the median
+with the recipe's spread. The current hands are the recipe `machine` (1 : 3 : 7, the existing
+jitter) and are unchanged, so the existing bank's figures do not move.
 
-**The paragraph:** how long after the first keyed mark the lane's key-down line reaches the
-station's level, how long until its contrast clears 12 dB, and which of the two is the delay
-that loses the letters. Name the one change.
+The recipes, from the measured hands (gaps in the hand's own dits; spread = log std):
 
-## 3. The one rule
+| Recipe | dit ms | dah/dit | dit spread | dah spread | inside (spread) | letter (spread) | word (spread) | habits |
+|---|---|---|---|---|---|---|---|---|
+| `mobile` (Bryan) | 65 | 3.4 | 0.29 | 0.12 | 1.6 (0.10) | 4.4 (0.30) | 13.7 (0.40) | digits as words; short words together |
+| `bug` (Ken) | 80 | 2.9 | 0.37 | 0.19 | 1.7 (0.23) | 4.3 (0.18) | 7.6 (0.29) | none |
+| `farnsworth` (144020) | 75 | 2.9 | 0.28 | 0.05 | 0.9 (0.05) | 5.3 (0.35) | 21 (0.45) | none |
+| `tight` (121414) | 58 | 2.5 | 0.25 | 0.16 | 1.0 (0.08) | 3.6 (0.25) | 8.5 (0.40) | none |
+| `steady` (200157) | 75 | 2.8 | 0.10 | 0.01 | 1.1 (0.08) | 4.0 (0.30) | 11.8 (0.25) | none |
+| `machine` (control) | as the bank | 3.0 | as the bank | as the bank | 1 | 3 | 7 | none |
 
-The likely shape, for the trace to confirm or correct - **`CwRules.LaneHearsTheOpening`**:
+Each recipe at **two speeds** (its own dit, and its dit scaled to 20 WPM), **two levels** (20 dB
+and 10 dB, flat), **two texts** - a QSO text in the air's own words (`GM KEN NICE TO MEET U ES
+TNX FER RPRT UR RST 579 579 I AM IN MOBILE STN HR NAME BRYAN BRYAN ES QTH IS CHICOPEE, MA`) and
+the bank's existing text - seeded by recipe as the bank is: **48 hands**, scored exactly as the
+bank is scored (letters right, wrong, invented, spaces). A new survey group **`wild bank`**,
+reported as the bank is: total, per recipe, per level, invented. A guard test
+(`TheWildBankTests.TheBankIsMade`) that the 48 hands are generated and the truth is the text
+sent; **no score guard yet** - the figures are the baseline.
 
-- A lane's **key-up** stays as it is: the 30th percentile of its three-second history, known
-  before any station keys.
-- A lane's **key-down**, while it holds nothing, is **the greater of** the 90th percentile of
-  its history **and the top of the last mark-length of hops** (the median of the top quarter of
-  the hops in the last `OpeningHops`, a dah's worth at the lane's dit), so that the first dah of
-  a station lifts the ceiling at once and the contrast is read against the station's own level
-  from its first mark.
-- **The contrast floor (12 dB) is judged on that contrast**, so a station 12 dB over the lane's
-  known floor stands on its first marks rather than a second later.
-- **Noise lanes:** a ceiling lifted by one noise burst falls back as soon as the burst ends,
-  because the last mark-length of hops no longer holds it, so a lane stands on noise no more
-  than it does now; and the grid's tests on lanes, loudest first and two-lanes stay as they are.
-  If the trace shows the lifted ceiling lets noise lanes stand more, the second round takes
-  that.
+Also, per hand, the **ambiguity figure**: the share of the sent gaps within ±25% of the midpoint
+between the recipe's inside and letter medians, and between letter and word, in the survey
+doc beside the score. It says how much of each hand is readable by timing at all.
 
-Build it, measure once.
+## 3. Two real hands with truth
 
-## 4. Rounds two and three
+On `tests\fixtures\cw\captured\cw-2026-10-19-141708.wav`, 500 Hz: **Ken N3AFS from 0 to
+120 s** and **Bryan KB2UZK/M from 120 to 300 s**. The truth below is a **draft** - the best
+reads of the prototype, corrected by what the QSO must have said; `?` marks what is unknown.
+Put it in the tree beside the capture as `cw-2026-10-19-141708.truth.md`, headed `DRAFT - the
+owner corrects by ear`, with the two stretches as shown. The owner will correct it; until then
+these two stretches are **reported, not guarded** (HM-DEC-284: no rule ships against a draft).
 
-If round one fails the bar, trace the single largest loss against two finders as shipped (board
-or group, to the stretch or fist, to the second), fix the one thing the trace names, commit,
-measure again. Twice at most. Each round's figures go in the report's table.
+```
+Ken N3AFS, 0-120 s, 500 Hz, straight key or bug, about 15 WPM
+? ? <BT> ? UR RST 589 589 ? QTH IS NEW KENSINGTON, PA NR PITTSBURGH ?
+NAME IS KEN KEN ? HW? KB2UZK/M DE N3AFS K
+(at about 100 s Bryan begins: N3AFS DE KB2UZK/M)
 
-## 5. The bar, and the ship - the hard stop
+Bryan KB2UZK/M, 120-300 s, 500 Hz, mobile, about 18 WPM
+HELLO GM KEN NICE TO MEET U ES TNX FER RPRT UR RST 579 579 ? I AM IN MOBILE STN HR ?
+NAME BRYAN BRYAN ES QTH IS CHICOPEE, MA CHICOPEE, MA PARKED IN MY MOBILE <BT> SO BTU
+KEN N3AFS DE KB2UZK/M K
+(after about 280 s nothing of Bryan's; what follows is not scored)
+```
 
-**`BankFinds` ships on by default only if, at the end of the last round:**
+Score both stretches with the reader as shipped, the way the twelve-plus-three are scored
+(letters right, wrong, invented, spaces; alignment against the truth with `?` matching
+anything), and **per 20 s stretch** so the owner can see where it fails. A survey group
+**`wild hands`** with these two rows. On the capture sheet nothing changes.
 
-- **both boards hold:** the twelve-plus-three **297** or better, W1AW **2111** or better, wrong
-  and invented not rising, spaces not worse;
-- **the fist bank's score 2,500 or better**, invented not above 50; **the fading half 1,000 or
-  better**; the flat half not below 2,129;
-- **the weak-end guard holds:** the four 5 dB CQs at 71 of 84 or better; nothing in the 20 s of
-  noise after them; the short-dah rows and the nine hands hold their guards;
-- **the hard limits:** noise prints nothing, the random carrier at no more than two seeds, the
-  steady carrier at none, the first recording whole, nothing in silences, no old capture above
-  six strays per 10 s; the summed strays reported;
-- the easy fixtures not worse than 77 of 90; the working fixtures reported; `two-station`
-  reported; the CPU of the survey with one finder reported against two.
+## 4. The baseline trace
 
-**For the owner's ruling, not a fail:** if everything holds but one board is under by no more
-than 1% (the twelve-plus-three **294** or better, W1AW **2090** or better), do not ship; put the
-full figures under *For the owner's ruling* with the stretch that fell and why.
+For each of the two real hands and for the `mobile` and `bug` recipes at 20 dB, own speed, a
+table in section 3 of the report: the hand's **sent** (or measured) gap medians - inside,
+letter, word - against the reader's **learned** gap classes at 10 s, 30 s and the end of the
+stretch; its learned dit and dah against the hand's; the share of the decode that is `E`, `T`
+or `■`; and the text it printed. One table, these four rows. This is what the next unit (the
+gap learning) is measured against.
 
-**The hard stop:** if the twelve-plus-three is under 294 at the end of the last round, say so in
-one line at the top of section 2, leave `BankFinds` off, keep the tag and every one-finder rule
-in the tree behind it, and end the one-finder line. No further one-finder unit will be issued
-without a new ruling; the next units go to what the owner sees on the air with two finders.
+## 5. The bar
 
-If it ships: both scoreboard guards at the figures that ship, on the board as the author's; the
-fading half joins `TheFistBankGuardsTests` as a floor at the figure that shipped less 5%;
-`CW_SPEC.md` §2 is rewritten for one finder; the seam's rules are listed for removal in the
-next unit; the `Weak stations` row reads as the layout allows.
+This unit does not ship a reader change, so the bar is that the measure exists and nothing else
+moved:
+
+- the wild bank: 48 hands generated, truth is the text sent, the group in the survey with its
+  figures and the ambiguity figures; the `machine` recipe reproduces the existing bank's hands
+  bit for bit (say how that was checked);
+- the two real hands: the draft truth in the tree, the scores per 20 s stretch in the survey;
+- **the existing boards unchanged**: the twelve-plus-three 308, W1AW 2101, the fist bank 3,898,
+  every guard green, the engine line green, the app line green;
+- CPU of the survey reported (the two new groups add to it; say by how much).
+
+If the `machine` recipe does not reproduce the existing bank, stop, keep the recipe code, leave
+the survey's bank group on the old keyer, and say what differs.
 
 ---
 
 ## 6. The lines, the survey, the record
 
 Run the app line, the engine line and the survey line once at the end; rewrite
-`docs\cw-survey-2026-10-09.md` with a new `Rerun` line; the fist bank's matrices and every
-group before and after in the report.
+`docs\cw-survey-2026-10-09.md` with a new `Rerun` line; every group before and after, the two
+new groups added.
 
-- `PHASE_OUTCOME.md`, both copies: `## UNIT 586 - STEP 12`, one paragraph.
-- `PHASE_STATUS.md`, both copies: names 586.
+- `PHASE_OUTCOME.md`, both copies: `## UNIT 592 - STEP 12`, one paragraph.
+- `PHASE_STATUS.md`, both copies: names 592.
 - Patch-bump `Directory.Build.props`.
 - `CLAUDE.md` §1 index row.
-- `DECISIONS.md`, newest first, **HM-DEC-290**, headline *One finder, the opening*, quoting the
-  owner's ruling and the hard stop, naming the rule, the rounds, whether it shipped, waits on a
-  ruling, or ended the line, and the figures before and after.
-- `docs\cw-scoreboard.md`: a 586 row in each table at the figures that shipped.
-- **Touch no checkbox in `PHASE_PLAN.md`**, and add no ruling beyond HM-DEC-290.
+- `DECISIONS.md`, newest first, **HM-DEC-296**, headline *Hamlet may know words; the wild
+  yardstick*, quoting the owner's rulings of 2026-11-03 as given above, the four findings of the
+  analysis in a line each, what this unit built, and the baseline figures of the two new groups.
+- `docs\cw-scoreboard.md`: a new table **Wild hands** (the two real stretches, right / wrong /
+  invented / spaces, per unit) and a new table **Wild bank** (total, per recipe), each with its
+  592 row as the baseline; the existing tables untouched.
+- `CW_SPEC.md`: a new short section after §2, *what a hand sends*, with the recipe table and the
+  three mechanisms, so the spec says why W1AW reads and a hand does not.
+- **Touch no checkbox in `PHASE_PLAN.md`**, and add no ruling beyond HM-DEC-296.
 
 ---
 
 ## 7. Report
 
-Section 2, for the owner, in plain words, leading with **the whole picture, one finder against
-two, row by row** (W1AW, the hand-sent recordings, a short-dah fist, a weak CQ, a fading station,
-the far side, the carrier) and whether it ships, waits on a ruling, or stops. Then the rule in a
-sentence and what the openings read now. Section 1: per round. **Section 3: the openings'
-tables; the rounds' table (every condition, each round, two finders); the three matrices; the
-easy and working fixtures; both scoreboards' rows.** Section 4: anything left, a line each.
+Section 2, for the owner, in plain words: **the wild bank's baseline per recipe** (which hands
+the shipped reader reads and which it does not, in a line each), **the two real hands** per 20 s
+stretch, the ambiguity figures, and that the existing boards did not move. Section 1: what was
+built. **Section 3: the baseline trace table of §4; the wild bank matrix (recipe × level ×
+speed); the two real hands' stretches; the survey's groups before and after; CPU.** Section 4:
+anything left, a line each - including whether the `machine` recipe reproduced the bank, and
+which of the truth's `?` the reader itself can fill.

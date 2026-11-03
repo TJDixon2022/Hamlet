@@ -4,6 +4,31 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-296
+date: 2026-11-03
+refs: work instruction 592, HM-DEC-295, HM-DEC-284, HM-DEC-276, tests/Hamlet.RadioEngine.Tests/Cw/Fixtures/CwWildBank.cs, tests/Hamlet.RadioEngine.Tests/Cw/CwWildHands.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheWildBankTests.cs, tests/fixtures/cw/captured/cw-2026-10-19-141708.truth.md, CW_SPEC.md section 2.1
+---
+
+**Hamlet may know words; the wild yardstick.**
+
+**The owner's rulings, 2026-11-03:** *Hamlet may know words* ("sure"); the yardstick is changed before the reader is; no further units on marks, lanes, seams, handover or the opening as a mark problem. This unit is the yardstick. The reader is not touched, and nothing here teaches Hamlet a word: that ruling is recorded for the units that follow.
+
+**The analysis of 2026-11-03, the project file `ANALYSIS-2026-11-03-wild-cw.md`, which is not in this tree, as the work instruction summarises it:**
+
+- Marks are solved: on every wild capture in hand 0.0% of dits sit above the dit/dah midpoint and 0.0% of dahs below it, contrast 13.5 to 17.8 dB.
+- W1AW reads because it is a machine: gaps 35 / 100 / 240 ms, 1 : 2.9 : 6.9 dits, a 10-90% spread of 5 ms, one gap in 889 near any class boundary.
+- Wild hands lose on gaps, by three mechanisms: a cold inside-gap range wrong for a 1.6-dit hand and locked in by the learning; true ambiguity, Bryan spacing `579` like words and `I AM` like a letter; and swing in marks, a minority.
+- The yardstick measured the wrong thing: it holds no 1.6-dit hand, no digits spaced like words, no letter gaps spread 2.5 to 5 dits.
+
+**What this unit built.** The keyer gains a gap recipe: inside, letter and word gaps and dits and dahs drawn log-normal per recipe, and two habits, digits spaced like words and short words run together. `CwWildBank`: six recipes, each at two speeds, two levels and two texts, 48 hands, the new survey group `wild bank`, with each hand's ambiguity: the share of its sent gaps within ±25% of the arithmetic midpoint of its medians. `cw-2026-10-19-141708.truth.md`, a draft the owner corrects by ear, and the survey group `wild hands`: Ken N3AFS, 0 to 120 s, and Bryan KB2UZK/M, 120 to 300 s, each per 20 s, a `?` alone matching anything, reported and not guarded (this ruling applies HM-DEC-284: no rule ships against a draft). `TheWildBankTests` proves the bank is what it says; no score guards it. No file under `src\Hamlet.RadioEngine\Cw\` changed.
+
+**The control is the bank.** `machine` is the fist bank's own keyer: SHA-256 over all 96 fists' edges and audio, taken before the keyer was touched, is pinned in `TheMachineRecipeIsTheBank`, and the survey's old groups are byte-identical. **The work instruction's premise is corrected here:** that keyer sends letter gaps of 2 to 3.5 dits and word gaps of 4 to 6, uniform, not 1 : 3 : 7, and to reproduce the bank `machine` keeps them.
+
+**The baseline, the reader as shipped.** The wild bank 3133 of 3528, 274 wrong, 0 invented, score 2859, spaces 923 of 1104 with 400 added: `mobile` 522, `bug` 459, `farnsworth` 567, `tight` 489, `steady` 524, `machine` 572, each of 588. The wild hands, on the draft: Ken 43 of 76, 25 wrong, 0 invented, spaces 11 of 16 with 7 added; Bryan 118 of 144, 17 wrong, 0 invented, spaces 36 of 40 with 19 added. The boards unchanged: the twelve-plus-three 308, W1AW 2101, the fist bank 3898.
+
+**What the baseline says against the analysis, on its face:** replayed through the reader as shipped, Ken does not read as `ETETTE TTTTTE` but as `... NR GITTSNI■GH TU NAME ES KEN KEN ...`, with a quarter of his letters `E`, `T` or the placeholder. What separates the hands from the machine here is less the letters than Ken's stretch and the spaces added.
+
+---
 id: HM-DEC-295
 date: 2026-10-27
 refs: work instruction 591, HM-DEC-294, HM-DEC-284, HM-DEC-276, src/Hamlet.RadioEngine/Cw/CwSequenceReader.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheSequenceReaderTests.cs

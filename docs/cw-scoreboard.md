@@ -544,3 +544,19 @@ high and 25 medium, 2151 letters, all totalled.
 | `piece-04` | 227.5-248.3 s | medium | `DETERMINED BY THE NOISE FIGURE NF MORE THAN GAIN. MEASURING NF IS` | `DETERMINED BY THE NOISE FIGURE NF MORE THAN GAIN. MEASURING NF IS` | 54 of 54 | 11 of 11 | 0 | 0 | 0 | 0 |
 | `piece-04` | 248.3-272.3 s | medium | `DIFFICULT. THE TINYSA ULTRA CAN MEASURE NF BUT REQUIRES A CALIBRATED <BT>` | `DIFFICULT. THE TINK SA ULTRE CAN MEASURE NF BUT REQUIRES A CALIBA ATED <BT>` | 56 of 59 | 11 of 11 | 0 | 2 | 3 | 0 |
 | `piece-04` | 272.3-299.9 s | medium | `END OF 30WPM TEXT <BT> QST DE W` | `END OF 30WPM TEXT <BT> QST DE WE` | 21 of 21 | 7 of 7 | 0 | 0 | 0 | 0 |
+
+## Wild hands
+
+Work instruction 592, HM-DEC-296. Two real hands on `cw-2026-10-19-141708`, scored against `cw-2026-10-19-141708.truth.md`, **a draft the owner corrects by ear, so these are reported and not guarded**. Every later unit that touches the reader appends a row.
+
+| unit | date | Ken N3AFS, 0-120 s: right | wrong | invented | spaces | Bryan KB2UZK/M, 120-300 s: right | wrong | invented | spaces |
+|---|---|---|---|---|---|---|---|---|---|
+| 592 baseline | 2026-11-03 | 43 of 76 | 25 | 0 | 11 of 16, 7 added | 118 of 144 | 17 | 0 | 36 of 40, 19 added |
+
+## Wild bank
+
+Work instruction 592, HM-DEC-296. Forty-eight hands from six recipes (`CwWildBank`), 588 letters a recipe. **The figures are the baseline and nothing guards them.** Every later unit that touches the reader appends a row.
+
+| unit | date | total | wrong | invented | score | spaces | `mobile` | `bug` | `farnsworth` | `tight` | `steady` | `machine` |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| 592 baseline | 2026-11-03 | 3133 of 3528 | 274 | 0 | 2859 | 923 of 1104, 400 added | 522 | 459 | 567 | 489 | 524 | 572 |

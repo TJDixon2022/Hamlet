@@ -55,6 +55,21 @@ Confirmed by Tim 2026-09-25.
 
 **The reader finds the sequence, 2026-10-27 (the owner's ruling on HM-DEC-295).** Across the rig's passband a narrow lane every 25 Hz mixes the audio to its pitch and low-passes it at the width its sender's speed asks for, 15, 24 or 40 Hz, the nearest to 1.5 over his dit; every 5 ms it takes the lane's level in dB. Over the lane's last 12 s, every 2 s, an explicit-duration Viterbi finds the likeliest whole path through six states, dit, dah, the gap inside a letter, the gap between letters, the gap between words, and nobody keying, each with the durations and the two levels learned from the sender's own decode in three passes; a lane that has read its sender keeps his rhythm through a pause, and reads cold as well where its kept rhythm stops reading him. A lane prints only where its path's pattern is Morse: a dah share between 0.2 and 0.65, its dahs tight, key-down standing over key-up, and its gaps in order; of the lanes reading one station the best-separated prints, letters committed 2 s behind the newest audio, timed less the lane's delay. `CwSequenceReader`, behind `CwRules.SequenceReader`, on by default, is the only path to the printer: the grid's marks, the bank's handover and the column finder feed nothing, and the grid stays for the scope. The finders it replaces, their handover, shadows and holds, are recorded in `DECISIONS.md` from HM-DEC-273 to HM-DEC-294 and in this file's history.
 
+## 2.1 What a hand sends (HM-DEC-296)
+
+W1AW reads because it is a machine: gaps of 35, 100 and 240 ms, 1 : 2.9 : 6.9 dits, with a 10 to 90 per cent spread of 5 ms, so one gap in 889 lies near any class boundary. No measured hand keys that way. Each recipe's gaps are in its own dits and each spread is the standard deviation of the log, from the owner's analysis of 2026-11-03; the wild bank (`CwWildBank`) sends them.
+
+| Recipe | Measured from | dit ms | dah/dit | dit spread | dah spread | inside (spread) | letter (spread) | word (spread) | habits |
+|---|---|---|---|---|---|---|---|---|---|
+| `mobile` | Bryan KB2UZK/M | 65 | 3.4 | 0.29 | 0.12 | 1.6 (0.10) | 4.4 (0.30) | 13.7 (0.40) | digits as words; short words together |
+| `bug` | Ken N3AFS | 80 | 2.9 | 0.37 | 0.19 | 1.7 (0.23) | 4.3 (0.18) | 7.6 (0.29) | none |
+| `farnsworth` | `144020` | 75 | 2.9 | 0.28 | 0.05 | 0.9 (0.05) | 5.3 (0.35) | 21 (0.45) | none |
+| `tight` | `121414` | 58 | 2.5 | 0.25 | 0.16 | 1.0 (0.08) | 3.6 (0.25) | 8.5 (0.40) | none |
+| `steady` | `200157` | 75 | 2.8 | 0.10 | 0.01 | 1.1 (0.08) | 4.0 (0.30) | 11.8 (0.25) | none |
+| `machine` (control) | the fist bank's keyer | 80 and 60 | 3.0 | ±15% uniform | ±15% uniform | 1 (±20% uniform) | 2 to 3.5 uniform | 4 to 6 uniform | none |
+
+**Three mechanisms cost a hand its letters, and none of them is the marks.** The cold inside-gap range, 0.4 to 1.7 dits, is wrong for a 1.6-dit hand, and the learning locks the first wrong pass in. Some of a hand is truly ambiguous by timing: Bryan spaces `579` like words and `I AM` like a letter, and no one boundary reads both. And a minority is swing in the marks themselves, Ken's dit log-spread 0.37 against W1AW's 0.09.
+
 ## 3. Four layers, kept apart
 
 | Layer | Holds | Lives in | Changed by |
