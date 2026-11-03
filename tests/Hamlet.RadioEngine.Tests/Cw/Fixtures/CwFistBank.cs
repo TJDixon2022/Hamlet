@@ -72,17 +72,15 @@ public static class CwFistBank
         (from ratio in Ratios from wpm in Speeds from db in Signals from fades in new[] { false, true } select new CwFist(ratio, wpm, db, fades)).ToList();
 
     /// <summary>A fist's key-down and key-up times, alternating from the first key-down, drawn from its seed.</summary>
-    public static double[] Edges(CwFist fist)
+    public static double[] Edges(CwFist fist) => Key(Text, 1.2 / fist.Wpm, fist.Ratio, fist.Seed, gaps: null);
+
+    /// <summary>
+    /// What a text sends, element by element: each mark in order, and after each mark but the last the gap that follows it, with the
+    /// boundary Morse puts there and the class its length is drawn from. The two differ only by a hand's habits (work instruction 592).
+    /// </summary>
+    internal static IEnumerable<CwKeyedElement> Walk(string text, CwGapRecipe? gaps)
     {
-        var random = new Random(fist.Seed);
-        var dit = 1.2 / fist.Wpm;
-        var edges = new List<double>();
-        var at = CwFixtureGenerator.MessageStartSeconds;
-
-        double Spread(double ideal, double s) => ideal * (1 + (s * ((2 * random.NextDouble()) - 1)));
-        double Between(double low, double high) => dit * (low + ((high - low) * random.NextDouble()));
-
-        var words = Text.Split(' ');
+        var words = text.Split(' ');
 
         for (var w = 0; w < words.Length; w++)
         {
@@ -92,24 +90,75 @@ public static class CwFistBank
 
                 for (var e = 0; e < code.Length; e++)
                 {
-                    edges.Add(at);
-                    at += Spread(code[e] == '-' ? fist.Ratio * dit : dit, 0.15);
-                    edges.Add(at);
+                    var dah = code[e] == '-';
 
                     if (e + 1 < code.Length)
                     {
-                        at += Spread(dit, 0.2);
+                        yield return new CwKeyedElement(dah, CwGapClass.Inside, CwGapClass.Inside);
+                    }
+                    else if (c + 1 < words[w].Length)
+                    {
+                        // A habit: the gap between two digits is drawn from the hand's word gaps.
+                        var digits = gaps is { DigitsAsWords: true } && char.IsDigit(words[w][c]) && char.IsDigit(words[w][c + 1]);
+
+                        yield return new CwKeyedElement(dah, CwGapClass.Letter, digits ? CwGapClass.Word : CwGapClass.Letter);
+                    }
+                    else if (w + 1 < words.Length)
+                    {
+                        // A habit: the gap after a word of one or two letters is drawn from the hand's letter gaps.
+                        var together = gaps is { ShortWordsTogether: true } && words[w].Length <= 2;
+
+                        yield return new CwKeyedElement(dah, CwGapClass.Word, together ? CwGapClass.Letter : CwGapClass.Word);
+                    }
+                    else
+                    {
+                        yield return new CwKeyedElement(dah, null, null);
                     }
                 }
+            }
+        }
+    }
 
-                if (c + 1 < words[w].Length)
-                {
-                    at += Between(2, 3.5);
-                }
-                else if (w + 1 < words.Length)
-                {
-                    at += Between(4, 6);
-                }
+    /// <summary>
+    /// **THE KEYER** (work instruction 592, HM-DEC-296): a text's key-down and key-up times, alternating from the first key-down, drawn
+    /// from a seed. With no gap recipe it is the bank's own hand, the recipe <c>machine</c>, and draws exactly what it always drew: its
+    /// dits and dahs each spread ±15%, its gaps inside letters one dit ±20%, its letter gaps 2 to 3.5 dits and its word gaps 4 to 6,
+    /// each uniform. With one, every mark and gap is drawn log-normal around the recipe's median with the recipe's spread.
+    /// </summary>
+    internal static double[] Key(string text, double dit, double ratio, int seed, CwGapRecipe? gaps)
+    {
+        var random = new Random(seed);
+        var edges = new List<double>();
+        var at = CwFixtureGenerator.MessageStartSeconds;
+
+        double Spread(double ideal, double s) => ideal * (1 + (s * ((2 * random.NextDouble()) - 1)));
+        double Between(double low, double high) => dit * (low + ((high - low) * random.NextDouble()));
+        double Drawn(double median, double spread)
+            => median * Math.Exp(spread * Math.Sqrt(-2 * Math.Log(1 - random.NextDouble())) * Math.Cos(2 * Math.PI * random.NextDouble()));
+
+        double Mark(bool dah) => gaps is null
+            ? Spread(dah ? ratio * dit : dit, 0.15)
+            : dah ? Drawn(ratio * dit, gaps.DahSpread) : Drawn(dit, gaps.DitSpread);
+
+        double Gap(CwGapClass drawn) => (drawn, gaps) switch
+        {
+            (CwGapClass.Inside, null) => Spread(dit, 0.2),
+            (CwGapClass.Letter, null) => Between(2, 3.5),
+            (CwGapClass.Word, null) => Between(4, 6),
+            (CwGapClass.Inside, not null) => Drawn(gaps.Inside * dit, gaps.InsideSpread),
+            (CwGapClass.Letter, not null) => Drawn(gaps.Letter * dit, gaps.LetterSpread),
+            _ => Drawn(gaps!.Word * dit, gaps.WordSpread),
+        };
+
+        foreach (var element in Walk(text, gaps))
+        {
+            edges.Add(at);
+            at += Mark(element.Dah);
+            edges.Add(at);
+
+            if (element.Drawn is { } drawn)
+            {
+                at += Gap(drawn);
             }
         }
 
@@ -137,5 +186,6 @@ public static class CwFistBank
         ['V'] = "...-", ['W'] = ".--", ['X'] = "-..-", ['Y'] = "-.--", ['Z'] = "--..",
         ['0'] = "-----", ['1'] = ".----", ['2'] = "..---", ['3'] = "...--", ['4'] = "....-", ['5'] = ".....",
         ['6'] = "-....", ['7'] = "--...", ['8'] = "---..", ['9'] = "----.",
+        [','] = "--..--", ['?'] = "..--..", ['/'] = "-..-.",
     };
 }

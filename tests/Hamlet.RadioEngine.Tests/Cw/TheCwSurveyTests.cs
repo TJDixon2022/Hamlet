@@ -171,11 +171,24 @@ public sealed class TheCwSurveyTests(ITestOutputHelper output)
             jobs.Add(() => Fist(fist));
         }
 
+        // **THE WILD BANK** (work instruction 592, HM-DEC-296): forty-eight hands with gaps as they are sent, read as the fist bank's are.
+        foreach (var hand in Fixtures.CwWildBank.All)
+        {
+            jobs.Add(() => Wild(hand));
+        }
+
+        // How long each group's reads took, a read's own thread being busy throughout, for the report (work instruction 592, section 5).
+        var seconds = new System.Collections.Concurrent.ConcurrentDictionary<string, double>(StringComparer.Ordinal);
+
         Parallel.ForEach(jobs, new ParallelOptions { MaxDegreeOfParallelism = 3 }, job =>
         {
             try
             {
-                rows.Add(job());
+                var clock = System.Diagnostics.Stopwatch.StartNew();
+                var row = job();
+
+                rows.Add(row);
+                seconds.AddOrUpdate(row.Group, clock.Elapsed.TotalSeconds, (_, s) => s + clock.Elapsed.TotalSeconds);
             }
             catch (Exception e)
             {
@@ -183,11 +196,23 @@ public sealed class TheCwSurveyTests(ITestOutputHelper output)
             }
         });
 
-        var doc = Document(rows.ToList(), count, board, w1aw, failed.ToList());
+        // **THE WILD HANDS** (work instruction 592, HM-DEC-296): the two real stretches with a draft truth, reported and not guarded.
+        var handsClock = System.Diagnostics.Stopwatch.StartNew();
+        var hands = WildHands();
+
+        foreach (var row in hands.Rows)
+        {
+            rows.Add(row);
+        }
+
+        seconds[WildHandsGroup] = handsClock.Elapsed.TotalSeconds;
+
+        var doc = Document(rows.ToList(), count, board, w1aw, failed.ToList(), hands.Scores);
         var path = Path.Combine(root, "..", "..", "..", "docs", "cw-survey-2026-10-09.md");
 
         File.WriteAllText(path, doc);
         output.WriteLine(doc);
+        output.WriteLine(string.Create(Inv, $"READ SECONDS BY GROUP: {string.Join("; ", seconds.OrderBy(s => s.Key, StringComparer.Ordinal).Select(s => $"{s.Key} {s.Value:0}"))}; total {seconds.Values.Sum():0}; process CPU {System.Diagnostics.Process.GetCurrentProcess().TotalProcessorTime.TotalSeconds:0} s"));
 
         Assert.Equal(board.Score, rows.Where(r => r.Group.StartsWith("the boards", StringComparison.Ordinal)).Sum(r => r.Right!.Value - r.Wrong!.Value) - board.Invented);
         Assert.Equal(w1aw.Score, w1aw.Right - w1aw.Wrong - w1aw.Invented);
@@ -197,9 +222,14 @@ public sealed class TheCwSurveyTests(ITestOutputHelper output)
     // a letter whose marks lie over none of the fist's own key-downs within 50 Hz of its pitch, and silence a letter inside a stretch of
     // two seconds or more with no key-down, both from the recipe rather than read off the audio.
     internal static Row Fist(Fixtures.CwFist fist)
+        => Hand(FistGroup, fist.Name, fist.Recipe, Fixtures.CwFistBank.Text, Fixtures.CwFistBank.Audio(fist), Fixtures.CwFistBank.Edges(fist));
+
+    // A hand of the wild bank (work instruction 592): read and scored exactly as a fist of the bank is.
+    internal static Row Wild(Fixtures.CwWildHand hand)
+        => Hand(WildGroup, hand.Name, hand.Line, hand.Text, hand.Audio(), hand.Edges());
+
+    private static Row Hand(string group, string name, string recipe, string text, MonoAudio audio, double[] edges)
     {
-        var audio = Fixtures.CwFistBank.Audio(fist);
-        var edges = Fixtures.CwFistBank.Edges(fist);
         var (letters, _) = TheRecordingsScoreboardTests.ReadLive(audio.Samples, audio.SampleRate, 600, 500);
         var downs = Enumerable.Range(0, edges.Length / 2).Select(i => (From: edges[2 * i], To: edges[(2 * i) + 1])).ToList();
 
@@ -210,17 +240,151 @@ public sealed class TheCwSurveyTests(ITestOutputHelper output)
 
         var invented = letters.Where(l => !Keyed(l)).ToList();
         var printed = TheRecordingsScoreboardTests.Text(letters);
-        var wrong = TheRecordingsScoreboardTests.WrongAt(printed, Fixtures.CwFistBank.Text).Count(i => i < letters.Count && !invented.Contains(letters[i]));
-        var spaces = TheRecordingsScoreboardTests.SpacesOf(printed, Fixtures.CwFistBank.Text);
+        var wrong = TheRecordingsScoreboardTests.WrongAt(printed, text).Count(i => i < letters.Count && !invented.Contains(letters[i]));
+        var spaces = TheRecordingsScoreboardTests.SpacesOf(printed, text);
 
         return new Row(
-            FistGroup, fist.Name, audio.Samples.Length / (double)audio.SampleRate, Wpm(letters), Pitch(letters), Senders(letters),
-            fist.Recipe, Fixtures.CwFistBank.Text, TheRecordingsScoreboardTests.Right(printed, Fixtures.CwFistBank.Text), TheRecordingsScoreboardTests.Letters(Fixtures.CwFistBank.Text).Length,
+            group, name, audio.Samples.Length / (double)audio.SampleRate, Wpm(letters), Pitch(letters), Senders(letters),
+            recipe, text, TheRecordingsScoreboardTests.Right(printed, text), TheRecordingsScoreboardTests.Letters(text).Length,
             wrong, invented.Count, letters.Count(InSilence), $"{spaces.Right} of {spaces.OfReference}, {spaces.Added} added", printed);
     }
 
     /// <summary>The fist bank's group in the survey (work instruction 580).</summary>
     internal const string FistGroup = "the fist bank";
+
+    /// <summary>The wild bank's group in the survey (work instruction 592).</summary>
+    internal const string WildGroup = "wild bank";
+
+    /// <summary>The two real hands' group in the survey (work instruction 592).</summary>
+    internal const string WildHandsGroup = "wild hands";
+
+    // The two real stretches: the capture read once through the app's chain, and each stretch scored against the draft truth.
+    private static (IReadOnlyList<Row> Rows, IReadOnlyList<CwWildHands.Score> Scores) WildHands()
+    {
+        var wav = TheOwnersRecordingReadsTests.Wav(CwWildHands.Recording);
+        var audio = WavAudio.Read(wav);
+        var (pitch, width) = State(CwWildHands.Recording);
+        var (letters, _) = CwWildHands.Read(audio.Samples, audio.SampleRate, pitch, width, []);
+        var map = TheKeyingMapTests.Read(CwWildHands.Recording, audio.Samples, audio.SampleRate);
+        var scores = CwWildHands.Truths().Select(t => CwWildHands.ScoreOf(t, letters, map)).ToList();
+        var rows = scores.Select(s => new Row(
+            WildHandsGroup, s.Truth.Name, s.Truth.To - s.Truth.From, Wpm(s.Letters), Pitch(s.Letters), Senders(s.Letters),
+            "`cw-2026-10-19-141708.truth.md`, a draft the owner corrects by ear; a `?` alone matches anything", s.Truth.Text,
+            s.Right, s.OutOf, s.Wrong, s.Invented, s.Silence, $"{s.SpacesRight} of {s.SpacesOutOf}, {s.SpacesAdded} added", s.Printed)).ToList();
+
+        return (rows, scores);
+    }
+
+    // **THE WILD BANK'S TABLES** (work instruction 592, HM-DEC-296): the total, per recipe, per level, the matrix, and each hand with its ambiguity.
+    private static void WildBank(StringBuilder sb, List<Row> wild)
+    {
+        if (wild.Count == 0)
+        {
+            return;
+        }
+
+        var hands = Fixtures.CwWildBank.All.ToDictionary(h => h.Name, h => h);
+
+        string Sum(IReadOnlyList<Row> r) => string.Create(Inv, $"{r.Sum(x => x.Right ?? 0)} of {r.Sum(x => x.OutOf ?? 0)} | {r.Sum(x => x.Wrong ?? 0)} | {r.Sum(x => x.Invented ?? 0)} | {r.Sum(x => x.Silence ?? 0)} | **{r.Sum(x => x.Score ?? 0)}** | {SpacesSum(r)}");
+
+        sb.AppendLine();
+        sb.AppendLine("## The wild bank");
+        sb.AppendLine();
+        sb.AppendLine(string.Create(Inv, $"Work instruction 592, HM-DEC-296: {wild.Count} hands generated at test time (`CwWildBank`), each recipe at its own dit and at 20 WPM, 20 and 10 dB, flat, sending the QSO text `{Fixtures.CwWildBank.QsoText}` and the fist bank's, read and scored exactly as the fist bank is. **The figures are the baseline and nothing guards them.** `machine` is the fist bank's own keyer, its letter gaps 2 to 3.5 dits and its word gaps 4 to 6, and the four hands of it sending the bank's text are those fists, edge for edge and sample for sample."));
+        sb.AppendLine();
+        sb.AppendLine(string.Create(Inv, $"**The bank's total: {wild.Sum(r => r.Right ?? 0)} of {wild.Sum(r => r.OutOf ?? 0)}**, {wild.Sum(r => r.Wrong ?? 0)} wrong, {wild.Sum(r => r.Invented ?? 0)} invented, {wild.Sum(r => r.Silence ?? 0)} in silence, score **{wild.Sum(r => r.Score ?? 0)}**, spaces {SpacesSum(wild)}."));
+        sb.AppendLine();
+        sb.AppendLine("**Per recipe**, with the ambiguity: the share of the sent gaps within ±25% of the midpoint between the recipe's inside and letter medians, of the midpoint between its letter and word medians, and of either, the mean over its hands. It says how much of a hand is readable by timing at all.");
+        sb.AppendLine();
+        sb.AppendLine("| recipe | right | wrong | invented | in silence | score | spaces | inside or letter | letter or word | either |");
+        sb.AppendLine("|---|---|---|---|---|---|---|---|---|---|");
+
+        foreach (var recipe in Fixtures.CwWildBank.Recipes)
+        {
+            var mine = wild.Where(r => hands[r.File].Recipe == recipe).ToList();
+            var ambiguity = mine.Select(r => hands[r.File].Ambiguity()).ToList();
+
+            sb.AppendLine(string.Create(Inv, $"| `{recipe.Name}` | {Sum(mine)} | {ambiguity.Average(a => a.InsideLetter):0%} | {ambiguity.Average(a => a.LetterWord):0%} | {ambiguity.Average(a => a.Either):0%} |"));
+        }
+
+        sb.AppendLine();
+        sb.AppendLine("**Per level:**");
+        sb.AppendLine();
+        sb.AppendLine("| level | right | wrong | invented | in silence | score | spaces |");
+        sb.AppendLine("|---|---|---|---|---|---|---|");
+
+        foreach (var db in Fixtures.CwWildBank.Levels)
+        {
+            sb.AppendLine(string.Create(Inv, $"| {db:0} dB | {Sum(wild.Where(r => hands[r.File].Db == db).ToList())} |"));
+        }
+
+        sb.AppendLine();
+        sb.AppendLine("**Recipe by level and speed**, each cell the QSO text's letters right, then the fist bank text's:");
+        sb.AppendLine();
+        sb.AppendLine("| recipe | own dit, 20 dB | own dit, 10 dB | 20 WPM, 20 dB | 20 WPM, 10 dB |");
+        sb.AppendLine("|---|---|---|---|---|");
+
+        string Cell(Fixtures.CwWildRecipe recipe, bool own, double db)
+        {
+            int? Of(bool qso) => wild.FirstOrDefault(r => r.File == new Fixtures.CwWildHand(recipe, own, db, qso).Name)?.Right;
+
+            return string.Create(Inv, $"{Of(true)} / {Of(false)}");
+        }
+
+        foreach (var recipe in Fixtures.CwWildBank.Recipes)
+        {
+            sb.AppendLine($"| `{recipe.Name}` | {Cell(recipe, true, 20)} | {Cell(recipe, true, 10)} | {Cell(recipe, false, 20)} | {Cell(recipe, false, 10)} |");
+        }
+
+        sb.AppendLine();
+        sb.AppendLine(string.Create(Inv, $"The QSO text is {wild.First(r => hands[r.File].Qso).OutOf} letters, the fist bank text 60."));
+        sb.AppendLine();
+        sb.AppendLine("**Each hand's ambiguity:**");
+        sb.AppendLine();
+        sb.AppendLine("| hand | right | spaces | inside or letter | letter or word | either |");
+        sb.AppendLine("|---|---|---|---|---|---|");
+
+        foreach (var r in wild.OrderBy(r => Array.IndexOf(Fixtures.CwWildBank.Recipes, hands[r.File].Recipe)).ThenBy(r => r.File, StringComparer.Ordinal))
+        {
+            var a = hands[r.File].Ambiguity();
+
+            sb.AppendLine(string.Create(Inv, $"| `{r.File}` | {r.Right} of {r.OutOf} | {r.Spaces} | {a.InsideLetter:0%} | {a.LetterWord:0%} | {a.Either:0%} |"));
+        }
+    }
+
+    // The spaces cells of some rows, added up.
+    private static string SpacesSum(IReadOnlyList<Row> rows)
+    {
+        var parts = rows.Select(r => Regex.Match(r.Spaces, @"(\d+) of (\d+), (\d+) added")).Where(m => m.Success).ToList();
+
+        return string.Create(Inv, $"{parts.Sum(m => int.Parse(m.Groups[1].Value, Inv))} of {parts.Sum(m => int.Parse(m.Groups[2].Value, Inv))}, {parts.Sum(m => int.Parse(m.Groups[3].Value, Inv))} added");
+    }
+
+    // **THE WILD HANDS' STRETCHES** (work instruction 592, HM-DEC-296): each real hand, twenty seconds at a time.
+    private static void WildHandsTables(StringBuilder sb, IReadOnlyList<CwWildHands.Score> scores)
+    {
+        sb.AppendLine();
+        sb.AppendLine("## The wild hands");
+        sb.AppendLine();
+        sb.AppendLine("Work instruction 592, HM-DEC-296: two real hands on `cw-2026-10-19-141708`, read through the app's chain at the radio's own pitch and filter, scored as the twelve-plus-three are against `cw-2026-10-19-141708.truth.md`, **a draft the owner corrects by ear, so these are reported and not guarded**. A letter belongs to a stretch within 60 Hz of its pitch and a second of its span. A `?` standing alone matches any run at no cost and counts no letter, so a poor read gains a little from it. Right in a stretch is letters matched less letters added, so the stretches sum to the hand's figure.");
+
+        foreach (var s in scores)
+        {
+            sb.AppendLine();
+            sb.AppendLine(string.Create(Inv, $"**{s.Truth.Name}, {s.Truth.From:0} to {s.Truth.To:0} s at {s.Truth.PitchHz:0} Hz: {s.Right} of {s.OutOf} right**, {s.Wrong} wrong, {s.Invented} invented, {s.Silence} in silence, spaces {s.SpacesRight} of {s.SpacesOutOf}, {s.SpacesAdded} added."));
+            sb.AppendLine();
+            sb.AppendLine("| stretch | letters | right | wrong | invented | under a `?` | truth missing | spaces right | spaces missing | spaces added | printed |");
+            sb.AppendLine("|---|---|---|---|---|---|---|---|---|---|---|");
+
+            foreach (var w in s.Windows)
+            {
+                sb.AppendLine(string.Create(Inv, $"| {w.From:0}-{w.To:0} s | {w.Letters} | {w.Right} | {w.Wrong} | {w.Invented} | {w.Unknown} | {w.Missing} | {w.SpacesRight} | {w.SpacesMissing} | {w.SpacesAdded} | `{w.Printed.Replace("|", "\\|", StringComparison.Ordinal)}` |"));
+            }
+
+            sb.AppendLine();
+            sb.AppendLine("What the reader put under each `?`, in order: " + string.Join("; ", s.Unknowns.Select(u => u.Length == 0 ? "nothing" : $"`{u.Replace("|", "\\|", StringComparison.Ordinal)}`")) + ".");
+        }
+    }
 
     // **THE FIST BANK'S MATRICES** (work instruction 580, HM-DEC-284): letters right of 60, one fist a cell, across the axis pairs
     // the order names, the whole bank's total, and its worst ten.
@@ -424,13 +588,13 @@ public sealed class TheCwSurveyTests(ITestOutputHelper output)
 
     private static string Cut(string? s, double seconds) => s is null ? "-" : (seconds < 60 || s.Length <= 200 ? s : s[..200] + " ...").Replace("|", "\\|", StringComparison.Ordinal);
 
-    private static string Document(List<Row> rows, Dictionary<string, int> count, TheRecordingsScoreboardTests.Board board, TheW1awTableTests.W1awBoard w1aw, List<string> failed)
+    private static string Document(List<Row> rows, Dictionary<string, int> count, TheRecordingsScoreboardTests.Board board, TheW1awTableTests.W1awBoard w1aw, List<string> failed, IReadOnlyList<CwWildHands.Score> hands)
     {
         var order = new[]
         {
             "synthetic fixtures", "receiver fixtures: easy", "receiver fixtures: working", "receiver fixtures: edge", "receiver fixtures: ungraded",
             "synthetic CQs: 15 dB", "synthetic CQs: 5 dB", "synthetic CQs: 0 dB", "August adjudicated", "the boards: twelve-plus-three",
-            "W1AW pieces", "captured, elsewhere", "unadjudicated", "scan catches", FistGroup,
+            "W1AW pieces", "captured, elsewhere", "unadjudicated", "scan catches", FistGroup, WildGroup, WildHandsGroup,
         };
         var sb = new StringBuilder();
 
@@ -440,7 +604,7 @@ public sealed class TheCwSurveyTests(ITestOutputHelper output)
         sb.AppendLine();
         sb.AppendLine("Run again with: `timeout 1800 dotnet test tests/Hamlet.RadioEngine.Tests/Hamlet.RadioEngine.Tests.csproj --filter \"FullyQualifiedName~TheCwSurveyTests.EveryRecordingInTheTree\"` (it writes this file).");
         sb.AppendLine();
-        sb.AppendLine("Rerun: 2026-10-27, as shipped by the owner's ruling on HM-DEC-295: the sequence reader on by default, the only path to the printer; the boards at the figures it reads, 308 and 2101.");
+        sb.AppendLine("Rerun: 2026-11-03, work instruction 592, HM-DEC-296: the reader as shipped on HM-DEC-295, not touched; two groups added, `wild bank` and `wild hands`, the wild yardstick's baseline; the boards at 308 and 2101.");
         sb.AppendLine();
         sb.AppendLine("**The yardstick.** Score is letters right less wrong less invented, as on the boards. Invented is a letter over no keying on the board's keying map of the same audio; silence is a letter printed inside a silence of two seconds or more on that map. Where a file carries no truth, its read stands beside the earlier read in its sheet or its `.json`, scored by nothing, with the stray-letter figure: lone `E T I A N M` printed as words, per ten seconds.");
         sb.AppendLine();
@@ -492,6 +656,8 @@ public sealed class TheCwSurveyTests(ITestOutputHelper output)
         }
 
         FistBank(sb, rows.Where(r => r.Group == FistGroup).ToList());
+        WildBank(sb, rows.Where(r => r.Group == WildGroup).ToList());
+        WildHandsTables(sb, hands);
 
         foreach (var g in order)
         {
