@@ -1,46 +1,32 @@
-# Work instruction 592 - The wild yardstick: hands as they are sent
+# Work instruction 593 - The sequence reader learns a hand's gaps
 
-**Hand run. No change to the reader. A new measure, two truths, a baseline, and the record.** One
-commit for the work plus one for the record.
+**Hand run. One change to the reader - how it finds and learns the gap classes - up to three
+rounds, one commit per round plus the record.** Tag `before-gap-learning` first.
 
-**Where it stands** (1.13.278, the sequence reader on by default): the twelve-plus-three 308,
-W1AW 2101, the fist bank 3,898, the 5 dB CQs 84 of 84 - and on the air, hands the owner copies
-by ear print as E's and T's. The owner stepped back on 2026-11-03 and the analysis (project
-file `ANALYSIS-2026-11-03-wild-cw.md`, summarised here) found:
+**Where it stands** (1.13.279, the wild yardstick in place, the reader as shipped): the wild
+bank **2859** (3133 of 3528 letters right, 274 wrong, 0 invented, **400 spaces added**);
+per recipe `machine` 572, `farnsworth` 567, `steady` 524, `mobile` 522, `tight` 489, `bug` 459
+of 588; the two real hands Bryan **118 of 144**, Ken at most **43 of 76**; the old boards 308,
+2101, 3,898. **What the baseline says:** the reader keeps a hand's letters and breaks his words.
+The two hands with an inside gap of 1.6 dits are the worst - `bug` with 114 wrong (letters
+merged and split at the inside/letter line), `mobile` with 110 spaces added (the letter/word
+line) and `5 7 9` for `579`; on the air Bryan prints `IAM`, `TNXFER`, `Q TH`, `C H I C OP E E`,
+and Ken `GITTSNI■GH` for `PITTSBURGH`. The reader's cold inside-gap range is 0.4 to 1.7 dits,
+its classes are learned as medians of its own last decode, and its multi-start varies only the
+dit. **This unit changes how the reader finds and learns the gaps, and nothing else.**
 
-- **Marks are solved.** On every wild capture in hand (the Ken/Bryan capture, `144020`, `121414`,
-  `200157`), 0.0% of dits sit above the dit/dah midpoint and 0.0% of dahs below it; contrast
-  13.5 to 17.8 dB. The wild captures are not noisier than W1AW in any way that matters.
-- **W1AW reads because it is a machine**: gaps 35 / 100 / 240 ms = 1 : 2.9 : 6.9 dits with a
-  10-90% spread of 5 ms. One gap in 889 lies near any class boundary.
-- **Wild hands lose on gaps.** Measured inside : letter : word ratios - Bryan KB2UZK/M
-  1.6 : 4.4 : 13.1; Ken N3AFS 1.7 : 4.3 : 7.6; `144020` 0.9 : 5.3 : 21.3; `121414` 1.0 : 3.7 : 8.6;
-  `200157` 1.1 : 4.0 : 11.8. No two hands alike, none 1 : 3 : 7. Three mechanisms: (a) the
-  reader's cold inside-gap range (0.4-1.7 dits) is wrong for a 1.6-dit hand and the learning
-  locks the first wrong pass in - Ken reads `A UE IE DE AAI D 5T AT ET` as learned and
-  `I NEW BENSING TON ,P T PA NR PITTS` with the one inside/letter boundary moved from 140 to
-  200 ms; (b) true ambiguity - Bryan spaces `579` like words and `I AM` like a letter, and no
-  boundary from 110 to 240 ms reads both; ~13% of his gaps are in no-man's-land; (c) swing in
-  marks, a minority (Ken's dit log-spread 0.37 against W1AW's 0.09).
-- **The yardstick measured the wrong thing.** The fist bank's keyer sends 1 : 3 : 7 with
-  symmetric jitter and varies only mark properties. It holds no 1.6-dit hand, no digits spaced
-  like words, no letter gaps spread 2.5 to 5 dits. A reader scores 3,898 on it and reads Ken as
-  `ETETTE TTTTTE`.
-
-**The owner's rulings, 2026-11-03:** *Hamlet may know words* ("sure"); the yardstick is changed
-before the reader is; no further units on marks, lanes, seams, handover or the opening as a mark
-problem. This unit is the yardstick. The reader is not touched.
-
-**Standing rules** (HM-DEC-276, HM-DEC-284) apply. Engine line 1500 s, survey 1800 s,
-`--no-build` after one build, build servers shut down first, one test run at a time; a run
-stopped for memory is run once more alone without asking.
+**Standing rules** (HM-DEC-276, HM-DEC-284) apply, with up to three rounds. Engine line 1500 s,
+**survey 2400 s** (it ran 23 min with the two new groups), `--no-build` after one build per
+round, build servers shut down first, one test run at a time; a run stopped for memory is run
+once more alone without asking.
 
 Earlier unit numbers are not cited: each part of the tree is described by what it does.
 
 **Nothing keys or transmits. Nothing is written to the radio. No recording is added, removed or
-promoted.** The Ken/Bryan capture `cw-2026-10-19-141708` is already in the tree.
+promoted. The draft truth `cw-2026-10-19-141708.truth.md` is not edited** - the owner corrects
+it by ear; Ken and Bryan stay reported, not guarded.
 
-**Numbering.** This is unit 592, ruling HM-DEC-296. If taken, use the next free and say so.
+**Numbering.** This is unit 593, ruling HM-DEC-297. If taken, use the next free and say so.
 
 ---
 
@@ -73,133 +59,123 @@ If all five hold, say "Hamlet confirmed" and continue.
   to `RUN_LEDGER.md`. Touch nothing under `tools\arbiter\`. Tick nothing in `PHASE_PLAN.md`.
 - One `dotnet test` invocation per line, filtered, with a `timeout`.
 - Apostrophes in quoted heredocs break; `;` is refused; Python cannot run here; `-m` more than
-  once for a multi-line commit. Scripts go in `.run-unit\unit592-<name>.sh`, not committed.
+  once for a multi-line commit. Scripts go in `.run-unit\unit593-<name>.sh`, not committed.
 - **The one layout holds**: nothing on screen moves.
-- **No file under `src\Hamlet.RadioEngine\Cw\` changes.** If a measurement needs a hook the
-  reader does not have, report it under section 4 and measure without it.
+- The change is inside the sequence reader. The mark finders, the lane bank, the column finder
+  and the seam's rules are not touched. The keyer and the wild bank are not touched.
 - `output.md` at the root, four headings exactly: `## 1. What Claude did`, `## 2. What the owner
   should expect`, `## 3. What you should see`, `## 4. What's blocking us`. Status on the tree's
   own triggers; the phase count as `PHASE_STATUS.md` holds it; the asks list carried forward.
 
 ---
 
-## 2. The wild bank - hands with gaps as they are sent
+## 2. The trace, first
 
-The keyer that makes the fist bank's hands (the generator the survey's bank group uses) gains a
-**gap recipe**: inside, letter and word gaps each drawn per gap from a log-normal around the
-recipe's median with the recipe's spread (the spread is the standard deviation of the log), and
-two **habits**: *digits spaced like words* (a gap between two digits is drawn from the word
-class) and *short words run together* (a word gap after a one- or two-letter word is drawn from
-the letter class). Marks also take a per-hand spread: dits and dahs log-normal around the median
-with the recipe's spread. The current hands are the recipe `machine` (1 : 3 : 7, the existing
-jitter) and are unchanged, so the existing bank's figures do not move.
+On `bug` and `mobile` (20 dB, own speed, QSO text) and on Ken 20-60 s and Bryan 140-180 s: the
+cold read's starts as built (each dit start), and beside each its decode's likelihood, its share
+of `E`, `T` and `■`, its learned gap classes after the first pass against the hand's sent or
+measured gaps, and which start was taken. Then the same table for the starts §3 adds. The table
+shows, per hand, whether the fault is the cold range (the hand's inside gaps fall outside
+0.4-1.7 dits), the learning (the first pass's medians are wrong and later passes do not move),
+or the choice (a better start existed and was not taken). Build §3 as the table directs; where
+it says a part of §3 is not needed for any of the four, say so and leave that part out.
 
-The recipes, from the measured hands (gaps in the hand's own dits; spread = log std):
+## 3. The change: the reader finds and learns the gaps
 
-| Recipe | dit ms | dah/dit | dit spread | dah spread | inside (spread) | letter (spread) | word (spread) | habits |
-|---|---|---|---|---|---|---|---|---|
-| `mobile` (Bryan) | 65 | 3.4 | 0.29 | 0.12 | 1.6 (0.10) | 4.4 (0.30) | 13.7 (0.40) | digits as words; short words together |
-| `bug` (Ken) | 80 | 2.9 | 0.37 | 0.19 | 1.7 (0.23) | 4.3 (0.18) | 7.6 (0.29) | none |
-| `farnsworth` (144020) | 75 | 2.9 | 0.28 | 0.05 | 0.9 (0.05) | 5.3 (0.35) | 21 (0.45) | none |
-| `tight` (121414) | 58 | 2.5 | 0.25 | 0.16 | 1.0 (0.08) | 3.6 (0.25) | 8.5 (0.40) | none |
-| `steady` (200157) | 75 | 2.8 | 0.10 | 0.01 | 1.1 (0.08) | 4.0 (0.30) | 11.8 (0.25) | none |
-| `machine` (control) | as the bank | 3.0 | as the bank | as the bank | 1 | 3 | 7 | none |
+1. **The cold ranges fit a hand.** Inside gap 0.5 to 2.5 dits (was 0.4 to 1.7); letter gap 1.8
+   to 6.5; word gap 5 to 30 (the `farnsworth` hand sends 21). The mark ranges do not change.
 
-Each recipe at **two speeds** (its own dit, and its dit scaled to 20 WPM), **two levels** (20 dB
-and 10 dB, flat), **two texts** - a QSO text in the air's own words (`GM KEN NICE TO MEET U ES
-TNX FER RPRT UR RST 579 579 I AM IN MOBILE STN HR NAME BRYAN BRYAN ES QTH IS CHICOPEE, MA`) and
-the bank's existing text - seeded by recipe as the bank is: **48 hands**, scored exactly as the
-bank is scored (letters right, wrong, invented, spaces). A new survey group **`wild bank`**,
-reported as the bank is: total, per recipe, per level, invented. A guard test
-(`TheWildBankTests.TheBankIsMade`) that the 48 hands are generated and the truth is the text
-sent; **no score guard yet** - the figures are the baseline.
+2. **The cold read starts over the gap line as well as the dit.** `ReadCold` tries, for each dit
+   start it already tries, the inside/letter boundary at `ColdGapStarts` 1.5, 2.2 and 3.0 dits
+   (the table says; three at most). The letter/word boundary stays where the ranges put it on
+   the cold pass. CPU is reported; if the extra starts cost more than 20% on W1AW piece-04, the
+   starts run only when the first pass's `E`, `T` and `■` share is above `ValidityShare` (say
+   0.35), and the report says so.
 
-Also, per hand, the **ambiguity figure**: the share of the sent gaps within ±25% of the midpoint
-between the recipe's inside and letter medians, and between letter and word, in the survey
-doc beside the score. It says how much of each hand is readable by timing at all.
+3. **The winner is chosen by validity as well as likelihood.** Each start's decode gets a
+   validity figure: the share of its letters that are `E`, `T` or `■`, and the share of its
+   gaps that fall within ±20% of its own class boundaries (a decode that splits a hand has
+   many). Among the starts whose validity is under `ValidityShare`, the likeliest is kept; if
+   none is, the most valid is kept. The pattern test's figures are unchanged and still apply.
 
-## 3. Two real hands with truth
+4. **The classes are learned by an ordered fit, not medians.** After each pass, all gaps in the
+   window are fitted in log length by three ordered clusters (k-means in log length, three
+   centres kept in order, at most `FitRounds` 10 rounds, started from the current class medians);
+   the class boundaries are the **geometric** midpoints of adjacent centres (the arithmetic
+   midpoint sits too high for a hand whose classes are close). Marks are fitted the same way
+   with two clusters. A cluster that ends up with fewer than `LeastInCluster` 3 members keeps
+   the previous boundary on that side. A fit whose centres come out closer than `GapStep`
+   (the existing table figure) is refused and the pass keeps the previous classes.
 
-On `tests\fixtures\cw\captured\cw-2026-10-19-141708.wav`, 500 Hz: **Ken N3AFS from 0 to
-120 s** and **Bryan KB2UZK/M from 120 to 300 s**. The truth below is a **draft** - the best
-reads of the prototype, corrected by what the QSO must have said; `?` marks what is unknown.
-Put it in the tree beside the capture as `cw-2026-10-19-141708.truth.md`, headed `DRAFT - the
-owner corrects by ear`, with the two stretches as shown. The owner will correct it; until then
-these two stretches are **reported, not guarded** (HM-DEC-284: no rule ships against a draft).
+5. **A warm lane that goes invalid re-reads cold.** The warm decode's validity (3) joins the
+   pattern figures that already send a warm lane back to a cold read when they fall; the cold
+   read uses the starts of (2).
 
-```
-Ken N3AFS, 0-120 s, 500 Hz, straight key or bug, about 15 WPM
-? ? <BT> ? UR RST 589 589 ? QTH IS NEW KENSINGTON, PA NR PITTSBURGH ?
-NAME IS KEN KEN ? HW? KB2UZK/M DE N3AFS K
-(at about 100 s Bryan begins: N3AFS DE KB2UZK/M)
+Each figure named here goes in the reader's table beside the others, with the reason.
 
-Bryan KB2UZK/M, 120-300 s, 500 Hz, mobile, about 18 WPM
-HELLO GM KEN NICE TO MEET U ES TNX FER RPRT UR RST 579 579 ? I AM IN MOBILE STN HR ?
-NAME BRYAN BRYAN ES QTH IS CHICOPEE, MA CHICOPEE, MA PARKED IN MY MOBILE <BT> SO BTU
-KEN N3AFS DE KB2UZK/M K
-(after about 280 s nothing of Bryan's; what follows is not scored)
-```
+## 4. Rounds
 
-Score both stretches with the reader as shipped, the way the twelve-plus-three are scored
-(letters right, wrong, invented, spaces; alignment against the truth with `?` matching
-anything), and **per 20 s stretch** so the owner can see where it fails. A survey group
-**`wild hands`** with these two rows. On the capture sheet nothing changes.
+Round one: the trace, then §3 as the trace directs, measured once (the survey, the boards, the
+hard limits, the guards, CPU on W1AW piece-04). Rounds two and three: trace the largest loss on
+the wild bank against the shipped reader to the hand, to the second, to the path; fix the one
+thing the trace names; measure again. Twice at most.
 
-## 4. The baseline trace
+## 5. The bar, and the ship
 
-For each of the two real hands and for the `mobile` and `bug` recipes at 20 dB, own speed, a
-table in section 3 of the report: the hand's **sent** (or measured) gap medians - inside,
-letter, word - against the reader's **learned** gap classes at 10 s, 30 s and the end of the
-stretch; its learned dit and dah against the hand's; the share of the decode that is `E`, `T`
-or `■`; and the text it printed. One table, these four rows. This is what the next unit (the
-gap learning) is measured against.
+**The change ships (stays on; there is no switch for it) only if, at the end of the last round:**
 
-## 5. The bar
+- **the wild bank improves:** score **3,150 or better** (from 2,859), spaces added **250 or
+  fewer** (from 400), invented not above 5; `bug` **510 or better** (from 459); `mobile`'s
+  spaces added **50 or fewer** (from 110); no recipe worse than shipped by more than 10;
+- **the old boards hold:** the twelve-plus-three **308** or better, W1AW **2101** or better,
+  wrong and invented not rising, spaces not worse; the fist bank **3,898** or better and its
+  guard; the fading half and the strong flat hands as guarded;
+- **the hard limits:** noise prints nothing, the steady carrier at none, no old capture above
+  six strays per 10 s; the summed strays reported; the random-keyed carrier reported; the 5 dB
+  CQs 84 of 84; nothing in silences; the first recording whole;
+- the easy fixtures 90 of 90; the working and edge fixtures reported; `two-station` 27 of 27;
+  CPU under real time with margin, and the extra cold starts' cost said;
+- **Ken and Bryan reported** per 20 s against the draft truth, not a condition.
 
-This unit does not ship a reader change, so the bar is that the measure exists and nothing else
-moved:
+**For the owner's ruling, not a fail:** everything holds but one old board under by no more
+than 1% (305, 2080, 3,859), or everything holds but the wild bank between 3,000 and 3,150: put
+the full figures under *For the owner's ruling*; leave the change in the tree behind a rule
+(`CwRules.GapLearning`, off) and do not ship.
 
-- the wild bank: 48 hands generated, truth is the text sent, the group in the survey with its
-  figures and the ambiguity figures; the `machine` recipe reproduces the existing bank's hands
-  bit for bit (say how that was checked);
-- the two real hands: the draft truth in the tree, the scores per 20 s stretch in the survey;
-- **the existing boards unchanged**: the twelve-plus-three 308, W1AW 2101, the fist bank 3,898,
-  every guard green, the engine line green, the app line green;
-- CPU of the survey reported (the two new groups add to it; say by how much).
+If it fails otherwise: say which, by how much, where, by path; leave the change behind
+`CwRules.GapLearning`, off; keep the tag and the traces; say in one paragraph what the wild
+bank still loses and whether it is the cold range, the learning, the choice, or a fourth thing.
 
-If the `machine` recipe does not reproduce the existing bank, stop, keep the recipe code, leave
-the survey's bank group on the old keyer, and say what differs.
+If it ships: the wild bank joins the guards at the figures that ship less 5%
+(`TheWildBankTests.TheBankHolds`: total, `bug`, `mobile`'s spaces added); both scoreboard
+tables get their 593 row; `CW_SPEC.md` §2 says how the reader learns a hand's gaps, in a
+paragraph.
 
 ---
 
 ## 6. The lines, the survey, the record
 
 Run the app line, the engine line and the survey line once at the end; rewrite
-`docs\cw-survey-2026-10-09.md` with a new `Rerun` line; every group before and after, the two
-new groups added.
+`docs\cw-survey-2026-10-09.md` with a new `Rerun` line; every group before and after.
 
-- `PHASE_OUTCOME.md`, both copies: `## UNIT 592 - STEP 12`, one paragraph.
-- `PHASE_STATUS.md`, both copies: names 592.
+- `PHASE_OUTCOME.md`, both copies: `## UNIT 593 - STEP 12`, one paragraph.
+- `PHASE_STATUS.md`, both copies: names 593.
 - Patch-bump `Directory.Build.props`.
 - `CLAUDE.md` §1 index row.
-- `DECISIONS.md`, newest first, **HM-DEC-296**, headline *Hamlet may know words; the wild
-  yardstick*, quoting the owner's rulings of 2026-11-03 as given above, the four findings of the
-  analysis in a line each, what this unit built, and the baseline figures of the two new groups.
-- `docs\cw-scoreboard.md`: a new table **Wild hands** (the two real stretches, right / wrong /
-  invented / spaces, per unit) and a new table **Wild bank** (total, per recipe), each with its
-  592 row as the baseline; the existing tables untouched.
-- `CW_SPEC.md`: a new short section after §2, *what a hand sends*, with the recipe table and the
-  three mechanisms, so the spec says why W1AW reads and a hand does not.
-- **Touch no checkbox in `PHASE_PLAN.md`**, and add no ruling beyond HM-DEC-296.
+- `DECISIONS.md`, newest first, **HM-DEC-297**, headline *The reader learns a hand's gaps*,
+  naming what the trace found per hand, what was built, whether it shipped or waits on a ruling,
+  and the figures before and after: the wild bank, the two real hands, the old boards.
+- `docs\cw-scoreboard.md`: a 593 row in every table at the figures that shipped.
+- **Touch no checkbox in `PHASE_PLAN.md`**, and add no ruling beyond HM-DEC-297.
 
 ---
 
 ## 7. Report
 
-Section 2, for the owner, in plain words: **the wild bank's baseline per recipe** (which hands
-the shipped reader reads and which it does not, in a line each), **the two real hands** per 20 s
-stretch, the ambiguity figures, and that the existing boards did not move. Section 1: what was
-built. **Section 3: the baseline trace table of §4; the wild bank matrix (recipe × level ×
-speed); the two real hands' stretches; the survey's groups before and after; CPU.** Section 4:
-anything left, a line each - including whether the `machine` recipe reproduced the bank, and
-which of the truth's `?` the reader itself can fill.
+Section 2, for the owner, in plain words, leading with **the whole picture against the shipped
+reader, row by row** - the wild bank per recipe, Bryan and Ken per 20 s with what they print
+now, the old boards - whether it ships, and the *For the owner's ruling* heading if it applies;
+then what the trace found, a sentence per hand. Section 1: per round. **Section 3: the trace
+tables of §2 (before and after); the wild bank matrix; the two real hands' stretches; the
+rounds' table; the survey's groups before and after; CPU with the starts' cost.** Section 4:
+anything left, a line each.

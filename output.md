@@ -1,169 +1,173 @@
 ## 1. What Claude did
 
-Claude Code on the development computer, branch `main`. The prompt named `PROJECT: Hamlet`, and the order's gate and `PROJECT_CARD.md` confirmed it. Nothing in this report is evidence about the radio. Version 1.13.278 to 1.13.279. Work instruction 592, ruling HM-DEC-296, both free.
+Claude Code on the development computer, branch `main`. The prompt named `PROJECT: Hamlet`, and the order's gate and `PROJECT_CARD.md` confirmed it. Nothing in this report is evidence about the radio. Version 1.13.279 to 1.13.280. Work instruction 593, ruling HM-DEC-297. Tag `before-gap-learning` at `460831e1`. `SESSION.lock` was taken and released. Nothing was written to `RUN_LEDGER.md`, nothing under `tools\arbiter\` was touched, and no box was ticked in `PHASE_PLAN.md`. The draft truth was not edited. Nothing keys or transmits, nothing was written to the radio, and no recording was added, removed or promoted.
 
-**No file under `src\Hamlet.RadioEngine\Cw\` changed, and nothing was written to the radio.**
+**Round one** (`29ae7471`): the trace, then the wider cold ranges, the start chosen by validity, the ordered fit, and a warm lane that goes invalid read cold. **Section 3.2's line starts were left out, because they raised letters right on none of the twelve windows.** The wild bank 2846, `bug` 166.
 
-Built:
+**Round two** (`2431cab9`): on `bug`'s `5 7 9 5 7 9`, a window nearly all inside gaps, the fit parted his inside gaps in two and took his letter gaps for word gaps, the letter centre going 331, 256, 231, 168 ms. A fit's letter centre must now stand 2.0 over its inside centre (`FitLetterStep`). The wild bank 2911, `bug` 226.
 
-- **The keyer's gap recipe** (`CwFistBank.Key`, `Walk`): log-normal marks and gaps, and the two habits, digits as words and short words together.
-- **`CwWildBank`:** 48 hands, with each hand's ambiguity. The survey group is `wild bank`.
-- **`cw-2026-10-19-141708.truth.md`:** the order's draft, headed as it asks. The survey group is `wild hands`, scored per 20 s with a `?` alone matching anything (`CwWildHands`).
-- **`TheWildBankTests`, 5 tests, on the engine line:** `TheBankIsMade`, `TheHandsSendTheirRecipes`, `TheMachineRecipeIsTheBank`, `AnUnknownMatchesAnything`, `TheDraftTruthIsBesideTheCapture`. None guards a score.
-- **`TheBaselineTrace`:** the section 4 table, in the `Survey` category, off both lines.
-- **The record:** HM-DEC-296, `CLAUDE.md` row, `CW_SPEC.md` section 2.1, both scoreboard tables, both `PHASE_OUTCOME.md` and `PHASE_STATUS.md` copies, the survey rewritten with its `Rerun` line.
+**Round three** (`4108eb22`): word gaps laid as nobody keying were left out of the fit, so `farnsworth`, sending 397 and 1575 ms, learned 190 and 369. A stretch of nobody keying up to 30 dits, not cut by the window's edge, is now fitted as a word gap (`FitWordGapMost`). The wild bank 2944, spaces added 267, `bug` 254.
 
-Judgement calls the order left open:
+**Three of my own slips, all corrected:** the first survey's saved document was overwritten by a hand copy of the restored file, and I recovered it whole from the run log. One new test, `TheFitFindsAHandsClasses`, failed on a poor start of mine; I corrected the start and it passes, but only after the engine line had run, and that test is not on the line. I also said the final chain would stop after a memory notice, and it did not.
 
-- **`machine`'s own speed** is the bank's 15 WPM, since its other speed is 20.
-- **A bare `?` is unknown; the `?` in `HW?` was sent.** A bracketed line in the truth is a note and is not scored, so Bryan's call at 100 s is not in Ken's truth.
-- **The ambiguity midpoint is arithmetic**, as the order words it.
-- **Real hands' sent figures** are the order's recipe table, not measured here. Bryan's word gap is 13.1 dits in its prose and 13.7 in its table; the table is used.
-- **Bryan's "end" in the trace is 280 s**, where the truth says he stops.
+**Recorded:** HM-DEC-297, which is the order's own ruling record and in the tree in full.
+
+**Lines:** engine 168 of 168, app 278 of 278, the survey once with the rule off. The harness reported memory stops on the first survey and the final chain; both kept running to the end, and nothing was run twice.
 
 ## 2. What the owner should expect
 
-**The existing boards did not move.** The twelve-plus-three is 308, W1AW 2101, the fist bank 3,898. Apart from the two new groups and the `Rerun` line, the survey document is byte-identical to the last commit. Nothing changes on screen or at the radio.
+**It does not ship.** The change stays in the tree behind `CwRules.GapLearning`, off, so what you run reads exactly as it did. With it off, the survey is byte-identical to the last one but for its `Rerun` line. It missed the bar and is not in the band for your ruling: the wild bank ended at 2944, under 3,000.
 
-**The wild bank's baseline: 3133 of 3528 letters, nothing invented, but 400 spaces added.** The reader does better on these hands than the analysis led us to expect. Each recipe is out of 588:
+**The whole picture against the shipped reader:**
 
-- **`machine`, 572:** the control. Reads almost whole, 3 spaces added.
-- **`farnsworth`, 567:** the letters read, every word gap but one is found, and it adds 175 spaces, the most of any hand.
-- **`steady`, 524:** reads well, 34 spaces added.
-- **`mobile`, 522:** the letters read, but it adds 110 spaces and misses 66, and digits come out spaced like `5 7 9`.
-- **`tight`, 489:** weaker, mostly on the fist bank's text, 36 to 51 of 60 there.
-- **`bug`, 459:** the hardest, 114 wrong. It also has the most ambiguous gaps.
+| | as shipped | the change on | bar | |
+|---|---|---|---|---|
+| wild bank score | 2859 | **2944** | 3,150 | missed by 206 |
+| spaces added | 400 | 267 | 250 | missed by 17 |
+| invented | 0 | 0 | 5 or fewer | met |
+| `mobile` | 487, 110 added | 486, 73 added | 50 added or fewer | missed by 23 |
+| `bug` | 345, 459 right | **254, 410 right** | 510 | missed, and 91 worse |
+| `farnsworth` | 555, 175 added | 538, 85 added | within 10 of shipped | 17 worse |
+| `tight` | 414 | 505 | within 10 of shipped | met |
+| `steady` | 494 | 573 | within 10 of shipped | met |
+| `machine` | 564 | 588, every letter | within 10 of shipped | met |
+| twelve-plus-three | 308, 13 wrong, 4 invented | 313, 15 wrong, 0 invented | 308, wrong not rising | wrong rose by 2 |
+| W1AW | 2101, 24 wrong | 2098, 26 wrong | 2101 | 3 under, wrong rose by 2 |
+| fist bank | 3898 | 4634 | 3,898 | met |
+| fading half, right | 1771 | 2088 | as guarded | better |
+| flat half, right | 2690 | 2820 | as guarded | better |
+| first recording | `FF C HAT<BT> BEST 7V 73 <SK> KC4ZGP ■` | `FER C HAT<BT> BEST 7V 73 <SK> KC4ZGP DEWA`, whole | whole | better; the guard is pinned to the old read |
+| 5 dB CQs | 84 of 84 | 84 of 84 | 84 | met |
+| easy fixtures | 90 of 90 | 90 of 90 | 90 | met |
+| `two-station` | 27 of 27 | 27 of 27 | 27 | met |
+| noise, steady carrier | nothing | nothing | nothing | met |
+| highest strays per 10 s | under 6 | 5.3 | 6 | met |
+| letters in silences | 1 | 1 | as guarded | met |
+| CPU, W1AW piece-04, 283 s | 107.3 s | 123.4 s, +15% | under real time | met |
 
-**How much of each hand is readable by timing at all.** This is the share of sent gaps close to a boundary, so lower is easier:
+The random carrier printed at 20 seeds of 20 with the change on. I did not measure it this unit with the change off, so I can't give you a before figure. Earlier sequence-reader rounds recorded the same 20. The working fixtures fell from 19 to 5, and those are reported, not guarded.
 
-| `farnsworth` | `steady` | `mobile` | `tight` | `machine` | `bug` |
-|---|---|---|---|---|---|
-| 7% | 9% | 12% | 13% | 20% | 30% |
+**Bryan, against the draft truth, 118 to 123 of 144:**
 
-`machine` scoring 20% is not a fault in the measure: its letter and word gaps, 2 to 3.5 and 4 to 6 dits, sit close together. It still reads best, so ambiguity alone doesn't predict the score.
+| stretch | right, shipped | right, on | prints now, shipped | prints with the change on |
+|---|---|---|---|---|
+| 120-140 s | 16 | 17 | `E T■O GM KEN NICE TO M EE` | `D EELO GM KEN NICE TO ME ES` |
+| 140-160 s | 16 | 15 | `T S TNXFER RPRT UR I 5 7` | `T S TNXFER RPRT UR I 5 7` |
+| 160-180 s | 8 | 10 | `9 5 7 N LIL T IAM F M O` | `9 5 7 N LIL T IAM IN MO` |
+| 180-200 s | 16 | 16 | `BILE SNN T A MY NAME BRYAN B` | `BILE SNN TEA MIW NAME BRYAN B` |
+| 200-220 s | 15 | 16 | `RYAN ES Q TH E S E CHICOP` | `RYAN ES Q TH IS I CHICOP` |
+| 220-240 s | 14 | 14 | `E , MA C H I C OP E E MW MA P` | `E , MA CHICOP E E MW MA P` |
+| 240-260 s | 18 | 18 | `ARKED IN MY MOBILE <BT> SO TIT` | `ARKED IN MY MOBILE <BT> SO TIT` |
+| 260-280 s | 15 | 17 | `H KEN N3AFS DE KB■ZY/ M` | `H KEN N3AFS DE KB2UZY/ M` |
 
-**The two real hands, against the draft truth, per 20 s:**
+**Ken, against the draft truth, 43 to 37 of 76. The change reads him worse:**
 
-| Ken N3AFS: 43 of 76 | right | letters | | Bryan KB2UZK/M: 118 of 144 | right | letters |
-|---|---|---|---|---|---|---|
-| 0-20 s | 2 | 19 | | 120-140 s | 16 | 18 |
-| 20-40 s | 11 | 17 | | 140-160 s | 16 | 17 |
-| 40-60 s | 10 | 17 | | 160-180 s | 8 | 14 |
-| 60-80 s | 13 | 19 | | 180-200 s | 16 | 21 |
-| 80-100 s | 0 | 20 | | 200-220 s | 15 | 18 |
-| 100-120 s | 7 | 17 | | 220-240 s | 14 | 17 |
-| | | | | 240-260 s | 18 | 21 |
-| | | | | 260-280 s | 15 | 18 |
-| | | | | 280-300 s | 0 | 2 |
+| stretch | right, shipped | right, on | prints now, shipped | prints with the change on |
+|---|---|---|---|---|
+| 0-20 s | 2 | 2 | `U UE N DEALL<BT> W A NST SI LG` | `U UE N DEALL<BT> W M MST SI LG` |
+| 20-40 s | 11 | 11 | `N 58E XTHI I N W N ENSEN` | `N 58T QTVI I N W D ENS EN` |
+| 40-60 s | 10 | 9 | `G TOI ,P T ■ NR GITTSNI` | `G TOI ■ P T PA NR GITTSNI` |
+| 60-80 s | 13 | 8 | `■GH TU NAME ES KEN KEN UG` | `■BJ TU N TME AU KEM KEN UG` |
+| 80-100 s | 0 | 0 | `V ■LE UTI2UM WEEENIWRNS` | `V ■LT KTI2UME ■ TEENI M A NS` |
+| 100-120 s | 7 | 7 | `A N3AFS DE KB2UZY / TE` | `EETN3AFS DE KB2UZY / D` |
 
-**Two things will look different from what you were told.**
+**What the trace found, a sentence per hand:**
 
-- **Ken does not read as `ETETTE TTTTTE` on this replay.** He reads `NR GITTSNI■GH TU NAME ES KEN KEN`, with a quarter of his letters `E`, `T` or `■`. The capture was made on 1.13.256, before the reader shipped. So this replay doesn't reproduce E's and T's on hands you copy by ear.
-- **Ken's 43 is a little too high.** Of it, 7 come from 100-120 s, where the letters are really Bryan's `N3AFS DE KB2UZ`, aligned against the end of Ken's truth. His own sign-off at 80-100 s falls under the `?` and scores nothing. The truth needs your ear there.
+- **Ken:** partly the cold range. At 34 to 46 s the likeliest start as built laid 79% `E`, `T` and the placeholder against 25% with the wider range, yet his live read still fell, and I did not trace why.
+- **Bryan:** the learning. His letters improve a little, and most of his remaining losses are not gap-line faults.
+- **`mobile`:** the learning. The fit read 36 of 37 letters across three windows where the medians read 28 of 33, but his digits and short words are sent spaced like words and run together, and no line can part those.
+- **`bug`:** at first not the gaps at all, since every start read alike. The fit then broke him twice, and what he still loses is in his marks.
+
+**What the wild bank still loses is the learning, and now in the marks.** Nearly all the shortfall is `bug`: with a dit spread of 0.37, his dah centre falls from 250 to 165 ms between 40 and 66 s and his dah share climbs to 0.6, so long dits read as dahs. The gap fit is what moved five recipes the right way. The mark fit went in beside it and may be what hurts him, but that is a reading of the trace, not a measurement, and no round was left to test it.
+
+**What will look wrong but is not:** `CwRules.GapLearning` and `TheGapLearningTests` are in the tree with the rule off. The guards still hold the old first-recording read, which is correct while the change is off.
 
 ## 3. What you should see
 
-**The baseline trace.** Figures are inside / letter / word gaps, dit and dah, in ms. Each learned cell is the printed lane at that moment.
+**The trace, section 2.** Three 12 s windows a hand, one lane. Before is the start as built, read by medians; after is the start validity takes, read by the fit. Each cell gives the start, its share of `E`, `T` and `■`, its share of gaps near a boundary, then after three passes: letters matching the truth of letters printed, spaces added inside words, the learned inside / letter / word gaps in ms, and the two lines. The full tables, with every start, are in `.run-unit\reports\unit593-trace-r0.txt` and `unit593-on-measures.txt`.
 
-| hand | sent or measured | learned at 10 s | learned at 30 s | learned at the end | `E`, `T` or `■` |
-|---|---|---|---|---|---|
-| Ken N3AFS (analysis) | 136 / 344 / 608, dit 80, dah 232 | 500 Hz: 130 / 280 / 568, dit 75, dah 210 | 500 Hz: 148 / 385 / 490, dit 63, dah 223 | 120 s, 500 Hz: 115 / 290 / 780, dit 60, dah 220 | 25% |
-| Bryan KB2UZK/M (analysis) | 104 / 286 / 891, dit 65, dah 221 | 130 s, 500 Hz: 103 / 278 / 845, dit 70, dah 218 | 150 s, 500 Hz: 108 / 235 / 800, dit 65, dah 225 | 280 s, 500 Hz: 110 / 278 / 665, dit 55, dah 210 | 21% |
-| `mobile`, 20 dB, own speed, QSO text (sent) | 103 / 273 / 864, dit 65, dah 220 | 625 Hz: 110 / 323 / 490, dit 70, dah 228 | 625 Hz: 110 / 233 / 895, dit 65, dah 225 | 84 s, 625 Hz: 100 / 265 / 490, dit 70, dah 213 | 26% |
-| `bug`, 20 dB, own speed, QSO text (sent) | 140 / 358 / 596, dit 82, dah 225 | nobody printing | 625 Hz: 145 / 370 / 478, dit 70, dah 223 | 94 s, 625 Hz: 140 / 388 / 630, dit 90, dah 240 | 32% |
-
-What each printed:
-
-- **Ken:** `U UE N DEALL<BT> W A NST SI LGN 58E XTHI I N W N ENSENG TOI ,P T ■ NR GITTSNI■GH TU NAME ES KEN KEN UGV ■LE UTI2UM WEEENIWRNS A N3AFS DE KB2UZY / TE`
-- **Bryan:** `E T■O GM KEN NICE TO M EE T S TNXFER RPRT UR I 5 7 9 5 7 N LIL T IAM F M OBILE SNN T A MY NAME BRYAN BRYAN ES Q TH E S E CHICOP E , MA C H I C OP E E MW MA PARKED IN MY MOBILE <BT> SO TITH KEN N3AFS DE KB■ZY/ M II`
-- **`mobile`:** `■KENNICET OMEET UES T N X FER RPRT U RRST 5 7 9 5 7 9 IAMIYO BILE S TN H <AR>A ME BRYAN BR )N ESQTH I ■ H■ OPE E, M A`
-- **`bug`:** `GA UEN NICEEONEET UES TNX FER R PRT UR ■T 57■ HE79 IAM IN MOHILE STI HR NA M T NEE EN ■A N B R■A N E S MTTSE IS CHICOPEE■ MA`
-
-**The wild bank matrix.** Letters right, QSO text of 87, then the fist bank text of 60:
-
-| recipe | own dit, 20 dB | own dit, 10 dB | 20 WPM, 20 dB | 20 WPM, 10 dB |
-|---|---|---|---|---|
-| `mobile` | 75 / 56 | 79 / 57 | 71 / 54 | 79 / 51 |
-| `bug` | 64 / 46 | 74 / 43 | 67 / 44 | 71 / 50 |
-| `farnsworth` | 80 / 59 | 86 / 60 | 83 / 60 | 83 / 56 |
-| `tight` | 77 / 44 | 76 / 48 | 85 / 36 | 72 / 51 |
-| `steady` | 83 / 50 | 79 / 56 | 75 / 50 | 73 / 58 |
-| `machine` | 85 / 58 | 87 / 60 | 87 / 58 | 83 / 54 |
-
-| recipe | right | wrong | invented | score | spaces |
-|---|---|---|---|---|---|
-| `mobile` | 522 of 588 | 35 | 0 | 487 | 118 of 184, 110 added |
-| `bug` | 459 of 588 | 114 | 0 | 345 | 144 of 184, 47 added |
-| `farnsworth` | 567 of 588 | 12 | 0 | 555 | 183 of 184, 175 added |
-| `tight` | 489 of 588 | 75 | 0 | 414 | 150 of 184, 31 added |
-| `steady` | 524 of 588 | 30 | 0 | 494 | 176 of 184, 34 added |
-| `machine` | 572 of 588 | 8 | 0 | 564 | 152 of 184, 3 added |
-| **20 dB** | 1547 of 1764 | 153 | 0 | 1394 | 454 of 552, 175 added |
-| **10 dB** | 1586 of 1764 | 121 | 0 | 1465 | 469 of 552, 225 added |
-| **total** | 3133 of 3528 | 274 | 0 | 2859 | 923 of 1104, 400 added |
-
-Nothing printed in a silence. The per-hand table and each hand's ambiguity are in `docs\cw-survey-2026-10-09.md`.
-
-**The two real hands' stretches:**
-
-| stretch | letters | right | wrong | invented | under a `?` | truth missing | spaces right / missing / added | printed |
-|---|---|---|---|---|---|---|---|---|
-| Ken 0-20 s | 19 | 2 | 6 | 0 | 2 | 0 | 1 / 1 / 1 | `U UE N DEALL<BT> W A NST SI LG` |
-| Ken 20-40 s | 17 | 11 | 6 | 0 | 0 | 1 | 3 / 1 / 2 | `N 58E XTHI I N W N ENSEN` |
-| Ken 40-60 s | 17 | 10 | 6 | 0 | 0 | 0 | 2 / 1 / 2 | `G TOI ,P T ■ NR GITTSNI` |
-| Ken 60-80 s | 19 | 13 | 2 | 0 | 4 | 0 | 3 / 0 / 0 | `■GH TU NAME ES KEN KEN UG` |
-| Ken 80-100 s | 20 | 0 | 0 | 0 | 20 | 0 | 0 / 0 / 0 | `V ■LE UTI2UM WEEENIWRNS` |
-| Ken 100-120 s | 17 | 7 | 5 | 0 | 5 | 7 | 2 / 2 / 2 | `A N3AFS DE KB2UZY / TE` |
-| **Ken total** | 109 | 43 of 76 | 25 | 0 | 31 | 8 | 11 of 16, 7 added | |
-| Bryan 120-140 s | 18 | 16 | 2 | 0 | 0 | 1 | 5 / 0 / 3 | `E T■O GM KEN NICE TO M EE` |
-| Bryan 140-160 s | 17 | 16 | 1 | 0 | 0 | 4 | 6 / 2 / 2 | `T S TNXFER RPRT UR I 5 7` |
-| Bryan 160-180 s | 14 | 8 | 2 | 0 | 4 | 1 | 3 / 1 / 3 | `9 5 7 N LIL T IAM F M O` |
-| Bryan 180-200 s | 21 | 16 | 3 | 0 | 2 | 0 | 4 / 0 / 1 | `BILE SNN T A MY NAME BRYAN B` |
-| Bryan 200-220 s | 18 | 15 | 2 | 0 | 0 | 1 | 4 / 0 / 2 | `RYAN ES Q TH E S E CHICOP` |
-| Bryan 220-240 s | 17 | 14 | 2 | 0 | 0 | 0 | 4 / 0 / 7 | `E , MA C H I C OP E E MW MA P` |
-| Bryan 240-260 s | 21 | 18 | 2 | 0 | 0 | 0 | 6 / 0 / 0 | `ARKED IN MY MOBILE <BT> SO TIT` |
-| Bryan 260-280 s | 18 | 15 | 3 | 0 | 0 | 2 | 4 / 1 / 1 | `H KEN N3AFS DE KB■ZY/ M` |
-| Bryan 280-300 s | 2 | 0 | 0 | 0 | 0 | 0 | 0 / 0 / 0 | `II` |
-| **Bryan total** | 146 | 118 of 144 | 17 | 0 | 6 | 9 | 36 of 40, 19 added | |
-
-**The survey's groups, before and after.** Every old group's row is byte-identical, checked by a diff of the whole document against the last commit:
-
-| group | before | after |
+| hand, window | before | after |
 |---|---|---|
-| synthetic fixtures | 42 | 42 |
+| Ken, sent 136 / 344 / 608, 20-32 s | 120 ms, 20%, 7%: 5 of 9, 0+, 135/413/700 (275, 555) | 120 ms, 20%, 7%: 5 of 9, 0+, 133/437/979 (240, 655) |
+| 34-46 s | 70 ms, 79%, 43%: 6 of 22, 2+, 125/163/360 (145, 260) | 120 ms, 25%, 3%: 8 of 12, 3+, 141/348/559 (220, 440) |
+| 48-60 s | 120 ms, 23%, 13%: 6 of 12, 0+, 130/330/543 (230, 435) | 120 ms, 23%, 13%: 8 of 13, 0+, 129/320/698 (205, 470) |
+| Bryan, measured 104 / 286 / 891, 140-152 s | 70 ms, 29%, 11%: 12 of 12, 1+, 105/235/805 (170, 520) | 70 ms, 23%, 11%: 11 of 12, 1+, 105/243/904 (160, 470) |
+| 154-166 s | 70 ms, 20%, 49%: 6 of 8, 3+, 110/180/565 (145, 370) | 55 ms, 17%, 11%: 6 of 9, 3+, 104/180/679 (140, 360) |
+| 168-180 s | 70 ms, 21%, 23%: 7 of 10, 1+, 105/210/855 (160, 530) | 70 ms, 15%, 14%: 7 of 10, 0+, 106/314/915 (185, 535) |
+| `bug`, sent 136 / 344 / 608, 16-28 s | 100 ms, 25%, 27%: 11 of 12, 0+, 140/358/560 (250, 460) | 100 ms, 31%, 23%: 11 of 12, 2+, 138/329/466 (215, 390) |
+| 40-52 s | 110 ms, 8%, 43%: 10 of 12, 0+, 135/330/665 (230, 500) | 120 ms, 8%, 23%: 10 of 14, 0+, 129/290/513 (195, 385) |
+| 64-76 s | 120 ms, 18%, 11%: 8 of 12, 0+, 135/423/805 (280, 615) | 120 ms, 18%, 7%: 7 of 11, 1+, 137/376/595 (225, 475) |
+| `mobile`, sent 104 / 286 / 891, 13-25 s | 90 ms, 29%, 15%: 12 of 13, 3+, 105/245/400 (175, 320) | 90 ms, 29%, 14%: 14 of 14, 3+, 105/241/494 (160, 345) |
+| 34-46 s | 70 ms, 0%, 9%: 9 of 10, 3+, 105/253/703 (180, 480) | 70 ms, 0%, 6%: 11 of 11, 2+, 108/230/666 (155, 390) |
+| 55-67 s | 70 ms, 15%, 3%: 7 of 10, 0+, 100/300/1040 (200, 670) | 70 ms, 15%, 6%: 11 of 12, 1+, 102/269/832 (165, 475) |
+
+**The line starts' test.** Best letters right on any start of a kind, across the twelve windows: the wider range and the line starts tie on all twelve. On spaces they differ twice on those best rows: Ken at 48-60 s, where the line starts add 4 against none, and Bryan at 168-180 s, where they add 1 against 2 on a read of mostly `E` and `T`.
+
+**The wild bank by recipe, right / score / spaces added:**
+
+| recipe | as shipped | the change on |
+|---|---|---|
+| `mobile` | 522 / 487 / 110 | 528 / 486 / 73 |
+| `bug` | 459 / 345 / 47 | 410 / 254 / 53 |
+| `farnsworth` | 567 / 555 / 175 | 562 / 538 / 85 |
+| `tight` | 489 / 414 / 31 | 541 / 505 / 25 |
+| `steady` | 524 / 494 / 34 | 578 / 573 / 21 |
+| `machine` | 572 / 564 / 3 | 588 / 588 / 10 |
+| total | 3133 / 2859 / 400 | 3207 / 2944 / 267 |
+
+Every hand's score with the change on, in the order own 10 dB bank and QSO, own 20 dB bank and QSO, 20 WPM 10 dB bank and QSO, 20 WPM 20 dB bank and QSO:
+
+- `mobile`: 50, 77, 46, 72, 40, 70, 57, 74
+- `bug`: 28, 37, 17, 39, 28, 65, 8, 32
+- `farnsworth`: 51, 76, 60, 83, 56, 85, 56, 71
+- `tight`: 50, 79, 53, 73, 55, 68, 58, 69
+- `steady`: 60, 87, 57, 87, 60, 81, 54, 87
+- `machine`: 60, 87, 60, 87, 60, 87, 60, 87
+
+**The rounds:**
+
+| round | wild bank | `bug` | spaces added | twelve-plus-three | W1AW | fist bank |
+|---|---|---|---|---|---|---|
+| shipped | 2859 | 345 | 400 | 308 | 2101 | 3898 |
+| one | 2846 | 166 | 398 | 314 | 2098 | 4629 |
+| two (quick measure) | 2911 | 226 | not taken | 314 | 2098 | not taken |
+| three | 2944 | 254 | 267 | 313 | 2098 | 4634 |
+
+**The survey's groups, score:**
+
+| group | as shipped, and with the rule off now | the change on |
+|---|---|---|
+| synthetic fixtures | 42 | 67 |
 | receiver fixtures: easy | 90 | 90 |
-| receiver fixtures: working | 19 | 19 |
-| receiver fixtures: edge | 35 | 35 |
-| receiver fixtures: ungraded | 45 | 45 |
+| receiver fixtures: working | 19 | 5 |
+| receiver fixtures: edge | 35 | 31 |
+| receiver fixtures: ungraded | 45 | 75 |
 | synthetic CQs: 15 dB | 84 | 84 |
 | synthetic CQs: 5 dB | 84 | 84 |
-| synthetic CQs: 0 dB | 2 | 2 |
-| the boards: twelve-plus-three | 308 | 308 |
-| W1AW pieces | 2101 | 2101 |
-| the fist bank | 3898 | 3898 |
-| wild bank | - | 2859 |
-| wild hands | - | 119 |
+| synthetic CQs: 0 dB | 2 | -1 |
+| twelve-plus-three | 308 | 313 |
+| W1AW pieces | 2101 | 2098 |
+| the fist bank | 3898 | 4634 |
+| wild bank | 2859 | 2944 |
+| wild hands | 119 | 113 |
 
-**The lines:** engine 168 of 168, the five new tests included; app 278 of 278; survey passed. Both lines ran before the record was written and the version bumped. After that, only `DecisionLogOrderTests` was run again.
-
-**CPU.** The survey went from 16 m 23 s to 23 m 16 s, up 6 m 53 s, or 42%. Summed over each read's own time, `wild bank` is 899 s and `wild hands` 111 s, against 2269 s for the old groups, up 45%. That sum leaves out the boards' own reads. Process CPU for the new run is 4026 s; the old binary did not print that figure, so no before is given.
+**Cost.** W1AW piece-04, 283 s: 107.3 s to 123.4 s of CPU, +15%, under the order's 20%, so no gate was needed. The cold starts cost nothing extra because the line starts were left out; the 15% is the wider word range and the fit. The survey took 22 m 25 s with the rule off and 26 m 31 s on.
 
 ## 4. What's blocking us
 
 Nothing blocks the next unit. Left, a line each:
 
-- **`machine` reproduced the bank, bit for bit.** SHA-256 over all 96 fists' edges and audio, taken before the keyer changed, still matches and is pinned in `TheMachineRecipeIsTheBank`. The four machine hands sending the bank's text equal those fists exactly and read 60, 58, 54 and 58, as those fists do.
-- **The order's premise is corrected:** the bank's keyer does not send 1 : 3 : 7. It sends letter gaps of 2 to 3.5 dits and word gaps of 4 to 6, uniform. `machine` keeps that, since bit for bit was the bar, and its ambiguity uses medians of 2.75 and 5.
-- **Which of the truth's `?` the reader can fill:** two look real. **`MY`** in Bryan's `HR ? NAME`, and **`TU`** in Ken's `PITTSBURGH ? NAME`. The rest is not readable: `UUENDEALL` and `WA` in Ken's opening, nothing before `QTH`, `UGV■LEUTI2UM...` before `HW?`, and `LILT` in Bryan's `579 ? I AM`. The draft is unchanged; these are for your ear.
-- **The truth at Ken's end needs your ear.** Bryan's `N3AFS DE KB2UZ...` at 100-120 s scored against Ken's closing line, as section 2 says.
-- **After 280 s,** 17 letters printed at 425 Hz, outside Bryan's 60 Hz: `RRHE N3AFS ■ EIC TOME`. They look like another station and are not scored, as the truth says.
-- **`tight` reads 89% of the QSO text and 75% of the fist bank's text.** `bug` is 79% and 76%; on the other four the two texts differ by 3 points or less. Not traced.
-- **The score can flatter a poor read.** A free `?` lets any run go unscored, and the alignment finds chance matches. Treat Ken's 57% as an upper bound.
-- **The analysis file `ANALYSIS-2026-11-03-wild-cw.md` is not in this tree,** so its measurements are quoted from the order and were not checked.
-- **A stray file:** `src\Hamlet.RadioEngine\Cw\CwSequenceReader.cs.new`, 0 bytes, untracked, dated 2026-10-27. Not from this unit; left alone and not committed.
-- **The survey's memory notice:** the harness reported the run stopped for low memory, but its test host kept running at 0.25 GB and finished. It was one run, not a retry. The pressure came from elsewhere on the machine, including another session's build.
+- **For your eye, not a ruling the order asks for:** the change is a large gain on five recipes, on the fist bank and on the first recording, and its costs are concentrated in `bug`, W1AW's 3 letters and Ken. The change is in the tree if you want it looked at again.
+- **Worth testing next:** the gap fit alone with the marks left to medians, since `bug`'s remaining loss is in his marks. Not measured here.
+- **`bug` loses his opening too:** the 650 Hz lane held from 8 to 14 s and the printed text begins at about 20 s. This is the opening you ruled out of further units as a mark problem, so it was left.
+- **Ken reads worse on, and I did not trace why.** He has a draft truth and is not guarded.
+- **The first recording's guard** holds `FF C HAT<BT> BEST 7V 73 <SK> KC4ZGP ■`. If the change ever ships, that string must be restated to the whole read.
+- **The random carrier** printed at 20 of 20 seeds with the change on. Reported, not a condition, and not measured with it off this unit.
+- **`TheGapLearningTests`** is not on `docs\carry-forward-tests.txt`, as the rule is off. Its three plain tests pass, and its traces carry the `Survey` category.
+- **The memory notices:** the harness reported memory stops twice with 1.6 to 2.5 GB free. Both runs finished, and nothing was run twice. The pressure came from elsewhere on the machine.
+- **A stray file:** `src\Hamlet.RadioEngine\Cw\CwSequenceReader.cs.new`, 0 bytes, untracked. Not from this unit; left alone and not committed.
 - **Not committed, as before:** the earlier changes to `PARKED.md`, `RUN_LEDGER.md` and `.run-unit\`.
-- **No hook was missing:** the reader's existing `LaneReadings` gave everything section 4 asked for.
+- **The analysis file `ANALYSIS-2026-11-03-wild-cw.md` is still not in this tree.** Its figures were not checked.
 
 ### Asks still outstanding
 

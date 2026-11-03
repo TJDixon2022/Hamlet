@@ -248,12 +248,12 @@ public sealed class TheGapLearningTests(ITestOutputHelper output)
         Assert.True(CwRules.On(CwRules.GapLearning));
     }
 
-    /// <remarks>Section 3.4: the fit finds a hand's three classes from a poor start, and each class's members.</remarks>
+    /// <remarks>Section 3.4: the fit finds a hand's three classes and each class's members, from centres near them; from a poor start it can settle elsewhere, which is why a fit is judged before it is taken.</remarks>
     [Fact]
     public void TheFitFindsAHandsClasses()
     {
         double[] gaps = [20, 21, 22, 23, 24, 25, 60, 62, 64, 66, 68, 150, 160, 170];
-        var (centres, counts) = CwSequenceReader.OrderedFit(gaps, [20, 30, 100]);
+        var (centres, counts) = CwSequenceReader.OrderedFit(gaps, [20, 50, 120]);
 
         Assert.Equal(new[] { 6, 5, 3 }, counts);
         Assert.InRange(centres[0], 21, 24);

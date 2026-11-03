@@ -4,6 +4,24 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-297
+date: 2026-11-03
+refs: work instruction 593, HM-DEC-296, HM-DEC-295, HM-DEC-284, HM-DEC-276, src/Hamlet.RadioEngine/Cw/CwSequenceReader.cs, src/Hamlet.RadioEngine/Cw/CwRules.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheGapLearningTests.cs, docs/cw-survey-2026-10-09.md
+---
+
+**The reader learns a hand's gaps: built in three rounds, measured, left off.**
+
+Ordered by work instruction 593. `CwRules.GapLearning`, off: cold ranges that fit a hand (inside gap 0.5 to 2.5 dits, letter gap 1.8 to 6.5, word gap 5 to 30), a cold start chosen by validity as well as likelihood (`ValidityShare` 0.35, the greater of its share of `E`, `T` and the placeholder and its share of gaps within `BoundaryNear` 0.2 of its own boundaries), the classes learned by an ordered fit in log length with geometric boundaries (`FitRounds` 10, `LeastInCluster` 3, refused under `GapStep`), and a warm lane whose decode is not valid read cold as well.
+
+**What the trace found, per hand, on three 12 s windows each:** Ken, the cold range: at 34 to 46 s the likeliest start as built laid 79% `E`, `T` and the placeholder, and the wider range 25%. Bryan and `mobile`, the learning: the medians set the inside/letter line too high, and the fit read `mobile` 36 of 37 letters where the medians read 28 of 33. `bug`, neither at first: every start reads alike. **The inside/letter line starts of the order's section 3.2 raised letters right on none of the twelve windows, so they were left out, as the order allows;** the cost on W1AW's piece-04 is therefore +15%, 107.3 s to 123.4 s of CPU for 283 s, and no start is gated.
+
+**Round two:** on `bug`'s `5 7 9 5 7 9`, a window nearly all inside gaps, the fit parted his inside gaps in two and took his letter gaps for word gaps, the letter centre going 331, 256, 231, 168 ms, and the warm lane read on in runs of `E` and `T`. A fit's letter centre must stand `FitLetterStep` 2.0 over its inside centre. The wild bank 2846 to 2911. **Round three:** word gaps laid as nobody keying were left out of the fit, so `farnsworth`, sending 397 and 1575 ms, learned 190 and 369. A stretch of nobody keying up to `FitWordGapMost` 30 dits, not cut by the window's edge, is fitted as a word gap. The wild bank 2944, spaces added 398 to 267.
+
+**The figures, as shipped against the change on:** the wild bank 2859 to **2944** (3133 to 3207 right, 274 to 263 wrong, 0 invented, spaces added 400 to 267); `mobile` 487 to 486, 110 to 73 spaces added; `bug` 345 to **254**; `farnsworth` 555 to 538, 175 to 85 spaces added; `tight` 414 to 505; `steady` 494 to 573; `machine` 564 to 588. Bryan 118 to 123 of 144, Ken 43 to 37 of 76, both on a draft truth. The twelve-plus-three 308 to 313, wrong 13 to 15, invented 4 to 0, spaces 92 to 91 of 110, the first recording whole, `FER C HAT<BT> BEST 7V 73 <SK> KC4ZGP DEWA`; W1AW 2101 to 2098, wrong 24 to 26; the fist bank 3898 to 4634, its flat half 2690 to 2820 right and its fading half 1771 to 2088, its invented 18 to 26. The 5 dB CQs 84 of 84, the easy fixtures 90 of 90, `two-station` 27 of 27, noise and the steady carrier nothing, one letter in silences, the random carrier at 20 seeds of 20. The working fixtures 19 to 5.
+
+**It stays off.** Against the order's bar: the wild bank under 3,150 and under the 3,000 that would make it the owner's ruling; `bug` 254 against 510, and 91 under shipped where no recipe may fall more than 10; `farnsworth` 17 under shipped; spaces added 267 against 250; `mobile`'s 73 against 50; wrong rising on both boards; W1AW 3 under. With it off the survey is byte-identical to the shipped reader's but for its `Rerun` line: 308, 2101, 3898, 2859. What `bug` still loses is the learning, in the marks and not the gaps: his dah centre falls from 250 to 165 ms between 40 and 66 s and his dah share rises to 0.6. That was seen on the trace, and no round was left to change it. The tag `before-gap-learning` and the traces are kept.
+
+---
 id: HM-DEC-296
 date: 2026-11-03
 refs: work instruction 592, HM-DEC-295, HM-DEC-284, HM-DEC-276, tests/Hamlet.RadioEngine.Tests/Cw/Fixtures/CwWildBank.cs, tests/Hamlet.RadioEngine.Tests/Cw/CwWildHands.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheWildBankTests.cs, tests/fixtures/cw/captured/cw-2026-10-19-141708.truth.md, CW_SPEC.md section 2.1
