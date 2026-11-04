@@ -166,7 +166,7 @@ public sealed class TheCwVocabularyTests
     {
         var (share, counted, _) = CwSequenceReader.Recognized(Laid("TEST DE TEST"));
 
-        Assert.Equal(1.0, share, 3);
+        Assert.Equal(0.8, share, 3);
         Assert.Equal(10, counted);
     }
 
@@ -194,7 +194,7 @@ public sealed class TheCwVocabularyTests
         // The noise before a station who began mid-window falls out of the letters read.
         var (share, counted, _) = CwSequenceReader.Recognized(Laid("TETE TETTE TETE CQ CQ DE W1AW"));
 
-        Assert.Equal(1.0, share, 3);
+        Assert.Equal(0.4, share, 3);
         Assert.Equal(10, counted);
     }
 
@@ -247,6 +247,15 @@ public sealed class TheCwVocabularyTests
         Assert.True(v.Words < CwSequenceReader.ValidWords);
         Assert.True(v.Letters <= CwSequenceReader.ValidityShare);
         Assert.False(v.TextRefused);
+    }
+
+    [Fact]
+    public void AShortWordVouchesForNothing()
+    {
+        var (share, counted, _) = CwSequenceReader.Recognized(Laid("A ET A"));
+
+        Assert.Equal(0.0, share, 3);
+        Assert.Equal(4, counted);
     }
 
     [Fact]

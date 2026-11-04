@@ -690,6 +690,9 @@ public sealed class CwSequenceReader
     /// <summary>The recognized share at which a decode is valid (section 3).</summary>
     public const double ValidWords = 0.5;
 
+    /// <summary>The fewest characters of a word that speaks for a decode (work instruction 596, round two).</summary>
+    public const int WordVouchesFrom = 3;
+
     /// <summary>The decodes running the two judges refuse before a warm lane is read cold on it: not on one.</summary>
     public const int InvalidPasses = 2;
 
@@ -907,7 +910,7 @@ public sealed class CwSequenceReader
             if (!words[k].Cut)
             {
                 counted += words[k].Letters.Count;
-                known += CwVocabulary.IsWord(string.Concat(words[k].Letters)) ? words[k].Letters.Count : 0;
+                known += Vouches(string.Concat(words[k].Letters)) ? words[k].Letters.Count : 0;
             }
         }
 
@@ -916,6 +919,12 @@ public sealed class CwSequenceReader
 
         return (counted == 0 ? 0 : known / (double)counted, counted, letters);
     }
+
+    /// <summary>
+    /// **A SHORT WORD VOUCHES FOR NOTHING** (work instruction 596, round two). Traced on 221828 at 6 s: a noise lane at 350 Hz read `DE TT EN A ET A TEEENTE`, its letters counted `A ET A`, kept at 0.50 on two
+    /// lone `A`s, and took the terminal for 30 s from the station at 600 Hz, read `T FER ANOTH EE` at 0.33. A word recognized under <see cref="WordVouchesFrom"/> characters still counts, and counts as not found.
+    /// </summary>
+    private static bool Vouches(string word) => word.Length >= WordVouchesFrom && CwVocabulary.IsWord(word);
 
     /// <summary>
     /// **WHETHER A DECODE READS AS TEXT: TWO JUDGES** (work instruction 596). Its last <see cref="ValidityLetters"/> letters are refused only where both say so: the share of `E`, `T` and the

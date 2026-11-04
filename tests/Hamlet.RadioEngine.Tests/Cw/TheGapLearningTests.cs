@@ -735,6 +735,7 @@ public sealed class TheGapLearningTests(ITestOutputHelper output)
     [InlineData("mobile-bank")]
     [InlineData("carrier-5199")]
     [InlineData("carrier-5207")]
+    [InlineData("221828")]
     public void TheJudgesTraced(string which)
     {
         switch (which)
@@ -761,6 +762,7 @@ public sealed class TheGapLearningTests(ITestOutputHelper output)
             case "221548":
             case "221745":
             case "221530":
+            case "221828":
                 {
                     var name = "cw-2026-10-03-" + which;
                     var audio = WavAudio.Read(TheOwnersRecordingReadsTests.Wav(name));
@@ -772,7 +774,7 @@ public sealed class TheGapLearningTests(ITestOutputHelper output)
                     }
                     else
                     {
-                        Judged(audio, pitch, width, which == "221548" ? 16 : 0, 32, [500]);
+                        Judged(audio, pitch, width, which == "221548" ? 16 : 0, 32, which == "221828" ? null : [500]);
                     }
 
                     break;
