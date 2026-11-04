@@ -625,6 +625,8 @@ public sealed class CwSequenceReader
             // **AND BY VALIDITY AS WELL AS LIKELIHOOD** (work instruction 593, section 3.3): among them, a start whose decode is valid is
             // kept before any that is not; among the valid the likeliest, and where none is, the most recognized, the likeliest of those (work instruction 595).
             // Traced on Ken at 34 to 46 s: the likeliest Morse start laid 79% `E`, `T` and the placeholder.
+            // **WHERE NONE IS VALID, THE WORDS WHATEVER THE SPACES** (work instruction 595, round three). Traced on `mobile` at 20 WPM, 20 dB, the window ending at 16 s: the 70 ms
+            // start read `IQDE■CALL N0E`, its words 0.00 since its spaces are off, and the 40 ms start read `M ■J TM■■ U Q ETM W■ E`, 0.09 on one lucky `U`, and took the lane to `TTTTT TETE` for 8 s.
             var validity = gapLearning ? Validity(first) : default;
             var valid = validity.Valid == true;
             var words = validity.Counted >= ValidityLeast ? validity.Words : 0;
@@ -1258,7 +1260,13 @@ public sealed class CwSequenceReader
             }
         }
 
-        if (_printed is null && stations.FirstOrDefault(s => s.HasMarksAfter(Math.Max(_lastPrintedEnd, newest - _windowHops))) is { } chosen)
+        // **THE JUDGE RANKS A LANE, IT DOES NOT SILENCE THE BAND** (work instruction 595, round two). Traced on 221745: one station at 500 Hz, reading Morse from 10 s, read
+        // `TMN 40M TONITE . EUROREE H RD`, its words under ValidWords in every decode from 6 to 30 s since his spaces and a letter or two are off and `TONITE` is no word, so nothing
+        // printed in 30 s where the shipped reader read 27 of 29. A lane the words refuse takes the terminal only where no lane they do not refuse has marks to give it.
+        var chosenLane = stations.FirstOrDefault(s => s.HasMarksAfter(Math.Max(_lastPrintedEnd, newest - _windowHops)))
+            ?? _lanes.Where(l => l.Pattern.IsMorse && l.Standing == false && l.HasMarksAfter(Math.Max(_lastPrintedEnd, newest - _windowHops))).OrderByDescending(l => l.Pattern.Separation).FirstOrDefault();
+
+        if (_printed is null && chosenLane is { } chosen)
         {
             Trace?.Add(string.Create(Inv, $"{Seconds(newest):0.00} s holds {chosen.PitchHz:0} Hz in its {LaneWidthsHz[chosen.Width]:0} Hz lane, {chosen.Pattern}, {chosen.Learned}"));
             _printed = chosen;

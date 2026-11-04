@@ -33,6 +33,8 @@ public static class CwVocabulary
 
     private static readonly HashSet<string> Listed = Build();
 
+    private static readonly int LongestListed = Listed.Max(w => w.Length);
+
     /// <summary>How many words the list holds; the shapes are beside it.</summary>
     public static int Size => Listed.Count;
 
@@ -80,6 +82,33 @@ public static class CwVocabulary
     /// <summary>One to four digits; a ZIP's first part or a year is just a number.</summary>
     public static bool IsNumber(string word)
         => word.Length is >= 1 and <= 4 && word.All(IsDigit);
+
+    /// <summary>
+    /// The share of a run of letters that lies inside words of three letters or more on the list, the longest first from each place, whatever spaces were laid among them.
+    /// </summary>
+    public static double Covered(string text)
+    {
+        var run = text.Replace(" ", string.Empty, StringComparison.Ordinal);
+        var (k, covered) = (0, 0);
+
+        while (k < run.Length)
+        {
+            var taken = 0;
+
+            for (var n = Math.Min(LongestListed, run.Length - k); n >= 3 && taken == 0; n--)
+            {
+                if (Listed.Contains(run.Substring(k, n)))
+                {
+                    taken = n;
+                }
+            }
+
+            covered += taken;
+            k += Math.Max(taken, 1);
+        }
+
+        return run.Length == 0 ? 0 : covered / (double)run.Length;
+    }
 
     private static bool IsQuestion(string word)
         => word.Length == 4 && word[3] == '?' && QCodes.Contains(word[..3], StringComparer.Ordinal);

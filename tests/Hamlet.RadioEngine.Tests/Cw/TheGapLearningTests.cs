@@ -730,6 +730,9 @@ public sealed class TheGapLearningTests(ITestOutputHelper output)
     [InlineData("221548")]
     [InlineData("bug-qso")]
     [InlineData("bug-bank")]
+    [InlineData("221745")]
+    [InlineData("221530")]
+    [InlineData("mobile-bank")]
     public void TheJudgesTraced(string which)
     {
         switch (which)
@@ -744,12 +747,31 @@ public sealed class TheGapLearningTests(ITestOutputHelper output)
                 }
 
             case "221548":
+            case "221745":
+            case "221530":
                 {
-                    const string Name = "cw-2026-10-03-221548";
-                    var audio = WavAudio.Read(TheOwnersRecordingReadsTests.Wav(Name));
-                    var (pitch, width) = TheRecordingsScoreboardTests.RadioState(Name);
+                    var name = "cw-2026-10-03-" + which;
+                    var audio = WavAudio.Read(TheOwnersRecordingReadsTests.Wav(name));
+                    var (pitch, width) = TheRecordingsScoreboardTests.RadioState(name);
 
-                    Judged(audio, pitch, width, 16, 32, [500]);
+                    if (which == "221530")
+                    {
+                        Judged(audio, pitch, width, 0, 30, [500, 600]);
+                    }
+                    else
+                    {
+                        Judged(audio, pitch, width, which == "221548" ? 16 : 0, 32, [500]);
+                    }
+
+                    break;
+                }
+
+            case "mobile-bank":
+                {
+                    var hand = new CwWildHand(CwWildBank.Recipes.Single(r => r.Name == "mobile"), OwnSpeed: false, Db: 20, Qso: false);
+
+                    output.WriteLine("truth: " + hand.Text);
+                    Judged(hand.Audio(), 600, 500, 0, 70, [Math.Round(CwFistBank.ToneHz / 25) * 25]);
                     break;
                 }
 
@@ -856,6 +878,52 @@ public sealed class TheGapLearningTests(ITestOutputHelper output)
             var kept = !stands ? "refused, centres too close" : near > CwSequenceReader.FitNearMost ? "REFUSED by FitNearMost" : "kept";
 
             output.WriteLine(string.Create(Inv, $"| {end:0} | {gaps.Count} | {g[0] * HopMs:0} / {g[1] * HopMs:0} / {g[2] * HopMs:0} | {a * HopMs:0}, {b * HopMs:0} | {near:0.00} | {kept} | `{cold.Text}`"));
+        }
+    }
+
+    /// <remarks>Round three: a hand's lane in the chain, what it read each decode, and each window's cold starts under the word judge. Asserts nothing; never on a line.</remarks>
+    [Theory]
+    [Trait("Category", "Survey")]
+    [InlineData("mobile", false, 20.0, false)]
+    [InlineData("bug", true, 10.0, true)]
+    public void TheStartsTraced(string recipe, bool own, double level, bool qso)
+    {
+        const double HopMs = CwSequenceReader.HopMs;
+        var hand = new CwWildHand(CwWildBank.Recipes.Single(r => r.Name == recipe), own, level, qso);
+        var audio = hand.Audio();
+        var tone = Math.Round(CwFistBank.ToneHz / 25) * 25;
+        var whole = CwSequenceReader.LaneWidthsHz.Select(w => CwSequenceReader.Envelope(audio.Samples, audio.SampleRate, tone, w)).ToArray();
+        using var on = CwRules.Choose(CwRules.GapLearning);
+        var trace = new List<string>();
+        var letters = TheSequenceReaderTests.ReadLiveTraced(audio.Samples, audio.SampleRate, 600, 500, trace, tone);
+
+        output.WriteLine("truth: " + hand.Text);
+        output.WriteLine("printed: " + TheRecordingsScoreboardTests.Text(letters));
+
+        foreach (var line in trace.Where(l => l.Contains(" holds ", StringComparison.Ordinal) || l.Contains(" let go ", StringComparison.Ordinal) || l.Contains(" warm: ", StringComparison.Ordinal) || l.Contains(" passes, read ", StringComparison.Ordinal)))
+        {
+            output.WriteLine(line.Length > 330 ? line[..200] + " ... " + line[^100..] : line);
+        }
+
+        for (var end = 12.0; end <= audio.Samples.Length / (double)audio.SampleRate; end += 4)
+        {
+            var hops = (int)(end * 1000 / HopMs);
+            var db = whole[0][(hops - (int)(CwSequenceReader.WindowSeconds * 1000 / HopMs))..Math.Min(hops, whole[0].Length)];
+            var levels = CwSequenceReader.LevelsFromPercentiles(db);
+
+            output.WriteLine(string.Create(Inv, $"### window ends {end:0} s"));
+
+            foreach (var dit in new[] { CwSequenceReader.GuessDitHops(db) }.Concat(CwSequenceReader.ColdStartDits).Distinct())
+            {
+                var ranges = CwSequenceReader.ColdRanges(dit);
+                var first = CwSequenceReader.Read(db, ranges, levels, passes: 1);
+                var v = CwSequenceReader.Validity(first);
+                var all = first.Text.Where(c => c != (char)32).ToList();
+                var old = all.Count == 0 ? 1 : all.Count(c => c is (char)69 or (char)84 || c.ToString() == MorseAlphabet.Unreadable) / (double)all.Count;
+                var score = (CwSequenceReader.LogLikelihood(first.Segments, db, levels) - CwSequenceReader.PriorCost(first.Segments, ranges)) / db.Length;
+
+                output.WriteLine(string.Create(Inv, $"start {dit * HopMs:0} ms: score/hop {score:0.000}, Morse {first.Pattern.IsMorse}, words {v.Words:0.00} of {v.Counted}, covered {CwVocabulary.Covered(first.Text):0.00}, E,T,â–  {old:0.00}, near {v.Gaps:0.00}: `{first.Text}`"));
+            }
         }
     }
 
