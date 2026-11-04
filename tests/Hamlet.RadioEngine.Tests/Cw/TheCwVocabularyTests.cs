@@ -5,7 +5,7 @@ namespace Hamlet.RadioEngine.Tests.Cw;
 
 /// <summary>
 /// **THE WORDS OF THE AIR** (work instruction 595, section 2, under HM-DEC-296): what the vocabulary recognizes, and the recognized share the validity judge
-/// reads. Proves HM-DEC-299.
+/// reads. Proves HM-DEC-299 and HM-DEC-300.
 /// </summary>
 public sealed class TheCwVocabularyTests
 {
@@ -67,6 +67,45 @@ public sealed class TheCwVocabularyTests
     public void AShortWordIsOnlyFromTheShortLists(string word)
         => Assert.False(CwVocabulary.IsWord(word), word);
 
+    [Theory]
+    [InlineData("TONITE")]
+    [InlineData("TONIGHT")]
+    [InlineData("2NITE")]
+    [InlineData("WKD")]
+    [InlineData("WRKD")]
+    [InlineData("SKED")]
+    [InlineData("CONGRATS")]
+    [InlineData("GUD")]
+    [InlineData("GD")]
+    [InlineData("NITE")]
+    [InlineData("LID")]
+    [InlineData("CUL")]
+    [InlineData("TKS")]
+    [InlineData("VY")]
+    [InlineData("FINE")]
+    public void TheWordsTheTracesNamedAreWords(string word)
+        => Assert.True(CwVocabulary.IsWord(word), word);
+
+    [Theory]
+    [InlineData("40M", true)]
+    [InlineData("20M", true)]
+    [InlineData("160M", true)]
+    [InlineData("1600M", false)]
+    [InlineData("M", false)]
+    [InlineData("4M0", false)]
+    public void ABandIsAShape(string word, bool band)
+        => Assert.Equal(band, CwVocabulary.IsBand(word));
+
+    [Theory]
+    [InlineData("7.040", true)]
+    [InlineData("14.058", true)]
+    [InlineData("7.", false)]
+    [InlineData(".040", false)]
+    [InlineData("7.0.4", false)]
+    [InlineData("E.T", false)]
+    public void AFrequencyIsAShape(string word, bool frequency)
+        => Assert.Equal(frequency, CwVocabulary.IsFrequency(word));
+
     [Fact]
     public void TheListHoldsAtLeastTheFewThousandAsked()
         => Assert.True(CwVocabulary.Size >= 3000, CwVocabulary.Size.ToString(System.Globalization.CultureInfo.InvariantCulture));
@@ -125,7 +164,7 @@ public sealed class TheCwVocabularyTests
     [Fact]
     public void HonestTextHeavyInEAndTReadsWhole()
     {
-        var (share, counted) = CwSequenceReader.Recognized(Laid("TEST DE TEST"));
+        var (share, counted, _) = CwSequenceReader.Recognized(Laid("TEST DE TEST"));
 
         Assert.Equal(1.0, share, 3);
         Assert.Equal(10, counted);
@@ -134,7 +173,7 @@ public sealed class TheCwVocabularyTests
     [Fact]
     public void APathOfEAndTReadsAsNothing()
     {
-        var (share, counted) = CwSequenceReader.Recognized(Laid("TETE TTET"));
+        var (share, counted, _) = CwSequenceReader.Recognized(Laid("TETE TTET"));
 
         Assert.Equal(0.0, share, 3);
         Assert.Equal(8, counted);
@@ -143,7 +182,7 @@ public sealed class TheCwVocabularyTests
     [Fact]
     public void AWordCutByTheWindowCountsNeitherWay()
     {
-        var (share, counted) = CwSequenceReader.Recognized(Laid("TEE NAME TEE", opensCut: true, closesCut: true));
+        var (share, counted, _) = CwSequenceReader.Recognized(Laid("TEE NAME TEE", opensCut: true, closesCut: true));
 
         Assert.Equal(1.0, share, 3);
         Assert.Equal(4, counted);
@@ -153,7 +192,7 @@ public sealed class TheCwVocabularyTests
     public void OnlyTheLastTwelveLettersAreRead()
     {
         // The noise before a station who began mid-window falls out of the letters read.
-        var (share, counted) = CwSequenceReader.Recognized(Laid("TETE TETTE TETE CQ CQ DE W1AW"));
+        var (share, counted, _) = CwSequenceReader.Recognized(Laid("TETE TETTE TETE CQ CQ DE W1AW"));
 
         Assert.Equal(1.0, share, 3);
         Assert.Equal(10, counted);
@@ -182,10 +221,42 @@ public sealed class TheCwVocabularyTests
 
         segs.Add(new CwSequenceReader.Segment(CwSequenceReader.WordGap, at, at + 1));
 
-        var (share, counted) = CwSequenceReader.Recognized(segs);
+        var (share, counted, _) = CwSequenceReader.Recognized(segs);
 
         Assert.Equal(1.0, share, 3);
         Assert.Equal(4, counted);
+    }
+
+    private static (double Words, int Counted, double Letters, double Gaps, bool TextRefused, bool? Valid) Judged(string text)
+        => CwSequenceReader.Validity(new CwSequenceReader.Reading(Laid(text), text, [], default, default));
+
+    [Fact]
+    public void HonestTextOfEAndTIsKeptByTheWords()
+    {
+        var v = Judged("TEST DE TEST");
+
+        Assert.True(v.Letters > CwSequenceReader.ValidityShare);
+        Assert.False(v.TextRefused);
+    }
+
+    [Fact]
+    public void AHandALetterOffIsKeptByTheLetterCount()
+    {
+        var v = Judged("WAQK BROWN FOQ");
+
+        Assert.True(v.Words < CwSequenceReader.ValidWords);
+        Assert.True(v.Letters <= CwSequenceReader.ValidityShare);
+        Assert.False(v.TextRefused);
+    }
+
+    [Fact]
+    public void ARunOfEAndTIsRefusedByBoth()
+    {
+        var v = Judged("TETE TTET ETE");
+
+        Assert.True(v.Letters > CwSequenceReader.ValidityShare);
+        Assert.True(v.Words < CwSequenceReader.ValidWords);
+        Assert.True(v.TextRefused);
     }
 
     [Fact]

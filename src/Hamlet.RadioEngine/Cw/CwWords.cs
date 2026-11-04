@@ -20,6 +20,9 @@ public static class CwVocabulary
         "CPY", "CPI", "AGN", "PSE", "PLS", "OM", "YL", "XYL", "NR", "NAME", "WX", "TEMP", "ANT", "RIG", "PWR", "WATTS", "GA", "GM", "GE", "GN", "GB", "CUL", "CUAGN",
         "73", "88", "DX", "TEST", "VY", "NW", "BTU", "SRI", "SORRY", "OK", "R", "RR", "WID", "HPE", "SN", "SOON", "HV", "HVE", "CONDX", "ABT", "ABOUT", "MNI",
         "MANY", "DIPOLE", "VERT", "YAGI", "KEY", "BUG", "STN", "MOBILE", "WPM",
+
+        // The words the traces named (work instruction 596).
+        "TONITE", "TONIGHT", "2NITE", "WKD", "WRKD", "SKED", "CONGRATS", "GUD", "GD", "NITE", "LID", "FINE",
     ];
 
     private static readonly string[] States =
@@ -40,7 +43,7 @@ public static class CwVocabulary
 
     /// <summary>A word is recognized if it is on the list or matches a shape: a Q-code may carry its <c>?</c>.</summary>
     public static bool IsWord(string word)
-        => word.Length > 0 && (Listed.Contains(word) || IsQuestion(word) || IsCallsign(word) || IsRst(word) || IsNumber(word));
+        => word.Length > 0 && (Listed.Contains(word) || IsQuestion(word) || IsCallsign(word) || IsRst(word) || IsNumber(word) || IsBand(word) || IsFrequency(word));
 
     /// <summary>One or two letters, a digit, one to three letters, with an optional suffix of a slash and up to three letters or digits, such as <c>/M</c>, <c>/QRP</c> or <c>/4</c>.</summary>
     public static bool IsCallsign(string word)
@@ -82,6 +85,18 @@ public static class CwVocabulary
     /// <summary>One to four digits; a ZIP's first part or a year is just a number.</summary>
     public static bool IsNumber(string word)
         => word.Length is >= 1 and <= 4 && word.All(IsDigit);
+
+    /// <summary>One to three digits and an <c>M</c>: <c>40M</c>, <c>160M</c>.</summary>
+    public static bool IsBand(string word)
+        => word.Length is >= 2 and <= 4 && word[^1] == 'M' && word[..^1].All(IsDigit);
+
+    /// <summary>Digits, a point, digits: <c>7.040</c>.</summary>
+    public static bool IsFrequency(string word)
+    {
+        var point = word.IndexOf('.', StringComparison.Ordinal);
+
+        return point > 0 && point < word.Length - 1 && word.Remove(point, 1).All(IsDigit);
+    }
 
     /// <summary>
     /// The share of a run of letters that lies inside words of three letters or more on the list, the longest first from each place, whatever spaces were laid among them.

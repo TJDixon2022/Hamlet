@@ -733,10 +733,22 @@ public sealed class TheGapLearningTests(ITestOutputHelper output)
     [InlineData("221745")]
     [InlineData("221530")]
     [InlineData("mobile-bank")]
+    [InlineData("carrier-5199")]
+    [InlineData("carrier-5207")]
     public void TheJudgesTraced(string which)
     {
         switch (which)
         {
+            case "carrier-5199":
+            case "carrier-5207":
+                {
+                    var carrier = TheShapePicksTheSenderTests.Noise(25, 5192);
+
+                    TheShapePicksTheSenderTests.Key(carrier, TheShapePicksTheSenderTests.RandomKeying(2.5, 23, int.Parse(which[8..], Inv)), 625, 24);
+                    Judged(new MonoAudio(8000, carrier), 600, 500, 0, 25, [625]);
+                    break;
+                }
+
             case "tightfist-easy":
                 {
                     var audio = WavAudio.Read(TheGridStepsAsideTests.Fixture(which));
@@ -814,11 +826,13 @@ public sealed class TheGapLearningTests(ITestOutputHelper output)
             }
 
             var text = line[(line.IndexOf("text `", StringComparison.Ordinal) + 6)..^1];
-            var all = text.Where(c => c != ' ').ToList();
-            var old = all.Count == 0 ? 1 : all.Count(c => c is 'E' or 'T' || c.ToString() == MorseAlphabet.Unreadable) / (double)all.Count;
-            var near = double.Parse(line[(line.IndexOf(", near ", StringComparison.Ordinal) + 7)..].Split(',')[0], Inv);
+            string After(string key) => line[(line.IndexOf(key, StringComparison.Ordinal) + key.Length)..].Split(',')[0].Split(' ')[0];
+            var words = double.Parse(After(", words "), Inv);
+            var counted = int.Parse(After(" of "), Inv);
+            var share = double.Parse(After(", letters "), Inv);
+            var verdict = counted < CwSequenceReader.ValidityLeast ? "no verdict" : After(", refused ") == "True" ? "REFUSED" : "kept";
 
-            output.WriteLine(string.Create(Inv, $"{parts[0]} s {hz:0} Hz, {all.Count / 12.0:0.0} letters/s, shipped judge E,T,■ {old:0.00} near {near:0.00} {(Math.Max(old, near) <= 0.35 ? "VALID" : "invalid")}; {line[(line.IndexOf(", words ", StringComparison.Ordinal) + 2)..line.IndexOf(": ", StringComparison.Ordinal)]}; `{text}`"));
+            output.WriteLine(string.Create(Inv, $"{parts[0]} s {hz:0} Hz, E,T,■ {share:0.00} {(share > CwSequenceReader.ValidityShare ? "refuses" : "keeps")}, words {words:0.00} of {counted} {(words < CwSequenceReader.ValidWords ? "refuses" : "keeps")}, together {verdict}, near {After(", near ")}, standing {After(", standing ")}; `{text}`"));
         }
     }
 
