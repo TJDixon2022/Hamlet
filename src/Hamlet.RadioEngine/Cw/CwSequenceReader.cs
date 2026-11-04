@@ -629,7 +629,7 @@ public sealed class CwSequenceReader
             // start read `IQDE■CALL N0E`, its words 0.00 since its spaces are off, and the 40 ms start read `M ■J TM■■ U Q ETM W■ E`, 0.09 on one lucky `U`, and took the lane to `TTTTT TETE` for 8 s.
             var validity = gapLearning ? Validity(first) : default;
             var valid = validity.Valid == true;
-            var words = gapLearning ? CwVocabulary.Covered(first.Text) : 0;
+            var words = validity.Counted >= ValidityLeast ? validity.Words : 0;
             var better = valid ? !bestValid || score > bestScore : !bestValid && (words > bestWords || (words == bestWords && score > bestScore));
 
             if (gapLearning ? (morse && !bestMorse) || (morse == bestMorse && better) : (morse && !bestMorse) || (morse == bestMorse && score > bestScore))
