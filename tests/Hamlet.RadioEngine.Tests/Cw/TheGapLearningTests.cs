@@ -704,6 +704,7 @@ public sealed class TheGapLearningTests(ITestOutputHelper output)
     [Trait("Category", "Survey")]
     [InlineData("cw-2026-10-08-121324")]
     [InlineData("cw-2026-10-03-221548")]
+    [InlineData("w1aw-2026-10-07/piece-03")]
     public void TheRecordingTraced(string recording)
     {
         var audio = WavAudio.Read(TheOwnersRecordingReadsTests.Wav(recording));
@@ -736,10 +737,19 @@ public sealed class TheGapLearningTests(ITestOutputHelper output)
     [InlineData("carrier-5199")]
     [InlineData("carrier-5207")]
     [InlineData("221828")]
+    [InlineData("cq-12wpm-5db")]
     public void TheJudgesTraced(string which)
     {
         switch (which)
         {
+            case "cq-12wpm-5db":
+                {
+                    var audio = WavAudio.Read(Path.Combine(SyntheticCq.Folder, which + ".wav"));
+
+                    Judged(audio, 600, 500, 0, 16, null);
+                    break;
+                }
+
             case "carrier-5199":
             case "carrier-5207":
                 {
@@ -950,6 +960,26 @@ public sealed class TheGapLearningTests(ITestOutputHelper output)
     {
         using var on = CwRules.Choose(CwRules.GapLearning);
         output.WriteLine(TheRecordingsScoreboardTests.Table(TheRecordingsScoreboardTests.Score()));
+    }
+
+    /// <remarks>W1AW's stretches where the rule on and off differ, each with what it printed and its figures. Asserts nothing; never on a line.</remarks>
+    [Fact]
+    [Trait("Category", "Survey")]
+    public void TheW1awTraced()
+    {
+        var off = TheW1awTableTests.Score();
+        using var on = CwRules.Choose(CwRules.GapLearning);
+        var chosen = TheW1awTableTests.Score();
+
+        output.WriteLine(string.Create(Inv, $"off {off.Score}, on {chosen.Score}"));
+
+        foreach (var (a, b) in off.Stretches.Zip(chosen.Stretches).Where(p => p.First.PrintedText != p.Second.PrintedText))
+        {
+            output.WriteLine(string.Create(Inv, $"{a.Stretch.Recording[^8..]} {a.Stretch.From:0.#}-{a.Stretch.To:0.#} s, {a.Stretch.Confidence}: right {a.Right} to {b.Right}, wrong {a.Wrong} to {b.Wrong}"));
+            output.WriteLine("  ref `" + a.Stretch.Reference + "`");
+            output.WriteLine("  off `" + a.PrintedText + "`");
+            output.WriteLine("  on  `" + b.PrintedText + "`");
+        }
     }
 
     /// <remarks>Section 4: the carrier keyed at random and the rest of the noise, read with the rule off and on. Asserts nothing; never on a line.</remarks>

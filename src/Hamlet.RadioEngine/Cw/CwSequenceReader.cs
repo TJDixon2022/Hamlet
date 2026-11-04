@@ -1646,6 +1646,13 @@ public sealed class CwSequenceReader
                         && Unreadable(cold.Text) <= Unreadable(reading.Text);
                     var take = cold.Pattern.IsMorse && ((fell && (!reading.Pattern.IsMorse || Better(cold.Pattern, reading.Pattern))) || stale);
 
+                    // **A COLD READ THE JUDGES REFUSE DOES NOT REPLACE A WARM READ THEY KEEP** (work instruction 596, round three). Traced on W1AW piece-03 at 256 s: the 625 Hz lane's
+                    // warm read laid `<BT> QST DE WP`, kept, and a cold read at a dah share of 0.28 against 0.46 took it as stale on `35RHI TEHT 4 BST DE WH`, refused, and printed `4 BST`.
+                    if (take && CwRules.On(CwRules.GapLearning) && Validity(cold).TextRefused && !Validity(reading).TextRefused)
+                    {
+                        take = false;
+                    }
+
                     trace?.Add(string.Create(Inv, $"{newest * HopMs / 1000:0.00} s {PitchHz:0} Hz warm: {reading.Pattern}; kept: {Kept}; cold: {cold.Pattern}, {(cold.Passes.Count > 0 ? cold.Passes[^1] : null)}; {(take ? "takes the cold read" : fell ? "keeps its rhythm, the cold read no better" : "keeps its rhythm")}"));
 
                     if (take)
