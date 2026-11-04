@@ -357,6 +357,330 @@ public sealed class TheGapLearningTests(ITestOutputHelper output)
     }
 
     /// <remarks>
+    /// **THE TRACE ON `bug`** (work instruction 594, section 2): 20 dB, his own speed, the QSO text, the windows ending at 40 to 66 s, one lane, a lane's warm
+    /// chain with the first window cold. Each pass: the dit and dah the medians give, the dit and dah a two-cluster fit gives on the same marks, the
+    /// dah share, the letters right. Twice: with the medians driving the next pass, as the reader now does; and with the fit replayed here driving it, as
+    /// HM-DEC-297 built it, since the engine no longer holds it. Then the live lane. Asserts nothing; never on a line.
+    /// </remarks>
+    [Fact]
+    [Trait("Category", "Survey")]
+    public void TheBugTraced()
+    {
+        var recipe = CwWildBank.Recipes.Single(r => r.Name == "bug");
+        var hand = new CwWildHand(recipe, OwnSpeed: true, Db: 20, Qso: true);
+        var audio = hand.Audio();
+        var pitch = Math.Round(CwFistBank.ToneHz / 25) * 25;
+        var whole = CwSequenceReader.LaneWidthsHz.Select(w => CwSequenceReader.Envelope(audio.Samples, audio.SampleRate, pitch, w)).ToArray();
+        using var on = CwRules.Choose(CwRules.GapLearning);
+
+        output.WriteLine(hand.Text);
+        BugChain("the medians drive the next pass (this unit)", whole, hand.Text, driveByFit: false);
+        BugChain("the mark fit, replayed here, drives the next pass (as HM-DEC-297 built it)", whole, hand.Text, driveByFit: true);
+
+        var trace = new List<string>();
+        var letters = TheSequenceReaderTests.ReadLiveTraced(audio.Samples, audio.SampleRate, 600, 500, trace, pitch);
+
+        output.WriteLine(string.Empty);
+        output.WriteLine("## the live lane");
+        output.WriteLine(TheRecordingsScoreboardTests.Text(letters));
+
+        foreach (var line in trace.Where(l => l.Contains(" passes, read ", StringComparison.Ordinal) && Second(l) >= 38 && Second(l) <= 68))
+        {
+            output.WriteLine(line);
+        }
+    }
+
+    private void BugChain(string name, double[][] whole, string truth, bool driveByFit)
+    {
+        const double HopMs = CwSequenceReader.HopMs;
+        CwSequenceReader.Learned? learned = null;
+        var levels = default(CwSequenceReader.Levels);
+        var lastWidth = 0;
+
+        output.WriteLine(string.Empty);
+        output.WriteLine("## " + name);
+        output.WriteLine("| window ends | pass | lane Hz | medians dit/dah ms | fit dit/dah ms | dah share | letters right |");
+        output.WriteLine("|---|---|---|---|---|---|---|");
+
+        for (var end = 40; end <= 66; end += 2)
+        {
+            var to = (int)(end * 1000 / HopMs);
+            var from = Math.Max(0, to - (int)(CwSequenceReader.WindowSeconds * 1000 / HopMs));
+            var cut = whole.Select(e => e[from..Math.Min(to, e.Length)]).ToArray();
+
+            if (learned is null)
+            {
+                var (cold, width) = CwSequenceReader.ReadCold(w => cut[w]);
+
+                learned = cold.Passes[^1];
+                levels = cold.Levels;
+                lastWidth = width;
+            }
+
+            var next = CwSequenceReader.WidthFor(learned.Dit);
+            var db = cut[next];
+            var ranges = learned.Ranges;
+
+            levels = next == lastWidth ? levels : CwSequenceReader.LevelsFromPercentiles(db);
+            lastWidth = next;
+
+            for (var pass = 1; pass <= CwSequenceReader.Passes; pass++)
+            {
+                var segs = CwSequenceReader.Decode(db, ranges, levels);
+
+                if (CwSequenceReader.LearnByFit(segs, db, ranges) is not { } l)
+                {
+                    break;
+                }
+
+                var marks = segs.Where(g => g.IsMark).Select(g => (double)g.Length).ToList();
+                var (m, mc) = CwSequenceReader.OrderedFit(marks, [l.Dit, l.Dah]);
+                var dit = mc[0] >= CwSequenceReader.LeastInCluster ? m[0] : l.Dit;
+                var dah = mc[1] >= CwSequenceReader.LeastInCluster ? m[1] : l.Dah;
+                var line = mc[0] >= CwSequenceReader.LeastInCluster && mc[1] >= CwSequenceReader.LeastInCluster ? Math.Sqrt(dit * dah) : ranges[CwSequenceReader.Dit].Hi;
+                var a = Against(CwSequenceReader.Text(segs), truth);
+
+                output.WriteLine(string.Create(Inv, $"| {end} | {pass} | {CwSequenceReader.LaneWidthsHz[next]:0} | {l.Dit * HopMs:0} / {l.Dah * HopMs:0} | {dit * HopMs:0} / {dah * HopMs:0} | {CwSequenceReader.Pattern(segs, levels).DahShare:0.00} | {a.Right} of {a.Letters} |"));
+
+                if (driveByFit)
+                {
+                    var r = l.Ranges.ToArray();
+
+                    r[CwSequenceReader.Dit] = new CwSequenceReader.Range(Math.Max(1, (int)Math.Round(0.55 * dit)), Math.Max(2, (int)Math.Round(line)));
+                    r[CwSequenceReader.Dah] = new CwSequenceReader.Range(Math.Max(1, (int)Math.Round(line)), Math.Max(2, (int)Math.Round(1.8 * dah)));
+                    l = l with { Dit = dit, Dah = dah, Ranges = r };
+                }
+
+                learned = l;
+                ranges = l.Ranges;
+                levels = l.Levels;
+            }
+        }
+    }
+
+    private static double Second(string line) => double.Parse(line[..line.IndexOf(' ', StringComparison.Ordinal)], Inv);
+
+    /// <remarks>
+    /// **THE TRACE ON KEN, 60 TO 80 S** (work instruction 594, section 2): each window's starts with the one taken and its validity, the classes each pass
+    /// learned against his measured 136, 344 and 608 ms, the live lane's own passes, and every letter that differs from the draft truth, with the rule on
+    /// and off, each named a mark or a gap fault from the patterns as laid. Asserts nothing; never on a line.
+    /// </remarks>
+    [Fact]
+    [Trait("Category", "Survey")]
+    public void TheKenTraced()
+    {
+        const double From = 60;
+        const double To = 80;
+        const double HopMs = CwSequenceReader.HopMs;
+        var audio = WavAudio.Read(TheOwnersRecordingReadsTests.Wav(CwWildHands.Recording));
+        var truth = CwWildHands.Truths().Single(t => t.Name.StartsWith("Ken", StringComparison.Ordinal));
+        var (pitch, width) = TheRecordingsScoreboardTests.RadioState(CwWildHands.Recording);
+        var whole = CwSequenceReader.LaneWidthsHz.Select(w => CwSequenceReader.Envelope(audio.Samples, audio.SampleRate, truth.PitchHz, w)).ToArray();
+
+        using (CwRules.Choose(CwRules.GapLearning))
+        {
+            output.WriteLine("## the starts, each window, the rule on; his measured gaps 136 / 344 / 608 ms");
+
+            for (var end = 62; end <= 82; end += 4)
+            {
+                var hops = (int)(end * 1000 / HopMs);
+                var from = hops - (int)(CwSequenceReader.WindowSeconds * 1000 / HopMs);
+                var cut = whole.Select(e => e[from..hops]).ToArray();
+                var db = cut[0];
+                var levels = CwSequenceReader.LevelsFromPercentiles(db);
+                var (cold, _) = CwSequenceReader.ReadCold(w => cut[w]);
+
+                output.WriteLine(string.Empty);
+                output.WriteLine(string.Create(Inv, $"### window {end - CwSequenceReader.WindowSeconds:0}-{end} s"));
+
+                foreach (var dit in new[] { CwSequenceReader.GuessDitHops(db) }.Concat(CwSequenceReader.ColdStartDits).Distinct())
+                {
+                    var ranges = CwSequenceReader.ColdRanges(dit);
+                    var first = CwSequenceReader.Read(db, ranges, levels, passes: 1);
+                    var v = CwSequenceReader.Validity(first);
+                    var score = (CwSequenceReader.LogLikelihood(first.Segments, db, levels) - CwSequenceReader.PriorCost(first.Segments, ranges)) / db.Length;
+                    var taken = first.Passes.Count > 0 && cold.Passes.Count > 0 && first.Passes[0] == cold.Passes[0];
+
+                    output.WriteLine(string.Create(Inv, $"start {dit * HopMs:0} ms: score/hop {score:0.000}, Morse {first.Pattern.IsMorse}, E,T,■ {v.Letters:0%}, near lines {v.Gaps:0%}, validity {v.Figure:0.00}{(taken ? ", TAKEN" : string.Empty)}: `{first.Text}`"));
+                }
+
+                for (var p = 0; p < cold.Passes.Count; p++)
+                {
+                    output.WriteLine(string.Create(Inv, $"pass {p + 1}: {cold.Passes[p]}"));
+                }
+
+                output.WriteLine("read: `" + cold.Text + "`");
+            }
+        }
+
+        foreach (var ruleOn in new[] { false, true })
+        {
+            using var chosen = ruleOn ? CwRules.Choose(CwRules.GapLearning) : null;
+            var trace = new List<string>();
+            var letters = TheSequenceReaderTests.ReadLiveTraced(audio.Samples, audio.SampleRate, pitch, width, trace, truth.PitchHz);
+            var map = TheKeyingMapTests.Read(CwWildHands.Recording, audio.Samples, audio.SampleRate);
+            var score = CwWildHands.ScoreOf(truth, letters, map);
+            var window = score.Windows.Single(w => Math.Abs(w.From - From) < 0.1);
+
+            output.WriteLine(string.Empty);
+            output.WriteLine(string.Create(Inv, $"## the rule {(ruleOn ? "on" : "off")}: {score.Right} of {score.OutOf} right; 60-80 s, {window.Right} right, `{window.Printed}`"));
+            output.WriteLine("truth: `" + truth.Text + "`");
+
+            foreach (var line in trace.Where(l => l.Contains(" passes, read ", StringComparison.Ordinal) && Second(l) >= From && Second(l) <= To + 6))
+            {
+                output.WriteLine(line);
+            }
+
+            KenFaults(score.Letters, truth, trace, From, To);
+        }
+    }
+
+    // One row per letter that differs in the span, each run of differing letters named by comparing its patterns as laid with the truth's.
+    private void KenFaults(IReadOnlyList<TheRecordingsScoreboardTests.Printed> letters, CwWildHands.Truth truth, IReadOnlyList<string> trace, double from, double to)
+    {
+        var key = new StringBuilder();
+        var free = new HashSet<int>();
+
+        foreach (var word in truth.Text.Split(' ', StringSplitOptions.RemoveEmptyEntries))
+        {
+            if (word == "?")
+            {
+                free.Add(key.Length);
+            }
+            else
+            {
+                key.Append(TheRecordingsScoreboardTests.Letters(word));
+            }
+        }
+
+        var decode = string.Concat(letters.Select(l => TheRecordingsScoreboardTests.Letters(l.Text)));
+        var of = letters.SelectMany((l, i) => Enumerable.Repeat(i, TheRecordingsScoreboardTests.Letters(l.Text).Length)).ToArray();
+        var (kinds, at, _, _) = CwWildHands.Align(decode, key.ToString(), free);
+        var laid = new Dictionary<string, string>(StringComparer.Ordinal);
+
+        foreach (var line in trace.Where(l => l.Contains(" commits ", StringComparison.Ordinal)))
+        {
+            var parts = line.Split(' ');
+            var c = Array.IndexOf(parts, "commits");
+
+            laid[parts[c + 3].Split('-')[0]] = parts[c + 1];
+        }
+
+        var patternOf = MorseAlphabet.All.GroupBy(p => p.Value, StringComparer.Ordinal).ToDictionary(g => g.Key, g => g.First().Key, StringComparer.Ordinal);
+
+        string Laid(int d) => laid.TryGetValue(letters[of[d]].From.ToString("0.00", Inv), out var p) ? p : "?";
+        string Sent(int k) => patternOf.TryGetValue(key[k].ToString(), out var p) ? p : "?";
+
+        // The alignment in order: a printed letter and a letter of the truth, or either alone.
+        var ops = new List<(int? D, int? K)>();
+        var next = 0;
+
+        for (var k = 0; k < key.Length; k++)
+        {
+            if (at[k] is { } d)
+            {
+                for (; next < d; next++)
+                {
+                    if (kinds[next] == CwWildHands.LetterIs.Added)
+                    {
+                        ops.Add((next, null));
+                    }
+                }
+
+                ops.Add((d, k));
+                next = d + 1;
+            }
+            else
+            {
+                ops.Add((null, k));
+            }
+        }
+
+        output.WriteLine("| second | sent | printed | sent as | laid as | fault |");
+        output.WriteLine("|---|---|---|---|---|---|");
+
+        var i = 0;
+        var seconds = 0.0;
+
+        while (i < ops.Count)
+        {
+            if (ops[i].D is { } a && ops[i].K is { } b && decode[a] == key[b])
+            {
+                seconds = letters[of[a]].From;
+                i++;
+                continue;
+            }
+
+            var run = new List<(int? D, int? K)>();
+
+            for (; i < ops.Count && !(ops[i].D is { } x && ops[i].K is { } y && decode[x] == key[y]); i++)
+            {
+                run.Add(ops[i]);
+            }
+
+            var second = run.Where(r => r.D is not null).Select(r => letters[of[r.D!.Value]].From).DefaultIfEmpty(seconds).First();
+
+            if (second < from || second >= to)
+            {
+                continue;
+            }
+
+            var sent = string.Concat(run.Where(r => r.K is not null).Select(r => Sent(r.K!.Value)));
+            var read = string.Concat(run.Where(r => r.D is not null).Select(r => Laid(r.D!.Value)));
+            var fault = sent == read ? "gap: the same marks, parted elsewhere"
+                : sent.Length != read.Length ? string.Create(Inv, $"marks: {sent.Length} sent, {read.Length} laid")
+                : run.All(r => r.D is not null && r.K is not null && Laid(r.D.Value).Length == Sent(r.K.Value).Length) ? "mark: a dit and a dah exchanged"
+                : "gap and mark";
+
+            foreach (var r in run)
+            {
+                var when = r.D is { } dd ? letters[of[dd]].From : second;
+
+                output.WriteLine(string.Create(Inv, $"| {when:0.00} | {(r.K is { } kk ? key[kk].ToString() : "-")} | {(r.D is { } d2 ? decode[d2].ToString() : "-")} | {(r.K is { } k2 ? Sent(k2) : "-")} | {(r.D is { } d3 ? Laid(d3) : "-")} | {fault} |"));
+            }
+        }
+    }
+
+    /// <remarks>The rounds' trace on a recording: what the chain printed, and every decode of the lanes that printed it. Asserts nothing; never on a line.</remarks>
+    [Theory]
+    [Trait("Category", "Survey")]
+    [InlineData("cw-2026-10-08-121324")]
+    public void TheRecordingTraced(string recording)
+    {
+        var audio = WavAudio.Read(TheOwnersRecordingReadsTests.Wav(recording));
+        var (pitch, width) = TheRecordingsScoreboardTests.RadioState(recording);
+        var trace = new List<string>();
+        using var on = CwRules.Choose(CwRules.GapLearning);
+        var letters = TheSequenceReaderTests.ReadLiveTraced(audio.Samples, audio.SampleRate, pitch, width, trace);
+
+        output.WriteLine(TheRecordingsScoreboardTests.Text(letters));
+
+        foreach (var line in trace.Where(l => l.Contains(" holds ", StringComparison.Ordinal) || l.Contains(" let go ", StringComparison.Ordinal) || l.Contains(" commits ", StringComparison.Ordinal)).Take(60))
+        {
+            output.WriteLine(line);
+        }
+    }
+
+    /// <remarks>Section 4: the carrier keyed at random and the rest of the noise, read with the rule off and on. Asserts nothing; never on a line.</remarks>
+    [Fact]
+    [Trait("Category", "Survey")]
+    public void TheNoiseBothWays()
+    {
+        foreach (var ruleOn in new[] { false, true })
+        {
+            using var chosen = ruleOn ? CwRules.Choose(CwRules.GapLearning) : null;
+            var runs = TheRecordingsScoreboardTests.NoiseRuns();
+
+            output.WriteLine(string.Create(Inv, $"## the rule {(ruleOn ? "on" : "off")}: the random carrier printed at {runs.Count(n => n.What.StartsWith("a carrier", StringComparison.Ordinal) && n.Reads.Length > 0)} seeds of 20"));
+
+            foreach (var (what, reads) in runs)
+            {
+                output.WriteLine($"{what}: `{reads}`");
+            }
+        }
+    }
+
+    /// <remarks>
     /// The rounds' quick measure: the wild bank by recipe, read in parallel as the survey reads it. The survey's figures are the record's; these
     /// say whether a round is worth one. Asserts nothing; never on a line.
     /// </remarks>

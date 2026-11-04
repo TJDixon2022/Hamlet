@@ -759,10 +759,12 @@ public sealed class CwSequenceReader
     }
 
     /// <summary>
-    /// <see cref="Learn"/> by an ordered fit (section 3.4): every gap of the decode fitted by three ordered clusters and every mark by two,
-    /// from the decode's own medians; the class boundaries the geometric midpoints of the centres. A cluster under
-    /// <see cref="LeastInCluster"/> keeps the given ranges' boundary on that side, and a fit whose gap centres stand closer than
-    /// <see cref="GapStep"/> is refused, the pass keeping the given ranges' gap classes. Nobody keying is no gap of the hand's.
+    /// <see cref="Learn"/> with the gaps by an ordered fit (section 3.4): every gap of the decode fitted by three ordered clusters from the
+    /// decode's own medians, the gap boundaries the geometric midpoints of the centres. A cluster under <see cref="LeastInCluster"/> keeps the
+    /// given ranges' boundary on that side, and a fit whose gap centres stand closer than <see cref="FitLetterStep"/> and <see cref="GapStep"/>
+    /// is refused, the pass keeping the given ranges' gap classes. Nobody keying is no gap of the hand's.
+    /// **MARKS STAY WITH THE MEDIANS** (work instruction 594): dit, dah and the line between them are <see cref="Learn"/>'s own. On a hand
+    /// with a dit spread of 0.37 two mark clusters did not hold still: `bug`'s dah centre slid from 250 to 165 ms as a window filled.
     /// </summary>
     public static Learned? LearnByFit(IReadOnlyList<Segment> segs, ReadOnlySpan<double> db, IReadOnlyList<Range> previous)
     {
@@ -771,7 +773,6 @@ public sealed class CwSequenceReader
             return null;
         }
 
-        var marks = segs.Where(g => g.IsMark).Select(g => (double)g.Length).ToList();
         var longest = FitWordGapMost * medians.Dit;
         var count = db.Length;
 
@@ -779,11 +780,6 @@ public sealed class CwSequenceReader
         // 1575: the word gaps were laid as nobody keying, so a fit without them learned 190 and 369 and took his letter gaps for word gaps, 138 spaces
         // added. Up to the cold word gap's longest it counts; past that, or cut by the window's edge, it says nothing of his gaps.
         var gaps = segs.Where(g => g.State is InsideGap or LetterGap or WordGap || (g.State == Silence && g.From > 0 && g.To < count && g.Length <= longest)).Select(g => (double)g.Length).ToList();
-        var (m, mc) = OrderedFit(marks, [medians.Dit, medians.Dah]);
-        var dit = mc[0] >= LeastInCluster ? m[0] : medians.Dit;
-        var dah = mc[1] >= LeastInCluster ? m[1] : medians.Dah;
-        var markLine = mc[0] >= LeastInCluster && mc[1] >= LeastInCluster ? Math.Sqrt(dit * dah) : previous[Dit].Hi;
-
         var (ig, lg, wg) = (medians.InsideGap, medians.LetterGap, medians.WordGap);
         var insideLine = (double)previous[InsideGap].Hi;
         var wordLine = (double)previous[LetterGap].Hi;
@@ -800,9 +796,9 @@ public sealed class CwSequenceReader
             }
         }
 
-        Range[] r = [.. Rounded([(0.55 * dit, markLine), (markLine, 1.8 * dah), (0.4 * ig, insideLine), (insideLine, wordLine), (wordLine, 2.5 * wg)]), SilenceFrom(wg)];
+        Range[] r = [medians.Ranges[Dit], medians.Ranges[Dah], .. Rounded([(0.4 * ig, insideLine), (insideLine, wordLine), (wordLine, 2.5 * wg)]), SilenceFrom(wg)];
 
-        return medians with { Dit = dit, Dah = dah, InsideGap = ig, LetterGap = lg, WordGap = wg, Ranges = r };
+        return medians with { InsideGap = ig, LetterGap = lg, WordGap = wg, Ranges = r };
     }
 
     /// <summary>
@@ -1518,6 +1514,8 @@ public sealed class CwSequenceReader
             }
 
             var shift = newest - count;
+
+            trace?.Add(string.Create(Inv, $"{newest * HopMs / 1000:0.00} s {PitchHz:0} Hz passes, read {ReadHow}, validity {Validity(reading).Figure:0.00}: {string.Join(" | ", reading.Passes)}"));
 
             // **A WARM LANE WHOSE KEY-DOWN FALLS FAR UNDER ITS SENDER'S IS HEARING SOMEONE ELSE** (work instruction 590, round
             // three): it commits nothing from that window and keeps its sender's rhythm. Traced on 144020: from 12.5 s the 500 Hz
