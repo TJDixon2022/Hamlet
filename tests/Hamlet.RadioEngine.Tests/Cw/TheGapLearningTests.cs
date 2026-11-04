@@ -557,7 +557,7 @@ public sealed class TheGapLearningTests(ITestOutputHelper output)
                     var first = CwSequenceReader.Read(db, ranges, levels, passes: 1);
                     var v = CwSequenceReader.Validity(first);
                     var score = (CwSequenceReader.LogLikelihood(first.Segments, db, levels) - CwSequenceReader.PriorCost(first.Segments, ranges)) / db.Length;
-                    var taken = first.Passes.Count > 0 && cold.Passes.Count > 0 && first.Passes[0] == cold.Passes[0];
+                    var taken = first.Passes.Count > 0 && cold.Passes.Count > 0 && first.Passes[0].ToString() == cold.Passes[0].ToString();
 
                     output.WriteLine(string.Create(Inv, $"start {dit * HopMs:0} ms: score/hop {score:0.000}, Morse {first.Pattern.IsMorse}, E,T,■ {v.Letters:0%}, near lines {v.Gaps:0%}, validity {v.Figure:0.00}{(taken ? ", TAKEN" : string.Empty)}: `{first.Text}`"));
                 }

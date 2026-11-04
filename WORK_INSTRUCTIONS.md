@@ -1,32 +1,30 @@
-# Work instruction 593 - The sequence reader learns a hand's gaps
+# Work instruction 594 - The gap fit alone: marks stay with the medians
 
-**Hand run. One change to the reader - how it finds and learns the gap classes - up to three
-rounds, one commit per round plus the record.** Tag `before-gap-learning` first.
+**Hand run. One setting - the gap learning with the mark fit taken out - up to three rounds, one
+commit per round plus the record.** The tag `before-gap-learning` stands.
 
-**Where it stands** (1.13.279, the wild yardstick in place, the reader as shipped): the wild
-bank **2859** (3133 of 3528 letters right, 274 wrong, 0 invented, **400 spaces added**);
-per recipe `machine` 572, `farnsworth` 567, `steady` 524, `mobile` 522, `tight` 489, `bug` 459
-of 588; the two real hands Bryan **118 of 144**, Ken at most **43 of 76**; the old boards 308,
-2101, 3,898. **What the baseline says:** the reader keeps a hand's letters and breaks his words.
-The two hands with an inside gap of 1.6 dits are the worst - `bug` with 114 wrong (letters
-merged and split at the inside/letter line), `mobile` with 110 spaces added (the letter/word
-line) and `5 7 9` for `579`; on the air Bryan prints `IAM`, `TNXFER`, `Q TH`, `C H I C OP E E`,
-and Ken `GITTSNI■GH` for `PITTSBURGH`. The reader's cold inside-gap range is 0.4 to 1.7 dits,
-its classes are learned as medians of its own last decode, and its multi-start varies only the
-dit. **This unit changes how the reader finds and learns the gaps, and nothing else.**
+**Where it stands** (1.13.280, `CwRules.GapLearning` in the tree, off): with the rule on, the
+first recording reads whole for the first time (`FER C HAT<BT> BEST 7V 73 <SK> KC4ZGP DEWA`),
+the fist bank **4634** from 3898, the fading half 2088 from 1771, the twelve-plus-three **313**
+from 308, the wild bank 2944 from 2859 with spaces added 267 from 400, `machine` 588 whole,
+`steady` 573, `tight` 505, Bryan 123 from 118. **And** `bug` **254** from 345, Ken 37 from 43,
+W1AW 2098 from 2101, wrong up two on each board. The trace named the loss: `bug`'s dah centre
+slides from 250 to 165 ms as a window fills, his dah share climbs to 0.6, and his long dits read
+as dahs. That is the **two-cluster mark fit** that went in beside the gap fit; on a hand with a
+dit spread of 0.37 the two mark clusters do not hold still where a median does. The gap fit
+moved five recipes the right way. **This unit takes the mark fit out and measures the gap fit
+alone.**
 
 **Standing rules** (HM-DEC-276, HM-DEC-284) apply, with up to three rounds. Engine line 1500 s,
-**survey 2400 s** (it ran 23 min with the two new groups), `--no-build` after one build per
-round, build servers shut down first, one test run at a time; a run stopped for memory is run
-once more alone without asking.
+survey 2400 s, `--no-build` after one build per round, build servers shut down first, one test
+run at a time; a run stopped for memory is run once more alone without asking.
 
 Earlier unit numbers are not cited: each part of the tree is described by what it does.
 
 **Nothing keys or transmits. Nothing is written to the radio. No recording is added, removed or
-promoted. The draft truth `cw-2026-10-19-141708.truth.md` is not edited** - the owner corrects
-it by ear; Ken and Bryan stay reported, not guarded.
+promoted. The draft truth `cw-2026-10-19-141708.truth.md` is not edited.**
 
-**Numbering.** This is unit 593, ruling HM-DEC-297. If taken, use the next free and say so.
+**Numbering.** This is unit 594, ruling HM-DEC-298. If taken, use the next free and say so.
 
 ---
 
@@ -59,123 +57,99 @@ If all five hold, say "Hamlet confirmed" and continue.
   to `RUN_LEDGER.md`. Touch nothing under `tools\arbiter\`. Tick nothing in `PHASE_PLAN.md`.
 - One `dotnet test` invocation per line, filtered, with a `timeout`.
 - Apostrophes in quoted heredocs break; `;` is refused; Python cannot run here; `-m` more than
-  once for a multi-line commit. Scripts go in `.run-unit\unit593-<name>.sh`, not committed.
+  once for a multi-line commit. Scripts go in `.run-unit\unit594-<name>.sh`, not committed.
 - **The one layout holds**: nothing on screen moves.
-- The change is inside the sequence reader. The mark finders, the lane bank, the column finder
-  and the seam's rules are not touched. The keyer and the wild bank are not touched.
+- The change is inside the sequence reader's gap learning. The mark finders, the lane bank, the
+  column finder, the seam's rules, the keyer and the wild bank are not touched.
 - `output.md` at the root, four headings exactly: `## 1. What Claude did`, `## 2. What the owner
   should expect`, `## 3. What you should see`, `## 4. What's blocking us`. Status on the tree's
   own triggers; the phase count as `PHASE_STATUS.md` holds it; the asks list carried forward.
 
 ---
 
-## 2. The trace, first
+## 2. The change
 
-On `bug` and `mobile` (20 dB, own speed, QSO text) and on Ken 20-60 s and Bryan 140-180 s: the
-cold read's starts as built (each dit start), and beside each its decode's likelihood, its share
-of `E`, `T` and `■`, its learned gap classes after the first pass against the hand's sent or
-measured gaps, and which start was taken. Then the same table for the starts §3 adds. The table
-shows, per hand, whether the fault is the cold range (the hand's inside gaps fall outside
-0.4-1.7 dits), the learning (the first pass's medians are wrong and later passes do not move),
-or the choice (a better start existed and was not taken). Build §3 as the table directs; where
-it says a part of §3 is not needed for any of the four, say so and leave that part out.
+**With `GapLearning` on, marks are learned as they are with it off**: dit and dah as the medians
+of the marks the last pass called dits and dahs, the dit/dah boundary where the shipped reader
+puts it. The two-cluster mark fit goes - removed, not switched. Everything else the rule holds
+stays as built: the cold ranges that fit a hand, the start chosen by validity, the ordered
+three-cluster gap fit with geometric boundaries and `FitLetterStep` 2.0, word gaps laid as
+nobody keying fitted up to `FitWordGapMost`, a warm lane that goes invalid read cold.
 
-## 3. The change: the reader finds and learns the gaps
+**The trace, first, on `bug`** (20 dB, own speed, QSO text, 40 to 66 s, where the dah centre
+slid): per pass, the dit and dah the medians give against the dit and dah the fit gave, the dah
+share, and the letters right - so the report shows the slide is gone. **And on Ken 60-80 s**,
+where the rule on read 8 against 13: the start taken and its validity, the learned classes per
+pass against his measured 136 / 344 / 608, and the path's letters against the draft truth, one
+row per letter that differs, naming whether each is a mark or a gap fault.
 
-1. **The cold ranges fit a hand.** Inside gap 0.5 to 2.5 dits (was 0.4 to 1.7); letter gap 1.8
-   to 6.5; word gap 5 to 30 (the `farnsworth` hand sends 21). The mark ranges do not change.
+## 3. Rounds
 
-2. **The cold read starts over the gap line as well as the dit.** `ReadCold` tries, for each dit
-   start it already tries, the inside/letter boundary at `ColdGapStarts` 1.5, 2.2 and 3.0 dits
-   (the table says; three at most). The letter/word boundary stays where the ranges put it on
-   the cold pass. CPU is reported; if the extra starts cost more than 20% on W1AW piece-04, the
-   starts run only when the first pass's `E`, `T` and `■` share is above `ValidityShare` (say
-   0.35), and the report says so.
+Round one: the change and the two traces, measured once (the survey, the boards, the hard
+limits, the guards, CPU on W1AW piece-04). Rounds two and three: trace the largest loss on the
+wild bank against the shipped reader to the hand, to the second, to the path; fix the one thing
+the trace names inside the gap learning; measure again. Twice at most. **No change to how
+marks are learned in any round.**
 
-3. **The winner is chosen by validity as well as likelihood.** Each start's decode gets a
-   validity figure: the share of its letters that are `E`, `T` or `■`, and the share of its
-   gaps that fall within ±20% of its own class boundaries (a decode that splits a hand has
-   many). Among the starts whose validity is under `ValidityShare`, the likeliest is kept; if
-   none is, the most valid is kept. The pattern test's figures are unchanged and still apply.
+## 4. The bar, and the ship
 
-4. **The classes are learned by an ordered fit, not medians.** After each pass, all gaps in the
-   window are fitted in log length by three ordered clusters (k-means in log length, three
-   centres kept in order, at most `FitRounds` 10 rounds, started from the current class medians);
-   the class boundaries are the **geometric** midpoints of adjacent centres (the arithmetic
-   midpoint sits too high for a hand whose classes are close). Marks are fitted the same way
-   with two clusters. A cluster that ends up with fewer than `LeastInCluster` 3 members keeps
-   the previous boundary on that side. A fit whose centres come out closer than `GapStep`
-   (the existing table figure) is refused and the pass keeps the previous classes.
+**`GapLearning` ships on by default only if, at the end of the last round:**
 
-5. **A warm lane that goes invalid re-reads cold.** The warm decode's validity (3) joins the
-   pattern figures that already send a warm lane back to a cold read when they fall; the cold
-   read uses the starts of (2).
-
-Each figure named here goes in the reader's table beside the others, with the reason.
-
-## 4. Rounds
-
-Round one: the trace, then §3 as the trace directs, measured once (the survey, the boards, the
-hard limits, the guards, CPU on W1AW piece-04). Rounds two and three: trace the largest loss on
-the wild bank against the shipped reader to the hand, to the second, to the path; fix the one
-thing the trace names; measure again. Twice at most.
-
-## 5. The bar, and the ship
-
-**The change ships (stays on; there is no switch for it) only if, at the end of the last round:**
-
-- **the wild bank improves:** score **3,150 or better** (from 2,859), spaces added **250 or
-  fewer** (from 400), invented not above 5; `bug` **510 or better** (from 459); `mobile`'s
-  spaces added **50 or fewer** (from 110); no recipe worse than shipped by more than 10;
+- **the wild bank:** score **3,050 or better** (from 2859), spaces added **270 or fewer**,
+  invented not above 5; **`bug` 345 or better** (shipped) and `farnsworth` **545 or better**;
+  no recipe worse than shipped by more than 10;
 - **the old boards hold:** the twelve-plus-three **308** or better, W1AW **2101** or better,
-  wrong and invented not rising, spaces not worse; the fist bank **3,898** or better and its
-  guard; the fading half and the strong flat hands as guarded;
+  wrong not above 13 and 24, invented not rising, spaces not worse; the fist bank **3,898** or
+  better and its guard; the fading half and the strong flat hands as guarded;
 - **the hard limits:** noise prints nothing, the steady carrier at none, no old capture above
-  six strays per 10 s; the summed strays reported; the random-keyed carrier reported; the 5 dB
-  CQs 84 of 84; nothing in silences; the first recording whole;
+  six strays per 10 s; the summed strays reported; the random-keyed carrier reported, measured
+  **both off and on** this time; the 5 dB CQs 84 of 84; nothing in silences beyond the one
+  guarded; **the first recording whole**;
 - the easy fixtures 90 of 90; the working and edge fixtures reported; `two-station` 27 of 27;
-  CPU under real time with margin, and the extra cold starts' cost said;
+  CPU under real time with margin;
 - **Ken and Bryan reported** per 20 s against the draft truth, not a condition.
 
 **For the owner's ruling, not a fail:** everything holds but one old board under by no more
-than 1% (305, 2080, 3,859), or everything holds but the wild bank between 3,000 and 3,150: put
-the full figures under *For the owner's ruling*; leave the change in the tree behind a rule
-(`CwRules.GapLearning`, off) and do not ship.
+than 1% (305, 2080, 3,859), or everything holds but wrong on one board up by one or two, or
+everything holds but the wild bank between 2,950 and 3,050: put the full figures under *For the
+owner's ruling*; leave the rule off; do not ship.
 
-If it fails otherwise: say which, by how much, where, by path; leave the change behind
-`CwRules.GapLearning`, off; keep the tag and the traces; say in one paragraph what the wild
-bank still loses and whether it is the cold range, the learning, the choice, or a fourth thing.
+If it fails otherwise: say which, by how much, where, by path; leave the rule off; keep the
+tag and the traces; say in one paragraph what the wild bank still loses and whether it is the
+gap fit, the marks, or a third thing.
 
-If it ships: the wild bank joins the guards at the figures that ship less 5%
-(`TheWildBankTests.TheBankHolds`: total, `bug`, `mobile`'s spaces added); both scoreboard
-tables get their 593 row; `CW_SPEC.md` §2 says how the reader learns a hand's gaps, in a
-paragraph.
+If it ships: the first recording's guard is restated to the whole read; both scoreboard guards
+at the figures that ship; the wild bank joins the guards (`TheWildBankTests.TheBankHolds`:
+total, `bug`, spaces added) at the figures that ship less 5%; the fist bank's guard rows move
+up to the figures that ship less 5%; `CW_SPEC.md` §2 says how the reader learns a hand's gaps,
+in a paragraph; `TheGapLearningTests` goes on the carry-forward list.
 
 ---
 
-## 6. The lines, the survey, the record
+## 5. The lines, the survey, the record
 
 Run the app line, the engine line and the survey line once at the end; rewrite
 `docs\cw-survey-2026-10-09.md` with a new `Rerun` line; every group before and after.
 
-- `PHASE_OUTCOME.md`, both copies: `## UNIT 593 - STEP 12`, one paragraph.
-- `PHASE_STATUS.md`, both copies: names 593.
+- `PHASE_OUTCOME.md`, both copies: `## UNIT 594 - STEP 12`, one paragraph.
+- `PHASE_STATUS.md`, both copies: names 594.
 - Patch-bump `Directory.Build.props`.
 - `CLAUDE.md` §1 index row.
-- `DECISIONS.md`, newest first, **HM-DEC-297**, headline *The reader learns a hand's gaps*,
-  naming what the trace found per hand, what was built, whether it shipped or waits on a ruling,
-  and the figures before and after: the wild bank, the two real hands, the old boards.
-- `docs\cw-scoreboard.md`: a 593 row in every table at the figures that shipped.
-- **Touch no checkbox in `PHASE_PLAN.md`**, and add no ruling beyond HM-DEC-297.
+- `DECISIONS.md`, newest first, **HM-DEC-298**, headline *The gap fit alone*, naming what the
+  two traces found, that the mark fit was removed, whether it shipped or waits on a ruling, and
+  the figures before and after: the wild bank, the two real hands, the old boards, the first
+  recording.
+- `docs\cw-scoreboard.md`: a 594 row in every table at the figures that shipped.
+- **Touch no checkbox in `PHASE_PLAN.md`**, and add no ruling beyond HM-DEC-298.
 
 ---
 
-## 7. Report
+## 6. Report
 
 Section 2, for the owner, in plain words, leading with **the whole picture against the shipped
-reader, row by row** - the wild bank per recipe, Bryan and Ken per 20 s with what they print
-now, the old boards - whether it ships, and the *For the owner's ruling* heading if it applies;
-then what the trace found, a sentence per hand. Section 1: per round. **Section 3: the trace
-tables of §2 (before and after); the wild bank matrix; the two real hands' stretches; the
-rounds' table; the survey's groups before and after; CPU with the starts' cost.** Section 4:
-anything left, a line each.
+reader, row by row** - the wild bank per recipe, Bryan and Ken per 20 s with what they print,
+the old boards, the first recording - whether it ships, and the *For the owner's ruling* heading
+if it applies; then what the two traces found, a sentence each. Section 1: per round.
+**Section 3: the `bug` trace (medians against the fit, per pass); the Ken trace; the wild bank
+matrix; the two real hands' stretches; the rounds' table; the survey's groups before and after;
+CPU.** Section 4: anything left, a line each.
