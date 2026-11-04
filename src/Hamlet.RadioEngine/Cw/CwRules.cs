@@ -178,8 +178,8 @@ internal static class CwRules
 
     /// <summary>
     /// **THE READER LEARNS A HAND'S GAPS** (work instruction 593, HM-DEC-297): cold ranges that fit a hand, a start chosen by validity as well as likelihood,
-    /// the classes by an ordered fit, a warm lane that goes invalid read cold. Built in three rounds, measured and left off: the wild bank 2944 against a bar of 3150,
-    /// `bug` 254 against 345 as shipped.
+    /// the gap classes by an ordered fit, a warm lane that goes invalid read cold. Work instruction 594, HM-DEC-298: the mark fit taken out, marks left to the medians; a lane
+    /// not valid takes no terminal; a fit whose lines sit among his gaps refused. Left off.
     /// </summary>
     public const string GapLearning = "the reader learns a hand's gaps";
 

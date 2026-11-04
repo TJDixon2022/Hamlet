@@ -294,6 +294,63 @@ public sealed class TheGapLearningTests(ITestOutputHelper output)
         Assert.Equal(45, learned.Ranges[CwSequenceReader.InsideGap].Hi);
     }
 
+    /// <remarks>Work instruction 594: marks stay with the medians. A window of two mark lengths and three clear gap classes learns the medians' dit, dah and line, and the fit's gap lines.</remarks>
+    [Fact]
+    public void MarksStayWithTheMediansAndClearGapsTakeTheFit()
+    {
+        var (segs, db) = Segments([20, 21, 22, 23, 24, 25, 60, 62, 64, 66, 68, 150, 160, 170]);
+        var medians = CwSequenceReader.Learn(segs, db)!;
+        var learned = CwSequenceReader.LearnByFit(segs, db, Previous)!;
+
+        Assert.Equal(medians.Dit, learned.Dit);
+        Assert.Equal(medians.Dah, learned.Dah);
+        Assert.Equal(medians.Ranges[CwSequenceReader.Dit], learned.Ranges[CwSequenceReader.Dit]);
+        Assert.Equal(medians.Ranges[CwSequenceReader.Dah], learned.Ranges[CwSequenceReader.Dah]);
+        Assert.InRange(learned.Ranges[CwSequenceReader.InsideGap].Hi, 36, 40);
+    }
+
+    /// <remarks>Work instruction 594, round three: gaps spread across the fit's lines, as `bug`'s are, keep the medians' own classes.</remarks>
+    [Fact]
+    public void GapsSpreadAcrossTheLinesKeepTheMedians()
+    {
+        var (segs, db) = Segments(Enumerable.Range(0, 27).Select(k => (int)Math.Round(15 * Math.Pow(1.1, k))).ToArray());
+        var medians = CwSequenceReader.Learn(segs, db)!;
+        var learned = CwSequenceReader.LearnByFit(segs, db, Previous)!;
+
+        Assert.Equal(medians.Ranges, learned.Ranges);
+    }
+
+    private static readonly CwSequenceReader.Range[] Previous = [new(8, 26), new(26, 76), new(10, 45), new(45, 100), new(100, 300), new(100, int.MaxValue)];
+
+    // Marks of 14 and 42 hops, each followed by a gap of the lengths given, the state as the given ranges lay it.
+    private static (List<CwSequenceReader.Segment> Segs, double[] Db) Segments(int[] gaps)
+    {
+        var segs = new List<CwSequenceReader.Segment>();
+        var at = 0;
+
+        for (var k = 0; k < gaps.Length; k++)
+        {
+            var mark = k % 2 == 0 ? 14 : 42;
+
+            segs.Add(new CwSequenceReader.Segment(k % 2 == 0 ? CwSequenceReader.Dit : CwSequenceReader.Dah, at, at + mark));
+            at += mark;
+            segs.Add(new CwSequenceReader.Segment(gaps[k] < 45 ? CwSequenceReader.InsideGap : gaps[k] < 100 ? CwSequenceReader.LetterGap : CwSequenceReader.WordGap, at, at + gaps[k]));
+            at += gaps[k];
+        }
+
+        var db = new double[at];
+
+        foreach (var g in segs.Where(g => g.IsMark))
+        {
+            for (var h = g.From; h < g.To; h++)
+            {
+                db[h] = 30;
+            }
+        }
+
+        return (segs, db);
+    }
+
     /// <remarks>
     /// Section 5: W1AW's piece-04 through the chain with the rule and without, the process's CPU time, the first read thrown away to warm
     /// the process. Asserts nothing; the bar is the report's.

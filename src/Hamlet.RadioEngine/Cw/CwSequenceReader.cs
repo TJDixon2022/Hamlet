@@ -699,6 +699,13 @@ public sealed class CwSequenceReader
     /// <summary>The longest a stretch of nobody keying may be, in dits, and still be fitted as a word gap (round three): the cold word gap's own longest.</summary>
     public const double FitWordGapMost = 30;
 
+    /// <summary>
+    /// **THE MOST OF A HAND'S GAPS A FIT'S LINES MAY SIT AMONG** (work instruction 594, round three), each within <see cref="BoundaryNear"/> of a line. Traced on the wild
+    /// bank: `bug`, the largest loss, read 340 with the fit taken out and 278 with it in, since his gaps spread across any line; his windows stood at 7% to 43%, the other
+    /// hands traced at 3% to 15%. Over this the classes are the medians' own. Measured at 0.2 (the bank 3064, `bug` 342) and 0.25 (3091, 344), the boards the same.
+    /// </summary>
+    public const double FitNearMost = 0.25;
+
     /// <summary>The fewest members a fitted cluster may hold and still move the boundary beside it (section 3.4).</summary>
     public const int LeastInCluster = 3;
 
@@ -762,7 +769,8 @@ public sealed class CwSequenceReader
     /// <see cref="Learn"/> with the gaps by an ordered fit (section 3.4): every gap of the decode fitted by three ordered clusters from the
     /// decode's own medians, the gap boundaries the geometric midpoints of the centres. A cluster under <see cref="LeastInCluster"/> keeps the
     /// given ranges' boundary on that side, and a fit whose gap centres stand closer than <see cref="FitLetterStep"/> and <see cref="GapStep"/>
-    /// is refused, the pass keeping the given ranges' gap classes. Nobody keying is no gap of the hand's.
+    /// is refused, the pass keeping the given ranges' gap classes. A fit whose lines sit among more than <see cref="FitNearMost"/> of his gaps is refused
+    /// for the medians' own classes. Nobody keying is no gap of the hand's.
     /// **MARKS STAY WITH THE MEDIANS** (work instruction 594): dit, dah and the line between them are <see cref="Learn"/>'s own. On a hand
     /// with a dit spread of 0.37 two mark clusters did not hold still: `bug`'s dah centre slid from 250 to 165 ms as a window filled.
     /// </summary>
@@ -790,9 +798,18 @@ public sealed class CwSequenceReader
 
             if (g[1] >= FitLetterStep * g[0] && g[2] >= GapStep * g[1])
             {
+                var fitInside = gc[0] >= LeastInCluster && gc[1] >= LeastInCluster ? Math.Sqrt(g[0] * g[1]) : insideLine;
+                var fitWord = gc[1] >= LeastInCluster && gc[2] >= LeastInCluster ? Math.Sqrt(g[1] * g[2]) : wordLine;
+
+                bool OnLine(double gap, double line) => Math.Abs(gap - line) <= BoundaryNear * line;
+
+                if (gaps.Count(v => OnLine(v, fitInside) || OnLine(v, fitWord)) > FitNearMost * gaps.Count)
+                {
+                    return medians;
+                }
+
                 (ig, lg, wg) = (gc[0] >= LeastInCluster ? g[0] : ig, gc[1] >= LeastInCluster ? g[1] : lg, gc[2] >= LeastInCluster ? g[2] : wg);
-                insideLine = gc[0] >= LeastInCluster && gc[1] >= LeastInCluster ? Math.Sqrt(g[0] * g[1]) : insideLine;
-                wordLine = gc[1] >= LeastInCluster && gc[2] >= LeastInCluster ? Math.Sqrt(g[1] * g[2]) : wordLine;
+                (insideLine, wordLine) = (fitInside, fitWord);
             }
         }
 
