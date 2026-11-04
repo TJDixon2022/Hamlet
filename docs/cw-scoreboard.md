@@ -401,6 +401,7 @@ guard: the random carrier prints at 20 of 20 seeds, reported and not a condition
 | 593 | 2026-11-03 | 325 of 353 | 13 | 4 | **308** | 1, on `221502` | 92 of 110, 13 added | the reader learns a hand's gaps (HM-DEC-297): with `GapLearning` on 313, 328 of 353, 15 wrong, 0 invented, 91 of 110, 14 added, the first recording whole; left off; unchanged as shipped |
 | 594 | 2026-11-03 | 325 of 353 | 13 | 4 | **308** | 1, on `221502` | 92 of 110, 13 added | the gap fit alone (HM-DEC-298): with `GapLearning` on 291, 309 of 353, 15 wrong, 3 invented, 89 of 110, 13 added, the first recording whole; left off; unchanged as shipped |
 | 595 | 2026-11-04 | 325 of 353 | 13 | 4 | **308** | 1, on `221502` | 92 of 110, 13 added | validity is words (HM-DEC-299): with `GapLearning` on 286, 317 of 353, 21 wrong, 10 invented, 93 of 110, 16 added; left off; unchanged as shipped |
+| 596 | 2026-11-04 | 325 of 353 | 13 | 4 | **308** | 1, on `221502` | 92 of 110, 13 added | two judges (HM-DEC-300): with `GapLearning` on 308, 328 of 353, 18 wrong, 2 invented, 94 of 110, 13 added; left off; unchanged as shipped |
 
 ## Scans (work instruction 544, HM-DEC-248)
 
@@ -498,6 +499,7 @@ high and 25 medium, 2151 letters, all totalled.
 | 593 | 2026-11-03 | **2101** | 2125 of 2151 | 24 | 0 | 440 of 440, 8 added | the reader learns a hand's gaps (HM-DEC-297): 2098 with `GapLearning` on, 26 wrong, 10 added; left off; unchanged as shipped |
 | 594 | 2026-11-03 | **2101** | 2125 of 2151 | 24 | 0 | 440 of 440, 8 added | the gap fit alone (HM-DEC-298): 2098 with `GapLearning` on, 26 wrong, 10 added; left off; unchanged as shipped |
 | 595 | 2026-11-04 | **2101** | 2125 of 2151 | 24 | 0 | 440 of 440, 8 added | validity is words (HM-DEC-299): 2103 with `GapLearning` on, 23 wrong; left off; unchanged as shipped |
+| 596 | 2026-11-04 | **2101** | 2125 of 2151 | 24 | 0 | 440 of 440, 8 added | two judges (HM-DEC-300): 2099 with `GapLearning` on, 25 wrong, 440 of 440, 9 added; left off; unchanged as shipped |
 
 **The fist bank** (work instruction 580, HM-DEC-284): ninety-six hands with a truth, every dah over dit of 1.6, 2.0, 2.5 and 3.0 at 10, 15, 20 and 25 WPM, 5, 10 and 20 dB, flat and fading, generated at test time from their recipes (`tests\Hamlet.RadioEngine.Tests\Cw\Fixtures\CwFistBank.cs`) and read by the survey as a group of its own, its matrices in `docs\cw-survey-2026-10-09.md` under `The fist bank`. A yardstick, not yet a guard.
 
@@ -564,6 +566,8 @@ Work instruction 592, HM-DEC-296. Two real hands on `cw-2026-10-19-141708`, scor
 | 594, `GapLearning` on, not shipped | 2026-11-03 | 43 of 76 | 25 | 0 | 12 of 16, 7 added | 122 of 144 | 15 | 1 | 36 of 40, 11 added |
 | 595, as shipped | 2026-11-04 | 43 of 76 | 25 | 0 | 11 of 16, 7 added | 118 of 144 | 17 | 0 | 36 of 40, 19 added |
 | 595, `GapLearning` on, not shipped | 2026-11-04 | 43 of 76 | 25 | 0 | 12 of 16, 8 added | 123 of 144 | 14 | 1 | 35 of 40, 12 added |
+| 596, as shipped | 2026-11-04 | 43 of 76 | 25 | 0 | 11 of 16, 7 added | 118 of 144 | 17 | 0 | 36 of 40, 19 added |
+| 596, `GapLearning` on, not shipped | 2026-11-04 | 43 of 76 | 25 | 0 | 12 of 16, 7 added | 123 of 144 | 14 | 1 | 36 of 40, 11 added |
 
 ## Wild bank
 
@@ -578,3 +582,5 @@ Work instruction 592, HM-DEC-296. Forty-eight hands from six recipes (`CwWildBan
 | 594, `GapLearning` on, not shipped | 2026-11-03 | 3277 of 3528 | 186 | 0 | 3091 | 928 of 1104, 263 added | 550 | 450 | 573 | 542 | 576 | 586 |
 | 595, as shipped | 2026-11-04 | 3133 of 3528 | 274 | 0 | 2859 | 923 of 1104, 400 added | 522 | 459 | 567 | 489 | 524 | 572 |
 | 595, `GapLearning` on, not shipped | 2026-11-04 | 3225 of 3528 | 236 | 0 | 2989 | 928 of 1104, 273 added | 537 | 425 | 579 | 542 | 571 | 571 |
+| 596, as shipped | 2026-11-04 | 3133 of 3528 | 274 | 0 | 2859 | 923 of 1104, 400 added | 522 | 459 | 567 | 489 | 524 | 572 |
+| 596, `GapLearning` on, not shipped | 2026-11-04 | 3298 of 3528 | 187 | 0 | 3111 | 941 of 1104, 258 added | 550 | 466 | 573 | 548 | 573 | 588 |

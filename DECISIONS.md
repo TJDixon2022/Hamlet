@@ -4,6 +4,30 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-300
+date: 2026-11-04
+refs: work instruction 596, HM-DEC-299, HM-DEC-296, HM-DEC-295, HM-DEC-284, HM-DEC-276, src/Hamlet.RadioEngine/Cw/CwWords.cs, src/Hamlet.RadioEngine/Cw/CwSequenceReader.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheCwVocabularyTests.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheGapLearningTests.cs
+---
+
+**Two judges: words and the letter count together, built in three rounds, measured, left off.**
+
+Ordered by work instruction 596. Each judge had failed where the other held: words alone cannot part a slightly wrong real hand from garbage, and the `E`, `T` and `■` share alone refuses honest `TEST DE TEST`.
+
+**The revert.** `c10b64ed`, HM-DEC-299's round three, is reverted, as `90a87614`. Non-valid starts are no longer ranked by words: among valid starts the likeliest, and where none is valid the likeliest of all, in every round.
+
+**The verdict.** A lane's last 12 letters are refused only where both say so: the `E`, `T` and `■` share over 0.35 and the recognized share under 0.5. Under 4 counted letters, no verdict, as built. The same verdict stands at the cold start, the warm re-read (two passes running) and the terminal, where a refused lane takes the terminal only where no unrefused lane has marks to give. The near-lines share stands where it stood, in the verdict and at the warm read: it judges the gaps and not the text. The vocabulary gains `TONITE TONIGHT 2NITE WKD WRKD SKED CONGRATS GUD GD NITE LID FINE`, with `CUL TKS VY` already on it, and the band and frequency shapes.
+
+**Round one:** the change as ordered. The wild bank 3109, `bug` 353, the first recording whole, but the twelve-plus-three 209: on `221828` a noise lane at 350 Hz printed for 30 s, -68. **Round two: a short word vouches for nothing.** That lane read `DE TT EN A ET A TEEENTE` at 6 s, kept at 0.50 on two lone `A`s, while the station at 600 Hz read `T FER ANOTH EE`, refused at 0.33. A word under three characters still counts and counts as not found: 308 with 18 wrong, W1AW 2093. **Round three: a cold read the judges refuse does not replace a warm read they keep.** On W1AW piece-03 at 256 s a warm read laying `<BT> QST DE WP`, kept, gave way as stale to a cold read of `35RHI TEHT 4 BST DE WH`, refused, and `4 BST` printed: W1AW 2099, the wild bank 3111, the fist bank 4371.
+
+**What the traces found.** `tightfist-easy` is laid without spaces, so it has no verdict and prints 14 of 14: it prints for lack of a verdict and not because its words were recognized. `221548`'s second station is refused at 18 to 22 s and at 26 s, kept at 24, 28 and 30 s, takes the terminal at 28 s, and prints 16 of 18. `bug` at 20 WPM, 20 dB: the lanes 50 Hz off read `TETE TNTN AETE` and are refused by both judges in nearly every decode, and they do not take the terminal. The random carrier is not kept out: at seed 5199 it is refused or has no verdict and at seed 5207 it nearly always has no verdict, since its long unspaced runs leave under 4 counted letters, and either way it prints: where nothing else has marks a refused lane still takes the terminal.
+
+**The figures, as shipped against the rule on at the end:** the twelve-plus-three 308 to **308** (325 to 328 of 353, wrong 13 to **18**, invented 4 to 2, spaces 92 to 94 of 110, added 13 both); W1AW 2101 to **2099** (2125 to 2124 of 2151, wrong 24 to 25); the fist bank 3898 to 4371; the fading half 1771 to 2050 right, the flat half 2690 to 2749; the easy fixtures 90 of 90 both; the working fixtures 19 to 9, the edge 35 to 31; the wild bank 2859 to **3111** (3133 to 3298 right, 274 to 187 wrong, invented 0 both, spaces added 400 to 258); `mobile` 487 to 529, `bug` 345 to 353, `farnsworth` 555 to 566, `tight` 414 to 511, `steady` 494 to 564, `machine` 564 to 588; Ken 43 of 76 both; Bryan 118 to 123 of 144; the first recording `FF C HAT<BT> BEST 7V 73 <SK> KC4ZGP ■` to `FER C HAT<BT> BEST 7V 73 <SK> KC4ZGP DEWA`; the random carrier 20 seeds of 20 both ways; the 5 dB CQs 84 to **81** of 84; `two-station` 27 of 27; one letter in silences; noise and the steady carrier nothing; strays highest 4.3 both, summed 46.5 to 41.5; CPU on W1AW piece-04 +4%.
+
+**It does not ship and waits on no ruling.** Against the bar it misses on three counts: wrong on the twelve-plus-three, 18 against 15; W1AW, 2 under with wrong 1 over; the 5 dB CQs, 3 under. The order's band for the owner's ruling allows one of its named misses, and wrong at 18 and the CQs lie outside it. As shipped: 308, 2101, 3898, 2859, the survey byte-identical but for its `Rerun` line. Nothing keys or transmits, and nothing is written to the radio.
+
+**What is still lost.** The 5 dB CQ is the judge: at 6 s a 600 Hz lane reading `■■` has no verdict, takes the terminal and costs the first `CQ`; the rule that would stop it was named and not built, there being no round left. The rest looks like a second thing, the letters themselves: both judges keep these reads, so neither can correct them. Wrong rose by 3 on `221745`, 2 on `221828` and 2 on `221530`, and fell by 1 each on the first recording and `221805`; only `AMEN` on `221828` has been traced, to a warm read, and the others were not traced to the second. W1AW's remaining letter is at piece-03's opening, `EIROUND` for `SROUND`.
+
+---
 id: HM-DEC-299
 date: 2026-11-04
 refs: work instruction 595, HM-DEC-298, HM-DEC-296, HM-DEC-295, HM-DEC-284, HM-DEC-276, src/Hamlet.RadioEngine/Cw/CwWords.cs, src/Hamlet.RadioEngine/Cw/CwSequenceReader.cs, data/cw/words-english.txt, data/cw/words-names.txt, tests/Hamlet.RadioEngine.Tests/Cw/TheCwVocabularyTests.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheGapLearningTests.cs
