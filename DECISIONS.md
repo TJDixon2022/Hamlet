@@ -4,6 +4,30 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-299
+date: 2026-11-04
+refs: work instruction 595, HM-DEC-298, HM-DEC-296, HM-DEC-295, HM-DEC-284, HM-DEC-276, src/Hamlet.RadioEngine/Cw/CwWords.cs, src/Hamlet.RadioEngine/Cw/CwSequenceReader.cs, data/cw/words-english.txt, data/cw/words-names.txt, tests/Hamlet.RadioEngine.Tests/Cw/TheCwVocabularyTests.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheGapLearningTests.cs
+---
+
+**Validity is words: built in three rounds, measured, left off.**
+
+Ordered by work instruction 595, the first use of the owner's ruling HM-DEC-296, *Hamlet may know words*. Words decide validity and nothing else: no letter is changed, added or removed because of a word.
+
+**The vocabulary.** `CwVocabulary`, in `CwWords.cs`: the Q-codes, prosigns, abbreviations and states' codes the order lists; the callsign, RST and number as shapes; 3,045 English words of three letters or more from the first 3,200 lines of `google-10000-english-usa-no-swears` (Josh Kaufman, MIT, from the Google Web Trillion Word Corpus); and 593 first names, the first 300 of each 1990 US Census list. Each data file names its source on its first line.
+
+**The judge.** The recognized share of a decode's last 12 letters, counted by letter over the words its own spaces delimit, a word cut by either edge counted neither way, and a prosign a word of its own. Valid at 0.5; under 4 letters no verdict and the standing kept. The `E`, `T` and `■` share is gone. The near-lines share stays in both places it stood: held to 0.35 inside the verdict, and as `FitNearMost` in the fit's keep rule.
+
+**What the four traces found.** `tightfist-easy`: the shipped judge called `VVVTESTDETESTK` invalid at 0.50; the word judge has no verdict on it, since it was laid without spaces, so it prints, 14 of 14. `221548`'s second station: invalid under the word judge from 22 to 28 s, its read `YR HEE MY SCOET T MAST` under 0.5 until 30 s, when the terminal goes to it and the backlog prints 16 of 18. `bug`, 20 WPM, 20 dB, 6 to 20 s: the lanes 50 Hz off read `TETE TNTN AETE`, shipped 0.55 to 1.00 of `E`, `T` and `■`, words 0.00 in every decode, and never take the terminal. `221828`: the loss is not the keep rule, which refused no window of the lane's cold read, near-lines 0.02 to 0.17, and not a refusal by the judge; a warm read laid `AMEN` where the cold read laid `AGN`.
+
+**Round one:** the judge as ordered. The easy fixtures 90 of 90 and W1AW 2103, but the twelve-plus-three 269, since a real hand's read fails on spaces and a letter or two: `221745` read `TMN 40M TONITE . EUROREE`, words 0.00, and printed nothing in 30 s. **Round two:** a refused lane takes the terminal only where no lane unrefused has marks to give. This departs from the order's section 3 sentence on the terminal, under its section 4. The twelve-plus-three 308 with 15 wrong, 92 of 110 spaces, the wild bank 3015, `bug` 321. **Round three:** where no cold start is valid, the most letters inside words whatever the spaces (`CwVocabulary.Covered`), since on `mobile` a 40 ms start at 0.09 on one lucky `U` beat a real rhythm at 0.00. The twelve-plus-three 286, the wild bank 2989, `bug` 280: worse than round two, and left in the tree, off, as the last round.
+
+**The figures, as shipped against the rule on at the end:** the twelve-plus-three 308 to **286** (325 to 317 of 353, wrong 13 to 21, invented 4 to 10, spaces 92 to 93 of 110, added 13 to 16); W1AW 2101 to 2103 (wrong 24 to 23); the fist bank 3898 to 4157; the fading half 1771 to 1961 right, the flat half 2690 to 2722; the easy fixtures 90 of 90 both; the working fixtures 19 to 5, the edge 35 to 31; the wild bank 2859 to **2989** (3133 to 3225 right, 274 to 236 wrong, spaces added 400 to 273); `mobile` 487 to 505, `bug` 345 to 280, `farnsworth` 555 to 572, `tight` 414 to 499, `steady` 494 to 562, `machine` 564 to 571; Ken 43 of 76 both; Bryan 118 to 123 of 144; the first recording `FF C HAT<BT> BEST 7V 73 <SK> KC4ZGP ■` to `FER C HAT<BT> BEST 7V 73 <SK> KC4ZGP DEWA`; the random carrier 20 seeds of 20 both, against 6 with the judge of HM-DEC-298; the 5 dB CQs 84 of 84, `two-station` 27 of 27, one letter in silences, strays highest 4.3 to 2.0, summed 46.5 to 31.2; CPU on W1AW piece-04 +2%.
+
+**It does not ship and waits on no ruling.** Against the bar it fails on the twelve-plus-three, 22 under with wrong and invented over; the wild bank, 61 under, with spaces added 3 over; `bug`, 60 under; and `mobile` and `machine`, 24 and 13 under the last unit's figures. It sits outside the band for the owner's ruling. As shipped: 308, 2101, 3898, 2859, the survey byte-identical but for its `Rerun` line. Nothing keys or transmits, and nothing is written to the radio.
+
+**What the boards still lose is the judge.** Whole words read over a hand's imperfect letters and spaces do not part an honest read from a wrong one: both score near nought, which the round one and round three traces show from each side. The `E`, `T` and `■` share the order removed had been parting them at the cold start. That reading rests on those traces; no build was measured with both judges together.
+
+---
 id: HM-DEC-298
 date: 2026-11-03
 refs: work instruction 594, HM-DEC-297, HM-DEC-296, HM-DEC-295, HM-DEC-284, HM-DEC-276, src/Hamlet.RadioEngine/Cw/CwSequenceReader.cs, src/Hamlet.RadioEngine/Cw/CwRules.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheGapLearningTests.cs, docs/cw-survey-2026-10-09.md
