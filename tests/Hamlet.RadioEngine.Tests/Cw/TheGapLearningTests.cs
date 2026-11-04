@@ -75,13 +75,13 @@ public sealed class TheGapLearningTests(ITestOutputHelper output)
 
             var built = Taken(rows.Where(r => r.Kind == "built").ToList(), r => r.Score);
             var likeliest = Taken(rows.Where(r => r.Kind != "built").ToList(), r => r.Score);
-            var valid = rows.Where(r => r.Kind != "built" && r.Validity <= CwSequenceReader.ValidityShare).ToList();
-            var chosen = valid.Count > 0 ? Taken(valid, r => r.Score) : rows.Where(r => r.Kind != "built").MinBy(r => r.Validity)!;
+            var valid = rows.Where(r => r.Kind != "built" && r.Validity).ToList();
+            var chosen = valid.Count > 0 ? Taken(valid, r => r.Score) : rows.Where(r => r.Kind != "built").MaxBy(r => r.Letters)!;
             var bestEdits = rows.MaxBy(r => r.RightFit)!;
 
             output.WriteLine(string.Empty);
             output.WriteLine(string.Create(Inv, $"### window {end - CwSequenceReader.WindowSeconds:0}-{end:0} s"));
-            output.WriteLine("| start | ranges | score/hop | Morse | E,T,■ | near lines | one pass, medians ig/lg/wg | one pass, fit ig/lg/wg | three by medians: right of letters, spaces added, last classes | three by the fit: right of letters, spaces added, last classes | taken |");
+            output.WriteLine("| start | ranges | score/hop | Morse | words | near lines | one pass, medians ig/lg/wg | one pass, fit ig/lg/wg | three by medians: right of letters, spaces added, last classes | three by the fit: right of letters, spaces added, last classes | taken |");
             output.WriteLine("|---|---|---|---|---|---|---|---|---|---|---|");
 
             foreach (var r in rows)
@@ -152,7 +152,7 @@ public sealed class TheGapLearningTests(ITestOutputHelper output)
         var a = Against(median3.Text, truth);
         var b = Against(fit3.Text, truth);
 
-        return new Row(dit, kind, score, first.Pattern.IsMorse, validity.Letters, validity.Gaps, validity.Figure, Show(medians), Show(fit), string.Create(Inv, $"{a.Right} of {a.Letters}, {a.Added}+ {Show(median3.Last)}"), median3.Text, string.Create(Inv, $"{b.Right} of {b.Letters}, {b.Added}+ {Show(fit3.Last)}"), b.Right, fit3.Text);
+        return new Row(dit, kind, score, first.Pattern.IsMorse, validity.Words, validity.Gaps, validity.Valid == true, Show(medians), Show(fit), string.Create(Inv, $"{a.Right} of {a.Letters}, {a.Added}+ {Show(median3.Last)}"), median3.Text, string.Create(Inv, $"{b.Right} of {b.Letters}, {b.Added}+ {Show(fit3.Last)}"), b.Right, fit3.Text);
     }
 
     // The decode against the best stretch of the truth, both ends free: its letters that match, and the spaces it lays inside the truth's words.
@@ -559,7 +559,7 @@ public sealed class TheGapLearningTests(ITestOutputHelper output)
                     var score = (CwSequenceReader.LogLikelihood(first.Segments, db, levels) - CwSequenceReader.PriorCost(first.Segments, ranges)) / db.Length;
                     var taken = first.Passes.Count > 0 && cold.Passes.Count > 0 && first.Passes[0].ToString() == cold.Passes[0].ToString();
 
-                    output.WriteLine(string.Create(Inv, $"start {dit * HopMs:0} ms: score/hop {score:0.000}, Morse {first.Pattern.IsMorse}, E,T,■ {v.Letters:0%}, near lines {v.Gaps:0%}, validity {v.Figure:0.00}{(taken ? ", TAKEN" : string.Empty)}: `{first.Text}`"));
+                    output.WriteLine(string.Create(Inv, $"start {dit * HopMs:0} ms: score/hop {score:0.000}, Morse {first.Pattern.IsMorse}, words {v.Words:0%} of {v.Counted}, near lines {v.Gaps:0%}, valid {v.Valid}{(taken ? ", TAKEN" : string.Empty)}: `{first.Text}`"));
                 }
 
                 for (var p = 0; p < cold.Passes.Count; p++)
@@ -720,6 +720,145 @@ public sealed class TheGapLearningTests(ITestOutputHelper output)
         }
     }
 
+    /// <remarks>
+    /// **THE FOUR TRACES** (work instruction 595, section 3): what the shipped judge (the share of `E`, `T` and the placeholder in the whole window, or the gaps
+    /// near the lines, over 0.35) and the word judge say of a lane's every decode in a span, and when the terminal moves. Asserts nothing; never on a line.
+    /// </remarks>
+    [Theory]
+    [Trait("Category", "Survey")]
+    [InlineData("tightfist-easy")]
+    [InlineData("221548")]
+    [InlineData("bug-qso")]
+    [InlineData("bug-bank")]
+    public void TheJudgesTraced(string which)
+    {
+        switch (which)
+        {
+            case "tightfist-easy":
+                {
+                    var audio = WavAudio.Read(TheGridStepsAsideTests.Fixture(which));
+
+                    output.WriteLine("truth: " + TheGridStepsAsideTests.Truth(which));
+                    Judged(audio, 600, 500, 0, 1000, null);
+                    break;
+                }
+
+            case "221548":
+                {
+                    const string Name = "cw-2026-10-03-221548";
+                    var audio = WavAudio.Read(TheOwnersRecordingReadsTests.Wav(Name));
+                    var (pitch, width) = TheRecordingsScoreboardTests.RadioState(Name);
+
+                    Judged(audio, pitch, width, 16, 32, [500]);
+                    break;
+                }
+
+            default:
+                {
+                    var hand = new CwWildHand(CwWildBank.Recipes.Single(r => r.Name == "bug"), OwnSpeed: false, Db: 20, Qso: which == "bug-qso");
+                    var tone = Math.Round(CwFistBank.ToneHz / 25) * 25;
+
+                    output.WriteLine("truth: " + hand.Text);
+                    Judged(hand.Audio(), 600, 500, 6, 24, [tone - 50, tone, tone + 50]);
+                    break;
+                }
+        }
+    }
+
+    private void Judged(MonoAudio audio, double pitch, double width, double from, double to, double[]? lanes)
+    {
+        var trace = new List<string>();
+        using var on = CwRules.Choose(CwRules.GapLearning);
+        var letters = TheSequenceReaderTests.ReadLiveTraced(audio.Samples, audio.SampleRate, pitch, width, trace);
+
+        output.WriteLine("printed: " + TheRecordingsScoreboardTests.Text(letters));
+
+        var held = new HashSet<string>(StringComparer.Ordinal);
+
+        foreach (var line in trace.Where(l => l.Contains(" holds ", StringComparison.Ordinal) || l.Contains(" let go ", StringComparison.Ordinal)))
+        {
+            output.WriteLine(line);
+        }
+
+        // The lanes named, or, where none is, every lane whose decode read Morse at some point in the span.
+        foreach (var line in trace.Where(l => l.Contains(" passes, read ", StringComparison.Ordinal) && Second(l) >= from && Second(l) <= to))
+        {
+            var parts = line.Split(' ');
+            var hz = double.Parse(parts[2], Inv);
+
+            if (lanes is null ? !line.Contains("morse True", StringComparison.Ordinal) : !lanes.Contains(hz))
+            {
+                continue;
+            }
+
+            var text = line[(line.IndexOf("text `", StringComparison.Ordinal) + 6)..^1];
+            var all = text.Where(c => c != ' ').ToList();
+            var old = all.Count == 0 ? 1 : all.Count(c => c is 'E' or 'T' || c.ToString() == MorseAlphabet.Unreadable) / (double)all.Count;
+            var near = double.Parse(line[(line.IndexOf(", near ", StringComparison.Ordinal) + 7)..].Split(',')[0], Inv);
+
+            output.WriteLine(string.Create(Inv, $"{parts[0]} s {hz:0} Hz, {all.Count / 12.0:0.0} letters/s, shipped judge E,T,■ {old:0.00} near {near:0.00} {(Math.Max(old, near) <= 0.35 ? "VALID" : "invalid")}; {line[(line.IndexOf(", words ", StringComparison.Ordinal) + 2)..line.IndexOf(": ", StringComparison.Ordinal)]}; `{text}`"));
+        }
+    }
+
+    /// <remarks>
+    /// **THE FOURTH TRACE, `221828`** (work instruction 595, section 3): the letters lost to the fit's keep rule. At each window, the lane's cold read and, on its last decode,
+    /// the gaps, the fit's lines, the share of his gaps near them, and whether <see cref="CwSequenceReader.FitNearMost"/> keeps or refuses the fit. Asserts nothing; never on a line.
+    /// </remarks>
+    [Fact]
+    [Trait("Category", "Survey")]
+    public void TheKeepRuleTraced()
+    {
+        const string Name = "cw-2026-10-03-221828";
+        const double HopMs = CwSequenceReader.HopMs;
+        var audio = WavAudio.Read(TheOwnersRecordingReadsTests.Wav(Name));
+        var (pitch, width) = TheRecordingsScoreboardTests.RadioState(Name);
+        var whole = CwSequenceReader.LaneWidthsHz.Select(w => CwSequenceReader.Envelope(audio.Samples, audio.SampleRate, 600, w)).ToArray();
+        var seconds = audio.Samples.Length / (double)audio.SampleRate;
+        using var on = CwRules.Choose(CwRules.GapLearning);
+        var trace = new List<string>();
+        var letters = TheSequenceReaderTests.ReadLiveTraced(audio.Samples, audio.SampleRate, pitch, width, trace, 600);
+
+        output.WriteLine("printed: " + TheRecordingsScoreboardTests.Text(letters));
+
+        foreach (var line in trace.Where(l => l.Contains(" holds ", StringComparison.Ordinal) || l.Contains(" let go ", StringComparison.Ordinal) || l.Contains(" passes, read ", StringComparison.Ordinal)))
+        {
+            output.WriteLine(line);
+        }
+
+        output.WriteLine("| window ends, s | gaps | fit centres, ms | lines, ms | near lines | the fit |");
+        output.WriteLine("|---|---|---|---|---|---|");
+
+        for (var end = 2.0; end <= seconds; end += 2)
+        {
+            var to = (int)(end * 1000 / HopMs);
+            var from = Math.Max(0, to - (int)(CwSequenceReader.WindowSeconds * 1000 / HopMs));
+            var cut = whole.Select(e => e[from..Math.Min(to, e.Length)]).ToArray();
+            var (cold, used) = CwSequenceReader.ReadCold(w => cut[w]);
+
+            if (cold.Passes.Count == 0 || CwSequenceReader.Learn(cold.Segments, cut[used]) is not { } medians)
+            {
+                continue;
+            }
+
+            var count = cut[used].Length;
+            var longest = CwSequenceReader.FitWordGapMost * medians.Dit;
+            var gaps = cold.Segments.Where(g => g.State is CwSequenceReader.InsideGap or CwSequenceReader.LetterGap or CwSequenceReader.WordGap || (g.State == CwSequenceReader.Silence && g.From > 0 && g.To < count && g.Length <= longest)).Select(g => (double)g.Length).ToList();
+
+            if (gaps.Count == 0)
+            {
+                continue;
+            }
+
+            var (g, gc) = CwSequenceReader.OrderedFit(gaps, [medians.InsideGap, medians.LetterGap, medians.WordGap]);
+            var stands = g[1] >= CwSequenceReader.FitLetterStep * g[0] && g[2] >= CwSequenceReader.GapStep * g[1];
+            var (a, b) = (Math.Sqrt(g[0] * g[1]), Math.Sqrt(g[1] * g[2]));
+            var near = gaps.Count(v => Math.Abs(v - a) <= CwSequenceReader.BoundaryNear * a || Math.Abs(v - b) <= CwSequenceReader.BoundaryNear * b) / (double)gaps.Count;
+            var kept = !stands ? "refused, centres too close" : near > CwSequenceReader.FitNearMost ? "REFUSED by FitNearMost" : "kept";
+
+            output.WriteLine(string.Create(Inv, $"| {end:0} | {gaps.Count} | {g[0] * HopMs:0} / {g[1] * HopMs:0} / {g[2] * HopMs:0} | {a * HopMs:0}, {b * HopMs:0} | {near:0.00} | {kept} | `{cold.Text}`"));
+        }
+    }
+
     /// <remarks>The twelve-plus-three, the rule on, every stretch. Asserts nothing; never on a line.</remarks>
     [Fact]
     [Trait("Category", "Survey")]
@@ -790,6 +929,6 @@ public sealed class TheGapLearningTests(ITestOutputHelper output)
     }
 
     private sealed record Row(
-        int Dit, string Kind, double Score, bool Morse, double Letters, double Near, double Validity, string Medians, string Fit,
+        int Dit, string Kind, double Score, bool Morse, double Letters, double Near, bool Validity, string Medians, string Fit,
         string Median3, string TextMedian, string Fit3, int RightFit, string TextFit);
 }

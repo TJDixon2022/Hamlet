@@ -83,6 +83,8 @@
        embedded so it ships with the app (HM-DEC-041). -->
   <ItemGroup>
     <EmbeddedResource Include="..\..\data\glossary.json" LogicalName="Hamlet.RadioEngine.Data.glossary.json" />
+    <EmbeddedResource Include="..\..\data\cw\words-english.txt" LogicalName="Hamlet.RadioEngine.Data.Cw.words-english.txt" />
+    <EmbeddedResource Include="..\..\data\cw\words-names.txt" LogicalName="Hamlet.RadioEngine.Data.Cw.words-names.txt" />
   </ItemGroup>
 
   <!-- The DXCC prefix table lives in /data with the other cited facts. It is

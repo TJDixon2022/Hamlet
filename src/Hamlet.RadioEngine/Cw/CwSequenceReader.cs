@@ -602,7 +602,8 @@ public sealed class CwSequenceReader
         var bestScore = double.NegativeInfinity;
         var bestMorse = false;
         var gapLearning = CwRules.On(CwRules.GapLearning);
-        var bestValidity = double.PositiveInfinity;
+        var bestValid = false;
+        var bestWords = -1.0;
 
         foreach (var dit in new[] { GuessDitHops(db) }.Concat(ColdStartDits).Distinct())
         {
@@ -622,18 +623,19 @@ public sealed class CwSequenceReader
             var morse = first.Pattern.IsMorse;
 
             // **AND BY VALIDITY AS WELL AS LIKELIHOOD** (work instruction 593, section 3.3): among them, a start whose decode is valid is
-            // kept before any that is not; among the valid the likeliest, and where none is, the most valid. Traced on Ken at 34 to 46 s:
-            // the likeliest Morse start laid 79% `E`, `T` and the placeholder.
-            var validity = gapLearning ? Validity(first).Figure : 0;
-            var valid = validity <= ValidityShare;
-            var wasValid = bestValidity <= ValidityShare;
-            var better = valid ? !wasValid || score > bestScore : !wasValid && validity < bestValidity;
+            // kept before any that is not; among the valid the likeliest, and where none is, the most recognized, the likeliest of those (work instruction 595).
+            // Traced on Ken at 34 to 46 s: the likeliest Morse start laid 79% `E`, `T` and the placeholder.
+            var validity = gapLearning ? Validity(first) : default;
+            var valid = validity.Valid == true;
+            var words = validity.Counted >= ValidityLeast ? validity.Words : 0;
+            var better = valid ? !bestValid || score > bestScore : !bestValid && (words > bestWords || (words == bestWords && score > bestScore));
 
             if (gapLearning ? (morse && !bestMorse) || (morse == bestMorse && better) : (morse && !bestMorse) || (morse == bestMorse && score > bestScore))
             {
                 bestScore = score;
                 bestMorse = morse;
-                bestValidity = validity;
+                bestValid = valid;
+                bestWords = words;
                 best = first;
             }
         }
@@ -680,8 +682,20 @@ public sealed class CwSequenceReader
     // The gaps a hand sends (work instruction 593).
     // ---------------------------------------------------------------------------------------------------------------------------
 
-    /// <summary>The most a decode's validity figure may be for it to be trusted (section 3.3); the share of `E`, `T` and the placeholder runs to about 0.25 in plain text.</summary>
+    /// <summary>The most of a decode's gaps that may sit near the lines it learned for it to be trusted (work instruction 593, section 3.3). The share of `E`, `T` and the placeholder that was held to it went with work instruction 595.</summary>
     public const double ValidityShare = 0.35;
+
+    /// <summary>The letters of a decode, the newest, the word judge reads (work instruction 595, section 3).</summary>
+    public const int ValidityLetters = 12;
+
+    /// <summary>The fewest letters a verdict is taken on; under this a lane is neither valid nor invalid and keeps its standing (section 3).</summary>
+    public const int ValidityLeast = 4;
+
+    /// <summary>The recognized share at which a decode is valid (section 3).</summary>
+    public const double ValidWords = 0.5;
+
+    /// <summary>The decodes running under <see cref="ValidWords"/> before a warm lane is read cold on it (section 3): not on one.</summary>
+    public const int InvalidPasses = 2;
 
     /// <summary>How near a class boundary, either way, a gap counts as sitting on it, as a share of the boundary (section 3.3).</summary>
     public const double BoundaryNear = 0.2;
@@ -819,14 +833,96 @@ public sealed class CwSequenceReader
     }
 
     /// <summary>
-    /// **HOW MUCH A DECODE SPLITS A HAND** (section 3.3): the share of its letters that are `E`, `T` or the placeholder, and the share of
-    /// its gaps within <see cref="BoundaryNear"/> of the class boundaries it learned. The figure is the greater; under
-    /// <see cref="ValidityShare"/> the decode is valid.
+    /// **THE RECOGNIZED SHARE** (work instruction 595, section 3, under HM-DEC-296): of a decode's last <see cref="ValidityLetters"/> letters, the share that
+    /// fall inside words of <see cref="CwVocabulary"/>, counted by letter. A word is what the lane's own spaces delimit, with a prosign standing as a word of its
+    /// own; a word cut by the window's edge, at either end, or by the edge of those letters, is not counted either way. Words decide nothing in the path.
     /// </summary>
-    public static (double Letters, double Gaps, double Figure) Validity(Reading reading)
+    public static (double Share, int Counted) Recognized(IReadOnlyList<Segment> segs)
     {
-        var letters = reading.Text.Where(c => c != ' ').ToList();
-        var share = letters.Count == 0 ? 1 : letters.Count(c => c is 'E' or 'T' || c.ToString() == MorseAlphabet.Unreadable) / (double)letters.Count;
+        var words = new List<(List<string> Letters, bool Cut)>();
+        var word = new List<string>();
+        var letter = new System.Text.StringBuilder();
+        var cutAtStart = segs.Count > 0 && segs[0].State is not (WordGap or Silence);
+
+        void CloseWord(bool cut)
+        {
+            if (word.Count > 0)
+            {
+                words.Add((word, cut || (cutAtStart && words.Count == 0)));
+                word = [];
+            }
+        }
+
+        void CloseLetter()
+        {
+            if (letter.Length == 0)
+            {
+                return;
+            }
+
+            var read = MorseAlphabet.Lookup(letter.ToString()) ?? MorseAlphabet.Unreadable;
+
+            letter.Clear();
+
+            if (read[0] == '<')
+            {
+                CloseWord(cut: false);
+                words.Add(([read], false));
+            }
+            else
+            {
+                word.Add(read);
+            }
+        }
+
+        foreach (var g in segs)
+        {
+            switch (g.State)
+            {
+                case Dit:
+                    letter.Append('.');
+                    break;
+                case Dah:
+                    letter.Append('-');
+                    break;
+                case LetterGap:
+                    CloseLetter();
+                    break;
+                case WordGap:
+                case Silence:
+                    CloseLetter();
+                    CloseWord(cut: false);
+                    break;
+            }
+        }
+
+        CloseLetter();
+        CloseWord(cut: true);
+
+        var (seen, counted, known) = (0, 0, 0);
+
+        for (var k = words.Count - 1; k >= 0 && seen + words[k].Letters.Count <= ValidityLetters; k--)
+        {
+            seen += words[k].Letters.Count;
+
+            if (!words[k].Cut)
+            {
+                counted += words[k].Letters.Count;
+                known += CwVocabulary.IsWord(string.Concat(words[k].Letters)) ? words[k].Letters.Count : 0;
+            }
+        }
+
+        return (counted == 0 ? 0 : known / (double)counted, counted);
+    }
+
+    /// <summary>
+    /// **WHETHER A DECODE READS AS TEXT** (work instruction 595): the <see cref="Recognized"/> share and the letters it was taken over; the share of its gaps within
+    /// <see cref="BoundaryNear"/> of the class boundaries it learned, which stands where it stood, held to <see cref="ValidityShare"/>; and the verdict: valid at
+    /// <see cref="ValidWords"/> or better with its gaps clear of the lines, and neither valid nor invalid, null, on under <see cref="ValidityLeast"/> letters.
+    /// </summary>
+    public static (double Words, int Counted, double Gaps, bool? Valid) Validity(Reading reading)
+    {
+        var (words, counted) = Recognized(reading.Segments);
         var gaps = reading.Segments.Where(g => g.State is InsideGap or LetterGap or WordGap).Select(g => (double)g.Length).ToList();
         var near = 1.0;
 
@@ -839,7 +935,7 @@ public sealed class CwSequenceReader
             near = gaps.Count(g => Near(g, r[InsideGap].Hi) || Near(g, r[LetterGap].Hi)) / (double)gaps.Count;
         }
 
-        return (share, near, Math.Max(share, near));
+        return (words, counted, near, counted < ValidityLeast ? null : words >= ValidWords && near <= ValidityShare);
     }
 
     /// <summary><c>cwhmm2.run</c> on audio: the envelope at a pitch and bandwidth, the first ranges from a dit guess in milliseconds.</summary>
@@ -1133,8 +1229,9 @@ public sealed class CwSequenceReader
         var printedSeparation = _printed?.Pattern.Separation ?? 0;
         // **A LANE WHOSE DECODE IS NOT VALID DOES NOT TAKE THE TERMINAL** (work instruction 594, round two). Traced on `bug` at 20 WPM, 20 dB: from 6 to 20 s the
         // terminal sat on a lane 50 Hz off him, its Morse pattern whole with his inside gaps laid as letter gaps, dit 60, inside 60, letter 103, word 205 ms, and
-        // `CQ CQ` printed `TETE TTET`; his own lane took it at 24 s. The printed lane is not judged so: it is let go as it was.
-        var reading = _lanes.Where(l => (l.Pattern.IsMorse && (l == _printed || l.Figure <= ValidityShare)) || (l == _printed && newest - l.LastMorse <= keep)).OrderByDescending(l => l == _printed ? printedSeparation + SeparationMargin : l.Pattern.Separation).ToList();
+        // `CQ CQ` printed `TETE TTET`; his own lane took it at 24 s. The printed lane is not judged so: it is let go as it was. **THE JUDGE IS WORDS** (work instruction 595):
+        // a lane with no verdict yet, a station just begun, is judged as the shipped reader judges him.
+        var reading = _lanes.Where(l => (l.Pattern.IsMorse && (l == _printed || l.Standing != false)) || (l == _printed && newest - l.LastMorse <= keep)).OrderByDescending(l => l == _printed ? printedSeparation + SeparationMargin : l.Pattern.Separation).ToList();
         var stations = new List<Lane>();
 
         foreach (var lane in reading)
@@ -1500,8 +1597,23 @@ public sealed class CwSequenceReader
                 // **AND WHERE ITS FIGURES FALL, A SECOND STATION IN THE LANE** (work instruction 590, change 3): a warm decode whose
                 // pattern falls from the one the lane kept by PatternDrop is read cold as well, and the cold read is taken where
                 // its pattern is Morse and stands better.
-                // **AND WHERE ITS DECODE IS NOT VALID** (work instruction 593, section 3.5).
-                var fell = !reading.Pattern.IsMorse || Falls(reading.Pattern, Kept) || (CwRules.On(CwRules.GapLearning) && Validity(reading).Figure > ValidityShare);
+                // **AND WHERE ITS DECODE IS NOT VALID** (work instruction 593, section 3.5): its gaps among the lines, as built; or its words under ValidWords for
+                // InvalidPasses decodes running, not on one (work instruction 595). A decode with no verdict leaves the run as it stood.
+                var invalid = false;
+
+                if (CwRules.On(CwRules.GapLearning))
+                {
+                    var v = Validity(reading);
+
+                    if (v.Counted >= ValidityLeast)
+                    {
+                        _wordsLow = v.Words < ValidWords ? _wordsLow + 1 : 0;
+                    }
+
+                    invalid = _wordsLow >= InvalidPasses || v.Gaps > ValidityShare;
+                }
+
+                var fell = !reading.Pattern.IsMorse || Falls(reading.Pattern, Kept) || invalid;
 
                 // **AND EVERY WINDOW, WHERE THE TWO DISAGREE ON WHAT IS A DAH, THE KEPT RHYTHM IS STALE** (work instruction 591, round
                 // two): traced on 121414, the sender went from a 220 ms dah to 155 ms at 11.8 s; at 16 and 18 s the cold read saw a dah
@@ -1522,6 +1634,7 @@ public sealed class CwSequenceReader
                         reading = cold;
                         ReadHow = "warm, then cold";
                         Width = coldWidth;
+                        _wordsLow = 0;
                     }
                 }
             }
@@ -1535,9 +1648,18 @@ public sealed class CwSequenceReader
 
             var shift = newest - count;
 
-            Figure = CwRules.On(CwRules.GapLearning) ? Validity(reading).Figure : 0;
+            if (CwRules.On(CwRules.GapLearning))
+            {
+                // Under ValidityLeast letters a lane keeps whatever standing it had (work instruction 595).
+                Standing = Validity(reading).Valid ?? Standing;
+            }
 
-            trace?.Add(string.Create(Inv, $"{newest * HopMs / 1000:0.00} s {PitchHz:0} Hz passes, read {ReadHow}, validity {Validity(reading).Figure:0.00}: {string.Join(" | ", reading.Passes)}"));
+            if (trace is not null)
+            {
+                var v = Validity(reading);
+
+                trace.Add(string.Create(Inv, $"{newest * HopMs / 1000:0.00} s {PitchHz:0} Hz passes, read {ReadHow}, words {v.Words:0.00} of {v.Counted}, near {v.Gaps:0.00}, standing {Standing?.ToString() ?? "none"}, morse {reading.Pattern.IsMorse}, late {Pattern.IsMorse}: {string.Join(" | ", reading.Passes)}; text `{reading.Text}`"));
+            }
 
             // **A WARM LANE WHOSE KEY-DOWN FALLS FAR UNDER ITS SENDER'S IS HEARING SOMEONE ELSE** (work instruction 590, round
             // three): it commits nothing from that window and keeps its sender's rhythm. Traced on 144020: from 12.5 s the 500 Hz
@@ -1589,8 +1711,11 @@ public sealed class CwSequenceReader
             }
         }
 
-        // The last decode's validity figure (work instruction 594, round two); nought with the rule off.
-        public double Figure { get; private set; }
+        // The lane's standing: valid, invalid, or none yet, always none with the rule off (work instruction 595).
+        public bool? Standing { get; private set; }
+
+        // The warm decodes running whose words fell under ValidWords (work instruction 595).
+        private int _wordsLow;
 
         // The key-down level the lane last read Morse at, in dB (round three).
         public double KeptTop { get; private set; }
