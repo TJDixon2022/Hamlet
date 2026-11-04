@@ -337,6 +337,7 @@ public sealed class TheGapLearningTests(ITestOutputHelper output)
     [Trait("Category", "Survey")]
     [InlineData("bug", true, 20.0, true, 625.0)]
     [InlineData("bug", false, 20.0, false, 625.0)]
+    [InlineData("bug", false, 20.0, true, 625.0)]
     [InlineData("mobile", true, 20.0, true, 625.0)]
     [InlineData("farnsworth", true, 20.0, true, 625.0)]
     public void TheHandTraced(string recipe, bool own, double db, bool qso, double watchHz)
@@ -645,6 +646,7 @@ public sealed class TheGapLearningTests(ITestOutputHelper output)
     [Theory]
     [Trait("Category", "Survey")]
     [InlineData("cw-2026-10-08-121324")]
+    [InlineData("cw-2026-10-03-221548")]
     public void TheRecordingTraced(string recording)
     {
         var audio = WavAudio.Read(TheOwnersRecordingReadsTests.Wav(recording));
@@ -655,10 +657,19 @@ public sealed class TheGapLearningTests(ITestOutputHelper output)
 
         output.WriteLine(TheRecordingsScoreboardTests.Text(letters));
 
-        foreach (var line in trace.Where(l => l.Contains(" holds ", StringComparison.Ordinal) || l.Contains(" let go ", StringComparison.Ordinal) || l.Contains(" commits ", StringComparison.Ordinal)).Take(60))
+        foreach (var line in trace.Where(l => l.Contains(" holds ", StringComparison.Ordinal) || l.Contains(" let go ", StringComparison.Ordinal) || l.Contains(" commits ", StringComparison.Ordinal) || l.Contains(" passes, read ", StringComparison.Ordinal) || l.Contains(" warm: ", StringComparison.Ordinal)))
         {
             output.WriteLine(line);
         }
+    }
+
+    /// <remarks>The twelve-plus-three, the rule on, every stretch. Asserts nothing; never on a line.</remarks>
+    [Fact]
+    [Trait("Category", "Survey")]
+    public void TheBoardTraced()
+    {
+        using var on = CwRules.Choose(CwRules.GapLearning);
+        output.WriteLine(TheRecordingsScoreboardTests.Table(TheRecordingsScoreboardTests.Score()));
     }
 
     /// <remarks>Section 4: the carrier keyed at random and the rest of the noise, read with the rule off and on. Asserts nothing; never on a line.</remarks>

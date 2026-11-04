@@ -1114,7 +1114,10 @@ public sealed class CwSequenceReader
         // went to 625 Hz, 25 Hz off the second station, at separation 1.64; from 22 s the 600 Hz lane read him at 2.25 and was
         // dropped as the printed lane's shadow, and 625 Hz printed him in a crossed rhythm.
         var printedSeparation = _printed?.Pattern.Separation ?? 0;
-        var reading = _lanes.Where(l => l.Pattern.IsMorse || (l == _printed && newest - l.LastMorse <= keep)).OrderByDescending(l => l == _printed ? printedSeparation + SeparationMargin : l.Pattern.Separation).ToList();
+        // **A LANE WHOSE DECODE IS NOT VALID DOES NOT TAKE THE TERMINAL** (work instruction 594, round two). Traced on `bug` at 20 WPM, 20 dB: from 6 to 20 s the
+        // terminal sat on a lane 50 Hz off him, its Morse pattern whole with his inside gaps laid as letter gaps, dit 60, inside 60, letter 103, word 205 ms, and
+        // `CQ CQ` printed `TETE TTET`; his own lane took it at 24 s. The printed lane is not judged so: it is let go as it was.
+        var reading = _lanes.Where(l => (l.Pattern.IsMorse && (l == _printed || l.Figure <= ValidityShare)) || (l == _printed && newest - l.LastMorse <= keep)).OrderByDescending(l => l == _printed ? printedSeparation + SeparationMargin : l.Pattern.Separation).ToList();
         var stations = new List<Lane>();
 
         foreach (var lane in reading)
@@ -1515,6 +1518,8 @@ public sealed class CwSequenceReader
 
             var shift = newest - count;
 
+            Figure = CwRules.On(CwRules.GapLearning) ? Validity(reading).Figure : 0;
+
             trace?.Add(string.Create(Inv, $"{newest * HopMs / 1000:0.00} s {PitchHz:0} Hz passes, read {ReadHow}, validity {Validity(reading).Figure:0.00}: {string.Join(" | ", reading.Passes)}"));
 
             // **A WARM LANE WHOSE KEY-DOWN FALLS FAR UNDER ITS SENDER'S IS HEARING SOMEONE ELSE** (work instruction 590, round
@@ -1566,6 +1571,9 @@ public sealed class CwSequenceReader
                 KeptTop = reading.Levels.Top;
             }
         }
+
+        // The last decode's validity figure (work instruction 594, round two); nought with the rule off.
+        public double Figure { get; private set; }
 
         // The key-down level the lane last read Morse at, in dB (round three).
         public double KeptTop { get; private set; }
