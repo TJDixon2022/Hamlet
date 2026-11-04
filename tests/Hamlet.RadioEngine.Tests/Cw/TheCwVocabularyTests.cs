@@ -68,6 +68,14 @@ public sealed class TheCwVocabularyTests
         => Assert.False(CwVocabulary.IsWord(word), word);
 
     [Fact]
+    public void WordsAreFoundWhateverTheSpaces()
+    {
+        Assert.Equal(0.0, CwVocabulary.Covered("TETE TTET ETETTE TTTTTE"), 3);
+        Assert.True(CwVocabulary.Covered("KGMKEN NI CE MEE TU") > 0.3);
+        Assert.Equal(0.0, CwVocabulary.Covered(string.Empty), 3);
+    }
+
+    [Fact]
     public void TheListHoldsAtLeastTheFewThousandAsked()
         => Assert.True(CwVocabulary.Size >= 3000, CwVocabulary.Size.ToString(System.Globalization.CultureInfo.InvariantCulture));
 
