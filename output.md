@@ -15,7 +15,7 @@ Claude Code on the development computer, branch `main`. The prompt named `PROJEC
 
 **Recorded:** HM-DEC-298, the order's own ruling record, in the tree in full.
 
-**Lines:** engine 168 of 168, app 278 of 278, `DecisionLogOrderTests` 2 of 2, the survey once with the rule off. The harness stopped three wrappers for low memory, and each time the test hosts kept running to the end. Nothing was run twice for it. The third stop left the rule's temporary "on" in place only during the guards of round one, and I put it back when they finished; it was never committed on.
+**Lines:** engine 168 of 168, app 278 of 278, `DecisionLogOrderTests` 2 of 2, the survey once with the rule off. The harness stopped three wrappers for low memory, and each time the test hosts kept running to the end. Nothing was run twice for it. The first stop left the rule's temporary "on" in place during the guards of round one, and I put it back when they finished; it was never committed on.
 
 ## 2. What the owner should expect
 
@@ -82,7 +82,7 @@ The working fixtures fell from 19 to 5 and the edge fixtures from 35 to 21; both
 - **Ken: the mark fit was his loss.** With it out he reads 13 at 60-80 s and 43 of 76 whole, and his classes come out near his measured gaps. The one letter that differs in that span is a mark fault, the same with the rule on or off.
 
 **Why it fails, by path:**
-- **The twelve-plus-three:** net 16 letters lost, and `221548`'s second station alone is 18, printing nothing at 18 to 30 s and 498 Hz. He began mid-window, so his 12 s windows still hold noise read as `E` and `T`, and the round two test refuses him. Round three added a further 9 points of loss, mostly on `221828` and `143951`.
+- **The twelve-plus-three:** net 16 letters lost, and `221548`'s second station alone is 18, printing nothing at 18 to 30 s and 498 Hz. He began mid-window, so his 12 s windows still hold noise read as `E` and `T`, and the round two test refuses him. Round three cost a further 9 points, 8 of them on `221828`, and one invented letter on `121324`.
 - **`tightfist-easy`:** prints nothing, 14 down. It sends `TEST DE TEST`, 7 letters of 11 `E` or `T`, which would fail the same test on honest text. I did not trace that, so treat it as likely rather than found.
 - **W1AW:** the same 2098 and 26 wrong as with the mark fit in, so neither this unit's change nor its rounds moved it.
 
