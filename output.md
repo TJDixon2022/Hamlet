@@ -99,7 +99,7 @@ Bryan also gets his spaces nearly clean: 1 added against 19. It finds fewer of t
 **What will look wrong but is not:**
 - `docs\cw-survey-2026-10-09.md` now shows the learned reader's figures, 238 and 2048, and its `Rerun` line says so. There is no switch-off survey, by the run budget; the shipped figures are on `docs\cw-scoreboard.md`.
 - The survey's `WPM` column is blank for these reads, because the net measures no speed.
-- The repository is about 11 MB larger, from the model and the vector.
+- The repository is about 6.6 MB larger, from the model and the vector.
 
 **Test lines, switch off:** engine 168 of 168, app 278 of 278, `TheLearnedReaderTests` 4 of 4. After the record, `DecisionLogOrderTests` 2 of 2 and `TheScoreboardGuardsCwTests` 4 of 4. The unit took about 70 minutes, inside the budget's target.
 
