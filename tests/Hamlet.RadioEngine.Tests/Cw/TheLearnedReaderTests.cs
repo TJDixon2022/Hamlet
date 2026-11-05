@@ -21,7 +21,7 @@ public sealed class TheLearnedReaderTests
     [Fact]
     public void FeaturesMatchTheVector()
     {
-        var (features, frames, _) = CwLearnedReader.Features(VectorAudio());
+        var (features, frames, _, _) = CwLearnedReader.Features(VectorAudio());
         var lines = File.ReadAllLines(Vector("cwnet-vector-feat.csv")).Where(l => l.Length > 0).ToList();
 
         Assert.Equal(lines.Count, frames);
@@ -44,7 +44,7 @@ public sealed class TheLearnedReaderTests
     [Fact]
     public void TheNetMatchesTheVector()
     {
-        var (features, frames, _) = CwLearnedReader.Features(VectorAudio());
+        var (features, frames, _, _) = CwLearnedReader.Features(VectorAudio());
         var (logits, outputs) = CwLearnedReader.Logits(features, frames);
         var want = File.ReadAllText(Vector("cwnet-vector-ids.txt")).Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries).Select(int.Parse).ToArray();
         var have = Enumerable.Range(0, outputs).Select(j => CwLearnedReader.Best(logits, j)).ToArray();

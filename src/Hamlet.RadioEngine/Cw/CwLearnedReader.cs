@@ -13,7 +13,7 @@ namespace Hamlet.RadioEngine.Cw;
 /// table, so the terminal, the scope and the record read it unchanged.</para>
 /// <para>**THE NET HAS NO MARKS AND NO PITCH.** So that a letter can carry its evidence (§0.0.1), and be scored at all, each carries one
 /// <see cref="CwMark"/> measured after the net has spoken: its span runs back from the frame that named it to the last letter, 0.6 s at most,
-/// and its pitch is the strongest bin of the features over that span. Neither decides any letter. The letter's score is the net's own
+/// and its pitch is the bin with the most raw power over that span, since a bin outside the radio's filter holds almost nothing and swings widely once it is a log over its own floor. Neither decides any letter. The letter's score is the net's own
 /// probability at that frame, dimmed under one half as the sequence reader dims its own.</para>
 /// </remarks>
 public sealed class CwLearnedReader
@@ -178,11 +178,12 @@ public sealed class CwLearnedReader
 
     /// <summary>The feature matrix of a window (spec section 2), row after row.</summary>
     /// <param name="x">The window at the net's rate.</param>
-    /// <returns>The matrix, its frame count, and the scale it was divided by.</returns>
-    internal static (float[] Features, int Frames, double Scale) Features(ReadOnlySpan<float> x)
+    /// <returns>The matrix, its frame count, the scale it was divided by, and the raw power per frame and bin, which the net never sees.</returns>
+    internal static (float[] Features, int Frames, double Scale, double[] Power) Features(ReadOnlySpan<float> x)
     {
         var frames = ((x.Length - FrameLength) / FrameHop) + 1;
         var log = new double[frames * BinCount];
+        var power = new double[frames * BinCount];
         var row = new double[BinCount];
 
         for (var t = 0; t < frames; t++)
@@ -201,6 +202,7 @@ public sealed class CwLearnedReader
                     im += sine[n] * frame[n];
                 }
 
+                power[(t * BinCount) + b] = (re * re) + (im * im);
                 row[b] = 10 * Math.Log10((re * re) + (im * im) + 1e-10);
             }
 
@@ -250,7 +252,7 @@ public sealed class CwLearnedReader
             features[i] = (float)(log[i] / (spread + 3));
         }
 
-        return (features, frames, spread + 3);
+        return (features, frames, spread + 3, power);
     }
 
     /// <summary>The net's scores per output frame for a feature matrix (spec section 3), row after row of <c>OutputSize</c> values.</summary>
@@ -367,7 +369,7 @@ public sealed class CwLearnedReader
             window[i] = _ring[(int)((start + i) % WindowSamples)];
         }
 
-        var (features, frames, scale) = Features(window);
+        var (features, frames, scale, power) = Features(window);
         var (logits, outputs) = Logits(features, frames);
         var first = start / SamplesPerOutputFrame;
 
@@ -378,12 +380,12 @@ public sealed class CwLearnedReader
                 break;
             }
 
-            Commit(_committedUpTo, (int)(_committedUpTo - first), start, features, frames, scale, logits);
+            Commit(_committedUpTo, (int)(_committedUpTo - first), start, features, power, frames, scale, logits);
         }
     }
 
     // The greedy collapse over the committed stream (spec section 3): `_prev` carries across runs, so a letter spanning two is emitted once.
-    private void Commit(long absolute, int frame, long start, float[] features, int frames, double scale, float[] logits)
+    private void Commit(long absolute, int frame, long start, float[] features, double[] power, int frames, double scale, float[] logits)
     {
         var best = Best(logits, frame);
         var changed = best != _prev;
@@ -415,11 +417,11 @@ public sealed class CwLearnedReader
             return;
         }
 
-        Letter(best, seconds, frame, start, features, frames, scale, logits);
+        Letter(best, seconds, frame, start, features, power, frames, scale, logits);
         _letterSinceSpace = true;
     }
 
-    private void Letter(int index, double seconds, int frame, long start, float[] features, int frames, double scale, float[] logits)
+    private void Letter(int index, double seconds, int frame, long start, float[] features, double[] power, int frames, double scale, float[] logits)
     {
         var text = Alphabet[index - 1] switch
         {
@@ -433,7 +435,7 @@ public sealed class CwLearnedReader
         var pattern = PatternOfText.TryGetValue(text, out var p) ? p : string.Empty;
         var from = Math.Max(Math.Max(0, seconds - SpanBackSeconds), _lastLetterSeconds);
         var to = seconds + SpanOnSeconds;
-        var (pitch, levelDb) = Pitch(from, to, start, features, frames, scale);
+        var (pitch, levelDb) = Pitch(from, to, start, features, power, frames, scale);
         var score = Probability(logits, frame, index);
 
         _lastLetterSeconds = seconds;
@@ -453,18 +455,20 @@ public sealed class CwLearnedReader
         });
     }
 
-    // The strongest bin over a span of the window, between bins by the parabola through its neighbours, and how far it stands over its floor in dB.
-    private (double PitchHz, double LevelDb) Pitch(double from, double to, long start, float[] features, int frames, double scale)
+    // The bin with the most power over a span of the window, between bins by the parabola through its neighbours in dB, and how far it stands over its floor in dB.
+    private (double PitchHz, double LevelDb) Pitch(double from, double to, long start, float[] features, double[] power, int frames, double scale)
     {
         var first = Math.Clamp((int)(((from + _delaySeconds) * NetRate) - start) / FrameHop, 0, frames - 1);
         var last = Math.Clamp((int)(((to + _delaySeconds) * NetRate) - start) / FrameHop, first, frames - 1);
         var sums = new double[BinCount];
+        var over = new double[BinCount];
 
         for (var t = first; t <= last; t++)
         {
             for (var b = 0; b < BinCount; b++)
             {
-                sums[b] += features[(t * BinCount) + b];
+                sums[b] += power[(t * BinCount) + b];
+                over[b] += features[(t * BinCount) + b];
             }
         }
 
@@ -473,12 +477,14 @@ public sealed class CwLearnedReader
 
         if (peak > 0 && peak < BinCount - 1)
         {
-            var curve = sums[peak - 1] - (2 * sums[peak]) + sums[peak + 1];
+            var left = Math.Log(sums[peak - 1] + 1e-10);
+            var right = Math.Log(sums[peak + 1] + 1e-10);
+            var curve = left - (2 * Math.Log(sums[peak] + 1e-10)) + right;
 
-            offset = curve < 0 ? Math.Clamp(0.5 * (sums[peak - 1] - sums[peak + 1]) / curve, -0.5, 0.5) : 0;
+            offset = curve < 0 ? Math.Clamp(0.5 * (left - right) / curve, -0.5, 0.5) : 0;
         }
 
-        return ((FirstBin + peak + offset) * HzPerBin, sums[peak] / (last - first + 1) * scale);
+        return ((FirstBin + peak + offset) * HzPerBin, over[peak] / (last - first + 1) * scale);
     }
 
     private static double Probability(float[] logits, int frame, int index)

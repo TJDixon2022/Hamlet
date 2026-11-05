@@ -30,6 +30,14 @@ public sealed class TheLearnedReaderTraces(ITestOutputHelper output)
         Write("KEN 0-120 s: `" + Between(ken, 0, 120) + "`");
         Write("BRYAN 120-300 s: `" + Between(ken, 120, 300) + "`");
 
+        // Each letter's own pitch and span: what puts it in a stretch or leaves it out when it is scored.
+        Write("PITCHES: " + string.Join(", ", ken.GroupBy(l => Math.Round(l.PitchHz / 25) * 25).OrderBy(g => g.Key).Select(g => string.Create(Inv, $"{g.Key:0} {g.Count()}"))));
+
+        foreach (var l in ken.Where(l => l.Seconds >= 122 && l.Seconds < 150))
+        {
+            Write(string.Create(Inv, $"  {l.From:0.00}-{l.Seconds:0.00} {l.PitchHz:0} {l.Text}"));
+        }
+
         foreach (var piece in new[] { "w1aw-2026-10-07/piece-03", "w1aw-2026-10-07/piece-04" })
         {
             var letters = TheRecordingsScoreboardTests.ReadLive(piece).Letters;
