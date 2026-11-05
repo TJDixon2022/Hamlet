@@ -4,6 +4,42 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-302
+date: 2026-11-05
+refs: work instruction 597, HM-DEC-301, HM-DEC-296, HM-DEC-284, HM-DEC-276, src/Hamlet.RadioEngine/Cw/CwLearnedReader.cs, src/Hamlet.RadioEngine/Cw/Model/CWNET_SPEC.md, tests/Hamlet.RadioEngine.Tests/Cw/TheLearnedReaderTests.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheLearnedReaderTraces.cs
+---
+
+**The learned reader: a trained net reads the audio, behind a switch, off by default, for the owner's ruling.**
+
+Ordered by work instruction 597. Four units of gap learning moved the two real hands from 118 to 123 and from 43 to 43, and the owner asked for a radical new input.
+
+**The model.** `cwnet.onnx`, 5.6 MB, a convolutional front end, two bidirectional GRU layers and CTC, built and trained outside this tree on synthetic keying only: the wild recipes, noise, QSB, drift, a second station and receiver AGC. **It has heard no recording.** Nothing in the model, the alphabet or the feature recipe was changed here.
+
+**The switch.** `CwRules.LearnedReader`, off by default, wired as `CwRules.GapLearning` is. On, the sequence reader is not built, so both never print at once; off, the learned reader is never constructed. It is fed the audio the sequence reader is fed, and its letters reach the lookup table as dots, dashes and letter ends, so the terminal is unchanged.
+
+**The vector tests pass, all four, on the first build:** `FeaturesMatchTheVector` within 1e-3 in every cell, `TheNetMatchesTheVector` on all 599 indices, `ReadsTheVector` through the chain in 100 ms pieces, `TheSwitchOffIsSilent`. The trace agrees with the stretches in `CWNET_SPEC.md` to a letter or two a line and is sometimes the better, so one round was run and rounds two and three were not called for.
+
+**What the session added, none of it deciding a letter.** The net has no marks and no pitch, and the scoring needs both, so each letter carries one mark measured afterwards: its span back from the frame that named it to the last letter, 0.6 s at most, and its pitch the bin with the most raw power over that span. Tagged from the log features, about 75 letters sat at the edge bins, 250 Hz and 950 Hz or more, and were dropped from their stretches; the text did not change. A letter is dimmed where the net's own probability at that frame is under one half, as the sequence reader dims its own. Both are reported for the owner to overrule.
+
+**The figures, the shipped reader against the learned reader:** the twelve-plus-three 308 to **238** (325 to 251 of 353, wrong 13 to 12, invented 4 to 1, spaces 92 of 110 with 13 added to 56 with 3 added, letters in silences 1 to 9); W1AW 2101 to **2048** (2125 to 2063 of 2151, wrong 24 to 15, spaces 440 of 440 with 8 added to 368 with 9 added); the wild bank 2859 to **3307** (3133 to 3398 of 3528, wrong 274 to 91, spaces added 400 to 32); `mobile` 522 to 548, `bug` 459 to 469, `farnsworth` 567 to 583, `tight` 489 to 540, `steady` 524 to 581, `machine` 572 to 586; the fist bank 3898 to **5255**; the easy fixtures 90 to 87 of 90; the 5 dB CQs 84 of 84 both; the 0 dB CQs 5 to 61 of 84; noise silent both; the steady carrier silent both; the random-keyed carrier at 20 seeds of 20 both; the first recording whole to `FER CHAT<BT> BEST 7V 73 <SK> KC4ZP DE WA`, 26 of 27; **Ken 43 to 51 of 76**, wrong 25 to 20; **Bryan 118 to 127 of 144**, wrong 17 to 9, spaces added 19 to 1; CPU on W1AW piece-04 108.6 s to 44.7 s, down 59%.
+
+**Where the board went.** KM3STU's three recordings at 800 Hz score 0 of 65: the net prints `KM3SKE CQ` at 700 Hz, `RR` and nothing. Traced to what the net prints, not to the scorer; why the net does not read him was not traced.
+
+**The guards are not changed.** They hold the shipped reader, which is what ships. With the switch on, the twelve-plus-three, W1AW, the first recording and the easy fixtures are all under their guards, so turning it on is the owner's ruling and restates them.
+---
+id: HM-DEC-301
+date: 2026-11-05
+refs: work instruction 597, UNIT_RUN_BUDGET.md, HM-DEC-276
+---
+
+**Run budget: one survey, one engine line, one app line per unit, at the end; quick measures per round; no rule-off survey.**
+
+The owner's order of 2026-11-04, from `UNIT_RUN_BUDGET.md`: *"units were running three to four hours because the work instructions asked for the full survey every round, the engine line more than once, and a rule-off survey at the end. That stops."*
+
+One full survey per unit, at the end, after the last round, never mid-round. One engine line and one app line per unit, at the end. No rule-off survey: code behind an off switch is not re-measured to prove it is off. Per round the quick measure only, plus the round's trace, and a guard test alone, filtered, only when the round's change could touch it. At most three rounds. The target is 60 to 90 minutes; if the trace shows a unit will not make it, it stops after the current round, measures once and reports. A work instruction that asks for more is refused in `output.md` section 4, and the budget is followed instead.
+
+**The lock is taken with the root named:** `tools\arbiter\lock.bat take C:\Source\HamLet`. Without it the lock lands on another project, as it did in work instruction 596.
+---
 id: HM-DEC-300
 date: 2026-11-04
 refs: work instruction 596, HM-DEC-299, HM-DEC-296, HM-DEC-295, HM-DEC-284, HM-DEC-276, src/Hamlet.RadioEngine/Cw/CwWords.cs, src/Hamlet.RadioEngine/Cw/CwSequenceReader.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheCwVocabularyTests.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheGapLearningTests.cs

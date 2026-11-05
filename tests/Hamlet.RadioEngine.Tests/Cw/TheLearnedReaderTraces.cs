@@ -48,6 +48,20 @@ public sealed class TheLearnedReaderTraces(ITestOutputHelper output)
         Write("the first recording: `" + TheRecordingsScoreboardTests.ReadLive("cw-2026-10-02-200157").Text + "`");
     }
 
+    /// <remarks>The three recordings the board counts where the survey shows nothing: everything the net printed, at any pitch.</remarks>
+    [Fact]
+    public void TheEmptyRows()
+    {
+        using var on = CwRules.Choose(CwRules.LearnedReader);
+
+        foreach (var recording in new[] { "cw-2026-10-08-121324", "cw-2026-10-08-121357", "cw-2026-10-08-121414" })
+        {
+            var (letters, text) = TheRecordingsScoreboardTests.ReadLive(recording);
+
+            Write(string.Create(Inv, $"{recording}: `{text}`; pitches {string.Join(", ", letters.GroupBy(l => Math.Round(l.PitchHz / 25) * 25).OrderBy(g => g.Key).Select(g => $"{g.Key:0} {g.Count()}"))}; stretches {string.Join(", ", TheRecordingsScoreboardTests.Score(limits: false).Stretches.Where(s => s.Stretch.Recording == recording).Select(s => $"{s.Stretch.From:0.#}-{s.Stretch.To:0.#} s `{s.Stretch.Reference}`"))}"));
+        }
+    }
+
     /// <remarks>The two real hands, per 20 s, as the survey scores them.</remarks>
     [Fact]
     public void TheHands()

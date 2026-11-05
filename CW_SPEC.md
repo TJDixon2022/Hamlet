@@ -400,3 +400,11 @@ still carries [verify].
   not against the previous build.
 - Conflict between a requirement and a later ruling is surfaced as a new
   ruling for Tim; it is never resolved by editing either file silently.
+
+## 14. The learned reader
+
+The learned reader (`CwLearnedReader`, HM-DEC-302) is a small trained network, a convolutional front end, two bidirectional GRU layers and CTC, that maps 26 bins of log spectrum to letters. It was trained on synthetic keying only and has heard no recording. `src/Hamlet.RadioEngine/Cw/Model/CWNET_SPEC.md` states exactly what the engine computes, and the shipped vector proves the port against it.
+
+It is fed the audio the sequence reader is fed, before any pitch, lane or mark finding, decimated to 8 kHz, and runs on a sliding 12 s window once a second, committing frames 2 s behind the newest sample. Its letters go where the sequence reader's go, as dots, dashes, letter ends and word ends to the lookup table, behind `CwRules.LearnedReader`, off by default; on, the sequence reader is not built.
+
+It does not find a pitch, a lane, a mark or a gap: it prints letters. It reads the louder of two stations, having been trained with a second station 4 to 25 dB down. It knows no words, and its errors are letter-gap splits and merges. It prints a word space itself, and the engine adds no space rule on top.
