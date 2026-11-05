@@ -324,8 +324,14 @@ public sealed class CwEnvelopeDetector
     /// <summary>Whether the sequence reader reads: with <see cref="CwRules.SequenceReader"/> on (work instruction 588).</summary>
     private bool SequenceReading => _sequence is not null && CwRules.On(CwRules.SequenceReader);
 
+    // The learned reader (work instruction 597): built only with CwRules.LearnedReader on, and then the sequence reader is not.
+    private CwLearnedReader? _learned;
+
+    /// <summary>The learned reader, for a test; null with its switch off, where it is never built.</summary>
+    internal CwLearnedReader? Learned => _learned;
+
     /// <summary>Whether the sequence reader is the path to the printer now (the owner's ruling on HM-DEC-295).</summary>
-    public bool SequenceReads => SequenceReading;
+    public bool SequenceReads => SequenceReading || _learned is not null;
 
     /// <summary>The station the sequence reader prints now, or null where it prints none or does not read.</summary>
     public CwSequenceReader.Station? SequenceStation => SequenceReading ? _sequence!.PrintedStation : null;
@@ -340,6 +346,11 @@ public sealed class CwEnvelopeDetector
     {
         lock (_gate)
         {
+            if (_learned is { } learned)
+            {
+                return learned.Take(final);
+            }
+
             return SequenceReading ? _sequence!.Take(final) : [];
         }
     }
@@ -1736,7 +1747,11 @@ public sealed class CwEnvelopeDetector
                 };
             }
             _columns = new CwColumnFinder(SampleRate, low, high);
-            _sequence = fromRig ? new CwSequenceReader(SampleRate, low, high) : null;
+            // **ONE READER PRINTS** (work instruction 597): the net hears the audio before any pitch or lane, so a new passband does not restart it.
+            var learnedReads = fromRig && CwRules.On(CwRules.LearnedReader);
+
+            _learned = learnedReads ? _learned ?? new CwLearnedReader(SampleRate) : null;
+            _sequence = fromRig && !learnedReads ? new CwSequenceReader(SampleRate, low, high) : null;
             _bankLane = null;
             _held.Clear();
             _pausedAt.Clear();
@@ -1856,6 +1871,7 @@ public sealed class CwEnvelopeDetector
             // hears none, since the bank's lanes feed nothing.
             var columns = ColumnsFinding;
             var sequence = SequenceReading;
+            var learned = _learned;
 
             foreach (var s in samples)
             {
@@ -1883,6 +1899,11 @@ public sealed class CwEnvelopeDetector
                 {
                     // **THE SEQUENCE READER** (work instruction 588): it hears every sample and the bank, which feeds nothing, none.
                     _sequence!.Push(s);
+                }
+                else if (learned is not null)
+                {
+                    // **THE LEARNED READER** (work instruction 597): the audio as it arrives, before any pitch, lane or mark.
+                    learned.Push(s);
                 }
                 else
                 {
@@ -2097,7 +2118,7 @@ public sealed class CwEnvelopeDetector
 
         // **A MARK IS A COLUMN** (work instruction 587): with the column finder as the finder the bank's lanes feed nothing and are
         // not run; the columns were offered to the pattern gate in CallMarks.
-        if (!ColumnsFinding && !SequenceReading)
+        if (!ColumnsFinding && !SequenceReading && _learned is null)
         {
             _bank?.Hop(nowSeconds);
 

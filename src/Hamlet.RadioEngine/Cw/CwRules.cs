@@ -183,7 +183,11 @@ internal static class CwRules
     /// </summary>
     public const string GapLearning = "the reader learns a hand's gaps";
 
-
+    /// <summary>
+    /// **THE LEARNED READER** (work instruction 597, HM-DEC-302): a trained net reads the audio (<see cref="CwLearnedReader"/>) and the sequence
+    /// reader is not built, so both never print at once. Off, nothing of it runs. Left off for the owner's ruling.
+    /// </summary>
+    public const string LearnedReader = "the learned reader";
 
 
     /// <summary>Every rule kept, in the order the work instruction names them.</summary>
@@ -207,7 +211,7 @@ internal static class CwRules
     /// The rules that ship off, built and measured and not taken: off unless a test chooses one on this thread with
     /// <see cref="Choose"/> (work instruction 565).
     /// </summary>
-    public static readonly IReadOnlySet<string> OffByDefault = new HashSet<string>(StringComparer.Ordinal) { BetweenClusters, StraddleSplit, GridStepsAside, HoldWaitsAndFits, FollowsTheFade, HeldLaneMarksAreItsStations, BankFinds, Columns, GapLearning };
+    public static readonly IReadOnlySet<string> OffByDefault = new HashSet<string>(StringComparer.Ordinal) { BetweenClusters, StraddleSplit, GridStepsAside, HoldWaitsAndFits, FollowsTheFade, HeldLaneMarksAreItsStations, BankFinds, Columns, GapLearning, LearnedReader };
 
     [ThreadStatic]
     private static HashSet<string>? _chosen;

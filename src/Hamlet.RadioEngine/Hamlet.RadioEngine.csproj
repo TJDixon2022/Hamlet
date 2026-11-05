@@ -20,6 +20,14 @@
          one class behind IAudioSource; everything else in the engine, the
          decoder included, only ever meets the interface. -->
     <PackageReference Include="NAudio" Version="2.2.1" />
+
+    <!-- The learned CW reader's runtime, CPU only (work instruction 597). -->
+    <PackageReference Include="Microsoft.ML.OnnxRuntime" Version="1.31.1" />
+  </ItemGroup>
+
+  <!-- The learned CW reader's net, copied beside the engine and loaded once (work instruction 597). -->
+  <ItemGroup>
+    <Content Include="Cw\Model\cwnet.onnx" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
   <!-- The FT8 decoder, built over steps 1 to 6 of this phase as a library with

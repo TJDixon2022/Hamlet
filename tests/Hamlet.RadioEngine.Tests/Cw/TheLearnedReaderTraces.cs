@@ -1,0 +1,129 @@
+using System.Globalization;
+using Hamlet.RadioEngine.Audio;
+using Hamlet.RadioEngine.Cw;
+using Xunit;
+using Xunit.Abstractions;
+
+namespace Hamlet.RadioEngine.Tests.Cw;
+
+/// <summary>
+/// **THE ROUNDS' TRACE AND QUICK MEASURE** (work instruction 597): what the learned reader prints beside the stretches in <c>CWNET_SPEC.md</c>, and
+/// its figures. Each asserts nothing and none is on a line.
+/// </summary>
+[Trait("Category", "Survey")]
+public sealed class TheLearnedReaderTraces(ITestOutputHelper output)
+{
+    private static readonly CultureInfo Inv = CultureInfo.InvariantCulture;
+
+    private void Write(string line) => output.WriteLine(line);
+
+    private static string Between(IReadOnlyList<TheRecordingsScoreboardTests.Printed> letters, double from, double to)
+        => TheRecordingsScoreboardTests.Text(letters.Where(l => l.Seconds >= from && l.Seconds < to).ToList());
+
+    /// <remarks>The order's trace: Ken, Bryan, W1AW's two pieces and the first recording, whole.</remarks>
+    [Fact]
+    public void TheTexts()
+    {
+        using var on = CwRules.Choose(CwRules.LearnedReader);
+        var ken = TheRecordingsScoreboardTests.ReadLive(CwWildHands.Recording).Letters;
+
+        Write("KEN 0-120 s: `" + Between(ken, 0, 120) + "`");
+        Write("BRYAN 120-300 s: `" + Between(ken, 120, 300) + "`");
+
+        foreach (var piece in new[] { "w1aw-2026-10-07/piece-03", "w1aw-2026-10-07/piece-04" })
+        {
+            var letters = TheRecordingsScoreboardTests.ReadLive(piece).Letters;
+
+            Write($"{piece} first 60 s: `" + Between(letters, 0, 60) + "`");
+        }
+
+        Write("the first recording: `" + TheRecordingsScoreboardTests.ReadLive("cw-2026-10-02-200157").Text + "`");
+    }
+
+    /// <remarks>The two real hands, per 20 s, as the survey scores them.</remarks>
+    [Fact]
+    public void TheHands()
+    {
+        using var on = CwRules.Choose(CwRules.LearnedReader);
+        var audio = WavAudio.Read(TheOwnersRecordingReadsTests.Wav(CwWildHands.Recording));
+        var (pitch, width) = TheRecordingsScoreboardTests.RadioState(CwWildHands.Recording);
+        var (letters, _) = CwWildHands.Read(audio.Samples, audio.SampleRate, pitch, width, []);
+        var map = TheKeyingMapTests.Read(CwWildHands.Recording, audio.Samples, audio.SampleRate);
+
+        foreach (var s in CwWildHands.Truths().Select(t => CwWildHands.ScoreOf(t, letters, map)))
+        {
+            Write(string.Create(Inv, $"{s.Truth.Name}, {s.Truth.From:0} to {s.Truth.To:0} s at {s.Truth.PitchHz:0} Hz: {s.Right} of {s.OutOf} right, {s.Wrong} wrong, {s.Invented} invented, {s.Silence} in silence, spaces {s.SpacesRight} of {s.SpacesOutOf}, {s.SpacesAdded} added"));
+
+            foreach (var w in s.Windows)
+            {
+                Write(string.Create(Inv, $"  {w.From:0}-{w.To:0} s: {w.Right} of {w.Letters}, {w.Wrong} wrong, {w.Invented} invented `{w.Printed}`"));
+            }
+        }
+    }
+
+    /// <remarks>The rounds' quick measure: the wild bank, the two boards, the first recording and the noise.</remarks>
+    [Fact]
+    public void TheQuickMeasure()
+    {
+        var rows = new System.Collections.Concurrent.ConcurrentBag<(Fixtures.CwWildHand Hand, TheCwSurveyTests.Row Row)>();
+        using var on = CwRules.Choose(CwRules.LearnedReader);
+        var rules = CwRules.Current;
+
+        Parallel.ForEach(Fixtures.CwWildBank.All, new ParallelOptions { MaxDegreeOfParallelism = 3 }, hand =>
+        {
+            using var here = CwRules.Use(rules);
+
+            rows.Add((hand, TheCwSurveyTests.Wild(hand)));
+        });
+
+        foreach (var recipe in Fixtures.CwWildBank.Recipes)
+        {
+            var mine = rows.Where(r => r.Hand.Recipe == recipe).ToList();
+
+            Write(string.Create(Inv, $"{recipe.Name}: {mine.Sum(r => r.Row.Right ?? 0)} right, {mine.Sum(r => r.Row.Wrong ?? 0)} wrong, {mine.Sum(r => r.Row.Invented ?? 0)} invented, score {mine.Sum(r => r.Row.Score ?? 0)}"));
+        }
+
+        Write(string.Create(Inv, $"total: {rows.Sum(r => r.Row.Right ?? 0)} right, {rows.Sum(r => r.Row.Wrong ?? 0)} wrong, {rows.Sum(r => r.Row.Invented ?? 0)} invented, score {rows.Sum(r => r.Row.Score ?? 0)}"));
+
+        var board = TheRecordingsScoreboardTests.Score();
+        var w1aw = TheW1awTableTests.Score();
+
+        Write(string.Create(Inv, $"the twelve-plus-three {board.Score}: {board.Total} of {board.OutOf}, {board.Wrong} wrong, {board.Invented} invented; W1AW {w1aw.Score}: {w1aw.Right} of {w1aw.OutOf}, {w1aw.Wrong} wrong, {w1aw.Invented} invented"));
+        Write("the first recording: " + board.FirstReads);
+        Write(string.Create(Inv, $"letters in silences: {board.SilencePrints.Count}"));
+
+        foreach (var n in board.Noise)
+        {
+            Write($"{n.What}: `{n.Reads}`");
+        }
+    }
+
+    /// <remarks>W1AW's piece-04 through the chain, shipped and learned, the process's CPU time, the first read thrown away to warm the process.</remarks>
+    [Fact]
+    public void TheCost()
+    {
+        const string Piece = "w1aw-2026-10-07/piece-04";
+        var audio = WavAudio.Read(TheOwnersRecordingReadsTests.Wav(Piece));
+        var (pitch, width) = TheRecordingsScoreboardTests.RadioState(Piece);
+
+        double Time(bool on)
+        {
+            using var chosen = on ? CwRules.Choose(CwRules.LearnedReader) : null;
+            var process = System.Diagnostics.Process.GetCurrentProcess();
+            var cpu = process.TotalProcessorTime;
+
+            TheRecordingsScoreboardTests.ReadLive(audio.Samples, audio.SampleRate, pitch, width);
+            process.Refresh();
+
+            return (process.TotalProcessorTime - cpu).TotalSeconds;
+        }
+
+        Time(false);
+        Time(true);
+
+        var shipped = Time(false);
+        var learned = Time(true);
+
+        Write(string.Create(Inv, $"{Piece}: {audio.Samples.Length / (double)audio.SampleRate:0} s of audio; shipped {shipped:0.0} s CPU, learned {learned:0.0} s CPU, {(learned - shipped) / shipped:+0%;-0%}"));
+    }
+}
