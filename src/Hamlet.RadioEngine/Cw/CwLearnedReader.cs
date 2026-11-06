@@ -83,6 +83,18 @@ public sealed class CwLearnedReader
     private bool _letterSinceSpace;
     private double _lastLetterSeconds = double.NegativeInfinity;
 
+    // **WHAT THE PANEL READS** (work instruction 598, task 3): written on the audio thread, read whole from any.
+    private const int PitchLetters = 10;
+    private const int LeastPitchLetters = 3;
+    private const double RateSeconds = 10;
+    private const int LeastRateCharacters = 5;
+    private const int LitOutputFrames = NetRate / SamplesPerOutputFrame;
+    private readonly Queue<double> _letterPitches = new();
+    private readonly Queue<double> _printedTimes = new();
+    private double _panelPitchHz = double.NaN;
+    private int _rateWpm;
+    private int _lit;
+
     /// <summary>Creates the reader.</summary>
     /// <param name="sampleRate">The rate of the audio it will be pushed.</param>
     public CwLearnedReader(int sampleRate)
@@ -153,6 +165,25 @@ public sealed class CwLearnedReader
 
         _lastFiltered = filtered;
     }
+
+    /// <summary>
+    /// **THE PANEL'S PITCH** (work instruction 598, task 3): the median of the last ten printed letters' mark pitches, NaN under three.
+    /// The median, because the net reads the louder of two stations and one letter's mark can land on the other.
+    /// </summary>
+    public double PanelPitchHz => Volatile.Read(ref _panelPitchHz);
+
+    /// <summary>
+    /// **THE PANEL'S SPEED, A LETTER RATE** (work instruction 598, task 3): letters and word spaces printed in the ten seconds of audio up
+    /// to the commit edge, as words a minute at five characters a word; null under five. The net names letters and measures no dit, so
+    /// this is a rate and never a measured speed.
+    /// </summary>
+    public int? LetterRateWpm => Volatile.Read(ref _rateWpm) is var wpm and > 0 ? wpm : null;
+
+    /// <summary>
+    /// **THE PANEL'S LIGHT** (work instruction 598, task 3): whether the newest run's last second, not yet committed, carries a letter or a
+    /// space anywhere in its argmax: it follows the keying a run at a time, once a second, where the committed stream is two seconds behind.
+    /// </summary>
+    public bool Lit => Volatile.Read(ref _lit) != 0;
 
     /// <summary>What was committed since the last call.</summary>
     /// <param name="final">True where the audio is over and everything is committed.</param>
@@ -382,6 +413,35 @@ public sealed class CwLearnedReader
 
             Commit(_committedUpTo, (int)(_committedUpTo - first), start, features, power, frames, scale, logits);
         }
+
+        // The light: the run's last second, which no run has committed yet; dark once the audio is over.
+        var lit = false;
+
+        for (var j = Math.Max(0, outputs - LitOutputFrames); !final && !lit && j < outputs; j++)
+        {
+            lit = Best(logits, j) != 0;
+        }
+
+        Volatile.Write(ref _lit, lit ? 1 : 0);
+
+        // The rate: what was printed in the ten seconds of audio up to the commit edge.
+        var edge = (_committedUpTo * SamplesPerOutputFrame / (double)NetRate) - _delaySeconds;
+
+        while (_printedTimes.Count > 0 && _printedTimes.Peek() <= edge - RateSeconds)
+        {
+            _printedTimes.Dequeue();
+        }
+
+        var count = _printedTimes.Count(t => t <= edge);
+
+        Volatile.Write(ref _rateWpm, count >= LeastRateCharacters ? (int)Math.Round(count * 60.0 / RateSeconds / 5) : 0);
+
+        // A pitch with nothing printed for ten seconds describes no reading now, so it goes blank and waits for three letters again.
+        if (_printedTimes.Count == 0 && _letterPitches.Count > 0)
+        {
+            _letterPitches.Clear();
+            Volatile.Write(ref _panelPitchHz, double.NaN);
+        }
     }
 
     // The greedy collapse over the committed stream (spec section 3): `_prev` carries across runs, so a letter spanning two is emitted once.
@@ -411,6 +471,7 @@ public sealed class CwLearnedReader
                         Stage = CwReadingStage.Settled,
                     },
                 });
+                _printedTimes.Enqueue(seconds);
                 _letterSinceSpace = false;
             }
 
@@ -439,6 +500,21 @@ public sealed class CwLearnedReader
         var score = Probability(logits, frame, index);
 
         _lastLetterSeconds = seconds;
+        _printedTimes.Enqueue(seconds);
+        _letterPitches.Enqueue(pitch);
+
+        if (_letterPitches.Count > PitchLetters)
+        {
+            _letterPitches.Dequeue();
+        }
+
+        if (_letterPitches.Count >= LeastPitchLetters)
+        {
+            var sorted = _letterPitches.Order().ToArray();
+            var middle = sorted.Length / 2;
+
+            Volatile.Write(ref _panelPitchHz, sorted.Length % 2 == 1 ? sorted[middle] : (sorted[middle - 1] + sorted[middle]) / 2);
+        }
 
         foreach (var element in pattern)
         {

@@ -2153,7 +2153,10 @@ public sealed class CwEnvelopeDetector
         // score before, and with the standing line gone a noise sequence scored over 0.2 and the light said hold here for
         // 377 steps while nothing printed. Amber while marks stand or form; no number of its own.
         var waiting = WaitingPitch?.Invoke() ?? double.NaN;
-        var light = keying && double.IsFinite(printed) ? CwShapeLight.Reading
+        // **THE LEARNED READER'S LIGHT** (work instruction 598, task 3): where it reads, lit while its newest uncommitted second holds a
+        // letter or a space, dark otherwise; the grid's sequences claim nothing for a printer they do not feed.
+        var light = _learned is { } learned ? (learned.Lit ? CwShapeLight.Reading : CwShapeLight.Listening)
+            : keying && double.IsFinite(printed) ? CwShapeLight.Reading
             : keying && double.IsFinite(waiting) ? CwShapeLight.Found
             : keying || forming > 0 ? CwShapeLight.Forming
             : CwShapeLight.Listening;

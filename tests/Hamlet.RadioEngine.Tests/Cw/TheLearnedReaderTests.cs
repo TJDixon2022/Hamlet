@@ -80,6 +80,60 @@ public sealed class TheLearnedReaderTests
         Assert.Equal(File.ReadAllText(Vector("cwnet-vector-text.txt")).Trim(), text.ToString());
     }
 
+    /// <summary>What the panel reads after each 100 ms piece of the vector, the learned reader on (work instruction 598, task 3).</summary>
+    private static List<(double Seconds, double PitchHz, int? Wpm, CwSpeedProof Proof, bool Lit, CwShapeLight Light)> Panel()
+    {
+        var audio = WavAudio.Read(Vector("cwnet-vector.wav"));
+        using var on = CwRules.Choose(CwRules.LearnedReader);
+        using var chain = new CwChain(audio.SampleRate);
+        var seen = new List<(double, double, int?, CwSpeedProof, bool, CwShapeLight)>();
+
+        chain.Detector.SetPassband(600, 500);
+
+        var piece = audio.SampleRate / 10;
+
+        for (var at = 0; at + piece <= audio.Samples.Length; at += piece)
+        {
+            chain.Process(new AudioChunk(at, audio.SampleRate, audio.Samples.AsSpan(at, piece)));
+            seen.Add(((at + piece) / (double)audio.SampleRate, chain.Decoder.PanelPitchHz, chain.Decoder.WordsPerMinute, chain.Decoder.SpeedProof, chain.Detector.Learned!.Lit, chain.Detector.Reading.ShapeLight));
+        }
+
+        return seen;
+    }
+
+    /// <remarks>The panel's pitch: the median of the learned letters' marks, within one bin of the vector's 579 Hz, and blank before three letters.</remarks>
+    [Fact]
+    public void ThePanelPitchIsTheLettersMedian()
+    {
+        var panel = Panel();
+
+        Assert.True(double.IsNaN(panel[0].PitchHz));
+        Assert.InRange(panel[^1].PitchHz, 579 - 31.25, 579 + 31.25);
+    }
+
+    /// <remarks>The panel's speed: a letter rate between 15 and 30 WPM on the vector's 21, said to be a hypothesis, never proved, and blank at the start.</remarks>
+    [Fact]
+    public void ThePanelSpeedIsALetterRate()
+    {
+        var panel = Panel();
+
+        Assert.Null(panel[0].Wpm);
+        Assert.InRange(panel[^1].Wpm ?? 0, 15, 30);
+        Assert.Equal(CwSpeedProof.Hypothesis, panel[^1].Proof);
+    }
+
+    /// <remarks>The panel's light: lit while the first ROGER is sent, from the net's uncommitted frames, and dark before 0.2 s; the light the panel shows follows it.</remarks>
+    [Fact]
+    public void ThePanelLightFollowsTheNet()
+    {
+        var panel = Panel();
+
+        Assert.All(panel.Where(p => p.Seconds < 0.2), p => Assert.False(p.Lit));
+        Assert.Contains(panel, p => p.Seconds >= 0.26 && p.Seconds <= 3.2 && p.Lit);
+        // Where the net's light held across two pieces, so no run fell between the detector's last hop and the look.
+        Assert.All(panel.Zip(panel.Skip(1)).Where(p => p.First.Lit == p.Second.Lit), p => Assert.Equal(p.Second.Lit ? CwShapeLight.Reading : CwShapeLight.Listening, p.Second.Light));
+    }
+
     /// <remarks>Off, nothing of this unit runs: the reader is never built, and the sequence reader reads as it did.</remarks>
     [Fact]
     public void TheSwitchOffIsSilent()

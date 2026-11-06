@@ -75,6 +75,9 @@ public sealed class CwChain : IDisposable
 
         // **THE SEQUENCE READER** (work instruction 588, HM-DEC-292): with it on, its letters are the only ones printed.
         decoder.SequenceSymbols = detector.SequenceSymbols;
+
+        // **THE PANEL READS THE LEARNED READER WHERE IT READS** (work instruction 598, task 3): its pitch and letter rate.
+        decoder.Learned = () => detector.Learned;
     }
     /// <summary>
     /// **THE PASSBAND IS THE RADIO'S, READ, OR THE WHOLE BAND** (work instruction 476): in CW or CW-R the radio's own CW

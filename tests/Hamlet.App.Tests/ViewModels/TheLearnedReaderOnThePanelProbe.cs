@@ -61,7 +61,7 @@ public sealed class TheLearnedReaderOnThePanelProbe(ITestOutputHelper output)
         for (var at = 0; at + perTick <= samples.Length; at += perTick)
         {
             chain.Process(new AudioChunk(at, audio.SampleRate, samples.AsSpan(at, perTick)));
-            frame = feed.Tick(envelope, envelope.Reading, decoder.RunsPrintingHz, frame, scopeQuiet: false, Now());
+            frame = feed.Tick(envelope, envelope.Reading, decoder.PanelPitchHz, frame, scopeQuiet: false, Now());
             hearing.ObserveScope(frame);
 
             var wpm = decoder.WordsPerMinute ?? 0;

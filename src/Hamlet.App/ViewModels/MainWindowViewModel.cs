@@ -12452,7 +12452,7 @@ public partial class MainWindowViewModel : ObservableObject
         CwHearing.ObserveScope(_scopeFeed.Tick(
             envelope,
             reading,
-            IsDecoding && _decoder is { } printing ? printing.RunsPrintingHz : double.NaN,
+            IsDecoding && _decoder is { } printing ? printing.PanelPitchHz : double.NaN,
             CwHearing.Scope,
             scopeQuiet: false,
             DateTime.UtcNow));

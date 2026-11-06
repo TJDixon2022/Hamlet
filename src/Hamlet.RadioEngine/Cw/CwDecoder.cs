@@ -127,6 +127,18 @@ public sealed class CwDecoder
     public double RunsWaitingHz => _runs.WaitingPitchHz;
 
     /// <summary>
+    /// The detector's learned reader, or null where it is not built (work instruction 598, task 3): it is built only with
+    /// <see cref="CwRules.LearnedReader"/> on, so with the switch off nothing reads it and every figure below is as it was.
+    /// </summary>
+    internal Func<CwLearnedReader?>? Learned { get; set; }
+
+    /// <summary>
+    /// **THE PITCH THE PANEL SAYS IT IS DECODING AT** (work instruction 598, task 3): the learned reader's letters' median pitch where it
+    /// reads, the printed sender's (<see cref="RunsPrintingHz"/>) otherwise. The detector still follows <see cref="RunsPrintingHz"/> alone.
+    /// </summary>
+    public double PanelPitchHz => Learned?.Invoke() is { } learned ? learned.PanelPitchHz : RunsPrintingHz;
+
+    /// <summary>
     /// The printed sender's pitch, dit and word gap, or null while none is printed (work instruction 576): what ends a held
     /// lane's hold. Read on the audio thread, where the decoder is fed.
     /// </summary>
@@ -192,6 +204,12 @@ public sealed class CwDecoder
     {
         get
         {
+            // **THE LEARNED READER'S LETTER RATE** (work instruction 598, task 3): where it reads, the speed is its rate, never a dit.
+            if (Learned?.Invoke() is { } learned)
+            {
+                return learned.LetterRateWpm is { } rate && rate >= SlowestPlausibleWpm && rate <= FastestPlausibleWpm ? rate : null;
+            }
+
             var side = ShapeSide;
 
             if (!double.IsFinite(side.PrintedPitchHz) || !(side.PrintedDitSeconds > 0))
@@ -212,8 +230,11 @@ public sealed class CwDecoder
     /// **PROVED WHERE <see cref="WordsPerMinute"/> NAMES A NUMBER** (work instruction 545): the gate prints a sender only
     /// while its two kinds of mark hold over its last ten and its gaps fall into kinds, and lets it go when it falls
     /// silent, so a dit it prints from is measured on keying still arriving. None otherwise.
+    /// **A LETTER RATE IS NOT PROVED** (work instruction 598, task 3): the learned reader measures no dit, so its rate is a
+    /// hypothesis by this type's own definition, and the panel says so beside it.
     /// </remarks>
-    public CwSpeedProof SpeedProof => WordsPerMinute is null ? CwSpeedProof.None : CwSpeedProof.Proved;
+    public CwSpeedProof SpeedProof
+        => WordsPerMinute is null ? CwSpeedProof.None : Learned?.Invoke() is not null ? CwSpeedProof.Hypothesis : CwSpeedProof.Proved;
 
     /// <summary>
     /// How long decoding stays suspended after the radio stops transmitting.
