@@ -120,6 +120,51 @@ public sealed class TheLearnedReaderTraces(ITestOutputHelper output)
         }
     }
 
+    /// <remarks>Work instruction 598: the twelve-plus-three stretch by stretch, KM3STU's rows marked, with the learned reader on.</remarks>
+    [Fact]
+    public void TheBoardRows()
+    {
+        using var on = CwRules.Choose(CwRules.LearnedReader);
+        var board = TheRecordingsScoreboardTests.Score(limits: false);
+
+        foreach (var s in board.Stretches)
+        {
+            var km3stu = s.Stretch.Recording.StartsWith("cw-2026-10-08-12", StringComparison.Ordinal) ? "KM3STU " : string.Empty;
+
+            Write(string.Create(Inv, $"{km3stu}{s.Stretch.Recording} {s.Stretch.From:0.#}-{s.Stretch.To:0.#} s @{s.Stretch.PitchHz:0} ({s.Stretch.Confidence}): {s.Right} of {s.ReferenceLetters}, {s.Wrong} wrong `{s.PrintedText}` against `{s.Stretch.Reference}`"));
+        }
+
+        var his = board.Stretches.Where(s => s.Stretch.Recording.StartsWith("cw-2026-10-08-12", StringComparison.Ordinal) && s.Stretch.Confidence >= TheRecordingsScoreboardTests.Confidence.Medium).ToList();
+
+        Write(string.Create(Inv, $"KM3STU counted: {his.Sum(s => s.Right)} of {his.Sum(s => s.ReferenceLetters)}, {his.Sum(s => s.Wrong)} wrong"));
+        Write(string.Create(Inv, $"the twelve-plus-three {board.Score}: {board.Total} of {board.OutOf}, {board.Wrong} wrong, {board.Invented} invented; first `{board.FirstReads}`; letters in silences {board.SilencePrints.Count}"));
+
+        foreach (var n in board.Noise)
+        {
+            Write($"{n.What}: `{n.Reads}`");
+        }
+    }
+
+    /// <remarks>Work instruction 598: the synthetic CQs and the easy receiver fixtures as the survey scores them, with the learned reader on.</remarks>
+    [Fact]
+    public void TheFixtures()
+    {
+        using var on = CwRules.Choose(CwRules.LearnedReader);
+        var root = CwFixtures.Folder;
+
+        foreach (var wav in Directory.GetFiles(Path.Combine(root, "synthetic-cq"), "*.wav").Order())
+        {
+            var row = TheCwSurveyTests.Truthful("cq", wav, TheCwSurveyTests.SheetText(wav), "sheet", 600, 500);
+
+            Write(string.Create(Inv, $"{Path.GetFileName(wav)}: {row.Right} of {row.OutOf}"));
+        }
+
+        var easy = Directory.GetFiles(Path.Combine(root, "receiver"), "*-easy.wav").Order()
+            .Select(wav => TheCwSurveyTests.Truthful("easy", wav, TheCwSurveyTests.SheetText(wav), "sheet", 600, 500)).ToList();
+
+        Write(string.Create(Inv, $"easy receiver fixtures: {easy.Sum(r => r.Right ?? 0)} of {easy.Sum(r => r.OutOf ?? 0)}"));
+    }
+
     /// <remarks>W1AW's piece-04 through the chain, shipped and learned, the process's CPU time, the first read thrown away to warm the process.</remarks>
     [Fact]
     public void TheCost()
