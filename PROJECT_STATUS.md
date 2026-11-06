@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 1 of 4
+TASK: 3 of 4
 WORK_INSTRUCTION: 598 - the learned reader, second model (run by hand)
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-11-05T21:43:00-05:00
-NOTE: Gate passed; reading the trace tests and the panel's feeds before running KM3STU on the first model
+UPDATED: 2026-11-05T21:55:26-05:00
+NOTE: Second model measured: KM3STU 55 of 65, the board 286, W1AW 2128; now wiring the panel's pitch, rate and light to the learned reader
 
 ---
 

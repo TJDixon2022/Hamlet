@@ -1,14 +1,33 @@
 # CWNET - the learned CW reader: what the engine must compute
 
-The model `cwnet.onnx` (ONNX opset 17, 5.6 MB) maps a feature matrix to per-frame letter
-scores. It was trained on synthetic keying only (48-hand wild recipes, 9-36 WPM, pitch
-380-900 Hz, band noise -4 to 45 dB, QSB, drift, a second station, receiver AGC). It has never
-heard a recording. Read here, before any code was written, it printed:
+**Second model (unit 598).** The model `cwnet.onnx` (ONNX opset 17, 5.6 MB) maps a feature
+matrix to per-frame letter scores. It is the first model trained further, on scenes the first
+never saw: the owner's radio as measured on KM3STU's captures - a DSP passband that is a wall
+(25 dB down within 60 Hz of the edge), a noise floor that sits *after* the AGC and so shows as a
+bright shadow of the keying in the bins outside the passband, an AGC that rides the noise itself
+and flickers in the gaps, a sender within 140 Hz of the passband's top edge - plus speeds down
+to 5 WPM and silent scenes. It has still never heard a recording. **The feature recipe (§2), the
+alphabet (§3) and the streaming rule (§4) are unchanged from the first model; only the weights
+differ.** `cwnet-vector.wav` and `cwnet-vector-feat.csv` are byte-for-byte the first model's;
+`cwnet-vector-ids.txt` is regenerated (one frame of 599 differs) and the text is still
+`ROGER TNX FER CALL`. The vector's tone is at 579 Hz (bin 10-11); its letters run from 0.26 s
+to 10.56 s, 18 characters with spaces, about 21 WPM by letter rate.
 
-- Ken (0-120 s of the draft-truth capture): `... QTH IIN W KENSENGTON, PT PA NR PITT NIURGH X NAME AS KEN KEN ... N3AFS DE KB2UZY/M`
-- Bryan (120-300 s): `GM KEN NCE TO MEET STNX FER RPRT URR 579 57N LIL NAM IN MOBILE STN AY NAME BRYAN BRYAN ES QTH IS CHICOPEE, MA CHICOPEE M, MA PARKED IN MY MOBILE = SO BTR KEN NMARS DE KB2UZY/MK`
-- W1AW piece-03: `... ENHANCEMENT MATERIAL GEFOR BURYING THE GROUND ROD. YOU CAN GET GEM FROM AN ELECTRICAL SPPLY HOUSE. ATTAC THE GROUND TO THE ANTENNA S RADIAL PLATE AND BOND CONNECT IT YOUR MAIN STATIO`
-- the first recording: `FER CHAT= BST 7V 73 ! KC4ZGP DE WA`
+Read here, before any code was written, the second model printed (the first model's read in
+brackets where it differed):
+
+- Ken (0-120 s of the draft-truth capture), 73 of 89 letters by draft truth [66]:
+  `F N DEALL4ANST SZ958N QTHIINWKENSENGTON,PT PANRPITTS NIURGH TU NAME IS KEN KEN SGHW+ KB2UM3DEN3ANS TN3AFS DE KB2UZY/M`
+- Bryan (120-300 s), 125 of 144 [128]:
+  `LOGM KEN NCE TOMSUNX FER RPRT URR 579 57N LILNAM IN MOBILE STN Y NAME BRYAN BRYAN ES QTH ISCHICOPEG, MA CHICOPEE M, MA PARKED IN MY MOBILE  SO BTLKEN N3AFS DE KB2UZY/ MK RRDE NIWARS N IY TOME`
+- KM3STU `cw-2026-10-08-121324` (0-60 s): `2KW3SOEE CQ POTA DE KM3STUK KQ4PAK` [`JKM3SKE CQ`]
+- KM3STU `cw-2026-10-08-121357` (0-60 s): `K RRTNX AGN URNN MK RR UR 55N 55N VA VA BK BKT` [`L RX RR`]
+- KM3STU `cw-2026-10-08-121414` (0-60 s): `RNKU  S72M3ST CQP` [`R`] - still mostly lost; with the
+  bins above his tone blanked by hand the same net prints `R 55N 55N VA VA BK BK TU RON VA S72 KM3STU CQP`,
+  so what is left is the shadow, not the keying
+- W1AW piece-03 (0-60 s): `WITH GROUND ENHANCEMENT MATERIAL GEFORE BURYING THE GROUND ROD. YOU CAN GET GEM FROM AN ELECTRICAL SUPPLY HOUSE. ATTACI THE GROUND TOTHE ANTENNAS RADIAL PLATE AND BOND CONNECTIT TO YOUR MAIN STATIO`
+- W1AW piece-04 (0-60 s): `OAN COMPARE SIGNALS. TORTH EAST WEAK SIGNAL GROUP AND THE SAN DIEGO MIKROWAVE GROUP GET TOGETHER TO COMPARE AND MEASURE STATIONS. IT IS A CHANCE TO COMPARE MINIMUM DIS CE`
+- the first recording: `FER CHAT= BST 7V 73 ! KC4ZGP DE WA`, 26 of 27 [same]
 
 If the engine's port prints these stretches like this, the port is right. If it prints
 garbage where these are readable, the port is wrong - the features, the resampling or the
@@ -60,7 +79,7 @@ window's start). Index 0 is the CTC blank. Indices 1..46 are, in order:
 
 **Greedy decode:** take the argmax index per output frame; walk the frames in time; emit a
 character when the index changes and is not 0. (`prev` starts at 0.) Index 1 is a word space.
-`cwnet-vector-ids.txt` holds the 599 argmax indices for the vector; `cwnet-vector-text.txt`
+`cwnet-vector-ids.txt` holds the 599 argmax indices for the vector (this model's); `cwnet-vector-text.txt`
 the decoded text `ROGER TNX FER CALL`. The engine must reproduce both.
 
 ## 4. Streaming: how the engine reads live
