@@ -165,6 +165,93 @@ public sealed class TheLearnedReaderTraces(ITestOutputHelper output)
         Write(string.Create(Inv, $"easy receiver fixtures: {easy.Sum(r => r.Right ?? 0)} of {easy.Sum(r => r.OutOf ?? 0)}"));
     }
 
+    /// <remarks>
+    /// Work instruction 599: with the learned reader on, every figure a guard on the lines asserts that the scoreboard trace does not print: the fist
+    /// bank's four rows and its fading half, `two-station`, each 5 dB CQ as the weak-end guard reads it, what prints in the 20 s of noise after each,
+    /// and the nine straight-key hands.
+    /// </remarks>
+    [Fact]
+    public void TheGuards()
+    {
+        using var on = CwRules.Choose(CwRules.LearnedReader);
+        var rules = CwRules.Current;
+        var fists = new System.Collections.Concurrent.ConcurrentBag<(Fixtures.CwFist Fist, int Right)>();
+
+        Parallel.ForEach(Fixtures.CwFistBank.All, new ParallelOptions { MaxDegreeOfParallelism = 3 }, fist =>
+        {
+            using var here = CwRules.Use(rules);
+
+            fists.Add((fist, TheCwSurveyTests.Fist(fist).Right ?? 0));
+        });
+
+        foreach (var ratio in new[] { 1.6, 2.0, 2.5, 3.0 })
+        {
+            Write(string.Create(Inv, $"fist bank, dah over dit {ratio:0.0}: {fists.Where(r => r.Fist.Ratio == ratio).Sum(r => r.Right)} of {fists.Count(r => r.Fist.Ratio == ratio) * 60}"));
+        }
+
+        Write(string.Create(Inv, $"fist bank, the fading half: {fists.Where(r => r.Fist.Fades).Sum(r => r.Right)} of {fists.Count(r => r.Fist.Fades) * 60}; the whole bank {fists.Sum(r => r.Right)}"));
+
+        var two = Path.Combine(CwFixtures.Folder, "receiver", "two-station.wav");
+        var twoRow = TheCwSurveyTests.Truthful("receiver fixtures: ungraded", two, TheCwSurveyTests.SheetText(two), "its sheet", 600, 500);
+
+        Write($"two-station: `{twoRow.Read}`, {twoRow.Right} of {twoRow.OutOf}");
+
+        var total = 0;
+
+        foreach (var (name, wav, r) in TheWeakEndTests.Files().Where(f => f.Name.Contains("-5db", StringComparison.Ordinal)))
+        {
+            var audio = WavAudio.Read(wav);
+            var reference = System.Text.RegularExpressions.Regex.Replace(r.Text, @"\^([A-Z]{2})", "<$1>");
+            var read = TheWeakEndTests.Chain(audio.Samples, audio.SampleRate, r.ToneHz, handover: true);
+            var right = TheRecordingsScoreboardTests.Right(read.Text, reference);
+
+            total += right;
+            Write($"5 dB CQ {name}: `{read.Text}`, {right} of {TheRecordingsScoreboardTests.Letters(reference).Length}");
+
+            var lastKeyUp = TheWeakEndTests.Sent(r)[^1].To;
+            var tail = audio.Samples.AsSpan(audio.Samples.Length - audio.SampleRate).ToArray();
+            var tailRms = Math.Sqrt(tail.Average(x => (double)x * x));
+            var silence = new float[20 * audio.SampleRate];
+            var silenceRms = Fixtures.CwFixtureGenerator.ShapedNoise(silence, r.Seed + 1);
+
+            for (var i = 0; i < silence.Length; i++)
+            {
+                silence[i] = (float)Math.Clamp(silence[i] * tailRms / silenceRms, -1, 1);
+            }
+
+            var samples = audio.Samples.Concat(silence).ToArray();
+            using var chain = new CwChain(audio.SampleRate);
+            var letters = new List<(double At, string Text)>();
+            var chunk = audio.SampleRate / 100;
+
+            chain.Detector.SetPassband(600, 500);
+            chain.Decoder.Runs.RunRead += (c, run) => letters.Add((run[^1].ToSeconds, c.Text));
+
+            for (var at = 0; at + chunk <= samples.Length; at += chunk)
+            {
+                chain.Process(new Hamlet.RadioEngine.Audio.AudioChunk(at, audio.SampleRate, samples.AsSpan(at, chunk)));
+            }
+
+            chain.Decoder.Flush();
+
+            var after = letters.Where(l => l.At > lastKeyUp + 0.05).ToList();
+
+            Write(string.Create(Inv, $"  then 20 s of noise: {after.Count} letters{(after.Count > 0 ? $", `{string.Join(" ", after.Select(a => $"{a.Text}@{a.At:0.0}"))}`" : string.Empty)}"));
+        }
+
+        Write($"5 dB CQs: {total} of 84");
+
+        foreach (var ratio in TheStraightKeyReadsTests.Ratios)
+        {
+            foreach (var seed in TheStraightKeyReadsTests.Seeds)
+            {
+                var row = TheStraightKeyReadsTests.Read(ratio, seed);
+
+                Write(string.Create(Inv, $"straight key, dah over dit {ratio:0.0}, seed {seed}: {row.Right} of {row.Of}, `{row.Reading.Text}`"));
+            }
+        }
+    }
+
     /// <remarks>W1AW's piece-04 through the chain, shipped and learned, the process's CPU time, the first read thrown away to warm the process.</remarks>
     [Fact]
     public void TheCost()
@@ -175,7 +262,7 @@ public sealed class TheLearnedReaderTraces(ITestOutputHelper output)
 
         double Time(bool on)
         {
-            using var chosen = on ? CwRules.Choose(CwRules.LearnedReader) : null;
+            using var chosen = on ? CwRules.Choose(CwRules.LearnedReader) : CwRules.Off(CwRules.LearnedReader);
             var process = System.Diagnostics.Process.GetCurrentProcess();
             var cpu = process.TotalProcessorTime;
 
