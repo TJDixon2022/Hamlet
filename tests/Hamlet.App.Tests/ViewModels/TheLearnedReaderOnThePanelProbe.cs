@@ -31,7 +31,8 @@ public sealed class TheLearnedReaderOnThePanelProbe(ITestOutputHelper output)
 
     private void Play(bool learned)
     {
-        using var chosen = learned ? CwRules.Choose(CwRules.LearnedReader) : null;
+        // The learned reader ships on (work instruction 599, HM-DEC-304), so the switch-off half turns it off.
+        using var chosen = learned ? CwRules.Choose(CwRules.LearnedReader) : CwRules.Off(CwRules.LearnedReader);
         var audio = WavAudio.Read(Path.Combine(RepositoryRoot(), "tests", "fixtures", "cwnet", "cwnet-vector.wav"));
         var random = new Random(598);
         var samples = audio.Samples.Concat(Enumerable.Range(0, 4 * audio.SampleRate).Select(_ => (float)((random.NextDouble() - 0.5) * 0.004))).ToArray();

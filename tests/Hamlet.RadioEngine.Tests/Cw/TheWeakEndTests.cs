@@ -579,6 +579,8 @@ public sealed class TheWeakEndTests(ITestOutputHelper output)
     /// 5 dB CQs reads half its letters or better. At the ship they read 13, 14, 16 and 19 of 21. Work instruction 576 (HM-DEC-280):
     /// a held lane keeps reading and its hold ends in a pause, and the four read 71 of 84 or better, 14, 17, 20 and 20 at the ship.
     /// The owner's ruling on HM-DEC-295, 2026-10-27: the sequence reader ships on and reads the four 84 of 84; they hold at 84 less one.
+    /// HM-DEC-304 (work instruction 599, the owner's ruling of 2026-11-06): the learned reader ships on and reads the four 83 of 84, 20,
+    /// 21, 21 and 21; they hold at 83, its own figure, which is the floor this test already had.
     /// </remarks>
     [Fact]
     public void TheWeakCqsReadAtHalfOrBetter()
@@ -642,11 +644,14 @@ public sealed class TheWeakEndTests(ITestOutputHelper output)
     /// <remarks>
     /// Work instruction 576, the silence after a weak station (HM-DEC-280): each 5 dB CQ followed by 20 s of the same band noise,
     /// its own shaping at its own level, read through the chain as it ships. Nothing prints in the 20 s: no letter whose last mark
-    /// ends after the CQ's last key-up.
+    /// ends after the CQ's last key-up. **Restated by HM-DEC-304** (work instruction 599, the owner's ruling of 2026-11-06): the learned
+    /// reader ships on and prints one letter in the four 20 s, an `E` 25.1 s into the 18 WPM CQ's file; the four together hold at one.
     /// </remarks>
     [Fact]
     public void NothingPrintsInTheSilenceAfterAWeakStation()
     {
+        var printed = 0;
+
         foreach (var (name, wav, r) in Files().Where(f => f.Name.Contains("-5db", StringComparison.Ordinal)))
         {
             var audio = WavAudio.Read(wav);
@@ -679,8 +684,10 @@ public sealed class TheWeakEndTests(ITestOutputHelper output)
             var after = letters.Where(l => l.At > lastKeyUp + 0.05).ToList();
 
             output.WriteLine(string.Create(Inv, $"{name}: the CQ `{string.Concat(letters.Where(l => l.At <= lastKeyUp + 0.05).Select(l => l.Text))}`, then in the 20 s: {after.Count} letters{(after.Count > 0 ? $", `{string.Join(" ", after.Select(a => $"{a.Text}@{a.At:0.0}"))}`" : string.Empty)}"));
-            Assert.Empty(after);
+            printed += after.Count;
         }
+
+        Assert.True(printed <= 1, $"{printed} letters printed in the silences after the four, over the learned reader's one");
     }
 
     /// <summary>One file's row.</summary>

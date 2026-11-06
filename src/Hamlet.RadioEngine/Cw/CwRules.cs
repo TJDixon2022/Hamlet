@@ -185,7 +185,9 @@ internal static class CwRules
 
     /// <summary>
     /// **THE LEARNED READER** (work instruction 597, HM-DEC-302): a trained net reads the audio (<see cref="CwLearnedReader"/>) and the sequence
-    /// reader is not built, so both never print at once. Off, nothing of it runs. Left off for the owner's ruling.
+    /// reader is not built, so both never print at once. Off, nothing of it runs. Work instruction 599, HM-DEC-304, the owner's ruling of
+    /// 2026-11-06: **on by default**, so the learned reader, second model, is what Hamlet reads with; a test turns it off with <see cref="Off"/>
+    /// to read with the sequence reader, which is built exactly as before.
     /// </summary>
     public const string LearnedReader = "the learned reader";
 
@@ -211,7 +213,7 @@ internal static class CwRules
     /// The rules that ship off, built and measured and not taken: off unless a test chooses one on this thread with
     /// <see cref="Choose"/> (work instruction 565).
     /// </summary>
-    public static readonly IReadOnlySet<string> OffByDefault = new HashSet<string>(StringComparer.Ordinal) { BetweenClusters, StraddleSplit, GridStepsAside, HoldWaitsAndFits, FollowsTheFade, HeldLaneMarksAreItsStations, BankFinds, Columns, GapLearning, LearnedReader };
+    public static readonly IReadOnlySet<string> OffByDefault = new HashSet<string>(StringComparer.Ordinal) { BetweenClusters, StraddleSplit, GridStepsAside, HoldWaitsAndFits, FollowsTheFade, HeldLaneMarksAreItsStations, BankFinds, Columns, GapLearning };
 
     [ThreadStatic]
     private static HashSet<string>? _chosen;

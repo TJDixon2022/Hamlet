@@ -415,6 +415,8 @@ public sealed class TheSequenceReaderTests(ITestOutputHelper output)
 
         (double Cpu, double Wall, string Text) Time(bool sequence)
         {
+            // Both readings are the sequence reader's and the finders', so the learned reader is off for both (work instruction 599).
+            using var pinned = CwRules.Off(CwRules.LearnedReader);
             using var on = sequence ? CwRules.Choose(CwRules.SequenceReader) : null;
             using var off = sequence ? null : CwRules.Off(CwRules.SequenceReader);
             var process = System.Diagnostics.Process.GetCurrentProcess();
@@ -815,6 +817,8 @@ public sealed class TheSequenceReaderTests(ITestOutputHelper output)
     /// <summary><see cref="TheRecordingsScoreboardTests.ReadLive(float[], int, double, double)"/>, the reader's trace kept.</summary>
     internal static IReadOnlyList<TheRecordingsScoreboardTests.Printed> ReadLiveTraced(float[] samples, int rate, double pitch, double width, List<string> trace, double watchHz = double.NaN)
     {
+        // The sequence reader's own trace: pinned to it with the learned reader off, which ships on (work instruction 599, HM-DEC-304).
+        using var pinned = CwRules.Off(CwRules.LearnedReader);
         using var chain = new CwChain(rate);
         var gate = chain.Decoder.Runs;
         var letters = new List<TheRecordingsScoreboardTests.Printed>();
@@ -848,6 +852,8 @@ public sealed class TheSequenceReaderTests(ITestOutputHelper output)
     /// <summary>Audio through the app's chain, the sequence reader's trace kept.</summary>
     internal static string Live(float[] samples, int rate, double pitch, double width, List<string>? trace)
     {
+        // Pinned to the sequence reader, as above (work instruction 599).
+        using var pinned = CwRules.Off(CwRules.LearnedReader);
         using var chain = new CwChain(rate);
         var characters = new List<CwCharacter>();
         var chunk = rate / 100;

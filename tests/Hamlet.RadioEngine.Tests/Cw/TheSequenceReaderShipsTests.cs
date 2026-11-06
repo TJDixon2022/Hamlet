@@ -8,7 +8,10 @@ namespace Hamlet.RadioEngine.Tests.Cw;
 /// **THE SEQUENCE READER SHIPS ON** (the owner's ruling on HM-DEC-295, 2026-10-27): <see cref="CwRules.SequenceReader"/> is on by
 /// default and is the only path to the printer. These hold what it reads at the ship that no other guard holds: the far side of a
 /// QSO, <c>two-station</c>, at 27 of 27, and the easy receiver fixtures at 90 of 90, each read and scored as the survey reads it
-/// (<see cref="TheCwSurveyTests.Truthful"/>).
+/// (<see cref="TheCwSurveyTests.Truthful"/>). **HM-DEC-304** (work instruction 599, the owner's ruling of 2026-11-06): the learned reader
+/// ships on, so these read the chain as it now ships and hold what it reads: <c>two-station</c> 27 of 27, unchanged, and the easy fixtures
+/// 87 of 90 (were 90). <see cref="TheReaderIsOnByDefault"/> holds the sequence reader's own switch, which is unchanged; the learned reader's
+/// switch decides which of the two is built.
 /// </summary>
 public sealed class TheSequenceReaderShipsTests(ITestOutputHelper output)
 {
@@ -44,6 +47,6 @@ public sealed class TheSequenceReaderShipsTests(ITestOutputHelper output)
         }
 
         Assert.Equal(90, outOf);
-        Assert.Equal(90, total);
+        Assert.True(total >= 87, $"the easy fixtures read {total} of 90, under the learned reader's 87");
     }
 }

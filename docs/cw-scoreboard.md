@@ -404,6 +404,7 @@ guard: the random carrier prints at 20 of 20 seeds, reported and not a condition
 | 596 | 2026-11-04 | 325 of 353 | 13 | 4 | **308** | 1, on `221502` | 92 of 110, 13 added | two judges (HM-DEC-300): with `GapLearning` on 308, 328 of 353, 18 wrong, 2 invented, 94 of 110, 13 added; left off; unchanged as shipped |
 | 597 | 2026-11-05 | 325 of 353 | 13 | 4 | **308** | 1, on `221502` | 92 of 110, 13 added | *learned reader, switch off* (HM-DEC-302): on 238, 251 of 353, 12 wrong, 1 invented, 9 in silence, 56 of 110, 3 added; unchanged as shipped |
 | 598 | 2026-11-05 | 325 of 353 | 13 | 4 | **308** | 1, on `221502` | 92 of 110, 13 added | *learned reader, second model, switch off* (HM-DEC-303): on 286, 302 of 353, 13 wrong, 3 invented, 11 in silence, 70 of 110, 4 added, KM3STU 55 of 65; unchanged as shipped |
+| 599 ruled | 2026-11-06 | 302 of 353 | 13 | 3 | **286** | 11 | 70 of 110, 4 added | *learned reader on - shipped*: the owner's ruling of 2026-11-06, HM-DEC-304; the learned reader, second model, is what Hamlet reads with, and the board is held at the figures it reads, KM3STU 55 of 65; the first recording reads `FER CHAT<BT> BEST 7V 73 <SK> KC4ZP DE WA`; the random carrier reported. Under the sequence reader, now off, 308 |
 
 ## Scans (work instruction 544, HM-DEC-248)
 
@@ -504,6 +505,7 @@ high and 25 medium, 2151 letters, all totalled.
 | 596 | 2026-11-04 | **2101** | 2125 of 2151 | 24 | 0 | 440 of 440, 8 added | two judges (HM-DEC-300): 2099 with `GapLearning` on, 25 wrong, 440 of 440, 9 added; left off; unchanged as shipped |
 | 597 | 2026-11-05 | **2101** | 2125 of 2151 | 24 | 0 | 440 of 440, 8 added | *learned reader, switch off* (HM-DEC-302): on 2048, 2063 of 2151, 15 wrong, 0 invented, 368 of 440, 9 added; unchanged as shipped |
 | 598 | 2026-11-05 | **2101** | 2125 of 2151 | 24 | 0 | 440 of 440, 8 added | *learned reader, second model, switch off* (HM-DEC-303): on 2128, 2132 of 2151, 4 wrong, 0 invented, 402 of 440, 3 added; unchanged as shipped |
+| 599 ruled | 2026-11-06 | **2128** | 2132 of 2151 | 4 | 0 | 402 of 440, 3 added | *learned reader on - shipped*: the owner's ruling of 2026-11-06, HM-DEC-304; the table held at the figures the learned reader reads. Under the sequence reader, now off, 2101 |
 
 **The fist bank** (work instruction 580, HM-DEC-284): ninety-six hands with a truth, every dah over dit of 1.6, 2.0, 2.5 and 3.0 at 10, 15, 20 and 25 WPM, 5, 10 and 20 dB, flat and fading, generated at test time from their recipes (`tests\Hamlet.RadioEngine.Tests\Cw\Fixtures\CwFistBank.cs`) and read by the survey as a group of its own, its matrices in `docs\cw-survey-2026-10-09.md` under `The fist bank`. A yardstick, not yet a guard.
 

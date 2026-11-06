@@ -32,14 +32,15 @@ a fixture decodes:
            log   TheOliviaLogsAsOliviaTests.AnOliviaContactLogsAsOlivia...         app
     CW     read  TheScoreboardGuardsCwTests, the scoreboard held to its last recorded row   engine   unit 552, HM-DEC-256
                  and the w1aw table held to its last row                             engine   unit 554, HM-DEC-258
-           read  the sequence reader ships on (the owner's ruling on HM-DEC-295, 2026-10-27):
+           read  shipped with the sequence reader (HM-DEC-295), restated for the learned reader (HM-DEC-304):
                  TheSequenceReaderTests.TheFirstProof, the prototype's cases     engine   HM-DEC-295
-                 TheFistBankGuardsTests, every bank row and the fading half       engine   HM-DEC-295
-                 TheWeakEndTests.TheWeakCqsReadAtHalfOrBetter, 83 of 84           engine   HM-DEC-295
-                 TheSequenceReaderShipsTests, two-station 27, easy fixtures 90    engine   HM-DEC-295
+                 TheFistBankGuardsTests, every bank row and the fading half       engine   HM-DEC-304
+                 TheWeakEndTests.TheWeakCqsReadAtHalfOrBetter, 83 of 84           engine   HM-DEC-304
+                 TheWeakEndTests.NothingPrintsInTheSilenceAfterAWeakStation, 1     engine   HM-DEC-304
+                 TheSequenceReaderShipsTests, two-station 27, easy fixtures 87    engine   HM-DEC-304
                  TheStraightKeyReadsTests.EveryHandReadsFortyEight, nine hands     engine   HM-DEC-285
-           read  the learned reader, switch off by default (work instruction 598):
-                 Cw.TheLearnedReaderTests, the vector and the panel, seven cases   engine   HM-DEC-303
+           read  the learned reader, on by default (work instruction 599, HM-DEC-304), the guards above held at its figures:
+                 Cw.TheLearnedReaderTests, the vector, the panel and the switch    engine   HM-DEC-304
 
 EVERY UNIT RUNS THIS LIST BEFORE ITS FIRST CHANGE AND AFTER ITS LAST. A RED AFTER THAT WAS
 GREEN BEFORE IS A REGRESSION, and the report names it as one in section 1 and section 4.

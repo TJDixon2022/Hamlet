@@ -169,6 +169,8 @@ public sealed class TheWildBankTests(ITestOutputHelper output)
     [Trait("Category", "Survey")]
     public void TheBaselineTrace()
     {
+        // What the sequence reader learned, so it is read with the sequence reader: the learned reader off (work instruction 599, HM-DEC-304).
+        using var pinned = CwRules.Off(CwRules.LearnedReader);
         var inv = CultureInfo.InvariantCulture;
         var wav = WavAudio.Read(TheOwnersRecordingReadsTests.Wav(CwWildHands.Recording));
         var (pitch, width) = TheRecordingsScoreboardTests.RadioState(CwWildHands.Recording);

@@ -134,14 +134,20 @@ public sealed class TheLearnedReaderTests
         Assert.All(panel.Zip(panel.Skip(1)).Where(p => p.First.Lit == p.Second.Lit), p => Assert.Equal(p.Second.Lit ? CwShapeLight.Reading : CwShapeLight.Listening, p.Second.Light));
     }
 
-    /// <remarks>Off, nothing of this unit runs: the reader is never built, and the sequence reader reads as it did.</remarks>
+    /// <remarks>
+    /// Off, nothing of this unit runs: the reader is never built, and the sequence reader reads as it did. Work instruction 599, HM-DEC-304: the
+    /// switch ships on, so the test turns it off itself, and first asserts that it is on by default.
+    /// </remarks>
     [Fact]
     public void TheSwitchOffIsSilent()
     {
         var audio = WavAudio.Read(Vector("cwnet-vector.wav"));
-        using var chain = new CwChain(audio.SampleRate);
 
-        Assert.Contains(CwRules.LearnedReader, CwRules.OffByDefault);
+        Assert.DoesNotContain(CwRules.LearnedReader, CwRules.OffByDefault);
+        Assert.True(CwRules.On(CwRules.LearnedReader), "the learned reader is not on by default");
+
+        using var off = CwRules.Off(CwRules.LearnedReader);
+        using var chain = new CwChain(audio.SampleRate);
 
         chain.Detector.SetPassband(600, 500);
 

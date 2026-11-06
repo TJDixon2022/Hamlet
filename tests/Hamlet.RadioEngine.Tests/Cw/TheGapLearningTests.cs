@@ -365,6 +365,8 @@ public sealed class TheGapLearningTests(ITestOutputHelper output)
 
         (double Cpu, double Wall, string Text) Time(bool on)
         {
+            // A rule of the sequence reader's, read with the sequence reader: the learned reader off (work instruction 599).
+            using var pinned = CwRules.Off(CwRules.LearnedReader);
             using var chosen = on ? CwRules.Choose(CwRules.GapLearning) : null;
             var process = System.Diagnostics.Process.GetCurrentProcess();
             var cpu = process.TotalProcessorTime;
@@ -958,6 +960,7 @@ public sealed class TheGapLearningTests(ITestOutputHelper output)
     [Trait("Category", "Survey")]
     public void TheBoardTraced()
     {
+        using var pinned = CwRules.Off(CwRules.LearnedReader);
         using var on = CwRules.Choose(CwRules.GapLearning);
         output.WriteLine(TheRecordingsScoreboardTests.Table(TheRecordingsScoreboardTests.Score()));
     }
@@ -967,6 +970,7 @@ public sealed class TheGapLearningTests(ITestOutputHelper output)
     [Trait("Category", "Survey")]
     public void TheW1awTraced()
     {
+        using var pinned = CwRules.Off(CwRules.LearnedReader);
         var off = TheW1awTableTests.Score();
         using var on = CwRules.Choose(CwRules.GapLearning);
         var chosen = TheW1awTableTests.Score();
@@ -987,6 +991,8 @@ public sealed class TheGapLearningTests(ITestOutputHelper output)
     [Trait("Category", "Survey")]
     public void TheNoiseBothWays()
     {
+        using var pinned = CwRules.Off(CwRules.LearnedReader);
+
         foreach (var ruleOn in new[] { false, true })
         {
             using var chosen = ruleOn ? CwRules.Choose(CwRules.GapLearning) : null;
@@ -1010,6 +1016,7 @@ public sealed class TheGapLearningTests(ITestOutputHelper output)
     public void TheQuickMeasure()
     {
         var rows = new System.Collections.Concurrent.ConcurrentBag<(CwWildHand Hand, TheCwSurveyTests.Row Row)>();
+        using var pinned = CwRules.Off(CwRules.LearnedReader);
         using var on = CwRules.Choose(CwRules.GapLearning);
         var rules = CwRules.Current;
 

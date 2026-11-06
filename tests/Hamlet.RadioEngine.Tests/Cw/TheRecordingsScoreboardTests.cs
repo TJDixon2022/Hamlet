@@ -508,15 +508,17 @@ public sealed class TheRecordingsScoreboardTests
     /// <summary>
     /// **THE HARD LIMITS, RESTATED** (the owner's ruling on HM-DEC-295, 2026-10-27): the sequence reader ships on, and the first
     /// recording reads as it reads it, `E` and `R` of `FER` merged into `F` across the hand's 151 ms letter gap, a known loss, and
-    /// `DEWA` as one unreadable letter.
+    /// `DEWA` as one unreadable letter. **Restated again by HM-DEC-304** (work instruction 599, the owner's ruling of 2026-11-06): the
+    /// learned reader ships on and the first recording reads as it reads it, `FER` whole, `C HAT` run together, the `G` of `KC4ZGP`
+    /// lost and `DEWA` read as `DE WA`: 26 of its 27 letters. It was `FF C HAT<BT> BEST 7V 73 <SK> KC4ZGP ■` under the sequence reader.
     /// </summary>
-    internal const string FirstRecordingReads = "FF C HAT<BT> BEST 7V 73 <SK> KC4ZGP ■";
+    internal const string FirstRecordingReads = "FER CHAT<BT> BEST 7V 73 <SK> KC4ZP DE WA";
 
     /// <summary>
     /// Letters printed in a silence of two seconds or more, at most (the owner's ruling on HM-DEC-295): the one on 221502, a letter
-    /// whose last two marks the reader laid 340 ms into a pause.
+    /// whose last two marks the reader laid 340 ms into a pause. Restated by HM-DEC-304 at the learned reader's 11 (was 1).
     /// </summary>
-    internal const int SilencePrintsAllowed = 1;
+    internal const int SilencePrintsAllowed = 11;
 
     /// <summary>Loud noise, 30 s and three minutes, at the two seeds the noise tests use; a carrier keyed at random at twenty seeds; and a steady carrier.</summary>
     internal static List<(string What, string Reads)> NoiseRuns()
