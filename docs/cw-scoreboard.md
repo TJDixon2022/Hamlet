@@ -403,6 +403,7 @@ guard: the random carrier prints at 20 of 20 seeds, reported and not a condition
 | 595 | 2026-11-04 | 325 of 353 | 13 | 4 | **308** | 1, on `221502` | 92 of 110, 13 added | validity is words (HM-DEC-299): with `GapLearning` on 286, 317 of 353, 21 wrong, 10 invented, 93 of 110, 16 added; left off; unchanged as shipped |
 | 596 | 2026-11-04 | 325 of 353 | 13 | 4 | **308** | 1, on `221502` | 92 of 110, 13 added | two judges (HM-DEC-300): with `GapLearning` on 308, 328 of 353, 18 wrong, 2 invented, 94 of 110, 13 added; left off; unchanged as shipped |
 | 597 | 2026-11-05 | 325 of 353 | 13 | 4 | **308** | 1, on `221502` | 92 of 110, 13 added | *learned reader, switch off* (HM-DEC-302): on 238, 251 of 353, 12 wrong, 1 invented, 9 in silence, 56 of 110, 3 added; unchanged as shipped |
+| 598 | 2026-11-05 | 325 of 353 | 13 | 4 | **308** | 1, on `221502` | 92 of 110, 13 added | *learned reader, second model, switch off* (HM-DEC-303): on 286, 302 of 353, 13 wrong, 3 invented, 11 in silence, 70 of 110, 4 added, KM3STU 55 of 65; unchanged as shipped |
 
 ## Scans (work instruction 544, HM-DEC-248)
 
@@ -502,6 +503,7 @@ high and 25 medium, 2151 letters, all totalled.
 | 595 | 2026-11-04 | **2101** | 2125 of 2151 | 24 | 0 | 440 of 440, 8 added | validity is words (HM-DEC-299): 2103 with `GapLearning` on, 23 wrong; left off; unchanged as shipped |
 | 596 | 2026-11-04 | **2101** | 2125 of 2151 | 24 | 0 | 440 of 440, 8 added | two judges (HM-DEC-300): 2099 with `GapLearning` on, 25 wrong, 440 of 440, 9 added; left off; unchanged as shipped |
 | 597 | 2026-11-05 | **2101** | 2125 of 2151 | 24 | 0 | 440 of 440, 8 added | *learned reader, switch off* (HM-DEC-302): on 2048, 2063 of 2151, 15 wrong, 0 invented, 368 of 440, 9 added; unchanged as shipped |
+| 598 | 2026-11-05 | **2101** | 2125 of 2151 | 24 | 0 | 440 of 440, 8 added | *learned reader, second model, switch off* (HM-DEC-303): on 2128, 2132 of 2151, 4 wrong, 0 invented, 402 of 440, 3 added; unchanged as shipped |
 
 **The fist bank** (work instruction 580, HM-DEC-284): ninety-six hands with a truth, every dah over dit of 1.6, 2.0, 2.5 and 3.0 at 10, 15, 20 and 25 WPM, 5, 10 and 20 dB, flat and fading, generated at test time from their recipes (`tests\Hamlet.RadioEngine.Tests\Cw\Fixtures\CwFistBank.cs`) and read by the survey as a group of its own, its matrices in `docs\cw-survey-2026-10-09.md` under `The fist bank`. A yardstick, not yet a guard.
 
@@ -572,6 +574,8 @@ Work instruction 592, HM-DEC-296. Two real hands on `cw-2026-10-19-141708`, scor
 | 596, `GapLearning` on, not shipped | 2026-11-04 | 43 of 76 | 25 | 0 | 12 of 16, 7 added | 123 of 144 | 14 | 1 | 36 of 40, 11 added |
 | 597, as shipped, *learned reader, switch off* | 2026-11-05 | 43 of 76 | 25 | 0 | 11 of 16, 7 added | 118 of 144 | 17 | 0 | 36 of 40, 19 added |
 | 597, *learned reader* on, not shipped | 2026-11-05 | 51 of 76 | 20 | 0 | 8 of 16, 2 added | 127 of 144 | 9 | 0 | 29 of 40, 1 added |
+| 598, as shipped, *learned reader, second model, switch off* | 2026-11-05 | 43 of 76 | 25 | 0 | 11 of 16, 7 added | 118 of 144 | 17 | 0 | 36 of 40, 19 added |
+| 598, *learned reader, second model* on, not shipped | 2026-11-05 | 51 of 76 | 19 | 0 | 7 of 16, 2 added | 124 of 144 | 12 | 0 | 34 of 40, 1 added |
 
 ## Wild bank
 
@@ -590,3 +594,5 @@ Work instruction 592, HM-DEC-296. Forty-eight hands from six recipes (`CwWildBan
 | 596, `GapLearning` on, not shipped | 2026-11-04 | 3298 of 3528 | 187 | 0 | 3111 | 941 of 1104, 258 added | 550 | 466 | 573 | 548 | 573 | 588 |
 | 597, as shipped, *learned reader, switch off* | 2026-11-05 | 3133 of 3528 | 274 | 0 | 2859 | 923 of 1104, 400 added | 522 | 459 | 567 | 489 | 524 | 572 |
 | 597, *learned reader* on, not shipped | 2026-11-05 | 3398 of 3528 | 91 | 0 | 3307 | 850 of 1104, 32 added | 548 | 469 | 583 | 540 | 581 | 586 |
+| 598, as shipped, *learned reader, second model, switch off* | 2026-11-05 | 3133 of 3528 | 274 | 0 | 2859 | 923 of 1104, 400 added | 522 | 459 | 567 | 489 | 524 | 572 |
+| 598, *learned reader, second model* on, not shipped | 2026-11-05 | 3372 of 3528 | 101 | 0 | 3271 | 858 of 1104, 31 added | 548 | 444 | 584 | 535 | 583 | 577 |

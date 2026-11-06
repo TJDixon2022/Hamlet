@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: EXECUTING
+STATE: COMPLETED
 TASK: 4 of 4
 WORK_INSTRUCTION: 598 - the learned reader, second model (run by hand)
-BALL: code
-NEXT_PASTE: none
+BALL: tim
+NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-11-05T21:56:39-05:00
-NOTE: Panel wired and its three tests green; starting the survey with the switch on, then the engine and app lines
+UPDATED: 2026-11-05T22:35:48-05:00
+NOTE: Second model reads KM3STU 55 of 65 and W1AW 2128; the panel reads the net; switch still off, board 286 against 308; the owner rules
 
 ---
 

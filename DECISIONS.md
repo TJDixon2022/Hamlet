@@ -4,6 +4,21 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-303
+date: 2026-11-05
+refs: work instruction 598, HM-DEC-302, HM-DEC-301, src/Hamlet.RadioEngine/Cw/CwLearnedReader.cs, src/Hamlet.RadioEngine/Cw/Model/CWNET_SPEC.md, src/Hamlet.RadioEngine/Cw/CwDecoder.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheLearnedReaderTests.cs
+---
+
+**HM-DEC-303 - The learned reader, second model.** `cwnet.onnx` is replaced by a model of the same shape, trained from the first on scenes the first never saw: the pitch at the edge of a receiver passband, a residual floor outside the passband pumped by the receiver's AGC, speeds down to 5 WPM, and silent scenes. It has heard no recording. The feature recipe, the alphabet and the streaming rule are unchanged, so the port is unchanged; the vector files are regenerated for the new model and the four vector tests pass. With the switch on: KM3STU 55 of 65 (was 0), the twelve-plus-three 286 (was 238, shipped 308), W1AW 2128 (was 2048, shipped 2101), Bryan 124 of 144 (was 127, shipped 118), Ken 51 of 76 (was 51, shipped 43), the wild bank 3271 (was 3307), the fist bank 5086 (was 5255), the first recording 26 of 27, letters in silences 11 (was 9), the random-keyed carrier at 20 of 20 seeds. The panel with the switch on shows the learned letters' pitch, a speed from the letter rate, and the light from the net's own activity. The switch ships off; the owner rules on turning it on. *Rejected:* tuning the first model's features or thresholds to KM3STU - the recipe is the contract with the port, and a model that needs the recipe bent for one station will need it bent for the next. *Rejected:* training on the recordings - the recordings are the yardstick, and a model that has heard them cannot be measured by them.
+
+Ordered by work instruction 598, whose text this is with the figures filled from the measure.
+
+**What else the measure shows, switch on, second model against first:** the 0 dB CQs 52 of 84 (was 61), the 5 dB CQs 83 of 84 (was 84), the 15 dB CQs 82 of 84, the easy fixtures 87 of 90 (unchanged), noise and the steady carrier silent, spaces on the twelve-plus-three 70 of 110 with 4 added (was 56 with 3), on W1AW 402 of 440 with 3 added (was 368 with 9), CPU on W1AW piece-04 44.3 s against the shipped 106.6 s, down 58% (was 59%). KM3STU's three recordings read `2KWI3SR EE CQ POTADE KM3STUK KQ4PAK`, `K FRTNX AGN URSNN5RN MBK RR UR 55D 55N VA VAK BKT` and `R55N5K BK TURON VA S72 K M3STUE CQP`.
+
+**The panel, as built, with the switch on.** The scope's `decoding at` line reads the median pitch of the last ten learned letters' marks, blank under three, and blank again once ten seconds of audio pass with nothing printed, since a pitch with nothing decoding describes no reading. The speed is the letters and word spaces printed in the ten seconds of audio up to the commit edge, at five characters a word, blank under five, and its proof is `Hypothesis`, shown as *not proved*, because `CwSpeedProof.Proved` is defined as a speed from a measured dit and the net measures none; it reads low while its first ten seconds fill. The light is green (`reading`) while the newest run's last second, not yet committed, carries a non-blank argmax, dark (`listening`) otherwise, once a second. With the switch off the learned reader is never built and every one of the three reads as before.
+
+**The sequence reader feeds none of the three** (found in task 1, by running the tab's chain on the vector): `CwSenderGate.PrintSequence` hands its symbols to the lookup table only, so the gate's printed pitch and dit stay empty, and the shipped panel shows `no station`, no speed and no green light while it prints. Recorded, not changed: the sequence reader was not this unit's to touch.
+---
 id: HM-DEC-302
 date: 2026-11-05
 refs: work instruction 597, HM-DEC-301, HM-DEC-296, HM-DEC-284, HM-DEC-276, src/Hamlet.RadioEngine/Cw/CwLearnedReader.cs, src/Hamlet.RadioEngine/Cw/Model/CWNET_SPEC.md, tests/Hamlet.RadioEngine.Tests/Cw/TheLearnedReaderTests.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheLearnedReaderTraces.cs

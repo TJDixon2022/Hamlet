@@ -1,189 +1,172 @@
-UNIT:       597 - complete at task 3 of 3 (one round of a possible three, the measure, the end) - 2026-11-05 11:45
+UNIT:       598 - complete at task 4 of 4 (the trace, the second model, the panel, the end) - 2026-11-05 22:34
 PHASE GOAL: Hamlet meets its CW requirements.
-UNIT GOAL:  Put the trained reader into the engine behind an off switch, prove the port against the shipped vector, and measure it for the owner's ruling.
-ADVANCED:   no - the switch ships off, so nothing the operator runs reads differently; it gives the owner a measured candidate.
-NUMBER:     with the switch on, Bryan 118 -> 127 of 144, Ken 43 -> 51 of 76; as shipped, unchanged
-DRIFT:      not carried - the order gives no count to carry
+UNIT GOAL:  The learned reader reads the station at the passband edge, and the panel (pitch, speed, the light) shows what it hears, so the owner can rule on turning it on.
+ADVANCED:   yes, task 2 (the model) and task 3 (the panel). The switch still ships off, so nothing the operator runs reads differently.
+NUMBER:     with the switch on, KM3STU 0 -> 55 of 65; the twelve-plus-three 238 -> 286 (shipped 308); as shipped, unchanged
+DRIFT:      0 - this unit advanced both tasks it named
 
 ## 1. What Claude did
 
-**Complete.** Claude Code on the development computer, branch `main`, pushed. The prompt named `PROJECT: Hamlet`, and the order's five checks passed. Nothing here is evidence about the radio. Version 1.13.283 to 1.13.284. Rulings HM-DEC-301 and HM-DEC-302, the numbers the order named. The lock was taken with the root named and released, and it sat in `C:\Source\HamLet\SESSION.lock` this time. Nothing was written to `RUN_LEDGER.md`, nothing under `tools\arbiter\` was touched, and no box was ticked in `PHASE_PLAN.md`. The draft truth was not edited. Nothing keys or transmits, nothing was written to the radio, and no recording was added, removed or promoted. No process I did not start was stopped.
+**Complete, all four tasks.** Claude Code on the development computer, branch `main`, every push accepted. The prompt named `PROJECT: Hamlet`, and the order's four gate checks passed: `SHACK_FACTS.md` and `CwLearnedReader.cs` exist, and there's no `CoreHMI.sln` or `MURC.sln`, at `C:\Source\HamLet`. Nothing here is evidence about the radio. Version 1.13.284 to 1.13.285, ruling HM-DEC-303 as numbered. The lock was taken with the root named and released. Nothing was written to `RUN_LEDGER.md`, nothing under `tools\arbiter\` was touched, and no box was ticked in `PHASE_PLAN.md`. The draft truth was not edited. Nothing keys or transmits, nothing was written to the radio, and no recording was added, removed or promoted. No process I did not start was stopped. The unit took about 55 minutes.
 
-**Round one, and the only one** (`a05b7fb0`, `fc54eea7`):
-- `Microsoft.ML.OnnxRuntime` 1.31.1 restored from NuGet, with `cwnet.onnx` copied beside the engine and loaded once on one thread.
-- `CwLearnedReader` built to the spec. All four vector tests passed on the first build that ran them.
-- `CwRules.LearnedReader`, off by default. On, the sequence reader is not built. Off, the learned reader is never constructed.
-- Letters reach the lookup table as dots, dashes and letter ends, so the terminal needed no change and nothing on screen moves.
+**Task 1, the trace, nothing built** (`f2bc4c65`):
+- **KM3STU on the first model, switch on:** `KM3SKE CQ`, `RR`, and nothing. That's 0 of 65 on the twelve-plus-three, which reads 238.
+- **The panel, by running the tab's own chain and scope feed on the vector, not by reading the code.** I used a headless probe, `TheLearnedReaderOnThePanelProbe`, because no radio can be connected here. With either switch position the panel showed `no station`, a blank speed, and a light that never went green. The `tone ... heard` line comes from the grid, not from any reader.
+- **The path, by file and method.**
+  - The `decoding at` line is `CwDecoder.RunsPrintingHz`, which is `CwSenderGate.StationPitchHz`, handed to `CwScopeFeed.Tick` at `MainWindowViewModel.cs:12455`.
+  - The speed is `CwDecoder.WordsPerMinute`, the printed sender's dit, via `DetectedWpm` into `TerminalSpeedText`.
+  - The light is `CwEnvelopeReading.ShapeLight`, set in `CwEnvelopeDetector`'s hop from the grid's standing sequences and the gate's printed or waiting pitch.
+- **No path from either reader to those three existed.** `CwSenderGate.PrintSequence` hands symbols to the lookup table only, so the gate's printed pitch and dit stay empty under the sequence reader too. The work order says the sequence reader already feeds these three places; it does not (section 4).
 
-**Rounds two and three were not run.** The order calls for them only if the vector test fails or the trace disagrees with the spec, and neither happened.
+**Task 2, the second model** (`a28da517`):
+- `cwnet.onnx` and `CWNET_SPEC.md` were replaced from `model\`. The vector's wav, features and text were byte-identical to the old, and its ids differed, as the order said.
+- **The four vector tests passed on the first build.** `FeaturesMatchTheVector` did not change state.
+- The quick measure ran with the switch on, by `CwRules.Choose` in the trace tests, so the source never had it on. Nothing in the model, the alphabet or the feature recipe was tuned.
 
-**One fix inside round one, in my own tagging and not in the port.** The first trace scored Bryan 89 of 144 with his text nearly right. I had tagged each letter's pitch from the log features, which swing widely in bins outside the radio's filter, so about 75 letters landed at the edge bins, 250 Hz and 950 Hz or more, and the scorer left them out of their stretches. Tagged from raw power, Bryan scores 127. The net's text is byte-identical before and after.
+**Task 3, the panel** (`250e7f71`). With the switch on, the three things the panel shows now come from the learned reader. Nothing on screen moves:
+- **Pitch:** `CwDecoder.PanelPitchHz`, the median of the last ten learned letters' mark pitches, blank under three. The scope's `decoding at` line reads it. The detector itself still follows `RunsPrintingHz` alone.
+- **Speed:** `CwDecoder.WordsPerMinute` becomes the learned reader's letter rate, the letters and word spaces of the ten seconds up to the commit edge at five characters a word, blank under five.
+- **Light:** green (`reading`) while the newest run's last second, not yet committed, carries a non-blank argmax, and dark (`listening`) otherwise.
+- **Three tests in `TheLearnedReaderTests`**, each about a second: the pitch within a bin of 579 Hz, the speed 15 to 30 WPM, and the light lit during the first `ROGER` and dark before 0.2 s.
+- With the switch off, the learned reader is never built, so every value comes through the shipped path unchanged.
 
-**Decisions I made for myself, all for the owner to overrule:**
-- **A letter's mark.** The net gives no marks or pitch, and the scoring needs both. So each letter carries one mark measured afterwards: its span runs back from the frame that named it to the last letter, 0.6 s at most, and its pitch is the bin with the most raw power over that span. This decides no letter. The 0.6 s is my choice, and a wide span makes `invented` lenient, so read the zeros with that in mind.
-- **Dimming.** A letter is dimmed where the net's own probability is under one half, the line the sequence reader uses for its own score. This touches what the display asserts, so it is also asked in section 4.
-- **Spaces.** A word end at the very start of the stream or straight after another is dropped, so the terminal's spacing stays as it is. This adds no space.
-- **Fixtures.** The vector files are in `tests\fixtures\cwnet\`, outside `tests\fixtures\cw\`, so the survey's folder count does not change. `Cw\Model\` holds the whole of `model\`, as the order says.
-- **One extra trace, `TheEmptyRows`,** to learn why three board rows were empty. It is filtered, on no line, and not a survey.
+**Task 4, the end** (this commit): the survey once with the switch on, then the engine and app lines with it off. `TheLearnedReaderTests` is now on the engine line's carry-forward list. The survey's `Rerun` line says *learned reader, second model*. The records:
+- `DECISIONS.md` HM-DEC-303
+- the `CLAUDE.md` §1 row
+- `CW_SPEC.md` §14, one paragraph
+- both `PHASE_OUTCOME.md` copies and both `PHASE_STATUS.md` copies
+- a 598 row in each of the four scoreboard tables
+- `Directory.Build.props`
+
+`TheScoreboardGuardsCwTests` (4 of 4) and `DecisionLogOrderTests` (2 of 2) were run alone after the records, since the new rows could touch them.
+
+**Decisions I made myself, each for the owner to overrule:**
+- **The speed is marked not proved.** `CwSpeedProof.Proved` is defined as a speed from a measured dit, and the net measures none, so the panel shows `20 WPM, not proved`. This touches what the display asserts.
+- **The pitch goes blank again** after ten seconds of audio with nothing printed. A `decoding at` line with nothing decoding describes no reading. The order didn't say either way.
+- **The speed reads low while its first ten seconds fill.** On the vector it showed 6 WPM at 5 s and 18 to 20 by 11 s, because the order's rate counts over a full ten seconds even when less has been heard. It does the same after a long silence. I left the order's definition as written.
+- **The light updates once a second,** since the net runs once a second. A word gap shorter than that does not darken it.
+- **One headless probe in the app tests and two traces in the engine tests** (`TheBoardRows`, `TheFixtures`). All three are `Survey`, filtered, and on no line.
+
+**HM-DEC-303 as recorded** (the order's text, figures filled):
+
+> **HM-DEC-303 - The learned reader, second model.** `cwnet.onnx` is replaced by a model of the same shape, trained from the first on scenes the first never saw: the pitch at the edge of a receiver passband, a residual floor outside the passband pumped by the receiver's AGC, speeds down to 5 WPM, and silent scenes. It has heard no recording. The feature recipe, the alphabet and the streaming rule are unchanged, so the port is unchanged; the vector files are regenerated for the new model and the four vector tests pass. With the switch on: KM3STU 55 of 65 (was 0), the twelve-plus-three 286 (was 238, shipped 308), W1AW 2128 (was 2048, shipped 2101), Bryan 124 of 144 (was 127, shipped 118), Ken 51 of 76 (was 51, shipped 43), the wild bank 3271 (was 3307), the fist bank 5086 (was 5255), the first recording 26 of 27, letters in silences 11 (was 9), the random-keyed carrier at 20 of 20 seeds. The panel with the switch on shows the learned letters' pitch, a speed from the letter rate, and the light from the net's own activity. The switch ships off; the owner rules on turning it on. *Rejected:* tuning the first model's features or thresholds to KM3STU - the recipe is the contract with the port, and a model that needs the recipe bent for one station will need it bent for the next. *Rejected:* training on the recordings - the recordings are the yardstick, and a model that has heard them cannot be measured by them.
 
 **What went wrong:**
-- **Stale trace.** A failed edit and build meant one trace ran on old binaries. Its output was identical to the run before, I discarded it, and no figure comes from it.
-- **Failed starts.** The end run failed twice at its build because of a backslash in the survey's `Rerun` line. It stopped before measuring anything and put the switch back each time. Then a heredoc broke on an apostrophe, as the order warned; bash refused it whole, so nothing ran.
-- **Memory notices.** At 11:08 the monitor reported the end run and two status loops stopped, with 3.7 GB free. I checked before acting: only the wrappers had gone, and the script and its test run were alive and ran to the end. So nothing was rerun, and there was one survey. The status loop was restarted in a form that watched the script.
+- **A BOM in a fragment.** One record fragment picked up a byte-order mark from PowerShell 5.1's `Set-Content`. I caught it and stripped it before the records were written, so nothing reached a file.
 
 ## 2. What the owner should expect
 
-**Ken and Bryan: the learned reader beats the shipped reader on both.** Right is the survey's figure for each 20 s, and the printed text is the learned reader's.
-
-| Ken N3AFS | shipped right, wrong | learned right, wrong | learned printed |
-|---|---|---|---|
-| 0-20 s | 2, 6 | 2, 6 | `FNEALL4WANST SIZ9` |
-| 20-40 s | 11, 6 | 13, 3 | `58N QTHII NWKENSEN` |
-| 40-60 s | 10, 6 | 12, 4 | `GTON,PT PA NRPITTS NIU` |
-| 60-80 s | 13, 2 | 14, 1 | `RGH TU NAME AS KEN KEN SG` |
-| 80-100 s | 0, 0 | 10, 6 | `V W<AR> KB2UZ3TEN3RNS` |
-| 100-120 s | 7, 5 | 0, 0 | `AN3AFS DE KB2UZY /M` |
-| **all** | **43 of 76, 25 wrong** | **51 of 76, 20 wrong** | |
-
-| Bryan KB2UZK/M | shipped right, wrong | learned right, wrong | learned printed |
-|---|---|---|---|
-| 120-140 s | 16, 2 | 16, 1 | `DLOGM KEN NICE TOMET` |
-| 140-160 s | 16, 1 | 15, 1 | `UNX FER RPRT URR D57` |
-| 160-180 s | 8, 2 | 10, 1 | `9 57N LILD IAMIN MO` |
-| 180-200 s | 16, 3 | 17, 2 | `BILE STNMY NAME BRYAN B` |
-| 200-220 s | 15, 2 | 17, 0 | `RYAN ES QTH IS CHICOP` |
-| 220-240 s | 14, 2 | 16, 0 | `E, MA CHICOPEE , MA P` |
-| 240-260 s | 18, 2 | 20, 0 | `ARKED IN MY MOBILE <BT> SO BT` |
-| 260-280 s | 15, 3 | 15, 4 | `R KEN NWARS DE KB2UZY/M` |
-| 280-300 s | 0, 0 | 1, 0 | `K R` |
-| **all** | **118 of 144, 17 wrong** | **127 of 144, 9 wrong** | |
-
-**The full text as the learned reader printed it:**
-- Ken: `FNEALL4WANST SIZ9 58N QTHII NWKENSENGTON,PT PA NRPITTS NIURGH TU NAME AS KEN KEN SGV W<AR> KB2UZ3TEN3RNS AN3AFS DE KB2UZY /M`
-- Bryan: `DLOGM KEN NICE TOMETUNX FER RPRT URR D579 57N LILD IAMIN MOBILE STNMY NAME BRYAN BRYAN ES QTH IS CHICOPEE, MA CHICOPEE , MA PARKED IN MY MOBILE <BT> SO BTR KEN NWARS DE KB2UZY/MK RRDE NIWARSNIY TOME`
-
-Bryan also gets his spaces nearly clean: 1 added against 19. It finds fewer of them, though, 29 of 40 against 36.
-
-**Ken's 100-120 s row looks wrong against the draft truth, and it may be the truth.** The draft says `KB2UZK/M DE N3AFS K`, while both readers print `N3AFS DE KB2UZY/M`, in that order. That is one for your ear.
-
-**The port matches the vector.** All four tests pass: the features within 1e-3 in every cell, the net on all 599 indices, and `ROGER TNX FER CALL` read through the chain in 100 ms pieces.
-
-**The rest, with the switch on against shipped:**
-
-| | shipped | learned reader |
-|---|---|---|
-| wild bank | 2859 | **3307**, wrong 274 to 91 |
-| `mobile` | 522 | 548 |
-| `bug` | 459 | 469 |
-| `farnsworth` | 567 | 583 |
-| `tight` | 489 | 540 |
-| `steady` | 524 | 581 |
-| `machine` | 572 | 586 |
-| fist bank | 3898 | **5255** |
-| twelve-plus-three | 308 | **238**, 251 of 353, 12 wrong, 1 invented, 9 in silence |
-| W1AW | 2101 | **2048**, 2063 of 2151, wrong 24 to 15 |
-| W1AW spaces | 440 of 440, 8 added | 368 of 440, 9 added |
-| easy fixtures | 90 of 90 | 87 of 90 |
-| 5 dB CQs | 84 of 84 | 84 of 84 |
-| 0 dB CQs | 5 of 84 | 61 of 84 |
-| noise | silent | silent |
-| steady carrier | silent | silent |
-| random-keyed carrier | prints at 20 of 20 seeds | prints at 20 of 20 seeds |
-| first recording | whole | `FER CHAT<BT> BEST 7V 73 <SK> KC4ZP DE WA`, 26 of 27 |
-| CPU, W1AW piece-04 | 108.6 s | 44.7 s, down 59% |
-
-**Why the board fell.** KM3STU's three recordings at 800 Hz score 0 of 65: the net prints `KM3SKE CQ`, `RR` and nothing. I confirmed that is what the net prints, not the scorer dropping letters. Why it does not read him was not traced.
-
-**What ships.** The switch is off, the shipped figures stand at 308, 2101, 3898 and 2859, and what you run reads as before.
-
-**What will look wrong but is not:**
-- `docs\cw-survey-2026-10-09.md` now shows the learned reader's figures, 238 and 2048, and its `Rerun` line says so. There is no switch-off survey, by the run budget; the shipped figures are on `docs\cw-scoreboard.md`.
-- The survey's `WPM` column is blank for these reads, because the net measures no speed.
-- The repository is about 6.6 MB larger, from the model and the vector.
-
-**Test lines, switch off:** engine 168 of 168, app 278 of 278, `TheLearnedReaderTests` 4 of 4. After the record, `DecisionLogOrderTests` 2 of 2 and `TheScoreboardGuardsCwTests` 4 of 4. The unit took about 70 minutes, inside the budget's target.
+- **Nothing you run reads differently.** The switch is off, the shipped reader prints, and the guards hold at 308, 2101, 3898 and 2859. The engine line is 175 of 175 (168 plus the seven learned-reader cases) and the app line 278 of 278, both with the switch off.
+- **The second model reads KM3STU,** the station the first model missed at the top edge of your filter. It also reads W1AW better than the shipped reader does: 2128 against 2101, with 4 wrong against 24.
+- **What will look wrong but is not:**
+  - **The shipped panel shows `no station` and no speed while it prints.** That has been true since the sequence reader shipped. It feeds none of those three, and this unit did not touch it.
+  - **The survey file holds switch-on figures.** That's what the run budget asks for. The shipped figures are on the scoreboard.
+- **Still not committed, as before:** the earlier changes to `PARKED.md`, `RUN_LEDGER.md`, `PROJECT_STATUS.md` (until this report's commit), `tools\go-claude\GoClaude.bat`, `.run-unit\` and the `cases-*.txt` files.
+- **Still untracked:** `model\` and `CwSequenceReader.cs.new`.
 
 ## 3. What you should see
 
-**The answer: the port is right, and the learned reader reads the real hands and every generated hand better than the shipped reader, but it reads the owner's boards worse, chiefly on a weak off-pitch station.**
+**KM3STU, letters right of 65 as the board scores him, switch on:**
 
-**No visible change in the app.** The switch is off, so this unit only gives you figures to rule on.
-
-**The trace beside the spec's stretches:**
-
-| | the spec | the engine |
+| recording | first model | second model |
 |---|---|---|
-| Ken | `... QTH IIN W KENSENGTON, PT PA NR PITT NIURGH X NAME AS KEN KEN ... N3AFS DE KB2UZY/M` | `... QTHII NWKENSENGTON,PT PA NRPITTS NIURGH TU NAME AS KEN KEN ... AN3AFS DE KB2UZY /M` |
-| Bryan | `GM KEN NCE TO MEET STNX FER RPRT URR 579 57N LIL NAM IN MOBILE STN AY NAME BRYAN BRYAN ES QTH IS CHICOPEE, MA CHICOPEE M, MA PARKED IN MY MOBILE = SO BTR KEN NMARS DE KB2UZY/MK` | `DLOGM KEN NICE TOMETUNX FER RPRT URR D579 57N LILD IAMIN MOBILE STNMY NAME BRYAN BRYAN ES QTH IS CHICOPEE, MA CHICOPEE , MA PARKED IN MY MOBILE <BT> SO BTR KEN NWARS DE KB2UZY/MK` |
-| W1AW piece-03 | `... ENHANCEMENT MATERIAL GEFOR BURYING THE GROUND ROD. YOU CAN GET GEM FROM AN ELECTRICAL SPPLY HOUSE. ATTAC THE GROUND TO THE ANTENNA S RADIAL PLATE AND BOND CONNECT IT YOUR MAIN STATIO` | `WITH ROUND ENHANCEMENT MATERIAL GEM BEFORE BURYING THE GROUND ROD. YOU CAN GET GEM FROM AN ELECTRICAL SUPPLY HOUSE. ATTACI THE GROUND TO THE ANTENNAS RADIAL PLATE AND BOND CONNECTIT TO YOUR MAIN STATION` |
-| W1AW piece-04 | not printed in the spec | `O CAN COM AR SIGNALSR THE NORTH EAST WEAK SIGNAL GROUP AND THE SAN DIEGO MIK ROWAVE GROUP GET TOGETHER TO COMPARE AND MEASURE STATIONS. IT IS ACHANCE TO COMPARE MINIMUM DIS CER` |
-| the first recording | `FER CHAT= BST 7V 73 ! KC4ZGP DE WA` | `FER CHAT<BT> BEST 7V 73 <SK> KC4ZP DE WA` |
+| `cw-2026-10-08-121324`, 14.6-30 s, `POTA DE KM3STU K KQ 4PA K` | 0 of 19 | **19 of 19** |
+| `cw-2026-10-08-121357`, 14.3-29.3 s, `55N 55N VA VA BK BK` | 0 of 14 | **12 of 14**, 1 wrong |
+| `cw-2026-10-08-121414`, 0.3-24.1 s, `R 55N 55N VA VA BK BK TU RON VA ES 72 KM3STU` | 0 of 32 | **24 of 32** |
+| **all** | **0 of 65** | **55 of 65**, 1 wrong |
 
-They agree to a letter or two a line, and they differ most in the spaces. `=` and `!` in the spec are `<BT>` and `<SK>` on the screen. The engine feeds the whole capture and the spec's windows may have been cut differently, which I would expect to account for small differences but did not test.
+What each printed, whole:
+- `121324`: first `KM3SKE CQ`; second `2KWI3SR EE CQ POTADE KM3STUK KQ4PAK`
+- `121357`: first `RR`; second `K FRTNX AGN URSNN5RN MBK RR UR 55D 55N VA VAK BKT`
+- `121414`: first nothing; second `R55N5K BK TURON VA S72 K M3STUE CQP`
 
-The spec quotes Ken 66 of 89 and Bryan 128 of 144 by letter. The survey's yardstick gives 51 of 76 and 127 of 144: it counts against the draft truth, its `?` places count no letter, and Ken's last stretch scores 0.
+**The twelve-plus-three:** 238 with the first model, **286** with the second (302 of 353, 13 wrong, 3 invented, spaces 70 of 110 with 4 added). Shipped is 308 (325 of 353). The 22-point gap is now spread across the other rows, not one station: `221530`'s second stretch 27 of 34, `221548`'s second 14 of 18, `221828` 31 of 41, `221745` 22 of 29.
 
-**The vector test:** pass, so there is no differing cell.
+**Ken and Bryan per 20 s, right and wrong**, from the survey:
 
-**The rounds:**
+| Ken N3AFS | shipped | first model | second model | second model printed |
+|---|---|---|---|---|
+| 0-20 s | 2, 6 | 2, 6 | 2, 6 | `FNDEALL4W ANST SI?9` |
+| 20-40 s | 11, 6 | 13, 3 | 13, 3 | `58N QTHIINWKENSEN` |
+| 40-60 s | 10, 6 | 12, 4 | 12, 4 | `GTON,PT PA NRPITTS NIU` |
+| 60-80 s | 13, 2 | 14, 1 | 15, 0 | `RGH U NAME IS KEN KENSG` |
+| 80-100 s | 0, 0 | 10, 6 | 9, 6 | `4 W<AR> KB2UM3DN3RNS` |
+| 100-120 s | 7, 5 | 0, 0 | 0, 0 | `AN3AFSLE KB2UZY /M` |
+| **all** | **43 of 76, 25 wrong** | **51 of 76, 20 wrong** | **51 of 76, 19 wrong** | |
 
-| round | vector | trace against the spec | twelve-plus-three | W1AW | wild bank | Bryan | Ken |
-|---|---|---|---|---|---|---|---|
-| one | 4 of 4 | agrees | 238 | 2048 | 3307 | 127 | 51 |
-| two, three | not called for | | | | | | |
+| Bryan KB2UZK/M | shipped | first model | second model | second model printed |
+|---|---|---|---|---|
+| 120-140 s | 16, 2 | 16, 1 | 16, 1 | `DLO GM KEN NICE TO MET` |
+| 140-160 s | 16, 1 | 15, 1 | 15, 2 | `S TNX FER RPRT URIR 57` |
+| 160-180 s | 8, 2 | 10, 1 | 10, 1 | `9 57N LILN IAM IN MO` |
+| 180-200 s | 16, 3 | 17, 2 | 17, 2 | `BILE STNMY NAME BRYAN B` |
+| 200-220 s | 15, 2 | 17, 0 | 17, 0 | `RYAN ES QTH IS CHICOP` |
+| 220-240 s | 14, 2 | 16, 0 | 14, 1 | `, MA CHICOPEE M, MA P` |
+| 240-260 s | 18, 2 | 20, 0 | 19, 1 | `ARKED IN MY MOBILE X SOBT` |
+| 260-280 s | 15, 3 | 15, 4 | 15, 4 | `AKEN NE3ARS DE KB2UZY/ M` |
+| 280-300 s | 0, 0 | 1, 0 | 1, 0 | `K R` |
+| **all** | **118 of 144, 17 wrong** | **127 of 144, 9 wrong** | **124 of 144, 12 wrong** | |
 
-**The survey's groups, switch on, against the shipped survey:**
+The full text, second model:
+- Ken: `FNDEALL4W ANST SI?9 58N QTHIINWKENSENGTON,PT PA NRPITTS NIURGH U NAME IS KEN KENSG4 W<AR> KB2UM3DN3RNS AN3AFSLE KB2UZY /M`
+- Bryan: `DLO GM KEN NICE TO MET S TNX FER RPRT URIR 579 57N LILN IAM IN MOBILE STNMY NAME BRYAN BRYAN ES QTH IS CHICOP , MA CHICOPEE M, MA PARKED IN MY MOBILE X SOBTAKEN NE3ARS DE KB2UZY/ MK RRDE NIWARS NIY TOME`
 
-| group | shipped right, score | learned right, score |
-|---|---|---|
-| synthetic fixtures | 51 of 67, 42 | 60 of 67, 55 |
-| receiver: easy | 90 of 90, 90 | 87 of 90, 86 |
-| receiver: working | 36 of 81, 19 | 64 of 81, 57 |
-| receiver: edge | 45 of 81, 35 | 51 of 81, 35 |
-| receiver: ungraded | 72 of 98, 45 | 79 of 98, 71 |
-| CQs: 15 dB | 84 of 84, 84 | 84 of 84, 84 |
-| CQs: 5 dB | 84 of 84, 84 | 84 of 84, 84 |
-| CQs: 0 dB | 5 of 84, 2 | 61 of 84, 50 |
-| twelve-plus-three | 325 of 353, 308 | 251 of 353, 238 |
-| W1AW pieces | 2125 of 2151, 2101 | 2063 of 2151, 2048 |
-| fist bank | 4461 of 5760, 3898 | 5425 of 5760, 5255 |
-| wild bank | 3133 of 3528, 2859 | 3398 of 3528, 3307 |
-| wild hands | 161 of 220, 119 | 178 of 220, 149 |
+The first model's full texts are in the last report:
+- Ken: `FNEALL4WANST SIZ9 58N QTHII NWKENSENGTON,PT PA NRPITTS NIURGH TU NAME AS KEN KEN SGV W<AR> KB2UZ3TEN3RNS AN3AFS DE KB2UZY /M`
+- Bryan: `DLOGM KEN NICE TOMETUNX FER RPRT URR D579 57N LILD IAMIN MOBILE STNMY NAME BRYAN BRYAN ES QTH IS CHICOPEE, MA CHICOPEE , MA PARKED IN MY MOBILE <BT> SO BTR KEN NWARS DE KB2UZY/MK RRDE NIWARSNIY TOME`
 
-Every file read. The strays bar: highest capture 1.5 per 10 s, under the line of six. The survey took 9.6 minutes.
+Bryan is three letters under the first model, and Ken holds at 51 with one fewer wrong. Bryan's spaces: 34 of 40 with 1 added, against 29 with 1 added.
 
-**CPU on W1AW's 283 s piece-04:** 108.6 s shipped, 44.7 s learned, process time, one warming read of each thrown away. That counts the whole chain, so it includes the grid. The learned figure is lower because the sequence reader does not run.
+**The rest, shipped against first model against second, switch on for the two models:**
+
+| | shipped | first model | second model |
+|---|---|---|---|
+| W1AW | 2101 (2125 of 2151, 24 wrong) | 2048 (2063, 15 wrong) | **2128** (2132, 4 wrong) |
+| W1AW spaces | 440 of 440, 8 added | 368 of 440, 9 added | 402 of 440, 3 added |
+| wild bank | 2859 | 3307 | 3271 (3372 of 3528, 101 wrong, 31 spaces added) |
+| fist bank | 3898 | 5255 | 5086 (5289 of 5760, 203 wrong) |
+| easy fixtures | 90 of 90 | 87 of 90 | 87 of 90 |
+| 15 dB CQs | not re-measured | not re-measured | 82 of 84 |
+| 5 dB CQs | 84 of 84 | 84 of 84 | 83 of 84 |
+| 0 dB CQs | 5 of 84 | 61 of 84 | 52 of 84 |
+| noise, four cases | silent | silent | silent |
+| steady carrier | silent | silent | silent |
+| random carrier | prints at 20 of 20 seeds | 20 of 20 | 20 of 20 |
+| first recording | whole | 26 of 27 | 26 of 27, `FER CHAT<BT> BEST 7V 73 <SK> KC4ZP DE WA` |
+| letters in silences | 1 | 9 | 11 |
+| CPU, W1AW piece-04 (283 s) | 106.6 s | 44.7 s | 44.3 s, down 58% |
+
+The wild bank per recipe, second model (first model in brackets): `mobile` 548 (548), `bug` 444 (469), `farnsworth` 584 (583), `tight` 535 (540), `steady` 583 (581), `machine` 577 (586). W1AW piece-03 now reads `GEM BEFORE BURYING` where the first model printed `GEFORE`, and piece-04 reads `THE NORTH EAST`. The survey took 9.4 minutes. The shipped CPU figure is this run's; the last unit measured it at 108.6 s.
+
+**The vector tests:** all four pass on the second model. The three new panel tests pass too, so `TheLearnedReaderTests` is 7 of 7, now on the engine line.
+
+**What the panel shows with the switch on**, on the vector played through the tab's chain:
+- **The decoding line** says `decoding at 579 Hz` from the third letter on.
+- **The speed** shows `6 WPM, not proved` at 5 s and climbs to `20 WPM, not proved` by 12 s. It's a letter rate, letters and spaces in the last ten seconds, because the net names letters and measures no dit. It reads low until ten seconds have been heard.
+- **The light** goes green (`reading`) from the first second, updates once a second, and goes dark in noise and in a gap of a second or more.
+- **The tone line** is still the grid's, as before.
+- With the switch off, the panel is exactly as shipped: `no station`, blank speed, no green light, as shown in section 2.
 
 ## 4. What's blocking us
 
-**Nothing blocks the next unit. One question needs your ruling, and two more follow from it.**
+**Nothing blocks the next unit. The two pending questions come back with this unit's figures.**
 
-**1. The learned reader stays off for one more unit, then you rule on turning it on.** *Proposed; your call.*
+**1. Turn the learned reader on, with the second model.** *Pending the owner; restated, not argued.*
 
-It reads every hand better and costs less than half the CPU, but three things stand in the way today. It reads nothing of KM3STU, W1AW drops 62 letters right though 9 fewer are wrong, and the panel is not wired to it. The next unit would trace KM3STU and wire the panel.
+With the switch on, the second model reads KM3STU 55 of 65 where the first read 0, and W1AW 2128 against the shipped 2101. Ken is 51 against 43 and Bryan 124 against 118. The wild bank is 3271 against 2859, the fist bank 5086 against 3898, the 0 dB CQs 52 of 84 against 5, and CPU is down 58%. The panel now reads it. Against that, the twelve-plus-three is 286 against the shipped 308. The first recording reads 26 of 27, with its `G` lost, and the easy fixtures are 87 of 90 against 90. Letters in silences rise from 1 to 11, the 5 dB CQs fall to 83 of 84, and the random carrier prints at 20 of 20 seeds as shipped does.
 
-- **Turning it on now, rejected:** the board falls to 238, and the guards at 308 and 2101, the first recording and the easy fixtures would all have to be restated first.
-- **Dropping it, rejected:** it beat the shipped reader on the real hands in its first run, trained on no recording, where four units of rules gained five letters.
+- **Turning it on now:** the guards at 308, the first recording whole, one letter in silences, the easy fixtures at 90 and the 5 dB CQs at 84 would each have to be restated first. W1AW and the fist bank rise past their guards.
+- **Leaving it off:** what the operator reads is unchanged, and the panel stays as blank as it is under the sequence reader.
 
-**2. A learned letter is dimmed under the net's own probability of one half.** *Proposed; it touches what the display asserts, so it is yours.*
-
-The switch is off, so nobody sees it yet. Without some such mark, every letter would show as sure. The line is the one the sequence reader already uses for its own score, but the two numbers measure different things, and I did not measure how well the net's probability tracks its errors.
-
-- **Every letter at full strength, rejected:** it would claim more than the net knows (§0.0).
-
-**3. The panel with the switch on.** From reading the code, not from running the app: the detector hands on no printed station, so the printed pitch and speed have nothing to read, and the light may not reflect what prints. This needs wiring before the switch goes on.
+**2. A learned letter is dimmed under the net's own probability of one half.** *Pending the owner; restated, not argued.* The line is unchanged this unit and is still unmeasured against the net's errors. The switch is off, so nobody sees it.
 
 **Left, a line each:**
-- **The random carrier** still prints at all 20 seeds, as shipped does. It is 20 to 30 letters of confident text per seed, and the net knows no words to refuse it.
-- **Letters in silences** rise from 1 to 9 on the board. Not traced.
-- **W1AW's slow pieces** lost the most spaces and letters: piece-01 reads 222 of 242, with 38 of 63 spaces. Not traced.
-- **Ken's draft truth at 100-120 s:** see section 2. Not edited, as ordered.
-- **Is the run budget met?** The order is within it, so nothing was refused. The quick measure took 9 minutes, not the budget's five.
-- **`TheLearnedReaderTests` is on no carry-forward line.** The order did not name it, so I ran it alone. It belongs on the engine line if the reader stays.
-- **`model\` at the root** is untracked and is now a second copy of what went into the tree; it can go. Left, since it came in the zip.
-- **The stray `CwSequenceReader.cs.new`** is still there, untracked.
-- **Not committed, as before:** the earlier changes to `PARKED.md`, `RUN_LEDGER.md`, `PROJECT_STATUS.md`, `tools\go-claude\GoClaude.bat` and `.run-unit\`, and the `cases-*.txt` fixtures.
-- **The order's shape:** it has no `PHASE GOAL`, `ADVANCES` or drift count, which `CLAUDE_CODE.md` §4.2 asks for. I filled the header from what the order says.
+- **The order's claim that the sequence reader feeds the panel's pitch, speed and light is not true of the tree.** Under it the panel shows `no station`, no speed and no green light while it prints. Not changed: the sequence reader was not this unit's to touch. It is on screen today, and it is the same §0.0 question as the learned reader's panel.
+- **The speed is marked `not proved`,** and that touches what the display asserts (section 1). Say if you want it otherwise.
+- **The letter rate reads low** for its first ten seconds and after a long silence. The order's definition was kept as written.
+- **The run budget was met:** one survey, one engine line, one app line, at the end. Afterwards I ran two guards alone because the records could touch them, plus one CPU trace.
+- **`model\` at the root** is now a second copy of what went into the tree. Left, since it came in the zip.
+- **The untracked `CwSequenceReader.cs.new`** is still there.
 
 ### Asks still outstanding
 
