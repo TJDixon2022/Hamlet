@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: EXECUTING
-TASK: 2 of 4
+STATE: COMPLETED
+TASK: 4 of 4
 WORK_INSTRUCTION: 599 - the learned reader goes on (run by hand)
-BALL: code
-NEXT_PASTE: none
+BALL: tim
+NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-11-06T18:53:03-05:00
-NOTE: Switch on: every restated guard green at 286, 2128, 87 of 90, 83 of 84, 11 in silence; committing
+UPDATED: 2026-11-06T19:17:12-05:00
+NOTE: The learned reader is on: board 286 with KM3STU 55 of 65, W1AW 2128, both lines green with it on; dimming still unmeasured
 
 ---
 
