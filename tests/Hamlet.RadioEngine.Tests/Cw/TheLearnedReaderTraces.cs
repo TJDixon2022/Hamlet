@@ -280,4 +280,128 @@ public sealed class TheLearnedReaderTraces(ITestOutputHelper output)
 
         Write(string.Create(Inv, $"{Piece}: {audio.Samples.Length / (double)audio.SampleRate:0} s of audio; shipped {shipped:0.0} s CPU, learned {learned:0.0} s CPU, {(learned - shipped) / shipped:+0%;-0%}"));
     }
+
+    // One scored letter of a set: its probability (null where no net read it) and whether the board's alignment made it right (true),
+    // wrong (false: substituted or inserted), or did not score it (null: a free end, or under a `?` of a draft truth).
+    private readonly record struct Judged(double? Probability, bool? Right);
+
+    private static readonly double[] Cuts = [0.25, 0.5, 0.75];
+
+    private static bool? RightOf(TheRecordingsScoreboardTests.LetterMark mark) => mark switch
+    {
+        TheRecordingsScoreboardTests.LetterMark.Right => true,
+        TheRecordingsScoreboardTests.LetterMark.Wrong or TheRecordingsScoreboardTests.LetterMark.Added => false,
+        _ => null,
+    };
+
+    private static IEnumerable<Judged> Of(TheRecordingsScoreboardTests.Scored s)
+        => s.Letters!.Select((l, i) => new Judged(l.Probability, RightOf(s.Marks![i])));
+
+    // The twelve counts of one set: at each cut, letters under it right and wrong, letters at or over it right and wrong.
+    private void Counts(string name, IReadOnlyList<Judged> set)
+    {
+        var scored = set.Where(j => j.Right is not null && j.Probability is not null).ToList();
+
+        Write(string.Create(Inv, $"{name}: {set.Count} letters, {set.Count(j => j.Probability is null)} with no probability, {set.Count(j => j.Right is null)} not scored (free ends, `?`), {scored.Count} scored: {scored.Count(j => j.Right == true)} right, {scored.Count(j => j.Right == false)} wrong"));
+
+        foreach (var cut in Cuts)
+        {
+            var under = scored.Where(j => j.Probability < cut).ToList();
+            var over = scored.Where(j => j.Probability >= cut).ToList();
+
+            Write(string.Create(Inv, $"  line {cut:0.00}: under {under.Count(j => j.Right == true)} right / {under.Count(j => j.Right == false)} wrong; at or over {over.Count(j => j.Right == true)} right / {over.Count(j => j.Right == false)} wrong"));
+        }
+    }
+
+    /// <remarks>
+    /// Work instruction 600, HM-DEC-305: the dimming line measured. A learned letter is dimmed where the net's probability for it is under one
+    /// half; this counts, at one quarter, one half and three quarters, how the letters under and over each line score on the board's own
+    /// alignment, on the twelve-plus-three, the fist bank, W1AW, the two real hands and the first recording; then every letter printed in the
+    /// board's silences with its probability; then the twelve-plus-three's right and wrong letters in ten bins of probability. Measures; moves nothing.
+    /// </remarks>
+    [Fact]
+    public void TheDimmingLine()
+    {
+        var board = TheRecordingsScoreboardTests.Score();
+        var counted = board.Stretches.Where(s => s.Stretch.Confidence >= TheRecordingsScoreboardTests.Confidence.Medium).ToList();
+        var twelve = counted.SelectMany(Of).ToList();
+
+        Write(string.Create(Inv, $"the twelve-plus-three {board.Score}: {board.Total} of {board.OutOf}, {board.Wrong} wrong, {board.Invented} invented; first `{board.FirstReads}`; letters in silences {board.SilencePrints.Count}"));
+        Counts("the twelve-plus-three", twelve);
+
+        // The fist bank: every hand read as the survey reads it and aligned to the text it sent, as the bank's rows score it.
+        var rules = CwRules.Current;
+        var fists = new System.Collections.Concurrent.ConcurrentBag<(Fixtures.CwFist Fist, List<Judged> Letters)>();
+
+        Parallel.ForEach(Fixtures.CwFistBank.All, new ParallelOptions { MaxDegreeOfParallelism = 3 }, fist =>
+        {
+            using var here = CwRules.Use(rules);
+            var audio = Fixtures.CwFistBank.Audio(fist);
+            var (letters, _) = TheRecordingsScoreboardTests.ReadLive(audio.Samples, audio.SampleRate, 600, 500);
+            var marks = TheRecordingsScoreboardTests.MarksOf(TheRecordingsScoreboardTests.Text(letters), Fixtures.CwFistBank.Text);
+
+            fists.Add((fist, letters.Select((l, i) => new Judged(l.Probability, RightOf(marks[i]))).ToList()));
+        });
+
+        Counts("the fist bank, every row", fists.SelectMany(f => f.Letters).ToList());
+
+        foreach (var ratio in Fixtures.CwFistBank.Ratios)
+        {
+            Counts(string.Create(Inv, $"  the fist bank row {ratio:0.0}"), fists.Where(f => f.Fist.Ratio == ratio).SelectMany(f => f.Letters).ToList());
+        }
+
+        var w1aw = TheW1awTableTests.Score();
+
+        Write(string.Create(Inv, $"W1AW {w1aw.Score}: {w1aw.Right} of {w1aw.OutOf}, {w1aw.Wrong} wrong, {w1aw.Invented} invented"));
+        Counts("W1AW", w1aw.Stretches.Where(s => s.Stretch.Confidence >= TheRecordingsScoreboardTests.Confidence.Medium).SelectMany(Of).ToList());
+
+        // The two real hands against the draft truth, as the survey scores them: a `?` matches anything and is not scored.
+        var hands = WavAudio.Read(TheOwnersRecordingReadsTests.Wav(CwWildHands.Recording));
+        var (pitch, width) = TheRecordingsScoreboardTests.RadioState(CwWildHands.Recording);
+        var (handLetters, _) = CwWildHands.Read(hands.Samples, hands.SampleRate, pitch, width, []);
+        var map = TheKeyingMapTests.Read(CwWildHands.Recording, hands.Samples, hands.SampleRate);
+
+        foreach (var s in CwWildHands.Truths().Select(t => CwWildHands.ScoreOf(t, handLetters, map)))
+        {
+            var judged = s.Letters.Select((l, i) => new Judged(l.Probability, null)).ToArray();
+
+            for (var d = 0; d < s.Kinds.Count; d++)
+            {
+                var right = s.Kinds[d] switch
+                {
+                    CwWildHands.LetterIs.Same => true,
+                    CwWildHands.LetterIs.Wrong or CwWildHands.LetterIs.Added => (bool?)false,
+                    _ => null,
+                };
+
+                judged[s.Of[d]] = judged[s.Of[d]] with { Right = right };
+            }
+
+            Counts(string.Create(Inv, $"{s.Truth.Name} {s.Truth.From:0}-{s.Truth.To:0} s ({s.Right} of {s.OutOf}, {s.Wrong} wrong)"), judged);
+        }
+
+        var first = board.Stretches.Single(s => s.Stretch.Recording == "cw-2026-10-02-200157");
+
+        Counts(string.Create(Inv, $"the first recording ({first.Right} of {first.ReferenceLetters}, `{first.PrintedText}`)"), Of(first).ToList());
+
+        // The letters printed in the board's silences, the `E I EE` the owner saw between transmissions.
+        Write(string.Create(Inv, $"letters in silences: {board.SilencePrints.Count}, under one half {board.SilencePrints.Count(p => p.Letter.Probability < 0.5)}, with no probability {board.SilencePrints.Count(p => p.Letter.Probability is null)}"));
+
+        foreach (var (recording, quiet, letter) in board.SilencePrints)
+        {
+            Write(string.Create(Inv, $"  `{recording}` {quiet.From:0.0}-{quiet.To:0.0} s: `{letter.Text}` at {letter.From:0.00} s {letter.PitchHz:0} Hz, probability {letter.Probability:0.000}{(letter.Probability < 0.5 ? " (dim)" : " (bright)")}"));
+        }
+
+        // Ten bins of probability on the twelve-plus-three, right and wrong apart.
+        Write("probability on the twelve-plus-three | right | wrong");
+
+        for (var b = 0; b < 10; b++)
+        {
+            var low = b / 10.0;
+            var high = (b + 1) / 10.0;
+            bool In(Judged j) => j.Probability >= low && (j.Probability < high || (b == 9 && j.Probability <= 1));
+
+            Write(string.Create(Inv, $"  {low:0.0}-{high:0.0} | {twelve.Count(j => j.Right == true && In(j))} | {twelve.Count(j => j.Right == false && In(j))}"));
+        }
+    }
 }
