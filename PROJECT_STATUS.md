@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-TASK: 4 of 4
-WORK_INSTRUCTION: 599 - the learned reader goes on (run by hand)
-BALL: tim
-NEXT_PASTE: output.md -> Claude Web
+STATE: EXECUTING
+TASK: 2 of 5
+WORK_INSTRUCTION: 600 - the dimming line, measured (run by hand)
+BALL: code
+NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-11-06T19:17:12-05:00
-NOTE: The learned reader is on: board 286 with KM3STU 55 of 65, W1AW 2128, both lines green with it on; dimming still unmeasured
+UPDATED: 2026-11-07T12:38:14-05:00
+NOTE: Trace done, as-shipped figures match (286, 11, 2128, 26 of 27); building the probability plumbing
 
 ---
 

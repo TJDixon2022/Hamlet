@@ -1,13 +1,15 @@
-# Work instruction 599 - The learned reader goes on
+# Work instruction 600 - The dimming line, measured
 
 **Run budget: UNIT_RUN_BUDGET.md applies (HM-DEC-301) - one survey, one engine line, one app line,
 at the end; quick measures per round.**
 
-**Hand run. The owner has ruled: the learned reader, with its second model, is what Hamlet
-reads with. Turn `CwRules.LearnedReader` on by default, keep the sequence reader behind the
-same switch, restate the guards at the learned reader's figures, measure the dimming line
-against the net's own errors, and record the ruling. Up to three rounds; the rounds fix the
-switch, the tests and the records, never the model.**
+**Hand run. The learned reader is what Hamlet reads with, and every learned letter is dimmed
+where the net's probability is under one half. That line has never been measured, because the
+scoreboard keeps no per-letter probability beside its right/wrong. This unit carries the
+probability through to the scoreboard, measures the line at one quarter, one half and three
+quarters on every recording the board scores, measures what the letters printed in silences
+score, and records the counts. The line does not move. Nothing Hamlet prints changes. Up to
+three rounds; the rounds fix the plumbing and the tests, never the model and never the line.**
 
 **Standing rules** (HM-DEC-276, HM-DEC-284, HM-DEC-301) apply. `--no-build` after one build per
 round, build servers shut down first, one test run at a time; a run stopped for memory is run
@@ -18,9 +20,10 @@ Earlier unit numbers are not cited: each part of the tree is described by what i
 **Nothing keys or transmits. Nothing is written to the radio. No recording is added, removed or
 promoted. The draft truth `cw-2026-10-19-141708.truth.md` is not edited. The sequence reader,
 the gap learning, the marks, the lanes, the keyer, the wild bank and every board are not
-touched; the model, the alphabet and the feature recipe are not touched.**
+touched; the model, the alphabet, the feature recipe and the vector files are not touched; the
+dimming line stays at one half; nothing on screen moves.**
 
-**Numbering.** This is unit 599, ruling HM-DEC-304. If taken, use the next free and say so.
+**Numbering.** This is unit 600, ruling HM-DEC-305. If taken, use the next free and say so.
 
 ---
 
@@ -51,29 +54,30 @@ If all four hold, say "Hamlet confirmed" and continue.
 
 ## 1. Why this unit exists
 
-**What the operator reads with today is the sequence reader, and the learned reader beats it
-on every real hand and on the air.** The last report, with the switch on and the second model:
-KM3STU **55 of 65** against the shipped reader's 0; W1AW **2128** against 2101 (4 wrong
-against 24); Ken **51 of 76** against 43; Bryan **124 of 144** against 118; the wild bank
-**3271** against 2859; the fist bank **5086** against 3898; the 0 dB CQs **52 of 84** against
-5; CPU on W1AW piece-04 **44.3 s** against 106.6 s. Against it: the twelve-plus-three **286**
-against 308, the first recording 26 of 27 against whole, the easy fixtures 87 of 90, the 5 dB
-CQs 83 of 84, letters in silences 11 against 1. The owner has heard the shipped reader on an
-evening of real band since that report - three stations, two of them weak - and asked how to
-turn the learned reader on. There is no control for it: the switch is `CwRules.LearnedReader`,
-off by default in code since the reader shipped. **The number this unit is aimed at is what
-the shipped build reads with the switch as it ships: the twelve-plus-three 308 and KM3STU 0 of
-65 as shipped, becoming 286 and 55 of 65 as shipped.** The panel with the learned reader on
-already shows pitch, a letter-rate speed marked `not proved`, and the light; nothing on
-screen moves.
+**There is no number for the dimming line.** The learned reader dims a letter where the net's
+probability for it is under one half; the line was proposed three reports ago and the last
+unit was asked to measure it and dropped the task whole, because the scoreboard's printed-letter
+record carries no probability a test can read beside the board's right/wrong. So the display
+asserts something nobody has counted: the operator sees bright letters and dim letters and
+nobody knows whether the dim ones are the wrong ones. The owner saw the shipped reader print
+`E I EE` between transmissions on an evening of real band; the learned reader prints 11 letters
+in the board's silences; whether those 11 are already dim is also uncounted. **The number this
+unit is aimed at is the one that does not exist: on the twelve-plus-three, how often a letter
+under one half is wrong and how often a letter at or over it is right, and how many of the 11
+silence letters sit under the line.** The before-number is *none*. The board stays at 286 before
+and after: this unit must not change a letter Hamlet prints.
 
 ```
 PHASE GOAL:   Hamlet meets its CW requirements.
-UNIT GOAL:    The learned reader, second model, is what Hamlet reads with by default,
-              every line green with it on, and the ruling is recorded.
-ADVANCES:     task 2 (the switch). Task 3 (the dimming measure) is the drop candidate.
+UNIT GOAL:    The net's per-letter probability reaches the scoreboard, the dimming line is
+              measured at one quarter, one half and three quarters, and the counts are
+              recorded; the line stays where it is and nothing Hamlet prints changes.
+ADVANCES:     task 3 (the measure). Task 4 (the off-line set) is the drop candidate.
 DRIFT:        0 consecutive units without advance (the last unit advanced).
 ```
+
+This unit is the measurement, so the trace in task 1 is small and the measure is task 3; the
+plumbing in task 2 is what the last unit said was missing.
 
 ---
 
@@ -84,31 +88,32 @@ mismatch. Report the mismatch; do not repair the instruction. Mismatches go in t
 when the work succeeded anyway.
 
 Claims this instruction rests on, from the last report, each to be checked:
-- `CwRules.LearnedReader` exists, off by default, wired as `CwRules.GapLearning` is wired. On,
-  the sequence reader is not built; off, the learned reader is never constructed. The trace
-  tests turn it on by `CwRules.Choose`.
-- `src\Hamlet.RadioEngine\Cw\Model\cwnet.onnx` is the second model and
-  `src\Hamlet.RadioEngine\Cw\Model\CWNET_SPEC.md` describes it; the vector files in
-  `tests\fixtures\cwnet\` match it; `TheLearnedReaderTests` is 7 of 7 and on the engine
-  line's carry-forward list.
-- With the switch on the panel shows `CwDecoder.PanelPitchHz` on the `decoding at` line,
-  `CwDecoder.WordsPerMinute` as a letter rate marked `not proved`, and the light from the
-  newest provisional frames. With it off the panel is as shipped: `no station`, blank speed,
-  no green light.
-- A learned letter is dimmed where the net's probability is under one half.
-- `TheScoreboardGuardsCwTests` (4 cases) guards the shipped figures 308, 2101, 3898 and
-  2859; there may be other tests asserting the first recording whole, one letter in silences,
-  the easy fixtures at 90 and the 5 dB CQs at 84. Task 1 finds every such assertion.
-- The engine line is 175 of 175 and the app line 278 of 278 with the switch off.
-- `docs\cw-survey-2026-10-09.md` carries a `Rerun` line marked *learned reader, second model*
-  at 286 and 2128; `docs\cw-scoreboard.md` carries 598 rows marked *switch off*.
-- An untracked `model\` at the root and an untracked `CwSequenceReader.cs.new`.
-- The last report said the sequence reader does **not** feed the panel's pitch, speed and
-  light, and that an earlier instruction claimed it did. Treat the report as right.
+- `CwRules.LearnedReader` is **on** by default; the sequence reader is built only when it is
+  off; sequence-reader tests pin it off by `CwRules.Off(CwRules.LearnedReader)` (the last
+  report corrected an instruction that said `Choose`). The shipped version is 1.13.286.
+- The dimming line is applied in `src\Hamlet.RadioEngine\Cw\CwLearnedReader.cs` near line 526,
+  as `score >= 0.5 ? High : Low` or words to that effect, where `score` is the net's probability
+  for the letter.
+- The scoreboard scores a recording against its truth by edit distance; its printed-letter
+  record (`Printed`, or whatever it is called) carries the letter and its time but **no
+  probability**. That is why the last unit dropped the dimming measure.
+- The guards as the last unit restated them, with the learned reader on: the twelve-plus-three
+  **286**, invented 3, spaces right 70, added 4, letters in silences **11**; the first recording
+  reads `FER CHAT<BT> BEST 7V 73 <SK> KC4ZP DE WA` (26 of 27); W1AW **2128** with 4 wrong; the
+  fist bank guarded by rows at 1212, 1359, 1372 and 1346, fading 2544 less five percent; the
+  easy fixtures 87 of 90; the 5 dB CQs 83 of 84; silence after a weak station at most 1. No test
+  guards the wild bank. These are this unit's before-numbers and must be its after-numbers.
+- `TheLearnedReaderTests` holds the vector tests and `TheSwitchOffIsSilent`; the four vector
+  tests pass against `tests\fixtures\cwnet\`.
+- The last report said some fifty-five test files ride the switch's default and are on neither
+  the engine line nor the app line, so they have never been run with the learned reader on. Task
+  1 finds the exact set; task 4 runs it once.
+- The engine line and the app line were green with the switch on at the end of the last unit;
+  the survey line carries a `Rerun` marked *learned reader on*.
+- Untracked `model\` at the root and `CwSequenceReader.cs.new`; the owner's.
 
-**Checks expected to fail:** none with the switch off. With the switch on, before task 2,
-`TheScoreboardGuardsCwTests` and any test found in task 1 that asserts a shipped figure are
-expected red; task 2 is what makes them green.
+**Checks expected to fail:** none. If any guard above is red before a line is written, stop and
+report it in section 4; the tree is not where the last report left it.
 
 ---
 
@@ -116,66 +121,67 @@ expected red; task 2 is what makes them green.
 
 Transcribed; do not re-argue any.
 
-**HM-DEC-302 - The learned reader** (in force). A trained net - conv front end, two-layer
-bidirectional GRU, CTC - reads the audio behind `CwRules.LearnedReader`, off by default. It
-was trained on synthetic keying only and has heard no recording. The port is proved against a
-shipped test vector; a mismatch is a bug in the port, never a reason to tune the model, the
-alphabet or the feature recipe. *Rejected:* turning it on in that unit - the board fell to 238
-and every guard would have had to be restated first. *Rejected:* dropping it - it beat the
-shipped reader on both real hands in its first run, where four units of rules gained five
-letters.
+**HM-DEC-304 - The learned reader is on** (in force). `CwRules.LearnedReader` is on by default:
+what the operator reads with is the learned reader, second model. The sequence reader stays in
+the tree behind the same switch, off, untouched, and its own tests pin it on so they keep
+testing it. The scoreboard guards are restated at the learned reader's figures, and every other
+test that asserted a shipped reader's figure now asserts the learned reader's. A learned letter
+is dimmed where the net's probability is under one half; the measure of that line was dropped
+because the probability is not kept where a test can read it. The panel shows the learned
+letters' pitch, a letter-rate speed marked `not proved`, and the light from the net's own
+activity. *Rejected:* removing the sequence reader - it is the only reader that measures a dit,
+and nothing is deleted for being off. *Rejected:* a control on the panel for the switch - the
+layout is the owner's, and two readers on offer to an operator is a choice nobody asked for.
+*Rejected:* holding the switch off until the twelve-plus-three recovers 308 - the twenty-two
+letters are spread across the owner's own boards while the real hands, the bulletin and the air
+all read better; the board is one yardstick and the air is the goal.
 
-**HM-DEC-303 - The learned reader, second model** (in force). `cwnet.onnx` is replaced by a
-model of the same shape, trained from the first on scenes the first never saw: the pitch at
-the edge of a receiver passband, a residual floor outside the passband pumped by the
-receiver's AGC, speeds down to 5 WPM, and silent scenes. It has heard no recording. The
-feature recipe, the alphabet and the streaming rule are unchanged, so the port is unchanged;
-the vector files are regenerated for the new model and the four vector tests pass. With the
-switch on: KM3STU 55 of 65 (was 0), the twelve-plus-three 286 (was 238, shipped 308), W1AW
-2128 (was 2048, shipped 2101), Bryan 124 of 144 (was 127, shipped 118), Ken 51 of 76 (was 51,
-shipped 43), the wild bank 3271 (was 3307), the fist bank 5086 (was 5255), the first recording
-26 of 27, letters in silences 11 (was 9), the random-keyed carrier at 20 of 20 seeds. The
-panel with the switch on shows the learned letters' pitch, a speed from the letter rate, and
-the light from the net's own activity. The switch ships off; the owner rules on turning it on.
-*Rejected:* tuning the first model's features or thresholds to KM3STU - the recipe is the
-contract with the port, and a model that needs the recipe bent for one station will need it
-bent for the next. *Rejected:* training on the recordings - the recordings are the yardstick,
-and a model that has heard them cannot be measured by them.
+**HM-DEC-303 - The learned reader, second model** (in force). `cwnet.onnx` is a model of the
+first's shape, trained from it on scenes the first never saw: the pitch at the edge of a
+receiver passband, a residual floor outside the passband pumped by the receiver's AGC, speeds
+down to 5 WPM, and silent scenes. It has heard no recording. The feature recipe, the alphabet
+and the streaming rule are unchanged, so the port is unchanged. *Rejected:* tuning the features
+or thresholds to one station - the recipe is the contract with the port, and a model that needs
+the recipe bent for one station will need it bent for the next. *Rejected:* training on the
+recordings - the recordings are the yardstick, and a model that has heard them cannot be
+measured by them.
+
+**HM-DEC-302 - The learned reader** (in force). A trained net - conv front end, two-layer
+bidirectional GRU, CTC - reads the audio behind `CwRules.LearnedReader`. The port is proved
+against a shipped test vector; a mismatch is a bug in the port, never a reason to tune the
+model, the alphabet or the feature recipe.
 
 **HM-DEC-301 - Run budget** (in force). One survey, one engine line, one app line per unit, at
 the end; quick measures per round; no rule-off survey; a work instruction that asks for more is
 refused in output.md section 4. The lock is taken with the root named:
 `tools\arbiter\lock.bat take C:\Source\HamLet`.
 
-**HM-DEC-296 - Hamlet may know words** (in force). A vocabulary may inform the reader. It is
-not used by the learned reader and is not this unit's business (parked, §6).
+**HM-DEC-296 - Hamlet may know words** (in force). A vocabulary may inform the reader. Not
+used by the learned reader; not this unit's business (parked, §6).
 
 **The owner's standing orders**, not rulings: nothing keys or transmits; no recording is added
-unless the owner says; the draft truth is corrected only by the owner's ear; one layout - nothing
-on screen moves.
+unless the owner says; the draft truth is corrected only by the owner's ear; one layout -
+nothing on screen moves.
 
-**The owner's ruling, 2026-11-06, to record as HM-DEC-304.** The owner asked how to turn the
-learned reader on; that is the ruling asked for in the last two reports. Write to
-`DECISIONS.md`, newest first, this text with the figures filled from the measure:
+**The record this unit writes, as HM-DEC-305.** This is a measurement recorded, not a ruling
+asked for; the line stays at one half and the owner rules on it later with the numbers in front
+of him. Write to `DECISIONS.md`, newest first, this text with the figures filled from the
+measure:
 
-> **HM-DEC-304 - The learned reader is on.** `CwRules.LearnedReader` is on by default: what
-> the operator reads with is the learned reader, second model. The sequence reader stays in
-> the tree behind the same switch, off, untouched, and its own tests pin it on by
-> `CwRules.Choose` so they keep testing it. The scoreboard guards are restated at the learned
-> reader's figures: the twelve-plus-three <n> (was 308), W1AW <n> (was 2101), the fist bank
-> <n> (was 3898), the wild bank <n> (was 2859); and every other test that asserted a shipped
-> reader's figure now asserts the learned reader's - the first recording <n> of 27, letters
-> in silences <n>, the easy fixtures <n> of 90, the 5 dB CQs <n> of 84 - each named in the
-> unit's report. A learned letter is dimmed where the net's probability is under one half;
-> measured on the twelve-plus-three, letters under one half are wrong <n> of <n> times and
-> letters at or over it <n> of <n>. The panel shows the learned letters' pitch, a letter-rate
-> speed marked `not proved`, and the light from the net's own activity. *Rejected:* removing
-> the sequence reader - it is the only reader that measures a dit, and nothing is deleted for
-> being off. *Rejected:* a control on the panel for the switch - the layout is the owner's,
-> and two readers on offer to an operator is a choice nobody asked for. *Rejected:* holding
-> the switch off until the twelve-plus-three recovers 308 - the twenty-two letters are spread
-> across the owner's own boards while the real hands, the bulletin and the air all read
-> better; the board is one yardstick and the air is the goal.
+> **HM-DEC-305 - The dimming line, measured.** The net's probability for each learned letter
+> travels with the letter to the scoreboard, which now keeps it beside the board's right/wrong;
+> nothing printed, dimmed or shown changed, the twelve-plus-three at 286 before and after. On
+> the twelve-plus-three as the board scores it, letters under one half are wrong <n> of <n>
+> and letters at or over one half are right <n> of <n>; at one quarter, under <n> wrong of <n>,
+> over <n> right of <n>; at three quarters, under <n> wrong of <n>, over <n> right of <n>. On
+> the fist bank rows: <the same at one half>. On W1AW: <the same at one half>. Of the <n>
+> letters printed in the board's silences, <n> sit under one half and are already dim. The line
+> stays at one half: where a letter dims is what the display asserts, and that is the owner's,
+> with these numbers in front of him. *Rejected:* moving the line in this unit to the best of
+> the three - a line chosen by the unit that measured it is a line chosen on one board, and the
+> owner has not seen it. *Rejected:* dimming by the board's right/wrong instead of the net's
+> probability - the board knows the truth and the operator's radio does not; the display may
+> only use what the net knows at the time.
 
 ---
 
@@ -194,112 +200,137 @@ release it at the end; write nothing to `RUN_LEDGER.md`; touch nothing under `to
 tick nothing in `PHASE_PLAN.md`; kill no process you did not start; one `dotnet test` per
 line, filtered, with a `timeout`; apostrophes in quoted heredocs break, `;` is refused, Python
 cannot run here, `-m` more than once for a multi-line commit; scripts in
-`.run-unit\unit599-<name>.sh`, not committed; **no sed inserts into C# files** - edit with the
+`.run-unit\unit600-<name>.sh`, not committed; **no sed inserts into C# files** - edit with the
 file tool. **Commit and push each task before starting the next.**
 
-### Task 1 - Trace: what the switch touches
+### Task 1 - Trace: where the probability is born and where it dies
 
 Say what you find rather than confirming this list. Nothing is built in this task.
 
-1. Where `CwRules.LearnedReader` gets its default, by file and line, and every place that
-   reads it: the engine, the app, the tab's chain, the survey, the trace tests, the probes.
-2. **Every test that depends on the switch's default** - that is, every test that would change
-   state if the default flipped - by name, and which way it would go. Expected: the
-   scoreboard guards, any test asserting the first recording whole, one letter in silences,
-   the easy fixtures at 90, the 5 dB CQs at 84, the panel showing `no station`, and any
-   sequence-reader test that builds its reader through the default rather than naming it.
-   Say which of these name their reader already and which ride the default.
-3. **The quick measure, switch on, as it ships now** - the engine's figures for the
-   twelve-plus-three with KM3STU's rows, W1AW, the first recording, the easy fixtures, the
-   5 dB and 0 dB CQs, letters in silences, the random carrier. These are the before-numbers
-   for the restated guards; where the last report already has them, say they match or do not.
-4. Where the dimming line is applied (the probability compared with one half), and whether
-   the net's per-letter probability is already kept somewhere a test can read it beside the
-   board's right/wrong.
+1. **Where the probability is born.** In the learned reader, by file and line: what `score`
+   is - the softmax of the net's logits at the frame the letter was emitted, or the best of a
+   run of frames, or something else - and whether it is the same figure the dimming line
+   compares with one half. Say exactly what the figure is so the record can say it.
+2. **Where it dies.** The path from the learned reader's letter to the scoreboard's printed
+   record: every type the letter passes through (the decoder's frame, the provisional and
+   committed letter, the tab's chain, the scoreboard's record), by name, and the first one that
+   drops the probability. If a type on the path already carries it and only the scoreboard's
+   record does not, say so - the plumbing is then smaller than task 2 describes.
+3. **How the board scores a printed letter.** The edit-distance alignment: whether it marks
+   each printed letter right, substituted or inserted, and whether that mark is kept per letter
+   or only summed. If only summed, task 2 keeps it per letter.
+4. **The silences.** How the board counts "letters in silences" (the 11): which stretches of
+   which recordings, and whether those letters go through the same printed record, so their
+   probabilities can be read in task 3.
+5. **The off-line set.** The exact list of test classes that ride the switch's default and are
+   on neither the engine line nor the app line - the last report said about fifty-five files.
+   Name them and say how they are filtered (category, trait, name), so task 4 can run them in
+   one filtered `dotnet test`.
+6. **Quick measure, as it ships now:** the twelve-plus-three with KM3STU's rows, letters in
+   silences, W1AW, the first recording. Expected 286 / 11 / 2128 / 26 of 27; say match or not.
 
 Report the findings before a line is written.
 
-### Task 2 - The switch goes on
+### Task 2 - The probability travels with the letter
 
-1. `CwRules.LearnedReader` defaults to **on**. The sequence reader is not touched; it is built
-   when the switch is off exactly as today.
-2. Every test from task 1 item 2 that rides the default and tests the **sequence reader** is
-   pinned to it by `CwRules.Choose` (or however the trace tests pin the learned reader on),
-   so it keeps testing what it tested. Nothing is deleted or skipped for being about the
-   sequence reader; a test that exists to test the sequence reader still does.
-3. Every test from task 1 item 2 that asserts a **shipped figure** is restated at the learned
-   reader's figure from the quick measure: `TheScoreboardGuardsCwTests` at the learned
-   reader's twelve-plus-three, W1AW, fist bank and wild bank; the first recording at its
-   count of 27; letters in silences at its count; the easy fixtures at its count of 90; the 5
-   dB CQs at its count of 84; the panel tests at what the learned reader shows. Each restated
-   figure is the engine's measured figure, not a figure from this file. *Why restate rather
-   than loosen:* a guard is a floor the next unit may not fall under; a guard at the old
-   reader's figure for the new reader is a guard on nothing.
-4. `TheLearnedReaderTests.TheSwitchOffIsSilent` still tests that the switch off builds no
-   learned reader; rename nothing.
-5. **Quick measure, as it now ships:** the twelve-plus-three with KM3STU's rows, W1AW, the
-   first recording, letters in silences, the random carrier. Expected equal to task 1 item 3.
+1. Carry the net's probability from where it is born (task 1 item 1) to the scoreboard's
+   printed record, through every type on the path (task 1 item 2). Where a type is shared with
+   the sequence reader, the probability is **optional** (nullable, or a value the sequence
+   reader never sets); the sequence reader is not touched and its letters carry none.
+2. The scoreboard keeps, per printed letter, the probability and the board's own mark for that
+   letter - right, substituted, inserted (task 1 item 3). Nothing about how the board scores
+   changes; the figures it reports do not move.
+3. **Nothing printed, dimmed or shown changes.** The dimming line still reads the same figure
+   it read before; the panel is untouched; the reader's output is byte-identical.
+4. `TheLearnedReaderTests`: one test that reads one recording through the chain and asserts
+   that every learned letter on the scoreboard carries a probability in [0, 1], and that a
+   sequence-reader run (pinned off with `CwRules.Off(CwRules.LearnedReader)`) carries none. On
+   the engine line.
+5. **Quick measure:** the twelve-plus-three with KM3STU's rows, letters in silences, W1AW, the
+   first recording. **Must equal task 1 item 6 exactly** - 286, 11, 2128, 26 of 27 - or the
+   plumbing changed what prints and the round is spent finding where. *Why exact:* a plumbing
+   unit that moves a figure by one has done something else as well, and the measure in task 3
+   would then be a measure of something other than the shipped reader.
 6. Commit, push.
 
-### Task 3 - The dimming line, measured (the drop candidate)
+### Task 3 - The dimming line, measured (advances)
 
-The dimming line at one half was proposed two reports ago and has never been measured against
-the net's errors. Measure it, do not move it:
+Measure; do not move.
 
-- On the twelve-plus-three as the board scores it, for every printed letter: the net's
-  probability for that letter and whether the board scored it right. Report four counts: under
-  one half right, under one half wrong, at or over one half right, at or over one half wrong.
-  Then the same four at one quarter and at three quarters, so the owner can see whether one
-  half is where the wrong letters are.
-- One `Survey`-filtered trace in `TheLearnedReaderTests` that prints these, on no line.
-- The line stays at one half whatever the counts show; the counts go in the report and in
-  HM-DEC-304. *Why not move it:* where a letter dims is what the display asserts, and that is
-  the owner's, with the numbers in front of him.
+1. One `Survey`-filtered trace in `TheLearnedReaderTests`, on no line, that runs the board and
+   prints, for each of: the twelve-plus-three as one set; the fist bank rows as one set; W1AW;
+   Ken 0-120 s and Bryan 120-300 s if the board has their truths; the first recording -
+   twelve counts: at each of one quarter, one half and three quarters, letters under the line
+   right / wrong, letters at or over the line right / wrong. *Wrong* is substituted or inserted;
+   a truth letter the reader never printed is not a letter and is not counted. Also the number
+   of letters each set holds and how many carried no probability (expected 0 with the switch
+   on).
+2. The same trace prints, for the letters the board counts as printed in silences: each
+   letter, its probability, and the count under one half. *Why:* these are the `E I EE` the
+   owner saw; if they are mostly already dim, the display is doing the right thing and the
+   later model only has to finish the job; if they are bright, that is a finding.
+3. The trace prints a short histogram of probability for right letters and for wrong letters
+   on the twelve-plus-three, ten bins, so the owner can see the shape and not only three cuts.
+4. Run it once; the figures go in the report and in HM-DEC-305.
+5. Commit, push.
 
-If the probability is not kept anywhere a test can read it beside the board's scoring (task 1
-item 4), say so and drop this task whole; do not plumb it this unit.
+### Task 4 - The off-line set, once (the drop candidate)
 
-### Task 4 - The lines, the survey, the record
+The test classes from task 1 item 5 have never run with the learned reader on. Run them once,
+in one filtered `dotnet test` with a `timeout`, and report: how many pass, how many fail, and
+for each failure one line saying whether it fails because it asserted a shipped-reader figure
+or shape (restate it at the learned reader's measured figure, as the last unit did for the
+lines), because it tests the sequence reader through the default (pin it off with
+`CwRules.Off(CwRules.LearnedReader)`), or for some other reason (leave it red, name it in
+section 4). *Why once:* these are the tests the shipped reader is not measured by; a red among
+them is a guard on nothing until someone looks, and nobody has.
 
-Run the app line, the engine line and the survey line **once, at the end**, with the switch
-as it now ships (on). Rewrite `docs\cw-survey-2026-10-09.md` with a new `Rerun` line marked
-*learned reader on*; every group.
+**Budget.** This run is in addition to HM-DEC-301's three. If Claude Code reads HM-DEC-301 as
+forbidding it, drop this task whole, say so in section 4, and the rest of the unit stands; do
+not spend a round arguing it.
 
-- `PHASE_OUTCOME.md`, both copies: `## UNIT 599 - STEP 12`, one paragraph.
-- `PHASE_STATUS.md`, both copies: names 599.
+Commit, push.
+
+### Task 5 - The lines, the survey, the record
+
+Run the app line, the engine line and the survey line **once, at the end**. The survey's
+figures are expected unchanged from the last `Rerun`; add a `Rerun` line marked *probability
+plumbed - unchanged* only if the survey's own text expects a line per unit, else leave it.
+
+- `PHASE_OUTCOME.md`, both copies: `## UNIT 600 - STEP 13`, one paragraph leading with the
+  counts at one half.
+- `PHASE_STATUS.md`, both copies: names 600.
 - Patch-bump `Directory.Build.props`.
 - `CLAUDE.md` §1 index row.
-- `DECISIONS.md`, newest first: **HM-DEC-304** as transcribed in §3, figures filled.
-- `docs\cw-scoreboard.md`: a 599 row in every table, marked *learned reader on - shipped*;
-  the guard figures named in the scoreboard's own text updated to the restated ones.
-- `CW_SPEC.md`, the section *The learned reader*: one paragraph saying the learned reader is
-  what Hamlet reads with, the sequence reader is behind the switch, and what the guards are
-  now.
-- `CLAUDE.md`, wherever it states the shipped figures 308, 2101, 3898, 2859 or says the
-  learned reader is off: updated to say what is true.
+- `DECISIONS.md`, newest first: **HM-DEC-305** as transcribed in §3, figures filled.
+- `docs\cw-scoreboard.md`: a 600 row in every table, marked *probability plumbed - unchanged*,
+  with the figures the board reports this unit; and a short new table or paragraph, *The dimming
+  line*, carrying the twelve counts on the twelve-plus-three and the silence count.
+- `CW_SPEC.md`, the section *The learned reader*: one paragraph saying what the probability is,
+  that it travels to the scoreboard, where the line sits and what was measured.
 - Commit, push.
 
 ---
 
 ## 6. Parked - do not touch, do not raise
 
-- **The random-keyed carrier** prints at 20 of 20 seeds; the net knows no words to refuse it.
-  A vocabulary-aware decode on the net's scores is its own unit (HM-DEC-296 allows it).
-- **Letters in silences, 11,** and the `E I EE` the owner saw on air between transmissions
-  under the shipped reader: the learned reader's figure is restated as a guard this unit and
-  brought down by a later model, not by a rule. Not traced here.
-- **KM3STU's third recording** at 24 of 32: the model's business, parked with the model.
+- **Moving the dimming line.** Measured this unit; the owner rules with the numbers. Not moved,
+  not proposed.
+- **Letters in silences, 11,** and the `E I EE` between transmissions: counted and scored this
+  unit, brought down by a later model, not by a rule. A third model was in training when the
+  owner stopped it; it is the web session's business, not this tree's.
+- **The random-keyed carrier** at 20 of 20 seeds; a vocabulary-aware decode is its own unit
+  (HM-DEC-296 allows it).
+- **KM3STU's third recording** at 24 of 32: the model's business.
 - **The speed marked `not proved`,** the pitch going blank after ten seconds of nothing, the
-  letter rate reading low for its first ten seconds, the light updating once a second: built
-  as the last unit decided, left as built; the owner has them in front of him now.
-- **Ken's draft truth at 100-120 s** (`KB2UZK/M DE N3AFS K` against `N3AFS DE KB2UZY/M`): the
-  owner's ear; not edited, not raised again.
-- **The sequence reader not feeding the panel** when the switch is off: it is now off by
-  default, so the panel the operator sees is the learned reader's. Not touched; the sequence
-  reader is not this unit's.
+  letter rate reading low for its first ten seconds, the light updating once a second: left as
+  built; the owner has them in front of him.
+- **Ken's draft truth at 100-120 s**: the owner's ear; not edited, not raised again.
+- **The wild bank unguarded** and the fist bank guarded by rows rather than its total: as the
+  last unit left them; a guard unit if the owner asks.
 - **The untracked `model\` at the root, `CwSequenceReader.cs.new`, and the uncommitted
-  `PARKED.md`, `RUN_LEDGER.md`, `PROJECT_STATUS.md`, `tools\go-claude\GoClaude.bat`,
-  `.run-unit\`, `cases-*.txt`:** the owner's to clean; known, not raised.
+  `PARKED.md`, `RUN_LEDGER.md`, `tools\go-claude\GoClaude.bat`, `.run-unit\`, `cases-*.txt`:**
+  the owner's to clean; known, not raised.
 - **The asks outstanding** from units 587, 575, 562, 520, 440 and 487: carried forward as they
   are; not raised again.
 
@@ -311,16 +342,18 @@ A parked item that turns out to block a task is raised once, saying it was parke
 
 Standing prohibitions are in `CLAUDE.md` and are not retyped. This unit's own:
 
-- **Do not touch the model, the alphabet, the feature recipe or the vector files.** The
-  recipe is the contract between the trained net and the port; this unit changes which reader
-  is on, not what the reader is.
-- **Do not delete, skip or weaken a sequence-reader test.** The sequence reader is off, not
-  gone; a test that stops testing it is a deletion with extra steps.
-- **Do not restate a guard above or below the measured figure.** A guard is the engine's own
-  figure from this unit's measure, or it is a number somebody typed.
-- **Do not put a control for the switch on the panel, and do not move anything on screen.**
-  The layout is the owner's; the switch is code.
-- **Do not move the dimming line.** Measure it; the line is the owner's.
+- **Do not move the dimming line, and do not change what is dimmed.** The line is the owner's;
+  this unit gives him the numbers to rule with. A unit that measures a line and moves it in the
+  same breath has measured nothing the owner can check.
+- **Do not change a figure Hamlet prints.** The quick measure in task 2 must equal task 1
+  exactly; the plumbing carries a number alongside the letter and does nothing else.
+- **Do not touch the model, the alphabet, the feature recipe or the vector files.** The recipe
+  is the contract between the trained net and the port.
+- **Do not let the probability reach the sequence reader or the panel.** The sequence reader
+  has no such figure and is not taught one; the panel does not change this unit.
+- **Do not delete, skip or weaken a test found red in task 4.** Restate a figure at the measured
+  one, pin a reader, or leave it red and name it. A test that stops testing is a deletion with
+  extra steps.
 
 ---
 
@@ -338,16 +371,17 @@ reason.
 headings exactly: `## 1. What Claude did`, `## 2. What the owner should expect`,
 `## 3. What you should see`, `## 4. What's blocking us`.
 
-**Section 3 leads with the answer:** what the shipped build now reads with, and the shipped
-figures - the twelve-plus-three with KM3STU's rows, W1AW, Ken and Bryan per 20 s, the wild
-bank, the fist bank, the first recording, letters in silences, the easy fixtures, the CQs,
-noise, the carriers, CPU - as they now stand with the switch as it ships, beside what shipped
-before; then each guard restated, old figure to new, by test name; then the dimming counts at
-one quarter, one half and three quarters, or that task 3 was dropped and why; then what the
-panel shows in the owner's terms when he runs the app. Section 2, in plain words, what is now
-true when the owner runs Hamlet and what will look wrong but is not - the speed marked `not
-proved`, the pitch blank in silence, the light once a second. Section 1 per task, with every
-test that was pinned or restated named. Section 4: anything needing a ruling, in the decision
-log's format; then anything left, a line each.
+**Section 3 leads with the answer.** First line: whether anything Hamlet prints changed -
+expected *no change on the air or on any board; the twelve-plus-three 286 before and after*.
+Then the twelve counts on the twelve-plus-three, at one quarter, one half and three quarters,
+as four numbers per cut; then the same at one half for the fist bank rows, W1AW and the real
+hands; then the silence letters - each with its probability, and how many are under one half;
+then the two histograms; then, in the owner's terms, what this says about the bright and dim
+letters he sees on the panel. Then task 4: how many of the off-line set passed, how many were
+restated, pinned or left red, by name. Section 2, in plain words: nothing looks different; the
+bright/dim letters are now counted. Section 1 per task, with the exact figure the probability
+is (task 1 item 1), every type the plumbing touched, and every test added, restated or pinned,
+named. Section 4: anything needing a ruling, in the decision log's format - *not* a proposal to
+move the line, which is parked; then anything left, a line each.
 
 **Write `output.md`, then stop.** Do not start the next unit.
