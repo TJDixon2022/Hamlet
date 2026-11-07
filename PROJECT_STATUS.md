@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: EXECUTING
+STATE: COMPLETED
 TASK: 5 of 5
 WORK_INSTRUCTION: 600 - the dimming line, measured (run by hand)
-BALL: code
-NEXT_PASTE: none
+BALL: tim
+NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-11-07T12:48:46-05:00
-NOTE: Dimming line measured: under one half 3 right / 2 wrong on the board, all 11 silence letters bright; task 4 dropped by the run budget; the end run starting
+UPDATED: 2026-11-07T13:12:33-05:00
+NOTE: Dimming line measured: under one half 3 right / 2 wrong, over 301 / 11; all 11 silence letters bright; 286 unchanged; lines 176 and 278 green
 
 ---
 

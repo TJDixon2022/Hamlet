@@ -4,6 +4,20 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-305
+date: 2026-11-07
+refs: work instruction 600, HM-DEC-304, HM-DEC-303, HM-DEC-301, src/Hamlet.RadioEngine/Cw/CwCharacter.cs, src/Hamlet.RadioEngine/Cw/CwLearnedReader.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheLearnedReaderTraces.cs, docs/cw-scoreboard.md
+---
+
+**HM-DEC-305 - The dimming line, measured.** The net's probability for each learned letter travels with the letter to the scoreboard, which now keeps it beside the board's right/wrong; nothing printed, dimmed or shown changed, the twelve-plus-three at 286 before and after. On the twelve-plus-three as the board scores it, letters under one half are wrong 2 of 5 and letters at or over one half are right 301 of 312; at one quarter, under 0 wrong of 0, over 304 right of 317; at three quarters, under 6 wrong of 28, over 282 right of 289. On the fist bank rows: under one half 99 wrong of 196, at or over 5213 right of 5317. On W1AW: under one half 0 wrong of 2, at or over 2131 right of 2135. Of the 11 letters printed in the board's silences, 0 sit under one half and are already dim. The line stays at one half: where a letter dims is what the display asserts, and that is the owner's, with these numbers in front of him. *Rejected:* moving the line in this unit to the best of the three - a line chosen by the unit that measured it is a line chosen on one board, and the owner has not seen it. *Rejected:* dimming by the board's right/wrong instead of the net's probability - the board knows the truth and the operator's radio does not; the display may only use what the net knows at the time.
+
+A measurement recorded, not a ruling asked for. Ordered by work instruction 600, whose text this is with the figures filled from the measure.
+
+**What the probability is.** The softmax of the net's scores, at the letter's index, at the first output frame of the run the greedy collapse emitted the letter on (`CwLearnedReader.cs`, `Probability`): not the best or the mean of the run. It is the figure the learned reader writes to `CwCharacter.Score` and compares with one half to dim. Because the sequence reader writes its own, different figure to the same `Score`, the probability now also travels as `CwCharacter.NetProbability`, which only the learned reader sets; the scoreboard's `Printed` carries it, and each scored stretch keeps the board's alignment mark per letter (right, substituted, inserted, or on a free end and not scored). `TheProbabilityReachesTheScoreboard` holds it on the engine line.
+
+**How the counts are taken.** `TheLearnedReaderTraces.TheDimmingLine`, on no line. A letter is right or wrong as the board's own alignment marks it, wrong being substituted or inserted; a truth letter never printed is not a letter; letters on the alignment's free ends, and under a `?` of the draft truth, are not scored. The twelve-plus-three: 324 letters, 7 not scored, 317 scored, 304 right and 13 wrong. Every letter carried a probability. The fist bank, 5513 scored: at one quarter under 2 right / 11 wrong; at three quarters under 553 right / 174 wrong, over 4757 right / 29 wrong; the 1.6 row at one half under 65 right / 65 wrong. W1AW, 2137 scored: at three quarters under 76 right / 2 wrong. Ken at one half under 2 right / 4 wrong, over 52 / 15; Bryan under 1 / 3, over 125 / 9; the first recording 26 of 26 at or over. The 11 silence letters' probabilities run from 0.514 to 0.999. The twelve-plus-three in ten bins of probability, right / wrong: 0.3-0.4 1 / 1, 0.4-0.5 2 / 1, 0.5-0.6 6 / 2, 0.6-0.7 7 / 2, 0.7-0.8 14 / 0, 0.8-0.9 30 / 2, 0.9-1.0 244 / 5, none under 0.3.
+
+---
 id: HM-DEC-304
 date: 2026-11-06
 refs: work instruction 599, HM-DEC-303, HM-DEC-302, HM-DEC-295, HM-DEC-301, src/Hamlet.RadioEngine/Cw/CwRules.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheScoreboardGuardsCwTests.cs, docs/cw-scoreboard.md

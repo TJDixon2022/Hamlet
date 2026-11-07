@@ -405,6 +405,28 @@ guard: the random carrier prints at 20 of 20 seeds, reported and not a condition
 | 597 | 2026-11-05 | 325 of 353 | 13 | 4 | **308** | 1, on `221502` | 92 of 110, 13 added | *learned reader, switch off* (HM-DEC-302): on 238, 251 of 353, 12 wrong, 1 invented, 9 in silence, 56 of 110, 3 added; unchanged as shipped |
 | 598 | 2026-11-05 | 325 of 353 | 13 | 4 | **308** | 1, on `221502` | 92 of 110, 13 added | *learned reader, second model, switch off* (HM-DEC-303): on 286, 302 of 353, 13 wrong, 3 invented, 11 in silence, 70 of 110, 4 added, KM3STU 55 of 65; unchanged as shipped |
 | 599 ruled | 2026-11-06 | 302 of 353 | 13 | 3 | **286** | 11 | 70 of 110, 4 added | *learned reader on - shipped*: the owner's ruling of 2026-11-06, HM-DEC-304; the learned reader, second model, is what Hamlet reads with, and the board is held at the figures it reads, KM3STU 55 of 65; the first recording reads `FER CHAT<BT> BEST 7V 73 <SK> KC4ZP DE WA`; the random carrier reported. Under the sequence reader, now off, 308 |
+| 600 | 2026-11-07 | 302 of 353 | 13 | 3 | **286** | 11 | 70 of 110, 4 added | *probability plumbed - unchanged* (HM-DEC-305): the net's probability travels with each learned letter to the board, which keeps it beside its right/wrong; nothing printed changed, KM3STU 55 of 65, the first recording 26 of 27; the dimming line measured below |
+
+### The dimming line (work instruction 600, HM-DEC-305)
+
+A learned letter is dimmed where the net's probability for it, the softmax at the first output frame it was emitted on, is under one half. Counted on the board's own alignment: wrong is substituted or inserted, a letter on a free end is not scored, a truth letter never printed is not a letter. Measured, not moved: the line stays at one half for the owner.
+
+| set | letters scored | line | under: right / wrong | at or over: right / wrong |
+|---|---|---|---|---|
+| the twelve-plus-three | 317 (304 right, 13 wrong) | 0.25 | 0 / 0 | 304 / 13 |
+| | | **0.50** | **3 / 2** | **301 / 11** |
+| | | 0.75 | 22 / 6 | 282 / 7 |
+| the fist bank, every row | 5513 (5310 right, 203 wrong) | 0.25 | 2 / 11 | 5308 / 192 |
+| | | 0.50 | 97 / 99 | 5213 / 104 |
+| | | 0.75 | 553 / 174 | 4757 / 29 |
+| W1AW | 2137 (2133 right, 4 wrong) | 0.50 | 2 / 0 | 2131 / 4 |
+| Ken N3AFS, 0-120 s | 73 (54 right, 19 wrong) | 0.50 | 2 / 4 | 52 / 15 |
+| Bryan KB2UZK/M, 120-300 s | 138 (126 right, 12 wrong) | 0.50 | 1 / 3 | 125 / 9 |
+| the first recording | 26 (26 right) | 0.50 | 0 / 0 | 26 / 0 |
+
+**The 11 letters printed in the board's silences: none under one half.** `B` 0.989 (`200157`), `Q` 0.983, `E` 0.791, `E` 0.642 (`143906`), `I` 0.945, `C` 0.514, `E` 0.985 (`143951`), `W` 0.999 (`144020`), `I` 0.699 (`221502`), `E` 0.891, `C` 0.986 (`121414`).
+
+The twelve-plus-three by probability, right / wrong: under 0.3 none; 0.3-0.4 1 / 1; 0.4-0.5 2 / 1; 0.5-0.6 6 / 2; 0.6-0.7 7 / 2; 0.7-0.8 14 / 0; 0.8-0.9 30 / 2; 0.9-1.0 244 / 5.
 
 ## Scans (work instruction 544, HM-DEC-248)
 
@@ -506,6 +528,7 @@ high and 25 medium, 2151 letters, all totalled.
 | 597 | 2026-11-05 | **2101** | 2125 of 2151 | 24 | 0 | 440 of 440, 8 added | *learned reader, switch off* (HM-DEC-302): on 2048, 2063 of 2151, 15 wrong, 0 invented, 368 of 440, 9 added; unchanged as shipped |
 | 598 | 2026-11-05 | **2101** | 2125 of 2151 | 24 | 0 | 440 of 440, 8 added | *learned reader, second model, switch off* (HM-DEC-303): on 2128, 2132 of 2151, 4 wrong, 0 invented, 402 of 440, 3 added; unchanged as shipped |
 | 599 ruled | 2026-11-06 | **2128** | 2132 of 2151 | 4 | 0 | 402 of 440, 3 added | *learned reader on - shipped*: the owner's ruling of 2026-11-06, HM-DEC-304; the table held at the figures the learned reader reads. Under the sequence reader, now off, 2101 |
+| 600 | 2026-11-07 | **2128** | 2132 of 2151 | 4 | 0 | 402 of 440, 3 added | *probability plumbed - unchanged* (HM-DEC-305): at one half 2 letters under, both right; 2131 right and 4 wrong at or over |
 
 **The fist bank** (work instruction 580, HM-DEC-284): ninety-six hands with a truth, every dah over dit of 1.6, 2.0, 2.5 and 3.0 at 10, 15, 20 and 25 WPM, 5, 10 and 20 dB, flat and fading, generated at test time from their recipes (`tests\Hamlet.RadioEngine.Tests\Cw\Fixtures\CwFistBank.cs`) and read by the survey as a group of its own, its matrices in `docs\cw-survey-2026-10-09.md` under `The fist bank`. A yardstick, not yet a guard.
 
@@ -579,6 +602,7 @@ Work instruction 592, HM-DEC-296. Two real hands on `cw-2026-10-19-141708`, scor
 | 598, as shipped, *learned reader, second model, switch off* | 2026-11-05 | 43 of 76 | 25 | 0 | 11 of 16, 7 added | 118 of 144 | 17 | 0 | 36 of 40, 19 added |
 | 598, *learned reader, second model* on, not shipped | 2026-11-05 | 51 of 76 | 19 | 0 | 7 of 16, 2 added | 124 of 144 | 12 | 0 | 34 of 40, 1 added |
 | 599, *learned reader on - shipped* (HM-DEC-304) | 2026-11-06 | 51 of 76 | 19 | 0 | 7 of 16, 2 added | 124 of 144 | 12 | 0 | 34 of 40, 1 added |
+| 600, *probability plumbed - unchanged* (HM-DEC-305) | 2026-11-07 | 51 of 76 | 19 | 0 | 7 of 16, 2 added | 124 of 144 | 12 | 0 | 34 of 40, 1 added |
 
 ## Wild bank
 
@@ -600,3 +624,4 @@ Work instruction 592, HM-DEC-296. Forty-eight hands from six recipes (`CwWildBan
 | 598, as shipped, *learned reader, second model, switch off* | 2026-11-05 | 3133 of 3528 | 274 | 0 | 2859 | 923 of 1104, 400 added | 522 | 459 | 567 | 489 | 524 | 572 |
 | 598, *learned reader, second model* on, not shipped | 2026-11-05 | 3372 of 3528 | 101 | 0 | 3271 | 858 of 1104, 31 added | 548 | 444 | 584 | 535 | 583 | 577 |
 | 599, *learned reader on - shipped* (HM-DEC-304) | 2026-11-06 | 3372 of 3528 | 101 | 0 | 3271 | 858 of 1104, 31 added | 548 | 444 | 584 | 535 | 583 | 577 |
+| 600, *probability plumbed - unchanged* (HM-DEC-305) | 2026-11-07 | 3372 of 3528 | 101 | 0 | 3271 | 858 of 1104, 31 added | 548 | 444 | 584 | 535 | 583 | 577 |
