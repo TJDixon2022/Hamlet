@@ -120,10 +120,30 @@ public sealed class TheRecordingsScoreboardTests
     internal static readonly string[] AddedAt559 = ["cw-2026-10-08-121324", "cw-2026-10-08-121357", "cw-2026-10-08-121414"];
 
     /// <summary>One letter the reader printed: when its last mark ended, its pitch, its text.</summary>
-    internal readonly record struct Printed(double Seconds, double PitchHz, string Text, bool SpaceBefore = false, CwGapLines? Lines = null, double From = double.NaN);
+    /// <remarks><c>Probability</c> is the learned reader's own figure for the letter, <see cref="CwCharacter.NetProbability"/>, and null
+    /// where the sequence reader printed it (work instruction 600, HM-DEC-305).</remarks>
+    internal readonly record struct Printed(double Seconds, double PitchHz, string Text, bool SpaceBefore = false, CwGapLines? Lines = null, double From = double.NaN, double? Probability = null);
+
+    /// <summary>What the board's alignment made of one printed letter (work instruction 600): the same alignment the letters right and
+    /// the wrong count are read from, kept per letter rather than summed.</summary>
+    internal enum LetterMark
+    {
+        /// <summary>Before or after the reference on the alignment's free ends: not scored.</summary>
+        Free,
+
+        /// <summary>The reference's own letter.</summary>
+        Right,
+
+        /// <summary>In the place of another letter: substituted.</summary>
+        Wrong,
+
+        /// <summary>Where the reference has none: inserted.</summary>
+        Added,
+    }
 
     /// <summary>A stretch's score: what printed there, its letters, and how many of the reference's letters were read right.</summary>
-    internal sealed record Scored(Stretch Stretch, string PrintedText, int ReferenceLetters, int Right, Spaces Spaces = default, IReadOnlyList<Printed>? Letters = null, int Wrong = 0, int Invented = 0);
+    /// <remarks><c>Marks</c> holds the alignment's mark for each of <c>Letters</c>, index for index (work instruction 600).</remarks>
+    internal sealed record Scored(Stretch Stretch, string PrintedText, int ReferenceLetters, int Right, Spaces Spaces = default, IReadOnlyList<Printed>? Letters = null, int Wrong = 0, int Invented = 0, IReadOnlyList<LetterMark>? Marks = null);
 
     /// <summary>The whole board: each stretch, the total over the stretches of medium confidence or better, and the hard limits.</summary>
     internal sealed record Board(IReadOnlyList<Scored> Stretches, IReadOnlyDictionary<string, string> Unassigned, int Total, int OutOf, string FirstReads, IReadOnlyList<(string What, string Reads)> Noise)
@@ -207,7 +227,7 @@ public sealed class TheRecordingsScoreboardTests
         };
         gate.RunRead += (c, run) =>
         {
-            letters.Add(new Printed(run[^1].ToSeconds, run.Average(m => m.PitchHz), c.Text, space, gate.StationLines, run[0].FromSeconds));
+            letters.Add(new Printed(run[^1].ToSeconds, run.Average(m => m.PitchHz), c.Text, space, gate.StationLines, run[0].FromSeconds, c.NetProbability));
             space = false;
         };
 
@@ -445,7 +465,7 @@ public sealed class TheRecordingsScoreboardTests
                 var printed = Text(by[s]);
                 var wrong = WrongAt(printed, s.Reference).Count(i => i < by[s].Count && !invented.Contains(by[s][i]));
 
-                scored.Add(new Scored(s, printed, Letters(s.Reference).Length, Right(printed, s.Reference), SpacesOf(printed, s.Reference), by[s], wrong, by[s].Count(invented.Contains)));
+                scored.Add(new Scored(s, printed, Letters(s.Reference).Length, Right(printed, s.Reference), SpacesOf(printed, s.Reference), by[s], wrong, by[s].Count(invented.Contains), MarksOf(printed, s.Reference)));
             }
 
             if (none.Length > 0)
@@ -500,6 +520,45 @@ public sealed class TheRecordingsScoreboardTests
         }
 
         return at;
+    }
+
+    /// <summary>
+    /// Each printed letter's mark on the alignment <see cref="WrongAt"/> and <see cref="Right"/> read (work instruction 600): right,
+    /// substituted, inserted, or on a free end and not scored. Index for index with the printed letters, spaces dropped.
+    /// </summary>
+    internal static IReadOnlyList<LetterMark> MarksOf(string printed, string reference)
+    {
+        var decode = Letters(printed);
+        var key = Letters(reference);
+        var marks = new LetterMark[decode.Length];
+
+        if (decode.Length == 0 || key.Length == 0)
+        {
+            return marks;
+        }
+
+        var score = CwScorer.Within(decode, key, CwKeyKind.Exact);
+        var di = score.Start;
+
+        foreach (var step in score.Steps)
+        {
+            switch (step.Edit)
+            {
+                case CwEdit.Same:
+                    marks[di++] = LetterMark.Right;
+                    break;
+
+                case CwEdit.Wrong:
+                    marks[di++] = LetterMark.Wrong;
+                    break;
+
+                case CwEdit.Added:
+                    marks[di++] = LetterMark.Added;
+                    break;
+            }
+        }
+
+        return marks;
     }
 
     /// <summary>What the first recording reads, spaces as printed.</summary>

@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 2 of 5
+TASK: 3 of 5
 WORK_INSTRUCTION: 600 - the dimming line, measured (run by hand)
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-11-07T12:38:14-05:00
-NOTE: Trace done, as-shipped figures match (286, 11, 2128, 26 of 27); building the probability plumbing
+UPDATED: 2026-11-07T12:43:17-05:00
+NOTE: The probability reaches the scoreboard, figures unchanged (286, 11, 2128, 26 of 27); running the dimming-line trace
 
 ---
 

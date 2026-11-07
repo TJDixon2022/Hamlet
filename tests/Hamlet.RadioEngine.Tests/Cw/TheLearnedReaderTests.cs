@@ -161,4 +161,25 @@ public sealed class TheLearnedReaderTests
         Assert.Null(chain.Detector.Learned);
         Assert.NotNull(chain.Detector.Sequence);
     }
+
+    /// <remarks>
+    /// Work instruction 600, HM-DEC-305: the net's probability for each letter travels with it to the scoreboard. The first recording read
+    /// through the chain as the board reads it: every letter the learned reader printed carries a probability in [0, 1], and the same
+    /// recording read with the sequence reader carries none, since that reader has no such figure.
+    /// </remarks>
+    [Fact]
+    public void TheProbabilityReachesTheScoreboard()
+    {
+        const string recording = "cw-2026-10-02-200157";
+        var learned = TheRecordingsScoreboardTests.ReadLive(recording).Letters;
+
+        Assert.NotEmpty(learned);
+        Assert.All(learned, l => Assert.True(l.Probability is >= 0 and <= 1, $"`{l.Text}` at {l.Seconds:0.00} s carries {l.Probability?.ToString(CultureInfo.InvariantCulture) ?? "none"}"));
+
+        using var off = CwRules.Off(CwRules.LearnedReader);
+        var sequence = TheRecordingsScoreboardTests.ReadLive(recording).Letters;
+
+        Assert.NotEmpty(sequence);
+        Assert.All(sequence, l => Assert.Null(l.Probability));
+    }
 }

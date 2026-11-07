@@ -526,6 +526,7 @@ public sealed class CwLearnedReader
             Reading = new CwCharacter(MorseAlphabet.Unreadable, score >= 0.5 ? CwConfidence.High : CwConfidence.Low, score, pattern, levelDb, 0, TimeSpan.FromSeconds(to))
             {
                 Stage = CwReadingStage.Settled,
+                NetProbability = score,
             },
             Marks = [new CwMark(0, from, to, pitch, levelDb, levelDb) { Keyed = true, Stood = true }],
         });

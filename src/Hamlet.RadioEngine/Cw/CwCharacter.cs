@@ -97,6 +97,19 @@ public sealed record CwCharacter(
     /// <summary>Which pass read it (HM-DEC-096, phase 1).</summary>
     public CwReadingStage Stage { get; init; } = CwReadingStage.Provisional;
 
+    /// <summary>
+    /// The learned reader's probability for this letter, or null where no net read it (work instruction 600, HM-DEC-305).
+    /// </summary>
+    /// <remarks>
+    /// <para>The softmax of the net's scores at the first output frame of the run that took this letter: the frame the greedy
+    /// collapse emitted it on. It is the same figure the learned reader writes to <see cref="Score"/> and dims under one half,
+    /// carried apart so that a reader of the letter can tell the net's probability from the sequence reader's own score, which
+    /// shares the field and means something else. The sequence reader never sets it.</para>
+    /// <para>Nothing reads it to decide what prints or how it is shown; it travels with the letter so the scoreboard can set it
+    /// beside the board's right or wrong (§0.0.1).</para>
+    /// </remarks>
+    public double? NetProbability { get; init; }
+
     /// <summary>True when this is the gap between two words rather than a character.</summary>
     public bool IsWordGap => Text == MorseAlphabet.WordGap;
 

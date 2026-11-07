@@ -51,7 +51,14 @@ internal static class CwWildHands
     /// <summary>A hand's whole score.</summary>
     public sealed record Score(
         Truth Truth, IReadOnlyList<Printed> Letters, string Printed, int Right, int OutOf, int Wrong, int Invented, int Silence,
-        int SpacesRight, int SpacesOutOf, int SpacesAdded, IReadOnlyList<Window> Windows, IReadOnlyList<string> Unknowns);
+        int SpacesRight, int SpacesOutOf, int SpacesAdded, IReadOnlyList<Window> Windows, IReadOnlyList<string> Unknowns)
+    {
+        /// <summary>What each letter of the decode was on the alignment, kept per letter (work instruction 600).</summary>
+        public IReadOnlyList<LetterIs> Kinds { get; init; } = [];
+
+        /// <summary>Each decode letter's index into <see cref="Letters"/>.</summary>
+        public IReadOnlyList<int> Of { get; init; } = [];
+    }
 
     /// <summary>The two stretches, read from the truth file beside the capture, so the draft has one home.</summary>
     public static IReadOnlyList<Truth> Truths()
@@ -128,7 +135,7 @@ internal static class CwWildHands
         gate.CharacterRead += c => space |= c.Text == MorseAlphabet.WordGap;
         gate.RunRead += (c, run) =>
         {
-            letters.Add(new Printed(run[^1].ToSeconds, run.Average(m => m.PitchHz), c.Text, space, gate.StationLines, run[0].FromSeconds));
+            letters.Add(new Printed(run[^1].ToSeconds, run.Average(m => m.PitchHz), c.Text, space, gate.StationLines, run[0].FromSeconds, c.NetProbability));
             space = false;
         };
 
@@ -287,7 +294,11 @@ internal static class CwWildHands
             Enumerable.Range(0, decode.Length).Count(WrongLetter), letters.Count(invented.Contains),
             letters.Count(l => map.SilenceAround(l.From, l.Seconds) is not null),
             boundaries.Count(b => b.Right), boundaries.Count(b => b.Right || b.Missing), boundaries.Count(b => b.Added),
-            windows, unknowns);
+            windows, unknowns)
+        {
+            Kinds = kinds,
+            Of = of,
+        };
     }
 
     /// <summary>

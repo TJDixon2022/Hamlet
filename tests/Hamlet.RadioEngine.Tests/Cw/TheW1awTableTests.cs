@@ -114,7 +114,7 @@ public sealed class TheW1awTableTests(ITestOutputHelper output)
                 var printed = TheRecordingsScoreboardTests.Text(mine);
                 var wrong = WrongAt(printed, s.Reference).Count(i => i < mine.Count && !made.Contains(mine[i]));
 
-                scored.Add(new Scored(s, printed, Letters(s.Reference).Length, Right(printed, s.Reference), SpacesOf(printed, s.Reference), mine, wrong, mine.Count(made.Contains)));
+                scored.Add(new Scored(s, printed, Letters(s.Reference).Length, Right(printed, s.Reference), SpacesOf(printed, s.Reference), mine, wrong, mine.Count(made.Contains), MarksOf(printed, s.Reference)));
             }
         }
 
